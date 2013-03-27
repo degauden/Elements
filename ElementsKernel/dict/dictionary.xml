@@ -1,0 +1,49 @@
+<lcgdict>
+  <selection>
+  <!-- Base classes in ElementsKernel -->
+  <class name="StatusCode"/>
+  <class name="Elements::Time"/>
+  <class pattern="Rndm::*"/>
+
+  <!-- IInterface templated helpers -->
+  <class pattern="extend_interfaces*&lt;*&gt;"/>
+  <class pattern="extends*&lt;*&gt;"/>
+  <class pattern="implements*&lt;*&gt;"/>
+
+
+  <function pattern="Elements::System::*"/>
+  <function pattern="Elements::*"/>
+
+  <enum name="Elements::StateMachine::State"/>
+  <enum name="Elements::StateMachine::Transition"/>
+
+  <enum name="Elements::CounterSummary::SaveType"/>
+
+  <enum name="MSG::Level"/>
+  <enum name="MSG::Color"/>
+
+  <class pattern="SmartIF&lt;*&gt;"/>
+  <class pattern="SmartIFBase&lt;*&gt;"/>
+
+  <!-- Temporary work-around for ROOT bug #44916 -->
+  <class name="std::string"/>
+
+  </selection>
+
+  <exclusion>
+    <class pattern="Rndm::*">
+      <method name="="/>
+    </class>
+
+    <!-- @FIXME Marco Cl.: work-around for ROOT bug #34282. -->
+    <!-- Temporary commented out because it does not work and the feature in
+         ROOT has been disabled.
+    <class name="Elements::Time">
+      <field name="SECS_PER_DAY"/>
+      <field name="SECS_PER_HOUR"/>
+      <field name="SEC_NSECS"/>
+    </class>
+    -->
+  </exclusion>
+</lcgdict>
+
