@@ -26,23 +26,31 @@ if(ELEMENTS_BUILD_TESTS)
   set_property(TEST ElementsKernel.test_PathResolver PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()
 
-#---Dictionaries------------------------------------------------------------
-elements_add_dictionary(ElementsKernel dict/dictionary.h  dict/dictionary.xml LINK_LIBRARIES ElementsKernel)
-
-elements_install_python_modules()
-elements_install_scripts()
-
-
-#---Special options
 if(ELEMENTS_HIDE_WARNINGS)
   if(UNIX)
     # This hides warnings from a broken header file in CppUnit, but may
     # hide problems in the actual test source
     set_property(SOURCE tests/src/test_ElementsTime.cpp
                  PROPERTY COMPILE_FLAGS -Wno-unused-parameter)
-    set_property(TARGET ElementsKernelDict PROPERTY COMPILE_FLAGS -Wno-overloaded-virtual)
-  endif()
-  if(WIN32)
-    set_property(TARGET ElementsKernelDict PROPERTY COMPILE_DEFINITIONS _SCL_SECURE_NO_WARNINGS)
   endif()
 endif()
+
+#---Dictionaries------------------------------------------------------------
+if (NOT APPLE)
+  elements_add_dictionary(ElementsKernel dict/dictionary.h  dict/dictionary.xml LINK_LIBRARIES ElementsKernel)
+
+  if(ELEMENTS_HIDE_WARNINGS)
+    if(UNIX)
+      set_property(TARGET ElementsKernelDict PROPERTY COMPILE_FLAGS -Wno-overloaded-virtual)
+    endif()
+    if(WIN32)
+      set_property(TARGET ElementsKernelDict PROPERTY COMPILE_DEFINITIONS _SCL_SECURE_NO_WARNINGS)
+    endif()
+  endif()
+endif()
+
+#---Python and Scripts ------------------------------------------------------------
+
+elements_install_python_modules()
+elements_install_scripts()
+
