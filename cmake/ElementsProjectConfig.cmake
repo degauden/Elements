@@ -116,7 +116,7 @@ macro(elements_project project version)
   option(BUILD_SHARED_LIBS "Set to OFF to build static libraries." ON)
   option(ELEMENTS_BUILD_TESTS "Set to OFF to disable the build of the tests (libraries and executables)." ON)
   option(ELEMENTS_HIDE_WARNINGS "Turn on or off options that are used to hide warning messages." ON)
-  option(ELEMENTS_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix systems (like CMT does)." ON)
+  option(ELEMENTS_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix systems (like CMT does)." OFF)
   #-------------------------------------------------------------------------------------------------
   set(ELEMENTS_DATA_SUFFIXES DBASE;PARAM;EXTRAPACKAGES CACHE STRING
       "List of (suffix) directories where to look for data packages.")
@@ -447,7 +447,7 @@ macro(_elements_use_other_projects)
 
   You need to call cmake ${hint_message}
 ")
-        endif()
+          endif()
         endif()
         if(NOT SGS_SYSTEM STREQUAL ${other_project}_astrotools_system)
           message(FATAL_ERROR "Incompatible values of SGS_SYSTEM:
@@ -1452,15 +1452,22 @@ endfunction()
 # elements_add_unit_test(<name>
 #                     source1 source2 ...
 #                     LINK_LIBRARIES library1 library2 ...
-#                     INCLUDE_DIRS dir1 package2 ...)
+#                     INCLUDE_DIRS dir1 package2 ...
+#                     [ENVIRONMENT variable[+]=value ...]
+#                     [TIMEOUT seconds]
+#                     [TYPE Boost|CppUnit])
 #
 # Special version of elements_add_executable which automatically adds the dependency
 # on CppUnit.
+# If special environment settings are needed, they can be specified in the
+# section ENVIRONMENT as <var>=<value> or <var>+=<value>, where the second format
+# prepends the value to the PATH-like variable.
+# The default TYPE is CppUnit and Boost can also be specified.
 #---------------------------------------------------------------------------------------------------
 function(elements_add_unit_test executable)
   if(ELEMENTS_BUILD_TESTS)
 
-    CMAKE_PARSE_ARGUMENTS(${executable}_UNIT_TEST "" "TYPE" "" ${ARGN})
+    CMAKE_PARSE_ARGUMENTS(${executable}_UNIT_TEST "" "TYPE;TIMEOUT" "ENVIRONMENT" ${ARGN})
 
     elements_common_add_build(${${executable}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
@@ -1468,10 +1475,10 @@ function(elements_add_unit_test executable)
       set(${executable}_UNIT_TEST_TYPE CppUnit)
     endif()
 
-    find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
-
     if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
       find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+    else()
+      find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
     endif()
 
     elements_add_executable(${executable} ${srcs}
@@ -1484,11 +1491,29 @@ function(elements_add_unit_test executable)
     if(NOT exec_suffix)
       set(exec_suffix)
     endif()
+
+    foreach(var ${${executable}_UNIT_TEST_ENVIRONMENT})
+      string(FIND ${var} "+=" is_prepend)
+      if(NOT is_prepend LESS 0)
+        # the argument contains +=
+        string(REPLACE "+=" "=" var ${var})
+        set(extra_env ${extra_env} -p ${var})
+      else()
+        set(extra_env ${extra_env} -s ${var})
+      endif()
+    endforeach()
+
     add_test(${package}.${executable}
-             ${env_cmd} --xml ${env_xml}
+             ${env_cmd} ${extra_env} --xml ${env_xml}
                ${executable}${exec_suffix})
+
+    if(${executable}_UNIT_TEST_TIMEOUT)
+      set_property(TEST ${package}.${executable} PROPERTY TIMEOUT ${${executable}_UNIT_TEST_TIMEOUT})
+    endif()
+
   endif()
 endfunction()
+
 
 #-------------------------------------------------------------------------------
 # elements_add_test(<name>
@@ -1503,7 +1528,7 @@ endfunction()
 #  FRAMEWORK - run a job with the specified options
 #  COMMAND - execute a command
 # If special environment settings are needed, they can be specified in the
-# section ENVIRONMENT as <var>=<value> or <var>+=<value>, where the secon format
+# section ENVIRONMENT as <var>=<value> or <var>+=<value>, where the second format
 # prepends the value to the PATH-like variable.
 # Great flexibility is given by the following options:
 #  FAILS - the tests succeds if the command fails (return code !=0)

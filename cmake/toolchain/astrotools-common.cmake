@@ -23,7 +23,12 @@
 function(sgs_find_host_arch)
   if(NOT SGS_HOST_ARCH)
     if(CMAKE_HOST_SYSTEM_PROCESSOR)
-      set(arch ${CMAKE_HOST_SYSTEM_PROCESSOR})
+      # Fix to get the right value for MacOSX
+      if( (CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin") AND (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "i386") )
+        execute_process(COMMAND uname -m OUTPUT_VARIABLE arch OUTPUT_STRIP_TRAILING_WHITESPACE)
+      else()
+        set(arch ${CMAKE_HOST_SYSTEM_PROCESSOR})
+      endif()
     else()
       if(UNIX)
         execute_process(COMMAND uname -p OUTPUT_VARIABLE arch OUTPUT_STRIP_TRAILING_WHITESPACE)
