@@ -252,10 +252,6 @@ macro(elements_project project version)
     add_subdirectory(${package})
   endforeach()
 
-  #--- Special global targets for merging files.
-  elements_merge_files(Rootmap lib ${CMAKE_PROJECT_NAME}.rootmap)
-  elements_merge_files(DictRootmap lib ${CMAKE_PROJECT_NAME}Dict.rootmap)
-
   # FIXME: it is not possible to produce the file python.zip at installation time
   # because the install scripts of the subdirectories are executed after those
   # of the parent project and we cannot have a post-install target because of
@@ -1338,8 +1334,6 @@ function(elements_add_module library)
   target_link_libraries(${library} ${ROOT_Reflex_LIBRARY} ${ARG_LINK_LIBRARIES})
   _elements_detach_debinfo(${library})
 
-  elements_generate_rootmap(${library})
-
   set_property(GLOBAL APPEND PROPERTY COMPONENT_LIBRARIES ${library})
 
   elements_add_genheader_dependencies(${library})
@@ -1354,41 +1348,6 @@ macro(elements_component_library)
   message(WARNING "Deprecated function 'elements_component_library', use 'elements_add_module' instead")
   elements_add_module(${ARGN})
 endmacro()
-
-#-------------------------------------------------------------------------------
-# elements_add_dictionary(dictionary header selection
-#                      LINK_LIBRARIES ...
-#                      INCLUDE_DIRS ...
-#                      OPTIONS ...)
-#
-# Find all the CMakeLists.txt files in the sub-directories and add their
-# directories to the variable.
-#-------------------------------------------------------------------------------
-function(elements_add_dictionary dictionary header selection)
-  # ensure that we have Reflex
-  if(NOT ROOT_Reflex_LIBRARY)
-    find_package(ROOT QUIET COMPONENTS Reflex)
-    if(NOT ROOT_Reflex_LIBRARY)
-      message(FATAL_ERROR "Reflex not found! Cannot produce dictionaries.")
-    endif()
-  endif()
-  # this function uses an extra option: 'OPTIONS'
-  CMAKE_PARSE_ARGUMENTS(ARG "" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;OPTIONS" ${ARGN})
-  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS} LIBRARIES ${ARG_LIBRARIES} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-
-  reflex_dictionary(${dictionary} ${header} ${selection} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} OPTIONS ${ARG_OPTIONS})
-  set_target_properties(${dictionary}Dict PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual")
-  _elements_detach_debinfo(${dictionary}Dict)
-
-  elements_add_genheader_dependencies(${dictionary}Gen)
-
-  # Notify the project level target
-  get_property(rootmapname TARGET ${dictionary}Gen PROPERTY ROOTMAPFILE)
-  elements_merge_files_append(DictRootmap ${dictionary}Gen ${CMAKE_CURRENT_BINARY_DIR}/${rootmapname})
-
-  #----Installation details-------------------------------------------------------
-  install(TARGETS ${dictionary}Dict LIBRARY DESTINATION lib OPTIONAL)
-endfunction()
 
 #---------------------------------------------------------------------------------------------------
 # elements_add_python_module(name
@@ -1755,26 +1714,6 @@ macro(elements_install_cmake_modules)
   set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH} PARENT_SCOPE)
   set_property(DIRECTORY PROPERTY ELEMENTS_EXPORTED_CMAKE ON)
 endmacro()
-
-#---------------------------------------------------------------------------------------------------
-# elements_generate_rootmap(library)
-#
-# Create the .rootmap file needed by the plug-in system.
-#---------------------------------------------------------------------------------------------------
-function(elements_generate_rootmap library)
-  find_package(ROOT QUIET)
-  set(rootmapfile ${library}.rootmap)
-
-  set(libname ${CMAKE_SHARED_MODULE_PREFIX}${library}${CMAKE_SHARED_MODULE_SUFFIX})
-  add_custom_command(OUTPUT ${rootmapfile}
-                     COMMAND ${env_cmd}
-                       --xml ${env_xml}
-		             ${ROOT_genmap_CMD} -i ${libname} -o ${rootmapfile}
-                     DEPENDS ${library})
-  add_custom_target(${library}Rootmap ALL DEPENDS ${rootmapfile})
-  # Notify the project level target
-  elements_merge_files_append(Rootmap ${library}Rootmap ${CMAKE_CURRENT_BINARY_DIR}/${library}.rootmap)
-endfunction()
 
 #-------------------------------------------------------------------------------
 # elements_generate_project_config_version_file()
