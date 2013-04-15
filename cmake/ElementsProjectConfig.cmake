@@ -369,6 +369,30 @@ macro(elements_project project version)
 
   include(CPack)
 
+  # Add Doxygen generation
+  find_package(Doxygen)
+  if(DOXYGEN_FOUND)
+    find_file(doxygen_file_template
+              NAMES Doxyfile.in
+              HINTS ENV CMTPROJECTPATH
+              PATHS ${CMAKE_CURRENT_LIST_DIR}/cmake/doc
+              PATH_SUFFIXES doc)
+
+    if(doxygen_file_template)
+      configure_file(
+        "${doxygen_file_template}"
+        "${PROJECT_BINARY_DIR}/doc/Doxyfile"
+        @ONLY
+      )
+    endif()
+
+    add_custom_target(doc
+                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM
+    )
+  endif()
+
 endmacro()
 
 #-------------------------------------------------------------------------------
