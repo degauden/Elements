@@ -131,14 +131,14 @@ private:
  works on seconds at best (through a struct @c tm), the subsecond
  part cannot be formatted; the #nanoformat() method is provided to
  overcome this limitation.  To combine #format() and #nanoformat()
- output use a suitable #StringFormat pattern.
+ output use a suitable string format pattern.
 
  #Time is linked to the system's concept of calendar time and is
  therefore may not be linear nor monotonic.  System time can jump
  arbitrarily in either direction as real time clock is corrected or
  the system is suspended.  The local time may also jump due to
  daylight savings.  The process' ability to sample system time can
- be limited for reasons such as getting swapped out.  #TimeInfo
+ be limited for reasons such as getting swapped out.  #Time
  provides an alternative time measurement facility not linked to
  calendar and guaranteed to grow monotonically -- though not always
  linearly.  Note that few systems actually provide wall-clock time
@@ -200,14 +200,14 @@ private:
  sleep and pull events off the queue based on the difference (the
  sleep time may exceed the requested time).  Either guard against
  long time warps like suspends or schedule timer events cautiously.
- Using #TimeInfo as schedule base solves such issues simply.  To
+ Using #Time as schedule base solves such issues simply.  To
  cope with backward system time jumps when using #Time as schedule
  base, assume that sleeps always last at least the requested time;
  if the time delta over the nap is less than the requested, assume
  time warp (this is not foolproof against interrupted system calls
  but works for many event scheduling situations).
 
- @sa #TimeInfo for monotonic time not related to the calendar.
+ @sa #Time for monotonic time not related to the calendar.
  *  (Documentation taken from original SEAL class)
  *  @author Marco Clemencic
  *  @date   2005-12-15

@@ -46,10 +46,11 @@ ELEMENTS_API longlong adjustTime(TimeType typ, longlong timevalue);
 
 /// Convert the time from OS native time to requested representation (Experts only)
 template<TimeType T>
-inline long long adjustTime(long long timevalue);
+/** Adjust time
+ * @param timevalue Time value to be converted.
+ */inline long long adjustTime(long long timevalue);
 /** Elapsed time since start of process in milliseconds.
  @param typ       Indicator or the unit the time will be returned.
- @param timevalue Time value to be converted.
  @return          Requested value in the indicated units.
  */ELEMENTS_API longlong ellapsedTime(TimeType typ = milliSec, InfoType fetch =
     Times, long pid = -1);

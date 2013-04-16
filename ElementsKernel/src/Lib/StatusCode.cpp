@@ -30,7 +30,7 @@ StatusCode::~StatusCode() {
 
       std::string lib, fnc;
       void* addr = 0;
-      /// @FIXME : (MCl) use backTrace(std::string&, const int, const int) instead
+      // FIXME : (MCl) use backTrace(std::string&, const int, const int) instead
       if (Elements::System::backTrace(addresses, depth)) {
 
         if (Elements::System::getStackLevel(addresses[2], addr, fnc, lib)) {
