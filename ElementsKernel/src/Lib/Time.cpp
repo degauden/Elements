@@ -277,7 +277,7 @@ const char * Time::timezone(int *daylight /* = 0 */) const {
  *  milliseconds (extension for compatibility with MessageSvc time format).
  */
 std::string Time::format(bool local, std::string spec) const {
-  /// @FIXME: This doesn't account for nsecs part!
+  // FIXME: This doesn't account for nsecs part!
   std::string result;
   tm time = split(local);
   std::string::size_type length = 0;
