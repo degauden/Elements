@@ -367,6 +367,9 @@ macro(elements_project project version)
 
   set(CPACK_GENERATOR TGZ)
 
+  set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/build\\\\..*/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
+
+
   include(CPack)
 
   # Add Doxygen generation
