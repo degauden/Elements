@@ -39,7 +39,7 @@
 #          and pressure; also added Gas threshold.
 # -----
 
-from GaudiKernel.SystemOfUnits import *
+from ElementsKernel.SystemOfUnits import *
 
 #
 #
