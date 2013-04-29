@@ -673,6 +673,11 @@ INPUT_ENCODING = UTF-8
 # *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py
 # *.f90 *.f *.for *.vhd *.vhdl
 
+#FILE_PATTERNS = CMakeLists.txt *.cmake
+#FILE_PATTERNS += *.c *.cc *.cxx *.cpp *.c++ *.d *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh
+#FILE_PATTERNS += *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py
+#FILE_PATTERNS += *.f90 *.f *.for *.vhd *.vhdl
+
 FILE_PATTERNS =
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories
