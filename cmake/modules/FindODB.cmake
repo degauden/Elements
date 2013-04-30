@@ -68,6 +68,7 @@ FIND_PROGRAM(ODB_COMPILER odb
              PATHS
              /bin
              /usr/bin
+             /usr/local/bin
              /opt/bin
              /opt/odb/bin
              )
@@ -151,7 +152,6 @@ IF(ODB_FOUND)
     if(ODB_PGSQL_LIBRARY)
       LIST(APPEND ODB_LIBRARIES ${ODB_PGSQL_LIBRARY})
     endif()
-
     MESSAGE(STATUS "Found ODB Compiler (ODB_COMPILER = ${ODB_COMPILER})")
     MESSAGE(STATUS "Found ODB Include folder (ODB_INCLUDE_DIR = ${ODB_INCLUDE_DIR})")
     MESSAGE(STATUS "Found ODB Core Libraries (ODB_LIBRARIES = ${ODB_LIBRARIES})")
