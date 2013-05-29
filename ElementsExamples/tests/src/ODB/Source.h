@@ -24,7 +24,7 @@ class Source {
 public:
   /// constructor with member assignment, without maps and without catalog "back pointer"
 
-  Source (){}
+  Source () : m_source_id(0), m_ra(0.0), m_dec(0.0){}
   Source(long source_id, double ra, double dec)
     : m_source_id(source_id), m_ra (ra), m_dec(dec)
   {};
