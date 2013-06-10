@@ -17,8 +17,10 @@ elements_add_executable(TheProgram src/main/TheMain.cpp
 find_package(ODB)
 
 if(ODB_FOUND)
-  if(ODB_PGSQL_LIBRARY)
-    ODB_WRAP_PGSQL_BOOST(ODB_SRCS ODB_HDRS tests/src/ODB/Source.h)
+#  if(ODB_PGSQL_LIBRARY)
+#    ODB_WRAP_PGSQL_BOOST(ODB_SRCS ODB_HDRS tests/src/ODB/Source.h)
+  if(ODB_SQLITE_LIBRARY)
+    ODB_WRAP_SQLITE_BOOST(ODB_SRCS ODB_HDRS tests/src/ODB/Source.h)
     elements_add_unit_test(test_ODB tests/src/ODB/*.cpp ${ODB_SRCS}
                            LINK_LIBRARIES ODB
                            INCLUDE_DIRS ODB tests/src/ODB)
