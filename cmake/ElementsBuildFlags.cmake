@@ -165,9 +165,13 @@ if ((ELEMENTS_V21 OR G21_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND SGS_COMPVE
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
 endif()
 
+set(ODB_CXX_EXTRA_FLAGS ""
+      CACHE STRING "flag passed to the ODB compiler"
+      FORCE)
 if ( ELEMENTS_CPP11 )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
+  set(ODB_CXX_EXTRA_FLAGS --std c++11)
 endif()
 
 if(NOT ELEMENTS_V21)
