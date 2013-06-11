@@ -27,9 +27,9 @@ function(ODB_WRAP SRCS HDRS DATABASE PROFILE) # ARGS
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_we_odb_h}-odb.cpp"
            "${CMAKE_CURRENT_BINARY_DIR}/${_we_odb_h}-odb.h"
            "${CMAKE_CURRENT_BINARY_DIR}/${_we_odb_h}-odb.i"
-    COMMAND ${ODB_COMPILER}
+    COMMAND ${ODB_COMPILER} ${ODB_CXX_EXTRA_FLAGS}
     ARGS -d ${DATABASE} -p ${PROFILE}
-    -I ${ODB_INCLUDE_DIR} -I ${CMAKE_BINARY_DIR}/proto
+    -I ${ODB_INCLUDE_DIR} -I ${CMAKE_BINARY_DIR}/proto -I ${CMAKE_BINARY_DIR}
     --hxx-suffix .h
     --ixx-suffix .i
     --cxx-suffix .cpp
