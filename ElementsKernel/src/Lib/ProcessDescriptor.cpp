@@ -473,7 +473,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
 
 long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     long* info) {
-  long status = 1, *vb = &status;
+  long status = 1, *vb;
   ProcessHandle h(pid);
   vb = &m_PRIORITYBOOST[h.item()];
   *vb = 0;
