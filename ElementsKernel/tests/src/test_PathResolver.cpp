@@ -59,8 +59,6 @@ int main() {
     err++;
   }
 
-  fileLocation = "";
-
   filename = "B/a.txt";
   fileLocation = PathResolver::find_file(filename, "DATAPATH");
 
@@ -82,7 +80,6 @@ int main() {
         << std::endl;
     err++;
   }
-  fileLocation = "";
 
   filename = "c.txt";
   fileLocation = PathResolver::find_file(filename, "DATAPATH",
@@ -106,7 +103,6 @@ int main() {
         << std::endl;
     err++;
   }
-  fileLocation = "";
 
   filename = ref4;
   fileLocation = PathResolver::find_file(filename, "DATAPATH");
