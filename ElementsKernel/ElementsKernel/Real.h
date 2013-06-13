@@ -141,8 +141,7 @@ public:
   static const Bits m_sign_bitmask = static_cast<Bits>(1) << (m_bitcount - 1);
 
   // The mask for the fraction bits.
-  static const Bits m_fraction_bitmask = ~static_cast<Bits>(0)
-      >> (m_exponent_bitcount + 1);
+  static const Bits m_fraction_bitmask = ~static_cast<Bits>(0) >> (m_exponent_bitcount + 1);
 
   // The mask for the exponent bits.
   static const Bits m_exponent_bitmask = ~(m_sign_bitmask | m_fraction_bitmask);
@@ -228,8 +227,7 @@ public:
     if (isNan() || rhs.isNan())
       return false;
 
-    return distanceBetweenSignAndMagnitudeNumbers(m_u.bits_, rhs.m_u.bits_)
-        <= m_max_ulps;
+    return distanceBetweenSignAndMagnitudeNumbers(m_u.bits_, rhs.m_u.bits_) <= m_max_ulps;
   }
 
 private:
@@ -266,8 +264,7 @@ private:
 
   // Given two numbers in the sign-and-magnitude representation,
   // returns the distance between them as an unsigned number.
-  static Bits distanceBetweenSignAndMagnitudeNumbers(const Bits &sam1,
-      const Bits &sam2) {
+  static Bits distanceBetweenSignAndMagnitudeNumbers(const Bits &sam1, const Bits &sam2) {
     const Bits biased1 = signAndMagnitudeToBiased(sam1);
     const Bits biased2 = signAndMagnitudeToBiased(sam2);
     return (biased1 >= biased2) ? (biased1 - biased2) : (biased2 - biased1);
