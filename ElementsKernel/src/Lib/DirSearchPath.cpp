@@ -26,7 +26,7 @@ using boost::tokenizer;
 using boost::char_separator;
 
 //constructors
-DirSearchPath::DirSearchPath(const std::string& stringifiedPath,
+DirSearchPath::DirSearchPath(const string& stringifiedPath,
     const char* separator) {
   addCWD(); //FIXME is this a good idea?
 
@@ -55,7 +55,7 @@ bool DirSearchPath::add(const path& dir) {
   bool dirExist(existsDir(dir));
   //add dir to path even if dir does not (yet) exist,
   // but don't add twice same dir
-  if (m_dirs.end() == std::find_if(m_dirs.begin(), m_dirs.end(), eqPath(dir)))
+  if (m_dirs.end() == find_if(m_dirs.begin(), m_dirs.end(), eqPath(dir)))
     m_dirs.push_back(dir);
   return dirExist;
 }
@@ -75,7 +75,7 @@ bool DirSearchPath::find(const string& fileName, string& fullFileName) const {
 //accessors
 bool DirSearchPath::find(const path& file, path& fileFound) const {
   bool rc(false);
-  for (std::list<path>::const_iterator iDir = m_dirs.begin();
+  for (list<path>::const_iterator iDir = m_dirs.begin();
       iDir != m_dirs.end(); ++iDir) {
     path full(*iDir / file);
     if (exists(full)) {
@@ -88,9 +88,9 @@ bool DirSearchPath::find(const path& file, path& fileFound) const {
 }
 
 //accessors
-std::list<DirSearchPath::path> DirSearchPath::find_all(const path& file) const {
-  std::list<path> found;
-  for (std::list<path>::const_iterator iDir = m_dirs.begin();
+list<DirSearchPath::path> DirSearchPath::find_all(const path& file) const {
+  list<path> found;
+  for (list<path>::const_iterator iDir = m_dirs.begin();
       iDir != m_dirs.end(); ++iDir) {
     path full(*iDir / file);
     if (exists(full)) {
@@ -101,7 +101,7 @@ std::list<DirSearchPath::path> DirSearchPath::find_all(const path& file) const {
 }
 
 //helpers
-bool DirSearchPath::existsDir(const std::string& dirName) {
+bool DirSearchPath::existsDir(const string& dirName) {
   bool rc(false);
   try {
     rc = is_directory(path(dirName));

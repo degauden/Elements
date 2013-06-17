@@ -27,6 +27,8 @@
 // provides macros for the tests
 #include <cppunit/extensions/HelperMacros.h>
 
+using namespace std;
+
 namespace ElementsKernelTest {
 class TimeTest: public CppUnit::TestFixture {
 
@@ -48,23 +50,23 @@ public:
   void test_nanoformat() {
     Elements::Time t(2011, 0, 13, 14, 22, 45, 123000, true);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("000123"), t.nanoformat());
-    CPPUNIT_ASSERT_EQUAL(std::string("000123000"), t.nanoformat(9));
-    CPPUNIT_ASSERT_EQUAL(std::string("000123"), t.nanoformat(2, 7));
-    CPPUNIT_ASSERT_EQUAL(std::string("0"), t.nanoformat(1, 3));
-    CPPUNIT_ASSERT_EQUAL(std::string("00012"), t.nanoformat(1, 5));
-    CPPUNIT_ASSERT_EQUAL(std::string("000"), t.nanoformat(3, 3));
+    CPPUNIT_ASSERT_EQUAL(string("000123"), t.nanoformat());
+    CPPUNIT_ASSERT_EQUAL(string("000123000"), t.nanoformat(9));
+    CPPUNIT_ASSERT_EQUAL(string("000123"), t.nanoformat(2, 7));
+    CPPUNIT_ASSERT_EQUAL(string("0"), t.nanoformat(1, 3));
+    CPPUNIT_ASSERT_EQUAL(string("00012"), t.nanoformat(1, 5));
+    CPPUNIT_ASSERT_EQUAL(string("000"), t.nanoformat(3, 3));
 
   }
 
   void test_format() {
     Elements::Time t(2011, 0, 13, 14, 22, 45, 1230000, true);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("2011-01-13 14:22:45"),
+    CPPUNIT_ASSERT_EQUAL(string("2011-01-13 14:22:45"),
         t.format(true, "%Y-%m-%d %H:%M:%S"));
-    CPPUNIT_ASSERT_EQUAL(std::string("2011-01-13 14:22:45.001"),
+    CPPUNIT_ASSERT_EQUAL(string("2011-01-13 14:22:45.001"),
         t.format(true, "%Y-%m-%d %H:%M:%S.%f"));
-    CPPUNIT_ASSERT_EQUAL(std::string("14:22:45 2011/01/13 "),
+    CPPUNIT_ASSERT_EQUAL(string("14:22:45 2011/01/13 "),
         t.format(true, "%H:%M:%S %Y/%m/%d "));
 
   }

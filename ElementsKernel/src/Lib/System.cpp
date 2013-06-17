@@ -22,6 +22,8 @@
 
 #include "ElementsKernel/System.h"
 
+using namespace std;
+
 #ifdef _WIN32
   #define strcasecmp  _stricmp
   #define strncasecmp _strnicmp
@@ -69,10 +71,10 @@ struct HMODULE {
 #  define __attribute__(x)
 #endif
 
-static std::vector<std::string> s_argvStrings;
-static std::vector<const char*> s_argvChars;
+static vector<string> s_argvStrings;
+static vector<const char*> s_argvChars;
 
-static unsigned long doLoad(const std::string& name, Elements::System::ImageHandle* handle)  {
+static unsigned long doLoad(const string& name, Elements::System::ImageHandle* handle)  {
 #ifdef _WIN32
   void* mh = ::LoadLibrary( name.length() == 0 ? Elements::System::exeName().c_str() : name.c_str());
   *handle = mh;
@@ -86,7 +88,7 @@ static unsigned long doLoad(const std::string& name, Elements::System::ImageHand
   HMODULE* mod = new HMODULE;
   if ( 0 != mh ) {
     if ( 0 != ::shl_gethandle_r(mh, &mod->dsc) ) {
-      std::cout << "Elements::System::loadDynamicLib>" << ::strerror(getLastError()) << std::endl;
+      cout << "Elements::System::loadDynamicLib>" << ::strerror(getLastError()) << endl;
     }
     else {
       typedef void* (*___all)();
@@ -104,9 +106,9 @@ static unsigned long doLoad(const std::string& name, Elements::System::ImageHand
   return 1;
 }
 
-static unsigned long loadWithoutEnvironment(const std::string& name, Elements::System::ImageHandle* handle)    {
+static unsigned long loadWithoutEnvironment(const string& name, Elements::System::ImageHandle* handle)    {
 
-  std::string dllName = name;
+  string dllName = name;
   long len = strlen(SHLIB_SUFFIX);
 
   // Add the suffix at the end of the library name only if necessary
@@ -121,7 +123,7 @@ static unsigned long loadWithoutEnvironment(const std::string& name, Elements::S
 }
 
 /// Load dynamic link library
-unsigned long Elements::System::loadDynamicLib(const std::string& name, ImageHandle* handle) {
+unsigned long Elements::System::loadDynamicLib(const string& name, ImageHandle* handle) {
   unsigned long res;
   // if name is empty, just load it
   if (name.length() == 0) {
@@ -129,12 +131,12 @@ unsigned long Elements::System::loadDynamicLib(const std::string& name, ImageHan
   } else {
     // If the name is a logical name (environment variable), the try
     // to load the corresponding library from there.
-    std::string imgName;
+    string imgName;
     if ( getEnv(name, imgName) )    {
       res = loadWithoutEnvironment(imgName, handle);
     } else {
       // build the dll name
-      std::string dllName = name;
+      string dllName = name;
 #if defined(linux) || defined(__APPLE__)
       dllName = "lib" + dllName;
 #endif
@@ -146,7 +148,7 @@ unsigned long Elements::System::loadDynamicLib(const std::string& name, ImageHan
 #if defined(linux) || defined(__APPLE__)
       errno = 0xAFFEDEAD;
 #endif
-     // std::cout << "Elements::System::loadDynamicLib>" << getLastErrorString() << std::endl;
+     // cout << "Elements::System::loadDynamicLib>" << getLastErrorString() << endl;
     }
   }
   return res;
@@ -179,7 +181,7 @@ unsigned long Elements::System::unloadDynamicLib(ImageHandle handle)    {
 }
 
 /// Get a specific function defined in the DLL
-unsigned long Elements::System::getProcedureByName(ImageHandle handle, const std::string& name, EntryPoint* pFunction)    {
+unsigned long Elements::System::getProcedureByName(ImageHandle handle, const string& name, EntryPoint* pFunction)    {
 #ifdef _WIN32
   *pFunction = (EntryPoint)::GetProcAddress((HINSTANCE)handle, name.data());
   if ( 0 == *pFunction )    {
@@ -194,7 +196,7 @@ unsigned long Elements::System::getProcedureByName(ImageHandle handle, const std
 #endif
   if ( 0 == *pFunction )    {
     errno = 0xAFFEDEAD;
-   // std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
+   // cout << "Elements::System::getProcedureByName>" << getLastErrorString() << endl;
     return 0;
   }
   return 1;
@@ -202,13 +204,13 @@ unsigned long Elements::System::getProcedureByName(ImageHandle handle, const std
   *pFunction = (EntryPoint)::dlsym(handle, name.c_str());
   if(!(*pFunction)) {
     // Try with an underscore :
-    std::string sname = "_" + name;
+    string sname = "_" + name;
     *pFunction = (EntryPoint)::dlsym(handle, sname.c_str());
   }
   if ( 0 == *pFunction )    {
     errno = 0xAFFEDEAD;
-    std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
-    //std::cout << "Elements::System::getProcedureByName> failure" << std::endl;
+    cout << "Elements::System::getProcedureByName>" << getLastErrorString() << endl;
+    //cout << "Elements::System::getProcedureByName> failure" << endl;
     return 0;
   }
   return 1;
@@ -229,7 +231,7 @@ unsigned long Elements::System::getProcedureByName(ImageHandle handle, const std
 }
 
 /// Get a specific function defined in the DLL
-unsigned long Elements::System::getProcedureByName(ImageHandle handle, const std::string& name, Creator* pFunction)    {
+unsigned long Elements::System::getProcedureByName(ImageHandle handle, const string& name, Creator* pFunction)    {
   return getProcedureByName(handle, name, (EntryPoint*)pFunction);
 }
 
@@ -244,14 +246,14 @@ unsigned long Elements::System::getLastError()    {
 }
 
 /// Retrieve last error code as string
-const std::string Elements::System::getLastErrorString()    {
-  const std::string errString = getErrorString(getLastError());
+const string Elements::System::getLastErrorString()    {
+  const string errString = getErrorString(getLastError());
   return errString;
 }
 
 /// Retrieve error code as string for a given error
-const std::string Elements::System::getErrorString(unsigned long error)    {
-  std::string errString =  "";
+const string Elements::System::getErrorString(unsigned long error)    {
+  string errString =  "";
 #ifdef _WIN32
   LPVOID lpMessageBuffer;
   ::FormatMessage(
@@ -277,24 +279,24 @@ const std::string Elements::System::getErrorString(unsigned long error)    {
       cerrString = (char *)"Unknown error. No information found in strerror()!";
     }
     else {
-      errString = std::string(cerrString);
+      errString = string(cerrString);
     }
     errno = 0;
   }
   else    {
     cerrString = ::strerror(error);
-    errString = std::string(cerrString);
+    errString = string(cerrString);
   }
 #endif
   return errString;
 }
 
-const std::string Elements::System::typeinfoName( const std::type_info& tinfo) {
+const string Elements::System::typeinfoName( const type_info& tinfo) {
   return typeinfoName(tinfo.name());
 }
 
-const std::string Elements::System::typeinfoName( const char* class_name) {
-  std::string result;
+const string Elements::System::typeinfoName( const char* class_name) {
+  string result;
 #ifdef _WIN32
   long off = 0;
   if ( ::strncmp(class_name, "class ", 6) == 0 )   {
@@ -306,7 +308,7 @@ const std::string Elements::System::typeinfoName( const char* class_name) {
     off = 7;
   }
   if ( off > 0 )    {
-    std::string tmp = class_name + off;
+    string tmp = class_name + off;
     long loc = 0;
     while( (loc = tmp.find("class ")) > 0 )  {
       tmp.erase(loc, 6);
@@ -321,11 +323,11 @@ const std::string Elements::System::typeinfoName( const char* class_name) {
     result = class_name;
   }
   // Change any " *" to "*"
-  while ( (off=result.find(" *")) != std::string::npos ) {
+  while ( (off=result.find(" *")) != string::npos ) {
     result.replace(off, 2, "*");
   }
   // Change any " &" to "&"
-  while ( (off=result.find(" &")) != std::string::npos ) {
+  while ( (off=result.find(" &")) != string::npos ) {
     result.replace(off, 2, "&");
   }
 
@@ -407,8 +409,8 @@ const std::string Elements::System::typeinfoName( const char* class_name) {
       result = realname;
       free(realname);
       /// substitute ', ' with ','
-      std::string::size_type pos = result.find(", ");
-      while( std::string::npos != pos ) {
+      string::size_type pos = result.find(", ");
+      while( string::npos != pos ) {
         result.replace( pos , 2 , "," ) ;
         pos = result.find(", ");
       }
@@ -418,8 +420,8 @@ const std::string Elements::System::typeinfoName( const char* class_name) {
 }
 
 /// Host name
-const std::string& Elements::System::hostName() {
-  static std::string host = "";
+const string& Elements::System::hostName() {
+  static string host = "";
   if ( host == "" ) {
     char buffer[512];
     memset(buffer,0,sizeof(buffer));
@@ -435,8 +437,8 @@ const std::string& Elements::System::hostName() {
 }
 
 /// OS name
-const std::string& Elements::System::osName() {
-  static std::string osname = "";
+const string& Elements::System::osName() {
+  static string osname = "";
 #ifdef _WIN32
   osname = "Windows";
 #else
@@ -452,13 +454,13 @@ const std::string& Elements::System::osName() {
 
 
 /// OS version
-const std::string& Elements::System::osVersion() {
-  static std::string osver = "";
+const string& Elements::System::osVersion() {
+  static string osver = "";
 #ifdef _WIN32
   OSVERSIONINFO ut;
   ut.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   ::GetVersionEx(&ut);
-  std::ostringstream ver;
+  ostringstream ver;
   ver << ut.dwMajorVersion << '.' << ut.dwMinorVersion;
   osver = ver.str();
 #else
@@ -473,12 +475,12 @@ const std::string& Elements::System::osVersion() {
 }
 
 /// Machine type
-const std::string& Elements::System::machineType() {
-  static std::string mach = "";
+const string& Elements::System::machineType() {
+  static string mach = "";
 #ifdef _WIN32
   SYSTEM_INFO ut;
   ::GetSystemInfo(&ut);
-  std::ostringstream arch;
+  ostringstream arch;
   arch << ut.wProcessorArchitecture;
   mach = arch.str();
 #else
@@ -493,8 +495,8 @@ const std::string& Elements::System::machineType() {
 }
 
 /// User login name
-const std::string& Elements::System::accountName() {
-  static std::string account = "";
+const string& Elements::System::accountName() {
+  static string account = "";
   if ( account == "" ) {
 #ifdef _WIN32
     char buffer[512];
@@ -522,7 +524,7 @@ long Elements::System::argc()    {
 }
 
 /// Const char** command line arguments including executable name as arg[0]
-const std::vector<std::string> Elements::System::cmdLineArgs()    {
+const vector<string> Elements::System::cmdLineArgs()    {
   if ( s_argvChars.size() == 0 )    {
     char exe[1024];
 #ifdef _WIN32
@@ -548,7 +550,7 @@ const std::vector<std::string> Elements::System::cmdLineArgs()    {
           strncpy(&exe[strlen(exe)], tmp1, tmp2-tmp1-1);
         }
         else    {
-          std::cout << "Mismatched \" in command line arguments" << std::endl;
+          cout << "Mismatched \" in command line arguments" << endl;
           s_argvChars.erase(s_argvChars.begin(), s_argvChars.end());
           s_argvStrings.erase(s_argvStrings.begin(), s_argvStrings.end());
           return s_argvStrings;
@@ -599,7 +601,7 @@ char** Elements::System::argv()    {
 #endif
 
 /// get a particular env var, return "UNKNOWN" if not defined
-std::string Elements::System::getEnv(const char* var) {
+string Elements::System::getEnv(const char* var) {
   char* env;
   if  ( (env = getenv(var)) != 0 ) {
     return env;
@@ -609,7 +611,7 @@ std::string Elements::System::getEnv(const char* var) {
 }
 
 /// get a particular env var, storing the value in the passed string (if set)
-bool Elements::System::getEnv(const char* var, std::string &value) {
+bool Elements::System::getEnv(const char* var, string &value) {
   char* env;
   if  ( (env = getenv(var)) != 0 ) {
     value = env;
@@ -628,13 +630,13 @@ bool Elements::System::isEnvSet(const char* var) {
 // Needed for _NSGetEnviron(void)
 #include "crt_externs.h"
 #endif
-std::vector<std::string> Elements::System::getEnv() {
+vector<string> Elements::System::getEnv() {
 #if defined(_WIN32)
 #  define environ _environ
 #elif defined(__APPLE__)
   static char **environ = *_NSGetEnviron();
 #endif
-  std::vector<std::string> vars;
+  vector<string> vars;
   for (int i=0; environ[i] != 0; ++i) {
     vars.push_back(environ[i]);
   }
@@ -667,13 +669,13 @@ int Elements::System::backTrace(void** addresses __attribute__ ((unused)),
 
 }
 
-bool Elements::System::backTrace(std::string& btrace, const int depth, const int offset)
+bool Elements::System::backTrace(string& btrace, const int depth, const int offset)
 {
   // Always hide the first two levels of the stack trace (that's us)
   const int totalOffset = offset + 2;
   const int totalDepth = depth + totalOffset;
 
-  std::string fnc, lib;
+  string fnc, lib;
 
   void** addresses = (void**) malloc(totalDepth*sizeof(void *));
   if ( addresses != 0 ){
@@ -682,9 +684,9 @@ bool Elements::System::backTrace(std::string& btrace, const int depth, const int
       void *addr = 0;
 
       if (Elements::System::getStackLevel(addresses[i],addr,fnc,lib)) {
-        std::ostringstream ost;
-        ost << "#" << std::setw(3) << std::setiosflags( std::ios::left ) << i-totalOffset+1;
-        ost << std::hex << addr << std::dec << " " << fnc << "  [" << lib << "]" << std::endl;
+        ostringstream ost;
+        ost << "#" << setw(3) << setiosflags( ios::left ) << i-totalOffset+1;
+        ost << hex << addr << dec << " " << fnc << "  [" << lib << "]" << endl;
         btrace += ost.str();
       }
     }
@@ -700,8 +702,8 @@ bool Elements::System::backTrace(std::string& btrace, const int depth, const int
 
 bool Elements::System::getStackLevel(void* addresses  __attribute__ ((unused)),
                            void*& addr      __attribute__ ((unused)),
-                           std::string& fnc __attribute__ ((unused)),
-                           std::string& lib __attribute__ ((unused)))
+                           string& fnc __attribute__ ((unused)),
+                           string& lib __attribute__ ((unused)))
 {
 
 #ifdef __linux
@@ -737,7 +739,7 @@ bool Elements::System::getStackLevel(void* addresses  __attribute__ ((unused)),
 }
 
 ///set an environment variables. @return 0 if successful, -1 if not
-int Elements::System::setEnv(const std::string &name, const std::string &value, int overwrite)
+int Elements::System::setEnv(const string &name, const string &value, int overwrite)
 {
 #ifndef WIN32
   // UNIX version

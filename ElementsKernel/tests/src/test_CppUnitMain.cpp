@@ -26,7 +26,7 @@ namespace ElementsKernelTest {
  *  Simple TestListener printing one line per test in the standard output.
  *
  *  Based on  CppUnit::BriefTestProgressListener (copy and paste)
- *  using std::cout instead of std::cerr.
+ *  using cout instead of cerr.
  *
  *  @author Marco Clemencic
  *  @date   2006-11-13
@@ -58,7 +58,7 @@ public:
   void endTest(CppUnit::Test * /*test*/) {
     if (!m_lastTestFailed)
       cout << " : OK";
-    cout << std::endl;
+    cout << endl;
   }
 
 private:
@@ -74,7 +74,7 @@ private:
 int main(int argc, char* argv[]) {
   // Retrieve test path from command line first argument.
   // Default to "" which resolve to the top level suite.
-  std::string testPath = (argc > 1) ? std::string(argv[1]) : std::string("");
+  string testPath = (argc > 1) ? string(argv[1]) : string("");
 
   // Add a listener that collects test result
   //CppUnit::TestResultCollector result;
@@ -90,13 +90,12 @@ int main(int argc, char* argv[]) {
 
   // Change the default outputter to a compiler error format outputter
   // uncomment the following line if you need a compiler outputter.
-  runner.setOutputter(
-      new CppUnit::CompilerOutputter(&runner.result(), std::cout));
+  runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), cout));
 
   // Change the default outputter to a xml error format outputter
   // uncomment the following line if you need a xml outputter.
   //runner.setOutputter( new CppUnit::XmlOutputter( &runner.result(),
-  //                                                    std::cout ) );
+  //                                                    cout ) );
 
   runner.eventManager().addListener(new ElementsKernelTest::ProgressListener());
 
@@ -111,21 +110,20 @@ int main(int argc, char* argv[]) {
   }
 
   // Test path not resolved
-  catch (std::invalid_argument &e) {
-    std::cout << std::endl << "ERROR: " << e.what() << std::endl;
+  catch (invalid_argument &e) {
+    cout << endl << "ERROR: " << e.what() << endl;
     return 0;
   }
 
   // Should never happen?
-  catch (std::exception& e) {
-    std::cout << std::endl << "UNEXPECTED STD EXCEPTION CAUGHT: " << e.what()
-        << std::endl;
+  catch (exception& e) {
+    cout << endl << "UNEXPECTED STD EXCEPTION CAUGHT: " << e.what() << endl;
     return 0;
   }
 
   // Should never happen?
   catch (...) {
-    std::cout << std::endl << "UNKNOWN EXCEPTION CAUGHT" << std::endl;
+    cout << endl << "UNKNOWN EXCEPTION CAUGHT" << endl;
     return 0;
   }
 
@@ -133,7 +131,7 @@ int main(int argc, char* argv[]) {
   int retcode = wasSuccessful ? 0 : 1;
 
   // Uncomment the next line if you want to integrate CppUnit with Oval
-  // std::cout << "[OVAL] Cppunit-result =" << retcode << std::endl;
+  // cout << "[OVAL] Cppunit-result =" << retcode << endl;
   return retcode;
 
 }
