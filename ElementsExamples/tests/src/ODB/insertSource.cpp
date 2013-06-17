@@ -16,9 +16,9 @@ int main(int argc, char* argv[]) {
 		auto_ptr<database> db(create_database(argc, argv));
 
 		{
-		  cout << "Inserting two sources in the database: " << std::endl
-		      << "- 99678, 45.67, 134.67" << std::endl
-          << "- 99690, 123.45, 56.29" << std::endl;
+		  cout << "Inserting two sources in the database: " << endl
+		      << "- 99678, 45.67, 134.67" << endl
+          << "- 99690, 123.45, 56.29" << endl;
 
 			Source mySource1(99678, 45.67, 134.67);
 			Source mySource2(99690, 123.45, 56.29);
@@ -35,18 +35,18 @@ int main(int argc, char* argv[]) {
 			transaction t(db->begin());
 			result r(db->query<Source>());
 
-      cout << "Reading sources from the database: " << std::endl;
+      cout << "Reading sources from the database: " << endl;
 
       for (result::iterator i(r.begin()); i != r.end(); ++i) {
         cout << "- " << i->getSourceId() << ", " << i->getRa() << ", "
             << i->getDec();
-        cout << std::endl;
+        cout << endl;
       }
 
 			t.commit();
 		}
 	} catch (const odb::exception& e) {
-		cerr << e.what() << std::endl;
+		cerr << e.what() << endl;
 		return 1;
 	}
 }

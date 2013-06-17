@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
@@ -122,10 +122,10 @@ static bool PR_find(const bf::path& file, const string& search_list,
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-string PathResolver::find_file(const std::string& logical_file_name,
-    const std::string& search_path, SearchType search_type) {
+string PathResolver::find_file(const string& logical_file_name,
+    const string& search_path, SearchType search_type) {
 
-  std::string path_list;
+  string path_list;
   Elements::System::getEnv(search_path, path_list);
 
   return (find_file_from_list(logical_file_name, path_list, search_type));
@@ -133,10 +133,10 @@ string PathResolver::find_file(const std::string& logical_file_name,
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-std::string PathResolver::find_file_from_list(
-    const std::string& logical_file_name, const std::string& search_list,
+string PathResolver::find_file_from_list(
+    const string& logical_file_name, const string& search_list,
     SearchType search_type) {
-  std::string result("");
+  string result("");
 
   bf::path lfn(logical_file_name);
 
@@ -158,9 +158,9 @@ std::string PathResolver::find_file_from_list(
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-string PathResolver::find_directory(const std::string& logical_file_name,
-    const std::string& search_path, SearchType search_type) {
-  std::string path_list;
+string PathResolver::find_directory(const string& logical_file_name,
+    const string& search_path, SearchType search_type) {
+  string path_list;
   Elements::System::getEnv(search_path, path_list);
 
   return (find_directory_from_list(logical_file_name, path_list, search_type));
@@ -169,9 +169,9 @@ string PathResolver::find_directory(const std::string& logical_file_name,
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 string PathResolver::find_directory_from_list(
-    const std::string& logical_file_name, const std::string& search_list,
+    const string& logical_file_name, const string& search_list,
     SearchType search_type) {
-  std::string result;
+  string result;
 
   if (!PR_find(logical_file_name, search_list, PR_directory, search_type,
       result)) {
@@ -184,8 +184,8 @@ string PathResolver::find_directory_from_list(
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 PathResolver::SearchPathStatus PathResolver::check_search_path(
-    const std::string& search_path) {
-  std::string path_list;
+    const string& search_path) {
+  string path_list;
   if (!Elements::System::getEnv(search_path, path_list))
     return (EnvironmentVariableUndefined);
 
@@ -210,11 +210,11 @@ PathResolver::SearchPathStatus PathResolver::check_search_path(
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-std::string PathResolverFindXMLFile(const std::string& logical_file_name) {
+string PathResolverFindXMLFile(const string& logical_file_name) {
   return PathResolver::find_file(logical_file_name, "XMLPATH");
 }
 
-std::string PathResolverFindDataFile(const std::string& logical_file_name) {
+string PathResolverFindDataFile(const string& logical_file_name) {
   return PathResolver::find_file(logical_file_name, "DATAPATH");
 }
 

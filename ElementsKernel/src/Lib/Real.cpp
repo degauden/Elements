@@ -11,6 +11,8 @@
 #include "ElementsKernel/Real.h"
 
 
+using namespace std;
+
 // Usable AlmostEqual function
 bool almostEqual2sComplement(float A, float B, int maxUlps=4)
 {
@@ -26,7 +28,7 @@ bool almostEqual2sComplement(float A, float B, int maxUlps=4)
     int bInt = *(int*)&B;
     if (bInt < 0)
         bInt = 0x80000000 - bInt;
-    int intDiff = std::abs(aInt - bInt);
+    int intDiff = abs(aInt - bInt);
     if (intDiff <= maxUlps)
         return true;
     return false;
@@ -49,7 +51,7 @@ bool almostEqual2sComplement(double A, double B, int maxUlps=10)
     if (bInt < 0)
         bInt = 0x8000000000000000 - bInt;
 
-    long long intDiff = std::abs(aInt - bInt);
+    long long intDiff = abs(aInt - bInt);
     if (intDiff <= maxUlps && -maxUlps <= intDiff)
     //if (intDiff <= maxUlps)
         return true;

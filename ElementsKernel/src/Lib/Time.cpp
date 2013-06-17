@@ -10,6 +10,7 @@
 #include <sstream>
 
 // local
+using namespace std;
 using namespace Elements;
 
 // architecture dependent includes
@@ -117,7 +118,7 @@ Time Time::current(void) {
   timeval tv;
   if (gettimeofday(&tv, 0) != 0) {
     char buf[256];
-    std::ostringstream tag, msg;
+    ostringstream tag, msg;
     tag << "errno=" << errno;
     if (strerror_r(errno, buf, 256) == 0) {
       msg << buf;
@@ -276,19 +277,19 @@ const char * Time::timezone(int *daylight /* = 0 */) const {
  *  The additional conversion specifier %f can be used to display
  *  milliseconds (extension for compatibility with MessageSvc time format).
  */
-std::string Time::format(bool local, std::string spec) const {
+string Time::format(bool local, string spec) const {
   // FIXME: This doesn't account for nsecs part!
-  std::string result;
+  string result;
   tm time = split(local);
-  std::string::size_type length = 0;
+  string::size_type length = 0;
 
   // handle the special case of "%f"
-  std::string::size_type pos = spec.find("%f");
-  if (std::string::npos != pos) {
+  string::size_type pos = spec.find("%f");
+  if (string::npos != pos) {
     // Get the milliseconds string
-    std::string ms = nanoformat(3, 3);
+    string ms = nanoformat(3, 3);
     // Replace all the occurrences of '%f' (if not preceded by '%')
-    while (std::string::npos != pos) {
+    while (string::npos != pos) {
       if (pos != 0 && spec[pos - 1] != '%') {
         spec.replace(pos, 2, ms);
       }
@@ -299,8 +300,8 @@ std::string Time::format(bool local, std::string spec) const {
   do {
     // Guess how much we'll expand.  If we go wrong, we'll expand again. (with a minimum)
     result.resize(
-        std::max<std::string::size_type>(result.size() * 2,
-            std::max<std::string::size_type>(spec.size() * 2, MIN_BUF_SIZE)),
+        std::max<string::size_type>(result.size() * 2,
+            std::max<string::size_type>(spec.size() * 2, MIN_BUF_SIZE)),
         0);
     length = ::strftime(&result[0], result.size(), spec.c_str(), &time);
   } while (!length);
@@ -319,7 +320,7 @@ std::string Time::format(bool local, std::string spec) const {
  have at most that many digits.  Both @a minwidth and @a maxwidth
  must be between one and nine inclusive and @a minwidth must be
  less or equal to @a maxwidth.  */
-std::string Time::nanoformat(size_t minwidth /* = 1 */,
+string Time::nanoformat(size_t minwidth /* = 1 */,
     size_t maxwidth /* = 9 */) const {
   TimeAssert((minwidth >= 1) && (minwidth <= maxwidth) && (maxwidth <= 9),
       "nanoformat options do not satisfy: 1 <= minwidth <= maxwidth <= 9");
@@ -327,11 +328,11 @@ std::string Time::nanoformat(size_t minwidth /* = 1 */,
   // Calculate the nanosecond fraction.  This will be < 1000000000.
   int value = (int) (m_nsecs % SEC_NSECS);
 
-  std::ostringstream buf;
+  ostringstream buf;
   buf.fill('0');
   buf.width(9);
   buf << value;
-  std::string out = buf.str();
+  string out = buf.str();
   // Find the last non-0 char before maxwidth, but after minwidth
   // (Note: -1 and +1 are to account for difference between position and size.
   //        moreover, npos + 1 == 0, so it is correct to say that 'not found' means size of 0)

@@ -2,6 +2,8 @@
 
 static const long TICK_TO_100NSEC = 100000;
 
+using namespace std;
+
 namespace Elements {
 namespace System {
 enum ProcessInfoCommand {
@@ -293,18 +295,18 @@ void readProcStat(long pid, linux_proc& pinfo) {
   int cnt, fd;
   char buf[512];
 
-  std::ostringstream ost;
+  ostringstream ost;
 
   ost << "/proc/" << pid << "/stat";
-  std::string fname = ost.str();
+  string fname = ost.str();
   if ((fd = open(fname.c_str(), O_RDONLY)) < 0) {
-    std::cerr << "Failed to open " << ost.str() << std::endl;
+    cerr << "Failed to open " << ost.str() << endl;
     return;
   }
 
   lseek(fd, 0, SEEK_SET);
   if ((cnt = read(fd, buf, sizeof(buf))) < 0) {
-    std::cout << "LINUX Read of Proc file failed:" << std::endl;
+    cout << "LINUX Read of Proc file failed:" << endl;
     close(fd);
     return;
   }
@@ -623,11 +625,11 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     vb->ExitStatus = 0;
     vb->PebBaseAddress = (PPEB) prc.startcode;
     vb->BasePriority = 2 * 15 - prc.priority;
-    // std::cout << "Base Priority=" << vb->BasePriority << "|"
-    // << prc.priority << std::endl;
+    // cout << "Base Priority=" << vb->BasePriority << "|"
+    // << prc.priority << endl;
     vb->AffinityMask = prc.flags;
-    // std::cout << "Flags        =" << vb->AffinityMask << "|"
-    // << prc.flags << std::endl;
+    // cout << "Flags        =" << vb->AffinityMask << "|"
+    // << prc.flags << endl;
     vb->UniqueProcessId = processID(pid);
     vb->InheritedFromUniqueProcessId = prc.ppid;
 #else                                     // All Other

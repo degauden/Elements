@@ -1,10 +1,7 @@
 #define SYSTEM_MODULEINFO_CPP
 
-//#include <ctime>
 #include <cstring>
 #include <cstdlib>
-//#include <iostream>
-//#include <typeinfo>
 
 #include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/System.h"
@@ -35,12 +32,14 @@ static PsApiFunctions _psApi;
   #include <dlfcn.h>
 #endif
 
+using namespace std;
+
 static Elements::System::ImageHandle      ModuleHandle = 0;
-static std::vector<std::string> s_linkedModules;
+static vector<string> s_linkedModules;
 
 /// Retrieve base name of module
-const std::string& Elements::System::moduleName()   {
-  static std::string module("");
+const string& Elements::System::moduleName()   {
+  static string module("");
   if ( module == "" )   {
     if ( processHandle() && moduleHandle() )    {
 #ifdef _WIN32
@@ -49,11 +48,11 @@ const std::string& Elements::System::moduleName()   {
       if ( _psApi.isValid() )   {
         _psApi.GetModuleBaseNameA( processHandle(), (HINSTANCE)moduleHandle(), moduleName, sizeof(moduleName) );
       }
-      std::string mod = moduleName;
+      string mod = moduleName;
 #elif defined(linux) || defined(__APPLE__)
-      std::string mod = ::basename((char*)((Dl_info*)moduleHandle())->dli_fname);
+      string mod = ::basename((char*)((Dl_info*)moduleHandle())->dli_fname);
 #elif __hpux
-      std::string mod = ::basename(((HMODULE*)moduleHandle())->dsc.filename);
+      string mod = ::basename(((HMODULE*)moduleHandle())->dsc.filename);
 #endif
       module = mod.substr(0, mod.rfind('.'));
     }
@@ -62,8 +61,8 @@ const std::string& Elements::System::moduleName()   {
 }
 
 /// Retrieve full name of module
-const std::string& Elements::System::moduleNameFull()   {
-  static std::string module("");
+const string& Elements::System::moduleNameFull()   {
+  static string module("");
   if ( module == "" )   {
     if ( processHandle() && moduleHandle() )    {
       char name[PATH_MAX] = {"Unknown.module"};
@@ -92,7 +91,7 @@ const std::string& Elements::System::moduleNameFull()   {
 Elements::System::ModuleType Elements::System::moduleType()   {
   static ModuleType type = UNKNOWN;
   if ( type == UNKNOWN )    {
-    const std::string& module = moduleNameFull();
+    const string& module = moduleNameFull();
     int loc = module.rfind('.')+1;
     if ( loc == 0 )
       type = EXECUTABLE;
@@ -179,7 +178,7 @@ Elements::System::ImageHandle Elements::System::exeHandle()    {
       //printf("Exe:Func handle:%X\n", func);
       if ( 0 != func ) {
       	if ( 0 != ::dladdr(func, &infoBuf) ) {
-	        //std::cout << "All OK" << std::endl;
+	        //cout << "All OK" << endl;
       	  info = &infoBuf;
       	}
       }
@@ -192,8 +191,8 @@ Elements::System::ImageHandle Elements::System::exeHandle()    {
 #endif
 }
 
-const std::string& Elements::System::exeName()    {
-  static std::string module("");
+const string& Elements::System::exeName()    {
+  static string module("");
   if ( module.length() == 0 )    {
     char name[PATH_MAX] = {"Unknown.module"};
     name[0] = 0;
@@ -216,7 +215,7 @@ const std::string& Elements::System::exeName()    {
   return module;
 }
 
-const std::vector<std::string> Elements::System::linkedModules()    {
+const vector<string> Elements::System::linkedModules()    {
   if ( s_linkedModules.size() == 0 )    {
 #ifdef _WIN32
     char   name[255];  // Maximum file name length on NT 4.0

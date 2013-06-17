@@ -3,123 +3,113 @@
 
 #include <string>
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <boost/filesystem.hpp>
 
+using namespace std;
 using namespace Elements::System;
 namespace bf = boost::filesystem;
 
 int main() {
   int err(0);
-  std::cout << "*** PathResolver_test starts ***" << std::endl;
+  cout << "*** PathResolver_test starts ***" << endl;
 
-  std::string local = bf::initial_path().string();
-  std::cout << "initial path: " << local << std::endl;
+  string local = bf::initial_path().string();
+  cout << "initial path: " << local << endl;
 
-  std::string ref1("../tests/PathResolver/A/a.txt");
-  std::string ref2("../tests/PathResolver/B/a.txt");
-  std::string ref3("../tests/PathResolver/C/c.txt");
+  string ref1("../tests/PathResolver/A/a.txt");
+  string ref2("../tests/PathResolver/B/a.txt");
+  string ref3("../tests/PathResolver/C/c.txt");
 
 #ifdef _WIN32
-  std::string ref4("C:/WINNT/explorer.exe");
+  string ref4("C:/WINNT/explorer.exe");
   setEnv("DATAPATH","..\\tests\\PathResolver;..\\tests\\PathResolver\\A;..\\tests\\PathResolver\\B",1);
 #else
 #if defined(__APPLE__)
-  std::string ref4("/usr/bin/true");
+  string ref4("/usr/bin/true");
 #else
-  std::string ref4("/bin/true");
+  string ref4("/bin/true");
 #endif
-  setEnv("DATAPATH",
-      "../tests/PathResolver:../tests/PathResolver/A:../tests/PathResolver/B",
-      1);
+  setEnv("DATAPATH", "../tests/PathResolver:../tests/PathResolver/A:../tests/PathResolver/B", 1);
 #endif
 
-  std::cout << "DATAPATH: " << getEnv("DATAPATH") << std::endl;
+  cout << "DATAPATH: " << getEnv("DATAPATH") << endl;
 
-  std::string filename = "a.txt";
-  std::string fileLocation("");
+  string filename = "a.txt";
+  string fileLocation("");
 
   fileLocation = PathResolver::find_file(filename, "DATAPATH");
-  std::cout << "search for: " << filename << std::endl;
-  std::cout << "fileLocation: " << fileLocation << std::endl;
+  cout << "search for: " << filename << endl;
+  cout << "fileLocation: " << fileLocation << endl;
   if (fileLocation == "") {
-    std::cout << "  => ERROR: file not found." << std::endl;
+    cout << "  => ERROR: file not found." << endl;
     err++;
-  } else if (fileLocation.find(local) != std::string::npos) {
+  } else if (fileLocation.find(local) != string::npos) {
     fileLocation.replace(fileLocation.find(local), local.length() + 1, "");
-    std::cout << "  -> \"" << fileLocation << "\"" << std::endl;
+    cout << "  -> \"" << fileLocation << "\"" << endl;
     if (fileLocation != ref1) {
-      std::cout << "  => ERROR: should have been \"" << ref1 << "\""
-          << std::endl;
+      cout << "  => ERROR: should have been \"" << ref1 << "\"" << endl;
       err++;
     }
   } else {
-    std::cout << "  => ERROR: could not remove local path from fileLocation"
-        << std::endl;
+    cout << "  => ERROR: could not remove local path from fileLocation" << endl;
     err++;
   }
 
   filename = "B/a.txt";
   fileLocation = PathResolver::find_file(filename, "DATAPATH");
 
-  std::cout << "search for: " << filename << std::endl;
-  std::cout << "fileLocation: " << fileLocation << std::endl;
+  cout << "search for: " << filename << endl;
+  cout << "fileLocation: " << fileLocation << endl;
   if (fileLocation == "") {
-    std::cout << "  => ERROR: file not found." << std::endl;
+    cout << "  => ERROR: file not found." << endl;
     err++;
-  } else if (fileLocation.find(local) != std::string::npos) {
+  } else if (fileLocation.find(local) != string::npos) {
     fileLocation.replace(fileLocation.find(local), local.length() + 1, "");
-    std::cout << "  -> \"" << fileLocation << "\"" << std::endl;
+    cout << "  -> \"" << fileLocation << "\"" << endl;
     if (fileLocation != ref2) {
-      std::cout << "  => ERROR: should have been \"" << ref2 << "\""
-          << std::endl;
+      cout << "  => ERROR: should have been \"" << ref2 << "\"" << endl;
       err++;
     }
   } else {
-    std::cout << "  => ERROR: could not remove local path from fileLocation"
-        << std::endl;
+    cout << "  => ERROR: could not remove local path from fileLocation" << endl;
     err++;
   }
 
   filename = "c.txt";
-  fileLocation = PathResolver::find_file(filename, "DATAPATH",
-      PathResolver::RecursiveSearch);
+  fileLocation = PathResolver::find_file(filename, "DATAPATH", PathResolver::RecursiveSearch);
 
-  std::cout << "recursive search for: " << filename << std::endl;
-  std::cout << "fileLocation:" << fileLocation << std::endl;
+  cout << "recursive search for: " << filename << endl;
+  cout << "fileLocation:" << fileLocation << endl;
   if (fileLocation == "") {
-    std::cout << "  => ERROR: file not found." << std::endl;
+    cout << "  => ERROR: file not found." << endl;
     err++;
-  } else if (fileLocation.find(local) != std::string::npos) {
+  } else if (fileLocation.find(local) != string::npos) {
     fileLocation.replace(fileLocation.find(local), local.length() + 1, "");
-    std::cout << "  -> \"" << fileLocation << "\"" << std::endl;
+    cout << "  -> \"" << fileLocation << "\"" << endl;
     if (fileLocation != ref3) {
-      std::cout << "  => ERROR: should have been \"" << ref3 << "\""
-          << std::endl;
+      cout << "  => ERROR: should have been \"" << ref3 << "\"" << endl;
       err++;
     }
   } else {
-    std::cout << "  => ERROR: could not remove local path from fileLocation"
-        << std::endl;
+    cout << "  => ERROR: could not remove local path from fileLocation" << endl;
     err++;
   }
 
   filename = ref4;
   fileLocation = PathResolver::find_file(filename, "DATAPATH");
 
-  std::cout << "search for: " << filename << std::endl;
-  std::cout << "fileLocation: " << fileLocation << std::endl;
+  cout << "search for: " << filename << endl;
+  cout << "fileLocation: " << fileLocation << endl;
   if (fileLocation == "") {
-    std::cout << "  => ERROR: file not found." << std::endl;
+    cout << "  => ERROR: file not found." << endl;
     err++;
   } else if (fileLocation != filename) {
-    std::cout << "  => ERROR: should have been \"" << ref4 << "\"  was \""
-        << fileLocation << "\"" << std::endl;
+    cout << "  => ERROR: should have been \"" << ref4 << "\"  was \"" << fileLocation << "\"" << endl;
     err++;
   }
 
-  std::cout << "*** PathResolver_test ends (" << (err == 0 ? "OK" : "ERROR")
-      << ") ***" << std::endl;
+  cout << "*** PathResolver_test ends (" << (err == 0 ? "OK" : "ERROR") << ") ***" << endl;
 
   return (err);
 }
