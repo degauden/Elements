@@ -273,8 +273,21 @@ private:
   FloatingPointUnion m_u;
 };
 
-// Usable AlmostEqual function
-bool almostEqual2sComplement(float A, float B, int maxUlps);
-bool almostEqual2sComplement(double A, double B, int maxUlps);
+namespace Real {
 
+template <typename RawType>
+bool almostEqual(const RawType& a, const RawType& b, const int& max_ulps=4)
+{
+  bool is_equal(false);
+
+  return is_equal;
+}
+
+
+// Usable AlmostEqual function
+bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps);
+bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps);
+
+
+} // namespace Real
 #endif /* REAL_H_ */
