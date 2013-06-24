@@ -7,11 +7,11 @@ namespace Elements {
 
 /// Simple sleep function.
 /// @author Marco Clemencic
-ELEMENTS_API void Sleep(int sec);
+ELEMENTS_API void normalSleep(int sec);
 
 /// Small variation on the sleep function for nanoseconds sleep.
 /// @author Marco Clemencic
-ELEMENTS_API void NanoSleep(long long nsec);
+ELEMENTS_API void nanoSleep(long long nsec);
 
 }
 
