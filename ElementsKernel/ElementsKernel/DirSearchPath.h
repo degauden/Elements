@@ -27,10 +27,9 @@ public:
   }
   /// \throws boost::filesystem::filesystem_error
 #ifdef _WIN32
-  DirSearchPath(const std::string& stringifiedPath, const char* separator=",;");
+  DirSearchPath(const std::string& stringifiedPath, const char* separator=",;", const bool add_cwd=true );
 #else
-  DirSearchPath(const std::string& stringifiedPath,
-      const char* separator = ",:");
+  DirSearchPath(const std::string& stringifiedPath, const char* separator = ",:", const bool add_cwd=true );
 #endif
   //@}
 
@@ -82,6 +81,6 @@ private:
   //  typedef std::set<path, lessPath> PathSet; ///<a set ordered by path name
   //  PathSet m_dirs;   ///<the dir container
   //
-  std::list<path> m_dirs;   ///<the dir container
+  std::list<path> m_dirs{};   ///<the dir container
 };
 #endif // JOBOPTIONS_DIRSEARCHPATH_H

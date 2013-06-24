@@ -26,10 +26,10 @@ using boost::tokenizer;
 using boost::char_separator;
 
 //constructors
-DirSearchPath::DirSearchPath(const string& stringifiedPath,
-    const char* separator) {
-  addCWD(); //FIXME is this a good idea?
-
+DirSearchPath::DirSearchPath(const string& stringifiedPath, const char* separator, const bool add_cwd) {
+  if ( add_cwd ) {
+    addCWD();
+  }
   typedef tokenizer<char_separator<char> > Tokenizer;
 
   Tokenizer tok(stringifiedPath, char_separator<char>(separator));
@@ -75,8 +75,7 @@ bool DirSearchPath::find(const string& fileName, string& fullFileName) const {
 //accessors
 bool DirSearchPath::find(const path& file, path& fileFound) const {
   bool rc(false);
-  for (list<path>::const_iterator iDir = m_dirs.begin();
-      iDir != m_dirs.end(); ++iDir) {
+  for (list<path>::const_iterator iDir = m_dirs.begin(); iDir != m_dirs.end(); ++iDir) {
     path full(*iDir / file);
     if (exists(full)) {
       fileFound = full;
@@ -90,8 +89,7 @@ bool DirSearchPath::find(const path& file, path& fileFound) const {
 //accessors
 list<DirSearchPath::path> DirSearchPath::find_all(const path& file) const {
   list<path> found;
-  for (list<path>::const_iterator iDir = m_dirs.begin();
-      iDir != m_dirs.end(); ++iDir) {
+  for (list<path>::const_iterator iDir = m_dirs.begin(); iDir != m_dirs.end(); ++iDir) {
     path full(*iDir / file);
     if (exists(full)) {
       found.push_back(full);
