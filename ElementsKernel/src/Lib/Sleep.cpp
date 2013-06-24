@@ -11,7 +11,7 @@ namespace Elements {
 
 /// Simple sleep function taken from COOL.
 /// @author Marco Clemencic
-void Sleep(int sec) {
+void normalSleep(int sec) {
 #if BOOST_VERSION >= 105000
   boost::this_thread::sleep_for(boost::chrono::seconds(sec));
 #else
@@ -27,7 +27,7 @@ void Sleep(int sec) {
 
 /// Small variation on the sleep function for nanoseconds sleep.
 /// @author Marco Clemencic
-void NanoSleep(long long nsec) {
+void nanoSleep(long long nsec) {
 #if BOOST_VERSION >= 105000
   boost::this_thread::sleep_for(boost::chrono::nanoseconds(nsec));
 #else

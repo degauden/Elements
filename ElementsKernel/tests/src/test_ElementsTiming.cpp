@@ -87,7 +87,7 @@ public:
 
   void test_ProcessTime() {
     Elements::System::ProcessTime t0 = Elements::System::getProcessTime();
-    Elements::Sleep(1);
+    Elements::normalSleep(1);
     Elements::System::ProcessTime t1 = Elements::System::getProcessTime();
 
     // light check on the conversion
