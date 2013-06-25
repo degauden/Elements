@@ -43,7 +43,7 @@ typedef enum {
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-static bool PR_find(const bf::path& file, const string& search_list,
+static bool prFind(const bf::path& file, const string& search_list,
     PR_file_type file_type, PathResolver::SearchType search_type,
     string& result) {
 
@@ -141,7 +141,7 @@ string PathResolver::find_file_from_list(
   bf::path lfn(logical_file_name);
 
   /* bool found = */
-  PR_find(lfn, search_list, PR_regular_file, search_type, result);
+  prFind(lfn, search_list, PR_regular_file, search_type, result);
 
   // The following functionality was in the original PathResolver, but I believe
   // that it's WRONG. It extracts the filename of the requested item, and searches
@@ -173,7 +173,7 @@ string PathResolver::find_directory_from_list(
     SearchType search_type) {
   string result;
 
-  if (!PR_find(logical_file_name, search_list, PR_directory, search_type,
+  if (!prFind(logical_file_name, search_list, PR_directory, search_type,
       result)) {
     result = "";
   }
@@ -210,11 +210,11 @@ PathResolver::SearchPathStatus PathResolver::check_search_path(
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-string PathResolverFindXMLFile(const string& logical_file_name) {
+string pathResolverFindXMLFile(const string& logical_file_name) {
   return PathResolver::find_file(logical_file_name, "XMLPATH");
 }
 
-string PathResolverFindDataFile(const string& logical_file_name) {
+string pathResolverFindDataFile(const string& logical_file_name) {
   return PathResolver::find_file(logical_file_name, "DATAPATH");
 }
 

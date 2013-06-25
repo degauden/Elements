@@ -78,9 +78,9 @@ public:
   static SearchPathStatus check_search_path(const std::string& search_path);
 
 };
-ELEMENTS_API std::string PathResolverFindXMLFile(
+ELEMENTS_API std::string pathResolverFindXMLFile(
     const std::string& logical_file_name);
-ELEMENTS_API std::string PathResolverFindDataFile(
+ELEMENTS_API std::string pathResolverFindDataFile(
     const std::string& logical_file_name);
 
 }
