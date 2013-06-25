@@ -27,9 +27,9 @@ public:
   }
   /// \throws boost::filesystem::filesystem_error
 #ifdef _WIN32
-  DirSearchPath(const std::string& stringifiedPath, const char* separator=",;", const bool add_cwd=true );
+  DirSearchPath(const std::string& stringifiedPath, const char* separator=",;", const bool add_cwd=false );
 #else
-  DirSearchPath(const std::string& stringifiedPath, const char* separator = ",:", const bool add_cwd=true );
+  DirSearchPath(const std::string& stringifiedPath, const char* separator = ",:", const bool add_cwd=false );
 #endif
   //@}
 
