@@ -106,11 +106,11 @@ typedef void* ThreadHandle;
 ///thread handle "accessor"
 inline ThreadHandle threadSelf() {return (void*)0;}
 #endif
-ELEMENTS_API int backTrace(void** addresses, const int depth);
+ELEMENTS_API int backTrace(void** addresses __attribute__ ((unused)), const int depth __attribute__ ((unused)));
 ELEMENTS_API bool backTrace(std::string& btrace, const int depth,
     const int offset = 0);
-ELEMENTS_API bool getStackLevel(void* addresses, void*& addr, std::string& fnc,
-    std::string& lib);
+ELEMENTS_API bool getStackLevel(void* addresses __attribute__ ((unused)), void*& addr __attribute__ ((unused)), std::string& fnc __attribute__ ((unused)),
+    std::string& lib __attribute__ ((unused)));
 
 #if __GNUC__ >= 4
 /// Small helper function that allows the cast from void * to function pointer

@@ -50,65 +50,71 @@ template<TimeType T>
  * @param timevalue Time value to be converted.
  */inline long long adjustTime(long long timevalue);
 /** Elapsed time since start of process in milliseconds.
- @param typ       Indicator or the unit the time will be returned.
- @return          Requested value in the indicated units.
- */ELEMENTS_API longlong ellapsedTime(TimeType typ = milliSec, InfoType fetch =
-    Times, long pid = -1);
+ @param typ     Indicator or the unit the time will be returned.
+ @param fetch   Indicator of the information to be fetched.
+ @param pid     Process ID of which the information will be returned
+ @return        Requested value in the indicated units.
+ */
+ELEMENTS_API longlong ellapsedTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** CPU kernel mode time of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
  If Fetch_None, the information will not be updated.
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
- */ELEMENTS_API longlong kernelTime(TimeType typ = milliSec, InfoType fetch =
-    Times, long pid = -1);
+ */
+ELEMENTS_API longlong kernelTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** CPU user mode time of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
  If Fetch_None, the information will not be updated.
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
- */ELEMENTS_API longlong userTime(TimeType typ = milliSec, InfoType fetch = Times,
-    long pid = -1);
+ */
+ELEMENTS_API longlong userTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** Consumed CPU time of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
  If Fetch_None, the information will not be updated.
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
- */ELEMENTS_API longlong cpuTime(TimeType typ = milliSec, InfoType fetch = Times,
-    long pid = -1);
+ */
+ELEMENTS_API longlong cpuTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** Maximum processing time left for this process.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
  If Fetch_None, the information will not be updated.
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
- */ELEMENTS_API longlong remainingTime(TimeType typ = milliSec, InfoType fetch =
-    Quota, long pid = -1);
+ */
+ELEMENTS_API longlong remainingTime(TimeType typ = milliSec, InfoType fetch = Quota, long pid = -1);
 /** Process Creation time.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
  If Fetch_None, the information will not be updated.
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
- */ELEMENTS_API longlong creationTime(TimeType typ = milliSec, InfoType fetch =
-    Times, long pid = -1);
+ */
+ELEMENTS_API longlong creationTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** Maximum processing time left for this process.
  @param typ     Indicator or the unit the time will be returned.
  @return        Requested value in the indicated units.
- */ELEMENTS_API longlong systemStart(TimeType typ = Sec);
+ */
+ELEMENTS_API longlong systemStart(TimeType typ = Sec);
 /** Maximum processing time left for this process.
  @param typ     Indicator or the unit the time will be returned.
  @return        Requested value in the indicated units.
- */ELEMENTS_API longlong upTime(TimeType typ = Hour);
+ */
+ELEMENTS_API longlong upTime(TimeType typ = Hour);
 /** Retrieve absolute system time
  @param typ     Indicator or the unit the time will be returned.
  @return        Requested value in the indicated units.
- */ELEMENTS_API longlong currentTime(TimeType typ = milliSec);
+ */
+ELEMENTS_API longlong currentTime(TimeType typ = milliSec);
 /** Retrieve the number of ticks since system startup
  @return        Requested value in the indicated units.
- */ELEMENTS_API longlong tickCount();
+ */
+ELEMENTS_API longlong tickCount();
 
 /** Simple class to hold the time information of a process.
  *
@@ -157,8 +163,7 @@ public:
 
   /// Return the delta between two \c ProcessTime objects.
   inline ProcessTime operator-(const ProcessTime &rhs) const {
-    return ProcessTime(i_kernel - rhs.i_kernel, i_user - rhs.i_user,
-        i_elapsed - rhs.i_elapsed);
+    return ProcessTime(i_kernel - rhs.i_kernel, i_user - rhs.i_user, i_elapsed - rhs.i_elapsed);
   }
 private:
   /// Internal storage.

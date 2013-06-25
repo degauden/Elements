@@ -291,7 +291,7 @@ const string Elements::System::getErrorString(unsigned long error)    {
   return errString;
 }
 
-const string Elements::System::typeinfoName( const type_info& tinfo) {
+const string Elements::System::typeinfoName( const std::type_info& tinfo) {
   return typeinfoName(tinfo.name());
 }
 
