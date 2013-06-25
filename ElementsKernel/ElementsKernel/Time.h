@@ -27,7 +27,7 @@ public:
       ElementsException(Message, Tag, Code) {
   }
   /// Destructor needed to match the signature of ElementsException::~ElementsException().
-  virtual ~TimeException() throw () {
+  virtual ~TimeException() noexcept {
   }
 };
 
