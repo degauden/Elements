@@ -77,7 +77,7 @@ public:
   }
 
   /// destructor (perform the deletion of "previous" field!)
-  virtual ~ElementsException() throw () {
+  virtual ~ElementsException() noexcept {
     m_code.setChecked();
     if (0 != m_previous) {
       delete m_previous;
@@ -164,7 +164,7 @@ public:
   }
 
   /// method from std::exception
-  virtual const char* what() const throw () {
+  virtual const char* what() const noexcept {
     return message().c_str();
   }
 protected:
