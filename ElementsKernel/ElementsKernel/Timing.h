@@ -1,6 +1,7 @@
 #ifndef ELEMENTSKERNEL_TIMING_H
 #define ELEMENTSKERNEL_TIMING_H
 
+#include <cstdint>
 // Framework include files
 #include "ElementsKernel/Kernel.h"
 #include "ElementsKernel/SystemBase.h"
@@ -42,20 +43,20 @@ enum TimeType {
   Year, Month, Day, Hour, Min, Sec, milliSec, microSec, nanoSec, Native
 };
 /// Convert time from OS native time to requested representation (Experts only)
-ELEMENTS_API longlong adjustTime(TimeType typ, longlong timevalue);
+ELEMENTS_API int64_t adjustTime(TimeType typ, int64_t timevalue);
 
 /// Convert the time from OS native time to requested representation (Experts only)
 template<TimeType T>
 /** Adjust time
  * @param timevalue Time value to be converted.
- */inline long long adjustTime(long long timevalue);
+ */inline int64_t adjustTime(int64_t timevalue);
 /** Elapsed time since start of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong ellapsedTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t ellapsedTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** CPU kernel mode time of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -63,7 +64,7 @@ ELEMENTS_API longlong ellapsedTime(TimeType typ = milliSec, InfoType fetch = Tim
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong kernelTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t kernelTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** CPU user mode time of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -71,7 +72,7 @@ ELEMENTS_API longlong kernelTime(TimeType typ = milliSec, InfoType fetch = Times
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong userTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t userTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** Consumed CPU time of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -79,7 +80,7 @@ ELEMENTS_API longlong userTime(TimeType typ = milliSec, InfoType fetch = Times, 
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong cpuTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t cpuTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** Maximum processing time left for this process.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -87,7 +88,7 @@ ELEMENTS_API longlong cpuTime(TimeType typ = milliSec, InfoType fetch = Times, l
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong remainingTime(TimeType typ = milliSec, InfoType fetch = Quota, long pid = -1);
+ELEMENTS_API int64_t remainingTime(TimeType typ = milliSec, InfoType fetch = Quota, long pid = -1);
 /** Process Creation time.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -95,26 +96,26 @@ ELEMENTS_API longlong remainingTime(TimeType typ = milliSec, InfoType fetch = Qu
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong creationTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t creationTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
 /** Maximum processing time left for this process.
  @param typ     Indicator or the unit the time will be returned.
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong systemStart(TimeType typ = Sec);
+ELEMENTS_API int64_t systemStart(TimeType typ = Sec);
 /** Maximum processing time left for this process.
  @param typ     Indicator or the unit the time will be returned.
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong upTime(TimeType typ = Hour);
+ELEMENTS_API int64_t upTime(TimeType typ = Hour);
 /** Retrieve absolute system time
  @param typ     Indicator or the unit the time will be returned.
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong currentTime(TimeType typ = milliSec);
+ELEMENTS_API int64_t currentTime(TimeType typ = milliSec);
 /** Retrieve the number of ticks since system startup
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API longlong tickCount();
+ELEMENTS_API int64_t tickCount();
 
 /** Simple class to hold the time information of a process.
  *
@@ -125,7 +126,7 @@ ELEMENTS_API longlong tickCount();
  */
 class ProcessTime {
 public:
-  typedef long long TimeValueType;
+  typedef int64_t TimeValueType;
 
   /// Constructor
   ProcessTime() :
@@ -182,43 +183,43 @@ private:
 namespace Elements {
 namespace System {
 template<>
-inline long long adjustTime<Year>(long long t) {
+inline int64_t adjustTime<Year>(int64_t t) {
   return (t == -1) ? t : t /= (1LL * 365 * 24 * 60 * 60 * 1000 * 1000 * 10);
 }
 template<>
-inline long long adjustTime<Day>(long long t) {
+inline int64_t adjustTime<Day>(int64_t t) {
   return (t == -1) ? t : t /= (1LL * 24 * 60 * 60 * 1000 * 1000 * 10);
 }
 template<>
-inline long long adjustTime<Hour>(long long t) {
+inline int64_t adjustTime<Hour>(int64_t t) {
   return (t == -1) ? t : t /= (1LL * 60 * 60 * 1000 * 1000 * 10);
 }
 template<>
-inline long long adjustTime<Min>(long long t) {
+inline int64_t adjustTime<Min>(int64_t t) {
   return (t == -1) ? t : t /= (60 * 1000 * 1000 * 10);
 }
 template<>
-inline long long adjustTime<Sec>(long long t) {
+inline int64_t adjustTime<Sec>(int64_t t) {
   return (t == -1) ? t : t /= (1000 * 1000 * 10);
 }
 template<>
-inline long long adjustTime<milliSec>(long long t) {
+inline int64_t adjustTime<milliSec>(int64_t t) {
   return (t == -1) ? t : t /= (1000 * 10);
 }
 template<>
-inline long long adjustTime<microSec>(long long t) {
+inline int64_t adjustTime<microSec>(int64_t t) {
   return (t == -1) ? t : t /= (10LL);
 }
 template<>
-inline long long adjustTime<nanoSec>(long long t) {
+inline int64_t adjustTime<nanoSec>(int64_t t) {
   return (t == -1) ? t : t *= 100LL;
 }
 template<>
-inline long long adjustTime<Month>(long long t) {
+inline int64_t adjustTime<Month>(int64_t t) {
   return (t == -1) ? t : t /= (1LL * 30 * 24 * 60 * 60 * 1000 * 1000 * 10);
 }
 template<>
-inline long long adjustTime<Native>(long long t) {
+inline int64_t adjustTime<Native>(int64_t t) {
   return t;
 }
 }

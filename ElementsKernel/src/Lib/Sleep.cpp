@@ -27,7 +27,7 @@ void normalSleep(int sec) {
 
 /// Small variation on the sleep function for nanoseconds sleep.
 /// @author Marco Clemencic
-void nanoSleep(long long nsec) {
+void nanoSleep(int64_t nsec) {
 #if BOOST_VERSION >= 105000
   boost::this_thread::sleep_for(boost::chrono::nanoseconds(nsec));
 #else
