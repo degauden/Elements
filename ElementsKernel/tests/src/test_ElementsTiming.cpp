@@ -47,7 +47,7 @@ public:
   }
 
   void test_adjustTime() {
-    long long t = 12345678901234560LL; // units of 100 nanoseconds
+    int64_t t = 12345678901234560LL; // units of 100 nanoseconds
     // 1234567890123456000 nanoseconds
     //    1234567890123456 microseconds
     //       1234567890123 milliseconds
@@ -60,28 +60,28 @@ public:
     //   12345678901234560 native
     CPPUNIT_ASSERT_EQUAL(
         Elements::System::adjustTime<Elements::System::nanoSec>(t),
-        1234567890123456000LL);
+        (int64_t)1234567890123456000LL);
     CPPUNIT_ASSERT_EQUAL(
         Elements::System::adjustTime<Elements::System::microSec>(t),
-        1234567890123456LL);
+        (int64_t)1234567890123456LL);
     CPPUNIT_ASSERT_EQUAL(
         Elements::System::adjustTime<Elements::System::milliSec>(t),
-        1234567890123LL);
+        (int64_t)1234567890123LL);
     CPPUNIT_ASSERT_EQUAL(Elements::System::adjustTime<Elements::System::Sec>(t),
-        1234567890LL);
+    	(int64_t)1234567890LL);
     CPPUNIT_ASSERT_EQUAL(Elements::System::adjustTime<Elements::System::Min>(t),
-        20576131LL);
+    	(int64_t)20576131LL);
     CPPUNIT_ASSERT_EQUAL(
-        Elements::System::adjustTime<Elements::System::Hour>(t), 342935LL);
+        Elements::System::adjustTime<Elements::System::Hour>(t), (int64_t)342935LL);
     CPPUNIT_ASSERT_EQUAL(Elements::System::adjustTime<Elements::System::Day>(t),
-        14288LL);
+    	(int64_t)14288LL);
     CPPUNIT_ASSERT_EQUAL(
-        Elements::System::adjustTime<Elements::System::Month>(t), 476LL);
+        Elements::System::adjustTime<Elements::System::Month>(t), (int64_t)476LL);
     CPPUNIT_ASSERT_EQUAL(
-        Elements::System::adjustTime<Elements::System::Year>(t), 39LL);
+        Elements::System::adjustTime<Elements::System::Year>(t), (int64_t)39LL);
     CPPUNIT_ASSERT_EQUAL(
         Elements::System::adjustTime<Elements::System::Native>(t),
-        12345678901234560LL);
+        (int64_t)12345678901234560LL);
 
   }
 
@@ -95,7 +95,7 @@ public:
         t1.kernelTime<Elements::System::milliSec>() / 1000);
 
     // measure the elapsed time
-    CPPUNIT_ASSERT_EQUAL((t1 - t0).elapsedTime<Elements::System::Sec>(), 1LL);
+    CPPUNIT_ASSERT_EQUAL((t1 - t0).elapsedTime<Elements::System::Sec>(), (int64_t)1LL);
   }
 
   void setUp() {
