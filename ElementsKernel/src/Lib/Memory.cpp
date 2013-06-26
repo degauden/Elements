@@ -17,8 +17,8 @@
 #include "process.h"
   #define getpid _getpid
 #else
-  #include <errno.h>
-  #include <string.h>
+  #include <cerrno>
+  #include <cstring>
   #include "sys/times.h"
   #include "unistd.h"
   #include "libgen.h"

@@ -3,6 +3,7 @@
 #define ELEMENTSKERNEL_STATUSCODE_H
 
 #include <ostream>
+#include <cstdint>
 
 #include "ElementsKernel/Kernel.h"
 #include "boost/shared_ptr.hpp"
@@ -34,7 +35,7 @@ public:
       d_code(SUCCESS), m_checked(false) {
   }
 
-  StatusCode(unsigned long code, bool checked = false) :
+  StatusCode(uint32_t code, bool checked = false) :
       d_code(code), m_checked(checked) {
   }
 
@@ -68,13 +69,13 @@ public:
   }
 
   /// Get the status code by value.
-  unsigned long getCode() const {
+  uint32_t getCode() const {
     m_checked = true;
     return d_code;
   }
 
   /// Set the status code by value.
-  void setCode(unsigned long value) {
+  void setCode(uint32_t value) {
     m_checked = false;
     d_code = value;
   }
@@ -88,12 +89,12 @@ public:
   }
 
   /// Cast operator.
-  operator unsigned long() const {
+  operator uint32_t() const {
     return getCode();
   }
 
   /// Assignment operator.
-  StatusCode& operator=(unsigned long value) {
+  StatusCode& operator=(uint32_t value) {
     setCode(value);
     return *this;
   }
@@ -128,7 +129,7 @@ public:
 
 protected:
   /// The status code.
-  unsigned long d_code;      ///< The status code
+  uint32_t d_code;      ///< The status code
   mutable bool m_checked;   ///< If the Status code has been checked
 
   static bool s_checking; ///< Global flag to control if StatusCode need to be checked
