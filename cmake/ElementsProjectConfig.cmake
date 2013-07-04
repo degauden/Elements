@@ -442,6 +442,7 @@ macro(_elements_use_other_projects)
     if(NOT ${other_project}_FOUND)
       string(TOUPPER ${other_project} other_project_upcase)
       set(suffixes)
+      # Look for all possible project version combination.
       foreach(_s1 ${other_project}
                   ${other_project_upcase}/${other_project_upcase}_${other_project_version}
                   ${other_project}/${other_project_version}
