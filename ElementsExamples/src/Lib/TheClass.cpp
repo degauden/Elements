@@ -8,12 +8,8 @@
 #include "ElementsExamples/TheClass.h"
 
 TheClass::TheClass() {
-  // TODO Auto-generated constructor stub
-
 }
 
 TheClass::~TheClass() {
-  // TODO Auto-generated destructor stub
 }
-
 
