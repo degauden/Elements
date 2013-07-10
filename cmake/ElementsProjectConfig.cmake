@@ -369,17 +369,26 @@ macro(elements_project project version)
     set(CPACK_PACKAGE_VERSION_${t} ${CMAKE_PROJECT_VERSION_${t}})
   endforeach()
   set(CPACK_SYSTEM_NAME ${BINARY_TAG})
-
+  set(CPACK_PACKAGE_RELOCATABLE TRUE)
+  # set(CPACK_PACKAGE_INSTALL_DIRECTORY /opt/euclid)
+  # set(CPACK_RPM_PACKAGE_PREFIX /opt/euclid)
+  set(CPACK_PACKAGING_INSTALL_PREFIX /opt/euclid/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   set(CPACK_GENERATOR RPM)
 
   set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/build\\\\..*/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
 
   # RPM packaging specific stuff
-  set(CPACK_RPM_PACKAGE_RELOCATABLE TRUE)
+  # set(CPACK_RPM_PACKAGE_RELOCATABLE TRUE)
+
+  #SET(CPACK_RPM_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
+  #SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${BINARY_TAG})
+  #SET(CPACK_RPM_FILE_NAME "${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}-${CPACK_RPM_PACKAGE_ARCHITECTURE}.rpm")
+  
+  
+  # message(status "-------------------------->CPACK_RPM_FILE_NAME: ${CPACK_RPM_FILE_NAME}")
+
 
   include(CPack)
-
-
 
   # Add Doxygen generation
   find_package(Doxygen)
