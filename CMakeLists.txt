@@ -12,7 +12,7 @@ find_package(ElementsProject)
 #---------------------------------------------------------------
 
 # Declare project name and version
-elements_project(Elements 1.0)
+elements_project(Elements 1.2)
 
 # This test does not really fit in a subdirectory.
 elements_add_test(cmake.EnvConfigTests
