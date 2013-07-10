@@ -360,18 +360,26 @@ macro(elements_project project version)
   install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION .)
 
   #--- CPack configuration
+  # Please have a look at the general CPack documentation at 
+  # http://www.cmake.org/Wiki/CMake:CPackPackageGenerators
+  # http://www.cmake.org/Wiki/CMake:CPackConfiguration
+  
   set(CPACK_PACKAGE_NAME ${project})
   foreach(t MAJOR MINOR PATCH)
     set(CPACK_PACKAGE_VERSION_${t} ${CMAKE_PROJECT_VERSION_${t}})
   endforeach()
   set(CPACK_SYSTEM_NAME ${BINARY_TAG})
 
-  set(CPACK_GENERATOR TGZ)
+  set(CPACK_GENERATOR RPM)
 
   set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/build\\\\..*/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
 
+  # RPM packaging specific stuff
+  set(CPACK_RPM_PACKAGE_RELOCATABLE TRUE)
 
   include(CPack)
+
+
 
   # Add Doxygen generation
   find_package(Doxygen)
