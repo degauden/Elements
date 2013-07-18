@@ -1,5 +1,5 @@
 /**
- * @file Factory_test.cpp
+ * @file Real_test.cpp
  *
  *  Created on: May 22, 2013
  *      Author: Pierre Dubath
