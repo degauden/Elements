@@ -5,9 +5,9 @@
  *      Author: Pierre Dubath
  */
 
+
 #include <boost/test/unit_test.hpp>
 #include "ElementsKernel/Real.h"
-#include <string>
 
 
 
@@ -54,7 +54,6 @@ BOOST_FIXTURE_TEST_CASE( FloatCompare_test, RealFix ) {
 
 BOOST_FIXTURE_TEST_CASE( DoubleCompare_test, RealFix ) {
 
-//  Catalog catalog = cosmosSurvey->getFirstCatalog();
 	double f = 1.0/2.0 ;
 
 	BOOST_CHECK_EQUAL(f, 0.5);
