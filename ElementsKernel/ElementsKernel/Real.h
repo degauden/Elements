@@ -285,8 +285,8 @@ bool almostEqual(const RawType& a, const RawType& b, const int& max_ulps=4)
 
 
 // Usable AlmostEqual function
-bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps);
-bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps);
+bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=4);
+bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=10);
 
 
 } // namespace Real

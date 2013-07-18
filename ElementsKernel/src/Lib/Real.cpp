@@ -16,7 +16,7 @@ using namespace std;
 namespace Real {
 
 // Usable AlmostEqual function
-bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=4)
+bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps)
 {
     // Make sure max_ulps is non-negative and small enough that the
     // default NAN won't compare as equal to anything.
@@ -39,7 +39,7 @@ bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps
 }
 
 
-bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=10)
+bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps)
 {
     // Make sure max_ulps is non-negative and small enough that the
     // default NAN won't compare as equal to anything.
