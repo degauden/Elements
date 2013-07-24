@@ -374,19 +374,32 @@ macro(elements_project project version)
   # set(CPACK_RPM_PACKAGE_PREFIX /opt/euclid)
   set(CPACK_PACKAGING_INSTALL_PREFIX /opt/euclid/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   set(CPACK_GENERATOR RPM)
+  set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
+  set(CPACK_PACKAGE_RELEASE 1)
+  set(CPACK_PACKAGE_VENDOR "The Euclid Consortium")
 
   set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/build\\\\..*/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
 
   # RPM packaging specific stuff
-  # set(CPACK_RPM_PACKAGE_RELOCATABLE TRUE)
+  set(CPACK_RPM_PACKAGE_RELOCATABLE TRUE)
 
-  #SET(CPACK_RPM_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
-  #SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${BINARY_TAG})
-  #SET(CPACK_RPM_FILE_NAME "${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}-${CPACK_RPM_PACKAGE_ARCHITECTURE}.rpm")
+  SET(CPACK_RPM_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
+  SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${BINARY_TAG})
+#  SET(CPACK_RPM_FILE_NAME "${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}-${CPACK_RPM_PACKAGE_ARCHITECTURE}.rpm")
+  SET(CPACK_RPM_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}")
   
-  
-  # message(status "-------------------------->CPACK_RPM_FILE_NAME: ${CPACK_RPM_FILE_NAME}")
+  message(status "-------------------------->CPACK_RPM_FILE_NAME: ${CPACK_RPM_FILE_NAME}")
 
+  find_file(spec_file_template
+            NAMES Elements.spec.in
+            HINTS ENV CMTPROJECTPATH
+            PATHS ${CMAKE_CURRENT_LIST_DIR}/cmake)
+  
+  if(spec_file_template)
+    configure_file("${spec_file_template}" "${PROJECT_BINARY_DIR}/${project}.spec" @ONLY IMMEDIATE)
+    set(CPACK_RPM_USER_BINARY_SPECFILE "${PROJECT_BINARY_DIR}/${project}.spec")
+    message(STATUS "Generated RPM Spec file: ${PROJECT_BINARY_DIR}/${project}.spec")
+  endif()
 
   include(CPack)
 
@@ -399,12 +412,14 @@ macro(elements_project project version)
               PATHS ${CMAKE_CURRENT_LIST_DIR}/cmake/doc
               PATH_SUFFIXES doc)
 
+
     if(doxygen_file_template)
       configure_file(
         "${doxygen_file_template}"
         "${PROJECT_BINARY_DIR}/doc/Doxyfile"
         @ONLY
       )
+      message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/Doxyfile")
     endif()
 
     add_custom_target(doc
