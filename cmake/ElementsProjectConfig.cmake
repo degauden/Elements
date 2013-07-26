@@ -62,6 +62,9 @@ else()
   set(ELEMENTS_DETACHED_DEBINFO OFF)
 endif()
 
+set(USE_ODB OFF CACHE BOOL "Use the ODB libraries")
+
+
 #---------------------------------------------------------------------------------------------------
 # Programs and utilities needed for the build
 #---------------------------------------------------------------------------------------------------
