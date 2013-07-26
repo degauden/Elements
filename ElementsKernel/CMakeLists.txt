@@ -1,6 +1,6 @@
 elements_subdir(ElementsKernel 1.0)
 
-find_package(Boost REQUIRED COMPONENTS filesystem thread system)
+find_package(Boost REQUIRED COMPONENTS filesystem thread program_options system)
 find_package(Log4CPP)
 
 #---Libraries---------------------------------------------------------------
