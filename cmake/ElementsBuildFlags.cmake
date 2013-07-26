@@ -1,6 +1,6 @@
 # Special defaults
-if ("${SGS_COMP}${SGS_COMPVERS}" STREQUAL "gcc47")
-  # C++11 is enable by default on gcc47
+if ("${SGS_COMP}${SGS_COMPVERS}" STREQUAL "gcc47" OR "${SGS_COMP}${SGS_COMPVERS}" STREQUAL "gcc48")
+  # C++11 is enable by default on gcc47 and gcc48
   set(ELEMENTS_CPP11_DEFAULT ON)
 else()
   set(ELEMENTS_CPP11_DEFAULT OFF)
@@ -214,7 +214,7 @@ endif()
 #--- Special flags -------------------------------------------------------------
 add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 
-if((SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "47|max") OR ELEMENTS_CPP11)
+if((SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "47|48|max") OR ELEMENTS_CPP11)
   set(GCCXML_CXX_FLAGS "${GCCXML_CXX_FLAGS} -D__STRICT_ANSI__")
 endif()
 
