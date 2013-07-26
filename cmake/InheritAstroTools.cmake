@@ -35,6 +35,7 @@ function(guess_astrotools_version var)
     string(TOUPPER ${other_project} other_project_upcase)
     set(suffixes ${other_project}
                  ${other_project_upcase}/${other_project_upcase}_${other_project_version}
+                 ${other_project}/${other_project_version}
                  ${other_project_upcase})
 
     #message(STATUS "projects_search_path -> ${projects_search_path}")
