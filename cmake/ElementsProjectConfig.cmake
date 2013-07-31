@@ -391,8 +391,6 @@ macro(elements_project project version)
 #  SET(CPACK_RPM_FILE_NAME "${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}-${CPACK_RPM_PACKAGE_ARCHITECTURE}.rpm")
   SET(CPACK_RPM_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}")
   
-  message(status "-------------------------->CPACK_RPM_FILE_NAME: ${CPACK_RPM_FILE_NAME}")
-
   find_file(spec_file_template
             NAMES Elements.spec.in
             HINTS ENV CMTPROJECTPATH
