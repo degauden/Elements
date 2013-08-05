@@ -6,7 +6,8 @@
 //   for the architecture independent int64 definition (longlong)
 #include "ElementsKernel/Kernel.h"
 #include "ElementsKernel/StreamBuffer.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/EuclidException.h"
+//#include "ElementsKernel/ElementsException.h"
 
 /** @class TimeException Time.h ElementsKernel/Time.h
  *
@@ -18,18 +19,23 @@
  *  @author Marco Clemencic
  *  @date   2005-12-14
  */
-class ELEMENTS_API TimeException: public ElementsException {
-public:
-  // Standard constructor
-  TimeException(const std::string& Message = "unspecified exception",
-      const std::string& Tag = "*Elements::Time*", const StatusCode & Code =
-          StatusCode::FAILURE) :
-      ElementsException(Message, Tag, Code) {
-  }
-  /// Destructor needed to match the signature of ElementsException::~ElementsException().
-  virtual ~TimeException() noexcept {
-  }
-};
+//
+// 	This class is commented out by Pierre Dubath (August 5th, 2013) in order to get rid of the class
+//	ElementsException created by Marco Clemencic and to replace it by EuclidException that will be renamed
+// 	ElementsException once the old ElementsException is deleted
+//
+//class ELEMENTS_API TimeException: public ElementsException {
+//public:
+//  // Standard constructor
+//  TimeException(const std::string& Message = "unspecified exception",
+//      const std::string& Tag = "*Elements::Time*", const StatusCode & Code =
+//          StatusCode::FAILURE) :
+//      ElementsException(Message, Tag, Code) {
+//  }
+//  /// Destructor needed to match the signature of ElementsException::~ElementsException().
+//  virtual ~TimeException() noexcept {
+//  }
+//};
 
 struct tm;
 # ifdef WIN32
@@ -300,7 +306,7 @@ private:
   inline void TimeAssert(bool cond, const std::string &msg =
       "time assertion failed") const {
     if (!cond)
-      throw TimeException(msg);
+      throw EuclidException(msg);
   }
 
 };

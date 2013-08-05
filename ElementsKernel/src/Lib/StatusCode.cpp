@@ -2,7 +2,7 @@
 
 #include "ElementsKernel/StatusCode.h"
 #include "ElementsKernel/System.h"
-#include "ElementsKernel/ElementsException.h"
+//#include "ElementsKernel/ElementsException.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -25,7 +25,13 @@ void StatusCode::disableChecking() {
 StatusCode::~StatusCode() {
   if(UNLIKELY(s_checking)) {
 
-    if (!m_checked && !ElementsException::s_proc && !uncaught_exception() ) {
+	    //
+	    // 	Change by Pierre Dubath (August 5th, 2013) in order to get rid of the class
+	    //	ElementsException created by Marco Clemencic and to replace it by EuclidException that will be renamed
+	    // 	ElementsException once the old ElementsException is deleted
+	    //
+	    //if (!m_checked && !ElementsException::s_proc && !uncaught_exception() ) {
+	        if (!m_checked && !uncaught_exception() ) {
 
       const size_t depth = 21;
       void* addresses[depth];

@@ -125,7 +125,14 @@ Time Time::current(void) {
     } else {
       msg << "Unknown error retrieving current time";
     }
-    throw ElementsException(msg.str(), tag.str(), StatusCode::FAILURE);
+    //throw ElementsException(msg.str(), tag.str(), StatusCode::FAILURE);
+    //
+    // 	Change by Pierre Dubath (August 5th, 2013) in order to get rid of the class
+    //	ElementsException created by Marco Clemencic and to replace it by EuclidException that will be renamed
+    // 	ElementsException once the old ElementsException is deleted
+    //
+    string message = msg.str() + tag.str();
+    throw EuclidException(message);
   }
   return Time(tv.tv_sec, tv.tv_usec * 1000);
 #endif
