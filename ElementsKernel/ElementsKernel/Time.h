@@ -6,8 +6,7 @@
 //   for the architecture independent int64 definition (longlong)
 #include "ElementsKernel/Kernel.h"
 #include "ElementsKernel/StreamBuffer.h"
-#include "ElementsKernel/EuclidException.h"
-//#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/ElementsException.h"
 
 /** @class TimeException Time.h ElementsKernel/Time.h
  *
@@ -306,7 +305,7 @@ private:
   inline void TimeAssert(bool cond, const std::string &msg =
       "time assertion failed") const {
     if (!cond)
-      throw EuclidException(msg);
+      throw ElementsException(msg);
   }
 
 };

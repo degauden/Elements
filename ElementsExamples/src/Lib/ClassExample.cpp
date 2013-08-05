@@ -7,7 +7,7 @@
 
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/ElementsLogging.h"
-#include "ElementsKernel/EuclidException.h"
+#include "ElementsKernel/ElementsException.h"
 
 ClassExample::ClassExample() {
 	// TODO Auto-generated constructor stub
@@ -42,7 +42,7 @@ void ClassExample::doSomething(double first, double second) {
 	try {
 		logger.info(" Divide the two numbers.This throws an exception if the second one is zero");
 		m_result = this->divideNumbers(first, second);
-	} catch (EuclidException& e) {
+	} catch (ElementsException& e) {
 		logger.info(" The exception is caught and it continues");
 		logger.debug("	A Elements exception is caught. The message is");
 		logger.debug(" 		-- %s", e.what());
@@ -61,7 +61,7 @@ double ClassExample::divideNumbers(double first, double second) {
 	if (std::abs(second) < tolerance ) {
 		std::stringstream errorBuffer;
 		errorBuffer << "Exception: attempt to divide by: " << second << " a number to close to zero!";
-		throw EuclidException(errorBuffer.str());
+		throw ElementsException(errorBuffer.str());
 	}
 	return first/second;
 }

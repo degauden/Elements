@@ -16,7 +16,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
-#include "ElementsKernel/EuclidException.h"
+#include "ElementsKernel/ElementsException.h"
 #include "ELEMENTS_VERSION.h"
 
 #include <boost/program_options.hpp>
@@ -113,7 +113,7 @@ int ElementsProgramExample::pseudo_main() {
 		cout << "boost::exception_detail : " << e.what() << endl;
 	} catch (const boost::bad_any_cast & e) {
 		cout << "boost::bad_any_cast : " << e.what() << endl;
-	} catch (const EuclidException & e) {
+	} catch (const ElementsException & e) {
 		cout << "Euclid exception caught : " << e.what() << endl;
 	} catch (const std::exception & e) {
 		cout << "std::exception caught : " << e.what() << endl;

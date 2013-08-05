@@ -26,7 +26,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include "ElementsKernel/EuclidException.h"
+#include "ElementsKernel/ElementsException.h"
 #include "ElementsKernel/ElementsProgram.h"
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
@@ -156,7 +156,7 @@ const boost::program_options::variables_map ElementsProgram::getProgramOptions(
 	if (!ifs) {
 		stringstream errorBuffer;
 		errorBuffer << "Cannot open config file: " << configFile << "\n";
-		throw EuclidException(errorBuffer.str());
+		throw ElementsException(errorBuffer.str());
 	} else {
 		/**
 		 * Read the configuration file into the variable map, taking values only if they are not already specified on the command line

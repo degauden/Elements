@@ -10,7 +10,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "ElementsKernel/EuclidException.h"
+#include "ElementsKernel/ElementsException.h"
 #include "ElementsKernel/ElementsLogging.h"
 
 #include "log4cpp/Category.hh"
@@ -64,7 +64,7 @@ void ElementsLogging::initializeLogger() {
 	default:
 		stringstream errorBuffer;
 		errorBuffer << "Unrecognized logging level: " << s_loggingLevel << "\n";
-		throw EuclidException(errorBuffer.str());
+		throw ElementsException(errorBuffer.str());
 		break;
 	}
 
