@@ -15,6 +15,8 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
+#include "ElementsKernel/ElementsLogging.h"
+
 
 /*
  *
@@ -45,11 +47,13 @@ protected:
 private:
 
   const boost::filesystem::path getDefaultConfigFile(std::string programName) const;
+  const boost::filesystem::path getDefaultLogFile(std::string programName) const;
 
   const boost::program_options::variables_map getProgramOptions(int argc, const char* argv[]);
 
-  void loggingTest();
+  void logAllOptions(std::string programName);
 
+  boost::filesystem::path m_logFile;
   /**
    * This is the BOOST program options variable_map used to store all program options
    */

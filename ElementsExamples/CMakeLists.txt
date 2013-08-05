@@ -8,14 +8,11 @@ elements_add_library(ElementsExamples src/Lib/*.cpp
                   INCLUDE_DIRS Boost ElementsKernel
                   PUBLIC_HEADERS ElementsExamples)
 
-elements_add_executable(TheProgram src/Program/TheMain.cpp
+elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExampleMain.cpp
                   LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ElementsExamples
                   INCLUDE_DIRS Boost ElementsExamples
                   PUBLIC_HEADERS ElementsExamples)
-
-elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExampleMain.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ElementsExamples
-                  INCLUDE_DIRS Boost ElementsExamples)
+                 
 if(USE_ODB)
   find_package(ODB)
   if(ODB_FOUND)

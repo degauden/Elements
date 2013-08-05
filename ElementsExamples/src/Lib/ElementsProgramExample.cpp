@@ -22,82 +22,102 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
+#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsExamples/ElementsProgramExample.h"
+#include "ElementsExamples/ClassExample.h"
+
 using namespace std;
 
-#include "ElementsExamples/ElementsProgramExample.h"
 
 ElementsProgramExample::ElementsProgramExample() {
-  // TODO Auto-generated constructor stub
+	// TODO Auto-generated constructor stub
 }
 
 ElementsProgramExample::~ElementsProgramExample() {
-  // TODO Auto-generated destructor stub
+	// TODO Auto-generated destructor stub
 }
 
 po::options_description ElementsProgramExample::defineSpecificProgramOptions() {
 
-   /**
-    * Document all program options specific to this program
-    */
-   po::options_description configFileOptions("Configuration options");
-   configFileOptions.add_options()
-       ("string-value", po::value<string>()->default_value(string{}), "A string option" )
-       ("long-long-value", po::value<int64_t>()->default_value(int64_t{}), "A long long option" )
-       ("double-value", po::value<double>()->default_value(double{}), "A double option" )
-       ("string-vector", po::value<vector<string>>()->multitoken()->default_value(vector<string>{},"Empty"), "A string vector" )
-       ("int-vector", po::value<vector<int>>()->multitoken()->default_value(vector<int>{},"Empty"), "An int vector" );
+	/**
+	 * Document all program options specific to this program
+	 */
+	po::options_description configFileOptions("Configuration options");
+	configFileOptions.add_options()
+	// A example string option
+	("string-value", po::value<string>()->default_value(string { }), "A string option")
+	// A example long int option
+	("long-long-value", po::value<int64_t>()->default_value(int64_t { }), "A long long option")
+	// A double option
+	("double-value", po::value<double>()->default_value(double { }), "A double option")
+	// A string vector option
+	("string-vector",po::value<vector<string>>()->multitoken()->default_value(vector<string> { }, "Empty"), "A string vector")
+	// A int vector option
+	("int-vector",po::value<vector<int>>()->multitoken()->default_value(vector<int> { }, "Empty"), "An int vector")
+	// A double vector option
+	("double-vector",po::value<vector<double>>()->multitoken()->default_value(vector<double> { }, "Empty"), "A double vector");
 
-   return configFileOptions;
+	return configFileOptions;
 }
 
 string ElementsProgramExample::getVersion() {
-  return "  1.2.0 is the version number TODO";
+	return "  1.2.0 is the version number TODO";
 }
 
 int ElementsProgramExample::pseudo_main() {
 
-  try {
-  cout << "##########################################################\n";
-  cout << "#\n";
-  cout << "#    Example main program : In the try block" << endl;
-  cout << "#\n";
-  cout << "##########################################################\n";
+	try {
+
+		ElementsLogging& logger = ElementsLogging::getLogger();
+		logger.info("#");
+		logger.info("#  Logging from the pseudo_main() of the ElementsProgramExample ");
+		logger.info("#");
+
+		// The map with all variables (of different types)
+		const po::variables_map variableMap = this->getVariablesMap();
+
+		// Retrieve the values from the po::variables_map
+		string stringValue = variableMap["string-value"].as<string>();
+		int64_t longLongValue = variableMap["long-long-value"].as<int64_t>();
+		double doubleValue = variableMap["double-value"].as<double>();
+		vector<int> intVector = variableMap["int-vector"].as<vector<int>>();
+		vector<string> stringVector = variableMap["string-vector"].as<
+				vector<string>>();
+
+		//-------------------------------------------------------------------------
+		// Do something here
+		ClassExample ce {};
+
+		logger.info("#");
+		logger.info("#  Call the doSomething of the ClassExample ");
+		logger.info("#");
+		double aDouble = static_cast<double>(longLongValue);
+		ce.doSomething(aDouble, doubleValue);
+
+		double result = ce.getResult();
 
 
-  // The map with all variables (of different types)
-  const po::variables_map variableMap = this->getVariablesMap();
+		//-------------------------------------------------------------------------
+		// Clean up
+		logger.info("#");
+		logger.info("#  The result of doSomething is %e ", result);
+		logger.info("#");
 
-  // Retrieve the values from the po::variables_map
-  string stringValue = variableMap["string-value"].as<string>();
-  int64_t longLongValue = variableMap["long-long-value"].as<int64_t>();
-  double doubleValue = variableMap["double-value"].as<double>();
-  vector<int> intVector = variableMap["int-vector"].as<vector<int>>();
-  vector<string> stringVector = variableMap["string-vector"].as<vector<string>>();
+		/**
+		 * Here we should call a method to persist the result of the calculation
+		 */
+		/// persist(result);
 
-  cout << "\nProgram options printed in pseudo_main() \n";
-  cout << "string-value        = " << stringValue << endl;
-  cout << "double-value     = " << doubleValue << endl;
-  cout << "long-long-value  = " << longLongValue << "\n\n";
-  cout << "int-vector size    = " << intVector.size() << endl;
-  cout << "string-vector size    = " << stringVector.size() << endl;
+	} catch (const boost::exception_detail::error_info_injector<
+			boost::program_options::unknown_option> & e) {
+		cout << "boost::exception_detail : " << e.what() << endl;
+	} catch (const boost::bad_any_cast & e) {
+		cout << "boost::bad_any_cast : " << e.what() << endl;
+	} catch (const EuclidException & e) {
+		cout << "Euclid exception caught : " << e.what() << endl;
+	} catch (const std::exception & e) {
+		cout << "std::exception caught : " << e.what() << endl;
+	}
 
-  cout << "----------------------------------------------------------\n\n";
-
-  //-------------------------------------------------------------------------
-  // Do something here
-
-  //-------------------------------------------------------------------------
-  // Clean up
-
-} catch (const boost::exception_detail::error_info_injector<boost::program_options::unknown_option> & e) {
-  cout << "boost::exception_detail : " << e.what() << endl;
-} catch (const boost::bad_any_cast & e) {
-  cout << "boost::bad_any_cast : " << e.what() << endl;
-} catch (const EuclidException & e) {
-  cout << "Euclid exception caught : " << e.what() << endl;
-} catch (const std::exception & e) {
-  cout << "std::exception caught : " << e.what() << endl;
-}
-
-return 0;
+	return 0;
 }
