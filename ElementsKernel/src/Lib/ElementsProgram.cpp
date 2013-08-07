@@ -73,7 +73,7 @@ const boost::filesystem::path ElementsProgram::getDefaultLogFile(
 }
 
 const boost::program_options::variables_map ElementsProgram::getProgramOptions(
-		int argc, const char* argv[]) {
+		int argc, char* argv[]) {
 
 	int defaultLogLevel = 400;
 
@@ -145,7 +145,7 @@ const boost::program_options::variables_map ElementsProgram::getProgramOptions(
 
 	// TODO get the system version
 	if (m_variablesMap.count("version")) {
-		cout << "Version : " << programName << this->getVersion() << endl;
+		cout << "Version : " << this->getVersion() << endl;
 		exit(0);
 	}
 
@@ -241,7 +241,7 @@ void ElementsProgram::logAllOptions(string programName) {
 
 }
 
-void ElementsProgram::setup(int argc, const char* argv[]) {
+int ElementsProgram::run(int argc, char* argv[]) {
 
 	// get all program options into the varaiable_map
 	m_variablesMap = getProgramOptions(argc, argv);
@@ -257,6 +257,11 @@ void ElementsProgram::setup(int argc, const char* argv[]) {
 
 	// log all program options
 	this->logAllOptions(argv[0]);
+
+
+	pseudoMain();
+
+	return 0;
 
 }
 

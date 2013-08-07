@@ -61,10 +61,11 @@ po::options_description ElementsProgramExample::defineSpecificProgramOptions() {
 }
 
 string ElementsProgramExample::getVersion() {
-	return "  1.2.0 is the version number TODO";
+	string version = "Svn Id and revision : $Id$ --- $Revision$";
+	return version;
 }
 
-int ElementsProgramExample::pseudo_main() {
+int ElementsProgramExample::pseudoMain() {
 
 	try {
 
@@ -121,3 +122,17 @@ int ElementsProgramExample::pseudo_main() {
 
 	return 0;
 }
+
+//int main(int argc, const char* argv[]) {
+//
+//  ElementsProgramExample epe{};
+//
+//  epe.run(argc, argv);
+//
+//  //return epe.pseudo_main();
+//
+//  return 0;
+//
+//} // Eof main()
+
+BUILD_MAIN_FOR(ElementsProgramExample)
