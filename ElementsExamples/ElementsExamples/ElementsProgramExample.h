@@ -37,7 +37,7 @@ public:
   ElementsProgramExample();
   virtual ~ElementsProgramExample();
 
-  int pseudo_main();
+  int pseudoMain();
 
   boost::program_options::options_description defineSpecificProgramOptions();
 

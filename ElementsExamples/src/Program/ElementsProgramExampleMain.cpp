@@ -11,14 +11,16 @@
  * This class represents ...
  */
 
-#include "ElementsExamples/ElementsProgramExample.h"
-
-int main(int argc, const char* argv[]) {
-
-  ElementsProgramExample epe{};
-
-  epe.setup(argc, argv);
-
-  return epe.pseudo_main();
-
-} // Eof main()
+//#include "ElementsExamples/ElementsProgramExample.h"
+//
+//int main(int argc, const char* argv[]) {
+//
+//  ElementsProgramExample epe{};
+//
+//  epe.setup(argc, argv);
+//
+//  //return epe.pseudo_main();
+//
+//  return 0;
+//
+//} // Eof main()

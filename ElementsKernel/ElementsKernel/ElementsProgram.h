@@ -3,11 +3,8 @@
  * 
  * Created on: Jul 18, 2013
  * 
- * @author dubath
+ * @author Pierre Dubath
  *
- * @section DESCRIPTION
- *
- * This class represents ...
  */
 
 #ifndef ELEMENTSPROGRAM_H_
@@ -17,47 +14,65 @@
 #include <boost/program_options.hpp>
 #include "ElementsKernel/ElementsLogging.h"
 
+/**
+ * Macro which must be used to create a main in classes
+ * that derived from ElementsProgram, i.e., these derived classes
+ * must end with the following line:
+ * 		BUILD_MAIN_FOR(ElementsProgramExample)
+ */
+#define BUILD_MAIN_FOR(ElementsProgramName) 		\
+  int main(int argc, char** argv) 					\
+  {                               					\
+    ElementsProgramName elementProgramInstance {} ;	\
+    return elementProgramInstance.run(argc, argv) ;	\
+  }
 
-/*
- *
- *  The ElementsProgramExample shows an example of how a program should be
- *  implemented. There are three required files, the ElementsProgramExample
+/**
+ * @class ElementsProgram
+ * @brief
+ * 		Base class for all Element programs
+ * @details
+ * 		This base class takes care of program options and of logging
+ * 		initialization. All Elements program extending this class
  */
 class ElementsProgram {
 public:
-  void setup(int argc, const char* argv[]);
+	int run(int argc, char* argv[]);
 
 protected:
-  ElementsProgram();
-  virtual ~ElementsProgram();
+	ElementsProgram();
+	virtual ~ElementsProgram();
 
-  /**
-   * The pseudo main that all programs must implement.
-   */
-  virtual int pseudo_main() = 0;
+	/**
+	 * The pseudo main that all programs must implement.
+	 */
+	virtual int pseudoMain() = 0;
 
-  virtual boost::program_options::options_description defineSpecificProgramOptions() = 0;
+	virtual boost::program_options::options_description defineSpecificProgramOptions() = 0;
 
-  virtual std::string getVersion() = 0;
+	virtual std::string getVersion() = 0;
 
-  const boost::program_options::variables_map& getVariablesMap() const {
-     return m_variablesMap;
-   }
+	const boost::program_options::variables_map& getVariablesMap() const {
+		return m_variablesMap;
+	}
 
 private:
 
-  const boost::filesystem::path getDefaultConfigFile(std::string programName) const;
-  const boost::filesystem::path getDefaultLogFile(std::string programName) const;
+	const boost::filesystem::path getDefaultConfigFile(
+			std::string programName) const;
+	const boost::filesystem::path getDefaultLogFile(
+			std::string programName) const;
 
-  const boost::program_options::variables_map getProgramOptions(int argc, const char* argv[]);
+	const boost::program_options::variables_map getProgramOptions(int argc,
+			char* argv[]);
 
-  void logAllOptions(std::string programName);
+	void logAllOptions(std::string programName);
 
-  boost::filesystem::path m_logFile;
-  /**
-   * This is the BOOST program options variable_map used to store all program options
-   */
-  boost::program_options::variables_map m_variablesMap { };
+	boost::filesystem::path m_logFile;
+	/**
+	 * This is the BOOST program options variable_map used to store all program options
+	 */
+	boost::program_options::variables_map m_variablesMap { };
 
 };
 
