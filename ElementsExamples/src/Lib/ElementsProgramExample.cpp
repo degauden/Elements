@@ -3,14 +3,11 @@
  * 
  * Created on: Jul 18, 2013
  * 
- * @author dubath
+ * @author Pierre Dubath
  *
- * @section LICENSE
- *
- * @section DESCRIPTION
- *
- * This class represents ...
  */
+
+#define VERSION "Version svn: $Id$ --- $Revision$"
 
 #include <string>
 #include <vector>
@@ -60,12 +57,8 @@ po::options_description ElementsProgramExample::defineSpecificProgramOptions() {
 	return configFileOptions;
 }
 
-string ElementsProgramExample::getVersion() {
-	string version = "Svn Id and revision : $Id$ --- $Revision$";
-	return version;
-}
 
-int ElementsProgramExample::pseudoMain() {
+void ElementsProgramExample::pseudoMain() {
 
 	try {
 
@@ -120,7 +113,6 @@ int ElementsProgramExample::pseudoMain() {
 		cout << "std::exception caught : " << e.what() << endl;
 	}
 
-	return 0;
 }
 
 //int main(int argc, const char* argv[]) {
