@@ -8,7 +8,7 @@ elements_add_library(ElementsExamples src/Lib/*.cpp
                   INCLUDE_DIRS Boost ElementsKernel
                   PUBLIC_HEADERS ElementsExamples)
 
-elements_add_executable(ElementsProgramExample src/Lib/ElementsProgramExample.cpp
+elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExample.cpp
                   LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ElementsExamples
                   INCLUDE_DIRS Boost ElementsExamples
                   PUBLIC_HEADERS ElementsExamples)

@@ -226,6 +226,6 @@ void ElementsProgram::setup(int argc, char* argv[]) {
 // This is the method call from teh main which does everything
 void ElementsProgram::run(int argc, char* argv[]) {
   setup(argc, argv);
-  pseudoMain();
+  mainMethod();
 }
 
