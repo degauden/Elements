@@ -16,29 +16,36 @@
  * Macro which must be used to create a main in classes
  * that derived from ElementsProgram, i.e., these derived classes
  * must end with the following line:
+ *
  * 		BUILD_MAIN_FOR(ElementsProgramExample)
  *
- * It also takes care of implementing the getVersion() method which
- * returns the VERSION defined in the derived classes, with
- * 		#define VERSION "Version svn: $Id$ ---- $Revision$
- *
- *	Note that svn expands the keywords ($Id$ ---- $Revision$) when
- *	comitting code only if the svn client has been instructed with
- * 		svn propset svn:keywords 'Id Revision' ElementsProgramExample.cpp
- *
- * 	TODO get release/tag version from svn rather than the Id Revision
- * 	see Redmine Elements task 3240
- *
- * 	How to use this macro is shown in ElementsProgramExample.cpp
+ * 	ElementsProgramExample.cpp shows how to use this macro
  */
 #define BUILD_MAIN_FOR(ElementsProgramName) 		    \
   int main(int argc, char* argv[]) 					        \
   {                               				        	\
     ElementsProgramName elementProgramInstance {} ;	\
-    elementProgramInstance.run(argc, argv) ;	\
-  } 												                        \
-string ElementsProgramName::getVersion() {		    	\
-	return VERSION;									                  \
+    elementProgramInstance.run(argc, argv) ;	      \
+    return 0;                                       \
+  }
+
+/**
+ * Macro which takes care of implementing the getVersion() method which
+ * returns the VERSION defined in the derived classes, with
+ *    #define VERSION "Version svn: $Id$ ---- $Revision$
+ *
+ *  Note that svn expands the keywords ($Id$ ---- $Revision$) when
+ *  comitting code only if the svn client has been instructed with
+ *    svn propset svn:keywords 'Id Revision' ElementsProgramExample.cpp
+ *
+ *  TODO get release/tag version from svn rather than the Id Revision
+ *  see Redmine Elements task 3240
+ *
+ *  How to use this macro is shown in ElementsProgramExample.cpp
+ */
+#define GET_VERSION()                             \
+string getVersion() {		    	                    \
+	return VERSION;									                \
 }
 
 /**
@@ -92,19 +99,20 @@ protected:
 
   /**
    * @brief
-   *   This is the "main" method os all Elements programs
+   *   This is the "main" method of all Elements programs
    * @details
-   *  This is the second method that must be implemented by all Elements programs
-   *  It is called from run(int argc,char* argv[])
+   *  This is the second method that must be implemented by all Elements programs. It
+   *  represents the entry point, called from run(int argc,char* argv[]).
    */
-  virtual void pseudoMain() = 0;
+  virtual void mainMethod() = 0;
 
   /**
    * @brief
    *   Get the program version from svn tags
    * @details
-   *   This method is implemented through the BUILD_MAIN_FOR(ElementsProgramName) macro,
-   *   therefore it should NOT be implemented in Elements programs
+   *   This method is implemented through the GET_VERSION() macro,
+   *   therefore it should NOT be implemented in Elements programs, i.e., in
+   *   derived classes.
    *
    * @return
    *   A string with the version information
