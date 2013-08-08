@@ -72,8 +72,7 @@ const boost::program_options::variables_map ElementsProgram::getProgramOptions(
   //
   ("config-file",
       po::value<boost::filesystem::path>(&configFile)->default_value(
-          defaultConfigFile),
-      "Name of a configuration file")
+          defaultConfigFile), "Name of a configuration file")
   //
   ("log-level", po::value<int>()->default_value(defaultLogLevel),
       "Log level: NONE=0, FATAL=100, ERROR=200, WARN=300, INFO=400 (default), DEBUG=500")
@@ -205,7 +204,7 @@ void ElementsProgram::logAllOptions(string programName) {
 }
 
 // Get the program options and setup logging
-void ElementsProgram::setup(int argc, char* argv[]) {
+void ElementsProgram::setup(int argc, char* argv[]) noexcept {
 
   // get all program options into the varaiable_map
   m_variablesMap = getProgramOptions(argc, argv);
@@ -225,7 +224,21 @@ void ElementsProgram::setup(int argc, char* argv[]) {
 
 // This is the method call from teh main which does everything
 void ElementsProgram::run(int argc, char* argv[]) {
+  ElementsLogging& logger = ElementsLogging::getLogger();
+
   setup(argc, argv);
-  mainMethod();
+
+  try {
+    mainMethod();
+  } catch (const exception & e) {
+    logger.fatal("# ");
+    logger.fatal("# Exception : %s ", e.what());
+    logger.fatal("# ");
+  } catch (...) {
+    logger.fatal("# ");
+    logger.fatal(
+        "# An exception of unknown type occured, i.e., an exception not deriving from std::exception ");
+    logger.fatal("# ");
+  }
 }
 
