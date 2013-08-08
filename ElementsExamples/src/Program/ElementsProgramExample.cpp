@@ -105,57 +105,66 @@ public:
    *    which should be replaced by real code in any program.
    *
    *    See the ElementsProgram documentation for more details.
+   *
    */
   void mainMethod() {
 
     // Get logger and log the entry into the mainMethod
     ElementsLogging& logger = ElementsLogging::getLogger();
 
+    logger.info("#");
+    logger.info(
+        "#  Logging from the mainMethod() of the ElementsProgramExample ");
+    logger.info("#");
+
+    // Get the map with all program options
+    const po::variables_map variableMap = this->getVariablesMap();
+
+    // Retrieve values from the po::variables_map
+    string stringValue = variableMap["string-value"].as<string>();
+    int64_t longLongValue = variableMap["long-long-value"].as<int64_t>();
+    double doubleValue = variableMap["double-value"].as<double>();
+    vector<int> intVector = variableMap["int-vector"].as<vector<int>>();
+    vector<string> stringVector =
+        variableMap["string-vector"].as<vector<string>>();
+
+    // creating an instance of ClassExample for later use
+    int64_t sourceId = longLongValue;
+    double ra = 121.123;
+    double dec = doubleValue;
+    ClassExample classExample { sourceId, ra, dec };
+
     try {
-      logger.info("#");
-      logger.info(
-          "#  Logging from the mainMethod() of the ElementsProgramExample ");
-      logger.info("#");
-
-      // Get the map with all program options
-      const po::variables_map variableMap = this->getVariablesMap();
-
-      // Retrieve values from the po::variables_map
-      string stringValue = variableMap["string-value"].as<string>();
-      int64_t longLongValue = variableMap["long-long-value"].as<int64_t>();
-      double doubleValue = variableMap["double-value"].as<double>();
-      vector<int> intVector = variableMap["int-vector"].as<vector<int>>();
-      vector<string> stringVector = variableMap["string-vector"].as<
-          vector<string>>();
 
       // Do something here
-      ClassExample ce { };
       logger.info("#");
-      logger.info("#    Calling the doSomething of the ClassExample ");
+      logger.info("#    Calling the summingAndDividing of the ClassExample ");
       logger.info("#");
       // Cast the longLongValue just to get a double to feed the doSomething
       double aDouble = static_cast<double>(longLongValue);
-      ce.doSomething(aDouble, doubleValue);
-
-      // Get the result and log it
-      double result = ce.getResult();
-      logger.info("#");
-      logger.info("#     The result of is %e ", result);
-      logger.info("#");
-
-      /*
-       * Here we might later introduced a standard mechanism to persist results
-       */
+      classExample.summingAndDividing(aDouble, doubleValue);
 
     } catch (const ElementsException & e) {
-      logger.fatal("#");
-      logger.fatal("# An exception: %s is caught", e.what());
-      logger.fatal("#");
-      /*
-       * If there is a way to recover from this exception, the correspondiong
-       * code can be introduced here.
-       */
+      logger.info("#");
+      logger.info("  In ElementsProgramExample::mainMethod()");
+      logger.info("      an exception %s is caught", e.what());
+      logger.info("         %s", e.what());
+      logger.info("      is caught");
+      logger.info("#     pretending we do not know what to do, it is thrown again");
+      logger.info("#         (to show what happens when a program crashes)");
+      logger.info("#");
+      throw ElementsException(e.what());
     }
+
+    // Get the result and log it
+    double result = classExample.getResult();
+    logger.info("#");
+    logger.info("#     The result of is %e ", result);
+    logger.info("#");
+
+    /*
+     * Here we might later introduced a standard mechanism to persist results
+     */
 
   }
 
@@ -166,7 +175,6 @@ public:
   GET_VERSION()
 
 };
-
 
 /*
  * Implementation of a main using a base class macro

@@ -170,7 +170,7 @@ private:
    *  Program setup taking care of command line options and logging
    *  initialization
    */
-  void setup(int argc, char* argv[]);
+  void setup(int argc, char* argv[]) noexcept;
 
   /**
    * @brief
