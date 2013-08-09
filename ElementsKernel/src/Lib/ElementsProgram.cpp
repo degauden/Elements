@@ -12,6 +12,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
+namespace fs = boost::filesystem ;
 
 #include "ElementsKernel/ElementsException.h"
 #include "ElementsKernel/ElementsLogging.h"
@@ -24,15 +25,15 @@ using namespace std;
  * TODO write a more elaborate version of this taking into account
  * the system and teh development location of the default config file
  */
-const boost::filesystem::path ElementsProgram::getDefaultConfigFile(
+const fs::path ElementsProgram::getDefaultConfigFile(
     string programName) const {
 
   // Start with the file name from argv[0]
-  boost::filesystem::path pn(programName);
+  fs::path pn(programName);
   // .conf as a standard extension for coinfiguration file
   pn.replace_extension("conf");
   // Get the path from an environment variable TODO change this
-  boost::filesystem::path programRootPath = getenv("ELEMENTSEXAMPLESROOT");
+  fs::path programRootPath = getenv("ELEMENTSEXAMPLESROOT");
   // Construct and return the full path
   return programRootPath / "conf" / pn;
 }
@@ -40,9 +41,9 @@ const boost::filesystem::path ElementsProgram::getDefaultConfigFile(
 /*
  * Get the default log file, i.e., ./"programName".log
  */
-const boost::filesystem::path ElementsProgram::getDefaultLogFile(
+const fs::path ElementsProgram::getDefaultLogFile(
     string programName) const {
-  boost::filesystem::path pn(programName);
+  fs::path pn(programName);
   pn.replace_extension("log");
   return "." / pn;
 }
@@ -50,17 +51,17 @@ const boost::filesystem::path ElementsProgram::getDefaultLogFile(
 /*
  * Get program options
  */
-const boost::program_options::variables_map ElementsProgram::getProgramOptions(
+const po::variables_map ElementsProgram::getProgramOptions(
     int argc, char* argv[]) {
 
   // Initialization
   int defaultLogLevel = 400;
-  boost::filesystem::path configFile;
+  fs::path configFile;
   string programName = argv[0];
 
   // Get defaults
-  boost::filesystem::path defaultConfigFile = getDefaultConfigFile(programName);
-  boost::filesystem::path defaultLogFile = getDefaultLogFile(programName);
+  fs::path defaultConfigFile = getDefaultConfigFile(programName);
+  fs::path defaultLogFile = getDefaultLogFile(programName);
 
   // Define the Generic options
   po::options_description genericOptions("Generic options");
@@ -71,14 +72,14 @@ const boost::program_options::variables_map ElementsProgram::getProgramOptions(
   ("help", "Produce help message")
   //
   ("config-file",
-      po::value<boost::filesystem::path>(&configFile)->default_value(
+      po::value<fs::path>(&configFile)->default_value(
           defaultConfigFile), "Name of a configuration file")
   //
   ("log-level", po::value<int>()->default_value(defaultLogLevel),
       "Log level: NONE=0, FATAL=100, ERROR=200, WARN=300, INFO=400 (default), DEBUG=500")
   //
   ("log-file",
-      po::value<boost::filesystem::path>()->default_value(defaultLogFile),
+      po::value<fs::path>()->default_value(defaultLogFile),
       "Name of a log file");
 
   // Get the definition of the specific options from the derived class
@@ -158,10 +159,10 @@ void ElementsProgram::logAllOptions(string programName) {
       // int option
     } else if (iter->second.value().type() == typeid(int)) {
       logMessage << iter->first << " = " << iter->second.as<int>();
-      // boost::filesystem::path option
-    } else if (iter->second.value().type() == typeid(boost::filesystem::path)) {
+      // fs::path option
+    } else if (iter->second.value().type() == typeid(fs::path)) {
       logMessage << iter->first << " = "
-          << iter->second.as<boost::filesystem::path>();
+          << iter->second.as<fs::path>();
       // int vector option
     } else if (iter->second.value().type() == typeid(vector<int> )) {
       vector<int> intVec = iter->second.as<vector<int>>();
@@ -212,8 +213,8 @@ void ElementsProgram::setup(int argc, char* argv[]) noexcept {
   // get the program options related to the logging
   ElementsLogging::LoggingLevel loggingLevel =
       (ElementsLogging::LoggingLevel) m_variablesMap["log-level"].as<int>();
-  boost::filesystem::path logFileName = m_variablesMap["log-file"].as<
-      boost::filesystem::path>();
+  fs::path logFileName = m_variablesMap["log-file"].as<
+      fs::path>();
 
   // setup the logging
   ElementsLogging::setupLogger(loggingLevel, logFileName);
