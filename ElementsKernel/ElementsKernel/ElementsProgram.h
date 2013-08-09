@@ -32,7 +32,7 @@
 /**
  * Macro which takes care of implementing the getVersion() method which
  * returns the VERSION defined in the derived classes, with
- *    #define VERSION "Version svn: $Id$ ---- $Revision$
+ *    \#define VERSION "Version svn: $Id$ ---- $Revision$
  *
  *  Note that svn expands the keywords ($Id$ ---- $Revision$) when
  *  comitting code only if the svn client has been instructed with
