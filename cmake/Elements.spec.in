@@ -9,12 +9,13 @@ Vendor:         @CPACK_PACKAGE_VENDOR@
 Prefix:         @CPACK_PACKAGING_INSTALL_PREFIX@
 Requires:       boost >= 1.48
 BuildRequires:  cmake >= 2.8.5
-BuildRequires:  gcc-c++ >= 4.7
 BuildArch:      @CPACK_RPM_PACKAGE_ARCHITECTURE@
+# AutoReqProv:    no
  
 %define _rpmdir @CMAKE_CURRENT_BINARY_DIR@/_CPack_Packages/@CPACK_SYSTEM_NAME@/RPM
 # %define _rpmfilename @CPACK_PACKAGE_FILE_NAME@.rpm
-%define _rpmfilename @CPACK_PACKAGE_NAME@-@CPACK_PACKAGE_VERSION@-@CPACK_SYSTEM_NAME@.rpm
+# %define _rpmfilename @CPACK_PACKAGE_NAME@-@CPACK_PACKAGE_VERSION@-@CPACK_SYSTEM_NAME@.rpm
+%define _rpmfilename @CPACK_PACKAGE_NAME@-@CPACK_PACKAGE_VERSION@-@CPACK_PACKAGE_RELEASE@.@CPACK_RPM_PACKAGE_ARCHITECTURE@.rpm
 %define _unpackaged_files_terminate_build 0
 %define _topdir @CMAKE_CURRENT_BINARY_DIR@/_CPack_Packages/@CPACK_SYSTEM_NAME@/RPM
  
