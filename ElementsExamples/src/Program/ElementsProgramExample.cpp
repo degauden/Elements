@@ -146,12 +146,14 @@ public:
 
     } catch (const ElementsException & e) {
       logger.info("#");
-      logger.info("  In ElementsProgramExample::mainMethod()");
-      logger.info("      an exception %s is caught", e.what());
+      logger.info("  In ElementsProgramExample::mainMethod(),");
+      logger.info("      an exception: ");
+      logger.info("#");
       logger.info("         %s", e.what());
-      logger.info("      is caught");
-      logger.info("#     pretending we do not know what to do, it is thrown again");
-      logger.info("#         (to show what happens when a program crashes)");
+      logger.info("#");
+      logger.info("      is caught.");
+      logger.info("      Pretending we do not know what to do, it is thrown again");
+      logger.info("      (to show what happens when a program crashes)");
       logger.info("#");
       throw ElementsException(e.what());
     }

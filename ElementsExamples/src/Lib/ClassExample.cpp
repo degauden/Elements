@@ -39,14 +39,18 @@ void ClassExample::summingAndDividing(double first, double second) {
 
   try {
     logger.info(
-        " Divide the two numbers.This throws an exception if second is zero");
+        " Divide two numbers ");
     m_result = this->divideNumbers(first, second);
   } catch (ElementsException& e) {
     logger.info("#");
-    logger.info("  In ClassExample::summingAndDividing(...)");
-    logger.info("      an exception is caught from divideNumbers");
-    logger.info("      the exception is trown again!");
-    logger.info("       (assuming we do not what to do to fix it!)");
+    logger.info("  In ClassExample::summingAndDividing(...),");
+    logger.info("      an exception: ");
+    logger.info("#");
+    logger.info("      %s",e.what());
+    logger.info("#");
+    logger.info("      is caught from divideNumbers.");
+    logger.info("      The exception is trown again!");
+    logger.info("      (assuming we do not what to do to fix it!)");
     logger.info("#");
     throw ElementsException(e.what());
   }
@@ -64,8 +68,8 @@ double ClassExample::divideNumbers(double first, double second) const {
   if (std::abs(second) < tolerance) {
     // build a stringstream error message
     std::stringstream errorBuffer;
-    errorBuffer << "Dividing by: " << second
-        << " exception thrown in divideNumber!";
+    errorBuffer << "Dividing by " << second
+        << " exception in divideNumbers!";
     throw ElementsException(errorBuffer.str());
   }
   return first / second;
