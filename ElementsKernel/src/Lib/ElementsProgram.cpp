@@ -25,27 +25,36 @@ using namespace std;
  * TODO write a more elaborate version of this taking into account
  * the system and teh development location of the default config file
  */
-const fs::path ElementsProgram::getDefaultConfigFile(
-    string programName) const {
+const fs::path ElementsProgram::getDefaultConfigFile(const
+    fs::path & programName) const {
 
-  // Start with the file name from argv[0]
-  fs::path pn(programName);
   // .conf as a standard extension for coinfiguration file
-  pn.replace_extension("conf");
+  fs::path confName(programName);
+  confName.replace_extension("conf");
   // Get the path from an environment variable TODO change this
   fs::path programRootPath = getenv("ELEMENTSEXAMPLESROOT");
   // Construct and return the full path
-  return programRootPath / "conf" / pn;
+  return programRootPath / "conf" / confName;
 }
 
 /*
  * Get the default log file, i.e., ./"programName".log
  */
-const fs::path ElementsProgram::getDefaultLogFile(
-    string programName) const {
-  fs::path pn(programName);
-  pn.replace_extension("log");
-  return "." / pn;
+const fs::path ElementsProgram::getDefaultLogFile(const
+    fs::path & programName) const {
+  fs::path logName(programName);
+  logName.replace_extension("log");
+  return getProgramPath() / logName;
+}
+
+const fs::path ElementsProgram::setProgramName(char* argv) const {
+  fs::path fullPath(argv);
+  return fullPath.filename();
+}
+
+const fs::path ElementsProgram::setProgramPath(char* argv) const {
+  fs::path fullPath(argv);
+  return fullPath.parent_path();
 }
 
 /*
@@ -54,14 +63,15 @@ const fs::path ElementsProgram::getDefaultLogFile(
 const po::variables_map ElementsProgram::getProgramOptions(
     int argc, char* argv[]) {
 
+  po::variables_map variablesMap { };
+
   // Initialization
   int defaultLogLevel = 400;
   fs::path configFile;
-  string programName = argv[0];
 
   // Get defaults
-  fs::path defaultConfigFile = getDefaultConfigFile(programName);
-  fs::path defaultLogFile = getDefaultLogFile(programName);
+  fs::path defaultConfigFile = getDefaultConfigFile(getProgramName());
+  fs::path defaultLogFile = getDefaultLogFile(getProgramName());
 
   // Define the Generic options
   po::options_description genericOptions("Generic options");
@@ -91,18 +101,18 @@ const po::variables_map ElementsProgram::getProgramOptions(
   allOptions.add(genericOptions).add(configFileOptions);
 
   // Parse the command line and store the options in the variable map
-  po::store(po::command_line_parser(argc, argv).options(allOptions).run(),
-      m_variablesMap);
-  po::notify(m_variablesMap);
+  po::store(po::parse_command_line(argc, argv, allOptions),
+      variablesMap);
+  po::notify(variablesMap);
 
   // Deal with the "help" option
-  if (m_variablesMap.count("help")) {
+  if (variablesMap.count("help")) {
     cout << allOptions << endl;
     exit(0);
   }
 
   // Deal with the "version" option
-  if (m_variablesMap.count("version")) {
+  if (variablesMap.count("version")) {
     cout << this->getVersion() << endl;
     exit(0);
   }
@@ -118,11 +128,12 @@ const po::variables_map ElementsProgram::getProgramOptions(
      * Parse the configuration file and put option values into the variable map only
      * if they were not already specified on the command line
      */
-    po::store(parse_config_file(ifs, configFileOptions), m_variablesMap);
-    po::notify(m_variablesMap);
+    po::store(parse_config_file(ifs, configFileOptions), variablesMap);
+    po::notify(variablesMap);
   }
+
   // return the variable_map load with all options
-  return m_variablesMap;
+  return variablesMap;
 }
 
 // Log all options with a header
@@ -207,6 +218,10 @@ void ElementsProgram::logAllOptions(string programName) {
 // Get the program options and setup logging
 void ElementsProgram::setup(int argc, char* argv[]) noexcept {
 
+  // store the program name and path in class variable
+  m_programName = setProgramName(argv[0]);
+  m_programPath = setProgramPath(argv[0]);
+
   // get all program options into the varaiable_map
   m_variablesMap = getProgramOptions(argc, argv);
 
@@ -220,14 +235,15 @@ void ElementsProgram::setup(int argc, char* argv[]) noexcept {
   ElementsLogging::setupLogger(loggingLevel, logFileName);
 
   // log all program options
-  this->logAllOptions(argv[0]);
+  this->logAllOptions(getProgramName().string());
 }
 
 // This is the method call from teh main which does everything
 void ElementsProgram::run(int argc, char* argv[]) {
-  ElementsLogging& logger = ElementsLogging::getLogger();
 
   setup(argc, argv);
+
+  ElementsLogging& logger = ElementsLogging::getLogger();
 
   try {
     mainMethod();

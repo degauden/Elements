@@ -123,6 +123,26 @@ protected:
    * @brief Getter
    *
    * @return
+   *   The program path
+   */
+  const boost::filesystem::path& getProgramPath() const {
+    return m_programPath;
+  }
+
+   /**
+    * @brief Getter
+    *
+    * @return
+    *   The program name
+    */
+  const boost::filesystem::path& getProgramName() const {
+    return m_programName;
+  }
+
+  /**
+   * @brief Getter
+   *
+   * @return
    *   The BOOST variables_map which includes all program options.
    */
   const boost::program_options::variables_map& getVariablesMap() const {
@@ -140,6 +160,16 @@ private:
   boost::program_options::variables_map m_variablesMap { };
 
   /**
+   * Name of the executable (from argv[0])
+   */
+   boost::filesystem::path m_programName;
+
+  /**
+   * Path of the executable (from argv[0])
+   */
+  boost::filesystem::path m_programPath;
+
+  /**
    * @brief
    *   Get a default configuration file name and path, to be used if not
    *   provided as a command line option
@@ -147,8 +177,8 @@ private:
    * @return
    *   A complete name/path to the default configuration file
    */
-  const boost::filesystem::path getDefaultConfigFile(
-      std::string programName) const;
+   const boost::filesystem::path getDefaultConfigFile(
+       const boost::filesystem::path & programName) const;
 
   /**
    * @brief
@@ -163,7 +193,29 @@ private:
    *   A complete name/path to the default log file
    */
   const boost::filesystem::path getDefaultLogFile(
-      std::string programName) const;
+      const boost::filesystem::path & programName) const;
+
+  /**
+   * @brief
+   *    Strip the path from argv[0] to set the program name
+
+   * @param
+   *    The first element of the command line, i.e., argv[0]
+   * @return
+   *    A BOOST path with the program name
+   */
+  const boost::filesystem::path setProgramName(char* argv) const;
+
+  /**
+   * @brief
+   *    Strip the name from argv[0] to set the program path
+
+   * @param
+   *    The first element of the command line, i.e., argv[0]
+   * @return
+   *    A BOOST path with the program path
+   */
+  const boost::filesystem::path setProgramPath(char* argv) const;
 
   /**
    * @brief

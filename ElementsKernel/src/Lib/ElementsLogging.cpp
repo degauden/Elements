@@ -31,7 +31,7 @@ ElementsLogging::ElementsLogging() {
 }
 
 
-boost::filesystem::path ElementsLogging::s_logFileName = "not_set_up_yet";
+boost::filesystem::path ElementsLogging::s_logFileName = "default.log";
 ElementsLogging::LoggingLevel ElementsLogging::s_loggingLevel = ElementsLogging::LoggingLevel::INFO;
 
 void ElementsLogging::setupLogger(ElementsLogging::LoggingLevel loggingLevel, boost::filesystem::path logFileName) {

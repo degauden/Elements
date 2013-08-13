@@ -2,16 +2,25 @@ elements_subdir(ElementsExamples 1.0)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread system program_options)
 
-#---Libraries---------------------------------------------------------------
+#===== Libraries ===============================================================
 elements_add_library(ElementsExamples src/Lib/*.cpp
                   LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ElementsKernel
                   INCLUDE_DIRS Boost ElementsKernel
                   PUBLIC_HEADERS ElementsExamples)
 
+#===== Executables =============================================================
 elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExample.cpp
                   LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ElementsExamples
                   INCLUDE_DIRS Boost ElementsExamples
                   PUBLIC_HEADERS ElementsExamples)
+                  
+#===== Boost tests =============================================================
+elements_add_unit_test(ClassExample_test tests/src/ClassExample_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+ 
+elements_add_unit_test(ElementsExample_all_tests tests/src/*_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+                                              
                  
 if(USE_ODB)
   find_package(ODB)
