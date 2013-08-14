@@ -31,22 +31,59 @@
 
 /**
  * Macro which takes care of implementing the getVersion() method which
- * returns the VERSION defined in the derived classes, with
- *    \#define VERSION "Version svn: $Id$ ---- $Revision$
+ * returns the project version from SVN keywqords. In the derived classes:
+ *    #define VERSION "SVN $Id$"
+ *    #define REVISION "SVN $Revision$"
+ *    #define HeadURL "SVN $HeadURL$
  *
- *  Note that svn expands the keywords ($Id$ ---- $Revision$) when
+ *    must be present
+ *
+ *  Note that svn expands the keywords ($Id$, $Revision$ and $HeadURL$) when
  *  comitting code only if the svn client has been instructed with
- *    svn propset svn:keywords 'Id Revision' ElementsProgramExample.cpp
- *
- *  TODO get release/tag version from svn rather than the Id Revision
- *  see Redmine Elements task 3240
+ *    svn propset svn:keywords 'Id Revision HeadURL' ElementsProgramExample.cpp
  *
  *  How to use this macro is shown in ElementsProgramExample.cpp
  */
-#define GET_VERSION()                             \
-string getVersion() {		    	                    \
-	return VERSION;									                \
-}
+#define GET_VERSION_FROM_SVN_KEYWORDS()             \
+  string getVersion() {                             \
+    /* string used to test the generation of an appropriate version in case of a tags */ \
+    /* string pathString = "http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/tags/1.2/ElementsExamples/src/Program/ElementsProgramExample.cpp"; */  \
+                                                    \
+    /* input url string to-be parsed */             \
+    string pathString = URL;                        \
+    /* output to-be-returned version */             \
+    string version {};                              \
+                                                    \
+    /* Delimiter to split the URL   */              \
+    const string delim("/");                        \
+    /* index of string position   */                \
+    string::size_type idx;                          \
+    /* element of the URL between pairs of "/"  */  \
+    vector<string> urlElements {};                  \
+                                                    \
+    /* Build a string vector with the URL elements */           \
+    while ((idx = pathString.find(delim)) != string::npos) {    \
+      urlElements.push_back(pathString.substr(0, idx));         \
+      pathString.erase(0, idx + delim.length());                \
+    }                                                           \
+                                                                \
+    /* Loop over all elements of the URL */                                 \
+    for (auto it = urlElements.begin(); it != urlElements.end(); ++it) {    \
+      /* If "trunk" is detected... */                                       \
+      if ((*it).find("trunk") != string::npos) {                            \
+         /* ...return the SVN Version keyword */                            \
+         version = VERSION;                                                 \
+         break;                                                             \
+       }                                                                    \
+      /* If "tags" id detected ... */                                       \
+      if ((*it).find("tags") != string::npos) {                             \
+        /* ...built a version from the project name and tags number */      \
+        version = *(boost::prior(it)) + " " + *(boost::next(it));           \
+        break;                                                              \
+      }                                                                     \
+    }                                                                       \
+    return version;                                                         \
+  }
 
 /**
  * @class ElementsProgram

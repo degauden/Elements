@@ -12,8 +12,9 @@
  * When creating a new file, naked svn tag should be introduced, they are then
  * expanded with the first commit.
  */
-#define VERSION "Version svn: $Id: ElementsProgramExample.cpp 3110 2013-08-13 12:13:13Z pdubath $ --- $Revision: 3110 $"
-#define URL "URL svn: $HeadURL$"
+#define VERSION "SVN $Id: ElementsProgramExample.cpp 3110 2013-08-13 12:13:13Z pdubath $"
+#define REVISION "SVN $Revision: 3110 $"
+#define URL "SVN $HeadURL$"
 
 // System includes
 #include <string>
@@ -175,7 +176,9 @@ public:
    * Implementation of the getVersion() method from the base class
    * DO NOT edit this!
    */
-  GET_VERSION()
+  GET_VERSION_FROM_SVN_KEYWORDS()
+
+
 
 };
 
