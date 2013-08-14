@@ -6,6 +6,6 @@
  */
 
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE Data Model Test Suite
+#define BOOST_TEST_MODULE ElementsExamples Test Suite
 #include <boost/test/unit_test.hpp>
 
