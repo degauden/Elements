@@ -12,7 +12,8 @@
  * When creating a new file, naked svn tag should be introduced, they are then
  * expanded with the first commit.
  */
-#define VERSION "Version svn: $Id$ --- $Revision$"
+#define VERSION "Version svn: $Id: ElementsProgramExample.cpp 3110 2013-08-13 12:13:13Z pdubath $ --- $Revision: 3110 $"
+#define URL "URL svn: $HeadURL$"
 
 // System includes
 #include <string>
@@ -165,7 +166,7 @@ public:
     logger.info("#");
 
     /*
-     * Here we might later introduced a standard mechanism to persist results
+     * Here we might later introduce a standard mechanism to persist results
      */
 
   }

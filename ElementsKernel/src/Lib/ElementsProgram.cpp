@@ -12,7 +12,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
-namespace fs = boost::filesystem ;
+namespace fs = boost::filesystem;
 
 #include "ElementsKernel/ElementsException.h"
 #include "ElementsKernel/ElementsLogging.h"
@@ -27,8 +27,7 @@ using namespace std;
  */
 const fs::path ElementsProgram::getDefaultConfigFile(const
     fs::path & programName) const {
-
-  // .conf as a standard extension for coinfiguration file
+  // .conf as a standard extension for configuration file
   fs::path confName(programName);
   confName.replace_extension("conf");
   // Get the path from an environment variable TODO change this
@@ -226,10 +225,19 @@ void ElementsProgram::setup(int argc, char* argv[]) noexcept {
   m_variablesMap = getProgramOptions(argc, argv);
 
   // get the program options related to the logging
-  ElementsLogging::LoggingLevel loggingLevel =
-      (ElementsLogging::LoggingLevel) m_variablesMap["log-level"].as<int>();
-  fs::path logFileName = m_variablesMap["log-file"].as<
-      fs::path>();
+  ElementsLogging::LoggingLevel loggingLevel;
+  if (m_variablesMap.count("log-level")) {
+    loggingLevel = (ElementsLogging::LoggingLevel) m_variablesMap["log-level"].as<int>();
+  } else {
+     throw ElementsException("Required option log-level is not provided!");
+  }
+  fs::path logFileName;
+  if (m_variablesMap.count("log-file")) {
+    logFileName = m_variablesMap["log-file"].as<fs::path>();
+  } else {
+     throw ElementsException("Required option log-file is not provided!");
+  }
+
 
   // setup the logging
   ElementsLogging::setupLogger(loggingLevel, logFileName);
@@ -238,7 +246,7 @@ void ElementsProgram::setup(int argc, char* argv[]) noexcept {
   this->logAllOptions(getProgramName().string());
 }
 
-// This is the method call from teh main which does everything
+// This is the method call from the main which does everything
 void ElementsProgram::run(int argc, char* argv[]) {
 
   setup(argc, argv);

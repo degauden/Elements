@@ -23,6 +23,9 @@ elements_add_unit_test(test_Memory tests/src/test_Memory.cpp
 elements_add_unit_test(Real_test tests/src/Real_test.cpp tests/src/BoostTestMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
+elements_add_unit_test(ElementsProgram_test tests/src/ElementsProgram_test.cpp tests/src/BoostTestMain.cpp
+                       LINK_LIBRARIES ElementsKernel ElementsExamples TYPE Boost)
+
 if(ELEMENTS_BUILD_TESTS)
   set_property(TEST ElementsKernel.test_PathResolver PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()
