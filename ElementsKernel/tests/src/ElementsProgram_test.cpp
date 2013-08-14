@@ -9,7 +9,7 @@
 #include <iostream>
 #include <boost/test/unit_test.hpp>
 #include "ElementsKernel/ElementsException.h"
-#include "ElementsExamples/ClassExample.h"
+//#include "ElementsExamples/ClassExample.h"
 //#include "ElementsExamples/ElementsExamples/src/Program/ElementsProgramExample.cpp"
 using namespace std;
 
