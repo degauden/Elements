@@ -12,8 +12,8 @@
  * When creating a new file, naked svn tag should be introduced, they are then
  * expanded with the first commit.
  */
-#define VERSION "SVN $Id: ElementsProgramExample.cpp 3110 2013-08-13 12:13:13Z pdubath $"
-#define REVISION "SVN $Revision: 3110 $"
+#define VERSION "SVN $Id$"
+#define REVISION "SVN $Revision$"
 #define URL "SVN $HeadURL$"
 
 // System includes
