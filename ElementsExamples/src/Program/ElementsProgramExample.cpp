@@ -12,9 +12,9 @@
  * When creating a new file, naked svn tag (see below) should be introduced, they are then
  * expanded with the first commit.
  *
- *    #define VERSION "SVN $Id$"
- *    #define REVISION "SVN $Revision$"
- *    #define URL "SVN $HeadURL$"
+ *    \#define VERSION "SVN $Id$"
+ *    \#define REVISION "SVN $Revision$"
+ *    \#define URL "SVN $HeadURL$"
  */
 #define SVN_ID "SVN $Id$"
 #define SVN_URL "SVN $HeadURL$"
