@@ -536,12 +536,13 @@ const vector<string> Elements::System::cmdLineArgs()    {
     // If we would use strtok, options like -g="My world" at
     // the command line level would result on NT in TWO options
     // instead in one as in UNIX.
-    char *next, *tmp1, *tmp2;
+    char *next, *tmp2;
     for(LPTSTR cmd = ::GetCommandLine(); *cmd; cmd=next)   {
       memset(exe,0,sizeof(exe));
       while ( *cmd == ' ' ) cmd++;
       next=::strchr(cmd,' ');
       if ( !next ) next = cmd + strlen(cmd);
+      char *tmp1 ;
       if ( (tmp1=::strchr(cmd,'\"')) > 0 && tmp1 < next )  {
         tmp2 = ::strchr(++tmp1,'\"');
         if ( tmp2 > 0 )   {
