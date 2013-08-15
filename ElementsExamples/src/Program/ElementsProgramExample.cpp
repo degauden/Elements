@@ -7,14 +7,17 @@
 
 /**
  * This macro includes svn tags that are expanded upon any commit. The program version
- * output on screen with the option --version is extracted from VERSION
+ * output on screen with the option --version is extracted from these keywords
  *
- * When creating a new file, naked svn tag should be introduced, they are then
+ * When creating a new file, naked svn tag (see below) should be introduced, they are then
  * expanded with the first commit.
+ *
+ *    #define VERSION "SVN $Id$"
+ *    #define REVISION "SVN $Revision$"
+ *    #define URL "SVN $HeadURL$"
  */
-#define VERSION "SVN $Id$"
-#define REVISION "SVN $Revision$"
-#define URL "SVN $HeadURL$"
+#define SVN_ID "SVN $Id$"
+#define SVN_URL "SVN $HeadURL$"
 
 // System includes
 #include <string>
@@ -30,6 +33,8 @@ namespace po = boost::program_options;
 // Other includes
 #include "ElementsKernel/ElementsProgram.h"
 #include "ElementsExamples/ClassExample.h"
+#include "ElementsKernel/Version.h"
+
 
 using namespace std;
 
@@ -154,7 +159,8 @@ public:
       logger.info("         %s", e.what());
       logger.info("#");
       logger.info("      is caught.");
-      logger.info("      Pretending we do not know what to do, it is thrown again");
+      logger.info(
+          "      Pretending we do not know what to do, it is thrown again");
       logger.info("      (to show what happens when a program crashes)");
       logger.info("#");
       throw ElementsException(e.what());
@@ -173,17 +179,16 @@ public:
   }
 
   /*
-   * Implementation of the getVersion() method from the base class
-   * DO NOT edit this!
+   * This is a standard implementation of getVersion()
+   * This must be copy/paste in all programs
    */
-  GET_VERSION_FROM_SVN_KEYWORDS()
-
-
-
+  string getVersion() {
+    return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
+  }
 };
 
 /*
  * Implementation of a main using a base class macro
- * DO NOT edit this!
+ * This must be copy/paste in all programs
  */
-BUILD_MAIN_FOR(ElementsProgramExample)
+MAIN_FOR(ElementsProgramExample)
