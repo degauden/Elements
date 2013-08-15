@@ -218,12 +218,12 @@ const string& Elements::System::exeName()    {
 const vector<string> Elements::System::linkedModules()    {
   if ( s_linkedModules.size() == 0 )    {
 #ifdef _WIN32
-    char   name[255];  // Maximum file name length on NT 4.0
     DWORD  cbNeeded;
     HINSTANCE handle[1024];
     if ( _psApi.isValid() )    {
       if ( _psApi.EnumProcessModules(processHandle(),handle,sizeof(handle),&cbNeeded) )   {
         for (size_t i = 0; i < cbNeeded/sizeof(HANDLE); i++ )    {
+          char   name[255];  // Maximum file name length on NT 4.0
           if ( 0 < _psApi.GetModuleFileNameExA( processHandle(), handle[i], name, sizeof(name)) )   {
             s_linkedModules.push_back(name);
           }
