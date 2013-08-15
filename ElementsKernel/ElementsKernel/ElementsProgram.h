@@ -176,7 +176,6 @@ private:
   /**
    * @brief
    *    Strip the path from argv[0] to set the program name
-
    * @param
    *    The first element of the command line, i.e., argv[0]
    * @return
@@ -187,7 +186,6 @@ private:
   /**
    * @brief
    *    Strip the name from argv[0] to set the program path
-
    * @param
    *    The first element of the command line, i.e., argv[0]
    * @return
