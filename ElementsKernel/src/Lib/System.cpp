@@ -48,13 +48,6 @@ using namespace std;
   #include "dlfcn.h"
   #include <sys/utsname.h>
   #include <unistd.h>
-#elif __hpux
-  #include "dl.h"
-struct HMODULE {
-  shl_descriptor dsc;
-  long           numSym;
-  shl_symbol*    sym;
-};
 #endif
 
 #endif
@@ -83,21 +76,6 @@ static unsigned long doLoad(const string& name, Elements::System::ImageHandle* h
 #if defined(linux) || defined(__APPLE__)
   void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
   *handle = mh;
-#elif __hpux
-  shl_t mh = ::shl_load(name.length() == 0 ? 0 : path, BIND_IMMEDIATE | BIND_VERBOSE, 0);
-  HMODULE* mod = new HMODULE;
-  if ( 0 != mh ) {
-    if ( 0 != ::shl_gethandle_r(mh, &mod->dsc) ) {
-      cout << "Elements::System::loadDynamicLib>" << ::strerror(getLastError()) << endl;
-    }
-    else {
-      typedef void* (*___all)();
-      ___all _alloc = (___all)malloc;
-      mod->numSym = ::shl_getsymbols(mod->dsc.handle, TYPE_PROCEDURE, EXPORT_SYMBOLS, malloc, &mod->sym);
-      *handle = mod;
-      // cppcheck-suppress memleak
-    }
-  }
 #endif
 #endif
   if ( 0 == *handle )   {
@@ -161,17 +139,6 @@ unsigned long Elements::System::unloadDynamicLib(ImageHandle handle)    {
 #elif defined(linux) || defined(__APPLE__)
   ::dlclose( handle );
   if ( 0 ) {
-#elif __hpux
-  // On HP we have to run finalization ourselves.....
-  Creator pFinalize = 0;
-  if ( getProcedureByName(handle, "_fini", &pFinalize) ) {
-    pFinalize();
-  }
-  HMODULE* mod = (HMODULE*)handle;
-  if ( 0 == ::shl_unload( mod->dsc.handle ) ) {
-    delete mod;
-  }
-  else {
 #else
   if (false){
 #endif
@@ -214,19 +181,6 @@ unsigned long Elements::System::getProcedureByName(ImageHandle handle, const str
     return 0;
   }
   return 1;
-#elif __hpux
-  HMODULE* mod = (HMODULE*)handle;
-  if ( 0 != mod ) {
-    long ll1 = name.length();
-    for ( int i = 0; i < mod->numSym; i++ ) {
-      long ll2 = strlen(mod->sym[i].name);
-      if ( 0 != ::strncmp(mod->sym[i].name, name.c_str(), (ll1>ll2) ? ll1 : ll2)==0 ) {
-	      *pFunction = (EntryPoint) mod->sym[i].value;
-	      return 1;
-      }
-    }
-  }
-  return 0;
 #endif
 }
 

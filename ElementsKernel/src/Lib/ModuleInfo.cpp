@@ -51,8 +51,6 @@ const string& Elements::System::moduleName()   {
       string mod = moduleName;
 #elif defined(linux) || defined(__APPLE__)
       string mod = ::basename((char*)((Dl_info*)moduleHandle())->dli_fname);
-#elif __hpux
-      string mod = ::basename(((HMODULE*)moduleHandle())->dsc.filename);
 #endif
       module = mod.substr(0, mod.rfind('.'));
     }
@@ -76,8 +74,6 @@ const string& Elements::System::moduleNameFull()   {
       const char *path =
 #  if defined(linux) || defined(__APPLE__)
           ((Dl_info*)moduleHandle())->dli_fname;
-#  elif __hpux
-          ((HMODULE*)moduleHandle())->dsc.filename;
 #  endif
       if (::realpath(path, name))
         module = name;
@@ -147,8 +143,6 @@ Elements::System::ImageHandle Elements::System::moduleHandle()    {
                , &info) ) {
 	return &info;
       }
-#elif __hpux
-      return 0;  // Don't know how to solve this .....
 #endif
     }
   }
@@ -185,9 +179,6 @@ Elements::System::ImageHandle Elements::System::exeHandle()    {
     }
   }
   return info;
-#elif __hpux
-  // Don't know how to solve this .....
-  return 0;
 #endif
 }
 
@@ -206,9 +197,6 @@ const string& Elements::System::exeName()    {
     ::sprintf(cmd, "/proc/%d/exe", ::getpid());
     module = "Unknown";
     if (::readlink(cmd, name, sizeof(name)) >= 0)
-      module = name;
-#elif __hpux
-    if (::realpath(((HMODULE*)exeHandle())->dsc.filename, name))
       module = name;
 #endif
   }
