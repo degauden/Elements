@@ -11,20 +11,22 @@ elements_add_library(ElementsKernel src/Lib/*.cpp
 
 #---Tests-------------------------------------------------------------------
 elements_add_unit_test(test_DirSearchPath tests/src/test_DirSearchPath.cpp
-                    LINK_LIBRARIES ElementsKernel TYPE CppUnit)
+                       LINK_LIBRARIES ElementsKernel TYPE CppUnit)
 elements_add_unit_test(test_PathResolver tests/src/test_PathResolver.cpp
-                    LINK_LIBRARIES ElementsKernel TYPE CppUnit)
+                       LINK_LIBRARIES ElementsKernel TYPE CppUnit)
 elements_add_unit_test(test_ElementsTime tests/src/test_ElementsTime.cpp tests/src/test_CppUnitMain.cpp
-                    LINK_LIBRARIES ElementsKernel TYPE CppUnit)
+                       LINK_LIBRARIES ElementsKernel TYPE CppUnit)
 elements_add_unit_test(test_ElementsTiming tests/src/test_ElementsTiming.cpp tests/src/test_CppUnitMain.cpp
-                    LINK_LIBRARIES ElementsKernel TYPE CppUnit)
+                       LINK_LIBRARIES ElementsKernel TYPE CppUnit)
 elements_add_unit_test(test_Memory tests/src/test_Memory.cpp
-                    LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(Real_test tests/src/Real_test.cpp tests/src/BoostTestMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 elements_add_unit_test(ElementsProgram_test tests/src/ElementsProgram_test.cpp tests/src/BoostTestMain.cpp
-                       LINK_LIBRARIES ElementsKernel ElementsExamples TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+elements_add_unit_test(Version_test tests/src/Version_test.cpp tests/src/BoostTestMain.cpp
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 if(ELEMENTS_BUILD_TESTS)
   set_property(TEST ElementsKernel.test_PathResolver PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
