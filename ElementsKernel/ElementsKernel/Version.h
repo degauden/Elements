@@ -16,11 +16,11 @@
  *    a getVersion in a prgram
  * @param svnUrl
  *    This is a string that can be filled with the HeadURL svn keywords. Writing
- *       #define SVN_URL "SVN $HeadURL$
+ *       \#define SVN_URL "SVN $HeadURL$
  *    in a file.
  * @param svnId
  *     This is a string that can be filled with the Id svn keywords. Writing
- *       #define SVN_ID "SVN $Id$
+ *       \#define SVN_ID "SVN $Id$
  *    in a file.
  *
  *    the svn keywords will be expanded upon the next commit if the svn
