@@ -83,6 +83,13 @@ if(NOT ELEMENTS_FLAGS_SET)
           FORCE)
     endif()
 
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -D_GLIBCXX_DEBUG"
+        CACHE STRING "Flags used by the compiler during Release with Debug builds."
+        FORCE)
+    set(CMAKE_C_FLAGS_DEBUG "-g"
+        CACHE STRING "Flags used by the compiler during Release with Debug builds."
+        FORCE)
+
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG"
         CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
         FORCE)
