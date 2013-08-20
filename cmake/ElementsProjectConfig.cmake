@@ -1721,6 +1721,33 @@ function(elements_install_scripts)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
+# elements_install_aux_files()
+#
+# Declare that the package needs to install the content of the 'aux' directory.
+#---------------------------------------------------------------------------------------------------
+function(elements_install_aux_files)
+  install(DIRECTORY aux/
+          DESTINATION aux
+          PATTERN "CVS" EXCLUDE
+          PATTERN ".svn" EXCLUDE
+          PATTERN "*~" EXCLUDE)
+endfunction()
+
+#---------------------------------------------------------------------------------------------------
+# elements_install_conf_files()
+#
+# Declare that the package needs to install the content of the 'conf' directory.
+#---------------------------------------------------------------------------------------------------
+function(elements_install_conf_files)
+  install(DIRECTORY conf/
+          DESTINATION conf
+          PATTERN "CVS" EXCLUDE
+          PATTERN ".svn" EXCLUDE
+          PATTERN "*~" EXCLUDE)
+endfunction()
+
+
+#---------------------------------------------------------------------------------------------------
 # elements_alias(name command...)
 #
 # Create a shell script that wraps the call to the specified command, as in
