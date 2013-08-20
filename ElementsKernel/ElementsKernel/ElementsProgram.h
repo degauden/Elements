@@ -176,7 +176,7 @@ private:
   /**
    * @brief
    *    Strip the path from argv[0] to set the program name
-   * @param
+   * @param argv
    *    The first element of the command line, i.e., argv[0]
    * @return
    *    A BOOST path with the program name
@@ -186,7 +186,7 @@ private:
   /**
    * @brief
    *    Strip the name from argv[0] to set the program path
-   * @param
+   * @param argv
    *    The first element of the command line, i.e., argv[0]
    * @return
    *    A BOOST path with the program path
