@@ -5,7 +5,7 @@
  *      Author: Pavel Binko
  */
 
-#ifndef EUCLIDEXCEPTION_H_
+#ifndef ELEMENTSEXCEPTION_H_
 #define ELEMENTSEXCEPTION_H_
 
 #include <string>
@@ -50,4 +50,4 @@ protected:
   std::string m_errorMsg;
 };
 
-#endif /* EUCLIDEXCEPTION_H_ */
+#endif /* ELEMENTSEXCEPTION_H_ */
