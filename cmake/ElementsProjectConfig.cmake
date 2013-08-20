@@ -65,6 +65,15 @@ endif()
 option(USE_ODB "Use the ODB libraries" OFF)
 option(ELEMENTS_USE_STRICT_BINARY_DEP "Flag to force the strict binary dependencies" OFF)
 
+if(DEFINED ENV{EUCLID_BASE})
+  set(EUCLID_BASE_DIR "$ENV{EUCLID_BASE}" CACHE STRING "Euclid Base Install Directory")
+  message(STATUS "EUCLID_BASE is in the environment: ${EUCLID_BASE_DIR}")
+else()
+  set(EUCLID_BASE_DIR "/opt/Euclid" CACHE STRING "Euclid Base Install Directory")
+  message(STATUS "EUCLID_BASE is not in the environment: using default ${EUCLID_BASE_DIR}")
+endif()
+
+
 #---------------------------------------------------------------------------------------------------
 # Programs and utilities needed for the build
 #---------------------------------------------------------------------------------------------------
@@ -389,7 +398,7 @@ macro(elements_project project version)
   set(CPACK_PACKAGE_RELOCATABLE TRUE)
   # set(CPACK_PACKAGE_INSTALL_DIRECTORY /opt/Euclid)
   # set(CPACK_RPM_PACKAGE_PREFIX /opt/Euclid)
-  set(CPACK_PACKAGING_INSTALL_PREFIX /opt/Euclid/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
+  set(CPACK_PACKAGING_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   set(CPACK_GENERATOR RPM)
   set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
   set(CPACK_PACKAGE_RELEASE 1.${SGS_OS}${SGS_OSVERS})
