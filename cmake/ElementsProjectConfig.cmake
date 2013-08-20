@@ -314,6 +314,18 @@ macro(elements_project project version)
       set(project_build_environment ${project_build_environment}
           PREPEND PATH \${${_proj}_PROJECT_ROOT}/${package}/scripts)
     endif()
+    
+    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/conf)
+      set(project_build_environment ${project_build_environment}
+          PREPEND ELEMENT_CONF_PATH \${${_proj}_PROJECT_ROOT}/${package}/conf)
+    endif()
+
+    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/aux)
+      set(project_build_environment ${project_build_environment}
+          PREPEND ELEMENT_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/aux)
+    endif()
+
+    
   endforeach()
 
   message(STATUS "  environment for the project")
@@ -323,7 +335,9 @@ macro(elements_project project version)
         PREPEND PATH \${.}/bin
         PREPEND LD_LIBRARY_PATH \${.}/lib
         PREPEND PYTHONPATH \${.}/python
-        PREPEND PYTHONPATH \${.}/python/lib-dynload)
+        PREPEND PYTHONPATH \${.}/python/lib-dynload
+        PREPEND ELEMENTS_CONF_PATH \${.}/conf
+        PREPEND ELEMENTS_AUX_PATH \${.}/aux)
   #   - build dirs
   set(project_build_environment ${project_build_environment}
       PREPEND PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -1908,6 +1922,8 @@ set(${CMAKE_PROJECT_NAME}_LIBRARY_DIRS \${_dir}/lib)
 
 set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_dir}/bin \${_dir}/scripts)
 set(${CMAKE_PROJECT_NAME}_PYTHON_PATH \${_dir}/python)
+set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_dir}/conf)
+set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/aux)
 
 set(${CMAKE_PROJECT_NAME}_COMPONENT_LIBRARIES ${component_libraries})
 set(${CMAKE_PROJECT_NAME}_LINKER_LIBRARIES ${linker_libraries})
@@ -2061,6 +2077,8 @@ macro(elements_external_project_environment)
   # collecting environment infos
   set(python_path)
   set(binary_path)
+  set(conf_path)
+  set(aux_path)  
   set(environment)
   set(library_path2)
 
@@ -2101,6 +2119,8 @@ macro(elements_external_project_environment)
 
       list(APPEND binary_path   ${${pack}_BINARY_PATH})
       list(APPEND python_path   ${${pack}_PYTHON_PATH})
+      list(APPEND conf_path     ${${pack}_CONF_PATH})
+      list(APPEND aux_path      ${${pack}_AUX_PATH})
       list(APPEND environment   ${${pack}_ENVIRONMENT})
       list(APPEND library_path2 ${${pack}_LIBRARY_DIR} ${${pack}_LIBRARY_DIRS})
       # Try the version with the name of the package uppercase (unless the
@@ -2108,6 +2128,8 @@ macro(elements_external_project_environment)
       if(NOT pack STREQUAL _pack_upper)
         list(APPEND binary_path   ${${_pack_upper}_BINARY_PATH})
         list(APPEND python_path   ${${_pack_upper}_PYTHON_PATH})
+        list(APPEND conf_path     ${${_pack_upper}_CONF_PATH})
+        list(APPEND aux_path      ${${_pack_upper}_AUX_PATH})
         list(APPEND environment   ${${_pack_upper}_ENVIRONMENT})
         list(APPEND library_path2 ${${_pack_upper}_LIBRARY_DIR} ${${_pack_upper}_LIBRARY_DIRS})
       endif()
@@ -2126,7 +2148,7 @@ macro(elements_external_project_environment)
     endif()
   endforeach()
 
-  foreach(var library_path python_path binary_path)
+  foreach(var library_path python_path binary_path conf_path aux_path)
     if(${var})
       list(REMOVE_DUPLICATES ${var})
     endif()
@@ -2143,6 +2165,16 @@ macro(elements_external_project_environment)
   foreach(val ${library_path})
     set(project_environment ${project_environment} PREPEND LD_LIBRARY_PATH ${val})
   endforeach()
+
+
+  foreach(val ${conf_path})
+    set(project_environment ${project_environment} PREPEND ELEMENTS_CONF_PATH ${val})
+  endforeach()
+
+  foreach(val ${aux_path})
+    set(project_environment ${project_environment} PREPEND ELEMENTS_AUX_PATH ${val})
+  endforeach()
+
 
   set(project_environment ${project_environment} ${environment})
 
