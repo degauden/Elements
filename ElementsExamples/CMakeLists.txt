@@ -36,7 +36,9 @@ if(USE_ODB)
   endif()
 endif()
 
-#---Python and Scripts ------------------------------------------------------------
+#---Python modules, Scripts, conf and aux files ------------------------------------------------------------
+
+elements_install_conf_files()
 
 #elements_install_python_modules()
 #elements_install_scripts()
