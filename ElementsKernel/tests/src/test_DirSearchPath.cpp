@@ -7,11 +7,7 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 #include <cassert>
 #include <iostream>
-#ifdef __ICC
-// disable icc warning #279: controlling expression is constant
-// ... a lot of noise produced by the boost/filesystem/operations.hpp
-#pragma warning(disable:279)
-#endif
+
 #include "boost/filesystem/operations.hpp"
 #include "ElementsKernel/DirSearchPath.h"
 
