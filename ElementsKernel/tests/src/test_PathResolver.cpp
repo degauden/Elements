@@ -8,13 +8,13 @@
 
 using namespace std;
 using namespace Elements::System;
-namespace bf = boost::filesystem;
+namespace fs = boost::filesystem;
 
 int main() {
   int err(0);
   cout << "*** PathResolver_test starts ***" << endl;
 
-  string local = bf::initial_path().string();
+  string local = fs::initial_path().string();
   cout << "initial path: " << local << endl;
 
   string ref1("../tests/PathResolver/A/a.txt");
