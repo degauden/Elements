@@ -35,7 +35,7 @@ find_program(distcc_cmd distcc)
 mark_as_advanced(ccache_cmd distcc_cmd)
 
 if(ccache_cmd)
-  option(CMAKE_USE_CCACHE "Use ccache to speed up compilation." OFF)
+  option(CMAKE_USE_CCACHE "Use ccache to speed up compilation." ON)
   if(CMAKE_USE_CCACHE)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${ccache_cmd})
     message(STATUS "Using ccache for building")
