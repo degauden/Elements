@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <sstream>
 #include <boost/algorithm/string.hpp>
 
 #include "ElementsKernel/FileLocator.h"
