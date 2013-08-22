@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <boost/utility.hpp>
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
 
@@ -17,16 +18,10 @@ std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId) {
 
     // Delimiter to split the URL
     const string delim("/");
-    // index of string position
-    string::size_type idx;
-    // element of the URL between pairs of "/"
+    // vector of elements of the URL between pairs of "/"
     vector<string> urlElements {};
-
     // Build a string vector with the URL elements
-    while ((idx = svnUrl.find(delim)) != string::npos) {
-      urlElements.push_back(svnUrl.substr(0, idx));
-      svnUrl.erase(0, idx + delim.length());
-    }
+    boost::split(urlElements, svnUrl, boost::is_any_of(delim));
 
     // Loop over all elements of the URL
     for (auto it = urlElements.begin(); it != urlElements.end(); ++it) {
