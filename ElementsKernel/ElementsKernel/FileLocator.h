@@ -107,7 +107,7 @@ boost::filesystem::path selectFileInVector(std::vector<boost::filesystem::path> 
 
 
 boost::filesystem::path searchConfFileRecursivelyInDir(std::string pathElement,
-    boost::regex searchedFileName, boost::filesystem::path prefixPath) nothrows;
+    boost::regex searchedFileName, boost::filesystem::path prefixPath) noexcept;
 
 /**
  * @brief searchConfFileInPath
