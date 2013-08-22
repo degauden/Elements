@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(searchFileInPath_test) {
   //cout << "From test 2 : File = " << actualFullPath << endl;
   fs::path expectedFullPath = fullPath / file;
   //BOOST_CHECK(actualFullPath.empty());
-  BOOST_CHECK(actualFullPath.compare(expectedFullPath) == 0);
+  BOOST_CHECK(actualFullPath == expectedFullPath);
 
 }  // Eof searchFileInPath_1 test
 
@@ -75,11 +75,11 @@ BOOST_AUTO_TEST_CASE(getPathLastSegment_test) {
   fs::path testPath { rootPath
       + "tests/conf/ElementsKernel/MockFileForTestingFileLocator.conf" };
   BOOST_CHECK(
-      getPathLastSegment(testPath).string().compare("ElementsKernel") == 0);
+      getPathLastSegment(testPath).string() == "ElementsKernel");
   fs::path testPath2 { rootPath
       + "tests/conf/ElementsKernel/MockFileForTestingFileLocator" };
   BOOST_CHECK(
-      getPathLastSegment(testPath2).string().compare("ElementsKernel") == 0);
+      getPathLastSegment(testPath2).string() == "ElementsKernel");
 
   fs::path testPath3 { "MockFileForTestingFileLocator" };
   BOOST_CHECK(getPathLastSegment(testPath3).empty());
@@ -141,7 +141,7 @@ BOOST_FIXTURE_TEST_CASE(selectFileInVector_test_ok, FileLocator_Fixture) {
   result = selectFileInVector(checkedFiles);
   fs::path actualResult = result.filename();
   fs::path expectedResult { "MockConfFileForTestingFileLocator_1.conf" };
-  BOOST_CHECK(actualResult.compare(expectedResult) == 0);
+  BOOST_CHECK(actualResult == expectedResult);
 
 }
 
@@ -176,7 +176,7 @@ BOOST_FIXTURE_TEST_CASE(searchConfFileInPathVariable_1_up, FileLocator_Fixture) 
   string file { "MockConfFileForTestingFileLocator_1.conf" };
   fs::path actualFullPath = searchConfFileInPathVariable(file);
   fs::path expectedFullPath = fullPath / fs::path { "ElementsKernel" } / fs::path { file };
-  BOOST_CHECK(actualFullPath.compare(expectedFullPath) == 0);
+  BOOST_CHECK(actualFullPath == expectedFullPath);
 
 }  // Eof searchConfFileInPath_1 up
 
@@ -186,7 +186,7 @@ BOOST_FIXTURE_TEST_CASE(searchConfFileInPathVariable_2_down1, FileLocator_Fixtur
   string file { "MockConfFileForTestingFileLocator_2" };
   fs::path actualFullPath = searchConfFileInPathVariable(file);
   fs::path expectedFullPath = fullPath / fs::path { "additionalDirForTesting/ElementsKernel" } / fs::path{file}.replace_extension(extension) ;
-  BOOST_CHECK(actualFullPath.compare(expectedFullPath) == 0);
+  BOOST_CHECK(actualFullPath == expectedFullPath);
 
 }
 
@@ -240,7 +240,7 @@ BOOST_FIXTURE_TEST_CASE(searchConfFileInPath_1_up_withPrefix, FileLocator_Fixtur
   fs::path expectedFullPath = fullPath / fs::path { "ElementsKernel" } / fs::path{file}.replace_extension(extension) ;
   cout << actualFullPath << endl;
   cout << expectedFullPath << endl;
-  BOOST_CHECK(actualFullPath.compare(expectedFullPath) == 0);
+  BOOST_CHECK(actualFullPath == expectedFullPath);
 
 }  // Eof searchConfFileInPath_1 up
 
@@ -251,7 +251,7 @@ BOOST_FIXTURE_TEST_CASE(searchConfFileInPath_2_down1_withPrefix, FileLocator_Fix
   string prefix {"ElementsKernel" } ;
    fs::path actualFullPath = searchConfFileInPathVariable(file, prefix);
   fs::path expectedFullPath = fullPath / fs::path { "additionalDirForTesting/ElementsKernel" } / fs::path{file}.replace_extension(extension) ;
-  BOOST_CHECK(actualFullPath.compare(expectedFullPath) == 0);
+  BOOST_CHECK(actualFullPath == expectedFullPath);
 
 }
 
@@ -308,11 +308,11 @@ BOOST_FIXTURE_TEST_CASE(searchConfFileInPath_twoFilesException_withPrefix, FileL
 //
 //  string actualPathElement = pathElements.at(0);
 //  string expectedPathElement = "/opt/local/bin";
-//  BOOST_CHECK(actualPathElement.compare(expectedPathElement) == 0);
+//  BOOST_CHECK(actualPathElement == expectedPathElement);
 //
 //  actualPathElement = pathElements.at(3);
 //  expectedPathElement = "/usr/bin";
-//  BOOST_CHECK(actualPathElement.compare(expectedPathElement) == 0);
+//  BOOST_CHECK(actualPathElement == expectedPathElement);
 //
 //} // Eof tokenizePath_test
 
@@ -328,7 +328,7 @@ BOOST_FIXTURE_TEST_CASE(searchConfFileInPath_twoFilesException_withPrefix, FileL
 //  cout << "From test 2 : File = " << actualFullPath << endl;
 //  string expectedFullPath = "/Users/binko/Euclid/sw/Alexandria/Integration/tests/conf/Blabla.conf";
 //  BOOST_CHECK(actualFullPath.empty());
-//  //BOOST_CHECK(actualFullPath.compare(expectedFullPath) == 0);
+//  //BOOST_CHECK(actualFullPath == expectedFullPath);
 //
 //} // Eof searchInEnvVariable_test
 
