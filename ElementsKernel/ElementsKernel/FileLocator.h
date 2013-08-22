@@ -107,25 +107,26 @@ boost::filesystem::path selectFileInVector(std::vector<boost::filesystem::path> 
 
 
 boost::filesystem::path searchConfFileRecursivelyInDir(std::string pathElement,
-    boost::regex searchedFileName, boost::filesystem::path prefixPath);
+    boost::regex searchedFileName, boost::filesystem::path prefixPath) nothrows;
 
 /**
  * @brief searchConfFileInPath
  *   Searches for a configuration file recursively in all directories/sub-directories given
  *   in an environment variable
- * @param toBeMatchedPath
- *   File system path segment used for the search. Normally, it takes the form
- *
- *   packageName/executableName (e.g., ElementsExample/ElementsProgramExample)
- *
- *   If the prefix is not provided, the search will use only the executableName.
+* @param fileName
+ *   File name of the configuration file (only the root name is used as
+ *   extension is replaced by configurationExtension in any case)
+ * @param pathPrefix
+ *   The path of the parent directory containing the sought configuration file. By default this is not used.
  * @param extension
  *   Configuration file extension (defaulted to "conf")
  * @param pathConfEnvVariable
  *   Name of the configuration environment variable defaulted to "ELEMENTS_CONF_PATH".
  *   It should have the format: ELEMENTS_CONF_PATH=path1:path2:...:pathN
  * @return
- *   Full path to the configuration file found or empty string, if not found
+ *   Full path to the configuration file found or empty string, if not found,
+ * @throws ElementsException
+ *   If the configuration file is found more than once in a given directory/sun-directories.
  */
 boost::filesystem::path searchConfFileInPathVariable(
     std::string fileName, std::string pathPrefix = "",
