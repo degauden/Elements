@@ -16,6 +16,8 @@ namespace fs = boost::filesystem;
 
 #include "ElementsKernel/ElementsException.h"
 #include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/FileLocator.h"
+
 #include "ElementsKernel/ElementsProgram.h"
 
 using namespace std;
@@ -30,10 +32,8 @@ const fs::path ElementsProgram::getDefaultConfigFile(const
   // .conf as a standard extension for configuration file
   fs::path confName(programName);
   confName.replace_extension("conf");
-  // Get the path from an environment variable TODO change this
-  fs::path programRootPath = getenv("ELEMENTSEXAMPLESROOT");
   // Construct and return the full path
-  return programRootPath / "conf" / confName;
+  return searchConfFileInPathVariable(confName.string());
 }
 
 /*
