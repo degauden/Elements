@@ -100,12 +100,27 @@ std::vector<boost::filesystem::path> checkPathPrefix(std::vector<boost::filesyst
  *    Vector of files
  * @return
  *    The selected file
- */
+* @throws ElementsException
+ *   If the vector of file contains more than one element
+  */
 boost::filesystem::path selectFileInVector(std::vector<boost::filesystem::path> checkedFiles);
 
 
 
-
+/**
+ * @brief
+ *    Search a file in one directory, possible checking that the parent directory match the prefixPath
+ * @param pathElement
+ *    The directory path
+ * @param searchedFileName
+ *    The file name
+ * @param
+ *    The name of the parent directory (or an empty string if this feature is not wanted
+ * @return
+ *    The full path of the searched file.
+ * @throws ElementsException
+ *   If the configuration file is found more than once in a given directory/sun-directories.
+ */
 boost::filesystem::path searchConfFileRecursivelyInDir(std::string pathElement,
     boost::regex searchedFileName, boost::filesystem::path prefixPath) noexcept;
 
@@ -113,7 +128,7 @@ boost::filesystem::path searchConfFileRecursivelyInDir(std::string pathElement,
  * @brief searchConfFileInPath
  *   Searches for a configuration file recursively in all directories/sub-directories given
  *   in an environment variable
-* @param fileName
+ * @param fileName
  *   File name of the configuration file (only the root name is used as
  *   extension is replaced by configurationExtension in any case)
  * @param pathPrefix
