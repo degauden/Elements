@@ -145,7 +145,7 @@ boost::filesystem::path searchConfFileRecursivelyInDir(std::string pathElement,
  */
 boost::filesystem::path searchConfFileInPathVariable(
     std::string fileName, std::string pathPrefix = "",
-    std::string configurationExtension = "conf",
+    std::string configurationExtension = ".conf",
     std::string pathConfEnvVariable = "ELEMENTS_CONF_PATH");
 
 //  /**
