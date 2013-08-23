@@ -17,14 +17,14 @@ using namespace std;
 
 //-----------------------------------------------------------------------------
 // Function searchInEnvVariable
-fs::path searchFileInPath(std::string pathEnvVariable, fs::path file,
-    std::string extension) {
+fs::path searchFileInPath(string pathEnvVariable, fs::path file,
+    string extension) {
 
   // Placeholder for the to-be-returned search result
   fs::path searchResult { };
 
   // get the path from the environment variable
-  std::string composedPath = getenv(pathEnvVariable.c_str());
+  string composedPath = getenv(pathEnvVariable.c_str());
 
   // Define the file name to be searched for
   fs::path fileName = file.filename().replace_extension(extension);
@@ -86,7 +86,7 @@ vector<fs::path> searchFileRecursivelyInDir(string directoryName,
       ++iter) {
 
     // Get the name of a directory element (file or directory itself)
-    std::string name = iter->path().leaf().string();
+    string name = iter->path().leaf().string();
 
     // search for our pattern
     if (regex_match(name, searchedFile)) {
@@ -163,9 +163,9 @@ fs::path searchConfFileRecursivelyInDir(string directoryName,
  * Iterate over the different directories included in the path and call
  * searchRecursivelyInDir(...) for each of them
  */
-fs::path searchConfFileInPathVariable(std::string fileName,
-    std::string pathPrefix, std::string configurationExtension,
-    std::string pathConfEnvVariable) {
+fs::path searchConfFileInPathVariable(string fileName,
+    string pathPrefix, string configurationExtension,
+    string pathConfEnvVariable) {
 
   // Placeholder for the to-be-returned search result
   fs::path searchResult { };
@@ -176,7 +176,7 @@ fs::path searchConfFileInPathVariable(std::string fileName,
       configurationExtension).string() };
 
   // get the path from the environment variable
-  std::string composedPath = getenv(pathConfEnvVariable.c_str());
+  string composedPath = getenv(pathConfEnvVariable.c_str());
 
   // Tokenize the path elements
   vector<string> pathElements;
@@ -216,7 +216,7 @@ fs::path searchConfFileInPathVariable(std::string fileName,
 //      ++iter) {
 //
 //    // Get the name of a directory element (file or directory itself)
-//    std::string name = iter->path().leaf().string();
+//    string name = iter->path().leaf().string();
 //
 //    // prepare an error string buffer in case of a double detections
 //    stringstream errorBuffer;
