@@ -33,7 +33,8 @@ struct FileLocator_Fixture {
   string extension = ".conf";
 
   string rootPath = getenv("ELEMENTSKERNELROOT");
-  string fullPath = rootPath + "/tests/conf/";
+  fs::path fullPath_path = fs::path{rootPath} / "tests/conf";
+  string fullPath = fullPath_path.string();
   string composedPath = "/opt/local/bin:" + fullPath + ":/bin";
 
   FileLocator_Fixture() {
