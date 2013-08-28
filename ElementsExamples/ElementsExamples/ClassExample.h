@@ -25,8 +25,9 @@ public:
   /**
    * @brief Constructor
    */
-  ClassExample(int64_t sourceId, double ra, double dec) :
-      m_sourceId(sourceId), m_ra(ra), m_dec(dec) {
+  ClassExample(int64_t source_id, double ra, double dec) :
+      m_source_id(source_id), m_ra(ra), m_dec(dec) {
+    m_result = 0.0;
   }
 
   /**
@@ -97,14 +98,14 @@ public:
    * Getter to access the static private string
    */
   static const std::string& getStaticString() {
-    return s_staticString;
+    return s_static_string;
   }
 
   /**
    * Getter to access private sourceId
    */
   int64_t getSourceId() const {
-    return m_sourceId;
+    return m_source_id;
   }
 
   /**
@@ -127,19 +128,19 @@ public:
 private:
 
   /// An example of a static string
-  static std::string s_staticString;
+  static std::string s_static_string;
 
   /// Source ID as an example of a long private member
-  int64_t m_sourceId { 0 };
+  int64_t m_source_id { 0 };
 
   /// Source right ascension
-  double m_ra { 0 };
+  double m_ra { 0.0 };
 
   /// Source declination
-  double m_dec { 0 };
+  double m_dec { 0.0 };
 
   /// A double to store a result
-  double m_result { 0 };
+  double m_result { 0.0 };
 
 };
 

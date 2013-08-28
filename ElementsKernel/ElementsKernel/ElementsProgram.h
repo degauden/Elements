@@ -104,7 +104,7 @@ protected:
    *   The program path
    */
   const boost::filesystem::path& getProgramPath() const {
-    return m_programPath;
+    return m_program_path;
   }
 
    /**
@@ -114,7 +114,7 @@ protected:
     *   The program name
     */
   const boost::filesystem::path& getProgramName() const {
-    return m_programName;
+    return m_program_name;
   }
 
   /**
@@ -124,7 +124,7 @@ protected:
    *   The BOOST variables_map which includes all program options.
    */
   const boost::program_options::variables_map& getVariablesMap() const {
-    return m_variablesMap;
+    return m_variables_map;
   }
 
 private:
@@ -135,17 +135,17 @@ private:
    * of different types. See the pseudoMain() in ElementsProgramExample.cpp
    * to see how to retrieve options from this map.
    */
-  boost::program_options::variables_map m_variablesMap { };
+  boost::program_options::variables_map m_variables_map { };
 
   /**
    * Name of the executable (from argv[0])
    */
-   boost::filesystem::path m_programName;
+   boost::filesystem::path m_program_name;
 
   /**
    * Path of the executable (from argv[0])
    */
-  boost::filesystem::path m_programPath;
+  boost::filesystem::path m_program_path;
 
   /**
    * @brief
@@ -156,7 +156,7 @@ private:
    *   A complete name/path to the default configuration file
    */
    const boost::filesystem::path getDefaultConfigFile(
-       const boost::filesystem::path & programName) const;
+       const boost::filesystem::path & program_name) const;
 
   /**
    * @brief
@@ -171,7 +171,7 @@ private:
    *   A complete name/path to the default log file
    */
   const boost::filesystem::path getDefaultLogFile(
-      const boost::filesystem::path & programName) const;
+      const boost::filesystem::path & program_name) const;
 
   /**
    * @brief
@@ -216,7 +216,7 @@ private:
    *  Log all program options
    *
    */
-  void logAllOptions(std::string programName);
+  void logAllOptions(std::string program_name);
 
 };
 

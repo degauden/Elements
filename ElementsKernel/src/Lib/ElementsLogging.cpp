@@ -31,17 +31,17 @@ ElementsLogging::ElementsLogging() {
 }
 
 
-boost::filesystem::path ElementsLogging::s_logFileName = "default.log";
-ElementsLogging::LoggingLevel ElementsLogging::s_loggingLevel = ElementsLogging::LoggingLevel::INFO;
+boost::filesystem::path ElementsLogging::s_log_file_name = "default.log";
+ElementsLogging::LoggingLevel ElementsLogging::s_logging_level = ElementsLogging::LoggingLevel::INFO;
 
-void ElementsLogging::setupLogger(ElementsLogging::LoggingLevel loggingLevel, boost::filesystem::path logFileName) {
-	ElementsLogging::s_loggingLevel = loggingLevel;
-	ElementsLogging::s_logFileName = logFileName;
+void ElementsLogging::setupLogger(ElementsLogging::LoggingLevel logging_level, boost::filesystem::path log_file_name) {
+	ElementsLogging::s_logging_level = logging_level;
+	ElementsLogging::s_log_file_name = log_file_name;
 }
 
 void ElementsLogging::initializeLogger() {
 
-	switch(s_loggingLevel)
+	switch(s_logging_level)
 	{
 	case ElementsLogging::LoggingLevel::DEBUG:
 		m_log4cppLogger.setPriority(log4cpp::Priority::DEBUG);
@@ -62,20 +62,20 @@ void ElementsLogging::initializeLogger() {
 			m_log4cppLogger.setPriority(log4cpp::Priority::EMERG);
 			break;
 	default:
-		stringstream errorBuffer;
-		errorBuffer << "Unrecognized logging level: " << s_loggingLevel << "\n";
-		throw ElementsException(errorBuffer.str());
+		stringstream error_buffer;
+		error_buffer << "Unrecognized logging level: " << s_logging_level << "\n";
+		throw ElementsException(error_buffer.str());
 		break;
 	}
 
-	log4cpp::Appender *consoleAppender = new log4cpp::OstreamAppender("console", &std::cout);
-	consoleAppender->setLayout(new log4cpp::BasicLayout());
+	log4cpp::Appender *console_appender = new log4cpp::OstreamAppender("console", &std::cout);
+	console_appender->setLayout(new log4cpp::BasicLayout());
 
-	log4cpp::Appender *fileAppender = new log4cpp::FileAppender("file", s_logFileName.string());
-	fileAppender->setLayout(new log4cpp::BasicLayout());
+	log4cpp::Appender *file_appender = new log4cpp::FileAppender("file", s_log_file_name.string());
+	file_appender->setLayout(new log4cpp::BasicLayout());
 
-	m_log4cppLogger.addAppender(consoleAppender);
-	m_log4cppLogger.addAppender(fileAppender);
+	m_log4cppLogger.addAppender(console_appender);
+	m_log4cppLogger.addAppender(file_appender);
 
 }
 

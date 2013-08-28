@@ -15,7 +15,7 @@ ClassExample::~ClassExample() {
   // destructor code if any
 }
 
-std::string ClassExample::s_staticString = "This is a static field example";
+std::string ClassExample::s_static_string = "This is a static field example";
 
 void ClassExample::summingAndDividing(double first, double second) {
 
@@ -24,7 +24,7 @@ void ClassExample::summingAndDividing(double first, double second) {
   logger.info("#");
   logger.info("#  Logging from the doSomething() class example: ");
   logger.info(
-      "#     examples of all logging levels (check with log-level option  ");
+      "#     examples of all logging levels (useful to check the log-level option  ");
   logger.info("#");
   logger.fatal("A Fatal log message, appears with log-level > 100");
   logger.error("An Error log message, appears with log-level > 200");
@@ -49,7 +49,7 @@ void ClassExample::summingAndDividing(double first, double second) {
     logger.info("      %s",e.what());
     logger.info("#");
     logger.info("      is caught from divideNumbers.");
-    logger.info("      The exception is trown again!");
+    logger.info("      The exception is thrown again!");
     logger.info("      (assuming we do not what to do to fix it!)");
     logger.info("#");
     throw ElementsException(e.what());
@@ -67,10 +67,10 @@ double ClassExample::divideNumbers(double first, double second) const {
   // and a test is achieve
   if (std::abs(second) < tolerance) {
     // build a stringstream error message
-    std::stringstream errorBuffer;
-    errorBuffer << "Dividing by " << second
+    std::stringstream error_buffer;
+    error_buffer << "Dividing by " << second
         << " exception in divideNumbers!";
-    throw ElementsException(errorBuffer.str());
+    throw ElementsException(error_buffer.str());
   }
   return first / second;
 }

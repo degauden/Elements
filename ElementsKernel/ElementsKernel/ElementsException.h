@@ -20,14 +20,14 @@ public:
    *                 with the caller.
    */
   explicit ElementsException(const char* message) :
-      m_errorMsg(message) {
+      m_error_msg(message) {
   }
 
   /** Constructor (C++ STL strings).
    *  @param message The error message.
    */
   explicit ElementsException(const std::string& message) :
-      m_errorMsg(message) {
+      m_error_msg(message) {
   }
 
   /** Virtual destructor.
@@ -41,13 +41,13 @@ public:
    *          not attempt to free the memory.
    */
   virtual const char * what() const noexcept {
-    return m_errorMsg.c_str();
+    return m_error_msg.c_str();
   }
 
 protected:
   /** Error message.
    */
-  std::string m_errorMsg;
+  std::string m_error_msg;
 };
 
 #endif /* ELEMENTSEXCEPTION_H_ */
