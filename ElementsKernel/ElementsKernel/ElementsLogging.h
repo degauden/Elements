@@ -77,8 +77,8 @@ public:
 
 private:
 
-	static ElementsLogging::LoggingLevel s_loggingLevel;
-	static boost::filesystem::path s_logFileName;
+	static ElementsLogging::LoggingLevel s_logging_level;
+	static boost::filesystem::path s_log_file_name;
 
 	static std::unique_ptr<ElementsLogging> s_instance;
 

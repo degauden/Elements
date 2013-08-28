@@ -76,8 +76,8 @@ public:
     /**
      * Document all program options specific to this program
      */
-    po::options_description configFileOptions("Configuration options");
-    configFileOptions.add_options()
+    po::options_description config_file_options("Configuration options");
+    config_file_options.add_options()
     // A example string option
     ("string-value", po::value<string>()->default_value(string { }),
         "A string option")
@@ -100,7 +100,7 @@ public:
         po::value<vector<double>>()->multitoken()->default_value(
             vector<double> { }, "Empty"), "A double vector");
 
-    return configFileOptions;
+    return config_file_options;
   }
 
   /**
@@ -125,21 +125,21 @@ public:
     logger.info("#");
 
     // Get the map with all program options
-    const po::variables_map variableMap = this->getVariablesMap();
+    const po::variables_map variables_map = this->getVariablesMap();
 
     // Retrieve values from the po::variables_map
-    string stringValue = variableMap["string-value"].as<string>();
-    int64_t longLongValue = variableMap["long-long-value"].as<int64_t>();
-    double doubleValue = variableMap["double-value"].as<double>();
-    vector<int> intVector = variableMap["int-vector"].as<vector<int>>();
-    vector<string> stringVector =
-        variableMap["string-vector"].as<vector<string>>();
+    string string_value = variables_map["string-value"].as<string>();
+    int64_t long_long_value = variables_map["long-long-value"].as<int64_t>();
+    double double_value = variables_map["double-value"].as<double>();
+    vector<int> int_vector = variables_map["int-vector"].as<vector<int>>();
+    vector<string> string_vector =
+        variables_map["string-vector"].as<vector<string>>();
 
     // creating an instance of ClassExample for later use
-    int64_t sourceId = longLongValue;
+    int64_t source_id = long_long_value;
     double ra = 121.123;
-    double dec = doubleValue;
-    ClassExample classExample { sourceId, ra, dec };
+    double dec = double_value;
+    ClassExample classExample { source_id, ra, dec };
 
     try {
 
@@ -148,8 +148,8 @@ public:
       logger.info("#    Calling the summingAndDividing of the ClassExample ");
       logger.info("#");
       // Cast the longLongValue just to get a double to feed the doSomething
-      double aDouble = static_cast<double>(longLongValue);
-      classExample.summingAndDividing(aDouble, doubleValue);
+      double a_double = static_cast<double>(long_long_value);
+      classExample.summingAndDividing(a_double, double_value);
 
     } catch (const ElementsException & e) {
       logger.info("#");
