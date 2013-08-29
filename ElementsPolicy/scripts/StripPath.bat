@@ -1,10 +1,10 @@
 @echo off
 
-if not "%GAUDI_NO_STRIP_PATH%" == "" goto :eof
+if not "%ELEMENTS_NO_STRIP_PATH%" == "" goto :eof
 
 set tmpfile="%TEMP%\StripPath_tmpsetup.bat"
 
-python %GAUDIPOLICYROOT%\scripts\PathStripper.py --shell=bat --output=%tmpfile% -e PATH -e PYTHONPATH -e JOBOPTSEARCHPATH -e HPATH
+python %ELEMENTSPOLICYROOT%\scripts\PathStripper.py --shell=bat --output=%tmpfile% -e PATH -e PYTHONPATH -e ELEMENTS_AUX_PATH -e ELEMENTS_CONF_PATH -e HPATH
 
 call %tmpfile%
 
