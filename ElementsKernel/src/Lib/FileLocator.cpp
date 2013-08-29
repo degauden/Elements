@@ -176,7 +176,14 @@ fs::path searchConfFileInPathVariable(string fileName,
       configurationExtension).string() };
 
   // get the path from the environment variable
-  string composedPath = getenv(pathConfEnvVariable.c_str());
+  char * composedPath_ptr = getenv(pathConfEnvVariable.c_str());
+  if (composedPath_ptr == nullptr) {
+    stringstream errorBuffer;
+    errorBuffer << "Enviroment variable: " << pathConfEnvVariable.c_str()
+        << " is not defined ! ";
+    throw ElementsException(errorBuffer.str());
+  }
+  string composedPath = composedPath_ptr;
 
   // Tokenize the path elements
   vector<string> pathElements;
