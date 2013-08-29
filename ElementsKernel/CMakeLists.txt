@@ -11,9 +11,9 @@ elements_add_library(ElementsKernel src/Lib/*.cpp
 
 #---Tests-------------------------------------------------------------------
 elements_add_unit_test(test_DirSearchPath tests/src/test_DirSearchPath.cpp
-                       LINK_LIBRARIES ElementsKernel TYPE CppUnit)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(test_PathResolver tests/src/test_PathResolver.cpp
-                       LINK_LIBRARIES ElementsKernel TYPE CppUnit)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(test_ElementsTime tests/src/test_ElementsTime.cpp tests/src/test_CppUnitMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE CppUnit)
 elements_add_unit_test(test_ElementsTiming tests/src/test_ElementsTiming.cpp tests/src/test_CppUnitMain.cpp
