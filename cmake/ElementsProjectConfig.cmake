@@ -326,12 +326,12 @@ macro(elements_project project version)
     
     if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/conf)
       set(project_build_environment ${project_build_environment}
-          PREPEND ELEMENT_CONF_PATH \${${_proj}_PROJECT_ROOT}/${package}/conf)
+          PREPEND ELEMENTS_CONF_PATH \${${_proj}_PROJECT_ROOT}/${package}/conf)
     endif()
 
     if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/aux)
       set(project_build_environment ${project_build_environment}
-          PREPEND ELEMENT_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/aux)
+          PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/aux)
     endif()
 
     
