@@ -14,10 +14,10 @@ elements_add_unit_test(test_DirSearchPath tests/src/test_DirSearchPath.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(test_PathResolver tests/src/test_PathResolver.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(test_ElementsTime tests/src/test_ElementsTime.cpp tests/src/test_CppUnitMain.cpp
-                       LINK_LIBRARIES ElementsKernel TYPE CppUnit)
-elements_add_unit_test(test_ElementsTiming tests/src/test_ElementsTiming.cpp tests/src/test_CppUnitMain.cpp
-                       LINK_LIBRARIES ElementsKernel TYPE CppUnit)
+elements_add_unit_test(ElementsTime_test tests/src/ElementsTime_test.cpp tests/src/BoostTestMain.cpp
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+elements_add_unit_test(ElementsTiming_test tests/src/ElementsTiming_test.cpp tests/src/BoostTestMain.cpp
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(test_Memory tests/src/test_Memory.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(Real_test tests/src/Real_test.cpp tests/src/BoostTestMain.cpp
