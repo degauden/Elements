@@ -21,25 +21,19 @@
 #   https://github.com/wangd/SciDB-HDF5/blob/master/cmake/Modules/FindCfitsio.cmake
 #
 
-include(FindPackageHandleStandardArgs)
-
-# Look for includes and libraries
-
-find_path(CFITSIO_INCLUDE_DIR
-  NAMES fitsio.h
-  HINTS ${CFITSIO_ROOT_DIR}
-  PATH_SUFFIXES include include/cfitsio)
-
-find_library(CFITSIO_LIBRARY cfitsio
-  HINTS ${CFITSIO_ROOT_DIR}
-  PATH_SUFFIXES lib)
-
-find_package_handle_standard_args(CFITSIO DEFAULT_MSG
-  CFITSIO_INCLUDE_DIR CFITSIO_LIBRARY)
-
 if(NOT CFITSIO_FOUND)
-  message("Can't find cfitsio. You can specify a non-standard (e.g., from source) installation using CFITSIO_ROOT_DIR")
-endif(NOT CFITSIO_FOUND)
 
+  find_path(CFITSIO_INCLUDE_DIR fitsio.h PATH_SUFFIXES cfitsio)
 
-mark_as_advanced(CFITSIO_LIBRARY CFITSIO_INCLUDE_DIR)
+  find_library(CFITSIO_LIBRARIES NAMES cfitsio)
+
+  set(CFITSIO_INCLUDE_DIRS ${CFITSIO_INCLUDE_DIR})
+
+# handle the QUIETLY and REQUIRED arguments and set CFITSIO_FOUND to TRUE if
+# all listed variables are TRUE
+  INCLUDE(FindPackageHandleStandardArgs)
+  FIND_PACKAGE_HANDLE_STANDARD_ARGS(Cfitsio DEFAULT_MSG CFITSIO_INCLUDE_DIR CFITSIO_LIBRARIES)
+
+  mark_as_advanced(CFITSIO_FOUND CFITSIO_INCLUDE_DIR CFITSIO_LIBRARIES)
+
+endif()
