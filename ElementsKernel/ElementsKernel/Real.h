@@ -318,5 +318,56 @@ bool isEqual(const RawType& l, const RawType& r)
   return is_equal ;
 }
 
+template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
+bool isLess(const RawType& l, const RawType& r)
+{
+  bool is_less{false} ;
+
+  if ( l < r && (! isEqual<RawType,max_ulps>(l,r)) ) {
+    is_less = true ;
+  }
+
+  return is_less ;
+
+}
+
+template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
+bool isGreater(const RawType& l, const RawType& r)
+{
+  bool is_greater{false} ;
+
+  if ( l > r && (! isEqual<RawType,max_ulps>(l,r)) ) {
+    is_greater = true ;
+  }
+
+  return is_greater ;
+
+}
+
+template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
+bool isLessOrEqual(const RawType& l, const RawType& r)
+{
+  bool is_loe{false} ;
+
+  if (! isGreater<RawType,max_ulps>(l,r))  {
+    is_loe = true ;
+  }
+
+  return is_loe ;
+
+}
+
+template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
+bool isGreaterOrEqual(const RawType& l, const RawType& r)
+{
+  bool is_goe{false} ;
+
+  if (! isLess<RawType,max_ulps>(l,r))  {
+    is_goe = true ;
+  }
+
+  return is_goe ;
+
+}
 
 #endif /* REAL_H_ */
