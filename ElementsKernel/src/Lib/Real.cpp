@@ -13,7 +13,6 @@
 
 using namespace std;
 
-namespace Real {
 
 // Usable AlmostEqual function
 bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps)
@@ -64,4 +63,3 @@ bool almostEqual2sComplement(const double& a, const double& b, const int& max_ul
     return false;
 }
 
-}

@@ -43,24 +43,9 @@
 #include <cstddef>
 #include <limits>
 
-// This template class serves as a compile-time function from size to
-// type.  It maps a size in bytes to a primitive type with that
-// size. e.g.
-//
-//   TypeWithSize<4>::UInt
-//
-// is typedef-ed to be unsigned int (unsigned integer made up of 4
-// bytes).
-//
-// Such functionality should belong to STL, but I cannot find it
-// there.
-//
-// Google Test uses this class in the implementation of floating-point
-// comparison.
-//
-// For now it only handles UInt (unsigned int) as that's all Google Test
-// needs.  Other types can be easily added in the future if need
-// arises.
+static const size_t flt_default_max_ulps = 4 ;
+static const size_t dbl_default_max_ulps = 10 ;
+
 
 template<size_t size>
 class TypeWithSize {
@@ -89,6 +74,25 @@ public:
   typedef long long Int;  // NOLINT
   typedef unsigned long long UInt;  // NOLINT
 };
+
+template <typename RawType>
+constexpr size_t defaultMaxUlps()
+{
+  return flt_default_max_ulps ;
+}
+
+template <>
+constexpr size_t defaultMaxUlps<float>()
+{
+  return flt_default_max_ulps ;
+}
+
+template <>
+constexpr size_t defaultMaxUlps<double>()
+{
+  return dbl_default_max_ulps ;
+}
+
 
 // This template class represents an IEEE floating-point number
 // (either single-precision or double-precision, depending on the
@@ -129,22 +133,22 @@ public:
   // Constants.
 
   // # of bits in a number.
-  static const size_t m_bitcount = 8 * sizeof(RawType);
+  static const size_t s_bitcount = 8 * sizeof(RawType);
 
   // # of fraction bits in a number.
-  static const size_t m_fraction_bitcount = std::numeric_limits<RawType>::digits - 1;
+  static const size_t s_fraction_bitcount = std::numeric_limits<RawType>::digits - 1;
 
   // # of exponent bits in a number.
-  static const size_t m_exponent_bitcount = m_bitcount - 1 - m_fraction_bitcount;
+  static const size_t s_exponent_bitcount = s_bitcount - 1 - s_fraction_bitcount;
 
   // The mask for the sign bit.
-  static const Bits m_sign_bitmask = static_cast<Bits>(1) << (m_bitcount - 1);
+  static const Bits s_sign_bitmask = static_cast<Bits>(1) << (s_bitcount - 1);
 
   // The mask for the fraction bits.
-  static const Bits m_fraction_bitmask = ~static_cast<Bits>(0) >> (m_exponent_bitcount + 1);
+  static const Bits s_fraction_bitmask = ~static_cast<Bits>(0) >> (s_exponent_bitcount + 1);
 
   // The mask for the exponent bits.
-  static const Bits m_exponent_bitmask = ~(m_sign_bitmask | m_fraction_bitmask);
+  static const Bits s_exponent_bitmask = ~(s_sign_bitmask | s_fraction_bitmask);
 
   // How many ULP's (Units in the Last Place) we want to tolerate when
   // comparing two numbers.  The larger the value, the more error we
@@ -158,7 +162,7 @@ public:
   //
   // See the following article for more details on ULP:
   // http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm.
-  static const size_t m_max_ulps = 4;
+  static const size_t m_max_ulps = defaultMaxUlps<RawType>();
 
   // Constructs a FloatingPoint from a raw floating-point number.
   //
@@ -167,7 +171,7 @@ public:
   // to be also a NAN.  Therefore, don't expect this constructor to
   // preserve the bits in x when x is a NAN.
   explicit FloatingPoint(const RawType& x) {
-    m_u.value_ = x;
+    m_u.m_value = x;
   }
 
   // Static methods
@@ -175,44 +179,44 @@ public:
   // Reinterprets a bit pattern as a floating-point number.
   //
   // This function is needed to test the AlmostEquals() method.
-  static RawType ReinterpretBits(const Bits bits) {
+  static RawType ReinterpretBits(const Bits &bits) {
     FloatingPoint fp(0);
-    fp.m_u.bits_ = bits;
-    return fp.m_u.value_;
+    fp.m_u.m_bits = bits;
+    return fp.m_u.m_value;
   }
 
   // Returns the floating-point number that represent positive infinity.
   static RawType Infinity() {
-    return ReinterpretBits(m_exponent_bitmask);
+    return ReinterpretBits(s_exponent_bitmask);
   }
 
   // Non-static methods
 
   // Returns the bits that represents this number.
   const Bits &bits() const {
-    return m_u.bits_;
+    return m_u.m_bits;
   }
 
   // Returns the exponent bits of this number.
   Bits exponentBits() const {
-    return m_exponent_bitmask & m_u.bits_;
+    return s_exponent_bitmask & m_u.m_bits;
   }
 
   // Returns the fraction bits of this number.
   Bits fractionBits() const {
-    return m_fraction_bitmask & m_u.bits_;
+    return s_fraction_bitmask & m_u.m_bits;
   }
 
   // Returns the sign bit of this number.
   Bits signBit() const {
-    return m_sign_bitmask & m_u.bits_;
+    return s_sign_bitmask & m_u.m_bits;
   }
 
   // Returns true iff this is NAN (not a number).
   bool isNan() const {
     // It's a NAN if the exponent bits are all ones and the fraction
     // bits are not entirely zeros.
-    return (exponentBits() == m_exponent_bitmask) && (fractionBits() != 0);
+    return (exponentBits() == s_exponent_bitmask) && (fractionBits() != 0);
   }
 
   // Returns true iff this number is at most kMaxUlps ULP's away from
@@ -227,15 +231,8 @@ public:
     if (isNan() || rhs.isNan())
       return false;
 
-    return distanceBetweenSignAndMagnitudeNumbers(m_u.bits_, rhs.m_u.bits_) <= m_max_ulps;
+    return distanceBetweenSignAndMagnitudeNumbers(m_u.m_bits, rhs.m_u.m_bits) <= m_max_ulps;
   }
-
-private:
-  // The data type used to store the actual floating-point number.
-  union FloatingPointUnion {
-    RawType value_;  // The raw floating-point number.
-    Bits bits_;      // The bits that represent the number.
-  };
 
   // Converts an integer from the sign-and-magnitude representation to
   // the biased representation.  More precisely, let N be 2 to the
@@ -253,12 +250,12 @@ private:
   // Read http://en.wikipedia.org/wiki/Signed_number_representations
   // for more details on signed number representations.
   static Bits signAndMagnitudeToBiased(const Bits &sam) {
-    if (m_sign_bitmask & sam) {
+    if (s_sign_bitmask & sam) {
       // sam represents a negative number.
       return ~sam + 1;
     } else {
       // sam represents a positive number.
-      return m_sign_bitmask | sam;
+      return s_sign_bitmask | sam;
     }
   }
 
@@ -270,24 +267,56 @@ private:
     return (biased1 >= biased2) ? (biased1 - biased2) : (biased2 - biased1);
   }
 
+private:
+  // The data type used to store the actual floating-point number.
+  union FloatingPointUnion {
+    RawType m_value;  // The raw floating-point number.
+    Bits m_bits;      // The bits that represent the number.
+  };
+
   FloatingPointUnion m_u;
 };
 
-namespace Real {
+
+// Usable AlmostEqual function
+
+template <typename FloatType>
+bool almostEqual2sComplement(const FloatType& a, const FloatType& b, const size_t& max_ulps=0)
+{
+  return false ;
+}
+
+bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=flt_default_max_ulps);
+bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=dbl_default_max_ulps);
+
 
 template <typename RawType>
-bool almostEqual(const RawType& a, const RawType& b, const int& max_ulps=4)
+bool isNan(const RawType& x)
 {
-  bool is_equal(false);
+  typedef typename TypeWithSize<sizeof(RawType)>::UInt Bits;
+  Bits x_bits = *reinterpret_cast<const Bits *>(&x);
 
-  return is_equal;
+  Bits x_exp_bits = FloatingPoint<RawType>::s_exponent_bitmask & x_bits ;
+  Bits x_frac_bits = FloatingPoint<RawType>::s_fraction_bitmask & x_bits ;
+
+  return (x_exp_bits == FloatingPoint<RawType>::s_exponent_bitmask) && (x_frac_bits != 0) ;
+
+}
+
+template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
+bool isEqual(const RawType& l, const RawType& r)
+{
+  bool is_equal{false} ;
+
+  if ( ! (isNan<RawType>(l) || isNan<RawType>(r)) ) {
+    typedef typename TypeWithSize<sizeof(RawType)>::UInt Bits;
+    Bits l_bits = *reinterpret_cast<const Bits *>(&l);
+    Bits r_bits = *reinterpret_cast<const Bits *>(&r);
+    is_equal = (FloatingPoint<RawType>::distanceBetweenSignAndMagnitudeNumbers(l_bits, r_bits) <= max_ulps);
+  }
+
+  return is_equal ;
 }
 
 
-// Usable AlmostEqual function
-bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=4);
-bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=10);
-
-
-} // namespace Real
 #endif /* REAL_H_ */
