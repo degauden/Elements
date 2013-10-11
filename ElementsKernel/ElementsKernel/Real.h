@@ -318,6 +318,19 @@ bool isEqual(const RawType& l, const RawType& r)
   return is_equal ;
 }
 
+template <size_t max_ulps>
+inline bool isEqual(const float& l, const float& r)
+{
+  return (isEqual<float,max_ulps>(l,r)) ;
+}
+
+template <size_t max_ulps>
+inline bool isEqual(const double& l, const double& r)
+{
+  return (isEqual<double,max_ulps>(l,r)) ;
+}
+
+
 template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isLess(const RawType& l, const RawType& r)
 {
@@ -328,8 +341,21 @@ bool isLess(const RawType& l, const RawType& r)
   }
 
   return is_less ;
-
 }
+
+template<size_t max_ulps>
+inline bool isLess(const float& l, const float& r)
+{
+  return (isLess<float,max_ulps>(l,r)) ;
+}
+
+template<size_t max_ulps>
+inline bool isLess(const double& l, const double& r)
+{
+  return (isLess<double,max_ulps>(l,r)) ;
+}
+
+
 
 template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isGreater(const RawType& l, const RawType& r)
@@ -341,8 +367,21 @@ bool isGreater(const RawType& l, const RawType& r)
   }
 
   return is_greater ;
-
 }
+
+template<size_t max_ulps>
+inline bool isGreater(const float& l, const float& r)
+{
+  return (isGreater<float,max_ulps>(l,r)) ;
+}
+
+template<size_t max_ulps>
+inline bool isGreater(const double& l, const double& r)
+{
+  return (isGreater<double,max_ulps>(l,r)) ;
+}
+
+
 
 template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isLessOrEqual(const RawType& l, const RawType& r)
@@ -354,8 +393,22 @@ bool isLessOrEqual(const RawType& l, const RawType& r)
   }
 
   return is_loe ;
-
 }
+
+template<size_t max_ulps>
+inline bool isLessOrEqual(const float& l, const float& r)
+{
+  return (isLessOrEqual<float,max_ulps>(l,r)) ;
+}
+
+template<size_t max_ulps>
+inline bool isLessOrEqual(const double& l, const double& r)
+{
+  return (isLessOrEqual<double,max_ulps>(l,r)) ;
+}
+
+
+
 
 template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isGreaterOrEqual(const RawType& l, const RawType& r)
@@ -367,7 +420,20 @@ bool isGreaterOrEqual(const RawType& l, const RawType& r)
   }
 
   return is_goe ;
-
 }
+
+template<size_t max_ulps>
+inline bool isGreaterOrEqual(const float& l, const float& r)
+{
+  return (isGreaterOrEqual<float,max_ulps>(l,r)) ;
+}
+
+template<size_t max_ulps>
+inline bool isGreaterOrEqual(const double& l, const double& r)
+{
+  return (isGreaterOrEqual<double,max_ulps>(l,r)) ;
+}
+
+
 
 #endif /* REAL_H_ */
