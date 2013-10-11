@@ -332,6 +332,28 @@ inline bool isEqual(const double& l, const double& r)
 
 
 template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
+inline bool isNotEqual(const RawType& l, const RawType& r)
+{
+  return (! isEqual<RawType,max_ulps>(l,r) ) ;
+}
+
+template <size_t max_ulps>
+inline bool isNotEqual(const float& l, const float& r)
+{
+  return (isNotEqual<float,max_ulps>(l,r)) ;
+}
+
+template <size_t max_ulps>
+inline bool isNotEqual(const double& l, const double& r)
+{
+  return (isNotEqual<double,max_ulps>(l,r)) ;
+}
+
+
+
+
+
+template <typename RawType, size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isLess(const RawType& l, const RawType& r)
 {
   bool is_less{false} ;
