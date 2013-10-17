@@ -19,7 +19,7 @@
  * @param pathEnvVariable
  *   Name of an environment variable, which should have the format
  *   VAR=path1:path1:...:pathN
- * @param filePath
+ * @param file
  *   Boost path of a file, from which the filename will be extracted
  *   (extension will be replace by below extension)
  * @param extension
@@ -42,7 +42,7 @@ boost::filesystem::path searchFileInPath(std::string pathEnvVariable,
  *    it returns "ElementsKernel". Elements are split between "/". If the given path do not
  *    contain any "/" it return an empty path
  *
- * @param pathElement
+ * @param fileFullPath
  *    The path variable to be processed
  * @return
  *    The last segment of the path variable, or an empty path if there is no "/" in the variable.
@@ -114,7 +114,7 @@ boost::filesystem::path selectFileInVector(std::vector<boost::filesystem::path> 
  *    The directory path
  * @param searchedFileName
  *    The file name
- * @param
+ * @param prefixPath
  *    The name of the parent directory (or an empty string if this feature is not wanted
  * @return
  *    The full path of the searched file.
@@ -133,7 +133,7 @@ boost::filesystem::path searchConfFileRecursivelyInDir(std::string pathElement,
  *   extension is replaced by configurationExtension in any case)
  * @param pathPrefix
  *   The path of the parent directory containing the sought configuration file. By default this is not used.
- * @param extension
+ * @param configurationExtension
  *   Configuration file extension (defaulted to "conf")
  * @param pathConfEnvVariable
  *   Name of the configuration environment variable defaulted to "ELEMENTS_CONF_PATH".
