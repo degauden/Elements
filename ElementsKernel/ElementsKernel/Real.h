@@ -1,8 +1,19 @@
-/*
- * Real.h
+/**
+ *  @file Real.h
+ *  @brief Floating point comparison implementations
+ *  @author Hubert Degaudenzi
+ *  @date Jun 13, 2013
+ *  @details Due to the finite representation of the real numbers in the computing
+ *    architecture, the comparison between 2 floating point numbers needs to be
+ *    done carefully. In details, even if the representation bit-wise of 2
+ *    numbers is different, the real numbers they represent might be the same.
  *
- *  Created on: Jun 13, 2013
- *      Author: hubert
+ *    In essence, this is equivalent to compare the 2 numbers \f$x\f$ and \f$y\f$ with a
+ *    relative tolerance number \f$\epsilon\f$:
+ *    \f[
+ *    |x-y| \leq \epsilon |x+y|
+ *    \f]
+ *
  */
 
 // Copyright 2005, Google Inc.
@@ -286,7 +297,40 @@ bool almostEqual2sComplement(const FloatType& a, const FloatType& b, const size_
   return false ;
 }
 
+
+/**
+ * @brief
+ *   This function compare 2 floats with a relative tolerance
+ * @details
+ *   The comparison is performed by casting the floating point numbers into integers and then compare
+ *   their representation with a tolerance for their last bits.
+ * @param a
+ *   first float number
+ * @param b
+ *   second float number
+ * @param max_ulps
+ *   The relative tolerance is expressed as ULPS (units in the last place). They are unit in the last
+ *   place of the mantissa. And the recommended default value is 4 for single precision numbers.
+ * @return
+ *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
+ */
 bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=flt_default_max_ulps);
+/**
+ * @brief
+ *   This function compare 2 doubles with a relative tolerance
+ * @details
+ *   The comparison is performed by casting the floating point numbers into integers and then compare
+ *   their representation with a tolerance for their last bits.
+ * @param a
+ *   first double number
+ * @param
+ *   b second double number
+ * @param max_ulps
+ *   The relative tolerance is expressed as ULPS (units in the last place). They are unit in the last
+ *   place of the mantissa. And the recommended default value is 10 for double precision numbers.
+ * @return
+ *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
+ */
 bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=dbl_default_max_ulps);
 
 
