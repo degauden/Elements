@@ -8,7 +8,7 @@ using namespace Elements::System;
 
 int main(int /* argc */, char** /* argv */) {
   size_t kB = size_t(1024);
-  size_t nBytes = kB * kB * kB * size_t(5);
+  size_t nBytes = kB * kB * size_t(500);
   void* p = ::malloc(nBytes);
   if (!p) {
     cout << "Failed to allocate " << nBytes << " bytes of memory." << endl;
