@@ -103,6 +103,9 @@ $(lastword $(MAKEFILE_LIST)):
 	@ # do not delegate further
 
 # trigger CMake configuration
-$(BUILDDIR)/Makefile:
-	mkdir -p $(BUILDDIR)
+$(BUILDDIR)/Makefile: | $(BUILDDIR)
 	cd $(BUILDDIR) && $(CMAKE) $(CMAKEFLAGS) $(CURDIR)
+
+$(BUILDDIR):
+	mkdir -p $(BUILDDIR)
+	
