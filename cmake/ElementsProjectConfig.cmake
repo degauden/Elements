@@ -1921,11 +1921,11 @@ macro(elements_generate_project_platform_config_file)
 "# File automatically generated: DO NOT EDIT.
 
 # Get the exported informations about the targets
-get_filename_component(_dir "\${CMAKE_CURRENT_LIST_FILE}" PATH)
+get_filename_component(_dir " \${CMAKE_CURRENT_LIST_FILE} " PATH)
 #include(\${_dir}/${CMAKE_PROJECT_NAME}Exports.cmake)
 
 # Set useful properties
-get_filename_component(_dir "\${_dir}" PATH)
+get_filename_component(_dir " \${_dir} " PATH)
 set(${CMAKE_PROJECT_NAME}_INCLUDE_DIRS \${_dir}/include)
 set(${CMAKE_PROJECT_NAME}_LIBRARY_DIRS \${_dir}/lib)
 

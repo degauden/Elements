@@ -18,14 +18,12 @@ FIND_PATH(LOG4CPP_INCLUDE_DIR log4cpp/Category.hh
   PATHS
     "$ENV{LOG4CPP}/include"
     /usr/local/include
-    /opt/local/include
     /usr/include
 )
 
 FIND_LIBRARY(LOG4CPP_LIBRARIES log4cpp
   PATHS
     "$ENV{LOG4CPP}/lib"
-    /opt/local/lib
     /usr/local/lib
     /usr/lib
 )
