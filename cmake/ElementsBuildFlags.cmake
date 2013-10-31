@@ -10,22 +10,10 @@ endif()
 # Build options that map to compile time features
 #
 
-option(G21_HIDE_SYMBOLS
+option(ELEMENTS_HIDE_SYMBOLS
        "enable explicit symbol visibility on gcc-4"
        OFF)
-option(G21_NEW_INTERFACES
-       "disable backward-compatibility hacks in IInterface and InterfaceID"
-       OFF)
-option(G21_NO_ENDREQ
-       "disable the 'endreq' stream modifier (use 'endmsg' instead)"
-       OFF)
-option(G21_NO_DEPRECATED
-       "remove deprecated methods and functions"
-       OFF)
-option(G22_NEW_SVCLOCATOR
-       "use (only) the new interface of the ServiceLocator"
-       OFF)
-
+       
 option(ELEMENTS_CMT_RELEASE
        "use CMT deafult release flags instead of the CMake ones"
        ON)
@@ -163,7 +151,7 @@ if(APPLE)
 endif()
 
 #--- Special build flags -------------------------------------------------------
-if ((G21_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[0-9]"))
+if ((ELEMENTS_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[0-9]"))
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
 endif()
 
@@ -182,15 +170,10 @@ if ( ELEMENTS_CPP11 )
 endif()
 
 # special case
-if(G21_HIDE_SYMBOLS AND (comp MATCHES gcc4))
-  add_definitions(-DG21_HIDE_SYMBOLS)
+if(ELEMENTS_HIDE_SYMBOLS AND (comp MATCHES gcc4))
+  add_definitions(-DELEMENTS_HIDE_SYMBOLS)
 endif()
 #
-foreach (feature G21_NEW_INTERFACES G21_NO_ENDREQ G21_NO_DEPRECATED G22_NEW_SVCLOCATOR)
-  if (${feature})
-    add_definitions(-D${feature})
-  endif()
-endforeach()
 
 if (SGS_HOST_ARCH AND SGS_ARCH)
   if (SGS_HOST_ARCH STREQUAL x86_64 AND SGS_ARCH STREQUAL i686)

@@ -68,7 +68,7 @@ static const __ulonglong ULONGLONG_MIN = {0x00000000, 0x00000000};
 
 // ---------------------------------- Symbol visibility macros (begin)
 // Enabled on in Elements v21 mode
-#if defined(G21_HIDE_SYMBOLS)
+#if defined(ELEMENTS_HIDE_SYMBOLS)
 // These macros will allow selection on exported symbols
 // taken from http://gcc.gnu.org/wiki/Visibility
 #if __GNUC__ >= 4 && ! defined(__CINT__)
@@ -110,7 +110,7 @@ static const __ulonglong ULONGLONG_MIN = {0x00000000, 0x00000000};
 #define ELEMENTS_IMPORT
 #define ELEMENTS_EXPORT
 #define ELEMENTS_LOCAL
-#endif // defined(G21_HIDE_SYMBOLS)
+#endif // defined(ELEMENTS_HIDE_SYMBOLS)
 // ---------------------------------- Symbol visibility macros (end)
 
 // -------------- LIKELY/UNLIKELY macros (begin)
