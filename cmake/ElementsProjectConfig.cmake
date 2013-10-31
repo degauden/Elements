@@ -487,8 +487,10 @@ macro(_elements_use_other_projects)
       string(REGEX MATCH "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+))?" _version ${other_project_version})
 
       set(other_project_cmake_version ${CMAKE_MATCH_1}.${CMAKE_MATCH_2})
-      if(NOT CMAKE_MATCH_4 STREQUAL "")
-        set(other_project_cmake_version ${other_project_cmake_version}.${CMAKE_MATCH_4})
+      if(DEFINED CMAKE_MATCH_4)
+        if(NOT CMAKE_MATCH_4 STREQUAL "")
+          set(other_project_cmake_version ${other_project_cmake_version}.${CMAKE_MATCH_4})
+        endif()
       endif()
     else()
       # "HEAD" is a special version id (mapped to v999r999).
