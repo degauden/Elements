@@ -54,6 +54,8 @@
 #include <cstddef>
 #include <limits>
 
+#include "ElementsKernel/Kernel.h"
+
 static const size_t flt_default_max_ulps = 4 ;
 static const size_t dbl_default_max_ulps = 10 ;
 
@@ -314,7 +316,7 @@ bool almostEqual2sComplement(const FloatType& a, const FloatType& b, const size_
  * @return
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
-bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=flt_default_max_ulps);
+ELEMENTS_API bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=flt_default_max_ulps);
 /**
  * @brief
  *   This function compare 2 doubles with a relative tolerance
@@ -331,7 +333,7 @@ bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps
  * @return
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
-bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=dbl_default_max_ulps);
+ELEMENTS_API bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=dbl_default_max_ulps);
 
 
 template <typename RawType>

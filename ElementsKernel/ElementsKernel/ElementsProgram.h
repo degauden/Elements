@@ -11,6 +11,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Kernel.h"
 
 /**
  * Macro which must be used to create a main in classes
@@ -52,7 +53,7 @@ public:
    * @param argv
    *   Command line arguments
    */
-  void run(int argc, char* argv[]);
+  ELEMENTS_API void run(int argc, char* argv[]);
 
 protected:
 

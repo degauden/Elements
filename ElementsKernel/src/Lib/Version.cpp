@@ -9,6 +9,8 @@
 #include <boost/utility.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include "ElementsKernel/Version.h"
+
 using namespace std;
 
 std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId) {

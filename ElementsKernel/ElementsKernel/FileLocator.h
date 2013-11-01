@@ -11,6 +11,8 @@
 #include <string>
 #include "boost/filesystem.hpp"
 #include <boost/regex.hpp>
+#include "ElementsKernel/Kernel.h"
+
 
 /**
  * @brief searchFileInEnvVariable
@@ -27,7 +29,7 @@
  * @return
  *   Full path to the file found or empty string, if not found
  */
-boost::filesystem::path searchFileInPath(std::string pathEnvVariable,
+ELEMENTS_API boost::filesystem::path searchFileInPath(std::string pathEnvVariable,
     boost::filesystem::path file, std::string extension);
 
 /**
@@ -47,7 +49,7 @@ boost::filesystem::path searchFileInPath(std::string pathEnvVariable,
  * @return
  *    The last segment of the path variable, or an empty path if there is no "/" in the variable.
  */
-boost::filesystem::path getPathLastSegment(boost::filesystem::path fileFullPath);
+ELEMENTS_API boost::filesystem::path getPathLastSegment(boost::filesystem::path fileFullPath);
 
 /**
  * @brief
@@ -62,7 +64,7 @@ boost::filesystem::path getPathLastSegment(boost::filesystem::path fileFullPath)
  * @return
  *    A vector of full path of the one (or many) detected file(s)
  */
-std::vector<boost::filesystem::path> searchFileRecursivelyInDir(std::string directoryName,
+ELEMENTS_API std::vector<boost::filesystem::path> searchFileRecursivelyInDir(std::string directoryName,
     std::string searchedFileName);
 
 /**
@@ -85,7 +87,7 @@ std::vector<boost::filesystem::path> searchFileRecursivelyInDir(std::string dire
  * @return
  *    A vector with all file full paths whose last element match the prefix
  */
-std::vector<boost::filesystem::path> checkPathPrefix(std::vector<boost::filesystem::path> fileFullPaths,
+ELEMENTS_API std::vector<boost::filesystem::path> checkPathPrefix(std::vector<boost::filesystem::path> fileFullPaths,
     std::string prefix);
 
 /**
@@ -103,7 +105,7 @@ std::vector<boost::filesystem::path> checkPathPrefix(std::vector<boost::filesyst
 * @throws ElementsException
  *   If the vector of file contains more than one element
   */
-boost::filesystem::path selectFileInVector(std::vector<boost::filesystem::path> checkedFiles);
+ELEMENTS_API boost::filesystem::path selectFileInVector(std::vector<boost::filesystem::path> checkedFiles);
 
 
 
@@ -121,7 +123,7 @@ boost::filesystem::path selectFileInVector(std::vector<boost::filesystem::path> 
  * @throws ElementsException
  *   If the configuration file is found more than once in a given directory/sun-directories.
  */
-boost::filesystem::path searchConfFileRecursivelyInDir(std::string pathElement,
+ELEMENTS_API boost::filesystem::path searchConfFileRecursivelyInDir(std::string pathElement,
     boost::regex searchedFileName, boost::filesystem::path prefixPath) noexcept;
 
 /**
@@ -143,7 +145,7 @@ boost::filesystem::path searchConfFileRecursivelyInDir(std::string pathElement,
  * @throws ElementsException
  *   If the configuration file is found more than once in a given directory/sun-directories.
  */
-boost::filesystem::path searchConfFileInPathVariable(
+ELEMENTS_API boost::filesystem::path searchConfFileInPathVariable(
     std::string fileName, std::string pathPrefix = "",
     std::string configurationExtension = ".conf",
     std::string pathConfEnvVariable = "ELEMENTS_CONF_PATH");

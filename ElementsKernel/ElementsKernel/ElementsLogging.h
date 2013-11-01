@@ -15,6 +15,8 @@
 
 #include "log4cpp/Category.hh"
 
+#include "ElementsKernel/Kernel.h"
+
 /**
  * This is a singleton logger class which provide a unique logger throughout a program
  */
@@ -31,7 +33,7 @@ public:
 		DEBUG = 500
 	} LoggingLevel;
 
-	static ElementsLogging& getLogger();
+	ELEMENTS_API static ElementsLogging& getLogger();
 
 	static void setupLogger(ElementsLogging::LoggingLevel loggingLevel, boost::filesystem::path logFileName);
 

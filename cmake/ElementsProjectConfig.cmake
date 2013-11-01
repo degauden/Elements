@@ -1405,6 +1405,9 @@ function(elements_add_library library)
   set_property(GLOBAL APPEND PROPERTY LINKER_LIBRARIES ${library})
 
   elements_add_genheader_dependencies(${library})
+  if(ELEMENTS_HIDE_SYMBOLS)
+    generate_export_header(${library} EXPORT_FILE_NAME ${library}Export.h)
+  endif()
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION lib OPTIONAL)

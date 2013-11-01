@@ -8,6 +8,8 @@
 #ifndef VERSION_H_
 #define VERSION_H_
 
+#include "ElementsKernel/Kernel.h"
+
 /**
  * @brief
  *    Function returning a version string extracted from SVN keywords
@@ -29,7 +31,7 @@
  *
  * @return
  */
-std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId);
+ELEMENTS_API std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId);
 
 
 #endif /* VERSION_H_ */
