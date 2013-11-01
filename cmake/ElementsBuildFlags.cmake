@@ -12,7 +12,7 @@ endif()
 
 option(ELEMENTS_HIDE_SYMBOLS
        "enable explicit symbol visibility on gcc-4"
-       ON)
+       OFF)
        
 option(ELEMENTS_CMT_RELEASE
        "use CMT deafult release flags instead of the CMake ones"
@@ -152,7 +152,7 @@ endif()
 
 #--- Special build flags -------------------------------------------------------
 if ((ELEMENTS_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[0-9]"))
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+  add_compiler_export_flags()
 endif()
 
 if(USE_ODB)
