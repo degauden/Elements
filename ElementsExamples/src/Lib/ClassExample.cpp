@@ -10,11 +10,6 @@
 #include "ElementsKernel/ElementsException.h"
 
 
-// Default desctructor
-ClassExample::~ClassExample() {
-  // destructor code if any
-}
-
 std::string ClassExample::s_static_string = "This is a static field example";
 
 void ClassExample::summingAndDividing(double first, double second) {

@@ -9,6 +9,8 @@
 #define CLASSEXAMPLE_H_
 
 #include<string>
+#include "ElementsKernel/Kernel.h"
+
 
 /**
  * @class ClassExample
@@ -25,7 +27,7 @@ public:
   /**
    * @brief Constructor
    */
-  ClassExample(int64_t source_id, double ra, double dec) :
+  ELEMENTS_API ClassExample(int64_t source_id, double ra, double dec) :
       m_source_id(source_id), m_ra(ra), m_dec(dec) {
     m_result = 0.0;
   }
@@ -33,7 +35,7 @@ public:
   /**
    * @brief Destructor
    */
-  virtual ~ClassExample();
+  ELEMENTS_API virtual ~ClassExample() {};
 
   /**
    * @brief
@@ -54,7 +56,7 @@ public:
    * @return
    *    The sum of the two values
    */
-  double computeSum(double first, double second) const noexcept;
+  ELEMENTS_API double computeSum(double first, double second) const noexcept;
 
   /**
    * @brief
@@ -72,7 +74,7 @@ public:
    * @throws
    *   EuclidException, if the second number is (close to) zero
    */
-  double divideNumbers(double first, double second) const;
+  ELEMENTS_API double divideNumbers(double first, double second) const;
 
   /**
    * @brief
@@ -92,12 +94,12 @@ public:
    * @throws
    *   EuclidException, if the second number is (close to) zero
    */
-  void summingAndDividing(double first, double second);
+  ELEMENTS_API void summingAndDividing(double first, double second);
 
   /*
    * Getter to access the static private string
    */
-  static const std::string& getStaticString() {
+  ELEMENTS_API static const std::string& getStaticString() {
     return s_static_string;
   }
 
@@ -128,7 +130,7 @@ public:
 private:
 
   /// An example of a static string
-  static std::string s_static_string;
+  ELEMENTS_API static std::string s_static_string;
 
   /// Source ID as an example of a long private member
   int64_t m_source_id { 0 };
