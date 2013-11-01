@@ -1,5 +1,5 @@
 # Special defaults
-if ("${SGS_COMP}${SGS_COMPVERS}" STREQUAL "gcc47" OR "${SGS_COMP}${SGS_COMPVERS}" STREQUAL "gcc48")
+if (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[7-9]")
   # C++11 is enable by default on gcc47 and gcc48
   set(ELEMENTS_CPP11_DEFAULT ON)
 else()
@@ -12,7 +12,7 @@ endif()
 
 option(ELEMENTS_HIDE_SYMBOLS
        "enable explicit symbol visibility on gcc-4"
-       OFF)
+       ON)
        
 option(ELEMENTS_CMT_RELEASE
        "use CMT deafult release flags instead of the CMake ones"
