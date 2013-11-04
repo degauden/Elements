@@ -23,5 +23,6 @@
 
 #include "ElementsKernel/Export.h"
 #include "ElementsKernel/Likely.h"
+#include "ElementsKernel/Deprecated.h"
 
 #endif  // ELEMENTSKERNEL_KERNEL_H
