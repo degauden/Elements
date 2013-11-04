@@ -11,7 +11,7 @@
 #include <string>
 #include "boost/filesystem.hpp"
 #include <boost/regex.hpp>
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 
 
 /**

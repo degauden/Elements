@@ -9,7 +9,7 @@
 #define CLASSEXAMPLE_H_
 
 #include<string>
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h"
 
 
 /**

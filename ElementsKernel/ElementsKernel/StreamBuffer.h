@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <typeinfo>
 
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Kernel.h" // ELEMENTS_API
 #include "ElementsKernel/swab.h"
 
 // forward declarations

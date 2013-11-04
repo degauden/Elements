@@ -2,7 +2,7 @@
 #define ELEMENTSKERNEL_SYSTEM_H
 
 // Framework include files
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 // STL include files
 #include <string>
 #include <vector>

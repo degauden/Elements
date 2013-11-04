@@ -54,7 +54,7 @@
 #include <cstddef>
 #include <limits>
 
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 
 static const size_t flt_default_max_ulps = 4 ;
 static const size_t dbl_default_max_ulps = 10 ;

@@ -15,7 +15,7 @@
 
 #include "log4cpp/Category.hh"
 
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 
 /**
  * This is a singleton logger class which provide a unique logger throughout a program

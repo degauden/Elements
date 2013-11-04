@@ -2,7 +2,7 @@
 #define ELEMENTSKERNEL_PATHRESOLVER_H
 
 #include <string>
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 
 namespace Elements {
 namespace System {

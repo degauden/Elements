@@ -10,7 +10,7 @@
 #include <string>
 #include "boost/filesystem/path.hpp"
 #include "boost/filesystem/exception.hpp" /*filesystem_error*/
-#include "ElementsKernel/Kernel.h" /* ELEMENTS_API */
+#include "ElementsKernel/Export.h" /* ELEMENTS_API */
 /** @class DirSearchPath
  * @brief search for files in a list of directories
  * @author Paolo Calafiura <pcalafiura@lbl.gov> - ATLAS Collaboration

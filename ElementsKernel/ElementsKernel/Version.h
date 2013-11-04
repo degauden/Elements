@@ -8,7 +8,7 @@
 #ifndef VERSION_H_
 #define VERSION_H_
 
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 
 /**
  * @brief
