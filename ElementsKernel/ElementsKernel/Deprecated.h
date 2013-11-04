@@ -8,15 +8,14 @@
 #ifndef ELEMENTSKERNEL_DEPRECATED_H_
 #define ELEMENTSKERNEL_DEPRECATED_H_
 
-
-#ifndef ELEMENTS_DEPRECATED
-#  define ELEMENTS_DEPRECATED __attribute__ ((__deprecated__))
+#if __GNUC__ >= 4
+#  ifndef ELEMENTS_DEPRECATED
+#    define ELEMENTS_DEPRECATED __attribute__ ((__deprecated__))
+#  endif
+#  ifndef ELEMENTS_DEPRECATED_MSG
+#    define ELEMENTS_DEPRECATED_MSG(msg)  __attribute__ ((__deprecated__(msg)))
+#  endif
 #endif
-
-#ifndef ELEMENTS_DEPRECATED_MSG
-#  define ELEMENTS_DEPRECATED_MSG(msg)  __attribute__ ((__deprecated__(msg)))
-#endif
-
 
 
 #endif /* DEPRECATED_H_ */
