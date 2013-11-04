@@ -11,7 +11,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include "ElementsKernel/ElementsLogging.h"
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 
 /**
  * Macro which must be used to create a main in classes

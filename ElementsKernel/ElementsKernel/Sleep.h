@@ -2,7 +2,7 @@
 #define ELEMENTSKERNEL_SLEEP_H_
 
 #include <cstdint>
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 
 namespace Elements {
 

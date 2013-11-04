@@ -5,7 +5,7 @@
 #include <ostream>
 #include <cstdint>
 
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "boost/shared_ptr.hpp"
 
 /**

@@ -4,7 +4,7 @@
 
 // Include files
 //   for the architecture independent int64 definition (longlong)
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "ElementsKernel/StreamBuffer.h"
 #include "ElementsKernel/ElementsException.h"
 

@@ -2,7 +2,7 @@
 #define ELEMENTSKERNEL_MEMORY_H
 
 // Framework include files
-#include "ElementsKernel/Kernel.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "ElementsKernel/SystemBase.h"
 
 /** Note: OS specific details for memory usage
