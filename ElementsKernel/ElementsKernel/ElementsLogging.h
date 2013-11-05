@@ -10,7 +10,7 @@
 
 #include <cstdarg>
 #include <memory>
-#include <mutex>
+//#include <mutex>
 #include <boost/filesystem.hpp>
 
 #include "log4cpp/Category.hh"
