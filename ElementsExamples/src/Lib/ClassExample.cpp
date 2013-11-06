@@ -5,6 +5,9 @@
  *     Author: Pierre Dubath
  */
 
+#include <cmath>
+
+
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/ElementsLogging.h"
 #include "ElementsKernel/ElementsException.h"
