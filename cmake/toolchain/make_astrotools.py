@@ -134,6 +134,7 @@ SGS_prepare_paths()"""
                          ("gcc47", "gcc", "4.7.2"),
                          ("gcc48", "gcc", "4.8.1"),
                          ("clang30", "clang", "3.0"),
+                         ("clang33", "clang", "3.3"),
                          ("gccmax", "gcc", "4.7.2")]:
             yield "SGS_compiler(%s %s %s)" % compiler
 

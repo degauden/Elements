@@ -1,5 +1,19 @@
+
+if(SGS_COMP STREQUAL "clang")
+  find_package(Clang)
+  SET (CMAKE_C_COMPILER    "${CLANG_C_COMPILER}")
+  SET (CMAKE_CXX_COMPILER  "${CLANG_CXX_COMPILER}")
+  SET (CMAKE_AR            "${LLVM_AR}")
+  SET (CMAKE_LINKER        "${LLVM_LINKER}")
+  SET (CMAKE_NM            "${LLVM_NM}")
+  SET (CMAKE_OBJDUMP       "${LLVM_OBJDUMP}")
+  SET (CMAKE_RANLIB        "${LLVM_RANLIB}")
+endif()
+  
+
 # Special defaults
-if (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[7-9]")
+if ( (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[7-9]")
+    OR (SGS_COMP STREQUAL clang AND SGS_COMPVERS MATCHES "3[0-3]") )
   # C++11 is enable by default on gcc47 and gcc48
   set(ELEMENTS_CPP11_DEFAULT ON)
 else()
