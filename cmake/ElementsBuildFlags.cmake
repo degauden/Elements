@@ -209,6 +209,11 @@ if(ELEMENTS_HIDE_WARNINGS)
   endif()
 endif()
 
+if(SGS_COMP STREQUAL "clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
+endif()
+
 #--- Special flags -------------------------------------------------------------
 add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 
