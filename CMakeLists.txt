@@ -16,4 +16,4 @@ elements_project(Elements 1.2)
 
 # This test does not really fit in a subdirectory.
 elements_add_test(cmake.EnvConfigTests
-               COMMAND nosetests ${CMAKE_SOURCE_DIR}/cmake/EnvConfig)
+                  COMMAND nosetests ${CMAKE_SOURCE_DIR}/cmake/EnvConfig)
