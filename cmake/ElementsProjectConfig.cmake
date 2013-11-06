@@ -78,7 +78,7 @@ endif()
 # Programs and utilities needed for the build
 #---------------------------------------------------------------------------------------------------
 include(CMakeParseArguments)
-include(GenerateExportHeader)
+#include(GenerateExportHeader)
 
 find_package(PythonInterp)
 
