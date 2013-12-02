@@ -87,12 +87,12 @@ static unsigned long doLoad(const string& name, Elements::System::ImageHandle* h
 static unsigned long loadWithoutEnvironment(const string& name, Elements::System::ImageHandle* handle)    {
 
   string dllName = name;
-  long len = strlen(SHLIB_SUFFIX);
+  unsigned long len = static_cast<unsigned long>(strlen(SHLIB_SUFFIX));
 
   // Add the suffix at the end of the library name only if necessary
   // FIXME: cure the logic
   if ((dllName.length() != 0) &&
-      ::strncasecmp(dllName.data()+dllName.length()-len, SHLIB_SUFFIX, len) != 0) {
+      ::strncasecmp(static_cast<const char *>(dllName.data()+dllName.length()-len), SHLIB_SUFFIX, len) != 0) {
     dllName += SHLIB_SUFFIX;
   }
 
@@ -207,7 +207,6 @@ const string Elements::System::getLastErrorString()    {
 
 /// Retrieve error code as string for a given error
 const string Elements::System::getErrorString(unsigned long error)    {
-  string errString =  "";
 #ifdef _WIN32
   LPVOID lpMessageBuffer;
   ::FormatMessage(
@@ -222,6 +221,7 @@ const string Elements::System::getErrorString(unsigned long error)    {
   // Free the buffer allocated by the system
   ::LocalFree( lpMessageBuffer );
 #else
+  string errString =  "";
   char *cerrString(0);
   // Remember: for linux dl* routines must be handled differently!
   if ( error == 0xAFFEDEAD ) {
