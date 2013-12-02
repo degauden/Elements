@@ -653,8 +653,7 @@ inline void StreamBuffer::swapFromBuffer(void* target, int siz) {
 template<class T> inline StreamBuffer& operator <<(StreamBuffer& s,
     const std::vector<T>& v) {
   s << v.size();
-  for (typename std::vector<T>::const_iterator i = v.begin(); i != v.end();
-      i++) {
+  for (typename std::vector<T>::const_iterator i = v.begin(); i != v.end(); ++i) {
     s << (*i);
   }
   return s;
@@ -678,7 +677,7 @@ template<class T> inline StreamBuffer& operator >>(StreamBuffer& s,
 template<class T> inline StreamBuffer& operator <<(StreamBuffer& s,
     const std::list<T>& l) {
   s << l.size();
-  for (typename std::list<T>::const_iterator i = l.begin(); i != l.end(); i++) {
+  for (typename std::list<T>::const_iterator i = l.begin(); i != l.end(); ++i) {
     s << (*i);
   }
   return s;
