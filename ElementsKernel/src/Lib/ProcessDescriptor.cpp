@@ -529,8 +529,8 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     close(fd);
     if (nread < bufsize && nread >= 0)
       buf[nread] = '\0';
-    fd = sscanf(buf, "%ld %ld %ld %ld %ld %ld %ld", &size, &resident, &share,
-        &trs, &drs, &lrs, &dt);
+    sscanf(buf, "%ld %ld %ld %ld %ld %ld %ld", &size, &resident, &share,
+                                               &trs, &drs, &lrs, &dt);
     linux_proc prc;
     readProcStat(processID(pid), prc);
     vb->PeakVirtualSize = prc.vsize;
