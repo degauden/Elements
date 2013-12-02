@@ -110,9 +110,9 @@ inline TimeSpan::TimeSpan(ValueType secs, int nsecs) :
  @param mins  Whole minutes.
  @param secs  Whole seconds.
  @param nsecs Nanoseconds.  */
-inline TimeSpan::TimeSpan(int days, int hours, int mins, int secs, int nsecs) {
-  m_nsecs = (secs + 60 * (mins + 60 * (hours + 24 * days))) * Time::SEC_NSECS
-      + nsecs;
+inline TimeSpan::TimeSpan(int days, int hours, int mins, int secs, int nsecs) 
+                         : m_nsecs((secs + 60 * (mins + 60 * (hours + 24 * days))) * Time::SEC_NSECS + nsecs)
+{
 }
 
 /** Get the number of complete days in the span.  */
