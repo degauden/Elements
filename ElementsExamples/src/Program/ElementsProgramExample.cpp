@@ -135,8 +135,7 @@ public:
     // cppcheck-suppress unreadVariable
     vector<int> int_vector = variables_map["int-vector"].as<vector<int>>();
     // cppcheck-suppress unreadVariable
-    vector<string> string_vector =
-        variables_map["string-vector"].as<vector<string>>();
+    vector<string> string_vector = variables_map["string-vector"].as<vector<string>>();
 
     // creating an instance of ClassExample for later use
     int64_t source_id = long_long_value;
