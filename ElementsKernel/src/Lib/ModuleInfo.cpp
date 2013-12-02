@@ -52,7 +52,7 @@ const string& Elements::System::moduleName()   {
 #elif defined(linux) || defined(__APPLE__)
       string mod = ::basename((char*)((Dl_info*)moduleHandle())->dli_fname);
 #endif
-      module = mod.substr(0, mod.rfind('.'));
+      module = mod.substr(static_cast<string::size_type>(0), mod.rfind('.'));
     }
   }
   return module;

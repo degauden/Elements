@@ -72,11 +72,11 @@ static unsigned long doLoad(const string& name, Elements::System::ImageHandle* h
   void* mh = ::LoadLibrary( name.length() == 0 ? Elements::System::exeName().c_str() : name.c_str());
   *handle = mh;
 #else
-  const char* path = name.c_str();
-#if defined(linux) || defined(__APPLE__)
-  void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
-  *handle = mh;
-#endif
+# if defined(linux) || defined(__APPLE__)
+   const char* path = name.c_str();
+   void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
+   *handle = mh;
+# endif
 #endif
   if ( 0 == *handle )   {
     return Elements::System::getLastError();
