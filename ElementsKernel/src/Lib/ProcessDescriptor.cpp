@@ -2,8 +2,6 @@
 
 static const long TICK_TO_100NSEC = 100000;
 
-using namespace std;
-
 namespace Elements {
 namespace System {
 enum ProcessInfoCommand {
@@ -79,6 +77,8 @@ namespace NtApi {
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <cstdio>
+
+//using nameespace std;
 
 /* Format of the Linux proc/stat (man 5 proc, kernel 2.6.35):
  pid %d      The process ID.
@@ -295,18 +295,18 @@ void readProcStat(long pid, linux_proc& pinfo) {
   int cnt, fd;
   char buf[512];
 
-  ostringstream ost;
+  std::ostringstream ost;
 
   ost << "/proc/" << pid << "/stat";
-  string fname = ost.str();
+  std::string fname = ost.str();
   if ((fd = open(fname.c_str(), O_RDONLY)) < 0) {
-    cerr << "Failed to open " << ost.str() << endl;
+    std::cerr << "Failed to open " << ost.str() << std::endl;
     return;
   }
 
   lseek(fd, 0, SEEK_SET);
   if ((cnt = read(fd, buf, sizeof(buf))) < 0) {
-    cout << "LINUX Read of Proc file failed:" << endl;
+    std::cout << "LINUX Read of Proc file failed:" << std::endl;
     close(fd);
     return;
   }

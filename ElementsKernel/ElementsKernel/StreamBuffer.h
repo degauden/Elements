@@ -512,7 +512,7 @@ public:
     long i, len;
     *this >> len;
     for (i = 0, data = ""; i < len; i++) {
-      data.append(1, m_buffer[m_pointer++]);
+      data.append(static_cast<std::string::size_type>(1), m_buffer[m_pointer++]);
     }
     return *this;
   }

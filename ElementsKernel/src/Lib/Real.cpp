@@ -17,10 +17,6 @@ using namespace std;
 // Usable AlmostEqual function
 bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps)
 {
-    // Make sure max_ulps is non-negative and small enough that the
-    // default NAN won't compare as equal to anything.
-    assert(max_ulps > 0 && max_ulps < 4 * 1024 * 1024);
-
 //    int a_int = *(int*)&a;
     // cppcheck-suppress invalidPointerCast
     int a_int = *reinterpret_cast<const int *>(&a);
@@ -42,10 +38,6 @@ bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps
 
 bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps)
 {
-    // Make sure max_ulps is non-negative and small enough that the
-    // default NAN won't compare as equal to anything.
-    assert(max_ulps > 0 && max_ulps < 4 * 1024 * 1024);
-
 //    long long a_int = *(long long*)&a;
     // cppcheck-suppress invalidPointerCast
     long long a_int = *reinterpret_cast<const long long *>(&a);
