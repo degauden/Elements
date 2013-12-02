@@ -58,7 +58,7 @@ namespace NtApi {
 };
 #else  // UNIX...: first the EGCS stuff, then the OS dependent includes
 #define WINVER 0
-#include <errno.h>
+#include <cerrno>
 #include <string>
 #include "unistd.h"
 #include "libgen.h"
@@ -382,7 +382,7 @@ Elements::System::ProcessDescriptor::ProcessHandle::~ProcessHandle() {
 #ifdef _WIN32
     ::CloseHandle(m_handle);
 #else
-    m_handle = 0;
+    m_handle = nullptr;
 #endif
   }
 }

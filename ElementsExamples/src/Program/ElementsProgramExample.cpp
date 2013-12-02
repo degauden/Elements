@@ -128,10 +128,13 @@ public:
     const po::variables_map variables_map = this->getVariablesMap();
 
     // Retrieve values from the po::variables_map
+    // cppcheck-suppress unreadVariable
     string string_value = variables_map["string-value"].as<string>();
     int64_t long_long_value = variables_map["long-long-value"].as<int64_t>();
     double double_value = variables_map["double-value"].as<double>();
+    // cppcheck-suppress unreadVariable
     vector<int> int_vector = variables_map["int-vector"].as<vector<int>>();
+    // cppcheck-suppress unreadVariable
     vector<string> string_vector =
         variables_map["string-vector"].as<vector<string>>();
 

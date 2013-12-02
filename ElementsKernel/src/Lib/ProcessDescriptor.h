@@ -115,7 +115,7 @@ class ProcessDescriptor {
     ProcessHandle(long pid);
     virtual ~ProcessHandle();
     long item() {
-      return m_needRelease ? 1 : 0;
+      return m_needRelease ? true : false ;
     }
     void* handle() {
       return m_handle;
