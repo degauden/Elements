@@ -365,7 +365,7 @@ const string Elements::System::typeinfoName( const char* class_name) {
       /// substitute ', ' with ','
       string::size_type pos = result.find(", ");
       while( string::npos != pos ) {
-        result.replace( pos , 2 , "," ) ;
+        result.replace( pos , static_cast<string::size_type>(2) , "," ) ;
         pos = result.find(", ");
       }
     }
