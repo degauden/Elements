@@ -126,7 +126,7 @@ public:
   /// Definition of the contained link set
   class ContainedLink {
   public:
-    ContainedObject* first;
+    const ContainedObject* first;
     long second;
     long third;
     ContainedLink() :
@@ -135,14 +135,14 @@ public:
     ContainedLink(const ContainedLink& copy) :
         first(copy.first), second(copy.second), third(copy.third) {
     }
-    ContainedLink(ContainedObject* pObj, long hint, long link) :
+    ContainedLink(const ContainedObject* pObj, long hint, long link) :
         first(pObj), second(hint), third(link) {
     }
   };
   /// Definition of the contained link set
   class IdentifiedLink {
   public:
-    DataObject* first;
+    const DataObject* first;
     long second;
     IdentifiedLink() :
         first(0), second(INVALID) {
@@ -150,7 +150,7 @@ public:
     IdentifiedLink(const IdentifiedLink& copy) :
         first(copy.first), second(copy.second) {
     }
-    IdentifiedLink(DataObject* pObj, long hint) :
+    IdentifiedLink(const DataObject* pObj, long hint) :
         first(pObj), second(hint) {
     }
   };
@@ -321,17 +321,17 @@ public:
     return *this;
   }
 
-  void getIdentifiedLink(DataObject*& pObject, long& hint) {
+  void getIdentifiedLink(const DataObject*& pObject, long& hint) {
     IdentifiedLink& l = m_identifiedLinks.back();
     pObject = l.first;
     hint = l.second;
     m_identifiedLinks.pop_back();
   }
   void addIdentifiedLink(const DataObject* pObject, long hint) {
-    m_identifiedLinks.push_back(IdentifiedLink((DataObject*) pObject, hint));
+    m_identifiedLinks.push_back(IdentifiedLink(static_cast<const DataObject *>(pObject), hint));
   }
 
-  void getContainedLink(ContainedObject*& pObject, long& hint, long& link) {
+  void getContainedLink(const ContainedObject*& pObject, long& hint, long& link) {
     ContainedLink& l = m_containedLinks.back();
     pObject = l.first;
     hint = l.second;
@@ -340,7 +340,7 @@ public:
   }
   void addContainedLink(const ContainedObject* pObject, long hint, long link) {
     m_containedLinks.push_back(
-        ContainedLink((ContainedObject*) pObject, hint, link));
+        ContainedLink(static_cast<const ContainedObject *>(pObject), hint, link));
   }
 
 #ifdef USE_STREAM_ANALYSER
