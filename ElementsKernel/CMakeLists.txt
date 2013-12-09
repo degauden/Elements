@@ -31,6 +31,10 @@ elements_add_unit_test(Version_test tests/src/Version_test.cpp tests/src/BoostTe
 # FileLocator_test
 elements_add_unit_test(FileLocator_test tests/src/FileLocator_test.cpp tests/src/BoostTestMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
+#-----------------------
+# Path_test
+elements_add_unit_test(Path_test tests/src/Path_test.cpp tests/src/BoostTestMain.cpp
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 
 if(ELEMENTS_BUILD_TESTS)

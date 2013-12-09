@@ -1,7 +1,7 @@
 /**
  * @file Version.cpp
  *
- * Created on: Aug 14, 2013Jun 20, 2013
+ * Created on: Aug 14, 2013
  *     Author: Pierre Dubath
  */
 #include <string>
