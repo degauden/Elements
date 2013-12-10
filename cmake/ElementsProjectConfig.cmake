@@ -207,10 +207,14 @@ macro(elements_project project version)
   set(merge_cmd ${PYTHON_EXECUTABLE} ${merge_cmd} --no-stamp)
 
   find_program(versheader_cmd createProjVersHeader.py HINTS ${binary_paths})
-  set(versheader_cmd ${PYTHON_EXECUTABLE} ${versheader_cmd})
+  if(versheader_cmd)
+    set(versheader_cmd ${PYTHON_EXECUTABLE} ${versheader_cmd})
+  endif()
 
   find_program(zippythondir_cmd ZipPythonDir.py HINTS ${binary_paths})
-  set(zippythondir_cmd ${PYTHON_EXECUTABLE} ${zippythondir_cmd})
+  if(zippythondir_cmd)
+    set(zippythondir_cmd ${PYTHON_EXECUTABLE} ${zippythondir_cmd})
+  endif()
 
   find_program(elementsrun_cmd elementsrun.py HINTS ${binary_paths})
   set(elementsrun_cmd ${PYTHON_EXECUTABLE} ${elementsrun_cmd})
@@ -231,10 +235,12 @@ macro(elements_project project version)
   include(ElementsBuildFlags)
   # Generate the version header for the project.
   string(TOUPPER ${project} _proj)
-  execute_process(COMMAND
-                  ${versheader_cmd} --quiet
-                     ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h)
-  install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h DESTINATION include)
+  if(versheader_cmd)
+    execute_process(COMMAND
+                    ${versheader_cmd} --quiet
+                    ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h)
+    install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h DESTINATION include)
+  endif()
   # Add generated headers to the include path.
   include_directories(${CMAKE_BINARY_DIR}/include)
 
@@ -271,10 +277,11 @@ macro(elements_project project version)
   # of the parent project and we cannot have a post-install target because of
   # http://public.kitware.com/Bug/view.php?id=8438
   # install(CODE "execute_process(COMMAND  ${zippythondir_cmd} ${CMAKE_INSTALL_PREFIX}/python)")
-  add_custom_target(python.zip
-                    COMMAND ${zippythondir_cmd} ${CMAKE_INSTALL_PREFIX}/python
-                    COMMENT "Zipping Python modules")
-
+  if(zippythondir_cmd)
+    add_custom_target(python.zip
+                      COMMAND ${zippythondir_cmd} ${CMAKE_INSTALL_PREFIX}/python
+                      COMMENT "Zipping Python modules")
+  endif()
   #--- Prepare environment configuration
   message(STATUS "Preparing environment configuration:")
 
@@ -417,13 +424,14 @@ macro(elements_project project version)
     
   find_file(spec_file_template
             NAMES Elements.spec.in
-            HINTS ENV CMTPROJECTPATH
-            PATHS ${CMAKE_CURRENT_LIST_DIR}/cmake)
+            PATHS ${CMAKE_MODULE_PATH}
+            NO_DEFAULT_PATH)
   
   if(spec_file_template)
     configure_file("${spec_file_template}" "${PROJECT_BINARY_DIR}/${project}.spec" @ONLY IMMEDIATE)
     set(CPACK_RPM_USER_BINARY_SPECFILE "${PROJECT_BINARY_DIR}/${project}.spec")
     message(STATUS "Generated RPM Spec file: ${PROJECT_BINARY_DIR}/${project}.spec")
+    message(STATUS "From the SPEC template file: ${spec_file_template}")
   endif()
 
   include(CPack)
@@ -433,9 +441,9 @@ macro(elements_project project version)
   if(DOXYGEN_FOUND)
     find_file(doxygen_file_template
               NAMES Doxyfile.in
-              HINTS ENV CMTPROJECTPATH
-              PATHS ${CMAKE_CURRENT_LIST_DIR}/cmake/doc
-              PATH_SUFFIXES doc)
+              PATHS ${CMAKE_MODULE_PATH}
+              PATH_SUFFIXES doc
+              NO_DEFAULT_PATH)
 
 
     if(doxygen_file_template)
@@ -445,6 +453,8 @@ macro(elements_project project version)
         @ONLY
       )
       message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/Doxyfile")
+      message(STATUS "From the Doxygen.in template file: ${doxygen_file_template}")
+      
     endif()
 
     add_custom_target(doc
@@ -964,7 +974,7 @@ macro(elements_subdir name version)
   # Generate the version header for the package.
   execute_process(COMMAND
                   ${versheader_cmd} --quiet
-                     ${name} ${version} ${CMAKE_CURRENT_BINARY_DIR}/${name}Version.h)
+                  ${name} ${version} ${CMAKE_CURRENT_BINARY_DIR}/${name}Version.h)
 endmacro()
 
 #-------------------------------------------------------------------------------
