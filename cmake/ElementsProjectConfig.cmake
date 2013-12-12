@@ -1683,6 +1683,7 @@ function(elements_install_headers)
               PATTERN "*.h"
               PATTERN "*.icpp"
               PATTERN "*.hpp"
+              PATTERN "*.hxx"
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE)
     if(NOT IS_ABSOLUTE ${hdr_dir})
