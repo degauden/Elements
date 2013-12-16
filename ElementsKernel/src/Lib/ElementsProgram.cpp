@@ -6,9 +6,7 @@
  */
 
 // there is no version of boost with the std::__debug namespace
-#ifdef _GLIBCXX_DEBUG
-#undef _GLIBCXX_DEBUG
-#endif
+#include "ElementsKernel/NoGlibDebug.h"
 
 #include <string>
 #include <fstream>
