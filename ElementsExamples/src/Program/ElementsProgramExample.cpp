@@ -19,6 +19,11 @@
 #define SVN_ID "SVN $Id$"
 #define SVN_URL "SVN $HeadURL$"
 
+// there is no version of boost with the std::__debug namespace
+#ifdef _GLIBCXX_DEBUG
+#undef _GLIBCXX_DEBUG
+#endif
+
 // System includes
 #include <string>
 #include <vector>
