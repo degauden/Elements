@@ -5,6 +5,11 @@
  *     Author: Pierre Dubath
  */
 
+// there is no version of boost with the std::__debug namespace
+#ifdef _GLIBCXX_DEBUG
+#undef _GLIBCXX_DEBUG
+#endif
+
 #include <string>
 #include <fstream>
 #include <iostream>
