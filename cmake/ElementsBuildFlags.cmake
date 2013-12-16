@@ -20,6 +20,8 @@ else()
   set(ELEMENTS_CPP11_DEFAULT OFF)
 endif()
 
+set(ELEMENTS_PARALLEL_DEFAULT OFF)
+
 #--- Elements Build Options -------------------------------------------------------
 # Build options that map to compile time features
 #
@@ -35,6 +37,11 @@ option(ELEMENTS_CMT_RELEASE
 option(ELEMENTS_CPP11
        "enable C++11 compilation"
        ${ELEMENTS_CPP11_DEFAULT})
+       
+option(ELEMENTS_PARALLEL
+       "enable C++11 parallel support with OpenMP"
+       ${ELEMENTS_PARALLEL_DEFAULT})
+       
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
@@ -72,10 +79,10 @@ if(NOT ELEMENTS_FLAGS_SET)
 
     # Build type compilation flags (if different from default or uknown to CMake)
     if(ELEMENTS_CMT_RELEASE)
-      set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -D_GLIBCXX_PARALLEL"
+      set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG"
           CACHE STRING "Flags used by the compiler during release builds."
           FORCE)
-      set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG -D_GLIBCXX_PARALLEL"
+      set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG"
           CACHE STRING "Flags used by the compiler during release builds."
           FORCE)
     endif()
@@ -87,7 +94,7 @@ if(NOT ELEMENTS_FLAGS_SET)
 #        CACHE STRING "Flags used by the compiler during Release with Debug builds."
 #        FORCE)
 
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG -D_GLIBCXX_PARALLEL"
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG"
         CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
         FORCE)
     set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG"
@@ -187,6 +194,11 @@ if ( ELEMENTS_CPP11 )
     set(ODB_CXX_EXTRA_FLAGS --std c++11)
   endif()
 endif()
+
+if ( ELEMENTS_PARALLEL AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[0-9]") )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_PARALLEL -fopenmp")
+endif()
+
 
 # special case
 if(ELEMENTS_HIDE_SYMBOLS AND (comp MATCHES gcc4))
