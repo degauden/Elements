@@ -72,10 +72,10 @@ if(NOT ELEMENTS_FLAGS_SET)
 
     # Build type compilation flags (if different from default or uknown to CMake)
     if(ELEMENTS_CMT_RELEASE)
-      set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG"
+      set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -D_GLIBCXX_PARALLEL"
           CACHE STRING "Flags used by the compiler during release builds."
           FORCE)
-      set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG"
+      set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG -D_GLIBCXX_PARALLEL"
           CACHE STRING "Flags used by the compiler during release builds."
           FORCE)
     endif()
@@ -87,7 +87,7 @@ if(NOT ELEMENTS_FLAGS_SET)
 #        CACHE STRING "Flags used by the compiler during Release with Debug builds."
 #        FORCE)
 
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG"
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG -D_GLIBCXX_PARALLEL"
         CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
         FORCE)
     set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG"
@@ -101,7 +101,7 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the compiler during coverage builds."
         FORCE)
 
-    set(CMAKE_CXX_FLAGS_PROFILE "-pg"
+    set(CMAKE_CXX_FLAGS_PROFILE "-pg -D_GLIBCXX_PROFILE"
         CACHE STRING "Flags used by the compiler during profile builds."
         FORCE)
     set(CMAKE_C_FLAGS_PROFILE "-pg"
