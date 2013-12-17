@@ -16,8 +16,11 @@ endif()
 # Add the directory containing this file and the to the modules search path
 set(CMAKE_MODULE_PATH ${ElementsProject_DIR} ${ElementsProject_DIR}/modules ${CMAKE_MODULE_PATH})
 # Automatically add the modules directory provided by the project.
-if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake})
-  set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake} ${CMAKE_MODULE_PATH})
+if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
+  if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/modules)
+    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+  endif()
+  set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 endif()
 
 #-------------------------------------------------------------------------------
@@ -69,7 +72,7 @@ if(DEFINED ENV{EUCLID_BASE})
   set(EUCLID_BASE_DIR "$ENV{EUCLID_BASE}" CACHE STRING "Euclid Base Install Directory")
   message(STATUS "EUCLID_BASE is in the environment: ${EUCLID_BASE_DIR}")
 else()
-  set(EUCLID_BASE_DIR "/opt/Euclid" CACHE STRING "Euclid Base Install Directory")
+  set(EUCLID_BASE_DIR "/opt/euclid" CACHE STRING "Euclid Base Install Directory")
   message(STATUS "EUCLID_BASE is not in the environment: using default ${EUCLID_BASE_DIR}")
 endif()
 
@@ -99,6 +102,9 @@ find_package(PythonInterp)
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
   if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
+    if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/modules)
+      set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+    endif()
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
   endif()
   project(${project})
@@ -224,8 +230,10 @@ macro(elements_project project version)
 
   #--- Project Installations------------------------------------------------------------------------
   install(DIRECTORY cmake/ DESTINATION cmake
-                           FILES_MATCHING PATTERN "*.cmake"
-                           PATTERN ".svn" EXCLUDE)
+                           FILES_MATCHING 
+                             PATTERN "*.cmake"
+                             PATTERN "*.in"
+                             PATTERN ".svn" EXCLUDE)
   install(PROGRAMS cmake/env.py DESTINATION scripts OPTIONAL)
   install(DIRECTORY cmake/EnvConfig DESTINATION scripts
           FILES_MATCHING PATTERN "*.py" PATTERN "*.conf")
@@ -404,8 +412,8 @@ macro(elements_project project version)
   endforeach()
   set(CPACK_SYSTEM_NAME ${BINARY_TAG})
   set(CPACK_PACKAGE_RELOCATABLE TRUE)
-  # set(CPACK_PACKAGE_INSTALL_DIRECTORY /opt/Euclid)
-  # set(CPACK_RPM_PACKAGE_PREFIX /opt/Euclid)
+  # set(CPACK_PACKAGE_INSTALL_DIRECTORY /opt/euclid)
+  # set(CPACK_RPM_PACKAGE_PREFIX /opt/euclid)
   set(CPACK_PACKAGING_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   set(CPACK_GENERATOR RPM)
   set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
@@ -1845,9 +1853,10 @@ macro(elements_install_cmake_modules)
           DESTINATION cmake
           FILES_MATCHING
             PATTERN "*.cmake"
+            PATTERN "*.in"
             PATTERN "CVS" EXCLUDE
             PATTERN ".svn" EXCLUDE)
-  set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH} PARENT_SCOPE)
+  set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH} PARENT_SCOPE)
   set_property(DIRECTORY PROPERTY ELEMENTS_EXPORTED_CMAKE ON)
 endmacro()
 
@@ -1911,6 +1920,7 @@ set(${CMAKE_PROJECT_NAME}_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
 
 set(${CMAKE_PROJECT_NAME}_USES ${PROJECT_USE})
 
+list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake/modules)
 list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake)
 include(${CMAKE_PROJECT_NAME}PlatformConfig)
 ")
