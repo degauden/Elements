@@ -15,11 +15,9 @@ namespace Elements {
 
     static const double Avogadro = 6.0221367e+23/mole;
 
-    //
-    // c   = 299.792458 mm/ns
-    // c^2 = 898.7404 (mm/ns)^2
-    //
+    /// @brief \f$ c = 299.792458 \text{mm/ns}\f$
     static const double c_light   = 2.99792458e+8 * m/s;
+    /// @brief \f$c^2 = 898.7404 (\text{mm/ns})^2\f$
     static const double c_squared = c_light * c_light;
 
     //
@@ -59,6 +57,7 @@ namespace Elements {
 
     static const double k_Boltzmann = 1.3806488e-23 * joule/kelvin ;
 
+    /// @brief Standard Temperature and Pressure
     static const double STP_Temperature = 273.15*kelvin;
     static const double STP_Pressure    = 1.*atmosphere;
     static const double kGasThreshold   = 10.*mg/cm3;
