@@ -1,8 +1,8 @@
 /**
  * @file ElementsProgramExample.cpp
- *
- * Created on: Aug 8, 2013Jun 20, 2013
- *     Author: Pierre Dubath
+ * @date Aug 8, 2013
+ * @brief implementation of the ElementsProgramExample.h
+ * @author Pierre Dubath
  */
 
 /**
@@ -12,8 +12,8 @@
  * When creating a new file, naked svn tag (see below) should be introduced, they are then
  * expanded with the first commit.
  *
- *    \#define VERSION "SVN $Id$"
- *    \#define REVISION "SVN $Revision$"
+ *    \#define VERSION "SVN $Id$"\n
+ *    \#define REVISION "SVN $Revision$"\n
  *    \#define URL "SVN $HeadURL$"
  */
 #define SVN_ID "SVN $Id$"
