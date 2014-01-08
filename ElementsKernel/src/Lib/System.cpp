@@ -90,7 +90,7 @@ static unsigned long loadWithoutEnvironment(const string& name, Elements::System
   unsigned long len = static_cast<unsigned long>(strlen(SHLIB_SUFFIX));
 
   // Add the suffix at the end of the library name only if necessary
-  // FIXME: cure the logic
+  /// FIXME cure the logic
   if ((dllName.length() != 0) &&
       ::strncasecmp(static_cast<const char *>(dllName.data()+dllName.length()-len), SHLIB_SUFFIX, len) != 0) {
     dllName += SHLIB_SUFFIX;

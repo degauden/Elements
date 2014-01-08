@@ -16,7 +16,6 @@ WARNING = 4
 ERROR   = 5
 FATAL   = 6
 
-### for job options legacy (TODO: get rid of these!) -------------------------
 TRUE    = True
 FALSE   = False
 
