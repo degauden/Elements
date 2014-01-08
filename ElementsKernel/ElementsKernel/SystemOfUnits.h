@@ -1,14 +1,7 @@
-/*
- * SystemOfUnits.h
- *
- *  Created on: Dec 18, 2013
- *      Author: hubert
- *
- * ----------------------------------------------------------------------
- * MKSA coherent system of Units
- *
- *
- *
+/**
+ * @file SystemOfUnits.h
+ * @brief Definition of the common units based on MKSA
+ * @author Hubert Degaudenzi - The Euclid Consortium
  */
 
 #ifndef ELEMENTSKERNEL_SYSTEMOFUNITS_H_
