@@ -39,7 +39,7 @@ StatusCode::~StatusCode() {
 
       string lib, fnc;
 
-      /// @toto : (MCl) use backTrace(string&, const int, const int) instead
+      /// @todo : (MCl) use backTrace(string&, const int, const int) instead
       if (Elements::System::backTrace(addresses, depth)) {
         void* addr = nullptr;
         if (Elements::System::getStackLevel(addresses[2], addr, fnc, lib)) {
