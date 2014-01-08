@@ -1,16 +1,13 @@
-/*
- * Integer.h
- *
- *  Created on: Nov 4, 2013
- *      Author: hubert
+/**
+ * @file Integer.h
+ * @date Nov 4, 2013
+ * @author Hubert Degaudenzi - The Euclid Consortium
+ * @brief Large integer definition depends of the platform
+ * @todo This has to be reviewed completely
  */
 
 #ifndef ELEMENTS_INTEGER_H_
 #define ELEMENTS_INTEGER_H_
-
-
-/// Large integer definition depends of the platform
-/// @todo This has to be reviewed completely.
 
 #ifdef _WIN32
 #ifndef NO_LONGLONG_TYPEDEF
