@@ -692,8 +692,8 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     status = 1;
 
 #elif defined(__APPLE__)
-    // FIXME (MCl): Make an alternative function get timing on OSX
-    // times() seems to cause a segmentation fault
+    /// FIXME (MCl): Make an alternative function get timing on OSX
+    /// times() seems to cause a segmentation fault
 #else  // no /proc file system: assume sys_start for the first call
     tms tmsb;
     static clock_t sys_start = times(0);

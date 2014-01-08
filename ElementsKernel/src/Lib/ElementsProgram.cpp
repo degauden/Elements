@@ -25,9 +25,9 @@ namespace fs = boost::filesystem;
 
 using namespace std;
 
-/*
- * Get default config file
- * TODO write a more elaborate version of this taking into account
+/**
+ * @brief Get default config file
+ * @todo write a more elaborate version of this taking into account
  * the system and teh development location of the default config file
  */
 const fs::path ElementsProgram::getDefaultConfigFile(const
