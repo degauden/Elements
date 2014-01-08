@@ -1,3 +1,8 @@
+/**
+ * @file DirSearchPath.cpp
+ * @brief Implementation of the DirSearchPath class
+ */
+
 #ifdef WIN32
 // Disable warning
 //    C4996: '...': Function call with parameters that may be unsafe
