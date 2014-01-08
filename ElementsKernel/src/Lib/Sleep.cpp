@@ -21,12 +21,13 @@ void normalSleep(int sec) {
     t.sec += sec;
     thread::sleep(t);
   }
-  ///@toto (MCl) do something if cannot get the time.
+  ///@todo (MCl) do something if cannot get the time.
 #endif
 }
 
-/// Small variation on the sleep function for nanoseconds sleep.
-/// @author Marco Clemencic
+/** @brief Small variation on the sleep function for nanoseconds sleep.
+ * @author Marco Clemencic
+ */
 void nanoSleep(int64_t nsec) {
 #if BOOST_VERSION >= 105000
   boost::this_thread::sleep_for(boost::chrono::nanoseconds(nsec));
@@ -38,7 +39,7 @@ void nanoSleep(int64_t nsec) {
     t.nsec += nsec % 1000000000;
     thread::sleep(t);
   }
-  // TODO: (MCl) do something if cannot get the time.
+  /// @todo (MCl) do something if cannot get the time.
 #endif
 }
 
