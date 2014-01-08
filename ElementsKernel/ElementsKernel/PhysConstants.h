@@ -13,11 +13,12 @@
 namespace Elements {
   namespace Units {
 
+    /// @brief \f$N_A\f$
     static const double Avogadro = 6.0221367e+23/mole;
 
-    /// @brief \f$ c = 299.792458 \text{mm/ns}\f$
+    /// @brief \f$c\f$
     static const double c_light   = 2.99792458e+8 * m/s;
-    /// @brief \f$c^2 = 898.7404 (\text{mm/ns})^2\f$
+    /// @brief \f$c^2\f$
     static const double c_squared = c_light * c_light;
 
     //
