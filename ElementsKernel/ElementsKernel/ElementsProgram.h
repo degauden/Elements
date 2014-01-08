@@ -1,8 +1,8 @@
 /**
  * @file ElementsProgram.h
- *
- * Created on: Aug 7, 2013
- *     Author: Pierre Dubath
+ * @brief define the class for the base Elements program
+ * @date Aug 7, 2013
+ * @author Pierre Dubath - The Euclid Consortium
  */
 
 #ifndef ELEMENTSPROGRAM_H_
