@@ -39,7 +39,7 @@ StatusCode::~StatusCode() {
 
       string lib, fnc;
 
-      /// FIXME : (MCl) use backTrace(string&, const int, const int) instead
+      /// @toto : (MCl) use backTrace(string&, const int, const int) instead
       if (Elements::System::backTrace(addresses, depth)) {
         void* addr = nullptr;
         if (Elements::System::getStackLevel(addresses[2], addr, fnc, lib)) {
