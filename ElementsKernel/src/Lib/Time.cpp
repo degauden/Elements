@@ -88,7 +88,7 @@ Time::Time(int year, int month, int day, int hour, int min, int sec,
   val.tm_mday = day;
   val.tm_mon = month;
   val.tm_year = year > 1900 ? year - 1900 : year;
-  val.tm_isdst = -1; // FIXME?
+  val.tm_isdst = -1; /// FIXME
 
   m_nsecs = build(local, val, nsecs).m_nsecs;
 }
