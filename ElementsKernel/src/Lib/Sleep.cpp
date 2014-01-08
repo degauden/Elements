@@ -21,7 +21,7 @@ void normalSleep(int sec) {
     t.sec += sec;
     thread::sleep(t);
   }
-  // TODO: (MCl) do something if cannot get the time.
+  ///@toto (MCl) do something if cannot get the time.
 #endif
 }
 
