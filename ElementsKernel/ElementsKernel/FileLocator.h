@@ -1,8 +1,7 @@
 /**
  * @file FileLocator.h
- *
- * Created on: Aug 5, 2013
- *     Author: Pavel Binko
+ * @date Aug 5, 2013
+ * @author Pavel Binko - The Euclid Consortium
  */
 
 #ifndef FILELOCATOR_H_

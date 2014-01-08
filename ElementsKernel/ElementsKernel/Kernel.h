@@ -1,3 +1,10 @@
+/**
+ * @file Kernel.h
+ * @brief defines the collection of fundamental macros from Export.h,
+ *        Likely.h and Deprecated.h
+ * @author Hubert Degaudenzi - The Euclid Consortium
+ */
+
 #ifndef ELEMENTSKERNEL_KERNEL_H
 #define ELEMENTSKERNEL_KERNEL_H
 

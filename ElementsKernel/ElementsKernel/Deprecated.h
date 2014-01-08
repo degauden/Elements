@@ -1,8 +1,8 @@
-/*
- * Deprecated.h
- *
- *  Created on: Nov 4, 2013
- *      Author: hubert
+/**
+ * @file Deprecated.h
+ * @brief define the ELEMENTS_DEPRECATED macros for API evolution
+ * @author Hubert Degaudenzi - The Euclid Consortium
+ * @date Nov 4, 2013
  */
 
 #ifndef ELEMENTSKERNEL_DEPRECATED_H_

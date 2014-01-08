@@ -1,6 +1,7 @@
 #ifndef JOBOPTIONS_DIRSEARCHPATH_H
 #define JOBOPTIONS_DIRSEARCHPATH_H
-/** @file DirSearchPath.h
+/**
+ * @file DirSearchPath.h
  * @brief search for files in a list of directories
  * @author Paolo Calafiura <pcalafiura@lbl.gov> - ATLAS Collaboration
  */

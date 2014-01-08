@@ -1,8 +1,8 @@
-/*
- * Likely.h
- *
- *  Created on: Nov 4, 2013
- *      Author: hubert
+/**
+ * @file Likely.h
+ * @brief defines macros for better branch guessing
+ * @date Nov 4, 2013
+ * @author Hubert Degaudenzi - The Euclid Consortium
  */
 
 #ifndef ELELMENTSKERNEL_LIKELY_H_

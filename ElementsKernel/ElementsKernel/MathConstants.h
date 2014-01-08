@@ -1,8 +1,8 @@
-/*
- * MathConstants.h
- *
- *  Created on: Dec 18, 2013
- *      Author: hubert
+/**
+ * @file MathConstants.h
+ * @date Dec 18, 2013
+ * @brief A few math constants
+ * @author Hubert Degaudenzi - The Euclid Consortium
  */
 
 #ifndef ELEMENTSKERNEL_MATHCONSTANTS_H_

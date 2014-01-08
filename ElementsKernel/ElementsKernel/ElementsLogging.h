@@ -1,8 +1,8 @@
-/*
- * ElementsLogging.h
- *
- *  Created on: Jul 29, 2013
- *      Author: dubath
+/**
+ * @file ElementsLogging.h
+ * @brief Elements logging class
+ * @author Pierre Dubath
+ * @date Jul 29, 2013
  */
 
 #ifndef ELEMENTSLOGGING_H_

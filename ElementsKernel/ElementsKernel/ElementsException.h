@@ -1,8 +1,8 @@
-/*
- * ElementsException.h
- *
- *  Created on: Feb 20, 2013
- *      Author: Pavel Binko
+/**
+ * @file ElementsException.h
+ * @brief defines the base Elements exception class
+ * @date Feb 20, 2013
+ * @author Pavel Binko - The Euclid Consortium
  */
 
 #ifndef ELEMENTSEXCEPTION_H_
