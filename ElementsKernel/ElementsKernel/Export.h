@@ -1,8 +1,21 @@
-/*
+/**
  * @file Export.h
  * @brief defines the macros to be used for explicit export of the symbols
  * @date Nov 4, 2013
  * @author: Hubert Degaudenzi - The Euclid Consortium
+ * @details:
+ *  The ELEMENTS_EXPORT macro has to be used to expose the part of the public interface
+ *  of a library. It has typically to be used in the public header files. For the functions
+ *  the syntax looks like:
+ *  @code
+ *  ELEMENTS_EXPORT void func() ;
+ *  @endcode
+ *  and for the classes:
+ *  @code
+ *  class ELEMENTS_EXPORT MyClasse { ...
+ *  @endcode
+ *  This macro will only have an effect if the global symbol hiding is active in the framework.
+ *  This means that the ELEMENTS_HIDE_SYMBOLS macro has to be defined.
  */
 
 #ifndef ELEMENTS_EXPORT_H_
