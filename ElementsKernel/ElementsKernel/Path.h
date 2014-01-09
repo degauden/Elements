@@ -33,10 +33,10 @@ typedef enum {
    * @return
    *   A vector of paths of the files found or empty string, if nothing is found
    */
-   std::vector<boost::filesystem::path> pathSearch(std::string searched_name,
+   ELEMENTS_API std::vector<boost::filesystem::path> pathSearch(std::string searched_name,
       boost::filesystem::path directory, SearchType search_type);
 
-   std::vector<std::string> pathSearch(std::string searched_name,
+   ELEMENTS_API std::vector<std::string> pathSearch(std::string searched_name,
        std::string directory, SearchType search_type);
 
 //  /**
