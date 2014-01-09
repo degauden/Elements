@@ -4,15 +4,15 @@
  * @date Nov 4, 2013
  * @author: Hubert Degaudenzi - The Euclid Consortium
  * @details:
- *  The ELEMENTS_EXPORT macro has to be used to expose the part of the public interface
+ *  The ELEMENTS_API macro has to be used to expose the part of the public interface
  *  of a library. It has typically to be used in the public header files. For the functions
  *  the syntax looks like:
  *  @code
- *  ELEMENTS_EXPORT void func() ;
+ *  ELEMENTS_API void func() ;
  *  @endcode
  *  and for the classes:
  *  @code
- *  class ELEMENTS_EXPORT MyClasse { ...
+ *  class ELEMENTS_API MyClasse { ...
  *  @endcode
  *  This macro will only have an effect if the global symbol hiding is active in the framework.
  *  This means that the ELEMENTS_HIDE_SYMBOLS macro has to be defined.
@@ -25,8 +25,8 @@
 // ---------------------------------- Symbol visibility macros (begin)
 // Enabled on in Elements v21 mode
 #if defined(ELEMENTS_HIDE_SYMBOLS)
-// These macros will allow selection on exported symbols
-// taken from http://gcc.gnu.org/wiki/Visibility
+/// These macros will allow selection on exported symbols
+/// taken from http://gcc.gnu.org/wiki/Visibility
 #if __GNUC__ >= 4 && ! defined(__CINT__)
 #  define ELEMENTS_HASCLASSVISIBILITY
 #endif
@@ -37,8 +37,8 @@
  #  define ELEMENTS_EXPORT __declspec(dllexport)
  #  define ELEMENTS_LOCAL
  */
-// The symbol visibility is disabled on Win32 because it is not possible to
-// make coexists the gcc and VC ways.
+/// The symbol visibility is disabled on Win32 because it is not possible to
+/// make coexists the gcc and VC ways.
 #    define ELEMENTS_IMPORT
 #    define ELEMENTS_EXPORT
 #    define ELEMENTS_LOCAL
@@ -54,14 +54,14 @@
 #  endif
 #endif
 
-// Define ELEMENTS_API for DLL builds
+/// Define ELEMENTS_API for DLL builds
 #ifdef ELEMENTS_LINKER_LIBRARY
 #define ELEMENTS_API ELEMENTS_EXPORT
 #else
 #define ELEMENTS_API ELEMENTS_IMPORT
 #endif
 #else
-// Dummy definitions for the backward compatibility mode.
+/// Dummy definitions for the backward compatibility mode.
 #define ELEMENTS_API
 #define ELEMENTS_IMPORT
 #define ELEMENTS_EXPORT
