@@ -1,8 +1,7 @@
 /**
  * @file Version.h
- *
- * Created on: Aug 14, 2013Jun 20, 2013
- *     Author: Pierre Dubath
+ * @date Jun 20, 2013
+ * @author Pierre Dubath - The Euclid Consortium
  */
 
 #ifndef VERSION_H_
