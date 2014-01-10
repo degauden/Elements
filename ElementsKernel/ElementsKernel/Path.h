@@ -1,8 +1,7 @@
 /**
  * @file Path.h
- *
- * Created on: Dec 4, 2013
- *     Author: Pierre Dubath
+ * @date Dec 4, 2013
+ * @author Pierre Dubath
  */
 #ifndef PATH_H_
 #define PATH_H_
