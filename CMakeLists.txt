@@ -7,7 +7,8 @@ if(NOT ElementsProject_DIR AND ("$ENV{ElementsProject_DIR}" STREQUAL ""))
 endif()
 
 #---------------------------------------------------------------
-# Load macros and functions for Elements-based projects
+# Load macros and functions for Elements-based projects. The find_package 
+# function detects the ElementsProjectConfig.cmake file.
 find_package(ElementsProject)
 #---------------------------------------------------------------
 
