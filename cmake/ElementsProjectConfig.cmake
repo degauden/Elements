@@ -85,6 +85,7 @@ include(GenerateExportHeader)
 
 find_package(PythonInterp)
 
+include(SGSPlatform)
 #-------------------------------------------------------------------------------
 # elements_project(project version
 #               [USE proj1 vers1 [proj2 vers2 ...]]
