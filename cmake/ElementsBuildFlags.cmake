@@ -22,6 +22,9 @@ endif()
 
 set(ELEMENTS_PARALLEL_DEFAULT OFF)
 
+set(ELEMENTS_FORTIFY_DEFAULT ON)
+
+
 #--- Elements Build Options -------------------------------------------------------
 # Build options that map to compile time features
 #
@@ -42,6 +45,10 @@ option(ELEMENTS_PARALLEL
        "enable C++11 parallel support with OpenMP"
        ${ELEMENTS_PARALLEL_DEFAULT})
        
+option(ELEMENTS_FORTIFY
+       "enable g++ fortify option"
+       ${ELEMENTS_FORTIFY_DEFAULT})
+
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
@@ -197,6 +204,10 @@ endif()
 
 if ( ELEMENTS_PARALLEL AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[0-9]") )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_PARALLEL -fopenmp")
+endif()
+
+if ( ELEMENTS_FORTIFY AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[1-9]") )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2")
 endif()
 
 
