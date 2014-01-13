@@ -49,9 +49,9 @@ CMAKE = cmake
 # The toolchain is commented out for the moment. It is probably not needed for
 # Euclid for the moment.
 #
-ifneq ($(wildcard $(CURDIR)/toolchain.cmake),)
-  override CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/toolchain.cmake
-endif
+# ifneq ($(wildcard $(CURDIR)/toolchain.cmake),)
+#  override CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/toolchain.cmake
+# endif
 
 ifndef BINARY_TAG
   ifdef CMAKECONFIG
