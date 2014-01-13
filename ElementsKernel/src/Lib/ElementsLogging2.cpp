@@ -1,4 +1,4 @@
-/* 
+/**
  * @file ElementsLogging2.cpp
  * @date January 13, 2014
  * @author Nikolaos Apostolakos
