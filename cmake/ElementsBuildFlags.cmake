@@ -108,7 +108,7 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the compiler during coverage builds."
         FORCE)
 
-    set(CMAKE_CXX_FLAGS_PROFILE "-pg -D_GLIBCXX_PROFILE"
+    set(CMAKE_CXX_FLAGS_PROFILE "-pg"
         CACHE STRING "Flags used by the compiler during profile builds."
         FORCE)
     set(CMAKE_C_FLAGS_PROFILE "-pg"
