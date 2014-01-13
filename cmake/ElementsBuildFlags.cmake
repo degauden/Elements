@@ -114,8 +114,9 @@ if(NOT ELEMENTS_FLAGS_SET)
     set(CMAKE_C_FLAGS_COVERAGE "--coverage"
         CACHE STRING "Flags used by the compiler during coverage builds."
         FORCE)
-
-    set(CMAKE_CXX_FLAGS_PROFILE "-pg -D_GLIBCXX_PROFILE"
+        
+    # @todo Check why the -D_GLIBCXX_PROFILE cannot be used with Boost.
+    set(CMAKE_CXX_FLAGS_PROFILE "-pg"
         CACHE STRING "Flags used by the compiler during profile builds."
         FORCE)
     set(CMAKE_C_FLAGS_PROFILE "-pg"
