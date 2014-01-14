@@ -8,6 +8,7 @@
 #define	ELEMENTSLOGGING_H
 
 #include <string>
+#include <sstream>
 #include <boost/filesystem.hpp>
 #include <log4cpp/Category.hh>
 #include "ElementsKernel/Export.h" // ELEMENTS_API
@@ -21,13 +22,14 @@
  * The ElementsLogging class provides the logging API of the Elements framework.
  * To use the logging API the ElementsLogging::getLogger method can be used to
  * retrieve a logger instance, which can be further used for logging messages 
- * of different severities. For example:
+ * of different severities. For construction of more complicated messages, the
+ * printf style and stream style syntax are supported. For example:
  * 
  * \code
  * ElementsLogging logger = ElementsLogging::getLogger("name");
  * logger.debug("A debug message");
  * logger.info("A value %d in a printf style info message", 15);
- * logger.error("Something went seriously wrong");
+ * logger.error() << "A value " << 15 << " in a steam style error message";
  * \endcode
  * 
  * The name given as parameter of the ElementsLogging::getLogger method can be
@@ -52,6 +54,12 @@
  * stream.
  */
 class ElementsLogging {
+  
+private:
+  
+  // We declare the LogMessageStream here because it is used from the public
+  // functions. It is defined in the private section at the end.
+  class LogMessageStream;
   
 public:
 
@@ -128,6 +136,15 @@ public:
   void debug(const char *stringFormat, Args &&...args) {
     m_log4cppLogger.debug(stringFormat, std::forward<Args>(args)...);
   }
+  
+  /**
+   * Returns an object which can be used for logging a debug message using the
+   * "<<" operator.
+   * @return An object used for logging a debug message using the "<<" opearator
+   */
+  LogMessageStream debug() {
+    return LogMessageStream {m_log4cppLogger, &log4cpp::Category::debug};
+  }
 
   /**
    * Logs an info message.
@@ -145,6 +162,15 @@ public:
   template<typename ...Args>
   void info(const char *stringFormat, Args &&...args) {
     m_log4cppLogger.info(stringFormat, std::forward<Args>(args)...);
+  }
+  
+  /**
+   * Returns an object which can be used for logging a info message using the
+   * "<<" operator.
+   * @return An object used for logging a info message using the "<<" opearator
+   */
+  LogMessageStream info() {
+    return LogMessageStream {m_log4cppLogger, &log4cpp::Category::info};
   }
 
   /**
@@ -164,6 +190,15 @@ public:
   void warn(const char *stringFormat, Args &&...args) {
     m_log4cppLogger.warn(stringFormat, std::forward<Args>(args)...);
   }
+  
+  /**
+   * Returns an object which can be used for logging a warn message using the
+   * "<<" operator.
+   * @return An object used for logging a warn message using the "<<" opearator
+   */
+  LogMessageStream warn() {
+    return LogMessageStream {m_log4cppLogger, &log4cpp::Category::warn};
+  }
 
   /**
    * Logs an error message.
@@ -181,6 +216,15 @@ public:
   template<typename ...Args>
   void error(const char *stringFormat, Args &&...args) {
     m_log4cppLogger.error(stringFormat, std::forward<Args>(args)...);
+  }
+  
+  /**
+   * Returns an object which can be used for logging a error message using the
+   * "<<" operator.
+   * @return An object used for logging a error message using the "<<" opearator
+   */
+  LogMessageStream error() {
+    return LogMessageStream {m_log4cppLogger, &log4cpp::Category::error};
   }
 
   /**
@@ -201,11 +245,47 @@ public:
     m_log4cppLogger.fatal(stringFormat, std::forward<Args>(args)...);
   }
   
+  /**
+   * Returns an object which can be used for logging a fatal message using the
+   * "<<" operator.
+   * @return An object used for logging a fatal message using the "<<" opearator
+   */
+  LogMessageStream fatal() {
+    return LogMessageStream {m_log4cppLogger, &log4cpp::Category::fatal};
+  }
+  
 private:
   
   ElementsLogging(log4cpp::Category& log4cppLogger);
   
   log4cpp::Category& m_log4cppLogger;
+  
+  /**
+   * @class LogMessageStream
+   * @brief A helper class for logging messages using the "<<" operator
+   * @details
+   * Each instance of the LogMessageStream class is used for logging one single
+   * message. It keeps a reference of the logger to use and a pointer of the
+   * related function (to allow different logging levels). The message is logged
+   * during the destruction of the object. Instances can only be retrieved by
+   * using the ElementsLogging::debug, ElementsLogging::info, etc methods.
+   */
+  class LogMessageStream {
+    using P_log_func = void (log4cpp::Category::*)(const std::string&);
+  public:
+    LogMessageStream(log4cpp::Category& logger, P_log_func log_func);
+    LogMessageStream(LogMessageStream&& other);
+    ~LogMessageStream();
+    template <typename T>
+    LogMessageStream& operator<<(const T& m) {
+      m_message << m;
+      return *this;
+    }
+  private:
+    log4cpp::Category& m_logger;
+    P_log_func m_log_func;
+    std::stringstream m_message {};
+  };
   
 }; /* ElementsLogging */
 
