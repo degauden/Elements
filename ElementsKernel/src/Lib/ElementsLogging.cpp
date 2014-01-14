@@ -9,6 +9,7 @@
 #include <log4cpp/FileAppender.hh>
 #include "ElementsKernel/ElementsException.h"
 #include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Integer.h"
 
 ElementsLogging::ElementsLogging(log4cpp::Category& log4cppLogger)
     : m_log4cppLogger(log4cppLogger) { }
@@ -54,4 +55,14 @@ void ElementsLogging::setLogFile(const boost::filesystem::path& fileName) {
   if (fileName.has_filename()) {
     root.addAppender(new log4cpp::FileAppender("file", fileName.string()));
   }
+}
+
+ElementsLogging::LogMessageStream::LogMessageStream(log4cpp::Category& logger, P_log_func log_func)
+    : m_logger(logger), m_log_func{log_func} { }
+    
+ElementsLogging::LogMessageStream::LogMessageStream(LogMessageStream&& other)
+    : m_logger(other.m_logger) { }
+    
+ElementsLogging::LogMessageStream::~LogMessageStream() {
+  (m_logger.*m_log_func) (m_message.str());
 }
