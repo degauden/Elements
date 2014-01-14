@@ -17,6 +17,7 @@ ElementsLogging::ElementsLogging(log4cpp::Category& log4cppLogger)
 ElementsLogging ElementsLogging::getLogger(const std::string& name) {
   if (log4cpp::Category::getRoot().getAppender("console") == NULL) {
     log4cpp::Category::getRoot().addAppender(new log4cpp::OstreamAppender("console", &std::cerr));
+    log4cpp::Category::setRootPriority(log4cpp::Priority::INFO);
   }
   return ElementsLogging {log4cpp::Category::getInstance(name)};
 }
@@ -24,22 +25,22 @@ ElementsLogging ElementsLogging::getLogger(const std::string& name) {
 void ElementsLogging::setLevel(ElementsLogging::LoggingLevel level) {
   switch (level) {
   case ElementsLogging::LoggingLevel::DEBUG:
-    log4cpp::Category::getRoot().setPriority(log4cpp::Priority::DEBUG);
+    log4cpp::Category::setRootPriority(log4cpp::Priority::DEBUG);
     break;
   case ElementsLogging::LoggingLevel::INFO:
-    log4cpp::Category::getRoot().setPriority(log4cpp::Priority::INFO);
+    log4cpp::Category::setRootPriority(log4cpp::Priority::INFO);
     break;
   case ElementsLogging::LoggingLevel::WARN:
-    log4cpp::Category::getRoot().setPriority(log4cpp::Priority::WARN);
+    log4cpp::Category::setRootPriority(log4cpp::Priority::WARN);
     break;
   case ElementsLogging::LoggingLevel::ERROR:
-    log4cpp::Category::getRoot().setPriority(log4cpp::Priority::ERROR);
+    log4cpp::Category::setRootPriority(log4cpp::Priority::ERROR);
     break;
   case ElementsLogging::LoggingLevel::FATAL:
-    log4cpp::Category::getRoot().setPriority(log4cpp::Priority::FATAL);
+    log4cpp::Category::setRootPriority(log4cpp::Priority::FATAL);
     break;
   case ElementsLogging::LoggingLevel::NONE:
-    log4cpp::Category::getRoot().setPriority(log4cpp::Priority::EMERG);
+    log4cpp::Category::setRootPriority(log4cpp::Priority::EMERG);
     break;
   default:
     std::stringstream error_buffer;
@@ -55,6 +56,7 @@ void ElementsLogging::setLogFile(const boost::filesystem::path& fileName) {
   if (fileName.has_filename()) {
     root.addAppender(new log4cpp::FileAppender("file", fileName.string()));
   }
+  root.setPriority(root.getPriority());
 }
 
 ElementsLogging::LogMessageStream::LogMessageStream(log4cpp::Category& logger, P_log_func log_func)
