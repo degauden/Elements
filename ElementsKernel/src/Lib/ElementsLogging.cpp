@@ -39,9 +39,6 @@ void ElementsLogging::setLevel(ElementsLogging::LoggingLevel level) {
   case ElementsLogging::LoggingLevel::FATAL:
     log4cpp::Category::setRootPriority(log4cpp::Priority::FATAL);
     break;
-  case ElementsLogging::LoggingLevel::NONE:
-    log4cpp::Category::setRootPriority(log4cpp::Priority::EMERG);
-    break;
   default:
     std::stringstream error_buffer;
     error_buffer << "Unrecognized logging level: " << level << "\n";
