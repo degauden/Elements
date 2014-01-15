@@ -46,7 +46,7 @@
  * If the ElementsProgram API is used, the logging level and the log file
  * can be set by using the command line parameters <b>--log-level</b> and
  * <b>--log-file</b> and no direct use of the ElementsLogging::setLevel and
- * ElementsLogging::setLogFile methods is necessary. Exception of this rule is
+ * ElementsLogging::setLogFile should be performed. Exception of this rule is
  * any log messages which are sent before the command line parameters are handled
  * (like global or static variable initializations, or any other action before
  * the call of the main method). These messages (without an explicit call to the
@@ -67,8 +67,6 @@ public:
    * The different available levels of logging
    */
   typedef enum {
-    /// Panic messages (affecting multiple apps/servers/sites)
-    NONE = 0,
     /// Very severe error events that will lead the application to abort
     FATAL = 100,
     /// Error events that might still allow the application to continue running
@@ -271,6 +269,9 @@ private:
    * using the ElementsLogging::debug, ElementsLogging::info, etc methods.
    */
   class LogMessageStream {
+    // The P_log_func is a pointer to member function. If you have no idea what
+    // this is don't get scared! Just have a look in the following link:
+    // http://www.codeproject.com/Articles/7150/Member-Function-Pointers-and-the-Fastest-Possible
     using P_log_func = void (log4cpp::Category::*)(const std::string&);
   public:
     LogMessageStream(log4cpp::Category& logger, P_log_func log_func);

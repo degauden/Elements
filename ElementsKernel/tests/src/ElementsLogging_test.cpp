@@ -271,21 +271,6 @@ BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
   // Then
   messages = tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 1);
-  
-  // Given
-  tracker.reset();
-  logger.setLevel(ElementsLogging::LoggingLevel::NONE);
-  
-  // When
-  logger.debug("Debug message");
-  logger.info("Info message");
-  logger.warn("Warn message");
-  logger.error("Error message");
-  logger.fatal("Fatal message");
-  
-  // Then
-  messages = tracker.getMessages();
-//  BOOST_CHECK_EQUAL(messages.size(), 0);
 }
 
 //-----------------------------------------------------------------------------
