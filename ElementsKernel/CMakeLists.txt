@@ -27,6 +27,8 @@ elements_add_unit_test(ElementsProgram_test tests/src/ElementsProgram_test.cpp t
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(Version_test tests/src/Version_test.cpp tests/src/BoostTestMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
+elements_add_unit_test(ElementsLogging_test tests/src/ElementsLogging_test.cpp tests/src/BoostTestMain.cpp
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 #-----------------------
 # FileLocator_test
 elements_add_unit_test(FileLocator_test tests/src/FileLocator_test.cpp tests/src/BoostTestMain.cpp

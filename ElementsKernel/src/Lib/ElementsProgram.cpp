@@ -141,7 +141,7 @@ const po::variables_map ElementsProgram::getProgramOptions(
 // Log all options with a header
 void ElementsProgram::logAllOptions(string program_name) {
 
-  ElementsLogging& logger = ElementsLogging::getLogger();
+  ElementsLogging logger = ElementsLogging::getLogger("ElementsProgram");
 
   logger.info("##########################################################");
   logger.info("##########################################################");
@@ -243,7 +243,8 @@ void ElementsProgram::setup(int argc, char* argv[]) noexcept {
 
 
   // setup the logging
-  ElementsLogging::setupLogger(logging_level, log_file_name);
+  ElementsLogging::setLevel(logging_level);
+  ElementsLogging::setLogFile(log_file_name);
 
   // log all program options
   this->logAllOptions(getProgramName().string());
@@ -254,7 +255,7 @@ void ElementsProgram::run(int argc, char* argv[]) {
 
   setup(argc, argv);
 
-  ElementsLogging& logger = ElementsLogging::getLogger();
+  ElementsLogging logger = ElementsLogging::getLogger("ElementsProgram");
 
   try {
     mainMethod();
