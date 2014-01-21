@@ -141,6 +141,7 @@ namespace Elements {
     static const double gigaelectronvolt = 1.e+9*electronvolt;
     static const double teraelectronvolt = 1.e+12*electronvolt;
     static const double petaelectronvolt = 1.e+15*electronvolt;
+    static const double erg              = 1.e-7*joule;
 
     // symbols
     static const double MeV = megaelectronvolt;
