@@ -237,6 +237,7 @@ namespace Elements {
     //
     static const double lumen  = candela*steradian;
     static const double jansky = 1.e-26 * watt / (m2*hertz);
+    static const double microjansky = 1.e-6 * jansky;
 
     //
     // Illuminance [I][L^-2]
