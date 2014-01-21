@@ -33,18 +33,15 @@ set(CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 #set(CMAKE_SKIP_BUILD_RPATH TRUE)
 
 if (ELEMENTS_BUILD_PREFIX_CMD)
-
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${ELEMENTS_BUILD_PREFIX_CMD}")
   message(STATUS "Prefix build commands with '${ELEMENTS_BUILD_PREFIX_CMD}'")
-
 else()
-
-  find_program(ccache_cmd ccache)
+  find_program(ccache_cmd NAMES ccache-swig ccache)
   find_program(distcc_cmd distcc)
   mark_as_advanced(ccache_cmd distcc_cmd)
 
   if(ccache_cmd)
-    option(CMAKE_USE_CCACHE "Use ccache to speed up compilation." ON)
+    option(CMAKE_USE_CCACHE "Use ccache to speed up compilation." OFF)
     if(CMAKE_USE_CCACHE)
       set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${ccache_cmd})
       message(STATUS "Using ccache for building")
@@ -54,14 +51,15 @@ else()
   if(distcc_cmd)
     option(CMAKE_USE_DISTCC "Use distcc to speed up compilation." OFF)
     if(CMAKE_USE_DISTCC)
-      set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${distcc_cmd})
-      message(STATUS "Using distcc for building")
       if(CMAKE_USE_CCACHE)
-        message(WARNING "Cannot use distcc and ccache at the same time: using distcc")
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "CCACHE_PREFIX=${distcc_cmd} ${ccache_cmd}")
+        message(STATUS "Enabling distcc builds in ccache")
+      else()
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${distcc_cmd})
+        message(STATUS "Using distcc for building")
       endif()
     endif()
   endif()
-
 endif()
 
 # This option make sense only if we have 'objcopy'
