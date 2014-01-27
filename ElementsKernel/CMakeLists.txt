@@ -10,10 +10,6 @@ elements_add_library(ElementsKernel src/Lib/*.cpp
                   PUBLIC_HEADERS ElementsKernel)
 
 #---Tests-------------------------------------------------------------------
-elements_add_unit_test(test_DirSearchPath tests/src/test_DirSearchPath.cpp
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(test_PathResolver tests/src/test_PathResolver.cpp
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(ElementsTime_test tests/src/ElementsTime_test.cpp tests/src/BoostTestMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(ElementsTiming_test tests/src/ElementsTiming_test.cpp tests/src/BoostTestMain.cpp
@@ -30,17 +26,13 @@ elements_add_unit_test(Version_test tests/src/Version_test.cpp tests/src/BoostTe
 elements_add_unit_test(ElementsLogging_test tests/src/ElementsLogging_test.cpp tests/src/BoostTestMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 #-----------------------
-# FileLocator_test
-elements_add_unit_test(FileLocator_test tests/src/FileLocator_test.cpp tests/src/BoostTestMain.cpp
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
-#-----------------------
 # Path_test
 elements_add_unit_test(Path_test tests/src/Path_test.cpp tests/src/BoostTestMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 
 if(ELEMENTS_BUILD_TESTS)
-  set_property(TEST ElementsKernel.test_PathResolver PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+  set_property(TEST PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()
 
 if(ELEMENTS_HIDE_WARNINGS)
