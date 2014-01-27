@@ -31,10 +31,6 @@ elements_add_unit_test(Path_test tests/src/Path_test.cpp tests/src/BoostTestMain
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 
-if(ELEMENTS_BUILD_TESTS)
-  set_property(TEST PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-endif()
-
 if(ELEMENTS_HIDE_WARNINGS)
   if(UNIX)
     # This hides warnings from a broken header file in CppUnit, but may
