@@ -27,7 +27,7 @@ elements_add_unit_test(ElementsLogging_test tests/src/ElementsLogging_test.cpp t
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 #-----------------------
 # Path_test
-elements_add_unit_test(Path_test tests/src/Path_test.cpp tests/src/BoostTestMain.cpp
+elements_add_unit_test(PathSearch_test tests/src/PathSearch_test.cpp tests/src/BoostTestMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 

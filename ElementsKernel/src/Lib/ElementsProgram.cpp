@@ -19,7 +19,7 @@ namespace fs = boost::filesystem;
 
 #include "ElementsKernel/ElementsException.h"
 #include "ElementsKernel/ElementsLogging.h"
-#include "ElementsKernel/Path.h"
+#include "ElementsKernel/PathSearch.h"
 
 #include "ElementsKernel/ElementsProgram.h"
 
@@ -37,7 +37,7 @@ const fs::path ElementsProgram::getDefaultConfigFile(const
   fs::path conf_name(program_name);
   conf_name.replace_extension("conf");
   // Construct and return the full path
-  vector<fs::path> configFile = searchFileInEnvVariable(conf_name.string(), CONF_ENV_VAR_NAME);
+  vector<fs::path> configFile = pathSearchInEnvVariable(conf_name.string(), CONF_ENV_VAR_NAME);
   if (configFile.size() == 0) {
     stringstream error_buffer;
         error_buffer << "No config file " << conf_name.string() << " in " << CONF_ENV_VAR_NAME << "\n";

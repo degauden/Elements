@@ -8,7 +8,7 @@
 #include <sstream>
 #include <boost/algorithm/string.hpp>
 
-#include "ElementsKernel/Path.h"
+#include "ElementsKernel/PathSearch.h"
 #include "ElementsKernel/ElementsException.h"
 
 namespace fs = boost::filesystem;
@@ -74,7 +74,7 @@ vector<string> pathSearch(string searched_name, string directory,
  *
  * and call pathSearch(...) for each of them
  */
-vector<fs::path> searchFileInEnvVariable(std::string file_name,
+vector<fs::path> pathSearchInEnvVariable(std::string file_name,
     std::string path_like_env_variable) {
 
   // Placeholder for the to-be-returned search result
