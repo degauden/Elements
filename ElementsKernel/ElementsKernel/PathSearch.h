@@ -3,8 +3,8 @@
  * @date Dec 4, 2013
  * @author Pierre Dubath
  */
-#ifndef PATH_H_
-#define PATH_H_
+#ifndef SEARCHPATH_H_
+#define SEARCHPATH_H_
 
 #include <string>
 #include <vector>
@@ -46,7 +46,7 @@ ELEMENTS_API std::vector<std::string> pathSearch(std::string searched_name,
  *
  * and call pathSearch(...) for each of them
  */
-ELEMENTS_API std::vector<boost::filesystem::path> searchFileInEnvVariable(std::string file_name, std::string path_like_env_variable);
+ELEMENTS_API std::vector<boost::filesystem::path> pathSearchInEnvVariable(std::string file_name, std::string path_like_env_variable);
 
 //  /**
 //   * @brief
@@ -71,4 +71,4 @@ ELEMENTS_API std::vector<boost::filesystem::path> searchFileInEnvVariable(std::s
 //  static std::vector<boost::filesystem::path> tokenizePathLikeVariable(
 //      std::string path_like_env_variable);
 
-#endif /* PATH_H_ */
+#endif /* SEARCHPATH_H_ */
