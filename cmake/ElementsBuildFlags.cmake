@@ -49,6 +49,10 @@ option(ELEMENTS_FORTIFY
        "enable g++ fortify option"
        ${ELEMENTS_FORTIFY_DEFAULT})
 
+option(USE_LOCAL_INSTALLAREA
+       "Use local InstallArea for the Developers"
+       OFF)
+
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
