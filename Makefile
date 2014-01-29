@@ -50,7 +50,7 @@ CMAKE = cmake
 # Euclid for the moment.
 #
 ifneq ($(wildcard $(CURDIR)/toolchain.cmake),)
-  override CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/toolchain.cmake
+  override CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/toolchain.cmake -DUSE_LOCAL_INSTALLAREA=ON
 endif
 
 ifndef BINARY_TAG
