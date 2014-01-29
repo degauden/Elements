@@ -152,6 +152,11 @@ macro(elements_project project version)
       set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/InstallArea/${BINARY_TAG} CACHE PATH
           "Install path prefix, prepended onto install directories." FORCE )
     endif()
+  else()
+    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+      set(CMAKE_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
+          "Install path prefix, prepended onto install directories." FORCE )
+    endif()  
   endif()
 
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
