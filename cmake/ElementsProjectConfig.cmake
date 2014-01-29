@@ -147,9 +147,11 @@ macro(elements_project project version)
   set(ELEMENTS_DATA_SUFFIXES DBASE;PARAM;EXTRAPACKAGES CACHE STRING
       "List of (suffix) directories where to look for data packages.")
 
-  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/InstallArea/${BINARY_TAG} CACHE PATH
-      "Install path prefix, prepended onto install directories." FORCE )
+  if(USE_LOCAL_INSTALLAREA)
+    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+      set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/InstallArea/${BINARY_TAG} CACHE PATH
+          "Install path prefix, prepended onto install directories." FORCE )
+    endif()
   endif()
 
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
