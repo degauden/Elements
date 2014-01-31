@@ -1,5 +1,5 @@
 /**
- * @file Path.cpp
+ * @file PathSearch.cpp
  *
  * Created on: Dec 4, 2013
  *     Author: Pierre Dubath
