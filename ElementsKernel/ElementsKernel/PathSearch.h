@@ -1,5 +1,5 @@
 /**
- * @file Path.h
+ * @file PathSearch.h
  * @date Dec 4, 2013
  * @author Pierre Dubath
  */
