@@ -97,7 +97,7 @@ public:
    * 
    * @param level The new message level
    */
-  static void setLevel(LoggingLevel level);
+  ELEMENTS_API static void setLevel(LoggingLevel level);
   
   /**
    * @brief
@@ -115,7 +115,7 @@ public:
    * 
    * @param fileName The file where the log messages will be stored
    */
-  static void setLogFile(const boost::filesystem::path& fileName);
+  ELEMENTS_API static void setLogFile(const boost::filesystem::path& fileName);
   
   /**
    * Logs a debug message.
@@ -268,7 +268,7 @@ private:
    * during the destruction of the object. Instances can only be retrieved by
    * using the ElementsLogging::debug, ElementsLogging::info, etc methods.
    */
-  class LogMessageStream {
+  class ELEMENTS_API LogMessageStream {
     // The P_log_func is a pointer to member function. If you have no idea what
     // this is don't get scared! Just have a look in the following link:
     // http://www.codeproject.com/Articles/7150/Member-Function-Pointers-and-the-Fastest-Possible
