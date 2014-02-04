@@ -457,6 +457,11 @@ macro(elements_project project version)
 
   include(CPack)
 
+  message(STATUS "Creating the source tarball: ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz")
+  file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES)
+  execute_process(COMMAND tar zcf ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
+                  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+
   # Add Doxygen generation
   find_package(Doxygen)
   if(DOXYGEN_FOUND)
