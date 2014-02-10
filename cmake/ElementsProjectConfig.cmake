@@ -986,11 +986,13 @@ endmacro()
 # directories to the variable.
 #-------------------------------------------------------------------------------
 function(elements_get_packages var)
+  # FIXME: trick to get the relative path to the build directory
+  file(GLOB rel_build_dir RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
   set(packages)
   file(GLOB_RECURSE cmakelist_files RELATIVE ${CMAKE_SOURCE_DIR} CMakeLists.txt)
   foreach(file ${cmakelist_files})
-    # ignore the source directory itself
-    if(NOT path STREQUAL CMakeLists.txt)
+    # ignore the source directory itself and files in the build directory
+    if(NOT file STREQUAL CMakeLists.txt AND NOT file MATCHES "^${rel_build_dir}")
       get_filename_component(package ${file} PATH)
       list(APPEND packages ${package})
     endif()
