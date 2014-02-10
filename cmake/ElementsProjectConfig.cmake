@@ -285,6 +285,19 @@ macro(elements_project project version)
   set(packages ${sorted_packages})
   #message(STATUS "${packages}")
 
+  # Search standard libraries.
+  set(std_library_path)
+  if(CMAKE_HOST_UNIX)
+    # Guess the LD_LIBRARY_PATH required by the compiler we use (only Unix).
+    _elements_find_standard_lib(libstdc++.so std_library_path)
+    if (CMAKE_CXX_COMPILER MATCHES "icpc")
+      _elements_find_standard_lib(libimf.so icc_libdir)
+      set(std_library_path ${std_library_path} ${icc_libdir})
+    endif()
+    # this ensures that the std libraries are in RPATH
+    link_directories(${std_library_path})
+  endif()
+
   file(WRITE ${CMAKE_BINARY_DIR}/subdirs_deps.dot "digraph subdirs_deps {\n")
   # Add all subdirectories to the project build.
   list(LENGTH packages packages_count)
@@ -2166,6 +2179,22 @@ function(elements_generate_env_conf filename)
 endfunction()
 
 #-------------------------------------------------------------------------------
+# _elements_find_standard_libdir(libname var)
+#
+# Find the location of a standard library asking the compiler.
+#-------------------------------------------------------------------------------
+function(_elements_find_standard_lib libname var)
+  #message(STATUS "find ${libname} -> ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -print-file-name=${libname}")
+  set(_cmd "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -print-file-name=${libname}")
+  separate_arguments(_cmd)
+  execute_process(COMMAND ${_cmd} OUTPUT_VARIABLE cpplib)
+  get_filename_component(cpplib ${cpplib} REALPATH)
+  get_filename_component(cpplib ${cpplib} PATH)
+  #message(STATUS "${libname} lib dir -> ${cpplib}")
+  set(${var} ${cpplib} PARENT_SCOPE)
+endfunction()
+
+#-------------------------------------------------------------------------------
 # elements_external_project_environment()
 #
 # Collect the environment details from the found packages and add them to the
@@ -2181,19 +2210,8 @@ macro(elements_external_project_environment)
   set(environment)
   set(library_path2)
 
-  if(CMAKE_HOST_UNIX)
-    # Guess the LD_LIBRARY_PATH required by the compiler we use (only Unix).
-    #message(STATUS "find libstdc++.so -> ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -print-file-name=libstdc++.so")
-    set(_cmd "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -print-file-name=libstdc++.so")
-    separate_arguments(_cmd)
-    execute_process(COMMAND ${_cmd} OUTPUT_VARIABLE cpplib)
-    get_filename_component(cpplib ${cpplib} REALPATH)
-    get_filename_component(cpplib ${cpplib} PATH)
-    # Special hack for the way gcc is installed onf AFS at CERN.
-    string(REPLACE "contrib/gcc" "external/gcc" cpplib ${cpplib})
-    #message(STATUS "C++ lib dir -> ${cpplib}")
-    set(library_path2 ${cpplib})
-  endif()
+  # add path to standard libraries to LD_LIBRARY_PATH
+  set(library_path2 ${std_library_path})
 
   get_property(packages_found GLOBAL PROPERTY PACKAGES_FOUND)
   #message("${packages_found}")
