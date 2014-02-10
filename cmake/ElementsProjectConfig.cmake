@@ -335,12 +335,6 @@ macro(elements_project project version)
         PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python/lib-dynload
         PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/conf
         PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/aux)
-  #   - build dirs
-  set(project_build_environment ${project_build_environment}
-      PREPEND PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-      PREPEND LD_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-      PREPEND PYTHONPATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-      PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python)
 
   message(STATUS "  environment for local subdirectories")
   #   - project root (for relocatability)
@@ -394,6 +388,13 @@ macro(elements_project project version)
 
     
   endforeach()
+
+  #   - build dirs
+  set(project_build_environment ${project_build_environment}
+      PREPEND PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+      PREPEND LD_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+      PREPEND PYTHONPATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+      PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python)
 
   # - produce environment XML description
   #   release version
