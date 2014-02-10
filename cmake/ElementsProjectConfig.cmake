@@ -561,14 +561,14 @@ macro(_elements_use_other_projects)
                    PATH_SUFFIXES ${suffixes})
       if(${other_project}_FOUND)
         message(STATUS "  found ${other_project} ${${other_project}_VERSION} ${${other_project}_DIR}")
-        if (astrotools_version)
-        if(NOT astrotools_version STREQUAL ${other_project}_astrotools_version)
-          if(${other_project}_astrotools_version)
-            set(hint_message "with the option '-DCMAKE_TOOLCHAIN_FILE=.../astrotools-${${other_project}_astrotools_version}.cmake'")
-          else()
-            set(hint_message "without the option '-DCMAKE_TOOLCHAIN_FILE=...'")
-          endif()
-          message(FATAL_ERROR "Incompatible versions of astrotools toolchains:
+        if(astrotools_version)
+          if(NOT astrotools_version STREQUAL ${other_project}_astrotools_version)
+            if(${other_project}_astrotools_version)
+              set(hint_message "with the option '-DCMAKE_TOOLCHAIN_FILE=.../astrotools-${${other_project}_astrotools_version}.cmake'")
+            else()
+              set(hint_message "without the option '-DCMAKE_TOOLCHAIN_FILE=...'")
+            endif()
+            message(FATAL_ERROR "Incompatible versions of astrotools toolchains:
   ${CMAKE_PROJECT_NAME} -> ${astrotools_version}
   ${other_project} ${${other_project}_VERSION} -> ${${other_project}_astrotools_version}
 
