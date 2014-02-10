@@ -1497,6 +1497,7 @@ function(elements_add_python_module module)
   # require Python libraries
   find_package(PythonLibs QUIET REQUIRED)
 
+  include_directories(${PYTHON_INCLUDE_DIRS})
   add_library(${module} MODULE ${srcs})
   if(win32)
     set_target_properties(${module} PROPERTIES SUFFIX .pyd PREFIX "")
@@ -2116,9 +2117,14 @@ function(elements_generate_env_conf filename)
   endforeach()
 
   # include inherited environments
-  foreach(other_project ${used_elements_projects})
-    set(data "${data}  <env:include hints=\"${${other_project}_DIR}\">${other_project}Environment.xml</env:include>\n")
+  # (note: it's important that the full search path is ready before we start including)
+  foreach(other_project ${used_gaudi_projects})
+    set(data "${data}  <env:search_path>${${other_project}_DIR}</env:search_path>\n")
   endforeach()
+  foreach(other_project ${used_gaudi_projects})
+    set(data "${data}  <env:include>${other_project}Environment.xml</env:include>\n")
+  endforeach()
+
 
   set(commands ${ARGN})
   #message(STATUS "start - ${commands}")
