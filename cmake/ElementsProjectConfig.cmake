@@ -915,7 +915,7 @@ macro(elements_collect_subdir_deps)
     set(${_p}_DEPENDENCIES)
     # parse the CMakeLists.txt
     file(READ ${CMAKE_SOURCE_DIR}/${_p}/CMakeLists.txt file_contents)
-    string(REGEX MATCHALL "elements_depends_on_subdirs *\\(([^)]+)\\)" vars ${file_contents})
+    string(REGEX MATCHALL "elements_depends_on_subdirs *\\(([^)]+)\\)" vars "${file_contents}")
     foreach(var ${vars})
       # extract the individual subdir names
       string(REGEX REPLACE "elements_depends_on_subdirs *\\(([^)]+)\\)" "\\1" __p ${var})
