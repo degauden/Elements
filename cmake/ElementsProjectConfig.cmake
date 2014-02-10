@@ -1546,12 +1546,15 @@ endfunction()
 #                     source1 source2 ...
 #                     LINK_LIBRARIES library1 library2 ...
 #                     INCLUDE_DIRS dir1 package2 ...
+#                     [WORKING_DIRECTORY dir]
 #                     [ENVIRONMENT variable[+]=value ...]
 #                     [TIMEOUT seconds]
 #                     [TYPE Boost|CppUnit])
 #
 # Special version of elements_add_executable which automatically adds the dependency
-# on CppUnit.
+# on CppUnit and declares the test to CTest (add_test).
+# The WORKING_DIRECTORY option can be passed if the command needs to be run from
+# a fixed directory.
 # If special environment settings are needed, they can be specified in the
 # section ENVIRONMENT as <var>=<value> or <var>+=<value>, where the second format
 # prepends the value to the PATH-like variable.
@@ -1560,12 +1563,16 @@ endfunction()
 function(elements_add_unit_test executable)
   if(ELEMENTS_BUILD_TESTS)
 
-    CMAKE_PARSE_ARGUMENTS(${executable}_UNIT_TEST "" "TYPE;TIMEOUT" "ENVIRONMENT" ${ARGN})
+    CMAKE_PARSE_ARGUMENTS(${executable}_UNIT_TEST "" "TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT" ${ARGN})
 
     elements_common_add_build(${${executable}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
     if(NOT ${executable}_UNIT_TEST_TYPE)
       set(${executable}_UNIT_TEST_TYPE CppUnit)
+    endif()
+    
+    if(NOT ${executable}_UNIT_TEST_WORKING_DIRECTORY)
+      set(${executable}_UNIT_TEST_WORKING_DIRECTORY .)
     endif()
 
     if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
@@ -1596,10 +1603,11 @@ function(elements_add_unit_test executable)
       endif()
     endforeach()
 
-    add_test(${package}.${executable}
-             ${env_cmd} ${extra_env} --xml ${env_xml}
-               ${executable}${exec_suffix})
-
+    add_test(NAME ${package}.${executable}
+             WORKING_DIRECTORY ${${executable}_UNIT_TEST_WORKING_DIRECTORY}
+             COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
+             ${executable}${exec_suffix})
+                
     if(${executable}_UNIT_TEST_TIMEOUT)
       set_property(TEST ${package}.${executable} PROPERTY TIMEOUT ${${executable}_UNIT_TEST_TIMEOUT})
     endif()
@@ -1611,6 +1619,7 @@ endfunction()
 #-------------------------------------------------------------------------------
 # elements_add_test(<name>
 #                [FRAMEWORK options1 options2 ...|COMMAND cmd args ...]
+#                [WORKING_DIRECTORY dir]
 #                [ENVIRONMENT variable[+]=value ...]
 #                [DEPENDS other_test ...]
 #                [FAILS] [PASSREGEX regex] [FAILREGEX regex]
@@ -1623,6 +1632,8 @@ endfunction()
 # If special environment settings are needed, they can be specified in the
 # section ENVIRONMENT as <var>=<value> or <var>+=<value>, where the second format
 # prepends the value to the PATH-like variable.
+# The WORKING_DIRECTORY option can be passed if the command needs to be run from
+# a fixed directory (ignored by QMTEST tests).
 # Great flexibility is given by the following options:
 #  FAILS - the tests succeds if the command fails (return code !=0)
 #  DEPENDS - ensures an order of execution of tests (e.g. do not run a read
@@ -1632,8 +1643,7 @@ endfunction()
 #
 #-------------------------------------------------------------------------------
 function(elements_add_test name)
-  CMAKE_PARSE_ARGUMENTS(ARG "FAILS" "TIMEOUT" "ENVIRONMENT;FRAMEWORK;COMMAND;DEPENDS;PASSREGEX;FAILREGEX" ${ARGN})
-
+  CMAKE_PARSE_ARGUMENTS(ARG "FAILS" "TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT;FRAMEWORK;COMMAND;DEPENDS;PASSREGEX;FAILREGEX" ${ARGN})
   elements_get_package_name(package)
 
   if(ARG_FRAMEWORK)
@@ -1653,6 +1663,11 @@ function(elements_add_test name)
     message(FATAL_ERROR "Type of test '${name}' not declared")
   endif()
 
+  if(NOT ARG_WORKING_DIRECTORY)
+    set(ARG_WORKING_DIRECTORY .)
+  endif()
+
+
   foreach(var ${ARG_ENVIRONMENT})
     string(FIND ${var} "+=" is_prepend)
     if(NOT is_prepend LESS 0)
@@ -1664,10 +1679,12 @@ function(elements_add_test name)
     endif()
   endforeach()
 
-  add_test(${package}.${name}
-           ${env_cmd}
-               ${extra_env} --xml ${env_xml}
-               ${cmdline})
+  add_test(NAME ${package}.${name}
+           WORKING_DIRECTORY ${ARG_WORKING_DIRECTORY}
+           COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
+           ${cmdline})
+ 
+
 
   if(ARG_DEPENDS)
     foreach(t ${ARG_DEPENDS})
