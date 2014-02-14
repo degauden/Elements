@@ -36,7 +36,7 @@ if (ELEMENTS_BUILD_PREFIX_CMD)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${ELEMENTS_BUILD_PREFIX_CMD}")
   message(STATUS "Prefix build commands with '${ELEMENTS_BUILD_PREFIX_CMD}'")
 else()
-  find_program(ccache_cmd NAMES ccache-swig ccache)
+  find_program(ccache_cmd NAMES ccache ccache-swig)
   find_program(distcc_cmd distcc)
   mark_as_advanced(ccache_cmd distcc_cmd)
 
@@ -106,12 +106,6 @@ find_package(PythonInterp)
 # runtime.
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
-  if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
-    if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/modules)
-      set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
-    endif()
-    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
-  endif()
   project(${project})
   #----For some reason this is not set by calling 'project()'
   set(CMAKE_PROJECT_NAME ${project})
@@ -210,6 +204,29 @@ macro(elements_project project version)
   if(used_elements_projects)
     list(REMOVE_DUPLICATES used_elements_projects)
   endif()
+  #message(STATUS "used_gaudi_projects -> ${used_gaudi_projects}")
+
+  # Ensure that we have the correct order of the modules search path.
+  # (the included <project>Config.cmake files are prepending their entries to
+  # the module path).
+  foreach(_p ${used_gaudi_projects})
+    if(IS_DIRECTORY ${${_p}_DIR}/cmake)
+      if(IS_DIRECTORY ${${_p}_DIR}/cmake/modules)
+        set(CMAKE_MODULE_PATH ${${_p}_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+      endif()
+      set(CMAKE_MODULE_PATH ${${_p}_DIR}/cmake ${CMAKE_MODULE_PATH})
+    endif()
+  endforeach()
+  if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
+    if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/modules)
+      set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+    endif()
+    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+  endif()
+  if(CMAKE_MODULE_PATH)
+    list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
+  endif()
+  #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
 
   # Find the required data packages and add them to the environment.
   _elements_handle_data_packages(${PROJECT_DATA})
@@ -283,6 +300,21 @@ macro(elements_project project version)
   #message(STATUS "${packages}")
   set(packages ${sorted_packages})
   #message(STATUS "${packages}")
+
+  # Search standard libraries.
+  set(std_library_path)
+  if(CMAKE_HOST_UNIX)
+    # Guess the LD_LIBRARY_PATH required by the compiler we use (only Unix).
+    _elements_find_standard_lib(libstdc++.so std_library_path)
+    if (CMAKE_CXX_COMPILER MATCHES "icpc")
+      _elements_find_standard_lib(libimf.so icc_libdir)
+      set(std_library_path ${std_library_path} ${icc_libdir})
+    endif()
+    # this ensures that the std libraries are in RPATH
+    link_directories(${std_library_path})
+  endif()
+
+  file(WRITE ${CMAKE_BINARY_DIR}/subdirs_deps.dot "digraph subdirs_deps {\n")
   # Add all subdirectories to the project build.
   list(LENGTH packages packages_count)
   set(package_idx 0)
@@ -291,6 +323,7 @@ macro(elements_project project version)
     message(STATUS "Adding directory ${package} (${package_idx}/${packages_count})")
     add_subdirectory(${package})
   endforeach()
+  file(APPEND ${CMAKE_BINARY_DIR}/subdirs_deps.dot "}\n")
 
   # FIXME: it is not possible to produce the file python.zip at installation time
   # because the install scripts of the subdirectories are executed after those
@@ -311,8 +344,28 @@ macro(elements_project project version)
   # (so far, the build and the release envirnoments are identical)
   set(project_build_environment ${project_environment})
 
-  message(STATUS "  environment for local subdirectories")
   # - collect internal environment
+  message(STATUS "  environment for the project")
+  #   - installation dirs
+  set(project_environment ${project_environment}
+        PREPEND PATH \${.}/scripts
+        PREPEND PATH \${.}/bin
+        PREPEND LD_LIBRARY_PATH \${.}/lib
+        PREPEND PYTHONPATH \${.}/python
+        PREPEND PYTHONPATH \${.}/python/lib-dynload
+        PREPEND ELEMENTS_CONF_PATH \${.}/conf
+        PREPEND ELEMENTS_AUX_PATH \${.}/aux)
+  #     (installation dirs added to build env to be able to test pre-built bins)
+  set(project_build_environment ${project_build_environment}
+        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/scripts
+        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/bin
+        PREPEND LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib
+        PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python
+        PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python/lib-dynload
+        PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/conf
+        PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/aux)
+
+  message(STATUS "  environment for local subdirectories")
   #   - project root (for relocatability)
   string(TOUPPER ${project} _proj)
   #set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
@@ -365,22 +418,13 @@ macro(elements_project project version)
     
   endforeach()
 
-  message(STATUS "  environment for the project")
-  #   - installation dirs
-  set(project_environment ${project_environment}
-        PREPEND PATH \${.}/scripts
-        PREPEND PATH \${.}/bin
-        PREPEND LD_LIBRARY_PATH \${.}/lib
-        PREPEND PYTHONPATH \${.}/python
-        PREPEND PYTHONPATH \${.}/python/lib-dynload
-        PREPEND ELEMENTS_CONF_PATH \${.}/conf
-        PREPEND ELEMENTS_AUX_PATH \${.}/aux)
   #   - build dirs
   set(project_build_environment ${project_build_environment}
       PREPEND PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       PREPEND LD_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python)
+
   # - produce environment XML description
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
@@ -455,6 +499,11 @@ macro(elements_project project version)
   endif()
 
   include(CPack)
+
+  message(STATUS "Creating the source tarball: ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz")
+  file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES)
+  execute_process(COMMAND tar zcf ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
+                  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 
   # Add Doxygen generation
   find_package(Doxygen)
@@ -555,14 +604,14 @@ macro(_elements_use_other_projects)
                    PATH_SUFFIXES ${suffixes})
       if(${other_project}_FOUND)
         message(STATUS "  found ${other_project} ${${other_project}_VERSION} ${${other_project}_DIR}")
-        if (astrotools_version)
-        if(NOT astrotools_version STREQUAL ${other_project}_astrotools_version)
-          if(${other_project}_astrotools_version)
-            set(hint_message "with the option '-DCMAKE_TOOLCHAIN_FILE=.../astrotools-${${other_project}_astrotools_version}.cmake'")
-          else()
-            set(hint_message "without the option '-DCMAKE_TOOLCHAIN_FILE=...'")
-          endif()
-          message(FATAL_ERROR "Incompatible versions of astrotools toolchains:
+        if(astrotools_version)
+          if(NOT astrotools_version STREQUAL ${other_project}_astrotools_version)
+            if(${other_project}_astrotools_version)
+              set(hint_message "with the option '-DCMAKE_TOOLCHAIN_FILE=.../astrotools-${${other_project}_astrotools_version}.cmake'")
+            else()
+              set(hint_message "without the option '-DCMAKE_TOOLCHAIN_FILE=...'")
+            endif()
+            message(FATAL_ERROR "Incompatible versions of astrotools toolchains:
   ${CMAKE_PROJECT_NAME} -> ${astrotools_version}
   ${other_project} ${${other_project}_VERSION} -> ${${other_project}_astrotools_version}
 
@@ -876,6 +925,12 @@ function(elements_depends_on_subdirs)
     # prevent multiple executions
     set(elements_depends_on_subdirs_called TRUE PARENT_SCOPE)
   endif()
+  
+
+  # add the dependencies lines to the DOT dependency graph
+  foreach(d ${ARGN})
+    file(APPEND ${CMAKE_BINARY_DIR}/subdirs_deps.dot "\"${subdir_name}\" -> \"${d}\";\n")
+  endforeach()
 endfunction()
 
 #-------------------------------------------------------------------------------
@@ -889,7 +944,7 @@ macro(elements_collect_subdir_deps)
     set(${_p}_DEPENDENCIES)
     # parse the CMakeLists.txt
     file(READ ${CMAKE_SOURCE_DIR}/${_p}/CMakeLists.txt file_contents)
-    string(REGEX MATCHALL "elements_depends_on_subdirs *\\(([^)]+)\\)" vars ${file_contents})
+    string(REGEX MATCHALL "elements_depends_on_subdirs *\\(([^)]+)\\)" vars "${file_contents}")
     foreach(var ${vars})
       # extract the individual subdir names
       string(REGEX REPLACE "elements_depends_on_subdirs *\\(([^)]+)\\)" "\\1" __p ${var})
@@ -960,11 +1015,13 @@ endmacro()
 # directories to the variable.
 #-------------------------------------------------------------------------------
 function(elements_get_packages var)
+  # FIXME: trick to get the relative path to the build directory
+  file(GLOB rel_build_dir RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
   set(packages)
   file(GLOB_RECURSE cmakelist_files RELATIVE ${CMAKE_SOURCE_DIR} CMakeLists.txt)
   foreach(file ${cmakelist_files})
-    # ignore the source directory itself
-    if(NOT path STREQUAL CMakeLists.txt)
+    # ignore the source directory itself and files in the build directory
+    if(NOT file STREQUAL CMakeLists.txt AND NOT file MATCHES "^${rel_build_dir}")
       get_filename_component(package ${file} PATH)
       list(APPEND packages ${package})
     endif()
@@ -1484,6 +1541,7 @@ function(elements_add_python_module module)
   # require Python libraries
   find_package(PythonLibs QUIET REQUIRED)
 
+  include_directories(${PYTHON_INCLUDE_DIRS})
   add_library(${module} MODULE ${srcs})
   if(win32)
     set_target_properties(${module} PROPERTIES SUFFIX .pyd PREFIX "")
@@ -1529,12 +1587,15 @@ endfunction()
 #                     source1 source2 ...
 #                     LINK_LIBRARIES library1 library2 ...
 #                     INCLUDE_DIRS dir1 package2 ...
+#                     [WORKING_DIRECTORY dir]
 #                     [ENVIRONMENT variable[+]=value ...]
 #                     [TIMEOUT seconds]
 #                     [TYPE Boost|CppUnit])
 #
 # Special version of elements_add_executable which automatically adds the dependency
-# on CppUnit.
+# on CppUnit and declares the test to CTest (add_test).
+# The WORKING_DIRECTORY option can be passed if the command needs to be run from
+# a fixed directory.
 # If special environment settings are needed, they can be specified in the
 # section ENVIRONMENT as <var>=<value> or <var>+=<value>, where the second format
 # prepends the value to the PATH-like variable.
@@ -1543,12 +1604,16 @@ endfunction()
 function(elements_add_unit_test executable)
   if(ELEMENTS_BUILD_TESTS)
 
-    CMAKE_PARSE_ARGUMENTS(${executable}_UNIT_TEST "" "TYPE;TIMEOUT" "ENVIRONMENT" ${ARGN})
+    CMAKE_PARSE_ARGUMENTS(${executable}_UNIT_TEST "" "TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT" ${ARGN})
 
     elements_common_add_build(${${executable}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
     if(NOT ${executable}_UNIT_TEST_TYPE)
       set(${executable}_UNIT_TEST_TYPE CppUnit)
+    endif()
+    
+    if(NOT ${executable}_UNIT_TEST_WORKING_DIRECTORY)
+      set(${executable}_UNIT_TEST_WORKING_DIRECTORY .)
     endif()
 
     if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
@@ -1579,10 +1644,11 @@ function(elements_add_unit_test executable)
       endif()
     endforeach()
 
-    add_test(${package}.${executable}
-             ${env_cmd} ${extra_env} --xml ${env_xml}
-               ${executable}${exec_suffix})
-
+    add_test(NAME ${package}.${executable}
+             WORKING_DIRECTORY ${${executable}_UNIT_TEST_WORKING_DIRECTORY}
+             COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
+             ${executable}${exec_suffix})
+                
     if(${executable}_UNIT_TEST_TIMEOUT)
       set_property(TEST ${package}.${executable} PROPERTY TIMEOUT ${${executable}_UNIT_TEST_TIMEOUT})
     endif()
@@ -1594,6 +1660,7 @@ endfunction()
 #-------------------------------------------------------------------------------
 # elements_add_test(<name>
 #                [FRAMEWORK options1 options2 ...|COMMAND cmd args ...]
+#                [WORKING_DIRECTORY dir]
 #                [ENVIRONMENT variable[+]=value ...]
 #                [DEPENDS other_test ...]
 #                [FAILS] [PASSREGEX regex] [FAILREGEX regex]
@@ -1606,6 +1673,8 @@ endfunction()
 # If special environment settings are needed, they can be specified in the
 # section ENVIRONMENT as <var>=<value> or <var>+=<value>, where the second format
 # prepends the value to the PATH-like variable.
+# The WORKING_DIRECTORY option can be passed if the command needs to be run from
+# a fixed directory (ignored by QMTEST tests).
 # Great flexibility is given by the following options:
 #  FAILS - the tests succeds if the command fails (return code !=0)
 #  DEPENDS - ensures an order of execution of tests (e.g. do not run a read
@@ -1615,8 +1684,7 @@ endfunction()
 #
 #-------------------------------------------------------------------------------
 function(elements_add_test name)
-  CMAKE_PARSE_ARGUMENTS(ARG "FAILS" "TIMEOUT" "ENVIRONMENT;FRAMEWORK;COMMAND;DEPENDS;PASSREGEX;FAILREGEX" ${ARGN})
-
+  CMAKE_PARSE_ARGUMENTS(ARG "FAILS" "TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT;FRAMEWORK;COMMAND;DEPENDS;PASSREGEX;FAILREGEX" ${ARGN})
   elements_get_package_name(package)
 
   if(ARG_FRAMEWORK)
@@ -1636,6 +1704,11 @@ function(elements_add_test name)
     message(FATAL_ERROR "Type of test '${name}' not declared")
   endif()
 
+  if(NOT ARG_WORKING_DIRECTORY)
+    set(ARG_WORKING_DIRECTORY .)
+  endif()
+
+
   foreach(var ${ARG_ENVIRONMENT})
     string(FIND ${var} "+=" is_prepend)
     if(NOT is_prepend LESS 0)
@@ -1647,10 +1720,12 @@ function(elements_add_test name)
     endif()
   endforeach()
 
-  add_test(${package}.${name}
-           ${env_cmd}
-               ${extra_env} --xml ${env_xml}
-               ${cmdline})
+  add_test(NAME ${package}.${name}
+           WORKING_DIRECTORY ${ARG_WORKING_DIRECTORY}
+           COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
+           ${cmdline})
+ 
+
 
   if(ARG_DEPENDS)
     foreach(t ${ARG_DEPENDS})
@@ -2082,9 +2157,14 @@ function(elements_generate_env_conf filename)
   endforeach()
 
   # include inherited environments
-  foreach(other_project ${used_elements_projects})
-    set(data "${data}  <env:include hints=\"${${other_project}_DIR}\">${other_project}Environment.xml</env:include>\n")
+  # (note: it's important that the full search path is ready before we start including)
+  foreach(other_project ${used_gaudi_projects})
+    set(data "${data}  <env:search_path>${${other_project}_DIR}</env:search_path>\n")
   endforeach()
+  foreach(other_project ${used_gaudi_projects})
+    set(data "${data}  <env:include>${other_project}Environment.xml</env:include>\n")
+  endforeach()
+
 
   set(commands ${ARGN})
   #message(STATUS "start - ${commands}")
@@ -2104,6 +2184,22 @@ function(elements_generate_env_conf filename)
 endfunction()
 
 #-------------------------------------------------------------------------------
+# _elements_find_standard_libdir(libname var)
+#
+# Find the location of a standard library asking the compiler.
+#-------------------------------------------------------------------------------
+function(_elements_find_standard_lib libname var)
+  #message(STATUS "find ${libname} -> ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -print-file-name=${libname}")
+  set(_cmd "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -print-file-name=${libname}")
+  separate_arguments(_cmd)
+  execute_process(COMMAND ${_cmd} OUTPUT_VARIABLE cpplib)
+  get_filename_component(cpplib ${cpplib} REALPATH)
+  get_filename_component(cpplib ${cpplib} PATH)
+  #message(STATUS "${libname} lib dir -> ${cpplib}")
+  set(${var} ${cpplib} PARENT_SCOPE)
+endfunction()
+
+#-------------------------------------------------------------------------------
 # elements_external_project_environment()
 #
 # Collect the environment details from the found packages and add them to the
@@ -2119,19 +2215,8 @@ macro(elements_external_project_environment)
   set(environment)
   set(library_path2)
 
-  if(CMAKE_HOST_UNIX)
-    # Guess the LD_LIBRARY_PATH required by the compiler we use (only Unix).
-    #message(STATUS "find libstdc++.so -> ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -print-file-name=libstdc++.so")
-    set(_cmd "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -print-file-name=libstdc++.so")
-    separate_arguments(_cmd)
-    execute_process(COMMAND ${_cmd} OUTPUT_VARIABLE cpplib)
-    get_filename_component(cpplib ${cpplib} REALPATH)
-    get_filename_component(cpplib ${cpplib} PATH)
-    # Special hack for the way gcc is installed onf AFS at CERN.
-    string(REPLACE "contrib/gcc" "external/gcc" cpplib ${cpplib})
-    #message(STATUS "C++ lib dir -> ${cpplib}")
-    set(library_path2 ${cpplib})
-  endif()
+  # add path to standard libraries to LD_LIBRARY_PATH
+  set(library_path2 ${std_library_path})
 
   get_property(packages_found GLOBAL PROPERTY PACKAGES_FOUND)
   #message("${packages_found}")
