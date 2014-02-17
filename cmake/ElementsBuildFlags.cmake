@@ -31,7 +31,7 @@ set(ELEMENTS_FORTIFY_DEFAULT ON)
 
 option(ELEMENTS_HIDE_SYMBOLS
        "enable explicit symbol visibility on gcc-4"
-       OFF)
+       ON)
        
 option(ELEMENTS_CMT_RELEASE
        "use CMT deafult release flags instead of the CMake ones"
