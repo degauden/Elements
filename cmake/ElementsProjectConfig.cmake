@@ -493,11 +493,13 @@ macro(elements_project project version)
             NO_DEFAULT_PATH)
   
   if(spec_file_template)
-    configure_file("${spec_file_template}" "${PROJECT_BINARY_DIR}/${project}.spec" @ONLY IMMEDIATE)
-    set(CPACK_RPM_USER_BINARY_SPECFILE "${PROJECT_BINARY_DIR}/${project}.spec")
-    message(STATUS "Generated RPM Spec file: ${PROJECT_BINARY_DIR}/${project}.spec")
+    file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SPECS)
+    configure_file("${spec_file_template}" "${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SPECS/${project}.spec" @ONLY IMMEDIATE)
+    set(CPACK_RPM_USER_BINARY_SPECFILE "${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SPECS/${project}.spec")
+    message(STATUS "Generated RPM Spec file: ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SPECS/${project}.spec")
     message(STATUS "From the SPEC template file: ${spec_file_template}")
   endif()
+
 
   include(CPack)
 
