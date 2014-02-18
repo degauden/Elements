@@ -115,7 +115,7 @@ macro(elements_project project version)
   set(CMAKE_PROJECT_VERSION ${version} CACHE STRING "Version of the project")
 
   #--- Parse the other arguments on the
-  CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "USE;DATA" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "USE;DATA;DESCRIPTION" ${ARGN})
   if (PROJECT_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "Wrong arguments.")
   endif()
@@ -206,6 +206,11 @@ macro(elements_project project version)
     list(REMOVE_DUPLICATES used_elements_projects)
   endif()
   #message(STATUS "used_gaudi_projects -> ${used_gaudi_projects}")
+
+  if(NOT PROJECT_DESCRIPTION)
+    set(PROJECT_DESCRIPTION "Please provide a description of the project.")
+  endif()
+
 
   # Ensure that we have the correct order of the modules search path.
   # (the included <project>Config.cmake files are prepending their entries to
@@ -474,7 +479,7 @@ macro(elements_project project version)
   set(CPACK_PACKAGING_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   set(CPACK_GENERATOR RPM)
   set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
-  set(CPACK_PACKAGE_RELEASE 1.${SGS_OS}${SGS_OSVERS})
+  set(CPACK_PACKAGE_RELEASE 1)
   set(CPACK_PACKAGE_VENDOR "The Euclid Consortium")
 
   set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/build\\\\..*/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
@@ -486,7 +491,8 @@ macro(elements_project project version)
   SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${SGS_ARCH})
   SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
   SET(CPACK_RPM_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}")
-    
+  SET(CPACK_RPM_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
+  
   find_file(spec_file_template
             NAMES Elements.spec.in
             PATHS ${CMAKE_MODULE_PATH}
