@@ -493,10 +493,31 @@ macro(elements_project project version)
   SET(CPACK_RPM_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}")
   SET(CPACK_RPM_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
   
+  get_property(debinfo_objects GLOBAL PROPERTY DEBINFO_OBJECTS)
+  
+  if(debinfo_objects)
+    set(CPACK_RPM_DEBINFO_FILES "%files debuginfo")
+    set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
+%defattr(-,root,root,-)")
+  
+    list(SORT debinfo_objects)    
+    foreach(_do ${debinfo_objects})
+      if("${_do}" MATCHES "^lib")
+        set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
+%{libdir}/${_do}")
+      else()
+        set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
+%{bindir}/${_do}")    
+      endif()
+    endforeach()
+    #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")    
+  endif()
+  
   find_file(spec_file_template
             NAMES Elements.spec.in
             PATHS ${CMAKE_MODULE_PATH}
             NO_DEFAULT_PATH)
+  
   
   if(spec_file_template)
     file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SPECS)
@@ -1450,6 +1471,7 @@ macro(_elements_detach_debinfo target)
     install(FILES ${_builddir}/${_tn}.dbg DESTINATION ${_dest} OPTIONAL)
     # ... and removed on 'make clean'.
     set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${_builddir}/${_tn}.dbg)
+    set_property(GLOBAL APPEND PROPERTY DEBINFO_OBJECTS ${_tn}.dbg)
   endif()
 endmacro()
 
