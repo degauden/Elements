@@ -18,6 +18,7 @@ Requires(postun):  /sbin/ldconfig
 %define bin_tag x86_64-fc19-gcc48-o2g
 %define _prefix @EUCLID_BASE_DIR@/%{name}/%{version}/InstallArea/%{bin_tag}
 %define libdir %{_prefix}/lib
+%define bindir %{_prefix}/bin
 %define pydir %{_prefix}/python
 %define scriptsdir %{_prefix}/scripts
 %define cmakedir %{_prefix}/cmake
@@ -49,7 +50,7 @@ Debug information for package %{name}
 %build
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
-export CMAKE_PREFIX_PATH=/opt/euclid:/usr/share/EuclidEnv/cmake
+export CMAKE_PREFIX_PATH=$PWD/cmake:/opt/euclid:/usr/share/EuclidEnv/cmake
 %cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake
 %__make VERBOSE=1 %{?_smp_mflags}
 
@@ -63,24 +64,11 @@ export CMAKE_PREFIX_PATH=/opt/euclid:/usr/share/EuclidEnv/cmake
 
 %postun -p /sbin/ldconfig
 
-%files
-%defattr(-,root,root,-)
-%{libdir}/*.so
-#Il faut enlever les .dbg de la ligne ci-dessous
-%{_bindir}
-#A decommenter si le dossier existe
-#%%{auxdir}
-%{pydir}
-%{scriptsdir}
-%{confdir}
-%{_prefix}/@CPACK_PACKAGE_NAME@Environment.xml
-%{_prefix}/manifest.xml
+@CPACK_RPM_REGULAR_FILES@
 
 %files devel
 %defattr(-,root,root,-)
-%{_includedir}
 %{cmakedir}
-%{_prefix}/@CPACK_PACKAGE_NAME@Config.cmake
-%{_prefix}/@CPACK_PACKAGE_NAME@ConfigVersion.cmake
+@CPACK_RPM_DEVEL_FILES@
 
 @CPACK_RPM_DEBINFO_FILES@

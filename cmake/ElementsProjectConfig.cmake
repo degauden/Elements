@@ -283,6 +283,7 @@ macro(elements_project project version)
                     ${versheader_cmd} --quiet
                     ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h)
     install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h DESTINATION include)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)  
   endif()
   # Add generated headers to the include path.
   include_directories(${CMAKE_BINARY_DIR}/include)
@@ -492,7 +493,108 @@ macro(elements_project project version)
   SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
   SET(CPACK_RPM_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}")
   SET(CPACK_RPM_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
+
+
+  set(CPACK_RPM_REGULAR_FILES "%files")
+  set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%defattr(-,root,root,-)")
+  set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{_prefix}/${CPACK_PACKAGE_NAME}Environment.xml")
+  set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{_prefix}/manifest.xml")
+
+#------------------------------------------------------------------------------
+  get_property(regular_bin_objects GLOBAL PROPERTY REGULAR_BIN_OBJECTS)
   
+  if(regular_bin_objects)
+    list(SORT regular_bin_objects)    
+    foreach(_do ${regular_bin_objects})
+      set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{bindir}/${_do}")    
+    endforeach()
+    #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")    
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
+  
+  if(regular_lib_objects)
+    list(SORT regular_lib_objects)    
+    foreach(_do ${regular_lib_objects})
+      set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}")    
+    endforeach()
+    #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")    
+  endif()
+
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_scripts GLOBAL PROPERTY PROJ_HAS_SCRIPTS)
+  
+  if(proj_has_scripts)
+        set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{scriptsdir}")    
+    #message(STATUS "The regular objects: ${CPACK_RPM_REGULAR_FILES}")    
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_aux GLOBAL PROPERTY PROJ_HAS_AUX)
+  
+  if(proj_has_aux)
+        set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{auxdir}")    
+    #message(STATUS "The regular objects: ${CPACK_RPM_REGULAR_FILES}")    
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_conf GLOBAL PROPERTY PROJ_HAS_CONF)
+  
+  if(proj_has_conf)
+        set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{confdir}")    
+    #message(STATUS "The regular objects: ${CPACK_RPM_REGULAR_FILES}")    
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_python GLOBAL PROPERTY PROJ_HAS_PYTHON)
+  
+  if(proj_has_python)
+        set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{pydir}")    
+    #message(STATUS "The regular objects: ${CPACK_RPM_REGULAR_FILES}")    
+  endif()
+
+#===============================================================================
+
+  set(CPACK_RPM_DEVEL_FILES "%files devel")
+  set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%defattr(-,root,root,-)")
+
+#------------------------------------------------------------------------------
+  get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
+
+  if(config_objects)
+    list(SORT config_objects)    
+    foreach(_do ${config_objects})
+      set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{_prefix}/${_do}")    
+    endforeach()
+    #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")    
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_include GLOBAL PROPERTY PROJ_HAS_INCLUDE)
+  
+  if(proj_has_include)
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{_includedir}")    
+    #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")    
+  endif()
+
+
+#===============================================================================
+
+#------------------------------------------------------------------------------
   get_property(debinfo_objects GLOBAL PROPERTY DEBINFO_OBJECTS)
   
   if(debinfo_objects)
@@ -512,6 +614,9 @@ macro(elements_project project version)
     endforeach()
     #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")    
   endif()
+
+#===============================================================================
+
   
   find_file(spec_file_template
             NAMES Elements.spec.in
@@ -1532,6 +1637,7 @@ function(elements_add_library library)
   elements_export(LIBRARY ${library})
   elements_install_headers(${ARG_PUBLIC_HEADERS})
   install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
+  set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
 endfunction()
 
 # Backward compatibility macro
@@ -1557,6 +1663,7 @@ function(elements_add_module library)
   #----Installation details-------------------------------------------------------
   install(TARGETS ${library} LIBRARY DESTINATION lib OPTIONAL)
   elements_export(MODULE ${library})
+  set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
 endfunction()
 
 # Backward compatibility macro
@@ -1592,6 +1699,7 @@ function(elements_add_python_module module)
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${module} LIBRARY DESTINATION python/lib-dynload OPTIONAL)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)  
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1621,7 +1729,7 @@ function(elements_add_executable executable)
   install(TARGETS ${executable} EXPORT ${CMAKE_PROJECT_NAME}Exports RUNTIME DESTINATION bin OPTIONAL)
   install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
   elements_export(EXECUTABLE ${executable})
-
+  set_property(GLOBAL APPEND PROPERTY REGULAR_BIN_OBJECTS ${executable})
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1822,6 +1930,7 @@ function(elements_install_headers)
   if(has_local_headers)
     set_property(DIRECTORY PROPERTY INSTALLS_LOCAL_HEADERS TRUE)
   endif()
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)  
 endfunction()
 
 #-------------------------------------------------------------------------------
@@ -1868,6 +1977,7 @@ function(elements_install_python_modules)
     get_filename_component(modname ${dir} NAME)
     set_property(DIRECTORY APPEND PROPERTY has_python_modules ${modname})
   endforeach()
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)  
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1884,6 +1994,7 @@ function(elements_install_scripts)
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE
           PATTERN "*.pyc" EXCLUDE)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1897,6 +2008,7 @@ function(elements_install_aux_files)
           PATTERN "CVS" EXCLUDE
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_AUX TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1910,6 +2022,7 @@ function(elements_install_conf_files)
           PATTERN "CVS" EXCLUDE
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CONF TRUE)
 endfunction()
 
 
@@ -1937,6 +2050,7 @@ exec ${cmd} \"\$@\"
   execute_process(COMMAND chmod 755 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name})
   # install
   install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name} DESTINATION scripts)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -2014,6 +2128,7 @@ if(PACKAGE_NAME STREQUAL PACKAGE_FIND_NAME)
 endif()
 ")
   install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION .)
+  set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}ConfigVersion.cmake)
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -2043,6 +2158,7 @@ list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake)
 include(${CMAKE_PROJECT_NAME}PlatformConfig)
 ")
   install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION .)
+  set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}Config.cmake)
 endmacro()
 
 #-------------------------------------------------------------------------------
