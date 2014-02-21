@@ -66,9 +66,6 @@ export CMAKE_PREFIX_PATH=$PWD/cmake:/opt/euclid:/usr/share/EuclidEnv/cmake
 
 @CPACK_RPM_REGULAR_FILES@
 
-%files devel
-%defattr(-,root,root,-)
-%{cmakedir}
 @CPACK_RPM_DEVEL_FILES@
 
 @CPACK_RPM_DEBINFO_FILES@
