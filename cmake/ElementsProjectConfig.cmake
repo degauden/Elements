@@ -272,6 +272,8 @@ macro(elements_project project version)
   install(PROGRAMS cmake/env.py DESTINATION scripts OPTIONAL)
   install(DIRECTORY cmake/EnvConfig DESTINATION scripts
           FILES_MATCHING PATTERN "*.py" PATTERN "*.conf")
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)  
+
 
   #--- Global actions for the project
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
@@ -590,6 +592,16 @@ macro(elements_project project version)
 %{_includedir}")    
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")    
   endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_cmake GLOBAL PROPERTY PROJ_HAS_CMAKE)
+  
+  if(proj_has_cmake)
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{cmakedir}")    
+    #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")    
+  endif()
+
 
 
 #===============================================================================
@@ -1638,6 +1650,7 @@ function(elements_add_library library)
   elements_install_headers(${ARG_PUBLIC_HEADERS})
   install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
   set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)  
 endfunction()
 
 # Backward compatibility macro
@@ -1699,7 +1712,7 @@ function(elements_add_python_module module)
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${module} LIBRARY DESTINATION python/lib-dynload OPTIONAL)
-  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)  
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1730,6 +1743,7 @@ function(elements_add_executable executable)
   install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
   elements_export(EXECUTABLE ${executable})
   set_property(GLOBAL APPEND PROPERTY REGULAR_BIN_OBJECTS ${executable})
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)  
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -2090,6 +2104,7 @@ macro(elements_install_cmake_modules)
             PATTERN ".svn" EXCLUDE)
   set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH} PARENT_SCOPE)
   set_property(DIRECTORY PROPERTY ELEMENTS_EXPORTED_CMAKE ON)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)  
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -2212,6 +2227,7 @@ set(${CMAKE_PROJECT_NAME}_OVERRIDDEN_SUBDIRS ${override_subdirs})
 ")
 
   install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}PlatformConfig.cmake DESTINATION cmake)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)  
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -2545,6 +2561,7 @@ get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)
       endif()
     endif()
     install(FILES ${pkg_exp_file} DESTINATION cmake)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)  
   endforeach()
 endmacro()
 
