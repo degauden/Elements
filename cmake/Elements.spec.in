@@ -18,7 +18,6 @@ Requires(postun):  /sbin/ldconfig
 %define bin_tag x86_64-fc19-gcc48-o2g
 %define _prefix @EUCLID_BASE_DIR@/%{name}/%{version}/InstallArea/%{bin_tag}
 %define libdir %{_prefix}/lib
-%define bindir %{_prefix}/bin
 %define pydir %{_prefix}/python
 %define scriptsdir %{_prefix}/scripts
 %define cmakedir %{_prefix}/cmake
@@ -51,10 +50,16 @@ Debug information for package %{name}
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 export CMAKE_PREFIX_PATH=$PWD/cmake:/opt/euclid:/usr/share/EuclidEnv/cmake
-%cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake
-%__make VERBOSE=1 %{?_smp_mflags}
+%__mkdir -p build.${BINARY_TAG}
+cd build.${BINARY_TAG}
+%cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake ../
+%__make VERBOSE=1 %{?_smp_mflags} all
 
 %install
+export BINARY_TAG=%{bin_tag}
+export VERBOSE=1
+export CMAKE_PREFIX_PATH=$PWD/cmake:/opt/euclid:/usr/share/EuclidEnv/cmake
+cd build.${BINARY_TAG}
 %__make install VERBOSE=1 DESTDIR=$RPM_BUILD_ROOT
 
 %clean
