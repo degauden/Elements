@@ -10,7 +10,7 @@ function(guess_astrotools_version var)
 
   # Note: it works even if the env. var. is not set.
   file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" sp1)
-  file(TO_CMAKE_PATH "$ENV{CMTPROJECTPATH}" sp2)
+  file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" sp2)
   set(projects_search_path ${CMAKE_PREFIX_PATH} ${sp1} ${sp2})
 
   # extract the list of projects we depend on
