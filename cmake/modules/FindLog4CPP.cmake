@@ -1,3 +1,4 @@
+# -*- cmake -*-
 #FindLog4CPP.cmake
 #
 # Created on: Jul 26, 2013

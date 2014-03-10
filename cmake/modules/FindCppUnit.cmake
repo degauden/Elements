@@ -1,3 +1,4 @@
+# -*- cmake -*-
 # - Locate CppUnit library
 # Defines:
 #

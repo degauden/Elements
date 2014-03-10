@@ -1,3 +1,4 @@
+# -*- rpm-spec -*-
 Summary:        Euclid @CPACK_PACKAGE_NAME@ Project
 Name:           @CPACK_PACKAGE_NAME@
 Version:        @CPACK_PACKAGE_VERSION@
