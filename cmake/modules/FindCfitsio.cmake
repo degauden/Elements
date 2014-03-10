@@ -1,3 +1,4 @@
+# -*- cmake -*-
 #
 # FindCfitsio.cmake
 #
