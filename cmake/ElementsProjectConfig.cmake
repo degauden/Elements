@@ -91,7 +91,6 @@ include(GenerateExportHeader)
 
 find_package(PythonInterp)
 
-include(SGSPlatform)
 #-------------------------------------------------------------------------------
 # elements_project(project version
 #               [USE proj1 vers1 [proj2 vers2 ...]]
@@ -108,6 +107,7 @@ include(SGSPlatform)
 # runtime.
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
+  include(SGSPlatform)
   project(${project})
   #----For some reason this is not set by calling 'project()'
   set(CMAKE_PROJECT_NAME ${project})

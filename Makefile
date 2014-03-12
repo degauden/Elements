@@ -46,7 +46,7 @@
 # settings
 CMAKE = cmake
 
-override CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/toolchain.cmake -DUSE_LOCAL_INSTALLAREA=ON
+override CMAKEFLAGS += -DUSE_LOCAL_INSTALLAREA=ON
 
 ifndef BINARY_TAG
   ifdef CMAKECONFIG
