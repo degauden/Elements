@@ -1,3 +1,4 @@
+include(SGSPlatform)
 
 if(SGS_COMP STREQUAL "clang")
   find_package(Clang)
