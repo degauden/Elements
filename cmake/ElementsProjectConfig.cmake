@@ -107,6 +107,7 @@ find_package(PythonInterp)
 # runtime.
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
+  include(SGSPlatform)
   project(${project})
   #----For some reason this is not set by calling 'project()'
   set(CMAKE_PROJECT_NAME ${project})

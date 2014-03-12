@@ -45,13 +45,8 @@
 
 # settings
 CMAKE = cmake
-#
-# The toolchain is commented out for the moment. It is probably not needed for
-# Euclid for the moment.
-#
-ifneq ($(wildcard $(CURDIR)/toolchain.cmake),)
-  override CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/toolchain.cmake -DUSE_LOCAL_INSTALLAREA=ON
-endif
+
+override CMAKEFLAGS += -DUSE_LOCAL_INSTALLAREA=ON
 
 ifndef BINARY_TAG
   ifdef CMAKECONFIG

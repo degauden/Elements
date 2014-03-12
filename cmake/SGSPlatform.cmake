@@ -16,6 +16,11 @@
 #                      should be set to x86_64-slc6-gcc46.
 ################################################################################
 
+if(SGSPlatform_included)
+  return()
+endif(SGSPlatform_included)
+set(SGSPlatform_included true)
+
 ################################################################################
 # Functions to get system informations for the SGS configuration.
 ################################################################################
@@ -268,12 +273,6 @@ sgs_get_target_platform()
 #message(STATUS "toolchain: CMAKE_HOST_SYSTEM_PROCESSOR -> ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 #message(STATUS "toolchain: CMAKE_HOST_SYSTEM_NAME      -> ${CMAKE_HOST_SYSTEM_NAME}")
 #message(STATUS "toolchain: CMAKE_HOST_SYSTEM_VERSION   -> ${CMAKE_HOST_SYSTEM_VERSION}")
-
-# SGS location
-if(NOT astrotools_version)
-  message(FATAL_ERROR "Variable astrotools_version not defined. It must be defined before including astrotools-common.cmake")
-endif()
-
 
 
 
