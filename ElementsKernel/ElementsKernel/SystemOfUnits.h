@@ -141,6 +141,7 @@ namespace Elements {
     static const double gigaelectronvolt = 1.e+9*electronvolt;
     static const double teraelectronvolt = 1.e+12*electronvolt;
     static const double petaelectronvolt = 1.e+15*electronvolt;
+    static const double erg              = 1.e-7*joule;
 
     // symbols
     static const double MeV = megaelectronvolt;
@@ -234,7 +235,9 @@ namespace Elements {
     //
     // Luminous flux [I]
     //
-    static const double lumen = candela*steradian;
+    static const double lumen  = candela*steradian;
+    static const double jansky = 1.e-26 * watt / (m2*hertz);
+    static const double microjansky = 1.e-6 * jansky;
 
     //
     // Illuminance [I][L^-2]

@@ -30,6 +30,9 @@
     return 0;                                       \
   }
 
+static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
+
+
 /**
  * @class ElementsProgram
  * @brief
@@ -130,6 +133,7 @@ protected:
 
 private:
 
+
   /**
    * This is the BOOST program options variable_map used to store all
    * program options. It is similar to a std::map but the element can be
@@ -141,7 +145,7 @@ private:
   /**
    * Name of the executable (from argv[0])
    */
-   boost::filesystem::path m_program_name;
+  boost::filesystem::path m_program_name;
 
   /**
    * Path of the executable (from argv[0])
