@@ -12,7 +12,7 @@ macro(use_astrotools astrotools_version)
   # Find the actual toolchain file.
   find_file(CMAKE_TOOLCHAIN_FILE
             NAMES astrotools-${astrotools_version}.cmake
-            HINTS ENV CMTPROJECTPATH
+            HINTS ENV CMAKE_PROJECT_PATH
             PATHS ${CMAKE_CURRENT_LIST_DIR}/cmake/toolchain
             PATH_SUFFIXES toolchain)
 

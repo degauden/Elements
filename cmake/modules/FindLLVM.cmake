@@ -1,3 +1,4 @@
+# -*- cmake -*-
 
 find_program(LLVM_AR
              NAMES llvm-ar
