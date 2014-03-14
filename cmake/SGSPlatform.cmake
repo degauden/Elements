@@ -213,7 +213,7 @@ function(sgs_get_target_platform)
     message(FATAL_ERROR "SGS build type ${type} not supported.")
   endif()
   set(CMAKE_BUILD_TYPE ${type} CACHE STRING
-      "Choose the type of build, options are: empty, Debug, Release, Coverage, Profile, RelWithDebInfo, MinSizeRel.")
+      "Choose the type of build, options are: empty, Debug, Release, Coverage, Profile, RelWithDebInfo, MinSizeRel." FORCE)
 
   # architecture
   set(CMAKE_SYSTEM_PROCESSOR ${SGS_ARCH} PARENT_SCOPE)
