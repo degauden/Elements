@@ -40,20 +40,20 @@ public:
     m_messages.str("");
     m_messages.clear();
   }
-  std::vector<std::tuple<int,ElementsLogging::LoggingLevel,std::string,std::string>> getMessages() {
-    std::vector<std::tuple<int,ElementsLogging::LoggingLevel,std::string,std::string>> messages;
+  std::vector<std::tuple<std::string,ElementsLogging::LoggingLevel,std::string,std::string>> getMessages() {
+    std::vector<std::tuple<std::string,ElementsLogging::LoggingLevel,std::string,std::string>> messages;
     for (std::string line; std::getline(m_messages, line);) {
-      std::stringstream infoStream {line.substr(0, line.find(':'))};
-      int timestamp;
-      infoStream >> timestamp;
-      std::string logLevelString;
-      infoStream >> logLevelString;
-      ElementsLogging::LoggingLevel logLevel = levelMap[logLevelString];
-      std::string name;
-      std::getline(infoStream, name);
-      algo::trim(name);
+      std::string timestamp = line.substr(0, line.find(' '));
+      line = line.substr(line.find(' ')+1);
       std::string message = line.substr(line.find(':') + 1);
       algo::trim_left(message);
+      line = line.substr(0, line.find(':'));
+      algo::trim(line);
+      std::string logLevelString = line.substr(line.rfind(' '));
+      algo::trim(logLevelString);
+      ElementsLogging::LoggingLevel logLevel = levelMap[logLevelString];
+      std::string name = line.substr(0, line.rfind(' '));
+      algo::trim(name);
       messages.push_back(std::make_tuple(timestamp, logLevel, name, message));
     }
     return messages;
@@ -313,8 +313,6 @@ BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
   logFileName1 << "/tmp/" << std::time(NULL) << std::rand() << ".log";
   std::stringstream logFileName2 {};
   logFileName2 << "/tmp/" << std::time(NULL) << std::rand() << ".log";
-  std::cout << logFileName1.str() << std::endl;
-  std::cout << logFileName2.str() << std::endl;
   
   // When
   
