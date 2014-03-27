@@ -206,7 +206,7 @@ macro(elements_project project version)
   if(used_elements_projects)
     list(REMOVE_DUPLICATES used_elements_projects)
   endif()
-  #message(STATUS "used_gaudi_projects -> ${used_gaudi_projects}")
+  #message(STATUS "used_elements_projects -> ${used_elements_projects}")
 
   if(NOT PROJECT_DESCRIPTION)
     set(PROJECT_DESCRIPTION "Please provide a description of the project.")
@@ -215,7 +215,7 @@ macro(elements_project project version)
   # Ensure that we have the correct order of the modules search path.
   # (the included <project>Config.cmake files are prepending their entries to
   # the module path).
-  foreach(_p ${used_gaudi_projects})
+  foreach(_p ${used_elements_projects})
     if(IS_DIRECTORY ${${_p}_DIR}/cmake)
       if(IS_DIRECTORY ${${_p}_DIR}/cmake/modules)
         set(CMAKE_MODULE_PATH ${${_p}_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
@@ -2332,10 +2332,11 @@ function(elements_generate_env_conf filename)
 
   # include inherited environments
   # (note: it's important that the full search path is ready before we start including)
-  foreach(other_project ${used_gaudi_projects})
+  
+  foreach(other_project ${used_elements_projects})
     set(data "${data}  <env:search_path>${${other_project}_DIR}</env:search_path>\n")
   endforeach()
-  foreach(other_project ${used_gaudi_projects})
+  foreach(other_project ${used_elements_projects})
     set(data "${data}  <env:include>${other_project}Environment.xml</env:include>\n")
   endforeach()
 
