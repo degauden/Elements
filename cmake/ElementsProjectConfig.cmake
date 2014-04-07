@@ -380,7 +380,7 @@ macro(elements_project project version)
   #set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
   file(RELATIVE_PATH _PROJECT_ROOT ${CMAKE_INSTALL_PREFIX} ${CMAKE_SOURCE_DIR})
   #message(STATUS "_PROJECT_ROOT -> ${_PROJECT_ROOT}")
-  set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "\${.}/${_PROJECT_ROOT}")
+  set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "\${.}/../..")
   set(project_build_environment ${project_build_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
   #   - 'packages':
   foreach(package ${packages})
