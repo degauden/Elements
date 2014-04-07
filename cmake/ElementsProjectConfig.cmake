@@ -98,7 +98,8 @@ find_package(PythonInterp)
 #
 # Main macro for a Elements-based project.
 # Each project must call this macro once in the top-level CMakeLists.txt,
-# stating the project name and the version in the LHCb format (vXrY[pZ]).
+# stating the project name and the version in the LHCb format (vXrY[pZ]). or in the 
+# regular format (X.Y[.Z]).
 #
 # The USE list can be used to declare which Elements-based projects are required by
 # the broject being compiled.
