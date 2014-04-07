@@ -1,4 +1,3 @@
-__author__ = "Marco Clemencic <marco.clemencic@cern.ch>"
 
 import os
 import sys
