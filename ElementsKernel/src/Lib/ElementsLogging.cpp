@@ -72,7 +72,7 @@ ElementsLogging::LogMessageStream::LogMessageStream(log4cpp::Category& logger, P
     : m_logger(logger), m_log_func{log_func} { }
     
 ElementsLogging::LogMessageStream::LogMessageStream(LogMessageStream&& other)
-    : m_logger(other.m_logger) { }
+    : m_logger(other.m_logger), m_log_func{other.m_log_func} { }
     
 ElementsLogging::LogMessageStream::~LogMessageStream() {
   (m_logger.*m_log_func) (m_message.str());
