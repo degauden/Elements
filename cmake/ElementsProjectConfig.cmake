@@ -275,8 +275,20 @@ macro(elements_project project version)
                              PATTERN "*.cmake"
                              PATTERN "*.in"
                              PATTERN ".svn" EXCLUDE)
-  install(PROGRAMS cmake/scripts/env.py DESTINATION scripts OPTIONAL)
+                             
   install(PROGRAMS cmake/scripts/rpmbuild_wrap.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/createProjVersHeader.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/install.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/locker.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/merge_files.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/PathStripper.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/remove_lines.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/StripPath.sh DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/StripPath.csh DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/StripPath.bat DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/ZipPythonDir.py DESTINATION scripts OPTIONAL)
+
+  install(PROGRAMS cmake/scripts/env.py DESTINATION scripts OPTIONAL)
   install(DIRECTORY cmake/scripts/EnvConfig DESTINATION scripts
           FILES_MATCHING PATTERN "*.py" PATTERN "*.conf")
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
