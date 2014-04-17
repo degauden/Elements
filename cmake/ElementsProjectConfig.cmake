@@ -240,7 +240,7 @@ macro(elements_project project version)
 
   #--- commands required to build cached variable
   # (python scripts are located as such but run through python)
-  set(binary_paths ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/ElementsPolicy/scripts ${CMAKE_SOURCE_DIR}/ElementsKernel/scripts ${CMAKE_SOURCE_DIR}/Elements/scripts ${binary_paths})
+  set(binary_paths ${CMAKE_SOURCE_DIR}/cmake/scripts ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/ElementsPolicy/scripts ${CMAKE_SOURCE_DIR}/ElementsKernel/scripts ${CMAKE_SOURCE_DIR}/Elements/scripts ${binary_paths})
 
   find_program(env_cmd env.py HINTS ${binary_paths})
   set(env_cmd ${PYTHON_EXECUTABLE} ${env_cmd})
@@ -261,8 +261,13 @@ macro(elements_project project version)
   find_program(elementsrun_cmd elementsrun.py HINTS ${binary_paths})
   set(elementsrun_cmd ${PYTHON_EXECUTABLE} ${elementsrun_cmd})
 
+  find_program(rpmbuild_wrap_cmd rpmbuild_wrap.py HINTS ${binary_paths})
+  set(rpmbuild_wrap_cmd ${PYTHON_EXECUTABLE} ${rpmbuild_wrap_cmd})
+
+
   mark_as_advanced(env_cmd merge_cmd versheader_cmd
-                   zippythondir_cmd elementsrun_cmd)
+                   zippythondir_cmd elementsrun_cmd
+                   rpmbuild_wrap_cmd)
 
   #--- Project Installations------------------------------------------------------------------------
   install(DIRECTORY cmake/ DESTINATION cmake
@@ -271,6 +276,7 @@ macro(elements_project project version)
                              PATTERN "*.in"
                              PATTERN ".svn" EXCLUDE)
   install(PROGRAMS cmake/env.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/rpmbuild_wrap.py DESTINATION scripts OPTIONAL)
   install(DIRECTORY cmake/EnvConfig DESTINATION scripts
           FILES_MATCHING PATTERN "*.py" PATTERN "*.conf")
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
