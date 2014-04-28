@@ -1226,7 +1226,7 @@ function(elements_get_packages var)
   file(GLOB_RECURSE cmakelist_files RELATIVE ${CMAKE_SOURCE_DIR} CMakeLists.txt)
   foreach(file ${cmakelist_files})
     # ignore the source directory itself and files in the build directory
-    if(NOT file STREQUAL CMakeLists.txt AND NOT file MATCHES "^${rel_build_dir}")
+    if(NOT file STREQUAL CMakeLists.txt AND NOT (file MATCHES "^${rel_build_dir}" OR file MATCHES "^build\\."))
       get_filename_component(package ${file} PATH)
       list(APPEND packages ${package})
     endif()
