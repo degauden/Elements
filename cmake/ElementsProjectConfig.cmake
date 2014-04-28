@@ -649,38 +649,52 @@ macro(elements_project project version)
 #===============================================================================
 
 
-  find_file(spec_file_template
-            NAMES Elements.spec.in
-            PATHS ${CMAKE_MODULE_PATH}
-            NO_DEFAULT_PATH)
-
-
-  set(PROJECT_RPM_TOPDIR "${PROJECT_BINARY_DIR}/Packages/RPM")
-  set(PROJECT_RPM_BUILD_ROOT "${PROJECT_RPM_TOPDIR}/BUILDROOT/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}%{?dist}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
-
-  if(spec_file_template)
-    file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SPECS)
-    configure_file("${spec_file_template}" "${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec" @ONLY IMMEDIATE)
-    set(CPACK_RPM_USER_BINARY_SPECFILE "${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
-    message(STATUS "Generated RPM Spec file: ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
-    message(STATUS "From the SPEC template file: ${spec_file_template}")
-  endif()
-
 
   include(CPack)
 
   find_package(Tar)
   if(TAR_FOUND)
+  
+    find_package(RPMBuild)
+  
+    if (RPMBUILD_FOUND)
+      option(USE_DEFAULT_RPMBUILD_DIR "Use default RPM build directory (the value of the %_topdir variable)" OFF)
+      if(USE_DEFAULT_RPMBUILD_DIR)
+        execute_process(COMMAND rpmbuild --eval %_topdir OUTPUT_VARIABLE PROJECT_RPM_TOPDIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+      else()
+        set(PROJECT_RPM_TOPDIR "${PROJECT_BINARY_DIR}/Packages/RPM")        
+      endif()
+      set(PROJECT_TARGZ_DIR "${PROJECT_RPM_TOPDIR}/SOURCES")          
+    else()
+      set(PROJECT_TARGZ_DIR "${PROJECT_BINARY_DIR}/Packages")
+    endif()
+  
     add_custom_target(targz
-                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/SOURCES
-                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_RPM_TOPDIR}/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
-#                      COMMAND ${CMAKE_COMMAND} -E tar zcf ${PROJECT_RPM_TOPDIR}/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
+                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_TARGZ_DIR}
+                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-                      COMMENT "Generating The Source TarBall ${PROJECT_RPM_TOPDIR}/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz" VERBATIM
+                      COMMENT "Generating The Source TarBall ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz" VERBATIM
     )
     
-    find_package(RPMBuild)
     if (RPMBUILD_FOUND)
+    
+      find_file(spec_file_template
+                NAMES Elements.spec.in
+                PATHS ${CMAKE_MODULE_PATH}
+                NO_DEFAULT_PATH)
+
+      
+
+      set(PROJECT_RPM_BUILD_ROOT "${PROJECT_RPM_TOPDIR}/BUILDROOT/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}%{?dist}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
+
+      if(spec_file_template)
+        file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SPECS)
+        configure_file("${spec_file_template}" "${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec" @ONLY IMMEDIATE)
+        message(STATUS "Generated RPM Spec file: ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
+        message(STATUS "From the SPEC template file: ${spec_file_template}")
+      endif()
+
+    
       add_custom_target(rpmbuilddir
                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILD      
                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILDROOT      
@@ -691,14 +705,8 @@ macro(elements_project project version)
       )
       
                         
-    
-      set(RPM_TOPDIR_OPTION  --define="_topdir ${PROJECT_RPM_TOPDIR}")
-      message(STATUS "---------------------------------------->${RPMBUILD_EXECUTABLE} ${RPM_TOPDIR_OPTION} -ba ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
       add_custom_target(rpm
                         COMMAND ${rpmbuild_wrap_cmd} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
-#                        COMMAND RPM_BUILD_ROOT=${PROJECT_RPM_TOPDIR}/BUILDROOT/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.fc19.${CPACK_RPM_PACKAGE_ARCHITECTURE} ${RPMBUILD_EXECUTABLE} --define="_topdir ${PROJECT_RPM_TOPDIR}" -ba ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
-#                        COMMAND ${RPMBUILD_EXECUTABLE} -ba ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
-#                        WORKING_DIRECTORY "${PROJECT_RPM_TOPDIR}"
                         COMMENT "Generating The RPM Files in ${PROJECT_RPM_TOPDIR}" VERBATIM
       )
     
