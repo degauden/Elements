@@ -50,7 +50,12 @@ Debug information for package %{name}
 %build
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
-export CMAKE_PREFIX_PATH=$PWD/cmake:/opt/euclid:/usr/share/EuclidEnv/cmake
+if [[ -z "$EUCLID_BASE" ]]; then
+  export CMAKE_PROJECT_PATH=/opt/euclid
+else 
+  export CMAKE_PROJECT_PATH=$EUCLID_BASE
+fi
+export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
 %__mkdir -p build.${BINARY_TAG}
 cd build.${BINARY_TAG}
 %cmake ../
@@ -59,7 +64,12 @@ cd build.${BINARY_TAG}
 %install
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
-export CMAKE_PREFIX_PATH=$PWD/cmake:/opt/euclid:/usr/share/EuclidEnv/cmake
+if [[ -z "$EUCLID_BASE" ]]; then
+  export CMAKE_PROJECT_PATH=/opt/euclid
+else 
+  export CMAKE_PROJECT_PATH=$EUCLID_BASE
+fi
+export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
 cd build.${BINARY_TAG}
 %__make install VERBOSE=1 DESTDIR=$RPM_BUILD_ROOT
 
