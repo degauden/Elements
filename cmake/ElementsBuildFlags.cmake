@@ -10,7 +10,7 @@ if(SGS_COMP STREQUAL "clang")
   SET (CMAKE_OBJDUMP       "${LLVM_OBJDUMP}")
   SET (CMAKE_RANLIB        "${LLVM_RANLIB}")
 endif()
-  
+
 
 # Special defaults
 if ( (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[7-9]")
@@ -33,7 +33,7 @@ set(ELEMENTS_FORTIFY_DEFAULT ON)
 option(ELEMENTS_HIDE_SYMBOLS
        "enable explicit symbol visibility on gcc-4"
        OFF)
-       
+
 option(ELEMENTS_CMT_RELEASE
        "use CMT deafult release flags instead of the CMake ones"
        ON)
@@ -41,11 +41,11 @@ option(ELEMENTS_CMT_RELEASE
 option(ELEMENTS_CPP11
        "enable C++11 compilation"
        ${ELEMENTS_CPP11_DEFAULT})
-       
+
 option(ELEMENTS_PARALLEL
        "enable C++11 parallel support with OpenMP"
        ${ELEMENTS_PARALLEL_DEFAULT})
-       
+
 option(ELEMENTS_FORTIFY
        "enable g++ fortify option"
        ${ELEMENTS_FORTIFY_DEFAULT})
@@ -124,7 +124,7 @@ if(NOT ELEMENTS_FLAGS_SET)
     set(CMAKE_C_FLAGS_COVERAGE "--coverage"
         CACHE STRING "Flags used by the compiler during coverage builds."
         FORCE)
-        
+
     # @todo Check why the -D_GLIBCXX_PROFILE cannot be used with Boost.
     set(CMAKE_CXX_FLAGS_PROFILE "-pg"
         CACHE STRING "Flags used by the compiler during profile builds."
@@ -170,10 +170,6 @@ endif()
 
 if(UNIX)
   add_definitions(-D_GNU_SOURCE -Dunix -Df2cFortran)
-
-  if (CMAKE_SYSTEM_NAME MATCHES Linux)
-    add_definitions(-Dlinux)
-  endif()
 endif()
 
 if(MSVC90)
@@ -223,7 +219,7 @@ if ( ELEMENTS_FORTIFY AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[1-9
   endif()
   if ( (CMAKE_BUILD_TYPE STREQUAL "Release") OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo") OR (CMAKE_BUILD_TYPE STREQUAL "MinSizeRel"))
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2")
-  endif()    
+  endif()
 endif()
 
 
