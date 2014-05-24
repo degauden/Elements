@@ -169,7 +169,7 @@ endif()
 
 
 if(UNIX)
-  add_definitions(-D_GNU_SOURCE -Dunix -Df2cFortran)
+  add_definitions(-D_GNU_SOURCE -Df2cFortran)
 endif()
 
 if(MSVC90)
