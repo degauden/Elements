@@ -10,36 +10,30 @@
 #include <iostream>
 
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
-
-
+#include "ElementsKernel/ElementsLogging.h"
 #include "ElementsKernel/Temporary.h"
 
 
 using namespace std;
-namespace bf = boost::filesystem ;
+namespace fs = boost::filesystem ;
 
 
-TempPath::TempPath(string motif) : m_motif(motif) {
 
-  m_path = bf::temp_directory_path() / bf::unique_path(m_motif);
-  this->create() ;
+TempPath::TempPath(const string& motif) : m_motif(motif) {
 
-}
-
-void TempPath::create() {
-
-  cout << "TmpPath Creation" << endl ;
+  if (m_motif != "" ) {
+    m_path = fs::temp_directory_path() / fs::unique_path(m_motif);
+  } else {
+    m_path = fs::temp_directory_path() / fs::unique_path();
+  }
 
 }
 
-TempPath::~TempPath() {
 
-  this->destroy() ;
 
-}
-
-bf::path TempPath::path() const {
+fs::path TempPath::path() const {
   return m_path ;
 }
 
@@ -47,24 +41,42 @@ string TempPath::motif() const {
   return m_motif ;
 }
 
+TempDir::TempDir(const string& motif) : TempPath(motif) {
 
+  ElementsLogging logger = ElementsLogging::getLogger("") ;
+  logger.debug() << "Creation of the " << path() <<" temporary directory" ;
 
-void TempDir::create() {
-
-  cout << "TmpDir Creation" << endl ;
-}
-
-void TempDir::destroy() {
+  fs::create_directory(path()) ;
 
 }
 
+TempDir::~TempDir() {
 
-void TempFile::create() {
+  ElementsLogging logger = ElementsLogging::getLogger("") ;
+  logger.debug() << "Automatic destruction of the " << path() <<" temporary directory" ;
 
-  cout << "TmpFile Creation" << endl ;
+  fs::remove_all(path()) ;
+
+}
+
+
+TempFile::TempFile(const string& motif) : TempPath(motif) {
+
+  ElementsLogging logger = ElementsLogging::getLogger("") ;
+  logger.debug() << "Creation of the " << path() <<" temporary file" ;
+
+  fs::ofstream ofs(path());
+  ofs.close();
 
 }
 
-void TempFile::destroy() {
+TempFile::~TempFile() {
+
+  ElementsLogging logger = ElementsLogging::getLogger("") ;
+  logger.debug() << "Automatic destruction of the " << path() <<" file" ;
+
+  fs::remove(path()) ;
 
 }
+
+

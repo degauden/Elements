@@ -12,17 +12,16 @@
 
 #include <boost/filesystem.hpp>
 
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 
 class TempPath {
 public:
-  TempPath(std::string motif) ;
-  virtual void create();
-  virtual void destroy() {};
-  virtual ~TempPath() ;
+  TempPath(const std::string& motif) ;
+  virtual ~TempPath() {};
   boost::filesystem::path path() const;
   std::string motif() const;
 private:
-  std::string m_motif ;
+  const std::string m_motif ;
   boost::filesystem::path m_path ;
 
 };
@@ -30,23 +29,18 @@ private:
 
 class TempDir : public TempPath {
 public:
-  TempDir(std::string motif) : TempPath(motif) {} ;
-  void create() override;
-  void destroy() override;
+  TempDir(const std::string& motif="");
+  ~TempDir();
 
 };
 
 
 class TempFile : public TempPath {
 public:
-  TempFile(std::string motif) : TempPath(motif) {} ;
-  void create() override;
-  void destroy() override;
+  TempFile(const std::string&  motif="") ;
+  ~TempFile() ;
 
 };
-
-
-
 
 
 #endif // TEMPORARY_H_ 
