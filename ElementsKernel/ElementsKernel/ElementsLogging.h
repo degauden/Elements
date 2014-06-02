@@ -98,7 +98,7 @@ public:
    * @param name The name to use for identifying the logger messages
    * @return A logger instance
    */
-  ELEMENTS_API static ElementsLogging getLogger(const std::string& name);
+  ELEMENTS_API static ElementsLogging getLogger(const std::string& name = "");
   
   /**
    * @brief
