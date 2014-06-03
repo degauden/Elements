@@ -29,7 +29,7 @@ std::map<std::string, ElementsLogging::LoggingLevel> levelMap {
 };
 
 // A class which takes over the given stream and keeps track of the log messages
-// sent to it. It recovers the given stream in its previous stete during destruction.
+// sent to it. It recovers the given stream in its previous state during destruction.
 class LogMessageTracker {
 public:
   LogMessageTracker(std::ostream& stream) : m_messages {}, m_stream(stream), m_old {stream.rdbuf(m_messages.rdbuf())} { }
