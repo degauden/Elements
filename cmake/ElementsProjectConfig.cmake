@@ -275,9 +275,9 @@ macro(elements_project project version)
                              PATTERN "*.cmake"
                              PATTERN "*.in"
                              PATTERN ".svn" EXCLUDE)
-  install(PROGRAMS cmake/env.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/env.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/rpmbuild_wrap.py DESTINATION scripts OPTIONAL)
-  install(DIRECTORY cmake/EnvConfig DESTINATION scripts
+  install(DIRECTORY cmake/scripts/EnvConfig DESTINATION scripts
           FILES_MATCHING PATTERN "*.py" PATTERN "*.conf")
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
 
