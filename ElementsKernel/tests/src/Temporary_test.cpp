@@ -27,6 +27,8 @@ using namespace std;
 
 struct Temporary_Fixture {
 
+  TempDir top_dir{"Temporary_test-%%%%%%%"};
+
   Temporary_Fixture() {
     // setup
   }
