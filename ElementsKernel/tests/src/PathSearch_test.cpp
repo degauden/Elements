@@ -6,6 +6,7 @@
  */
 #include <string>
 #include <vector>
+#include <cstdlib>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
