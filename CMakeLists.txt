@@ -17,4 +17,4 @@ elements_project(Elements 2.1.1 DESCRIPTION "A C++ base framework for the Euclid
 
 # This test does not really fit in a subdirectory.
 elements_add_test(cmake.EnvConfigTests
-                  COMMAND nosetests ${CMAKE_SOURCE_DIR}/cmake/EnvConfig)
+                  COMMAND nosetests ${CMAKE_SOURCE_DIR}/cmake/scripts/EnvConfig)
