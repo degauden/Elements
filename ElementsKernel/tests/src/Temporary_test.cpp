@@ -38,7 +38,23 @@ BOOST_AUTO_TEST_SUITE (Temporary_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE(simple_test, Temporary_Fixture) {
+BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
+
+  fs::path test_path;
+  fs::path test_file_path ;
+
+  {
+	TempDir One;
+	test_path = One.path();
+	BOOST_CHECK(fs::exists(test_path));
+
+	TempFile Two;
+	test_file_path = Two.path();
+	BOOST_CHECK(fs::exists(test_file_path));
+  }
+
+  BOOST_CHECK(!fs::exists(test_path));
+  BOOST_CHECK(!fs::exists(test_file_path));
 
   BOOST_CHECK(true);
 
