@@ -51,6 +51,10 @@ option(USE_LOCAL_INSTALLAREA
        "Use local InstallArea for the Developers"
        OFF)
 
+option(OPT_DEBUG
+       "Enable optimisation for the Debug version"
+       ON)
+
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
@@ -100,12 +104,20 @@ if(NOT ELEMENTS_FLAGS_SET)
 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND SGS_COMPVERS VERSION_GREATER "47")
       # Use -Og with Debug builds in gcc >= 4.8
-      set(CMAKE_CXX_FLAGS_DEBUG "-Og -g"
+       set(CMAKE_CXX_FLAGS_DEBUG "-g"
           CACHE STRING "Flags used by the compiler during Debug builds."
           FORCE)
-      set(CMAKE_C_FLAGS_DEBUG "-Og -g"
+      set(CMAKE_C_FLAGS_DEBUG "-g"
           CACHE STRING "Flags used by the compiler during Debug builds."
           FORCE)
+      if(OPT_DEBUG)
+        set(CMAKE_CXX_FLAGS_DEBUG "-Og ${CMAKE_CXX_FLAGS_DEBUG}"
+            CACHE STRING "Flags used by the compiler during Debug builds."
+            FORCE)
+        set(CMAKE_C_FLAGS_DEBUG "-Og ${CMAKE_C_FLAGS_DEBUG}"
+            CACHE STRING "Flags used by the compiler during Debug builds."
+            FORCE)
+      endif()
     endif()
 
 
@@ -218,7 +230,7 @@ if ( ELEMENTS_PARALLEL AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[2-
 endif()
 
 if ( ELEMENTS_FORTIFY AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[1-9]") )
-  if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND SGS_COMPVERS VERSION_GREATER "47")
+  if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND SGS_COMPVERS VERSION_GREATER "47" AND OPT_DEBUG)
     add_definitions(-D_FORTIFY_SOURCE=2)
   endif()
   if ( (CMAKE_BUILD_TYPE STREQUAL "Release") OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo") OR (CMAKE_BUILD_TYPE STREQUAL "MinSizeRel"))
