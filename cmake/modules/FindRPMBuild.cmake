@@ -7,7 +7,7 @@
 #   CPack is used to build tar.gz source tarball
 #   which may be used by a custom user-made spec file.
 #
-# - Define RPMTools_ADD_RPM_TARGETS which defines
+# - Define ADD_RPM_TARGETS which defines
 #   two (top-level) CUSTOM targets for building
 #   source and binary RPMs
 #
@@ -21,27 +21,25 @@ ENDIF(WIN32)
 
 IF (UNIX)
   # Look for RPM builder executable
-  FIND_PROGRAM(RPMTools_RPMBUILD_EXECUTABLE 
+  FIND_PROGRAM(RPMBUILD_EXECUTABLE 
     NAMES rpmbuild
     PATHS "/usr/bin;/usr/lib/rpm"
     PATH_SUFFIXES bin
     DOC "The RPM builder tool")
 
-  IF (RPMTools_RPMBUILD_EXECUTABLE)
-    SET(RPMTools_RPMBUILD_FOUND "YES")
-    GET_FILENAME_COMPONENT(RPMTools_BINARY_DIRS ${RPMTools_RPMBUILD_EXECUTABLE} PATH)
-  ELSE (RPMTools_RPMBUILD_EXECUTABLE) 
-    SET(RPMTools_RPMBUILD_FOUND "NO")
-  ENDIF (RPMTools_RPMBUILD_EXECUTABLE) 
+  IF (RPMBUILD_EXECUTABLE)
+    SET(RPMBUILD_FOUND "YES")
+  ELSE (RPMBUILD_EXECUTABLE) 
+    SET(RPMBUILD_FOUND "NO")
+  ENDIF (RPMBUILD_EXECUTABLE) 
 
-  IF (RPMTools_RPMBUILD_FOUND)
-    SET(RPMTools_FOUND TRUE)    
+  IF (RPMBUILD_FOUND)
     #
     # - first arg  (ARGV0) is RPM name
     # - second arg (ARGV1) is the RPM spec file path [optional]
     # - third arg  (ARGV2) is the RPM ROOT DIRECTORY used to build RPMs [optional]
     #
-    MACRO(RPMTools_ADD_RPM_TARGETS RPMNAME)
+    MACRO(ADD_RPM_TARGETS RPMNAME)
 
       #
       # If no spec file is provided create a minimal one
@@ -58,7 +56,7 @@ IF (UNIX)
       ELSE ("${ARGV2}" STREQUAL "")
         SET(RPM_ROOTDIR "${ARGV2}")	
       ENDIF("${ARGV2}" STREQUAL "")
-      MESSAGE(STATUS "RPMTools:: Using RPM_ROOTDIR=${RPM_ROOTDIR}")
+      MESSAGE(STATUS "RPM Build:: Using RPM_ROOTDIR=${RPM_ROOTDIR}")
 
       # Prepare RPM build tree
       FILE(MAKE_DIRECTORY ${RPM_ROOTDIR})
@@ -155,20 +153,18 @@ rm -rf build_tree
           COMMAND cpack -G TGZ --config CPackSourceConfig.cmake
           COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz ${RPM_ROOTDIR}/SOURCES    
           COMMAND ${CMAKE_COMMAND} -E remove ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz
-          COMMAND ${RPMTools_RPMBUILD_EXECUTABLE} -bs --define=\"_topdir ${RPM_ROOTDIR}\" --buildroot=${RPM_ROOTDIR}/tmp ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME} 
+          COMMAND ${RPMBUILD_EXECUTABLE} -bs --define=\"_topdir ${RPM_ROOTDIR}\" --buildroot=${RPM_ROOTDIR}/tmp ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME} 
        )
       
       ADD_CUSTOM_TARGET(${RPMNAME}_rpm
           COMMAND cpack -G TGZ --config CPackSourceConfig.cmake
           COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz ${RPM_ROOTDIR}/SOURCES    
           COMMAND ${CMAKE_COMMAND} -E remove ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz
-          COMMAND ${RPMTools_RPMBUILD_EXECUTABLE} -bb --define=\"_topdir ${RPM_ROOTDIR}\" --buildroot=${RPM_ROOTDIR}/tmp ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME} 
+          COMMAND ${RPMBUILD_EXECUTABLE} -bb --define=\"_topdir ${RPM_ROOTDIR}\" --buildroot=${RPM_ROOTDIR}/tmp ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME} 
       )
-    ENDMACRO(RPMTools_ADD_RPM_TARGETS)
+    ENDMACRO(ADD_RPM_TARGETS)
 
-  ELSE (RPMTools_RPMBUILD_FOUND)
-    SET(RPMTools FALSE)
-  ENDIF (RPMTools_RPMBUILD_FOUND)  
+  ENDIF (RPMBUILD_FOUND)  
   
 ENDIF (UNIX)
   
