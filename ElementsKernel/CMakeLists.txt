@@ -30,6 +30,11 @@ elements_add_unit_test(ElementsLogging_test tests/src/ElementsLogging_test.cpp t
 elements_add_unit_test(PathSearch_test tests/src/PathSearch_test.cpp tests/src/BoostTestMain.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
+#-----------------------
+# Temporary_test
+elements_add_unit_test(Temporary_test tests/src/Temporary_test.cpp tests/src/BoostTestMain.cpp
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
 
 if(ELEMENTS_HIDE_WARNINGS)
   if(UNIX)
