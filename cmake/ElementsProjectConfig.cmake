@@ -650,12 +650,14 @@ macro(elements_project project version)
 
   find_package(Tar)
   if(TAR_FOUND)
-    file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES)
     add_custom_target(targz
+                      COMMAND mkdir -p ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES
                       COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                       COMMENT "Generating The Source TarBall ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz" VERBATIM
-    )  
+    )
+    
+    
   endif()
 
   # Add Doxygen generation
