@@ -16,7 +16,7 @@ BuildRequires: gcc > 4.7, cmake >= 2.6
 Requires(post):    /sbin/ldconfig
 Requires(postun):  /sbin/ldconfig
 
-%define bin_tag x86_64-fc19-gcc48-o2g
+%define bin_tag @CPACK_SYSTEM_NAME@
 %define _prefix @EUCLID_BASE_DIR@/%{name}/%{version}/InstallArea/%{bin_tag}
 %define libdir %{_prefix}/lib
 %define pydir %{_prefix}/python
