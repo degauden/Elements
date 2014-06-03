@@ -6,6 +6,7 @@
  */
 #include <string>
 #include <vector>
+#include <cstdlib>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -83,6 +84,33 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
 
 }
 
+BOOST_FIXTURE_TEST_CASE(TempEnv_test, Temporary_Fixture) {
+
+  // test if the global temporary directory exists.
+  BOOST_CHECK(fs::exists(top_dir.path()));
+  fs::path test_tmpdir = top_dir.path()/"tmpdir" ;
+  fs::create_directory(test_tmpdir) ;
+  setenv("TMPDIR", test_tmpdir.c_str(), 1);
+  string tmp_env_val = getenv("TMPDIR") ;
+  // test that the variable is actually set in the environment
+  // of the process
+  BOOST_CHECK(tmp_env_val==test_tmpdir.string());
+
+  // create a new temporary directory that should be rooted at the
+  // value of the TMPDIR directory.
+
+  TempDir new_one ;
+
+  // test that the new tmp directory has been created in the right
+  // directory (in $TMPDIR)
+  BOOST_CHECK(new_one.path().parent_path()==test_tmpdir);
+
+  // remove the environment variable
+  unsetenv("TMPDIR");
+  // check that it is gone
+  BOOST_CHECK(getenv("TMPDIR") == nullptr) ;
+  BOOST_CHECK(fs::exists(test_tmpdir)) ;
+}
 
 BOOST_AUTO_TEST_SUITE_END ()
 
