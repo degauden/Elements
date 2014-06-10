@@ -13,17 +13,12 @@
 //====================================================================
 #define ELEMENTSKERNEL_MEMORY_CPP
 
-#ifdef _WIN32
-#include "process.h"
-  #define getpid _getpid
-#else
-  #include <cerrno>
-  #include <cstring>
-  #include "sys/times.h"
-  #include "unistd.h"
-  #include "libgen.h"
-  #include <cstdio>
-#endif
+#include <cerrno>
+#include <cstring>
+#include "sys/times.h"
+#include "unistd.h"
+#include "libgen.h"
+#include <cstdio>
 
 // Framework include files
 #include <limits.h>
