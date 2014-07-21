@@ -13,7 +13,7 @@ find_package(ElementsProject)
 #---------------------------------------------------------------
 
 # Declare project name and version
-elements_project(Elements 2.1.1 DESCRIPTION "A C++ base framework for the Euclid Software.")
+elements_project(Elements 2.2 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
 # This test does not really fit in a subdirectory.
 elements_add_test(cmake.EnvConfigTests
