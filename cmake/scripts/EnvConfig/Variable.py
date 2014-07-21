@@ -9,10 +9,13 @@ import logging
 from os.path import normpath
 from zipfile import is_zipfile
 
+
 class VariableProcessor(object):
+
     '''
     Base class for the objects used to process the variables.
     '''
+
     def __init__(self, env):
         '''
         @param env: dictionary with the reference environment to use
@@ -40,33 +43,43 @@ class VariableProcessor(object):
     def __call__(self, variable, value):
         return self.process(variable, value)
 
+
 class ListProcessor(VariableProcessor):
+
     '''
     Base class for processors operating only on lists.
     '''
+
     def isTarget(self, variable):
         '''
         Return True if this variable is a list.
         '''
         return isinstance(variable, List)
 
+
 class ScalarProcessor(VariableProcessor):
+
     '''
     Base class for processors operating only on scalars.
     '''
+
     def isTarget(self, variable):
         '''
         Return True if this variable is a scalar.
         '''
         return isinstance(variable, Scalar)
 
+
 class EnvExpander(VariableProcessor):
+
     '''
     Variable processor to expand the reference to environment variables.
     '''
+
     def __init__(self, env):
         super(EnvExpander, self).__init__(env)
-        self._exp = re.compile(r"\$([A-Za-z_][A-Za-z0-9_]*)|\$\(([A-Za-z_][A-Za-z0-9_]*)\)|\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$\{(\.)\}")
+        self._exp = re.compile(
+            r"\$([A-Za-z_][A-Za-z0-9_]*)|\$\(([A-Za-z_][A-Za-z0-9_]*)\)|\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$\{(\.)\}")
 
     def isTarget(self, variable):
         return (super(EnvExpander, self).isTarget(variable)
@@ -80,7 +93,8 @@ class EnvExpander(VariableProcessor):
                          + str(self._env[filter(None, m.groups())[0]])
                          + value[m.end():])
             except KeyError, k:
-                logging.debug('KeyError: %s unknown while expanding %s', k, value)
+                logging.debug(
+                    'KeyError: %s unknown while expanding %s', k, value)
                 return value
             return self._repl(value)
         else:
@@ -92,45 +106,58 @@ class EnvExpander(VariableProcessor):
         else:
             # expand only in the elements that are new
             old_values = set(variable.val)
-            value = map(lambda v: v if v in old_values else self._repl(v), value)
+            value = map(
+                lambda v: v if v in old_values else self._repl(v), value)
         return value
 
+
 class PathNormalizer(VariableProcessor):
+
     '''
     Call os.path.normpath for all the entries of the variable.
     '''
+
     def process(self, variable, value):
         if isinstance(value, str):
-            if '://' not in value: # this might be a URL
+            if '://' not in value:  # this might be a URL
                 value = normpath(value)
         else:
             value = [normpath(v) for v in value if v]
         return value
 
+
 class DuplicatesRemover(ListProcessor):
+
     '''
     Remove duplicates entries from lists.
     '''
+
     def process(self, variable, value):
-        val =  []
+        val = []
         for s in value:
             if s not in val:
                 val.append(s)
         return val
 
+
 class EmptyDirsRemover(ListProcessor):
+
     '''
     Remove empty or not existing directories from lists.
     '''
+
     def process(self, variable, value):
         from os.path import isdir
         from os import listdir
         return [s for s in value if s.endswith('.zip') or (isdir(s) and listdir(s))]
 
+
 class UsePythonZip(ListProcessor):
+
     '''
     Use .zip files instead of regular directories in PYTHONPATH when possible.
     '''
+
     def isTarget(self, variable):
         return (super(UsePythonZip, self).isTarget(variable)
                 and variable.varName == 'PYTHONPATH')
@@ -146,21 +173,24 @@ class UsePythonZip(ListProcessor):
         return val
 
 # Default (minimal) set of processors.
-processors = [ EnvExpander, PathNormalizer, DuplicatesRemover,
-               # special processors
-               EmptyDirsRemover, UsePythonZip
-               ]
+processors = [EnvExpander, PathNormalizer, DuplicatesRemover,
+              # special processors
+              EmptyDirsRemover, UsePythonZip
+              ]
 
-# FIXME: these are back-ward compatibility hacks: we need a proper way to add/remove processors
+# FIXME: these are back-ward compatibility hacks: we need a proper way to
+# add/remove processors
 if ('no-strip-path' in os.environ.get('CMTEXTRATAGS', '')
-    or 'GAUDI_NO_STRIP_PATH' in os.environ
-    or 'LB_NO_STRIP_PATH' in os.environ):
+        or 'ELEMENTS_NO_STRIP_PATH' in os.environ
+        or 'E_NO_STRIP_PATH' in os.environ):
     processors.remove(EmptyDirsRemover)
 
 if 'no-pyzip' in os.environ.get('CMTEXTRATAGS', ''):
     processors.remove(UsePythonZip)
 
+
 class VariableBase(object):
+
     '''
     Base class for the classes used to manipulate the environment.
     '''
@@ -182,7 +212,9 @@ class VariableBase(object):
                 value = p(self, value)
         return value
 
+
 class List(VariableBase):
+
     '''
     Class for manipulating with environment lists.
 
@@ -204,7 +236,7 @@ class List(VariableBase):
             value = value.split(separator)
         self.val = self.process(value, environment)
 
-    def unset(self, value, separator=':', environment=None):# pylint: disable=W0613
+    def unset(self, value, separator=':', environment=None):  # pylint: disable=W0613
         '''Sets the value of the List to empty. Any previous value is overwritten.'''
         self.val = []
 
@@ -216,7 +248,7 @@ class List(VariableBase):
             # clone the list
             return list(self.val)
 
-    def remove_regexp(self, value, separator = ':'):
+    def remove_regexp(self, value, separator=':'):
         self.remove(value, separator, True)
 
     def remove(self, value, separator=':', regexp=False):
@@ -224,16 +256,16 @@ class List(VariableBase):
         if regexp:
             value = self.search(value, True)
 
-        elif isinstance(value,str):
+        elif isinstance(value, str):
             value = value.split(separator)
 
         for i in range(len(value)):
             val = value[i]
             if val not in value:
-                self.log.info('Value "%s" not found in List: "%s". Removal canceled.', val, self.varName)
+                self.log.info(
+                    'Value "%s" not found in List: "%s". Removal canceled.', val, self.varName)
             while val in self.val:
                 self.val.remove(val)
-
 
     def append(self, value, separator=':', environment=None):
         '''Adds value(s) at the end of the list.'''
@@ -269,7 +301,8 @@ class List(VariableBase):
 
     def __setitem__(self, key, value):
         if value in self.val:
-            self.log.info('Var: "%s" value: "%s". Addition canceled because of duplicate entry.', self.varName, value)
+            self.log.info(
+                'Var: "%s" value: "%s". Addition canceled because of duplicate entry.', self.varName, value)
         else:
             self.val.insert(key, value)
 
@@ -291,6 +324,7 @@ class List(VariableBase):
 
 
 class Scalar(VariableBase):
+
     '''Class for manipulating with environment scalars.'''
 
     def __init__(self, name, local=False):
@@ -301,32 +335,32 @@ class Scalar(VariableBase):
         '''Returns the name of the scalar.'''
         return self.varName
 
-    def set(self, value, separator=':', environment=None):# pylint: disable=W0613
+    def set(self, value, separator=':', environment=None):  # pylint: disable=W0613
         '''Sets the value of the scalar. Any previous value is overwritten.'''
         self.val = self.process(value, environment)
 
-    def unset(self, value, separator=':', environment=None):# pylint: disable=W0613
+    def unset(self, value, separator=':', environment=None):  # pylint: disable=W0613
         '''Sets the value of the variable to empty. Any previous value is overwritten.'''
         self.val = ''
 
-    def value(self, asString=False, separator=':'):# pylint: disable=W0613
+    def value(self, asString=False, separator=':'):  # pylint: disable=W0613
         '''Returns values of the scalar.'''
         return self.val
 
     def remove_regexp(self, value, separator=':'):
         self.remove(value, separator, True)
 
-    def remove(self, value, separator=':', regexp=True):# pylint: disable=W0613
+    def remove(self, value, separator=':', regexp=True):  # pylint: disable=W0613
         '''Removes value(s) from the scalar. If value is not found, removal is canceled.'''
         value = self.search(value)
         for val in value:
             self.val = self.val.replace(val, '')
 
-    def append(self, value, separator=':', environment=None):# pylint: disable=W0613
+    def append(self, value, separator=':', environment=None):  # pylint: disable=W0613
         '''Adds value(s) at the end of the scalar.'''
         self.val += self.process(value, environment)
 
-    def prepend(self, value, separator=':', environment=None):# pylint: disable=W0613
+    def prepend(self, value, separator=':', environment=None):  # pylint: disable=W0613
         '''Adds value(s) at the beginning of the scalar.'''
         self.val = self.process(value, environment) + self.val
 
@@ -337,16 +371,20 @@ class Scalar(VariableBase):
     def __str__(self):
         return self.val
 
+
 class EnvError(Exception):
+
     '''Class which defines errors for locals operations.'''
+
     def __init__(self, value, code):
         super(EnvError, self).__init__()
         self.val = value
         self.code = code
+
     def __str__(self):
         if self.code == 'undefined':
-            return 'Reference to undefined environment element: "'+self.val +'".'
+            return 'Reference to undefined environment element: "' + self.val + '".'
         elif self.code == 'ref2var':
             return 'Reference to list from the middle of string.'
         elif self.code == 'redeclaration':
-            return 'Wrong redeclaration of environment element "'+self.val+'".'
+            return 'Wrong redeclaration of environment element "' + self.val + '".'
