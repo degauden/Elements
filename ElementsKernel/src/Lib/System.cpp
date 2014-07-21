@@ -480,7 +480,6 @@ long Elements::System::argc()    {
 /// Const char** command line arguments including executable name as arg[0]
 const vector<string> Elements::System::cmdLineArgs()    {
   if ( s_argvChars.size() == 0 )    {
-    char exe[1024];
 #ifdef _WIN32
     /// @todo: rewrite the tokenizer to avoid strncpy, etc
     // Disable warning C4996 triggered by C standard library calls
@@ -519,6 +518,7 @@ const vector<string> Elements::System::cmdLineArgs()    {
     }
 #pragma warning(pop)
 #elif defined(__linux) || defined(__APPLE__)
+    char exe[1024];
     sprintf(exe, "/proc/%d/cmdline", ::getpid());
     FILE *cmdLine = ::fopen(exe,"r");
     char cmd[1024];
