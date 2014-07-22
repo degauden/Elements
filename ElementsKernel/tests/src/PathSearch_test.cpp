@@ -30,9 +30,9 @@ struct Path_Fixture {
 
   string env_variable_name = "ELEMENTS_CONF_PATH";
   // store the original value of the environment variable to set it again correctly after the test
-  const char * tmp_char_ptr = getenv(env_variable_name.c_str());
+  const char * tmp_char_ptr = ::getenv(env_variable_name.c_str());
 
-  string root_path = getenv("ELEMENTSKERNELROOT");
+  string root_path = ::getenv("ELEMENTSKERNELROOT");
   string string_full_path = root_path + "/tests/data/PathSearch/";
   fs::path full_path { string_full_path };
 
