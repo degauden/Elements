@@ -45,6 +45,9 @@ struct ClassExampleFixture {
     class_example_ptr = new ClassExample(source_id, ra, dec);
   }
 
+  ClassExampleFixture(const ClassExampleFixture& other)
+  : class_example_ptr(other.class_example_ptr){}
+
   ~ClassExampleFixture() {
     // delete fixture object
     delete class_example_ptr;
