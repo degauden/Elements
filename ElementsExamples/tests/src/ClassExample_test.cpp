@@ -46,7 +46,8 @@ struct ClassExampleFixture {
   }
 
   ClassExampleFixture(const ClassExampleFixture& other)
-  : class_example_ptr(other.class_example_ptr){}
+  : class_example_ptr(new ClassExample(*(other.class_example_ptr))){
+  }
 
   ~ClassExampleFixture() {
     // delete fixture object
