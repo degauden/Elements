@@ -48,7 +48,7 @@ struct Path_Fixture {
   ~Path_Fixture() {
     // teardown
     if (tmp_char_ptr != nullptr) {
-      setenv(env_variable_name.c_str(), tmp_char_ptr, 1);
+      ::setenv(env_variable_name.c_str(), tmp_char_ptr, 1);
     }
   }
 };
