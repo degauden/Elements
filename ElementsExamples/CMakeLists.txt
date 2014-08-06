@@ -13,15 +13,15 @@ elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExampl
                   LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ElementsExamples
                   INCLUDE_DIRS Boost ElementsExamples
                   PUBLIC_HEADERS ElementsExamples)
-                  
+
 #===== Boost tests =============================================================
-elements_add_unit_test(ClassExample_test tests/src/ClassExample_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(ClassExample_test tests/src/ClassExample_test.cpp
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
- 
-elements_add_unit_test(ElementsExample_all_tests tests/src/*_test.cpp tests/src/TestMain.cpp
+
+elements_add_unit_test(ElementsExample_all_tests tests/src/*_test.cpp
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
-                                              
-                 
+
+
 if(USE_ODB)
   find_package(ODB)
   if(ODB_FOUND)
