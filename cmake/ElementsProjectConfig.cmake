@@ -1846,17 +1846,20 @@ function(elements_add_unit_test executable)
     elements_common_add_build(${${executable}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
     if(NOT ${executable}_UNIT_TEST_TYPE)
-      set(${executable}_UNIT_TEST_TYPE CppUnit)
+      set(${executable}_UNIT_TEST_TYPE None)
+#      set(${executable}_UNIT_TEST_TYPE CppUnit)
     endif()
 
     if(NOT ${executable}_UNIT_TEST_WORKING_DIRECTORY)
       set(${executable}_UNIT_TEST_WORKING_DIRECTORY .)
     endif()
 
-    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
-      find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-    else()
-      find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
+    if(NOT ${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
+      if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
+        find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+      else()
+        find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
+      endif()
     endif()
 
     elements_get_package_name(package)
@@ -1870,9 +1873,16 @@ function(elements_add_unit_test executable)
       set(srcs ${srcs} ${testmain_file})
     endif()
 
-    elements_add_executable(${executable} ${srcs}
-                         LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${executable}_UNIT_TEST_TYPE}
-                         INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${executable}_UNIT_TEST_TYPE})
+    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
+      elements_add_executable(${executable} ${srcs}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+    else()
+      elements_add_executable(${executable} ${srcs}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${executable}_UNIT_TEST_TYPE}
+                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${executable}_UNIT_TEST_TYPE})
+    endif()
+
 
     get_target_property(exec_suffix ${executable} SUFFIX)
     if(NOT exec_suffix)
