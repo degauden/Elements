@@ -1,6 +1,7 @@
 elements_subdir(ElementsExamples 1.0)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread system program_options unit_test_framework)
+find_package(CppUnit)
 
 #===== Libraries ===============================================================
 elements_add_library(ElementsExamples src/Lib/*.cpp
@@ -30,10 +31,12 @@ elements_add_unit_test(ClassExample_test2 tests/src/Boost/ClassExample_test.cpp 
 elements_add_unit_test(ElementsExample_all_tests tests/src/Boost/*_test.cpp
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
+#===== CppUnit tests =============================================================
 
-elements_add_unit_test(ClassExample_test3 tests/src/CppUnit/TestMain.cpp
+if(CPPUNIT_FOUND)
+elements_add_unit_test(ClassExample_test3 tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
                        LINK_LIBRARIES ElementsExamples TYPE CppUnit)
-
+endif()
 
 
 if(USE_ODB)
