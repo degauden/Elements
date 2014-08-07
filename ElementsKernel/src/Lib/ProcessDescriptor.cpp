@@ -60,14 +60,14 @@ namespace NtApi {
 #define WINVER 0
 #include <cerrno>
 #include <string>
-#include "unistd.h"
-#include "libgen.h"
+#include <unistd.h>
+#include <libgen.h>
 #include <cstdio>
 #include <unistd.h>
 #include <sstream>
 #include <iostream>
 #include <fcntl.h>
-#include "sys/times.h"
+#include <sys/times.h>
 #include <sys/types.h>
 #include <sys/signal.h>
 #include <sys/syscall.h>

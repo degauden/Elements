@@ -98,7 +98,7 @@ find_package(PythonInterp)
 #
 # Main macro for a Elements-based project.
 # Each project must call this macro once in the top-level CMakeLists.txt,
-# stating the project name and the version in the LHCb format (vXrY[pZ]). or in the 
+# stating the project name and the version in the LHCb format (vXrY[pZ]). or in the
 # regular format (X.Y[.Z]).
 #
 # The USE list can be used to declare which Elements-based projects are required by
@@ -253,6 +253,12 @@ macro(elements_project project version)
     set(versheader_cmd ${PYTHON_EXECUTABLE} ${versheader_cmd})
   endif()
 
+  find_program(testmain_cmd createBoostTestMain.py HINTS ${binary_paths})
+  if(testmain_cmd)
+    set(testmain_cmd ${PYTHON_EXECUTABLE} ${testmain_cmd})
+  endif()
+
+
   find_program(zippythondir_cmd ZipPythonDir.py HINTS ${binary_paths})
   if(zippythondir_cmd)
     set(zippythondir_cmd ${PYTHON_EXECUTABLE} ${zippythondir_cmd})
@@ -265,7 +271,7 @@ macro(elements_project project version)
   set(rpmbuild_wrap_cmd ${PYTHON_EXECUTABLE} ${rpmbuild_wrap_cmd})
 
 
-  mark_as_advanced(env_cmd merge_cmd versheader_cmd
+  mark_as_advanced(env_cmd merge_cmd versheader_cmd testmain_cmd
                    zippythondir_cmd elementsrun_cmd
                    rpmbuild_wrap_cmd)
 
@@ -275,9 +281,10 @@ macro(elements_project project version)
                              PATTERN "*.cmake"
                              PATTERN "*.in"
                              PATTERN ".svn" EXCLUDE)
-                             
+
   install(PROGRAMS cmake/scripts/rpmbuild_wrap.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/createProjVersHeader.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/createBoostTestMain.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/install.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/locker.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/merge_files.py DESTINATION scripts OPTIONAL)
@@ -531,7 +538,7 @@ macro(elements_project project version)
     list(SORT regular_bin_objects)
     foreach(_do ${regular_bin_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%{_bindir}/${_do}")    
+%{_bindir}/${_do}")
     endforeach()
     #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
@@ -640,7 +647,7 @@ macro(elements_project project version)
 %{libdir}/${_do}")
       else()
         set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
-%{_bindir}/${_do}")    
+%{_bindir}/${_do}")
       endif()
     endforeach()
     #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")
@@ -654,36 +661,36 @@ macro(elements_project project version)
 
   find_package(Tar)
   if(TAR_FOUND)
-  
+
     find_package(RPMBuild)
-  
+
     if (RPMBUILD_FOUND)
       option(USE_DEFAULT_RPMBUILD_DIR "Use default RPM build directory (the value of the %_topdir variable)" OFF)
       if(USE_DEFAULT_RPMBUILD_DIR)
         execute_process(COMMAND rpmbuild --eval %_topdir OUTPUT_VARIABLE PROJECT_RPM_TOPDIR OUTPUT_STRIP_TRAILING_WHITESPACE)
       else()
-        set(PROJECT_RPM_TOPDIR "${PROJECT_BINARY_DIR}/Packages/RPM")        
+        set(PROJECT_RPM_TOPDIR "${PROJECT_BINARY_DIR}/Packages/RPM")
       endif()
-      set(PROJECT_TARGZ_DIR "${PROJECT_RPM_TOPDIR}/SOURCES")          
+      set(PROJECT_TARGZ_DIR "${PROJECT_RPM_TOPDIR}/SOURCES")
     else()
       set(PROJECT_TARGZ_DIR "${PROJECT_BINARY_DIR}/Packages")
     endif()
-  
+
     add_custom_target(targz
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_TARGZ_DIR}
                       COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                       COMMENT "Generating The Source TarBall ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz" VERBATIM
     )
-    
+
     if (RPMBUILD_FOUND)
-    
+
       find_file(spec_file_template
                 NAMES Elements.spec.in
                 PATHS ${CMAKE_MODULE_PATH}
                 NO_DEFAULT_PATH)
 
-      
+
 
       set(PROJECT_RPM_BUILD_ROOT "${PROJECT_RPM_TOPDIR}/BUILDROOT/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}%{?dist}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
 
@@ -694,28 +701,28 @@ macro(elements_project project version)
         message(STATUS "From the SPEC template file: ${spec_file_template}")
       endif()
 
-    
+
       add_custom_target(rpmbuilddir
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILD      
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILDROOT      
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/RPMS  
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/SRPMS  
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILD
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILDROOT
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/RPMS
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/SRPMS
                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_BUILD_ROOT}
                         COMMENT "Generating ${PROJECT_RPM_TOPDIR} as rpmbuild directory" VERBATIM
       )
-      
-                        
+
+
       add_custom_target(rpm
                         COMMAND ${rpmbuild_wrap_cmd} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
                         COMMENT "Generating The RPM Files in ${PROJECT_RPM_TOPDIR}" VERBATIM
       )
-    
+
       add_dependencies(rpm targz)
       add_dependencies(rpm rpmbuilddir)
-    
+
     endif()
-    
-    
+
+
   endif()
 
   # Add Doxygen generation
@@ -1839,24 +1846,43 @@ function(elements_add_unit_test executable)
     elements_common_add_build(${${executable}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
     if(NOT ${executable}_UNIT_TEST_TYPE)
-      set(${executable}_UNIT_TEST_TYPE CppUnit)
+      set(${executable}_UNIT_TEST_TYPE None)
+#      set(${executable}_UNIT_TEST_TYPE CppUnit)
     endif()
 
     if(NOT ${executable}_UNIT_TEST_WORKING_DIRECTORY)
       set(${executable}_UNIT_TEST_WORKING_DIRECTORY .)
     endif()
 
-    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
-      find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-    else()
-      find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
+    if(NOT ${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
+      if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
+        find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+      else()
+        find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
+      endif()
     endif()
 
-    elements_add_executable(${executable} ${srcs}
-                         LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${executable}_UNIT_TEST_TYPE}
-                         INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${executable}_UNIT_TEST_TYPE})
-
     elements_get_package_name(package)
+
+    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
+      set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/BoostTestMain.cpp)
+      add_custom_command (
+                          OUTPUT ${testmain_file}
+                          COMMAND ${testmain_cmd} --quiet ${package} ${testmain_file}
+                         )
+      set(srcs ${srcs} ${testmain_file})
+    endif()
+
+    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
+      elements_add_executable(${executable} ${srcs}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+    else()
+      elements_add_executable(${executable} ${srcs}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${executable}_UNIT_TEST_TYPE}
+                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${executable}_UNIT_TEST_TYPE})
+    endif()
+
 
     get_target_property(exec_suffix ${executable} SUFFIX)
     if(NOT exec_suffix)
@@ -2398,7 +2424,7 @@ function(elements_generate_env_conf filename)
 
   # include inherited environments
   # (note: it's important that the full search path is ready before we start including)
-  
+
   foreach(other_project ${used_elements_projects})
     set(data "${data}  <env:search_path>${${other_project}_DIR}</env:search_path>\n")
   endforeach()
