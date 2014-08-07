@@ -22,12 +22,12 @@ static PsApiFunctions _psApi;
   #  define PATH_MAX 1024
   #endif
 #else  // UNIX...: first the EGCS stuff, then the OS dependent includes
-  #include <errno.h>
+  #include <cerrno>
   #include <string.h>
-  #include "sys/times.h"
-  #include "sys/param.h"
-  #include "unistd.h"
-  #include "libgen.h"
+  #include <sys/times.h>
+  #include <sys/param.h>
+  #include <unistd.h>
+  #include <libgen.h>
   #include <cstdio>
   #include <dlfcn.h>
 #endif

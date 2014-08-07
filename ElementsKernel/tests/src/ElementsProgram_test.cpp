@@ -16,7 +16,7 @@ using namespace std;
 //-----------------------------------------------------------------------------
 
 // tolerance value to compare floating point numbers
-double tolerance = 1e-10;
+double TOLERANCE = 1e-10;
 
 /*
  * Fixture to compare the test result against reference values

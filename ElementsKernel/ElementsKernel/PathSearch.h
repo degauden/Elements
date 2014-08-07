@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include "boost/filesystem.hpp"
+#include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 

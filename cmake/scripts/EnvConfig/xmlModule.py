@@ -7,9 +7,11 @@ Created on Jul 2, 2011
 from xml.dom import minidom
 import logging
 from cPickle import load, dump
-from hashlib import md5 # pylint: disable=E0611
+from hashlib import md5  # pylint: disable=E0611
+
 
 class XMLFile(object):
+
     '''Takes care of XML file operations such as reading and writing.'''
 
     def __init__(self):
@@ -30,7 +32,7 @@ class XMLFile(object):
             checksum.update(open(path, 'rb').read())
             checksum = checksum.digest()
 
-            cpath = path + "c" # preparsed file
+            cpath = path + "c"  # preparsed file
             try:
                 f = open(cpath, 'rb')
                 oldsum, data = load(f)
@@ -64,7 +66,8 @@ class XMLFile(object):
                         value = str(node.childNodes[0].data)
                     else:
                         value = ''
-                    variables.append((action, (value, caller, str(node.getAttribute('hints')))))
+                    variables.append(
+                        (action, (value, caller, str(node.getAttribute('hints')))))
 
                 elif action == 'search_path':
                     if node.childNodes:
@@ -79,7 +82,8 @@ class XMLFile(object):
                         continue
 
                     if action == 'declare':
-                        variables.append((action, (varname, str(node.getAttribute('type')), str(node.getAttribute('local')))))
+                        variables.append(
+                            (action, (varname, str(node.getAttribute('type')), str(node.getAttribute('local')))))
                     else:
                         if node.childNodes:
                             value = str(node.childNodes[0].data)
@@ -96,7 +100,6 @@ class XMLFile(object):
                 pass
         return variables
 
-
     def resetWriter(self):
         '''resets the buffer of writer'''
         self.xmlResult = '<?xml version="1.0" encoding="UTF-8"?><env:config xmlns:env="EnvSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="EnvSchema ./EnvSchema.xsd ">\n'
@@ -110,18 +113,21 @@ class XMLFile(object):
 
         doc = minidom.parseString(self.xmlResult)
         with open(outputFile, "w") as f:
-            f.write( doc.toxml() )
+            f.write(doc.toxml())
 
         return outputFile
 
     def writeVar(self, varName, action, value, vartype='list', local=False):
         '''Writes a action to a file. Declare undeclared elements (non-local list is default type).'''
         if action == 'declare':
-            self.xmlResult += '<env:declare variable="'+varName+'" type="'+ vartype.lower() +'" local="'+(str(local)).lower()+'" />\n'
+            self.xmlResult += '<env:declare variable="' + varName + '" type="' + \
+                vartype.lower() + '" local="' + (str(local)).lower() + '" />\n'
             self.declaredVars.append(varName)
             return
 
         if varName not in self.declaredVars:
-            self.xmlResult += '<env:declare variable="'+varName+'" type="'+ vartype +'" local="'+(str(local)).lower()+'" />\n'
+            self.xmlResult += '<env:declare variable="' + varName + '" type="' + \
+                vartype + '" local="' + (str(local)).lower() + '" />\n'
             self.declaredVars.append(varName)
-        self.xmlResult += '<env:'+action+' variable="'+ varName +'">'+value+'</env:'+action+'>\n'
+        self.xmlResult += '<env:' + action + ' variable="' + \
+            varName + '">' + value + '</env:' + action + '>\n'

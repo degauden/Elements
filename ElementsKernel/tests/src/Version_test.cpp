@@ -13,7 +13,7 @@ using namespace std;
 //-----------------------------------------------------------------------------
 
 // tolerance value to compare floating point numbers
-double tolerance = 1e-10;
+double TOLERANCE = 1e-10;
 
 // input string to test the generation of an appropriate version in case of a trunk or tags
 string SVN_ID {"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
