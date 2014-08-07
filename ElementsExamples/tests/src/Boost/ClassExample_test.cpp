@@ -14,7 +14,7 @@ using namespace std;
 //-----------------------------------------------------------------------------
 
 // tolerance value to compare floating point numbers
-double tolerance = 1e-10;
+double TOLERANCE = 1e-10;
 
 /*
  * Fixture to compare the test result against reference values
@@ -83,7 +83,7 @@ BOOST_FIXTURE_TEST_CASE( getters_test, ClassExampleFixture ) {
 BOOST_FIXTURE_TEST_CASE( computeSum_test, ClassExampleFixture ) {
   //
   double actualSum = m_class_example_ptr->computeSum(m_first_number, m_second_number);
-  BOOST_CHECK_CLOSE(actualSum, m_expected_sum, tolerance);
+  BOOST_CHECK_CLOSE(actualSum, m_expected_sum, TOLERANCE);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ BOOST_FIXTURE_TEST_CASE( computeSum_test, ClassExampleFixture ) {
 BOOST_FIXTURE_TEST_CASE( divideNumbers_test, ClassExampleFixture ) {
   //
   double actualDivisionResult = m_class_example_ptr->divideNumbers(m_first_number, m_second_number);
-  BOOST_CHECK_CLOSE(actualDivisionResult, m_expected_division_result, tolerance);
+  BOOST_CHECK_CLOSE(actualDivisionResult, m_expected_division_result, TOLERANCE);
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ BOOST_FIXTURE_TEST_CASE( divideNumbersByZeroException_test, ClassExampleFixture 
 BOOST_FIXTURE_TEST_CASE( summingAndDividing_test, ClassExampleFixture ) {
   //
   m_class_example_ptr->summingAndDividing(m_first_number, m_second_number);
-  BOOST_CHECK_CLOSE(m_class_example_ptr->getResult(), m_expected_final_result, tolerance);
+  BOOST_CHECK_CLOSE(m_class_example_ptr->getResult(), m_expected_final_result, TOLERANCE);
 }
 
 //-----------------------------------------------------------------------------
