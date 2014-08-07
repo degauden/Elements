@@ -31,6 +31,11 @@ elements_add_unit_test(ElementsExample_all_tests tests/src/Boost/*_test.cpp
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 
+elements_add_unit_test(ClassExample_test3 tests/src/CppUnit/TestMain.cpp
+                       LINK_LIBRARIES ElementsExamples TYPE CppUnit)
+
+
+
 if(USE_ODB)
   find_package(ODB)
   if(ODB_FOUND)
