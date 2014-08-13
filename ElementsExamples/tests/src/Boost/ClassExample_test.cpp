@@ -9,6 +9,8 @@
 #include <boost/test/unit_test.hpp>
 #include "ElementsKernel/ElementsException.h"
 #include "ElementsExamples/ClassExample.h"
+#include "ElementsKernel/Real.h"
+
 using namespace std;
 
 //-----------------------------------------------------------------------------
@@ -73,8 +75,10 @@ BOOST_FIXTURE_TEST_CASE( constructors_test, ClassExampleFixture ) {
 BOOST_FIXTURE_TEST_CASE( getters_test, ClassExampleFixture ) {
   //
   BOOST_CHECK(m_source_id == m_class_example_ptr->getSourceId());
-  BOOST_CHECK(m_ra == m_class_example_ptr->getRa());
-  BOOST_CHECK(m_dec == m_class_example_ptr->getDec());
+  BOOST_CHECK_CLOSE(m_ra, m_class_example_ptr->getRa(), TOLERANCE);
+  BOOST_CHECK_CLOSE(m_dec, m_class_example_ptr->getDec(), TOLERANCE);
+  BOOST_CHECK(isEqual(m_ra, m_class_example_ptr->getRa()));
+  BOOST_CHECK(isEqual(m_dec, m_class_example_ptr->getDec()));
   BOOST_CHECK(m_expected_static_string == m_class_example_ptr->getStaticString());
 }
 
