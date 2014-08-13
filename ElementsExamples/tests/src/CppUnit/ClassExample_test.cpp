@@ -17,7 +17,7 @@
 using namespace std;
 
 // tolerance value to compare floating point numbers
-double TOLERANCE = 1e-10;
+double TOLERANCE { 1e-10 };
 
 /*
  * Fixture to compare the test result against reference values
@@ -51,42 +51,28 @@ protected:
   void summingAndDividingTest();
   void summingAndDividingByZeroExceptionTest();
 
+
+
 private:
 
-  ClassExample* m_class_example_ptr;
+  ClassExample* m_class_example_ptr { nullptr };
 
   // Some numbers to feed the constructor
-  const int64_t m_source_id = 16253;
-  const double m_ra = 64.5768;
-  const double m_dec = -34.2857;
+  const int64_t m_source_id { 16253 };
+  const double m_ra  { 64.5768 };
+  const double m_dec { -34.2857 };
 
   // expected static string (hard coded in .cpp file!)
-  std::string m_expected_static_string = "This is a static field example";
+  std::string m_expected_static_string {"This is a static field example"};
 
   // Numbrs to test the methods
-  const double m_first_number = 2.5647;
-  const double m_second_number = 5.6874;
+  const double m_first_number { 2.5647 };
+  const double m_second_number { 5.6874 };
 
-  const double m_expected_sum = 8.2521;
-  const double m_expected_division_result = 0.45094419242536132;
-  const double m_expected_final_result = m_expected_division_result;
+  const double m_expected_sum { 8.2521 };
+  const double m_expected_division_result { 0.45094419242536132 };
+  const double m_expected_final_result { m_expected_division_result } ;
 
-
-//  ClassExampleSuite() {
-//    // call the constructor
-//    m_class_example_ptr = new ClassExample(m_source_id, m_ra, m_dec);
-//  }
-
-//  ClassExampleSuite(const ClassExampleSuite& other)
-//  : m_class_example_ptr(new ClassExample(*(other.m_class_example_ptr))){
-//  }
-//
-//  virtual ~ClassExampleSuite() {
-//    // delete fixture object
-//    delete m_class_example_ptr;
-//  }
-
-  //ClassExampleFixture(const ClassExampleFixture&) = delete;
 
 };
 
