@@ -1860,22 +1860,32 @@ function(elements_add_unit_test executable)
       set(${executable}_UNIT_TEST_WORKING_DIRECTORY .)
     endif()
 
+
+    elements_get_package_name(package)
+
+
     if(NOT ${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
       if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
         find_package(Boost COMPONENTS unit_test_framework REQUIRED)
       else()
         find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
       endif()
+      if (NOT TARGET ${package}_tests_dir)
+        add_custom_target(${package}_tests_dir
+                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/tests
+                          COMMENT "Generating The ${package}/tests directory" VERBATIM)
+      endif()
     endif()
 
-    elements_get_package_name(package)
 
     if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
       set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/BoostTestMain.cpp)
       add_custom_command (
                           OUTPUT ${testmain_file}
                           COMMAND ${boosttestmain_cmd} --quiet ${package} ${testmain_file}
+                          DEPENDS ${package}_tests_dir
                          )
+#      set_property(TARGET testmain_file DEPENDS ${package}_tests_dir)
       set(srcs ${srcs} ${testmain_file})
     endif()
 
@@ -1884,7 +1894,9 @@ function(elements_add_unit_test executable)
       add_custom_command (
                           OUTPUT ${testmain_file}
                           COMMAND ${cppunittestmain_cmd} --quiet ${package} ${testmain_file}
+                          DEPENDS ${package}_tests_dir
                          )
+#      set_property(TARGET testmain_file DEPENDS ${package}_tests_dir)
       set(srcs ${srcs} ${testmain_file})
     endif()
 

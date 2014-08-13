@@ -11,13 +11,13 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "ElementsKernel/ElementsException.h"
-#include "ElementsKernel/Real.h"
+#include "ElementsKernel/Real.h" // Provides isEqual
+
 #include "ElementsExamples/ClassExample.h"
 
-using namespace std;
+#include "tests/src/Tolerance.h"
 
-// tolerance value to compare floating point numbers
-double TOLERANCE { 1e-10 };
+using namespace std;
 
 /*
  * Fixture to compare the test result against reference values
@@ -100,8 +100,8 @@ void ClassExampleSuite::constructorsTest() {
 void ClassExampleSuite::gettersTest() {
 
   CPPUNIT_ASSERT(m_source_id == m_class_example_ptr->getSourceId());
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_ra, m_class_example_ptr->getRa(), TOLERANCE);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_dec, m_class_example_ptr->getDec(), TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_ra, m_class_example_ptr->getRa(), TEST_DOUBLE_TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_dec, m_class_example_ptr->getDec(), TEST_DOUBLE_TOLERANCE);
   CPPUNIT_ASSERT(isEqual(m_ra,m_class_example_ptr->getRa()));
   CPPUNIT_ASSERT(isEqual(m_dec, m_class_example_ptr->getDec()));
   CPPUNIT_ASSERT(m_expected_static_string == m_class_example_ptr->getStaticString());
@@ -112,14 +112,14 @@ void ClassExampleSuite::gettersTest() {
 void ClassExampleSuite::computeSumTest() {
 
   double actualSum = m_class_example_ptr->computeSum(m_first_number, m_second_number);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualSum, m_expected_sum, TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualSum, m_expected_sum, TEST_DOUBLE_TOLERANCE);
 
 }
 
 void ClassExampleSuite::divideNumbersTest() {
 
   double actualDivisionResult = m_class_example_ptr->divideNumbers(m_first_number, m_second_number);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualDivisionResult, m_expected_division_result, TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualDivisionResult, m_expected_division_result, TEST_DOUBLE_TOLERANCE);
 
 }
 
@@ -143,7 +143,7 @@ void ClassExampleSuite::divideNumbersByZeroExceptionTest() {
 void ClassExampleSuite::summingAndDividingTest() {
 
   m_class_example_ptr->summingAndDividing(m_first_number, m_second_number);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_class_example_ptr->getResult(), m_expected_final_result, TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_class_example_ptr->getResult(), m_expected_final_result, TEST_DOUBLE_TOLERANCE);
 
 }
 
