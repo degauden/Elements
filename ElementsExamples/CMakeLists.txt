@@ -34,8 +34,13 @@ elements_add_unit_test(ElementsExample_all_tests tests/src/Boost/*_test.cpp
 #===== CppUnit tests =============================================================
 
 if(CPPUNIT_FOUND)
-elements_add_unit_test(ClassExample_test3 tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
+# CppUnit Type test
+elements_add_unit_test(ClassExample_test3 tests/src/CppUnit/ClassExample_test.cpp
                        LINK_LIBRARIES ElementsExamples TYPE CppUnit)
+
+# Test with the CppUnit library. The TestMain.cpp is not generated
+elements_add_unit_test(ClassExample_test4 tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
+                       LINK_LIBRARIES ElementsExamples CppUnit)
 endif()
 
 
