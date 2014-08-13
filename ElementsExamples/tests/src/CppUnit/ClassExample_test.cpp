@@ -9,7 +9,9 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
+
 #include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Real.h"
 #include "ElementsExamples/ClassExample.h"
 
 using namespace std;
@@ -111,8 +113,10 @@ void ClassExampleSuite::constructorsTest() {
 void ClassExampleSuite::gettersTest() {
 
   CPPUNIT_ASSERT(m_source_id == m_class_example_ptr->getSourceId());
-  CPPUNIT_ASSERT(m_ra == m_class_example_ptr->getRa());
-  CPPUNIT_ASSERT(m_dec == m_class_example_ptr->getDec());
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_ra, m_class_example_ptr->getRa(), TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_dec, m_class_example_ptr->getDec(), TOLERANCE);
+  CPPUNIT_ASSERT(isEqual(m_ra,m_class_example_ptr->getRa()));
+  CPPUNIT_ASSERT(isEqual(m_dec, m_class_example_ptr->getDec()));
   CPPUNIT_ASSERT(m_expected_static_string == m_class_example_ptr->getStaticString());
 
 }
