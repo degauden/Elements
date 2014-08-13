@@ -56,8 +56,8 @@
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
-static const size_t flt_default_max_ulps = 4 ;
-static const size_t dbl_default_max_ulps = 10 ;
+static const size_t FLT_DEFAULT_MAX_ULPS { 4 };
+static const size_t DBL_DEFAULT_MAX_ULPS { 10 };
 
 
 template<size_t size>
@@ -91,19 +91,19 @@ public:
 template <typename RawType>
 constexpr size_t defaultMaxUlps()
 {
-  return flt_default_max_ulps ;
+  return FLT_DEFAULT_MAX_ULPS ;
 }
 
 template <>
 constexpr size_t defaultMaxUlps<float>()
 {
-  return flt_default_max_ulps ;
+  return FLT_DEFAULT_MAX_ULPS ;
 }
 
 template <>
 constexpr size_t defaultMaxUlps<double>()
 {
-  return dbl_default_max_ulps ;
+  return DBL_DEFAULT_MAX_ULPS ;
 }
 
 
@@ -316,7 +316,7 @@ bool almostEqual2sComplement(const FloatType& a, const FloatType& b, const size_
  * @return
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
-ELEMENTS_API bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=flt_default_max_ulps);
+ELEMENTS_API bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=FLT_DEFAULT_MAX_ULPS);
 /**
  * @brief
  *   This function compare 2 doubles with a relative tolerance
@@ -333,7 +333,7 @@ ELEMENTS_API bool almostEqual2sComplement(const float& a, const float& b, const 
  * @return
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
-ELEMENTS_API bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=dbl_default_max_ulps);
+ELEMENTS_API bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=DBL_DEFAULT_MAX_ULPS);
 
 
 template <typename RawType>
@@ -501,7 +501,5 @@ inline bool isGreaterOrEqual(const double& l, const double& r)
 {
   return (isGreaterOrEqual<double,max_ulps>(l,r)) ;
 }
-
-
 
 #endif /* REAL_H_ */

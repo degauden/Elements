@@ -9,13 +9,15 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
+
 #include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Real.h" // Provides isEqual
+
 #include "ElementsExamples/ClassExample.h"
 
-using namespace std;
+#include "tests/src/Tolerance.h"
 
-// tolerance value to compare floating point numbers
-double TOLERANCE = 1e-10;
+using namespace std;
 
 /*
  * Fixture to compare the test result against reference values
@@ -38,6 +40,7 @@ public:
 
   void setUp();
   void tearDown();
+  ClassExampleSuite() = default;
 
 protected:
 
@@ -49,42 +52,28 @@ protected:
   void summingAndDividingTest();
   void summingAndDividingByZeroExceptionTest();
 
+
+
 private:
 
-  ClassExample* m_class_example_ptr;
+  ClassExample* m_class_example_ptr { nullptr };
 
   // Some numbers to feed the constructor
-  const int64_t m_source_id = 16253;
-  const double m_ra = 64.5768;
-  const double m_dec = -34.2857;
+  const int64_t m_source_id { 16253 };
+  const double m_ra  { 64.5768 };
+  const double m_dec { -34.2857 };
 
   // expected static string (hard coded in .cpp file!)
-  std::string m_expected_static_string = "This is a static field example";
+  std::string m_expected_static_string {"This is a static field example"};
 
   // Numbrs to test the methods
-  const double m_first_number = 2.5647;
-  const double m_second_number = 5.6874;
+  const double m_first_number { 2.5647 };
+  const double m_second_number { 5.6874 };
 
-  const double m_expected_sum = 8.2521;
-  const double m_expected_division_result = 0.45094419242536132;
-  const double m_expected_final_result = m_expected_division_result;
+  const double m_expected_sum { 8.2521 };
+  const double m_expected_division_result { 0.45094419242536132 };
+  const double m_expected_final_result { m_expected_division_result } ;
 
-
-//  ClassExampleSuite() {
-//    // call the constructor
-//    m_class_example_ptr = new ClassExample(m_source_id, m_ra, m_dec);
-//  }
-
-//  ClassExampleSuite(const ClassExampleSuite& other)
-//  : m_class_example_ptr(new ClassExample(*(other.m_class_example_ptr))){
-//  }
-//
-//  virtual ~ClassExampleSuite() {
-//    // delete fixture object
-//    delete m_class_example_ptr;
-//  }
-
-  //ClassExampleFixture(const ClassExampleFixture&) = delete;
 
 };
 
@@ -111,8 +100,10 @@ void ClassExampleSuite::constructorsTest() {
 void ClassExampleSuite::gettersTest() {
 
   CPPUNIT_ASSERT(m_source_id == m_class_example_ptr->getSourceId());
-  CPPUNIT_ASSERT(m_ra == m_class_example_ptr->getRa());
-  CPPUNIT_ASSERT(m_dec == m_class_example_ptr->getDec());
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_ra, m_class_example_ptr->getRa(), TEST_DOUBLE_TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_dec, m_class_example_ptr->getDec(), TEST_DOUBLE_TOLERANCE);
+  CPPUNIT_ASSERT(isEqual(m_ra,m_class_example_ptr->getRa()));
+  CPPUNIT_ASSERT(isEqual(m_dec, m_class_example_ptr->getDec()));
   CPPUNIT_ASSERT(m_expected_static_string == m_class_example_ptr->getStaticString());
 
 }
@@ -121,14 +112,14 @@ void ClassExampleSuite::gettersTest() {
 void ClassExampleSuite::computeSumTest() {
 
   double actualSum = m_class_example_ptr->computeSum(m_first_number, m_second_number);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualSum, m_expected_sum, TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualSum, m_expected_sum, TEST_DOUBLE_TOLERANCE);
 
 }
 
 void ClassExampleSuite::divideNumbersTest() {
 
   double actualDivisionResult = m_class_example_ptr->divideNumbers(m_first_number, m_second_number);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualDivisionResult, m_expected_division_result, TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualDivisionResult, m_expected_division_result, TEST_DOUBLE_TOLERANCE);
 
 }
 
@@ -152,7 +143,7 @@ void ClassExampleSuite::divideNumbersByZeroExceptionTest() {
 void ClassExampleSuite::summingAndDividingTest() {
 
   m_class_example_ptr->summingAndDividing(m_first_number, m_second_number);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_class_example_ptr->getResult(), m_expected_final_result, TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_class_example_ptr->getResult(), m_expected_final_result, TEST_DOUBLE_TOLERANCE);
 
 }
 
