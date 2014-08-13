@@ -40,6 +40,7 @@ public:
 
   void setUp();
   void tearDown();
+  ClassExampleSuite() = default;
 
 protected:
 
