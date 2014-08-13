@@ -253,10 +253,16 @@ macro(elements_project project version)
     set(versheader_cmd ${PYTHON_EXECUTABLE} ${versheader_cmd})
   endif()
 
-  find_program(testmain_cmd createBoostTestMain.py HINTS ${binary_paths})
-  if(testmain_cmd)
-    set(testmain_cmd ${PYTHON_EXECUTABLE} ${testmain_cmd})
+  find_program(boosttestmain_cmd createBoostTestMain.py HINTS ${binary_paths})
+  if(boosttestmain_cmd)
+    set(boosttestmain_cmd ${PYTHON_EXECUTABLE} ${boosttestmain_cmd})
   endif()
+
+  find_program(cppunittestmain_cmd createCppUnitTestMain.py HINTS ${binary_paths})
+  if(cppunittestmain_cmd)
+    set(cppunittestmain_cmd ${PYTHON_EXECUTABLE} ${cppunittestmain_cmd})
+  endif()
+
 
 
   find_program(zippythondir_cmd ZipPythonDir.py HINTS ${binary_paths})
@@ -271,7 +277,7 @@ macro(elements_project project version)
   set(rpmbuild_wrap_cmd ${PYTHON_EXECUTABLE} ${rpmbuild_wrap_cmd})
 
 
-  mark_as_advanced(env_cmd merge_cmd versheader_cmd testmain_cmd
+  mark_as_advanced(env_cmd merge_cmd versheader_cmd boosttestmain_cmd cppunittestmain_cmd
                    zippythondir_cmd elementsrun_cmd
                    rpmbuild_wrap_cmd)
 
@@ -1868,10 +1874,20 @@ function(elements_add_unit_test executable)
       set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/BoostTestMain.cpp)
       add_custom_command (
                           OUTPUT ${testmain_file}
-                          COMMAND ${testmain_cmd} --quiet ${package} ${testmain_file}
+                          COMMAND ${boosttestmain_cmd} --quiet ${package} ${testmain_file}
                          )
       set(srcs ${srcs} ${testmain_file})
     endif()
+
+    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "CppUnit")
+      set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/CppUnitTestMain.cpp)
+      add_custom_command (
+                          OUTPUT ${testmain_file}
+                          COMMAND ${cppunittestmain_cmd} --quiet ${package} ${testmain_file}
+                         )
+      set(srcs ${srcs} ${testmain_file})
+    endif()
+
 
     if (${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
       elements_add_executable(${executable} ${srcs}
