@@ -1853,7 +1853,6 @@ function(elements_add_unit_test executable)
 
     if(NOT ${executable}_UNIT_TEST_TYPE)
       set(${executable}_UNIT_TEST_TYPE None)
-#      set(${executable}_UNIT_TEST_TYPE CppUnit)
     endif()
 
     if(NOT ${executable}_UNIT_TEST_WORKING_DIRECTORY)
