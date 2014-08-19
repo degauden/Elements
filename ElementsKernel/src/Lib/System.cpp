@@ -39,13 +39,13 @@ using namespace std;
   static const char* SHLIB_SUFFIX = ".so";
   #include <errno.h>
   #include <string.h>
-  #include "sys/times.h"
-  #include "unistd.h"
-  #include "libgen.h"
+  #include <sys/times.h>
+  #include <unistd.h>
+  #include <libgen.h>
   #include <cstdio>
   #include <cxxabi.h>
-#if defined(linux) || defined(__APPLE__)
-  #include "dlfcn.h"
+#if defined(__linux) || defined(__APPLE__)
+  #include <dlfcn.h>
   #include <sys/utsname.h>
   #include <unistd.h>
 #endif
@@ -72,7 +72,7 @@ static unsigned long doLoad(const string& name, Elements::System::ImageHandle* h
   void* mh = ::LoadLibrary( name.length() == 0 ? Elements::System::exeName().c_str() : name.c_str());
   *handle = mh;
 #else
-# if defined(linux) || defined(__APPLE__)
+# if defined(__linux) || defined(__APPLE__)
    const char* path = name.c_str();
    void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
    *handle = mh;
@@ -115,7 +115,7 @@ unsigned long Elements::System::loadDynamicLib(const string& name, ImageHandle* 
     } else {
       // build the dll name
       string dllName = name;
-#if defined(linux) || defined(__APPLE__)
+#if defined(__linux) || defined(__APPLE__)
       dllName = "lib" + dllName;
 #endif
       dllName += SHLIB_SUFFIX;
@@ -123,7 +123,7 @@ unsigned long Elements::System::loadDynamicLib(const string& name, ImageHandle* 
       res = loadWithoutEnvironment(dllName, handle);
     }
     if ( res != 1 ) {
-#if defined(linux) || defined(__APPLE__)
+#if defined(__linux) || defined(__APPLE__)
       errno = 0xAFFEDEAD;
 #endif
      // cout << "Elements::System::loadDynamicLib>" << getLastErrorString() << endl;
@@ -136,7 +136,7 @@ unsigned long Elements::System::loadDynamicLib(const string& name, ImageHandle* 
 unsigned long Elements::System::unloadDynamicLib(ImageHandle handle)    {
 #ifdef _WIN32
   if ( !::FreeLibrary((HINSTANCE)handle) ) {
-#elif defined(linux) || defined(__APPLE__)
+#elif defined(__linux) || defined(__APPLE__)
   ::dlclose( handle );
   if ( 0 ) {
 #else
@@ -155,7 +155,7 @@ unsigned long Elements::System::getProcedureByName(ImageHandle handle, const str
     return Elements::System::getLastError();
   }
   return 1;
-#elif defined(linux)
+#elif defined(__linux)
 #if __GNUC__ < 4
   *pFunction = (EntryPoint)::dlsym(handle, name.c_str());
 #else
@@ -480,7 +480,6 @@ long Elements::System::argc()    {
 /// Const char** command line arguments including executable name as arg[0]
 const vector<string> Elements::System::cmdLineArgs()    {
   if ( s_argvChars.size() == 0 )    {
-    char exe[1024];
 #ifdef _WIN32
     /// @todo: rewrite the tokenizer to avoid strncpy, etc
     // Disable warning C4996 triggered by C standard library calls
@@ -518,7 +517,8 @@ const vector<string> Elements::System::cmdLineArgs()    {
       s_argvChars.push_back( s_argvStrings.back().c_str());
     }
 #pragma warning(pop)
-#elif defined(linux) || defined(__APPLE__)
+#elif defined(__linux) || defined(__APPLE__)
+    char exe[1024];
     sprintf(exe, "/proc/%d/cmdline", ::getpid());
     FILE *cmdLine = ::fopen(exe,"r");
     char cmd[1024];

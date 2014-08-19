@@ -1,3 +1,4 @@
+# -*- cmake -*-
 #
 # FindEigen.cmake
 #

@@ -97,7 +97,8 @@ find_package(PythonInterp)
 #
 # Main macro for a Elements-based project.
 # Each project must call this macro once in the top-level CMakeLists.txt,
-# stating the project name and the version in the LHCb format (vXrY[pZ]).
+# stating the project name and the version in the LHCb format (vXrY[pZ]). or in the
+# regular format (X.Y[.Z]).
 #
 # The USE list can be used to declare which Elements-based projects are required by
 # the broject being compiled.
@@ -106,6 +107,7 @@ find_package(PythonInterp)
 # runtime.
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
+  include(SGSPlatform)
   project(${project})
   #----For some reason this is not set by calling 'project()'
   set(CMAKE_PROJECT_NAME ${project})
@@ -114,7 +116,7 @@ macro(elements_project project version)
   set(CMAKE_PROJECT_VERSION ${version} CACHE STRING "Version of the project")
 
   #--- Parse the other arguments on the
-  CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "USE;DATA" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "USE;DATA;DESCRIPTION" ${ARGN})
   if (PROJECT_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "Wrong arguments.")
   endif()
@@ -149,7 +151,7 @@ macro(elements_project project version)
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
       set(CMAKE_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
           "Install path prefix, prepended onto install directories." FORCE )
-    endif()  
+    endif()
   endif()
 
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
@@ -204,12 +206,16 @@ macro(elements_project project version)
   if(used_elements_projects)
     list(REMOVE_DUPLICATES used_elements_projects)
   endif()
-  #message(STATUS "used_gaudi_projects -> ${used_gaudi_projects}")
+  #message(STATUS "used_elements_projects -> ${used_elements_projects}")
+
+  if(NOT PROJECT_DESCRIPTION)
+    set(PROJECT_DESCRIPTION "Please provide a description of the project.")
+  endif()
 
   # Ensure that we have the correct order of the modules search path.
   # (the included <project>Config.cmake files are prepending their entries to
   # the module path).
-  foreach(_p ${used_gaudi_projects})
+  foreach(_p ${used_elements_projects})
     if(IS_DIRECTORY ${${_p}_DIR}/cmake)
       if(IS_DIRECTORY ${${_p}_DIR}/cmake/modules)
         set(CMAKE_MODULE_PATH ${${_p}_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
@@ -233,7 +239,7 @@ macro(elements_project project version)
 
   #--- commands required to build cached variable
   # (python scripts are located as such but run through python)
-  set(binary_paths ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/ElementsPolicy/scripts ${CMAKE_SOURCE_DIR}/ElementsKernel/scripts ${CMAKE_SOURCE_DIR}/Elements/scripts ${binary_paths})
+  set(binary_paths ${CMAKE_SOURCE_DIR}/cmake/scripts ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/ElementsPolicy/scripts ${CMAKE_SOURCE_DIR}/ElementsKernel/scripts ${CMAKE_SOURCE_DIR}/Elements/scripts ${binary_paths})
 
   find_program(env_cmd env.py HINTS ${binary_paths})
   set(env_cmd ${PYTHON_EXECUTABLE} ${env_cmd})
@@ -246,6 +252,18 @@ macro(elements_project project version)
     set(versheader_cmd ${PYTHON_EXECUTABLE} ${versheader_cmd})
   endif()
 
+  find_program(boosttestmain_cmd createBoostTestMain.py HINTS ${binary_paths})
+  if(boosttestmain_cmd)
+    set(boosttestmain_cmd ${PYTHON_EXECUTABLE} ${boosttestmain_cmd})
+  endif()
+
+  find_program(cppunittestmain_cmd createCppUnitTestMain.py HINTS ${binary_paths})
+  if(cppunittestmain_cmd)
+    set(cppunittestmain_cmd ${PYTHON_EXECUTABLE} ${cppunittestmain_cmd})
+  endif()
+
+
+
   find_program(zippythondir_cmd ZipPythonDir.py HINTS ${binary_paths})
   if(zippythondir_cmd)
     set(zippythondir_cmd ${PYTHON_EXECUTABLE} ${zippythondir_cmd})
@@ -254,18 +272,39 @@ macro(elements_project project version)
   find_program(elementsrun_cmd elementsrun.py HINTS ${binary_paths})
   set(elementsrun_cmd ${PYTHON_EXECUTABLE} ${elementsrun_cmd})
 
-  mark_as_advanced(env_cmd merge_cmd versheader_cmd
-                   zippythondir_cmd elementsrun_cmd)
+  find_program(rpmbuild_wrap_cmd rpmbuild_wrap.py HINTS ${binary_paths})
+  set(rpmbuild_wrap_cmd ${PYTHON_EXECUTABLE} ${rpmbuild_wrap_cmd})
+
+
+  mark_as_advanced(env_cmd merge_cmd versheader_cmd boosttestmain_cmd cppunittestmain_cmd
+                   zippythondir_cmd elementsrun_cmd
+                   rpmbuild_wrap_cmd)
 
   #--- Project Installations------------------------------------------------------------------------
   install(DIRECTORY cmake/ DESTINATION cmake
-                           FILES_MATCHING 
+                           FILES_MATCHING
                              PATTERN "*.cmake"
                              PATTERN "*.in"
                              PATTERN ".svn" EXCLUDE)
-  install(PROGRAMS cmake/env.py DESTINATION scripts OPTIONAL)
-  install(DIRECTORY cmake/EnvConfig DESTINATION scripts
+
+  install(PROGRAMS cmake/scripts/rpmbuild_wrap.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/createProjVersHeader.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/createBoostTestMain.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/install.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/locker.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/merge_files.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/PathStripper.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/remove_lines.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/StripPath.sh DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/StripPath.csh DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/StripPath.bat DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/ZipPythonDir.py DESTINATION scripts OPTIONAL)
+
+  install(PROGRAMS cmake/scripts/env.py DESTINATION scripts OPTIONAL)
+  install(DIRECTORY cmake/scripts/EnvConfig DESTINATION scripts
           FILES_MATCHING PATTERN "*.py" PATTERN "*.conf")
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
+
 
   #--- Global actions for the project
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
@@ -277,6 +316,7 @@ macro(elements_project project version)
                     ${versheader_cmd} --quiet
                     ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h)
     install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h DESTINATION include)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
   # Add generated headers to the include path.
   include_directories(${CMAKE_BINARY_DIR}/include)
@@ -371,7 +411,7 @@ macro(elements_project project version)
   #set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
   file(RELATIVE_PATH _PROJECT_ROOT ${CMAKE_INSTALL_PREFIX} ${CMAKE_SOURCE_DIR})
   #message(STATUS "_PROJECT_ROOT -> ${_PROJECT_ROOT}")
-  set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "\${.}/${_PROJECT_ROOT}")
+  set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "\${.}/../..")
   set(project_build_environment ${project_build_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
   #   - 'packages':
   foreach(package ${packages})
@@ -404,7 +444,7 @@ macro(elements_project project version)
       set(project_build_environment ${project_build_environment}
           PREPEND PATH \${${_proj}_PROJECT_ROOT}/${package}/scripts)
     endif()
-    
+
     if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/conf)
       set(project_build_environment ${project_build_environment}
           PREPEND ELEMENTS_CONF_PATH \${${_proj}_PROJECT_ROOT}/${package}/conf)
@@ -415,7 +455,7 @@ macro(elements_project project version)
           PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/aux)
     endif()
 
-    
+
   endforeach()
 
   #   - build dirs
@@ -458,10 +498,10 @@ macro(elements_project project version)
   install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION .)
 
   #--- CPack configuration
-  # Please have a look at the general CPack documentation at 
+  # Please have a look at the general CPack documentation at
   # http://www.cmake.org/Wiki/CMake:CPackPackageGenerators
   # http://www.cmake.org/Wiki/CMake:CPackConfiguration
-  
+
   set(CPACK_PACKAGE_NAME ${project})
   foreach(t MAJOR MINOR PATCH)
     set(CPACK_PACKAGE_VERSION_${t} ${CMAKE_PROJECT_VERSION_${t}})
@@ -473,7 +513,7 @@ macro(elements_project project version)
   set(CPACK_PACKAGING_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   set(CPACK_GENERATOR RPM)
   set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
-  set(CPACK_PACKAGE_RELEASE 1.${SGS_OS}${SGS_OSVERS})
+  set(CPACK_PACKAGE_RELEASE 1)
   set(CPACK_PACKAGE_VENDOR "The Euclid Consortium")
 
   set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/build\\\\..*/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
@@ -485,25 +525,210 @@ macro(elements_project project version)
   SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${SGS_ARCH})
   SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
   SET(CPACK_RPM_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}")
-    
-  find_file(spec_file_template
-            NAMES Elements.spec.in
-            PATHS ${CMAKE_MODULE_PATH}
-            NO_DEFAULT_PATH)
-  
-  if(spec_file_template)
-    configure_file("${spec_file_template}" "${PROJECT_BINARY_DIR}/${project}.spec" @ONLY IMMEDIATE)
-    set(CPACK_RPM_USER_BINARY_SPECFILE "${PROJECT_BINARY_DIR}/${project}.spec")
-    message(STATUS "Generated RPM Spec file: ${PROJECT_BINARY_DIR}/${project}.spec")
-    message(STATUS "From the SPEC template file: ${spec_file_template}")
+  SET(CPACK_RPM_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
+
+
+  set(CPACK_RPM_REGULAR_FILES "%files")
+  set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%defattr(-,root,root,-)")
+  set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{_prefix}/${CPACK_PACKAGE_NAME}Environment.xml")
+  set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{_prefix}/manifest.xml")
+
+#------------------------------------------------------------------------------
+  get_property(regular_bin_objects GLOBAL PROPERTY REGULAR_BIN_OBJECTS)
+
+  if(regular_bin_objects)
+    list(SORT regular_bin_objects)
+    foreach(_do ${regular_bin_objects})
+      set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{_bindir}/${_do}")
+    endforeach()
+    #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
+
+#------------------------------------------------------------------------------
+  get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
+
+  if(regular_lib_objects)
+    list(SORT regular_lib_objects)
+    foreach(_do ${regular_lib_objects})
+      set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    endforeach()
+    #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")
+  endif()
+
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_scripts GLOBAL PROPERTY PROJ_HAS_SCRIPTS)
+
+  if(proj_has_scripts)
+        set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{scriptsdir}")
+    #message(STATUS "The regular objects: ${CPACK_RPM_REGULAR_FILES}")
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_aux GLOBAL PROPERTY PROJ_HAS_AUX)
+
+  if(proj_has_aux)
+        set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{auxdir}")
+    #message(STATUS "The regular objects: ${CPACK_RPM_REGULAR_FILES}")
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_conf GLOBAL PROPERTY PROJ_HAS_CONF)
+
+  if(proj_has_conf)
+        set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{confdir}")
+    #message(STATUS "The regular objects: ${CPACK_RPM_REGULAR_FILES}")
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_python GLOBAL PROPERTY PROJ_HAS_PYTHON)
+
+  if(proj_has_python)
+        set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{pydir}")
+    #message(STATUS "The regular objects: ${CPACK_RPM_REGULAR_FILES}")
+  endif()
+
+#===============================================================================
+
+  set(CPACK_RPM_DEVEL_FILES "%files devel")
+  set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%defattr(-,root,root,-)")
+
+#------------------------------------------------------------------------------
+  get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
+
+  if(config_objects)
+    list(SORT config_objects)
+    foreach(_do ${config_objects})
+      set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{_prefix}/${_do}")
+    endforeach()
+    #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_include GLOBAL PROPERTY PROJ_HAS_INCLUDE)
+
+  if(proj_has_include)
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{_includedir}")
+    #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_cmake GLOBAL PROPERTY PROJ_HAS_CMAKE)
+
+  if(proj_has_cmake)
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{cmakedir}")
+    #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
+  endif()
+
+
+
+#===============================================================================
+
+#------------------------------------------------------------------------------
+  get_property(debinfo_objects GLOBAL PROPERTY DEBINFO_OBJECTS)
+
+  if(debinfo_objects)
+    set(CPACK_RPM_DEBINFO_FILES "%files debuginfo")
+    set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
+%defattr(-,root,root,-)")
+
+    list(SORT debinfo_objects)
+    foreach(_do ${debinfo_objects})
+      if("${_do}" MATCHES "^lib")
+        set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
+%{libdir}/${_do}")
+      else()
+        set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
+%{_bindir}/${_do}")
+      endif()
+    endforeach()
+    #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")
+  endif()
+
+#===============================================================================
+
+
 
   include(CPack)
 
-  message(STATUS "Creating the source tarball: ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz")
-  file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES)
-  execute_process(COMMAND tar zcf ${PROJECT_BINARY_DIR}/_CPack_Packages/${BINARY_TAG}/RPM/SOURCES/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
-                  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+  find_package(Tar)
+  if(TAR_FOUND)
+
+    find_package(RPMBuild)
+
+    if (RPMBUILD_FOUND)
+      option(USE_DEFAULT_RPMBUILD_DIR "Use default RPM build directory (the value of the %_topdir variable)" OFF)
+      if(USE_DEFAULT_RPMBUILD_DIR)
+        execute_process(COMMAND rpmbuild --eval %_topdir OUTPUT_VARIABLE PROJECT_RPM_TOPDIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+      else()
+        set(PROJECT_RPM_TOPDIR "${PROJECT_BINARY_DIR}/Packages/RPM")
+      endif()
+      set(PROJECT_TARGZ_DIR "${PROJECT_RPM_TOPDIR}/SOURCES")
+    else()
+      set(PROJECT_TARGZ_DIR "${PROJECT_BINARY_DIR}/Packages")
+    endif()
+
+    add_custom_target(targz
+                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_TARGZ_DIR}
+                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
+                      WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+                      COMMENT "Generating The Source TarBall ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz" VERBATIM
+    )
+
+    if (RPMBUILD_FOUND)
+
+      find_file(spec_file_template
+                NAMES Elements.spec.in
+                PATHS ${CMAKE_MODULE_PATH}
+                NO_DEFAULT_PATH)
+
+
+
+      set(PROJECT_RPM_BUILD_ROOT "${PROJECT_RPM_TOPDIR}/BUILDROOT/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}%{?dist}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
+
+      if(spec_file_template)
+        file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SPECS)
+        configure_file("${spec_file_template}" "${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec" @ONLY IMMEDIATE)
+        message(STATUS "Generated RPM Spec file: ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
+        message(STATUS "From the SPEC template file: ${spec_file_template}")
+      endif()
+
+
+      add_custom_target(rpmbuilddir
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILD
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILDROOT
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/RPMS
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/SRPMS
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_BUILD_ROOT}
+                        COMMENT "Generating ${PROJECT_RPM_TOPDIR} as rpmbuild directory" VERBATIM
+      )
+
+
+      add_custom_target(rpm
+                        COMMAND ${rpmbuild_wrap_cmd} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
+                        COMMENT "Generating The RPM Files in ${PROJECT_RPM_TOPDIR}" VERBATIM
+      )
+
+      add_dependencies(rpm targz)
+      add_dependencies(rpm rpmbuilddir)
+
+    endif()
+
+
+  endif()
 
   # Add Doxygen generation
   find_package(Doxygen)
@@ -523,7 +748,7 @@ macro(elements_project project version)
       )
       message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/Doxyfile")
       message(STATUS "From the Doxygen.in template file: ${doxygen_file_template}")
-      
+
     endif()
 
     add_custom_target(doc
@@ -543,7 +768,7 @@ endmacro()
 #-------------------------------------------------------------------------------
 macro(_elements_use_other_projects)
   # Note: it works even if the env. var. is not set.
-  file(TO_CMAKE_PATH "$ENV{CMTPROJECTPATH}" projects_search_path)
+  file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" projects_search_path)
 
   if(projects_search_path)
     list(REMOVE_DUPLICATES projects_search_path)
@@ -584,7 +809,7 @@ macro(_elements_use_other_projects)
       if(ELEMENTS_USE_STRICT_BINARY_DEP)
         set(binary_suffixes "" "/${BINARY_TAG}" "/${SGS_platform}" "/${SGS_system}")
       else()
-        set(binary_suffixes "" "/${BINARY_TAG}" "/${SGS_SYSTEM}-o2g" "/${SGS_SYSTEM}-opt" "/${SGS_SYSTEM}-dbg" "/${SGS_SYSTEM}-pro" "/${SGS_SYSTEM}-cov" "/${SGS_SYSTEM}-min" "/${SGS_platform}" "/${SGS_system}")      
+        set(binary_suffixes "" "/${BINARY_TAG}" "/${SGS_SYSTEM}-o2g" "/${SGS_SYSTEM}-opt" "/${SGS_SYSTEM}-dbg" "/${SGS_SYSTEM}-pro" "/${SGS_SYSTEM}-cov" "/${SGS_SYSTEM}-min" "/${SGS_platform}" "/${SGS_system}")
       endif()
       # Look for all possible project version combination.
       foreach(_s1 ${other_project}
@@ -732,7 +957,7 @@ endfunction()
 # <version> has to be a glob pattern (the default is '*').
 #
 # The package will be searched for in all the directories specified in the
-# environment variable CMTPROJECTPATH and in CMAKE_PREFIX_PATH. If specified,
+# environment variable CMAKE_PROJECT_PATH and in CMAKE_PREFIX_PATH. If specified,
 # the suffixes willbe appended to eache searched directory to look for the
 # data packages.
 #
@@ -742,7 +967,7 @@ function(elements_find_data_package name)
   #message(STATUS "elements_find_data_package(${ARGV})")
   if(NOT ${name}_FOUND)
     # Note: it works even if the env. var. is not set.
-    file(TO_CMAKE_PATH "$ENV{CMTPROJECTPATH}" projects_search_path)
+    file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" projects_search_path)
     file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" env_prefix_path)
 
     set(version *) # default version value
@@ -925,7 +1150,7 @@ function(elements_depends_on_subdirs)
     # prevent multiple executions
     set(elements_depends_on_subdirs_called TRUE PARENT_SCOPE)
   endif()
-  
+
 
   # add the dependencies lines to the DOT dependency graph
   foreach(d ${ARGN})
@@ -1021,7 +1246,7 @@ function(elements_get_packages var)
   file(GLOB_RECURSE cmakelist_files RELATIVE ${CMAKE_SOURCE_DIR} CMakeLists.txt)
   foreach(file ${cmakelist_files})
     # ignore the source directory itself and files in the build directory
-    if(NOT file STREQUAL CMakeLists.txt AND NOT file MATCHES "^${rel_build_dir}")
+    if(NOT file STREQUAL CMakeLists.txt AND NOT (file MATCHES "^${rel_build_dir}" OR file MATCHES "^build\\."))
       get_filename_component(package ${file} PATH)
       list(APPEND packages ${package})
     endif()
@@ -1441,6 +1666,7 @@ macro(_elements_detach_debinfo target)
     install(FILES ${_builddir}/${_tn}.dbg DESTINATION ${_dest} OPTIONAL)
     # ... and removed on 'make clean'.
     set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${_builddir}/${_tn}.dbg)
+    set_property(GLOBAL APPEND PROPERTY DEBINFO_OBJECTS ${_tn}.dbg)
   endif()
 endmacro()
 
@@ -1496,6 +1722,8 @@ function(elements_add_library library)
   elements_export(LIBRARY ${library})
   elements_install_headers(${ARG_PUBLIC_HEADERS})
   install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
+  set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
 endfunction()
 
 # Backward compatibility macro
@@ -1519,6 +1747,7 @@ function(elements_add_module library)
   #----Installation details-------------------------------------------------------
   install(TARGETS ${library} LIBRARY DESTINATION lib OPTIONAL)
   elements_export(MODULE ${library})
+  set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
 endfunction()
 
 # Backward compatibility macro
@@ -1552,6 +1781,7 @@ function(elements_add_python_module module)
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${module} LIBRARY DESTINATION python/lib-dynload OPTIONAL)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1579,7 +1809,8 @@ function(elements_add_executable executable)
   install(TARGETS ${executable} EXPORT ${CMAKE_PROJECT_NAME}Exports RUNTIME DESTINATION bin OPTIONAL)
   install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
   elements_export(EXECUTABLE ${executable})
-
+  set_property(GLOBAL APPEND PROPERTY REGULAR_BIN_OBJECTS ${executable})
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1609,24 +1840,64 @@ function(elements_add_unit_test executable)
     elements_common_add_build(${${executable}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
     if(NOT ${executable}_UNIT_TEST_TYPE)
-      set(${executable}_UNIT_TEST_TYPE CppUnit)
+      set(${executable}_UNIT_TEST_TYPE None)
     endif()
-    
+
     if(NOT ${executable}_UNIT_TEST_WORKING_DIRECTORY)
       set(${executable}_UNIT_TEST_WORKING_DIRECTORY .)
     endif()
 
-    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
-      find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-    else()
-      find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
-    endif()
-
-    elements_add_executable(${executable} ${srcs}
-                         LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${executable}_UNIT_TEST_TYPE}
-                         INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${executable}_UNIT_TEST_TYPE})
 
     elements_get_package_name(package)
+
+
+    if(NOT ${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
+      if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
+        find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+      else()
+        find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
+      endif()
+      if (NOT TARGET ${package}_tests_dir)
+        add_custom_target(${package}_tests_dir
+                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/tests
+                          COMMENT "Generating The ${package}/tests directory" VERBATIM)
+      endif()
+    endif()
+
+
+    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
+      set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/BoostTestMain.cpp)
+      add_custom_command (
+                          OUTPUT ${testmain_file}
+                          COMMAND ${boosttestmain_cmd} --quiet ${package} ${testmain_file}
+                          DEPENDS ${package}_tests_dir
+                         )
+#      set_property(TARGET testmain_file DEPENDS ${package}_tests_dir)
+      set(srcs ${srcs} ${testmain_file})
+    endif()
+
+    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "CppUnit")
+      set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/CppUnitTestMain.cpp)
+      add_custom_command (
+                          OUTPUT ${testmain_file}
+                          COMMAND ${cppunittestmain_cmd} --quiet ${package} ${testmain_file}
+                          DEPENDS ${package}_tests_dir
+                         )
+#      set_property(TARGET testmain_file DEPENDS ${package}_tests_dir)
+      set(srcs ${srcs} ${testmain_file})
+    endif()
+
+
+    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
+      elements_add_executable(${executable} ${srcs}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+    else()
+      elements_add_executable(${executable} ${srcs}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${executable}_UNIT_TEST_TYPE}
+                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${executable}_UNIT_TEST_TYPE})
+    endif()
+
 
     get_target_property(exec_suffix ${executable} SUFFIX)
     if(NOT exec_suffix)
@@ -1648,7 +1919,7 @@ function(elements_add_unit_test executable)
              WORKING_DIRECTORY ${${executable}_UNIT_TEST_WORKING_DIRECTORY}
              COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
              ${executable}${exec_suffix})
-                
+
     if(${executable}_UNIT_TEST_TIMEOUT)
       set_property(TEST ${package}.${executable} PROPERTY TIMEOUT ${${executable}_UNIT_TEST_TIMEOUT})
     endif()
@@ -1724,7 +1995,7 @@ function(elements_add_test name)
            WORKING_DIRECTORY ${ARG_WORKING_DIRECTORY}
            COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
            ${cmdline})
- 
+
 
 
   if(ARG_DEPENDS)
@@ -1780,6 +2051,7 @@ function(elements_install_headers)
   if(has_local_headers)
     set_property(DIRECTORY PROPERTY INSTALLS_LOCAL_HEADERS TRUE)
   endif()
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
 endfunction()
 
 #-------------------------------------------------------------------------------
@@ -1826,6 +2098,7 @@ function(elements_install_python_modules)
     get_filename_component(modname ${dir} NAME)
     set_property(DIRECTORY APPEND PROPERTY has_python_modules ${modname})
   endforeach()
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1842,6 +2115,7 @@ function(elements_install_scripts)
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE
           PATTERN "*.pyc" EXCLUDE)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1855,6 +2129,7 @@ function(elements_install_aux_files)
           PATTERN "CVS" EXCLUDE
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_AUX TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1868,6 +2143,7 @@ function(elements_install_conf_files)
           PATTERN "CVS" EXCLUDE
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CONF TRUE)
 endfunction()
 
 
@@ -1895,6 +2171,7 @@ exec ${cmd} \"\$@\"
   execute_process(COMMAND chmod 755 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name})
   # install
   install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name} DESTINATION scripts)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -1934,6 +2211,7 @@ macro(elements_install_cmake_modules)
             PATTERN ".svn" EXCLUDE)
   set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH} PARENT_SCOPE)
   set_property(DIRECTORY PROPERTY ELEMENTS_EXPORTED_CMAKE ON)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -1972,6 +2250,7 @@ if(PACKAGE_NAME STREQUAL PACKAGE_FIND_NAME)
 endif()
 ")
   install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION .)
+  set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}ConfigVersion.cmake)
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -2001,6 +2280,7 @@ list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake)
 include(${CMAKE_PROJECT_NAME}PlatformConfig)
 ")
   install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION .)
+  set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}Config.cmake)
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -2054,6 +2334,7 @@ set(${CMAKE_PROJECT_NAME}_OVERRIDDEN_SUBDIRS ${override_subdirs})
 ")
 
   install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}PlatformConfig.cmake DESTINATION cmake)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -2158,10 +2439,11 @@ function(elements_generate_env_conf filename)
 
   # include inherited environments
   # (note: it's important that the full search path is ready before we start including)
-  foreach(other_project ${used_gaudi_projects})
+
+  foreach(other_project ${used_elements_projects})
     set(data "${data}  <env:search_path>${${other_project}_DIR}</env:search_path>\n")
   endforeach()
-  foreach(other_project ${used_gaudi_projects})
+  foreach(other_project ${used_elements_projects})
     set(data "${data}  <env:include>${other_project}Environment.xml</env:include>\n")
   endforeach()
 
@@ -2211,7 +2493,7 @@ macro(elements_external_project_environment)
   set(python_path)
   set(binary_path)
   set(conf_path)
-  set(aux_path)  
+  set(aux_path)
   set(environment)
   set(library_path2)
 
@@ -2387,6 +2669,7 @@ get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)
       endif()
     endif()
     install(FILES ${pkg_exp_file} DESTINATION cmake)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
   endforeach()
 endmacro()
 

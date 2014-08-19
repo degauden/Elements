@@ -9,12 +9,14 @@
  * This macro includes svn tags that are expanded upon any commit. The program version
  * output on screen with the option --version is extracted from these keywords
  *
- * When creating a new file, naked svn tag (see below) should be introduced, they are then
- * expanded with the first commit.
- *
- *    \#define VERSION "SVN $Id$"\n
- *    \#define REVISION "SVN $Revision$"\n
- *    \#define URL "SVN $HeadURL$"
+ * When creating a new ElementsProgram file, naked svn tags should be introduced 
+ * (they are then expanded with the first commit), and the svn property svn:keywords
+ * must be set with the command:
+ * 
+ * svn propset svn:keywords 'Id Revision HeadURL' filename
+ * 
+ * For more information (and examples of naked svn tags) see the documentation
+ * of the getVersionFromKeywords() method in the Version.h file.
  */
 #define SVN_ID "SVN $Id$"
 #define SVN_URL "SVN $HeadURL$"

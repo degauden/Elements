@@ -121,7 +121,7 @@ class ProcessDescriptor {
       return m_handle;
     }
   };
-  long m_PRIORITYBOOST[2];
+  long m_PRIORITYBOOST[2]{};
   IO_COUNTERS m_IO_COUNTERS[2]{};
   VM_COUNTERS m_VM_COUNTERS[2]{};
   KERNEL_USER_TIMES m_KERNEL_USER_TIMES[2]{};
