@@ -1,3 +1,4 @@
+# -*- cmake -*-
 # - Locate XercesC library
 # Defines:
 #

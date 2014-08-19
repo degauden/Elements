@@ -36,6 +36,19 @@
  * used for identification of the log messages and for further tuning of the
  * underlying logging framework.
  * 
+ * The format of the logged messages follows the format:
+ * \code
+ * YYYY-MM-DDTHH:MM:SSZ LOGGER LEVEL : MESSAGE
+ * \endcode
+ * 
+ * For example, the previous code snippet will produce the following messages:
+ * 
+ * \code
+ * 2014-03-17T16:20:20CET name DEBUG : A debug message
+ * 2014-03-17T16:20:20CET name  INFO : A value 15 in a printf style info message
+ * 2014-03-17T16:20:20CET name ERROR : A value 15 in a steam style error message
+ * \endcode
+ * 
  * By default the logging level is set to INFO and the default behavior is to
  * forward all the messages to the standard error stream. This behavior can be
  * modified by using the method ElementsLogging::setLevel, which can be used
@@ -85,7 +98,7 @@ public:
    * @param name The name to use for identifying the logger messages
    * @return A logger instance
    */
-  ELEMENTS_API static ElementsLogging getLogger(const std::string& name);
+  ELEMENTS_API static ElementsLogging getLogger(const std::string& name = "");
   
   /**
    * @brief

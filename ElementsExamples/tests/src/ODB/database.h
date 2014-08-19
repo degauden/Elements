@@ -28,7 +28,7 @@ inline std::auto_ptr<odb::database> create_database(int& argc, char* argv[]) {
 
 		odb::sqlite::database::print_usage(cout);
 
-		exit(0);
+		::exit(0);
 	}
 
 	auto_ptr<database> db(

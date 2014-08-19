@@ -1,3 +1,5 @@
+# -*- cmake -*-
+
 find_package(LLVM)
 
 find_program(CLANG_C_COMPILER

@@ -1,4 +1,4 @@
-/** 
+/**
  * @file ElementsLogging_test.cpp
  * @date January 14, 2014
  * @author Nikolaos Apostolakos
@@ -29,7 +29,7 @@ std::map<std::string, ElementsLogging::LoggingLevel> levelMap {
 };
 
 // A class which takes over the given stream and keeps track of the log messages
-// sent to it. It recovers the given stream in its previous stete during destruction.
+// sent to it. It recovers the given stream in its previous state during destruction.
 class LogMessageTracker {
 public:
   LogMessageTracker(std::ostream& stream) : m_messages {}, m_stream(stream), m_old {stream.rdbuf(m_messages.rdbuf())} { }
@@ -40,20 +40,20 @@ public:
     m_messages.str("");
     m_messages.clear();
   }
-  std::vector<std::tuple<int,ElementsLogging::LoggingLevel,std::string,std::string>> getMessages() {
-    std::vector<std::tuple<int,ElementsLogging::LoggingLevel,std::string,std::string>> messages;
+  std::vector<std::tuple<std::string,ElementsLogging::LoggingLevel,std::string,std::string>> getMessages() {
+    std::vector<std::tuple<std::string,ElementsLogging::LoggingLevel,std::string,std::string>> messages;
     for (std::string line; std::getline(m_messages, line);) {
-      std::stringstream infoStream {line.substr(0, line.find(':'))};
-      int timestamp;
-      infoStream >> timestamp;
-      std::string logLevelString;
-      infoStream >> logLevelString;
-      ElementsLogging::LoggingLevel logLevel = levelMap[logLevelString];
-      std::string name;
-      std::getline(infoStream, name);
-      algo::trim(name);
+      std::string timestamp = line.substr(0, line.find(' '));
+      line = line.substr(line.find(' ')+1);
       std::string message = line.substr(line.find(':') + 1);
       algo::trim_left(message);
+      line = line.substr(0, line.find(':'));
+      algo::trim(line);
+      std::string logLevelString = line.substr(line.rfind(' '));
+      algo::trim(logLevelString);
+      ElementsLogging::LoggingLevel logLevel = levelMap[logLevelString];
+      std::string name = line.substr(0, line.rfind(' '));
+      algo::trim(name);
       messages.push_back(std::make_tuple(timestamp, logLevel, name, message));
     }
     return messages;
@@ -71,8 +71,8 @@ struct ElementsLogging_Fixture {
   }
   // This tracker will record all messages written in the stderr. The Elements
   // logging system guarantees that the messages will appear there.
-  LogMessageTracker tracker {std::cerr};
-  ElementsLogging logger = ElementsLogging::getLogger("TestLogger");
+  LogMessageTracker m_tracker {std::cerr};
+  ElementsLogging m_logger = ElementsLogging::getLogger("TestLogger");
 };
 
 class SetRandomSeed {
@@ -93,16 +93,16 @@ BOOST_AUTO_TEST_SUITE (ElementsLogging_test)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(loggerNames_test, ElementsLogging_Fixture) {
-  
+
   //Given
   ElementsLogging logger2 = ElementsLogging::getLogger("TestLogger2");
-  
+
   // When
-  logger.info("From logger 1");
+  m_logger.info("From logger 1");
   logger2.info("From logger 2");
-  
+
   // Then
-  auto messages = tracker.getMessages();
+  auto messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 2);
   std::string name1;
   std::tie(std::ignore, std::ignore, name1, std::ignore) = messages[0];
@@ -118,29 +118,29 @@ BOOST_FIXTURE_TEST_CASE(loggerNames_test, ElementsLogging_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(messageTextAndLevel_test, ElementsLogging_Fixture) {
-  
+
   // Given
-  logger.setLevel(ElementsLogging::LoggingLevel::DEBUG);
-  
+  m_logger.setLevel(ElementsLogging::LoggingLevel::DEBUG);
+
   // When
-  logger.debug("Debug message");
-  logger.info("Info message");
-  logger.warn("Warn message");
-  logger.error("Error message");
-  logger.fatal("Fatal message");
-  logger.debug("Debug message with %d value", 15);
-  logger.info("Info message with %d value", 15);
-  logger.warn("Warn message with %d value", 15);
-  logger.error("Error message with %d value", 15);
-  logger.fatal("Fatal message with %d value", 15);
-  logger.debug() << "Debug message with " << 15 << " value";
-  logger.info() << "Info message with " << 15 << " value";
-  logger.warn() << "Warn message with " << 15 << " value";
-  logger.error() << "Error message with " << 15 << " value";
-  logger.fatal() << "Fatal message with " << 15 << " value";
-  
+  m_logger.debug("Debug message");
+  m_logger.info("Info message");
+  m_logger.warn("Warn message");
+  m_logger.error("Error message");
+  m_logger.fatal("Fatal message");
+  m_logger.debug("Debug message with %d value", 15);
+  m_logger.info("Info message with %d value", 15);
+  m_logger.warn("Warn message with %d value", 15);
+  m_logger.error("Error message with %d value", 15);
+  m_logger.fatal("Fatal message with %d value", 15);
+  m_logger.debug() << "Debug message with " << 15 << " value";
+  m_logger.info() << "Info message with " << 15 << " value";
+  m_logger.warn() << "Warn message with " << 15 << " value";
+  m_logger.error() << "Error message with " << 15 << " value";
+  m_logger.fatal() << "Fatal message with " << 15 << " value";
+
   // Then
-  auto messages = tracker.getMessages();
+  auto messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 15);
   ElementsLogging::LoggingLevel logLevel;
   std::string message;
@@ -197,79 +197,79 @@ BOOST_FIXTURE_TEST_CASE(messageTextAndLevel_test, ElementsLogging_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
-  
+
   // Given
-  logger.setLevel(ElementsLogging::LoggingLevel::DEBUG);
-  
+  m_logger.setLevel(ElementsLogging::LoggingLevel::DEBUG);
+
   // When
-  logger.debug("Debug message");
-  logger.info("Info message");
-  logger.warn("Warn message");
-  logger.error("Error message");
-  logger.fatal("Fatal message");
-  
+  m_logger.debug("Debug message");
+  m_logger.info("Info message");
+  m_logger.warn("Warn message");
+  m_logger.error("Error message");
+  m_logger.fatal("Fatal message");
+
   // Then
-  auto messages = tracker.getMessages();
+  auto messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 5);
-  
+
   // Given
-  tracker.reset();
-  logger.setLevel(ElementsLogging::LoggingLevel::INFO);
-  
+  m_tracker.reset();
+  m_logger.setLevel(ElementsLogging::LoggingLevel::INFO);
+
   // When
-  logger.debug("Debug message");
-  logger.info("Info message");
-  logger.warn("Warn message");
-  logger.error("Error message");
-  logger.fatal("Fatal message");
-  
+  m_logger.debug("Debug message");
+  m_logger.info("Info message");
+  m_logger.warn("Warn message");
+  m_logger.error("Error message");
+  m_logger.fatal("Fatal message");
+
   // Then
-  messages = tracker.getMessages();
+  messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 4);
-  
+
   // Given
-  tracker.reset();
-  logger.setLevel(ElementsLogging::LoggingLevel::WARN);
-  
+  m_tracker.reset();
+  m_logger.setLevel(ElementsLogging::LoggingLevel::WARN);
+
   // When
-  logger.debug("Debug message");
-  logger.info("Info message");
-  logger.warn("Warn message");
-  logger.error("Error message");
-  logger.fatal("Fatal message");
-  
+  m_logger.debug("Debug message");
+  m_logger.info("Info message");
+  m_logger.warn("Warn message");
+  m_logger.error("Error message");
+  m_logger.fatal("Fatal message");
+
   // Then
-  messages = tracker.getMessages();
+  messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 3);
-  
+
   // Given
-  tracker.reset();
-  logger.setLevel(ElementsLogging::LoggingLevel::ERROR);
-  
+  m_tracker.reset();
+  m_logger.setLevel(ElementsLogging::LoggingLevel::ERROR);
+
   // When
-  logger.debug("Debug message");
-  logger.info("Info message");
-  logger.warn("Warn message");
-  logger.error("Error message");
-  logger.fatal("Fatal message");
-  
+  m_logger.debug("Debug message");
+  m_logger.info("Info message");
+  m_logger.warn("Warn message");
+  m_logger.error("Error message");
+  m_logger.fatal("Fatal message");
+
   // Then
-  messages = tracker.getMessages();
+  messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 2);
-  
+
   // Given
-  tracker.reset();
-  logger.setLevel(ElementsLogging::LoggingLevel::FATAL);
-  
+  m_tracker.reset();
+  m_logger.setLevel(ElementsLogging::LoggingLevel::FATAL);
+
   // When
-  logger.debug("Debug message");
-  logger.info("Info message");
-  logger.warn("Warn message");
-  logger.error("Error message");
-  logger.fatal("Fatal message");
-  
+  m_logger.debug("Debug message");
+  m_logger.info("Info message");
+  m_logger.warn("Warn message");
+  m_logger.error("Error message");
+  m_logger.fatal("Fatal message");
+
   // Then
-  messages = tracker.getMessages();
+  messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 1);
 }
 
@@ -278,16 +278,16 @@ BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
-  
+
   // Given
   std::stringstream logFileName {};
   logFileName << "/tmp/" << std::time(NULL) << std::rand() << ".log";
   ElementsLogging::setLogFile(logFileName.str());
-  
+
   // When
-  logger.error("First message");
-  logger.info("Second message");
-  
+  m_logger.error("First message");
+  m_logger.info("Second message");
+
   // Then
   BOOST_CHECK(boost::filesystem::exists(logFileName.str()));
   std::ifstream logFile {logFileName.str()};
@@ -307,23 +307,21 @@ BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
-  
+
   // Given
   std::stringstream logFileName1 {};
   logFileName1 << "/tmp/" << std::time(NULL) << std::rand() << ".log";
   std::stringstream logFileName2 {};
   logFileName2 << "/tmp/" << std::time(NULL) << std::rand() << ".log";
-  std::cout << logFileName1.str() << std::endl;
-  std::cout << logFileName2.str() << std::endl;
-  
+
   // When
-  
+
   ElementsLogging::setLogFile(logFileName1.str());
-  logger.error("First message");
+  m_logger.error("First message");
   ElementsLogging::setLogFile(logFileName2.str());
-  logger.info("Second message");
-  logger.info("Third message");
-  
+  m_logger.info("Second message");
+  m_logger.info("Third message");
+
   // Then
   BOOST_CHECK(boost::filesystem::exists(logFileName1.str()));
   std::ifstream logFile1 {logFileName1.str()};

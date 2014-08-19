@@ -5,8 +5,8 @@
  * @author Hubert Degaudenzi - The Euclid Consortium
  */
 
-#ifndef ELELMENTSKERNEL_LIKELY_H_
-#define ELELMENTSKERNEL_LIKELY_H_
+#ifndef ELEMENTSKERNEL_LIKELY_H_
+#define ELEMENTSKERNEL_LIKELY_H_
 
 // -------------- LIKELY/UNLIKELY macros (begin)
 // Use compiler hinting to improve branch prediction for linux
@@ -21,4 +21,4 @@
 
 
 
-#endif /* ELELMENTSKERNEL_LIKELY_H_ */
+#endif /* ELEMENTSKERNEL_LIKELY_H_ */

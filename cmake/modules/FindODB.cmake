@@ -1,3 +1,4 @@
+# -*- cmake -*-
 # - Find ODB library
 # Find the native ODB includes and library
 # This module defines

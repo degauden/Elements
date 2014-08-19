@@ -10,24 +10,29 @@ elements_add_library(ElementsKernel src/Lib/*.cpp
                   PUBLIC_HEADERS ElementsKernel)
 
 #---Tests-------------------------------------------------------------------
-elements_add_unit_test(ElementsTime_test tests/src/ElementsTime_test.cpp tests/src/BoostTestMain.cpp
+elements_add_unit_test(ElementsTime_test tests/src/ElementsTime_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(ElementsTiming_test tests/src/ElementsTiming_test.cpp tests/src/BoostTestMain.cpp
+elements_add_unit_test(ElementsTiming_test tests/src/ElementsTiming_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(test_Memory tests/src/test_Memory.cpp
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(Real_test tests/src/Real_test.cpp tests/src/BoostTestMain.cpp
+                       LINK_LIBRARIES ElementsKernel)
+elements_add_unit_test(Real_test tests/src/Real_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
-elements_add_unit_test(ElementsProgram_test tests/src/ElementsProgram_test.cpp tests/src/BoostTestMain.cpp
+elements_add_unit_test(ElementsProgram_test tests/src/ElementsProgram_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(Version_test tests/src/Version_test.cpp tests/src/BoostTestMain.cpp
+elements_add_unit_test(Version_test tests/src/Version_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(ElementsLogging_test tests/src/ElementsLogging_test.cpp tests/src/BoostTestMain.cpp
+elements_add_unit_test(ElementsLogging_test tests/src/ElementsLogging_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 #-----------------------
 # Path_test
-elements_add_unit_test(PathSearch_test tests/src/PathSearch_test.cpp tests/src/BoostTestMain.cpp
+elements_add_unit_test(PathSearch_test tests/src/PathSearch_test.cpp
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+#-----------------------
+# Temporary_test
+elements_add_unit_test(Temporary_test tests/src/Temporary_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 
