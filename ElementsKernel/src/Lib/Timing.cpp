@@ -18,26 +18,16 @@
 
 #include <ctime>
 #include <climits>
-#ifdef _WIN32
-#include <windows.h>
-#else
 #include <sys/time.h>
 #include <sys/times.h>
 #include <unistd.h>
-#endif
 
-#ifdef _WIN32
-static const int64_t UNIX_BASE_TIME = 116444736000000000;
-#else
 static const int64_t UNIX_BASE_TIME = 0;
-#endif
 
 // convert time from internal representation to the appropriate type
-// Internal representation for WIN32: 100 nanosecond intervals
-//                             Unix:    1 clock tick (usually 10 milliseconds)
+// Internal representation for Unix:    1 clock tick (usually 10 milliseconds)
 int64_t Elements::System::adjustTime(TimeType typ, int64_t t) {
   if (t != -1) {
-#ifndef _WIN32
     /////////    t *= 10000000;           // in 100 nanosecond intervals
     //  t /= CLK_TCK ;     // needs division by clock tick unit
     /// unfortunately "-ansi" flag turn off the correct definition of CLK_TCK
@@ -45,7 +35,6 @@ int64_t Elements::System::adjustTime(TimeType typ, int64_t t) {
     ///////// t /= 100 ;
 
     ///  t /= CLOCKS_PER_SEC;     // needs division by clock tick unit
-#endif
     switch (typ) {
     case Year:
       return adjustTime<Year>(t);
@@ -75,12 +64,8 @@ int64_t Elements::System::adjustTime(TimeType typ, int64_t t) {
 /// Retrieve the number of ticks since system startup
 int64_t Elements::System::tickCount() {
   int64_t count = 10000;
-#ifdef _WIN32
-  count *= ::GetTickCount(); // Number of milliSec since system startup
-#else
   struct tms buf;
   count *= 10 * times(&buf);
-#endif
   return count;
 }
 
@@ -89,10 +74,6 @@ int64_t Elements::System::tickCount() {
 /// Retrieve current system time
 int64_t Elements::System::currentTime(TimeType typ) {
   int64_t current = 0;
-#ifdef _WIN32
-  ::GetSystemTimeAsFileTime((FILETIME*)&current);
-  current -= UNIX_BASE_TIME;
-#else
   struct timeval tv;
   struct timezone tz;
   ::gettimeofday(&tv, &tz);
@@ -100,7 +81,6 @@ int64_t Elements::System::currentTime(TimeType typ) {
   current *= 1000000;
   current += tv.tv_usec;
   current *= 10;
-#endif
   return adjustTime(typ, current);
 }
 
