@@ -55,6 +55,10 @@ option(OPT_DEBUG
        "Enable optimisation for the Debug version"
        ON)
 
+option(ELEMENTS_LINKOPT
+       "Enable Link Time Optimisation"
+       OFF)
+
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
@@ -69,14 +73,12 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the compiler during debug builds."
         FORCE)
 
-    if (CMAKE_BUILD_TYPE STREQUAL "Release")
-      set(CMAKE_CXX_FLAGS_RELEASE "/O2"
-          CACHE STRING "Flags used by the compiler during release builds."
-          FORCE)
-      set(CMAKE_C_FLAGS_RELEASE "/O2"
-          CACHE STRING "Flags used by the compiler during release builds."
-          FORCE)
-    endif()
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2"
+        CACHE STRING "Flags used by the compiler during release builds."
+        FORCE)
+    set(CMAKE_C_FLAGS_RELEASE "/O2"
+        CACHE STRING "Flags used by the compiler during release builds."
+        FORCE)
 
   else()
 
@@ -91,18 +93,25 @@ if(NOT ELEMENTS_FLAGS_SET)
         FORCE)
 
     # Build type compilation flags (if different from default or unknown to CMake)
-    if (CMAKE_BUILD_TYPE STREQUAL "Release")
-      set(CMAKE_CXX_FLAGS_RELEASE "-O2"
+    set(CMAKE_CXX_FLAGS_RELEASE "-O2"
+        CACHE STRING "Flags used by the compiler during release builds."
+        FORCE)
+    set(CMAKE_C_FLAGS_RELEASE "-O2"
+        CACHE STRING "Flags used by the compiler during release builds."
+        FORCE)
+
+    if (ELEMENTS_LINKOPT AND SGS_COMPVERS VERSION_GREATER "47")
+      set(CMAKE_CXX_FLAGS_RELEASE "-flto ${CMAKE_CXX_FLAGS_RELEASE}"
           CACHE STRING "Flags used by the compiler during release builds."
           FORCE)
-      set(CMAKE_C_FLAGS_RELEASE "-O2"
+      set(CMAKE_C_FLAGS_RELEASE "-flto ${CMAKE_C_FLAGS_RELEASE}"
           CACHE STRING "Flags used by the compiler during release builds."
           FORCE)
-      add_definitions(-DNDEBUG)
     endif()
 
 
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND SGS_COMPVERS VERSION_GREATER "47")
+
+    if (SGS_COMPVERS VERSION_GREATER "47")
       # Use -Og with Debug builds in gcc >= 4.8
        set(CMAKE_CXX_FLAGS_DEBUG "-g"
           CACHE STRING "Flags used by the compiler during Debug builds."
@@ -128,9 +137,21 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
         FORCE)
 
-    if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    if (ELEMENTS_LINKOPT AND SGS_COMPVERS VERSION_GREATER "47")
+      set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-flto ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}"
+          CACHE STRING "Flags used by the compiler during release builds."
+          FORCE)
+      set(CMAKE_C_FLAGS_RELWITHDEBINFO "-flto ${CMAKE_C_FLAGS_RELWITHDEBINFO}"
+          CACHE STRING "Flags used by the compiler during release builds."
+          FORCE)
+    endif()
+
+
+
+    if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release")
         add_definitions(-DNDEBUG)
     endif()
+
 
 
     set(CMAKE_CXX_FLAGS_COVERAGE "--coverage"
