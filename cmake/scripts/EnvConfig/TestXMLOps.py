@@ -7,11 +7,11 @@ import unittest
 import os
 from StringIO import StringIO
 
-from EnvConfig import Control
-from EnvConfig import xmlModule
+from EnvConfig import Control  # @UnresolvedImport
+from EnvConfig import xmlModule  # @UnresolvedImport
+
 
 class Test(unittest.TestCase):
-
 
     def setUp(self):
         pass
@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
 
     def testFileLoad(self):
         '''Test loading of previously written file.'''
-        self.control = Control.Environment(useAsWriter = True)
+        self.control = Control.Environment(useAsWriter=True)
         self.control.unset('varToUnset')
 
         self.control.declare('myVar', 'list', True)

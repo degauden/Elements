@@ -35,7 +35,7 @@ def mergeFiles(fragFileNames, mergedFileName, commentChar, doMerge, ignoreMissin
     mergedFile = open(mergedFileName, 'r+')
 
     # locking file, gaining exclusive access to it
-    lock = locker.lock(mergedFile)
+    _ = locker.lock(mergedFile)
     try:
 
         newLines = []

@@ -27,16 +27,14 @@ using namespace std;
 static const char* SHLIB_SUFFIX = ".so";
 #include <errno.h>
 #include <string.h>
-#include "sys/times.h"
-#include "unistd.h"
-#include "libgen.h"
+#include <sys/times.h>
+#include <unistd.h>
+#include <libgen.h>
 #include <cstdio>
 #include <cxxabi.h>
-#if defined(__linux) || defined(__APPLE__)
-#  include "dlfcn.h"
-#  include <sys/utsname.h>
-#  include <unistd.h>
-#endif
+#include <dlfcn.h>
+#include <sys/utsname.h>
+#include <unistd.h>
 
 
 // Note: __attribute__ is a GCC keyword available since GCC 3.4

@@ -32,7 +32,7 @@ using namespace Elements;
 Time::Time(int year, int month, int day, int hour, int min, int sec,
     ValueType nsecs, bool local /* = true */) {
   tm val;
-  memset(&val, 0, sizeof(val));
+  ::memset(&val, 0, sizeof(val));
   val.tm_sec = sec;
   val.tm_min = min;
   val.tm_hour = hour;
