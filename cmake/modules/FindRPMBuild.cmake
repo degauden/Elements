@@ -15,13 +15,9 @@
 # https://savannah.nongnu.org/projects/tsp
 #
 
-IF (WIN32)  
-  MESSAGE(STATUS "RPM tools not available on Win32 systems")
-ENDIF(WIN32)
-
 IF (UNIX)
   # Look for RPM builder executable
-  FIND_PROGRAM(RPMBUILD_EXECUTABLE 
+  FIND_PROGRAM(RPMBUILD_EXECUTABLE
     NAMES rpmbuild
     PATHS "/usr/bin;/usr/lib/rpm"
     PATH_SUFFIXES bin
@@ -29,10 +25,10 @@ IF (UNIX)
 
 # handle the QUIETLY and REQUIRED arguments and set CCFITS_FOUND to TRUE if
 # all listed variables are TRUE
-  INCLUDE(FindPackageHandleStandardArgs) 
+  INCLUDE(FindPackageHandleStandardArgs)
   FIND_PACKAGE_HANDLE_STANDARD_ARGS(RPMBUILD DEFAULT_MSG RPMBUILD_EXECUTABLE)
 
-  mark_as_advanced(RPMBUILD_FOUND RPMBUILD_EXECUTABLE)	
+  mark_as_advanced(RPMBUILD_FOUND RPMBUILD_EXECUTABLE)
 
   IF (RPMBUILD_FOUND)
     #
@@ -50,12 +46,12 @@ IF (UNIX)
       ELSE ("${ARGV1}" STREQUAL "")
         SET(SPECFILE_PATH "${ARGV1}")
       ENDIF("${ARGV1}" STREQUAL "")
-      
+
       # Verify whether if RPM_ROOTDIR was provided or not
-      IF("${ARGV2}" STREQUAL "") 
+      IF("${ARGV2}" STREQUAL "")
         SET(RPM_ROOTDIR ${CMAKE_BINARY_DIR}/RPM)
       ELSE ("${ARGV2}" STREQUAL "")
-        SET(RPM_ROOTDIR "${ARGV2}")	
+        SET(RPM_ROOTDIR "${ARGV2}")
       ENDIF("${ARGV2}" STREQUAL "")
       MESSAGE(STATUS "RPM Build:: Using RPM_ROOTDIR=${RPM_ROOTDIR}")
 
@@ -71,7 +67,7 @@ IF (UNIX)
       #
       # We check whether if the provided spec file is
       # to be configure or not.
-      # 
+      #
       IF ("${ARGV1}" STREQUAL "")
         SET(SPECFILE_PATH "${RPM_ROOTDIR}/SPECS/${RPMNAME}.spec")
         SET(SPECFILE_NAME "${RPMNAME}.spec")
@@ -109,8 +105,8 @@ mkdir build_tree
 cd build_tree
 cmake -DP2_LANG_DIR:STATIC=%{prefix}/lang -DCMAKE_INSTALL_PREFIX=%{rpmprefix} ../%{srcdirname}
 make
-  
-%install 
+
+%install
 cd ../build_tree
 make install
 
@@ -129,13 +125,13 @@ rm -rf build_tree
       ELSE ("${ARGV1}" STREQUAL "")
         SET(SPECFILE_PATH "${ARGV1}")
 
-        GET_FILENAME_COMPONENT(SPECFILE_EXT ${SPECFILE_PATH} EXT)      
+        GET_FILENAME_COMPONENT(SPECFILE_EXT ${SPECFILE_PATH} EXT)
         IF ("${SPECFILE_EXT}" STREQUAL ".spec")
           # This is a 'ready-to-use' spec file which does not need to be CONFIGURED
           GET_FILENAME_COMPONENT(SPECFILE_NAME ${SPECFILE_PATH} NAME)
           MESSAGE(STATUS "Simple copy spec file <${SPECFILE_PATH}> --> <${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME}>")
           CONFIGURE_FILE(
-          ${SPECFILE_PATH} 
+          ${SPECFILE_PATH}
           ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME}
           COPYONLY)
         ELSE ("${SPECFILE_EXT}" STREQUAL ".spec")
@@ -144,28 +140,28 @@ rm -rf build_tree
           SET(SPECFILE_NAME "${SPECFILE_NAME}.spec")
           MESSAGE(STATUS "Configuring spec file <${SPECFILE_PATH}> --> <${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME}>")
           CONFIGURE_FILE(
-                 ${SPECFILE_PATH} 
+                 ${SPECFILE_PATH}
                  ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME}
                  @ONLY)
         ENDIF ("${SPECFILE_EXT}" STREQUAL ".spec")
       ENDIF("${ARGV1}" STREQUAL "")
-            
+
       ADD_CUSTOM_TARGET(${RPMNAME}_srpm
           COMMAND cpack -G TGZ --config CPackSourceConfig.cmake
-          COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz ${RPM_ROOTDIR}/SOURCES    
+          COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz ${RPM_ROOTDIR}/SOURCES
           COMMAND ${CMAKE_COMMAND} -E remove ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz
-          COMMAND ${RPMBUILD_EXECUTABLE} -bs --define=\"_topdir ${RPM_ROOTDIR}\" --buildroot=${RPM_ROOTDIR}/tmp ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME} 
+          COMMAND ${RPMBUILD_EXECUTABLE} -bs --define=\"_topdir ${RPM_ROOTDIR}\" --buildroot=${RPM_ROOTDIR}/tmp ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME}
        )
-      
+
       ADD_CUSTOM_TARGET(${RPMNAME}_rpm
           COMMAND cpack -G TGZ --config CPackSourceConfig.cmake
-          COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz ${RPM_ROOTDIR}/SOURCES    
+          COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz ${RPM_ROOTDIR}/SOURCES
           COMMAND ${CMAKE_COMMAND} -E remove ${CPACK_SOURCE_PACKAGE_FILE_NAME}.tar.gz
-          COMMAND ${RPMBUILD_EXECUTABLE} -bb --define=\"_topdir ${RPM_ROOTDIR}\" --buildroot=${RPM_ROOTDIR}/tmp ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME} 
+          COMMAND ${RPMBUILD_EXECUTABLE} -bb --define=\"_topdir ${RPM_ROOTDIR}\" --buildroot=${RPM_ROOTDIR}/tmp ${RPM_ROOTDIR}/SPECS/${SPECFILE_NAME}
       )
     ENDMACRO(ADD_RPM_TARGETS)
 
-  ENDIF (RPMBUILD_FOUND)  
-  
+  ENDIF (RPMBUILD_FOUND)
+
 ENDIF (UNIX)
-  
+
