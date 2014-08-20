@@ -15,13 +15,13 @@
 
 #include <cerrno>
 #include <cstring>
-#include "sys/times.h"
-#include "unistd.h"
-#include "libgen.h"
+#include <sys/times.h>
+#include <unistd.h>
+#include <libgen.h>
 #include <cstdio>
 
 // Framework include files
-#include <limits.h>
+#include <climits>
 #include "ElementsKernel/Memory.h"
 #include "ProcessDescriptor.h"
 

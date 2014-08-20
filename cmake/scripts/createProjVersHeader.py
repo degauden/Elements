@@ -10,7 +10,8 @@ plain_ver_style = "(?P<maj_ver>[0-9]+)\.(?P<min_ver>[0-9]+)(?:\.(?P<pat_ver>[0-9
 
 
 def main():
-    parser = OptionParser(usage="ERROR: Usage %prog <project> <version> <outputfile>")
+    parser = OptionParser(
+        usage="ERROR: Usage %prog <project> <version> <outputfile>")
     parser.add_option("-q", "--quiet", action="store_true",
                       help="Do not print messages.")
     opts, args = parser.parse_args()
@@ -23,11 +24,11 @@ def main():
         print "Creating %s for %s %s" % (outputfile, project, version)
 
     if version.startswith('HEAD'):
-        majver, minver, patver = 999, 999, 0 # special handling
+        majver, minver, patver = 999, 999, 0  # special handling
     else:
-        for style in [lhcb_ver_style, atlas_ver_style, plain_ver_style ] :
+        for style in [lhcb_ver_style, atlas_ver_style, plain_ver_style]:
             m = re.match(style, version)
-            if m :
+            if m:
                 break
         majver = int(m.groupdict()['maj_ver'])
         minver = int(m.groupdict()['min_ver'])

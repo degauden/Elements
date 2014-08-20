@@ -28,7 +28,7 @@ using namespace std;
 
 struct Temporary_Fixture {
 
-  TempDir top_dir{"Temporary_test-%%%%%%%"};
+  TempDir m_top_dir{"Temporary_test-%%%%%%%"};
 
   Temporary_Fixture() {
     // setup
@@ -87,8 +87,8 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
 BOOST_FIXTURE_TEST_CASE(TempEnv_test, Temporary_Fixture) {
 
   // test if the global temporary directory exists.
-  BOOST_CHECK(fs::exists(top_dir.path()));
-  fs::path test_tmpdir = top_dir.path()/"tmpdir" ;
+  BOOST_CHECK(fs::exists(m_top_dir.path()));
+  fs::path test_tmpdir = m_top_dir.path()/"tmpdir" ;
   fs::create_directory(test_tmpdir) ;
   setenv("TMPDIR", test_tmpdir.c_str(), 1);
   string tmp_env_val = getenv("TMPDIR") ;
