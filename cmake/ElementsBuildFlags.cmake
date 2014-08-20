@@ -32,7 +32,7 @@ set(ELEMENTS_FORTIFY_DEFAULT ON)
 
 option(ELEMENTS_HIDE_SYMBOLS
        "enable explicit symbol visibility on gcc-4"
-       ON)
+       OFF)
 
 
 option(ELEMENTS_CPP11
