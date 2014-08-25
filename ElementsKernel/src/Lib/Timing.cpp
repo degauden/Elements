@@ -126,7 +126,7 @@ int64_t Elements::System::creationTime(TimeType typ, InfoType fetch,
     long pid) {
   int64_t created = 0;
   KERNEL_USER_TIMES info;
-  if (fetch != NoFetch && getProcess()->query(pid, fetch, &info)) {
+  if (fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info)) {
     created = adjustTime(typ, info.CreateTime - UNIX_BASE_TIME);
   }
   return created;
@@ -137,7 +137,7 @@ int64_t Elements::System::remainingTime(TimeType typ, InfoType fetch,
     long pid) {
   int64_t left = 0;
   QUOTA_LIMITS quota;
-  if (fetch != NoFetch && getProcess()->query(pid, fetch, &quota)) {
+  if (fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &quota)) {
     if (left == -1) {
       //left = _I64_MAX;
     } else {
@@ -161,7 +161,7 @@ int64_t Elements::System::ellapsedTime(TimeType typ, InfoType fetch,
 int64_t Elements::System::kernelTime(TimeType typ, InfoType fetch, long pid) {
   KERNEL_USER_TIMES info;
   int64_t kerneltime = 0;
-  if (fetch != NoFetch && getProcess()->query(pid, fetch, &info)) {
+  if (fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info)) {
     kerneltime = adjustTime(typ, info.KernelTime);
   }
   return kerneltime;
@@ -171,7 +171,7 @@ int64_t Elements::System::kernelTime(TimeType typ, InfoType fetch, long pid) {
 int64_t Elements::System::userTime(TimeType typ, InfoType fetch, long pid) {
   int64_t usertime = 0;
   KERNEL_USER_TIMES info;
-  if (fetch != NoFetch && getProcess()->query(pid, fetch, &info)) {
+  if (fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info)) {
     usertime = adjustTime(typ, info.UserTime);
   }
   return usertime;
@@ -181,7 +181,7 @@ int64_t Elements::System::userTime(TimeType typ, InfoType fetch, long pid) {
 int64_t Elements::System::cpuTime(TimeType typ, InfoType fetch, long pid) {
   int64_t cputime = 0;
   KERNEL_USER_TIMES info;
-  if (fetch != NoFetch && getProcess()->query(pid, fetch, &info)) {
+  if (fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info)) {
     cputime = adjustTime(typ, info.KernelTime + info.UserTime);
   }
   return cputime;
@@ -191,7 +191,7 @@ namespace Elements {
 namespace System {
 ProcessTime getProcessTime(long pid) {
   KERNEL_USER_TIMES info;
-  if (getProcess()->query(pid, Times, &info)) {
+  if (getProcess()->query(pid, InfoType::Times, &info)) {
     return ProcessTime(info.KernelTime, info.UserTime,
         currentTime(Native) - info.CreateTime);
   }
