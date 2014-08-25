@@ -9,12 +9,12 @@
  * This macro includes svn tags that are expanded upon any commit. The program version
  * output on screen with the option --version is extracted from these keywords
  *
- * When creating a new ElementsProgram file, naked svn tags should be introduced 
+ * When creating a new ElementsProgram file, naked svn tags should be introduced
  * (they are then expanded with the first commit), and the svn property svn:keywords
  * must be set with the command:
- * 
+ *
  * svn propset svn:keywords 'Id Revision HeadURL' filename
- * 
+ *
  * For more information (and examples of naked svn tags) see the documentation
  * of the getVersionFromKeywords() method in the Version.h file.
  */
@@ -119,7 +119,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  void mainMethod() {
+  Elements::ExitCode mainMethod() {
 
     // Get logger and log the entry into the mainMethod
     ElementsLogging logger = ElementsLogging::getLogger("ElementsProgramExample");
@@ -182,6 +182,8 @@ public:
     /*
      * Here we might later introduce a standard mechanism to persist results
      */
+
+    return Elements::ExitCode::OK;
 
   }
 

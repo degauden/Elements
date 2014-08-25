@@ -258,14 +258,16 @@ void ElementsProgram::setup(int argc, char* argv[]) noexcept {
 }
 
 // This is the method call from the main which does everything
-void ElementsProgram::run(int argc, char* argv[]) {
+Elements::ExitCode ElementsProgram::run(int argc, char* argv[]) {
+
+  Elements::ExitCode exit_code {Elements::ExitCode::OK};
 
   setup(argc, argv);
 
   ElementsLogging logger = ElementsLogging::getLogger("ElementsProgram");
 
   try {
-    mainMethod();
+    exit_code = mainMethod();
   } catch (const exception & e) {
     logger.fatal("# ");
     logger.fatal("# Exception : %s ", e.what());
@@ -276,5 +278,8 @@ void ElementsProgram::run(int argc, char* argv[]) {
         "# An exception of unknown type occured, i.e., an exception not deriving from std::exception ");
     logger.fatal("# ");
   }
+
+  return exit_code ;
+
 }
 
