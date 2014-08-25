@@ -117,12 +117,10 @@ public:
     return a.d_code > b.d_code;
   }
 
-#ifndef _WIN32
   operator IgnoreError() const {
     m_checked = true;
     return IgnoreError();
   }
-#endif
 
   static ELEMENTS_API void enableChecking();
   static ELEMENTS_API void disableChecking();

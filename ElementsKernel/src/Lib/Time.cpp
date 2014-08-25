@@ -14,35 +14,9 @@ using namespace std;
 using namespace Elements;
 
 // architecture dependent includes
-#ifdef WIN32
-
-// this turns off a lot of useless Win stuff which conflicts with Elements. (found empirically)
-#define NOATOM
-#define NOGDI
-#define NOGDICAPMASKS
-#define NOMETAFILE
-#define NOMINMAX
-#define NOMSG
-#define NOOPENFILE
-#define NORASTEROPS
-#define NOSCROLL
-#define NOSOUND
-#define NOSYSMETRICS
-#define NOTEXTMETRIC
-#define NOWH
-#define NOCOMM
-#define NOKANJI
-#define NOCRYPT
-#define NOMCX
-
-#include <windows.h>
-
-#else
-// Linux
 
 #include <sys/time.h>
 
-#endif
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : Elements::Time
@@ -50,30 +24,7 @@ using namespace Elements;
 // 2005-12-15 : Marco Clemencic
 //-----------------------------------------------------------------------------
 
-#ifdef WIN32
-/** Seconds between 1601 and 1970, the Windows time base and UNIX time
- base.  1 January 1601, 00:00:00 to 1 January 1970, 00:00:00 is 369
- years.  To this we add the leap years from 1604 to 1968, excluding
- 1700, 1800, 1900.  This makes (1968 - 1600) / 4 - 3 = 89 leap
- days, and a total of 134774 days.  Each day in the period had 24 *
- 60 * 60 = 86400 seconds (no leap seconds).  Thus the difference is
- in total 134774 * 86400 = 11644473600 seconds.  For the actual
- bias this needs to be multiplied by 10000000 since Windows time
- uses 100ns resolution, not seconds.  */
-//# define SECS_1601_TO_1970	((369 * 365 + 89) * SECS_PER_DAY)
-# define SECS_1601_TO_1970	((369 * 365 + 89) * 86400ui64)
-#endif
 
-#ifdef WIN32
-static time_t timegm (struct tm *t) {
-  // This code is adapted from wine, samba
-  time_t t1 = mktime (t);
-  struct tm gmt;
-  gmtime_s(&gmt, &t1);
-  time_t t2 = mktime(&gmt);
-  return t1 + (t1 - t2);
-}
-#endif
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -93,28 +44,9 @@ Time::Time(int year, int month, int day, int hour, int min, int sec,
   m_nsecs = build(local, val, nsecs).m_nsecs;
 }
 
-#ifdef WIN32
-/** Windows-specific function to convert system time representation
- to a #Time class.  */
-Time Time::from (const FILETIME *systime) {
-  ValueType t = ((ValueType) systime->dwHighDateTime << 32)
-  + (ValueType) systime->dwLowDateTime;
-
-  if (t)
-  // Subtract bias (1970--1601 in 100ns), then convert to nanoseconds.
-  t = (t - SECS_1601_TO_1970 * (SEC_NSECS/100)) * 100;
-
-  return Time (t);
-}
-#endif
 
 /** Return the current system time.  */
 Time Time::current(void) {
-#ifdef WIN32
-  FILETIME ftime;
-  GetSystemTimeAsFileTime (&ftime);
-  return from (&ftime);
-#else
   timeval tv;
   if (gettimeofday(&tv, 0) != 0) {
     char buf[256];
@@ -135,7 +67,6 @@ Time Time::current(void) {
     throw ElementsException(message);
   }
   return Time(tv.tv_sec, tv.tv_usec * 1000);
-#endif
 }
 
 /** Construct a time from local time @a base and a delta @a diff. */
@@ -237,34 +168,13 @@ bool Time::isdst(bool local) const {
 Time::ValueType Time::utcoffset(int *daylight /* = 0 */) const {
   ValueType n = 0;
 
-#ifndef WIN32
   tm localtm = local();
   n = localtm.tm_gmtoff;
   if (daylight)
     *daylight = localtm.tm_isdst;
-#else
-  // Adapted from WINE.
-  time_t utctime = (time_t)(m_nsecs / SEC_NSECS);
-  tm localtm;
-  localtime_s(&localtm, &utctime);
-  int savedaylight = localtm.tm_isdst;
-  tm gmt;
-  gmtime_s(&gmt, &utctime);
-
-  gmt.tm_isdst = savedaylight;
-  n = utctime - mktime (&gmt);
-
-  if (daylight) *daylight = savedaylight;
-#endif
   return n * SEC_NSECS;
 }
 
-#ifdef WIN32
-// disable warning
-// C4996: 'tzname': This function or variable may be unsafe.
-#pragma warning(push)
-#pragma warning(disable:4996)
-#endif
 /** Return the local timezone name that applies at this time value.
  On some platforms returns the most recent timezone name (dst or
  non-dst one depending on the time value), not the one that applies
@@ -276,9 +186,6 @@ const char * Time::timezone(int *daylight /* = 0 */) const {
   // extern "C" { extern char *tzname [2]; }
   return tzname[localtm.tm_isdst > 0 ? 1 : 0];
 }
-#ifdef WIN32
-#pragma warning(pop)
-#endif
 
 /** Format the time using @c strftime.
  *  The additional conversion specifier %f can be used to display

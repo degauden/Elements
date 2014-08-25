@@ -480,9 +480,6 @@ macro(elements_project project version)
     file(WRITE ${CMAKE_BINARY_DIR}/run
          "#!/bin/sh\nexec ${_env_cmd_line} --xml ${env_xml} \"$@\"\n")
     execute_process(COMMAND chmod a+x ${CMAKE_BINARY_DIR}/run)
-  elseif(WIN32)
-    file(WRITE ${CMAKE_BINARY_DIR}/run.bat
-         "${_env_cmd_line} --xml ${env_xml} %1 %2 %3 %4 %5 %6 %7 %8 %9\n")
   endif() # ignore other systems
 
 
@@ -1691,24 +1688,10 @@ function(elements_add_library library)
     message(WARNING "Library ${library} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
   endif()
 
-  if(WIN32)
-	add_library( ${library}-arc STATIC EXCLUDE_FROM_ALL ${srcs})
-    set_target_properties(${library}-arc PROPERTIES COMPILE_DEFINITIONS ELEMENTS_LINKER_LIBRARY)
-    add_custom_command(
-      OUTPUT ${library}.def
-	  COMMAND ${genwindef_cmd} -o ${library}.def -l ${library} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${library}-arc.lib
-	  DEPENDS ${library}-arc genwindef)
-	#---Needed to create a dummy source file to please Windows IDE builds with the manifest
-	file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/${library}.cpp "// empty file\n" )
-    add_library( ${library} SHARED ${library}.cpp ${library}.def)
-    target_link_libraries(${library} ${library}-arc ${ARG_LINK_LIBRARIES})
-    set_target_properties(${library} PROPERTIES LINK_INTERFACE_LIBRARIES "${ARG_LINK_LIBRARIES}" )
-  else()
-    add_library(${library} ${srcs})
-    set_target_properties(${library} PROPERTIES COMPILE_DEFINITIONS ELEMENTS_LINKER_LIBRARY)
-    target_link_libraries(${library} ${ARG_LINK_LIBRARIES})
-    _elements_detach_debinfo(${library})
-  endif()
+  add_library(${library} ${srcs})
+  set_target_properties(${library} PROPERTIES COMPILE_DEFINITIONS ELEMENTS_LINKER_LIBRARY)
+  target_link_libraries(${library} ${ARG_LINK_LIBRARIES})
+  _elements_detach_debinfo(${library})
 
   # Declare that the used headers are needed by the libraries linked against this one
   set_target_properties(${library} PROPERTIES
@@ -1772,11 +1755,7 @@ function(elements_add_python_module module)
 
   include_directories(${PYTHON_INCLUDE_DIRS})
   add_library(${module} MODULE ${srcs})
-  if(win32)
-    set_target_properties(${module} PROPERTIES SUFFIX .pyd PREFIX "")
-  else()
-    set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "")
-  endif()
+  set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "")
   target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
 
   #----Installation details-------------------------------------------------------
