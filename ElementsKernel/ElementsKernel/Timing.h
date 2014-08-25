@@ -56,7 +56,7 @@ template<TimeType T>
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API int64_t ellapsedTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t ellapsedTime(TimeType typ = milliSec, InfoType fetch = InfoType::Times, long pid = -1);
 /** CPU kernel mode time of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -64,7 +64,7 @@ ELEMENTS_API int64_t ellapsedTime(TimeType typ = milliSec, InfoType fetch = Time
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API int64_t kernelTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t kernelTime(TimeType typ = milliSec, InfoType fetch = InfoType::Times, long pid = -1);
 /** CPU user mode time of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -72,7 +72,7 @@ ELEMENTS_API int64_t kernelTime(TimeType typ = milliSec, InfoType fetch = Times,
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API int64_t userTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t userTime(TimeType typ = milliSec, InfoType fetch = InfoType::Times, long pid = -1);
 /** Consumed CPU time of process in milliseconds.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -80,7 +80,7 @@ ELEMENTS_API int64_t userTime(TimeType typ = milliSec, InfoType fetch = Times, l
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API int64_t cpuTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t cpuTime(TimeType typ = milliSec, InfoType fetch = InfoType::Times, long pid = -1);
 /** Maximum processing time left for this process.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -88,7 +88,7 @@ ELEMENTS_API int64_t cpuTime(TimeType typ = milliSec, InfoType fetch = Times, lo
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API int64_t remainingTime(TimeType typ = milliSec, InfoType fetch = Quota, long pid = -1);
+ELEMENTS_API int64_t remainingTime(TimeType typ = milliSec, InfoType fetch = InfoType::Quota, long pid = -1);
 /** Process Creation time.
  @param typ     Indicator or the unit the time will be returned.
  @param fetch   Indicator of the information to be fetched.
@@ -96,7 +96,7 @@ ELEMENTS_API int64_t remainingTime(TimeType typ = milliSec, InfoType fetch = Quo
  @param pid     Process ID of which the information will be returned
  @return        Requested value in the indicated units.
  */
-ELEMENTS_API int64_t creationTime(TimeType typ = milliSec, InfoType fetch = Times, long pid = -1);
+ELEMENTS_API int64_t creationTime(TimeType typ = milliSec, InfoType fetch = InfoType::Times, long pid = -1);
 /** Maximum processing time left for this process.
  @param typ     Indicator or the unit the time will be returned.
  @return        Requested value in the indicated units.

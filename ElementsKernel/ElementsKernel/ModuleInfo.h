@@ -14,7 +14,8 @@
  */
 namespace Elements {
 namespace System {
-enum ModuleType {
+
+enum class ModuleType {
   UNKNOWN, SHAREDLIB, EXECUTABLE
 };
 /// Definition of an image handle
@@ -39,6 +40,7 @@ ELEMENTS_API const std::string& exeName();
 ELEMENTS_API const std::vector<std::string> linkedModules();
 /// Attach module handle
 ELEMENTS_API void setModuleHandle(ImageHandle handle);
+
 }
 }
 #endif // ELEMENTSKERNEL_MODULEINFO_H

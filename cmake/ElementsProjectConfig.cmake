@@ -87,7 +87,6 @@ endif()
 # Programs and utilities needed for the build
 #---------------------------------------------------------------------------------------------------
 include(CMakeParseArguments)
-include(GenerateExportHeader)
 
 find_package(PythonInterp)
 
@@ -1718,11 +1717,6 @@ function(elements_add_library library)
     REQUIRED_LIBRARIES "${ARG_LINK_LIBRARIES}")
   set_property(GLOBAL APPEND PROPERTY LINKER_LIBRARIES ${library})
 
-  elements_add_genheader_dependencies(${library})
-  if(ELEMENTS_HIDE_SYMBOLS)
-    generate_export_header(${library} EXPORT_FILE_NAME ${library}Export.h)
-  endif()
-
   #----Installation details-------------------------------------------------------
   install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION lib OPTIONAL)
   elements_export(LIBRARY ${library})
@@ -1749,8 +1743,6 @@ function(elements_add_module library)
   _elements_detach_debinfo(${library})
 
   set_property(GLOBAL APPEND PROPERTY COMPONENT_LIBRARIES ${library})
-
-  elements_add_genheader_dependencies(${library})
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${library} LIBRARY DESTINATION lib OPTIONAL)
@@ -1787,8 +1779,6 @@ function(elements_add_python_module module)
   endif()
   target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
 
-  elements_add_genheader_dependencies(${module})
-
   #----Installation details-------------------------------------------------------
   install(TARGETS ${module} LIBRARY DESTINATION python/lib-dynload OPTIONAL)
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
@@ -1814,8 +1804,6 @@ function(elements_add_executable executable)
   if (ELEMENTS_USE_EXE_SUFFIX)
     set_target_properties(${executable} PROPERTIES SUFFIX .exe)
   endif()
-
-  elements_add_genheader_dependencies(${executable})
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${executable} EXPORT ${CMAKE_PROJECT_NAME}Exports RUNTIME DESTINATION bin OPTIONAL)
@@ -1853,7 +1841,6 @@ function(elements_add_unit_test executable)
 
     if(NOT ${executable}_UNIT_TEST_TYPE)
       set(${executable}_UNIT_TEST_TYPE None)
-#      set(${executable}_UNIT_TEST_TYPE CppUnit)
     endif()
 
     if(NOT ${executable}_UNIT_TEST_WORKING_DIRECTORY)
