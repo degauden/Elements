@@ -24,33 +24,18 @@
 
 using namespace std;
 
-#ifdef _WIN32
-  #define strcasecmp  _stricmp
-  #define strncasecmp _strnicmp
-  #define getpid _getpid
-  #define NOMSG
-  #define NOGDI
-  #include "process.h"
-  #include "windows.h"
-  #undef NOMSG
-  #undef NOGDI
-  static const char* SHLIB_SUFFIX = ".dll";
-#else  // UNIX...: first the EGCS stuff, then the OS dependent includes
-  static const char* SHLIB_SUFFIX = ".so";
-  #include <errno.h>
-  #include <string.h>
-  #include <sys/times.h>
-  #include <unistd.h>
-  #include <libgen.h>
-  #include <cstdio>
-  #include <cxxabi.h>
-#if defined(__linux) || defined(__APPLE__)
-  #include <dlfcn.h>
-  #include <sys/utsname.h>
-  #include <unistd.h>
-#endif
+static const char* SHLIB_SUFFIX = ".so";
+#include <errno.h>
+#include <string.h>
+#include <sys/times.h>
+#include <unistd.h>
+#include <libgen.h>
+#include <cstdio>
+#include <cxxabi.h>
+#include <dlfcn.h>
+#include <sys/utsname.h>
+#include <unistd.h>
 
-#endif
 
 // Note: __attribute__ is a GCC keyword available since GCC 3.4
 #ifdef __GNUC__
@@ -68,16 +53,11 @@ static vector<string> s_argvStrings;
 static vector<const char*> s_argvChars;
 
 static unsigned long doLoad(const string& name, Elements::System::ImageHandle* handle)  {
-#ifdef _WIN32
-  void* mh = ::LoadLibrary( name.length() == 0 ? Elements::System::exeName().c_str() : name.c_str());
-  *handle = mh;
-#else
 # if defined(__linux) || defined(__APPLE__)
    const char* path = name.c_str();
    void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
    *handle = mh;
 # endif
-#endif
   if ( 0 == *handle )   {
     return Elements::System::getLastError();
   }
@@ -134,14 +114,8 @@ unsigned long Elements::System::loadDynamicLib(const string& name, ImageHandle* 
 
 /// unload dynamic link library
 unsigned long Elements::System::unloadDynamicLib(ImageHandle handle)    {
-#ifdef _WIN32
-  if ( !::FreeLibrary((HINSTANCE)handle) ) {
-#elif defined(__linux) || defined(__APPLE__)
   ::dlclose( handle );
   if ( 0 ) {
-#else
-  if (false){
-#endif
     return getLastError();
   }
   return 1;
@@ -149,13 +123,7 @@ unsigned long Elements::System::unloadDynamicLib(ImageHandle handle)    {
 
 /// Get a specific function defined in the DLL
 unsigned long Elements::System::getProcedureByName(ImageHandle handle, const string& name, EntryPoint* pFunction)    {
-#ifdef _WIN32
-  *pFunction = (EntryPoint)::GetProcAddress((HINSTANCE)handle, name.data());
-  if ( 0 == *pFunction )    {
-    return Elements::System::getLastError();
-  }
-  return 1;
-#elif defined(__linux)
+#if defined(__linux)
 #if __GNUC__ < 4
   *pFunction = (EntryPoint)::dlsym(handle, name.c_str());
 #else
@@ -191,12 +159,8 @@ unsigned long Elements::System::getProcedureByName(ImageHandle handle, const str
 
 /// Retrieve last error code
 unsigned long Elements::System::getLastError()    {
-#ifdef _WIN32
-  return ::GetLastError();
-#else
   // convert errno (int) to unsigned long
   return static_cast<unsigned long>(static_cast<unsigned int>(errno));
-#endif
 }
 
 /// Retrieve last error code as string
@@ -207,20 +171,6 @@ const string Elements::System::getLastErrorString()    {
 
 /// Retrieve error code as string for a given error
 const string Elements::System::getErrorString(unsigned long error)    {
-#ifdef _WIN32
-  LPVOID lpMessageBuffer;
-  ::FormatMessage(
-    FORMAT_MESSAGE_ALLOCATE_BUFFER |  FORMAT_MESSAGE_FROM_SYSTEM,
-    NULL,
-    error,
-    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), //The user default language
-    (LPTSTR) &lpMessageBuffer,
-    0,
-    NULL );
-  errString = (const char*)lpMessageBuffer;
-  // Free the buffer allocated by the system
-  ::LocalFree( lpMessageBuffer );
-#else
   string errString =  "";
   char *cerrString(0);
   // Remember: for linux dl* routines must be handled differently!
@@ -241,7 +191,6 @@ const string Elements::System::getErrorString(unsigned long error)    {
     cerrString = ::strerror(error);
     errString = string(cerrString);
   }
-#endif
   return errString;
 }
 
@@ -251,41 +200,6 @@ const string Elements::System::typeinfoName( const std::type_info& tinfo) {
 
 const string Elements::System::typeinfoName( const char* class_name) {
   string result;
-#ifdef _WIN32
-  long off = 0;
-  if ( ::strncmp(class_name, "class ", 6) == 0 )   {
-    // The returned name is prefixed with "class "
-    off = 6;
-  }
-  if ( ::strncmp(class_name, "struct ", 7) == 0 )   {
-    // The returned name is prefixed with "struct "
-    off = 7;
-  }
-  if ( off > 0 )    {
-    string tmp = class_name + off;
-    long loc = 0;
-    while( (loc = tmp.find("class ")) > 0 )  {
-      tmp.erase(loc, 6);
-    }
-    loc = 0;
-    while( (loc = tmp.find("struct ")) > 0 )  {
-      tmp.erase(loc, 7);
-    }
-    result = tmp;
-  }
-  else  {
-    result = class_name;
-  }
-  // Change any " *" to "*"
-  while ( (off=result.find(" *")) != string::npos ) {
-    result.replace(off, 2, "*");
-  }
-  // Change any " &" to "&"
-  while ( (off=result.find(" &")) != string::npos ) {
-    result.replace(off, 2, "&");
-  }
-
-#elif defined(__linux) || defined(__APPLE__)
     if ( ::strlen(class_name) == 1 ) {
       // See http://www.realitydiluted.com/mirrors/reality.sgi.com/dehnert_engr/cxx/abi.pdf
       // for details
@@ -369,7 +283,6 @@ const string Elements::System::typeinfoName( const char* class_name) {
         pos = result.find(", ");
       }
     }
-#endif
   return result;
 }
 
@@ -379,12 +292,7 @@ const string& Elements::System::hostName() {
   if ( host == "" ) {
     char buffer[512];
     memset(buffer,0,sizeof(buffer));
-#ifdef _WIN32
-    unsigned long len = sizeof(buffer);
-    ::GetComputerName(buffer, &len);
-#else
     ::gethostname(buffer, sizeof(buffer));
-#endif
     host = buffer;
   }
   return host;
@@ -393,16 +301,12 @@ const string& Elements::System::hostName() {
 /// OS name
 const string& Elements::System::osName() {
   static string osname = "";
-#ifdef _WIN32
-  osname = "Windows";
-#else
   struct utsname ut;
   if (uname(&ut) == 0) {
     osname = ut.sysname;
   } else {
     osname = "UNKNOWN";
   }
-#endif
   return osname;
 }
 
@@ -410,41 +314,24 @@ const string& Elements::System::osName() {
 /// OS version
 const string& Elements::System::osVersion() {
   static string osver = "";
-#ifdef _WIN32
-  OSVERSIONINFO ut;
-  ut.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  ::GetVersionEx(&ut);
-  ostringstream ver;
-  ver << ut.dwMajorVersion << '.' << ut.dwMinorVersion;
-  osver = ver.str();
-#else
   struct utsname ut;
   if (uname(&ut) == 0) {
     osver = ut.release;
   } else {
     osver = "UNKNOWN";
   }
-#endif
   return osver;
 }
 
 /// Machine type
 const string& Elements::System::machineType() {
   static string mach = "";
-#ifdef _WIN32
-  SYSTEM_INFO ut;
-  ::GetSystemInfo(&ut);
-  ostringstream arch;
-  arch << ut.wProcessorArchitecture;
-  mach = arch.str();
-#else
   struct utsname ut;
   if (uname(&ut) == 0) {
     mach = ut.machine;
   } else {
     mach = "UNKNOWN";
   }
-#endif
   return mach;
 }
 
@@ -452,17 +339,10 @@ const string& Elements::System::machineType() {
 const string& Elements::System::accountName() {
   static string account = "";
   if ( account == "" ) {
-#ifdef _WIN32
-    char buffer[512];
-    unsigned long buflen = sizeof(buffer);
-    ::GetUserName(buffer, &buflen);
-    account = buffer;
-#else
     const char* acct = ::getlogin();
     if ( 0 == acct ) acct = ::getenv("LOGNAME");
     if ( 0 == acct ) acct = ::getenv("USER");
     account = (acct) ? acct : "Unknown";
-#endif
   }
   return account;
 }
@@ -480,44 +360,6 @@ long Elements::System::argc()    {
 /// Const char** command line arguments including executable name as arg[0]
 const vector<string> Elements::System::cmdLineArgs()    {
   if ( s_argvChars.size() == 0 )    {
-#ifdef _WIN32
-    /// @todo: rewrite the tokenizer to avoid strncpy, etc
-    // Disable warning C4996 triggered by C standard library calls
-#pragma warning(push)
-#pragma warning(disable:4996)
-    // For compatibility with UNIX we CANNOT use strtok!
-    // If we would use strtok, options like -g="My world" at
-    // the command line level would result on NT in TWO options
-    // instead in one as in UNIX.
-    char *next, *tmp2;
-    for(LPTSTR cmd = ::GetCommandLine(); *cmd; cmd=next)   {
-      memset(exe,0,sizeof(exe));
-      while ( *cmd == ' ' ) cmd++;
-      next=::strchr(cmd,' ');
-      if ( !next ) next = cmd + strlen(cmd);
-      char *tmp1 ;
-      if ( (tmp1=::strchr(cmd,'\"')) > 0 && tmp1 < next )  {
-        tmp2 = ::strchr(++tmp1,'\"');
-        if ( tmp2 > 0 )   {
-          next = ++tmp2;
-          if ( cmd < tmp1 ) strncpy(exe, cmd, tmp1-cmd-1);
-          strncpy(&exe[strlen(exe)], tmp1, tmp2-tmp1-1);
-        }
-        else    {
-          cout << "Mismatched \" in command line arguments" << endl;
-          s_argvChars.erase(s_argvChars.begin(), s_argvChars.end());
-          s_argvStrings.erase(s_argvStrings.begin(), s_argvStrings.end());
-          return s_argvStrings;
-        }
-      }
-      else    {
-        strncpy(exe, cmd, next-cmd);
-      }
-      s_argvStrings.push_back(exe);
-      s_argvChars.push_back( s_argvStrings.back().c_str());
-    }
-#pragma warning(pop)
-#elif defined(__linux) || defined(__APPLE__)
     char exe[1024];
     sprintf(exe, "/proc/%d/cmdline", ::getpid());
     FILE *cmdLine = ::fopen(exe,"r");
@@ -535,7 +377,6 @@ const vector<string> Elements::System::cmdLineArgs()    {
       }
       ::fclose(cmdLine);
     }
-#endif
   }
   return s_argvStrings;
 }
@@ -549,11 +390,6 @@ char** Elements::System::argv()    {
   return (char**)&s_argvChars[0];
 }
 
-#ifdef WIN32
-// disable warning
-//   C4996: 'getenv': This function or variable may be unsafe.
-#pragma warning(disable:4996)
-#endif
 
 /// get a particular env var, return "UNKNOWN" if not defined
 string Elements::System::getEnv(const char* var) {
@@ -586,9 +422,7 @@ bool Elements::System::isEnvSet(const char* var) {
 #include "crt_externs.h"
 #endif
 vector<string> Elements::System::getEnv() {
-#if defined(_WIN32)
-#  define environ _environ
-#elif defined(__APPLE__)
+#if defined(__APPLE__)
   static char **environ = *_NSGetEnviron();
 #endif
   vector<string> vars;
@@ -696,28 +530,11 @@ bool Elements::System::getStackLevel(void* addresses  __attribute__ ((unused)),
 ///set an environment variables. @return 0 if successful, -1 if not
 int Elements::System::setEnv(const string &name, const string &value, int overwrite)
 {
-#ifndef WIN32
   // UNIX version
   return value.empty() ?
     // remove if set to nothing (and return success)
     ::unsetenv(name.c_str()) , 0 :
     // set the value
     ::setenv(name.c_str(),value.c_str(), overwrite);
-#else
-  // Windows version
-  if ( value.empty() ) {
-    // equivalent to unsetenv
-    return ::_putenv((name+"=").c_str());
-  }
-  else {
-    if ( !getenv(name.c_str()) || overwrite ) {
-      // set if not yet present or overwrite is set (force)
-      return ::_putenv((name+"="+value).c_str());
-    }
-  }
-  return 0; // if we get here, we are trying to set a variable already set, but
-            // not to overwrite.
-            // It is considered a success on Linux (man P setenv)
-#endif
 
 }

@@ -31,27 +31,14 @@
 #  define ELEMENTS_HASCLASSVISIBILITY
 #endif
 
-#ifdef _WIN32
-/*
- #  define ELEMENTS_IMPORT __declspec(dllimport)
- #  define ELEMENTS_EXPORT __declspec(dllexport)
- #  define ELEMENTS_LOCAL
- */
-/// The symbol visibility is disabled on Win32 because it is not possible to
-/// make coexists the gcc and VC ways.
-#    define ELEMENTS_IMPORT
-#    define ELEMENTS_EXPORT
-#    define ELEMENTS_LOCAL
+#if defined(ELEMENTS_HASCLASSVISIBILITY)
+#  define ELEMENTS_IMPORT __attribute__((visibility("default")))
+#  define ELEMENTS_EXPORT __attribute__((visibility("default")))
+#  define ELEMENTS_LOCAL  __attribute__((visibility("hidden")))
 #else
-#  if defined(ELEMENTS_HASCLASSVISIBILITY)
-#    define ELEMENTS_IMPORT __attribute__((visibility("default")))
-#    define ELEMENTS_EXPORT __attribute__((visibility("default")))
-#    define ELEMENTS_LOCAL  __attribute__((visibility("hidden")))
-#  else
-#    define ELEMENTS_IMPORT
-#    define ELEMENTS_EXPORT
-#    define ELEMENTS_LOCAL
-#  endif
+#  define ELEMENTS_IMPORT
+#  define ELEMENTS_EXPORT
+#  define ELEMENTS_LOCAL
 #endif
 
 /// Define ELEMENTS_API for DLL builds

@@ -367,13 +367,13 @@ public:
 #undef IMPLEMENT_STREAMER
 
   ///  Output Streamer
-  StreamBuffer& operator<<(longlong data) {
+  StreamBuffer& operator<<(long long data) {
     swapToBuffer(&data, sizeof(data));
     STREAM_ANALYSE(data, sizeof(data));
     return *this;
   }
   ///  Input Streamer
-  StreamBuffer& operator>>(longlong & data) {
+  StreamBuffer& operator>>(long long & data) {
     swapFromBuffer(&data, sizeof(data));
     return *this;
   }
@@ -591,9 +591,6 @@ inline StreamBuffer::SwapAction StreamBuffer::swapBuffer(int siz) const {
 //    return m_swapEnabled ? SWAP : NOSWAP;
     return SWAP;
 #elif defined(__linux) && !defined(__powerpc)
-//    return m_swapEnabled ? SWAP : NOSWAP;
-    return NOSWAP;
-#elif defined(BORLAND) || defined(_WIN32) || defined(WIN32)
 //    return m_swapEnabled ? SWAP : NOSWAP;
     return NOSWAP;
 #else
