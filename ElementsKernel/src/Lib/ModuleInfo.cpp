@@ -85,22 +85,22 @@ const string& Elements::System::moduleNameFull()   {
 
 /// Get type of the module
 Elements::System::ModuleType Elements::System::moduleType()   {
-  static ModuleType type = UNKNOWN;
-  if ( type == UNKNOWN )    {
+  static ModuleType type = Elements::System::ModuleType::UNKNOWN;
+  if ( type == Elements::System::ModuleType::UNKNOWN )    {
     const string& module = moduleNameFull();
     int loc = module.rfind('.')+1;
     if ( loc == 0 )
-      type = EXECUTABLE;
+      type = Elements::System::ModuleType::EXECUTABLE;
     else if ( module[loc] == 'e' || module[loc] == 'E' )
-      type = EXECUTABLE;
+      type = Elements::System::ModuleType::EXECUTABLE;
 #ifdef _WIN32
     else if ( module[loc] == 'd' || module[loc] == 'D' )
 #else
     else if ( module[loc] == 's' && module[loc+1] == 'o' )
 #endif
-      type = SHAREDLIB;
+      type = Elements::System::ModuleType::SHAREDLIB;
     else
-      type = UNKNOWN;
+      type = Elements::System::ModuleType::UNKNOWN;
   }
   return type;
 }
