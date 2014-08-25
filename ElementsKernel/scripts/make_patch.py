@@ -186,7 +186,6 @@ def main():
                         "slc4_ia32_gcc34*",
                         "slc4_amd64_gcc34*",
                         "slc4_amd64_gcc43*",
-                        "win32_vc71*",
                         "i686-slc3-gcc323*",
                         "i686-slc4-gcc34*",
                         "i686-slc4-gcc41*",

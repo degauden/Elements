@@ -37,9 +37,6 @@
 //};
 
 struct tm;
-# ifdef WIN32
-typedef struct _FILETIME FILETIME;
-# endif
 
 namespace Elements {
 
@@ -64,7 +61,7 @@ class TimeSpan;
 class ELEMENTS_API TimeSpan {
   friend class Time;
 public:
-  typedef longlong ValueType;
+  typedef long long ValueType;
 
   TimeSpan(void);
   TimeSpan(Time t);
@@ -220,7 +217,7 @@ private:
 class ELEMENTS_API Time {
   friend class TimeSpan;
 public:
-  typedef longlong ValueType;
+  typedef long long ValueType;
 
   /** Symbolic names for months */
   enum Months {
@@ -263,9 +260,6 @@ public:
   static Time max(void);
   /// Returns the current time.
   static Time current(void);
-# ifdef WIN32
-  static Time from (const FILETIME *systime);
-# endif
   static Time build(bool local, const tm &base, TimeSpan diff = 0);
 
   tm split(bool local, int *nsecpart = 0) const;
