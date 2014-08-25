@@ -11,6 +11,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Exit.h"
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
 /**
@@ -18,7 +19,7 @@
  * that derived from ElementsProgram, i.e., these derived classes
  * must end with the following line:
  *
- * 		BUILD_MAIN_FOR(ElementsProgramExample)
+ * 		MAIN_FOR(ElementsProgramExample)
  *
  * 	ElementsProgramExample.cpp shows how to use this macro
  */
@@ -26,8 +27,8 @@
   int main(int argc, char* argv[]) 					        \
   {                               				        	\
     ElementsProgramName elementProgramInstance {} ;	\
-    elementProgramInstance.run(argc, argv) ;	      \
-    return 0;                                       \
+    Elements::ExitCode exit_code = elementProgramInstance.run(argc, argv) ;	      \
+    return static_cast<int>(exit_code) ;                                       \
   }
 
 static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
@@ -56,7 +57,7 @@ public:
    * @param argv
    *   Command line arguments
    */
-  ELEMENTS_API void run(int argc, char* argv[]);
+  ELEMENTS_API Elements::ExitCode run(int argc, char* argv[]);
 
 protected:
 
@@ -89,7 +90,7 @@ protected:
    *  This is the second method that must be implemented by all Elements programs. It
    *  represents the entry point, called from run(int argc,char* argv[]).
    */
-  virtual void mainMethod() = 0;
+  virtual Elements::ExitCode mainMethod() = 0;
 
   /**
    * @brief
