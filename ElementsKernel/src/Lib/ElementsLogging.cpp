@@ -11,7 +11,6 @@
 #include <log4cpp/PatternLayout.hh>
 #include "ElementsKernel/ElementsException.h"
 #include "ElementsKernel/ElementsLogging.h"
-#include "ElementsKernel/Integer.h"
 
 std::unique_ptr<log4cpp::Layout> getLogLayout() {
   log4cpp::PatternLayout* layout = new log4cpp::PatternLayout {};

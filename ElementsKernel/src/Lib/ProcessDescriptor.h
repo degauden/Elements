@@ -37,7 +37,7 @@ struct QUOTA_LIMITS {
   unsigned long MinimumWorkingSetSize;
   unsigned long MaximumWorkingSetSize;
   unsigned long PagefileLimit;
-  longlong TimeLimit;
+  long long TimeLimit;
 };
 
 /** Process I/O Counters
@@ -47,12 +47,9 @@ struct IO_COUNTERS {
   unsigned long ReadOperationCount;
   unsigned long WriteOperationCount;
   unsigned long OtherOperationCount;
-  //      longlong ReadOperationCount;
-  //      longlong WriteOperationCount;
-  //      longlong OtherOperationCount;
-  longlong ReadTransferCount;
-  longlong WriteTransferCount;
-  longlong OtherTransferCount;
+  long long ReadTransferCount;
+  long long WriteTransferCount;
+  long long OtherTransferCount;
 };
 
 /** Process Virtual Memory Counters
@@ -92,10 +89,10 @@ struct POOLED_USAGE_AND_LIMITS {
  NtQueryInformationThread using ThreadTimes
  */
 struct KERNEL_USER_TIMES {
-  longlong CreateTime;
-  longlong ExitTime;
-  longlong KernelTime;
-  longlong UserTime;
+  long long CreateTime;
+  long long ExitTime;
+  long long KernelTime;
+  long long UserTime;
   //longlong EllapsedTime; // Added by M.Frank
 };
 
