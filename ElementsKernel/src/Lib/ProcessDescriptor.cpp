@@ -398,7 +398,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   long status = 1;
   ProcessHandle h(pid);
   IO_COUNTERS* vb = &m_IO_COUNTERS[h.item()];
-  if (fetch == IO) {
+  if (fetch == InfoType::IO) {
 #if defined(_WIN32) && WINVER>=0x0400     // Windows NT
     status = NtApi::NtQueryInformationProcess(h.handle(),
         ProcessIoCounters,
@@ -431,7 +431,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   long status = 1;
   ProcessHandle h(pid);
   POOLED_USAGE_AND_LIMITS* vb = &m_POOLED_USAGE_AND_LIMITS[h.item()];
-  if (fetch == Quota) {
+  if (fetch == InfoType::Quota) {
 #if defined(_WIN32) && WINVER>=0x0400     // Windows NT
     status = NtApi::NtQueryInformationProcess(h.handle(),
         ProcessPooledUsageAndLimits,
@@ -480,7 +480,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   vb = &m_PRIORITYBOOST[h.item()];
   *vb = 0;
   switch (fetch) {
-  case PriorityBoost:
+  case InfoType::PriorityBoost:
 #if defined(_WIN32) && WINVER>=0x0400     // Windows NT
     status = NtApi::NtQueryInformationProcess(h.handle(),
         ProcessPriorityBoost,
@@ -510,7 +510,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   long status = 1;
   ProcessHandle h(pid);
   VM_COUNTERS* vb = &m_VM_COUNTERS[h.item()];
-  if (fetch == Memory) {
+  if (fetch == InfoType::Memory) {
 #if defined(_WIN32) && WINVER>=0x0400     // Windows NT
     status = NtApi::NtQueryInformationProcess(h.handle(),
         ProcessVmCounters,
@@ -558,7 +558,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   long status = 1;
   ProcessHandle h(pid);
   QUOTA_LIMITS* vb = &m_QUOTA_LIMITS[h.item()];
-  if (fetch == Quota) {
+  if (fetch == InfoType::Quota) {
 #if defined(_WIN32) && WINVER>=0x0400     // Windows NT
     status = NtApi::NtQueryInformationProcess(h.handle(),
         ProcessQuotaLimits,
@@ -610,7 +610,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   long status = 1;
   ProcessHandle h(pid);
   PROCESS_BASIC_INFORMATION* vb = &m_PROCESS_BASIC_INFORMATION[h.item()];
-  if (fetch == ProcessBasics) {
+  if (fetch == InfoType::ProcessBasics) {
 #if defined(_WIN32) && WINVER>=0x0400     // Windows NT
     status = NtApi::NtQueryInformationProcess(h.handle(),
         ProcessBasicInformation,
@@ -646,7 +646,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   ProcessHandle h(pid);
   KERNEL_USER_TIMES* tb = &m_KERNEL_USER_TIMES[h.item()];
   ;
-  if (fetch == Times) {
+  if (fetch == InfoType::Times) {
 #if defined(_WIN32) && WINVER>=0x0400     // Windows NT
     status = NtApi::NtQueryInformationProcess(h.handle(),
         ProcessTimes,

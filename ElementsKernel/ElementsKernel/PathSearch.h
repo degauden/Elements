@@ -12,9 +12,9 @@
 #include <boost/regex.hpp>
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
-typedef enum {
+enum class SearchType {
   Local, Recursive
-} SearchType;
+} ;
 
 /**
  * @brief search

@@ -1,5 +1,8 @@
 elements_subdir(ElementsExamples 1.0)
 
+elements_depends_on_subdirs(ElementsKernel)
+
+
 find_package(Boost REQUIRED COMPONENTS filesystem thread system program_options unit_test_framework)
 find_package(CppUnit)
 

@@ -4,7 +4,7 @@
 namespace Elements {
 namespace System {
 /// Enumeration for fetching information
-enum InfoType {
+enum class InfoType {
   NoFetch,
   RemainTime,
   Times,
