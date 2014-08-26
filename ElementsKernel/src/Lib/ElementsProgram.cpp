@@ -277,6 +277,7 @@ Elements::ExitCode ElementsProgram::run(int argc, char* argv[]) {
     logger.fatal(
         "# An exception of unknown type occured, i.e., an exception not deriving from std::exception ");
     logger.fatal("# ");
+    exit_code = Elements::ExitCode::NOT_OK;
   }
 
   return exit_code ;
