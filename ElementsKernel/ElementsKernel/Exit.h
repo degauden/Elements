@@ -9,12 +9,17 @@
 #define ELEMENTSKERNEL_EXIT_H_
 
 
+#include <type_traits>
+
 namespace Elements {
 
-/// Strongly type exit numbers
+/// Strongly typed exit numbers
 /// @details This has to be used with the MAIN_FOR macro
 /// There is no clear universal specification for exit codes. Every system
-/// has more or less its convention. Please have a look at http://en.wikipedia.org/wiki/Exit_status
+/// has more or less its convention. Please have a look at http://en.wikipedia.org/wiki/Exit_status.
+/// These exit codes do exist for this very documentation. They allow a minimal communication
+/// with the batch framework. This gives a clear answer to the caller without the need of
+/// parsing the output of the executable.
 /// Notes:
 ///    - by default (without any implementation), the uncaught signal produces an
 ///      exit code of 128+signal value.
@@ -44,6 +49,10 @@ enum class ExitCode : int {
   CONFIG      = 78      ///< configuration error
 
 };
+
+/// Underlying type of the ExitCode class
+typedef std::underlying_type<ExitCode>::type ExitCodeType;
+
 
 } // namespace Elements
 

@@ -10,6 +10,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
+
 #include "ElementsKernel/ElementsLogging.h"
 #include "ElementsKernel/Exit.h"
 #include "ElementsKernel/Export.h" // ELEMENTS_API
@@ -28,7 +29,7 @@
   {                               				        	\
     ElementsProgramName elementProgramInstance {} ;	\
     Elements::ExitCode exit_code = elementProgramInstance.run(argc, argv) ;	      \
-    return static_cast<int>(exit_code) ;                                       \
+    return static_cast<Elements::ExitCodeType>(exit_code) ;                                       \
   }
 
 static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
