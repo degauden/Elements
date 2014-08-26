@@ -192,7 +192,7 @@ public:
    * This must be copy/paste in all programs
    */
   string getVersion() {
-    return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
+    return Elements::getVersionFromSvnKeywords(SVN_URL, SVN_ID);
   }
 };
 
