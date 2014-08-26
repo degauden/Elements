@@ -11,6 +11,8 @@
 
 using namespace std;
 
+namespace Elements {
+
 bool StatusCode::s_checking(false);
 
 void StatusCode::enableChecking() {
@@ -50,3 +52,4 @@ StatusCode::~StatusCode() {
   }
 }
 
+} // Elements namespace
