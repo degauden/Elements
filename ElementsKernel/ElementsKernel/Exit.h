@@ -12,7 +12,7 @@
 namespace Elements {
 
 /// Strongly type exit numbers
-/// @attention This has to be used with the MAIN_FOR macro
+/// @details This has to be used with the MAIN_FOR macro
 /// There is no clear universal specification for exit codes. Every system
 /// has more or less its convention. Please have a look at http://en.wikipedia.org/wiki/Exit_status
 /// Notes:
@@ -24,6 +24,8 @@ namespace Elements {
 enum class ExitCode : int {
 
   OK          =  0,     ///< Everything is OK
+
+  NOT_OK      =  1,     ///< Generic unknown failure
 
   USAGE       = 64,     ///< command line usage error
   DATAERR     = 65,     ///< data format error
