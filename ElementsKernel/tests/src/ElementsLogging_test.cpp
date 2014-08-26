@@ -17,7 +17,7 @@
 
 namespace algo = boost::algorithm;
 
-#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Logging.h"
 
 // A map to translate strings to logging levels
 std::map<std::string, ElementsLogging::LoggingLevel> levelMap {

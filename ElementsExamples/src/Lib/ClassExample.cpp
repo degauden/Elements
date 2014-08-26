@@ -9,7 +9,7 @@
 
 
 #include "ElementsExamples/ClassExample.h"
-#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Logging.h"
 #include "ElementsKernel/ElementsException.h"
 
 

@@ -12,7 +12,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
-#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Temporary.h"
 
 

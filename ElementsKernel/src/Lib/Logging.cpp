@@ -10,7 +10,7 @@
 #include <log4cpp/FileAppender.hh>
 #include <log4cpp/PatternLayout.hh>
 #include "ElementsKernel/ElementsException.h"
-#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Logging.h"
 
 std::unique_ptr<log4cpp::Layout> getLogLayout() {
   log4cpp::PatternLayout* layout = new log4cpp::PatternLayout {};
@@ -20,7 +20,7 @@ std::unique_ptr<log4cpp::Layout> getLogLayout() {
 
 ElementsLogging::ElementsLogging(log4cpp::Category& log4cppLogger)
     : m_log4cppLogger(log4cppLogger) { }
-    
+
 ElementsLogging ElementsLogging::getLogger(const std::string& name) {
   if (log4cpp::Category::getRoot().getAppender("console") == NULL) {
     log4cpp::OstreamAppender* consoleAppender = new log4cpp::OstreamAppender {"console", &std::cerr};
@@ -69,10 +69,10 @@ void ElementsLogging::setLogFile(const boost::filesystem::path& fileName) {
 
 ElementsLogging::LogMessageStream::LogMessageStream(log4cpp::Category& logger, P_log_func log_func)
     : m_logger(logger), m_log_func{log_func} { }
-    
+
 ElementsLogging::LogMessageStream::LogMessageStream(LogMessageStream&& other)
     : m_logger(other.m_logger), m_log_func{other.m_log_func} { }
-    
+
 ElementsLogging::LogMessageStream::~LogMessageStream() {
   (m_logger.*m_log_func) (m_message.str());
 }

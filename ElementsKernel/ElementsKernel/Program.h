@@ -11,7 +11,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
-#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Exit.h"
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
