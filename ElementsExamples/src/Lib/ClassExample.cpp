@@ -17,7 +17,7 @@ std::string ClassExample::s_static_string = "This is a static field example";
 
 void ClassExample::summingAndDividing(double first, double second) {
 
-  ElementsLogging logger = ElementsLogging::getLogger("ClassExample");
+  Elements::Logging logger = Elements::Logging::getLogger("ClassExample");
 
   logger.info("#");
   logger.info("#  Logging from the doSomething() class example: ");

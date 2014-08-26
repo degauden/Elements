@@ -149,7 +149,7 @@ const po::variables_map ProgramWithConf::getProgramOptions(
 // Log all options with a header
 void ProgramWithConf::logAllOptions(string program_name) {
 
-  ElementsLogging logger = ElementsLogging::getLogger("ElementsProgram");
+  Logging logger = Logging::getLogger("ElementsProgram");
 
   logger.info("##########################################################");
   logger.info("##########################################################");
@@ -236,9 +236,9 @@ void ProgramWithConf::setup(int argc, char* argv[]) noexcept {
   m_variables_map = getProgramOptions(argc, argv);
 
   // get the program options related to the logging
-  ElementsLogging::LoggingLevel logging_level;
+  Logging::LoggingLevel logging_level;
   if (m_variables_map.count("log-level")) {
-    logging_level = (ElementsLogging::LoggingLevel) m_variables_map["log-level"].as<int>();
+    logging_level = (Logging::LoggingLevel) m_variables_map["log-level"].as<int>();
   } else {
      throw ElementsException("Required option log-level is not provided!");
   }
@@ -251,8 +251,8 @@ void ProgramWithConf::setup(int argc, char* argv[]) noexcept {
 
 
   // setup the logging
-  ElementsLogging::setLevel(logging_level);
-  ElementsLogging::setLogFile(log_file_name);
+  Logging::setLevel(logging_level);
+  Logging::setLogFile(log_file_name);
 
   // log all program options
   this->logAllOptions(getProgramName().string());
@@ -265,7 +265,7 @@ Elements::ExitCode ProgramWithConf::run(int argc, char* argv[]) {
 
   setup(argc, argv);
 
-  ElementsLogging logger = ElementsLogging::getLogger("ElementsProgram");
+  Logging logger = Logging::getLogger("ElementsProgram");
 
   try {
     exit_code = mainMethod();

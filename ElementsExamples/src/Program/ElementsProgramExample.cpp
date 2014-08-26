@@ -122,7 +122,7 @@ public:
   Elements::ExitCode mainMethod() {
 
     // Get logger and log the entry into the mainMethod
-    ElementsLogging logger = ElementsLogging::getLogger("ElementsProgramExample");
+    Elements::Logging logger = Elements::Logging::getLogger("ElementsProgramExample");
 
     logger.info("#");
     logger.info(

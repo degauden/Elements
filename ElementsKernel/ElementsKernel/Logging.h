@@ -13,26 +13,28 @@
 #include <log4cpp/Category.hh>
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
+namespace Elements {
+
 /**
- * @class ElementsLogging
+ * @class Logging
  *
  * @brief Logging API of the Elements framework
  *
  *
- * The ElementsLogging class provides the logging API of the Elements framework.
- * To use the logging API the ElementsLogging::getLogger method can be used to
+ * The Elements::Logging class provides the logging API of the Elements framework.
+ * To use the logging API the Elements::Logging::getLogger method can be used to
  * retrieve a logger instance, which can be further used for logging messages
  * of different severities. For construction of more complicated messages, the
  * printf style and stream style syntax are supported. For example:
  *
  * \code
- * ElementsLogging logger = ElementsLogging::getLogger("name");
+ * Elements::Logging logger = Elements::Logging::getLogger("name");
  * logger.debug("A debug message");
  * logger.info("A value %d in a printf style info message", 15);
  * logger.error() << "A value " << 15 << " in a steam style error message";
  * \endcode
  *
- * The name given as parameter of the ElementsLogging::getLogger method can be
+ * The name given as parameter of the Elements::Logging::getLogger method can be
  * used for identification of the log messages and for further tuning of the
  * underlying logging framework.
  *
@@ -51,22 +53,22 @@
  *
  * By default the logging level is set to INFO and the default behavior is to
  * forward all the messages to the standard error stream. This behavior can be
- * modified by using the method ElementsLogging::setLevel, which can be used
- * to set the level to show, and the method ElementsLogging::setLogFile, which
+ * modified by using the method Elements::Logging::setLevel, which can be used
+ * to set the level to show, and the method Elements::Logging::setLogFile, which
  * can be used to redirect the messages in a file (in addition to the standard
  * error stream). Note that these methods have a global effect to the application.
  *
- * If the ElementsProgram API is used, the logging level and the log file
+ * If the Elements::Program API is used, the logging level and the log file
  * can be set by using the command line parameters <b>--log-level</b> and
- * <b>--log-file</b> and no direct use of the ElementsLogging::setLevel and
- * ElementsLogging::setLogFile should be performed. Exception of this rule is
+ * <b>--log-file</b> and no direct use of the Elements::Logging::setLevel and
+ * Elements::Logging::setLogFile should be performed. Exception of this rule is
  * any log messages which are sent before the command line parameters are handled
  * (like global or static variable initializations, or any other action before
  * the call of the main method). These messages (without an explicit call to the
- * ElementsLogging::setLogFile method) will only appear in the standard error
+ * Elements::Logging::setLogFile method) will only appear in the standard error
  * stream.
  */
-class ElementsLogging {
+class Logging {
 
 private:
 
@@ -93,12 +95,12 @@ public:
   } LoggingLevel;
 
   /**
-   * Returns an instance of ElementsLogging which can be used for logging
+   * Returns an instance of Elements::Logging which can be used for logging
    * messages of different severities.
    * @param name The name to use for identifying the logger messages
    * @return A logger instance
    */
-  ELEMENTS_API static ElementsLogging getLogger(const std::string& name = "");
+  ELEMENTS_API static Logging getLogger(const std::string& name = "");
 
   /**
    * @brief
@@ -267,7 +269,7 @@ public:
 
 private:
 
-  ElementsLogging(log4cpp::Category& log4cppLogger);
+  Logging(log4cpp::Category& log4cppLogger);
 
   log4cpp::Category& m_log4cppLogger;
 
@@ -279,7 +281,7 @@ private:
    * message. It keeps a reference of the logger to use and a pointer of the
    * related function (to allow different logging levels). The message is logged
    * during the destruction of the object. Instances can only be retrieved by
-   * using the ElementsLogging::debug, ElementsLogging::info, etc methods.
+   * using the Elements::Logging::debug, Elements::Logging::info, etc methods.
    */
   class ELEMENTS_API LogMessageStream {
     // The P_log_func is a pointer to member function. If you have no idea what
@@ -301,7 +303,9 @@ private:
     std::stringstream m_message {};
   };
 
-}; /* ElementsLogging */
+}; /* Logging */
+
+} // namespace Elements
 
 #endif	/* ELEMENTSLOGGING_H */
 
