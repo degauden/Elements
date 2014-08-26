@@ -138,25 +138,6 @@ protected:
 
 private:
 
-
-  /**
-   * This is the BOOST program options variable_map used to store all
-   * program options. It is similar to a std::map but the element can be
-   * of different types. See the pseudoMain() in ElementsProgramExample.cpp
-   * to see how to retrieve options from this map.
-   */
-  boost::program_options::variables_map m_variables_map { };
-
-  /**
-   * Name of the executable (from argv[0])
-   */
-  boost::filesystem::path m_program_name;
-
-  /**
-   * Path of the executable (from argv[0])
-   */
-  boost::filesystem::path m_program_path;
-
   /**
    * @brief
    *   Get a default configuration file name and path, to be used if not
@@ -227,6 +208,26 @@ private:
    *
    */
   void logAllOptions(std::string program_name);
+
+private:
+
+  /**
+   * This is the BOOST program options variable_map used to store all
+   * program options. It is similar to a std::map but the element can be
+   * of different types. See the pseudoMain() in ElementsProgramExample.cpp
+   * to see how to retrieve options from this map.
+   */
+  boost::program_options::variables_map m_variables_map { };
+
+  /**
+   * Name of the executable (from argv[0])
+   */
+  boost::filesystem::path m_program_name;
+
+  /**
+   * Path of the executable (from argv[0])
+   */
+  boost::filesystem::path m_program_path;
 
 };
 
