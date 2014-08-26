@@ -236,9 +236,9 @@ void ProgramWithConf::setup(int argc, char* argv[]) noexcept {
   m_variables_map = getProgramOptions(argc, argv);
 
   // get the program options related to the logging
-  Logging::LoggingLevel logging_level;
+  Logging::Level logging_level;
   if (m_variables_map.count("log-level")) {
-    logging_level = (Logging::LoggingLevel) m_variables_map["log-level"].as<int>();
+    logging_level = (Logging::Level) m_variables_map["log-level"].as<int>();
   } else {
      throw Exception("Required option log-level is not provided!");
   }

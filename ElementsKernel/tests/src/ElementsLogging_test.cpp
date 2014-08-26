@@ -22,12 +22,12 @@ namespace algo = boost::algorithm;
 using namespace Elements;
 
 // A map to translate strings to logging levels
-std::map<std::string, Logging::LoggingLevel> levelMap {
-  {"DEBUG", Logging::LoggingLevel::DEBUG},
-  {"INFO", Logging::LoggingLevel::INFO},
-  {"WARN", Logging::LoggingLevel::WARN},
-  {"ERROR", Logging::LoggingLevel::ERROR},
-  {"FATAL", Logging::LoggingLevel::FATAL}
+std::map<std::string, Logging::Level> levelMap {
+  {"DEBUG", Logging::Level::DEBUG},
+  {"INFO", Logging::Level::INFO},
+  {"WARN", Logging::Level::WARN},
+  {"ERROR", Logging::Level::ERROR},
+  {"FATAL", Logging::Level::FATAL}
 };
 
 // A class which takes over the given stream and keeps track of the log messages
@@ -42,8 +42,8 @@ public:
     m_messages.str("");
     m_messages.clear();
   }
-  std::vector<std::tuple<std::string,Logging::LoggingLevel,std::string,std::string>> getMessages() {
-    std::vector<std::tuple<std::string,Logging::LoggingLevel,std::string,std::string>> messages;
+  std::vector<std::tuple<std::string,Logging::Level,std::string,std::string>> getMessages() {
+    std::vector<std::tuple<std::string,Logging::Level,std::string,std::string>> messages;
     for (std::string line; std::getline(m_messages, line);) {
       std::string timestamp = line.substr(0, line.find(' '));
       line = line.substr(line.find(' ')+1);
@@ -53,7 +53,7 @@ public:
       algo::trim(line);
       std::string logLevelString = line.substr(line.rfind(' '));
       algo::trim(logLevelString);
-      Logging::LoggingLevel logLevel = levelMap[logLevelString];
+      Logging::Level logLevel = levelMap[logLevelString];
       std::string name = line.substr(0, line.rfind(' '));
       algo::trim(name);
       messages.push_back(std::make_tuple(timestamp, logLevel, name, message));
@@ -68,7 +68,7 @@ private:
 
 struct ElementsLogging_Fixture {
   ElementsLogging_Fixture() {
-    Logging::setLevel(Logging::LoggingLevel::INFO);
+    Logging::setLevel(Logging::Level::INFO);
     Logging::setLogFile("");
   }
   // This tracker will record all messages written in the stderr. The Elements
@@ -122,7 +122,7 @@ BOOST_FIXTURE_TEST_CASE(loggerNames_test, ElementsLogging_Fixture) {
 BOOST_FIXTURE_TEST_CASE(messageTextAndLevel_test, ElementsLogging_Fixture) {
 
   // Given
-  m_logger.setLevel(Logging::LoggingLevel::DEBUG);
+  m_logger.setLevel(Logging::Level::DEBUG);
 
   // When
   m_logger.debug("Debug message");
@@ -144,52 +144,52 @@ BOOST_FIXTURE_TEST_CASE(messageTextAndLevel_test, ElementsLogging_Fixture) {
   // Then
   auto messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 15);
-  Logging::LoggingLevel logLevel;
+  Logging::Level logLevel;
   std::string message;
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[0];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::DEBUG);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::DEBUG);
   BOOST_CHECK_EQUAL(message, "Debug message");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[1];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::INFO);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::INFO);
   BOOST_CHECK_EQUAL(message, "Info message");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[2];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::WARN);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::WARN);
   BOOST_CHECK_EQUAL(message, "Warn message");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[3];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::ERROR);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::ERROR);
   BOOST_CHECK_EQUAL(message, "Error message");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[4];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::FATAL);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::FATAL);
   BOOST_CHECK_EQUAL(message, "Fatal message");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[5];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::DEBUG);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::DEBUG);
   BOOST_CHECK_EQUAL(message, "Debug message with 15 value");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[6];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::INFO);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::INFO);
   BOOST_CHECK_EQUAL(message, "Info message with 15 value");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[7];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::WARN);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::WARN);
   BOOST_CHECK_EQUAL(message, "Warn message with 15 value");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[8];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::ERROR);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::ERROR);
   BOOST_CHECK_EQUAL(message, "Error message with 15 value");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[9];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::FATAL);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::FATAL);
   BOOST_CHECK_EQUAL(message, "Fatal message with 15 value");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[10];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::DEBUG);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::DEBUG);
   BOOST_CHECK_EQUAL(message, "Debug message with 15 value");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[11];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::INFO);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::INFO);
   BOOST_CHECK_EQUAL(message, "Info message with 15 value");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[12];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::WARN);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::WARN);
   BOOST_CHECK_EQUAL(message, "Warn message with 15 value");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[13];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::ERROR);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::ERROR);
   BOOST_CHECK_EQUAL(message, "Error message with 15 value");
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[14];
-  BOOST_CHECK_EQUAL(logLevel, Logging::LoggingLevel::FATAL);
+  BOOST_CHECK_EQUAL(logLevel, Logging::Level::FATAL);
   BOOST_CHECK_EQUAL(message, "Fatal message with 15 value");
 
 }
@@ -201,7 +201,7 @@ BOOST_FIXTURE_TEST_CASE(messageTextAndLevel_test, ElementsLogging_Fixture) {
 BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
 
   // Given
-  m_logger.setLevel(Logging::LoggingLevel::DEBUG);
+  m_logger.setLevel(Logging::Level::DEBUG);
 
   // When
   m_logger.debug("Debug message");
@@ -216,7 +216,7 @@ BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
 
   // Given
   m_tracker.reset();
-  m_logger.setLevel(Logging::LoggingLevel::INFO);
+  m_logger.setLevel(Logging::Level::INFO);
 
   // When
   m_logger.debug("Debug message");
@@ -231,7 +231,7 @@ BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
 
   // Given
   m_tracker.reset();
-  m_logger.setLevel(Logging::LoggingLevel::WARN);
+  m_logger.setLevel(Logging::Level::WARN);
 
   // When
   m_logger.debug("Debug message");
@@ -246,7 +246,7 @@ BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
 
   // Given
   m_tracker.reset();
-  m_logger.setLevel(Logging::LoggingLevel::ERROR);
+  m_logger.setLevel(Logging::Level::ERROR);
 
   // When
   m_logger.debug("Debug message");
@@ -261,7 +261,7 @@ BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
 
   // Given
   m_tracker.reset();
-  m_logger.setLevel(Logging::LoggingLevel::FATAL);
+  m_logger.setLevel(Logging::Level::FATAL);
 
   // When
   m_logger.debug("Debug message");

@@ -92,7 +92,7 @@ public:
     INFO = 400,
     /// Fine-grained informational events
     DEBUG = 500
-  } LoggingLevel;
+  } Level;
 
   /**
    * Returns an instance of Elements::Logging which can be used for logging
@@ -112,7 +112,7 @@ public:
    *
    * @param level The new message level
    */
-  ELEMENTS_API static void setLevel(LoggingLevel level);
+  ELEMENTS_API static void setLevel(Level level);
 
   /**
    * @brief

@@ -33,21 +33,21 @@ Logging Logging::getLogger(const std::string& name) {
   return Logging {log4cpp::Category::getInstance(name)};
 }
 
-void Logging::setLevel(Logging::LoggingLevel level) {
+void Logging::setLevel(Logging::Level level) {
   switch (level) {
-  case Logging::LoggingLevel::DEBUG:
+  case Logging::Level::DEBUG:
     log4cpp::Category::setRootPriority(log4cpp::Priority::DEBUG);
     break;
-  case Logging::LoggingLevel::INFO:
+  case Logging::Level::INFO:
     log4cpp::Category::setRootPriority(log4cpp::Priority::INFO);
     break;
-  case Logging::LoggingLevel::WARN:
+  case Logging::Level::WARN:
     log4cpp::Category::setRootPriority(log4cpp::Priority::WARN);
     break;
-  case Logging::LoggingLevel::ERROR:
+  case Logging::Level::ERROR:
     log4cpp::Category::setRootPriority(log4cpp::Priority::ERROR);
     break;
-  case Logging::LoggingLevel::FATAL:
+  case Logging::Level::FATAL:
     log4cpp::Category::setRootPriority(log4cpp::Priority::FATAL);
     break;
   default:
