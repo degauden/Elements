@@ -9,12 +9,12 @@
  * This macro includes svn tags that are expanded upon any commit. The program version
  * output on screen with the option --version is extracted from these keywords
  *
- * When creating a new ElementsProgram file, naked svn tags should be introduced 
+ * When creating a new ElementsProgram file, naked svn tags should be introduced
  * (they are then expanded with the first commit), and the svn property svn:keywords
  * must be set with the command:
- * 
+ *
  * svn propset svn:keywords 'Id Revision HeadURL' filename
- * 
+ *
  * For more information (and examples of naked svn tags) see the documentation
  * of the getVersionFromKeywords() method in the Version.h file.
  */
@@ -33,10 +33,10 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 // Service includes
-#include "ElementsKernel/ElementsLogging.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Logging.h"
+#include "ElementsKernel/Exception.h"
 // Other includes
-#include "ElementsKernel/ElementsProgram.h"
+#include "ElementsKernel/Program.h"
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/Version.h"
 
@@ -51,7 +51,7 @@ using namespace std;
  * 		This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
  * 		conveniently to write a new program.
  */
-class ElementsProgramExample: public ElementsProgram {
+class ElementsProgramExample: public Elements::Program {
 
 public:
 
@@ -119,10 +119,10 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  void mainMethod() {
+  Elements::ExitCode mainMethod() {
 
     // Get logger and log the entry into the mainMethod
-    ElementsLogging logger = ElementsLogging::getLogger("ElementsProgramExample");
+    Elements::Logging logger = Elements::Logging::getLogger("ElementsProgramExample");
 
     logger.info("#");
     logger.info(
@@ -158,7 +158,7 @@ public:
       double a_double = static_cast<double>(long_long_value);
       classExample.summingAndDividing(a_double, double_value);
 
-    } catch (const ElementsException & e) {
+    } catch (const Elements::Exception & e) {
       logger.info("#");
       logger.info("  In ElementsProgramExample::mainMethod(),");
       logger.info("      an exception: ");
@@ -170,7 +170,7 @@ public:
           "      Pretending we do not know what to do, it is thrown again");
       logger.info("      (to show what happens when a program crashes)");
       logger.info("#");
-      throw ElementsException(e.what());
+      throw Elements::Exception(e.what());
     }
 
     // Get the result and log it
@@ -183,6 +183,8 @@ public:
      * Here we might later introduce a standard mechanism to persist results
      */
 
+    return Elements::ExitCode::OK;
+
   }
 
   /*
@@ -190,7 +192,7 @@ public:
    * This must be copy/paste in all programs
    */
   string getVersion() {
-    return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
+    return Elements::getVersionFromSvnKeywords(SVN_URL, SVN_ID);
   }
 };
 

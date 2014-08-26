@@ -14,6 +14,8 @@
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
+namespace Elements {
+
 class TempPath {
 public:
   TempPath(const std::string& motif) ;
@@ -39,5 +41,6 @@ public:
   ELEMENTS_API ~TempFile() ;
 };
 
+} // namespace Elements
 
 #endif // ELEMENTSKERNEL_TEMPORARY_H_

@@ -10,7 +10,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Real.h" // Provides isEqual
 
 #include "ElementsExamples/ClassExample.h"
@@ -102,8 +102,8 @@ void ClassExampleSuite::gettersTest() {
   CPPUNIT_ASSERT(m_source_id == m_class_example_ptr->getSourceId());
   CPPUNIT_ASSERT_DOUBLES_EQUAL(m_ra, m_class_example_ptr->getRa(), TEST_DOUBLE_TOLERANCE);
   CPPUNIT_ASSERT_DOUBLES_EQUAL(m_dec, m_class_example_ptr->getDec(), TEST_DOUBLE_TOLERANCE);
-  CPPUNIT_ASSERT(isEqual(m_ra,m_class_example_ptr->getRa()));
-  CPPUNIT_ASSERT(isEqual(m_dec, m_class_example_ptr->getDec()));
+  CPPUNIT_ASSERT(Elements::isEqual(m_ra,m_class_example_ptr->getRa()));
+  CPPUNIT_ASSERT(Elements::isEqual(m_dec, m_class_example_ptr->getDec()));
   CPPUNIT_ASSERT(m_expected_static_string == m_class_example_ptr->getStaticString());
 
 }
@@ -128,7 +128,7 @@ void ClassExampleSuite::divideNumbersByZeroExceptionTest() {
   bool exception = false;
   try {
     m_class_example_ptr->divideNumbers(m_first_number, 0.0);
-  } catch (const ElementsException & e) {
+  } catch (const Elements::Exception & e) {
     //exception = true;
     string exception_str = e.what();
     exception =
@@ -152,7 +152,7 @@ void ClassExampleSuite::summingAndDividingByZeroExceptionTest() {
   bool exception = false;
   try {
     m_class_example_ptr->summingAndDividing(m_first_number, 0.0);
-  } catch (const ElementsException & e) {
+  } catch (const Elements::Exception & e) {
     //exception = true;
     string exception_str = e.what();
     exception =

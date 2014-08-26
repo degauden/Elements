@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/Real.h" // Provides isEqual
 
@@ -76,8 +76,8 @@ BOOST_FIXTURE_TEST_CASE( getters_test, ClassExampleFixture ) {
   BOOST_CHECK(m_source_id == m_class_example_ptr->getSourceId());
   BOOST_CHECK_CLOSE(m_ra, m_class_example_ptr->getRa(), TEST_DOUBLE_TOLERANCE);
   BOOST_CHECK_CLOSE(m_dec, m_class_example_ptr->getDec(), TEST_DOUBLE_TOLERANCE);
-  BOOST_CHECK(isEqual(m_ra, m_class_example_ptr->getRa()));
-  BOOST_CHECK(isEqual(m_dec, m_class_example_ptr->getDec()));
+  BOOST_CHECK(Elements::isEqual(m_ra, m_class_example_ptr->getRa()));
+  BOOST_CHECK(Elements::isEqual(m_dec, m_class_example_ptr->getDec()));
   BOOST_CHECK(m_expected_static_string == m_class_example_ptr->getStaticString());
 }
 
@@ -104,7 +104,7 @@ BOOST_FIXTURE_TEST_CASE( divideNumbersByZeroException_test, ClassExampleFixture 
   bool exception = false;
   try {
     m_class_example_ptr->divideNumbers(m_first_number, 0.0);
-  } catch (const ElementsException & e) {
+  } catch (const Elements::Exception & e) {
     //exception = true;
     string exception_str = e.what();
     exception =
@@ -130,7 +130,7 @@ BOOST_FIXTURE_TEST_CASE( summingAndDividingByZeroException_test, ClassExampleFix
   bool exception = false;
   try {
     m_class_example_ptr->summingAndDividing(m_first_number, 0.0);
-  } catch (const ElementsException & e) {
+  } catch (const Elements::Exception & e) {
     //exception = true;
     string exception_str = e.what();
     exception =

@@ -9,6 +9,8 @@
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
+namespace Elements {
+
 /**
  * @brief
  *    Function returning a version string extracted from SVN keywords
@@ -32,5 +34,6 @@
  */
 ELEMENTS_API std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId);
 
+} // Elements namespace
 
 #endif /* VERSION_H_ */

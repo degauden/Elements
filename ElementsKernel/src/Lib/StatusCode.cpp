@@ -3,7 +3,6 @@
 #include "ElementsKernel/StatusCode.h"
 #include "ElementsKernel/System.h"
 #include "ElementsKernel/Likely.h"
-//#include "ElementsKernel/ElementsException.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -11,6 +10,8 @@
 #include <exception>
 
 using namespace std;
+
+namespace Elements {
 
 bool StatusCode::s_checking(false);
 
@@ -51,3 +52,4 @@ StatusCode::~StatusCode() {
   }
 }
 
+} // Elements namespace

@@ -9,7 +9,7 @@
 #define NOGLIBDEBUG_H_
 
 
-// this head has to be used with some boost library that do no supoprt the scheme
+// this head has to be used with some boost library that do no support the scheme
 // by default.
 // there is no version of boost with the std::__debug namespace
 #ifdef _GLIBCXX_DEBUG

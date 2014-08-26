@@ -12,6 +12,8 @@
 #include <boost/regex.hpp>
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
+namespace Elements {
+
 enum class SearchType {
   Local, Recursive
 } ;
@@ -70,5 +72,7 @@ ELEMENTS_API std::vector<boost::filesystem::path> pathSearchInEnvVariable(std::s
 //
 //  static std::vector<boost::filesystem::path> tokenizePathLikeVariable(
 //      std::string path_like_env_variable);
+
+} // Elements namespace
 
 #endif /* SEARCHPATH_H_ */
