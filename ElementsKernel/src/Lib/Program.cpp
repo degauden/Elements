@@ -31,7 +31,7 @@ namespace Elements {
  * @todo write a more elaborate version of this taking into account
  * the system and the development location of the default config file
  */
-const fs::path ProgramWithConf::getDefaultConfigFile(const
+const fs::path ProgramWithConfFile::getDefaultConfigFile(const
     fs::path & program_name) const {
 
   // .conf as a standard extension for configuration file
@@ -50,19 +50,19 @@ const fs::path ProgramWithConf::getDefaultConfigFile(const
 /*
  * Get the default log file, i.e., ./"programName".log
  */
-const fs::path ProgramWithConf::getDefaultLogFile(const
+const fs::path ProgramWithConfFile::getDefaultLogFile(const
     fs::path & program_name) const {
   fs::path log_name(program_name);
   log_name.replace_extension("log");
   return getProgramPath() / log_name;
 }
 
-const fs::path ProgramWithConf::setProgramName(char* argv) const {
+const fs::path ProgramWithConfFile::setProgramName(char* argv) const {
   fs::path fullPath(argv);
   return fullPath.filename();
 }
 
-const fs::path ProgramWithConf::setProgramPath(char* argv) const {
+const fs::path ProgramWithConfFile::setProgramPath(char* argv) const {
   fs::path fullPath(argv);
   return fullPath.parent_path();
 }
@@ -70,7 +70,7 @@ const fs::path ProgramWithConf::setProgramPath(char* argv) const {
 /*
  * Get program options
  */
-const po::variables_map ProgramWithConf::getProgramOptions(
+const po::variables_map ProgramWithConfFile::getProgramOptions(
     int argc, char* argv[]) {
 
   po::variables_map variables_map { };
@@ -147,7 +147,7 @@ const po::variables_map ProgramWithConf::getProgramOptions(
 }
 
 // Log all options with a header
-void ProgramWithConf::logAllOptions(string program_name) {
+void ProgramWithConfFile::logAllOptions(string program_name) {
 
   Logging logger = Logging::getLogger("ElementsProgram");
 
@@ -226,7 +226,7 @@ void ProgramWithConf::logAllOptions(string program_name) {
 }
 
 // Get the program options and setup logging
-void ProgramWithConf::setup(int argc, char* argv[]) noexcept {
+void ProgramWithConfFile::setup(int argc, char* argv[]) noexcept {
 
   // store the program name and path in class variable
   m_program_name = setProgramName(argv[0]);
@@ -259,9 +259,9 @@ void ProgramWithConf::setup(int argc, char* argv[]) noexcept {
 }
 
 // This is the method call from the main which does everything
-Elements::ExitCode ProgramWithConf::run(int argc, char* argv[]) {
+ExitCode ProgramWithConfFile::run(int argc, char* argv[]) {
 
-  Elements::ExitCode exit_code {Elements::ExitCode::OK};
+  ExitCode exit_code {ExitCode::OK};
 
   setup(argc, argv);
 
@@ -278,7 +278,7 @@ Elements::ExitCode ProgramWithConf::run(int argc, char* argv[]) {
     logger.fatal(
         "# An exception of unknown type occured, i.e., an exception not deriving from std::exception ");
     logger.fatal("# ");
-    exit_code = Elements::ExitCode::NOT_OK;
+    exit_code = ExitCode::NOT_OK;
   }
 
   return exit_code ;

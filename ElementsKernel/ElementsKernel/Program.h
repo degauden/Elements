@@ -47,7 +47,7 @@ static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
  * 		all Elements programs, such as those dealing with program
  * 		options and logging.
  */
-class ProgramWithConf {
+class ProgramWithConfFile {
 
 public:
 
@@ -68,12 +68,12 @@ protected:
   /**
    * @brief Constructor
    */
-  ProgramWithConf() = default;
+  ProgramWithConfFile() = default;
 
   /**
    * @brief Destructor
    */
-  virtual ~ProgramWithConf() = default;
+  virtual ~ProgramWithConfFile() = default;
 
   /**
    * @brief
@@ -230,7 +230,7 @@ private:
 
 };
 
-typedef ProgramWithConf Program;
+typedef ProgramWithConfFile Program;
 
 }
 
