@@ -14,7 +14,7 @@
 namespace fs = boost::filesystem;
 
 #include "ElementsKernel/PathSearch.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 using namespace std;
 
