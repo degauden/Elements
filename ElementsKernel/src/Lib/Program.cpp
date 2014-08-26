@@ -21,16 +21,17 @@ namespace fs = boost::filesystem;
 #include "ElementsKernel/ElementsLogging.h"
 #include "ElementsKernel/PathSearch.h"
 
-#include "ElementsKernel/ElementsProgram.h"
+#include "ElementsKernel/Program.h"
 
 using namespace std;
 
+namespace Elements {
 /**
  * @brief Get default config file
  * @todo write a more elaborate version of this taking into account
  * the system and the development location of the default config file
  */
-const fs::path ElementsProgram::getDefaultConfigFile(const
+const fs::path ProgramWithConf::getDefaultConfigFile(const
     fs::path & program_name) const {
 
   // .conf as a standard extension for configuration file
@@ -49,19 +50,19 @@ const fs::path ElementsProgram::getDefaultConfigFile(const
 /*
  * Get the default log file, i.e., ./"programName".log
  */
-const fs::path ElementsProgram::getDefaultLogFile(const
+const fs::path ProgramWithConf::getDefaultLogFile(const
     fs::path & program_name) const {
   fs::path log_name(program_name);
   log_name.replace_extension("log");
   return getProgramPath() / log_name;
 }
 
-const fs::path ElementsProgram::setProgramName(char* argv) const {
+const fs::path ProgramWithConf::setProgramName(char* argv) const {
   fs::path fullPath(argv);
   return fullPath.filename();
 }
 
-const fs::path ElementsProgram::setProgramPath(char* argv) const {
+const fs::path ProgramWithConf::setProgramPath(char* argv) const {
   fs::path fullPath(argv);
   return fullPath.parent_path();
 }
@@ -69,7 +70,7 @@ const fs::path ElementsProgram::setProgramPath(char* argv) const {
 /*
  * Get program options
  */
-const po::variables_map ElementsProgram::getProgramOptions(
+const po::variables_map ProgramWithConf::getProgramOptions(
     int argc, char* argv[]) {
 
   po::variables_map variables_map { };
@@ -146,7 +147,7 @@ const po::variables_map ElementsProgram::getProgramOptions(
 }
 
 // Log all options with a header
-void ElementsProgram::logAllOptions(string program_name) {
+void ProgramWithConf::logAllOptions(string program_name) {
 
   ElementsLogging logger = ElementsLogging::getLogger("ElementsProgram");
 
@@ -225,7 +226,7 @@ void ElementsProgram::logAllOptions(string program_name) {
 }
 
 // Get the program options and setup logging
-void ElementsProgram::setup(int argc, char* argv[]) noexcept {
+void ProgramWithConf::setup(int argc, char* argv[]) noexcept {
 
   // store the program name and path in class variable
   m_program_name = setProgramName(argv[0]);
@@ -258,7 +259,7 @@ void ElementsProgram::setup(int argc, char* argv[]) noexcept {
 }
 
 // This is the method call from the main which does everything
-Elements::ExitCode ElementsProgram::run(int argc, char* argv[]) {
+Elements::ExitCode ProgramWithConf::run(int argc, char* argv[]) {
 
   Elements::ExitCode exit_code {Elements::ExitCode::OK};
 
@@ -284,3 +285,4 @@ Elements::ExitCode ElementsProgram::run(int argc, char* argv[]) {
 
 }
 
+} // namespace Elements
