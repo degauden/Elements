@@ -10,7 +10,7 @@
 
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/Logging.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 
 std::string ClassExample::s_static_string = "This is a static field example";

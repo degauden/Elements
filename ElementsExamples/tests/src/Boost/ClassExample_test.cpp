@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/Real.h" // Provides isEqual
 

@@ -10,7 +10,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Real.h" // Provides isEqual
 
 #include "ElementsExamples/ClassExample.h"

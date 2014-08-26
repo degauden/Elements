@@ -3,7 +3,6 @@
 #include "ElementsKernel/StatusCode.h"
 #include "ElementsKernel/System.h"
 #include "ElementsKernel/Likely.h"
-//#include "ElementsKernel/ElementsException.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>

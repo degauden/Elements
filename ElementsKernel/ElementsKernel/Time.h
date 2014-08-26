@@ -6,7 +6,7 @@
 //   for the architecture independent int64 definition (longlong)
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "ElementsKernel/StreamBuffer.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 /** @class TimeException Time.h ElementsKernel/Time.h
  *

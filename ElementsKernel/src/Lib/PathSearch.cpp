@@ -9,7 +9,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include "ElementsKernel/PathSearch.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 namespace fs = boost::filesystem;
 using namespace std;
