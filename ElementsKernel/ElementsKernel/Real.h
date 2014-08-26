@@ -56,6 +56,8 @@
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
+namespace Elements {
+
 static const size_t FLT_DEFAULT_MAX_ULPS { 4 };
 static const size_t DBL_DEFAULT_MAX_ULPS { 10 };
 
@@ -501,5 +503,7 @@ inline bool isGreaterOrEqual(const double& l, const double& r)
 {
   return (isGreaterOrEqual<double,max_ulps>(l,r)) ;
 }
+
+} // Elements namespace
 
 #endif /* REAL_H_ */
