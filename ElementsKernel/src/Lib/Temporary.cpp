@@ -19,7 +19,7 @@
 using namespace std;
 namespace fs = boost::filesystem ;
 
-
+namespace Elements {
 
 TempPath::TempPath(const string& motif) : m_motif(motif) {
 
@@ -43,7 +43,7 @@ string TempPath::motif() const {
 
 TempDir::TempDir(const string& motif) : TempPath(motif) {
 
-  Elements::Logging logger = Elements::Logging::getLogger() ;
+  Logging logger = Logging::getLogger() ;
   logger.debug() << "Creation of the " << path() <<" temporary directory" ;
 
   fs::create_directory(path()) ;
@@ -52,7 +52,7 @@ TempDir::TempDir(const string& motif) : TempPath(motif) {
 
 TempDir::~TempDir() {
 
-  Elements::Logging logger = Elements::Logging::getLogger() ;
+  Logging logger = Logging::getLogger() ;
   logger.debug() << "Automatic destruction of the " << path() <<" temporary directory" ;
 
   fs::remove_all(path()) ;
@@ -62,7 +62,7 @@ TempDir::~TempDir() {
 
 TempFile::TempFile(const string& motif) : TempPath(motif) {
 
-  Elements::Logging logger = Elements::Logging::getLogger() ;
+  Logging logger = Logging::getLogger() ;
   logger.debug() << "Creation of the " << path() <<" temporary file" ;
 
   fs::ofstream ofs(path());
@@ -72,11 +72,11 @@ TempFile::TempFile(const string& motif) : TempPath(motif) {
 
 TempFile::~TempFile() {
 
-  Elements::Logging logger = Elements::Logging::getLogger() ;
+  Logging logger = Logging::getLogger() ;
   logger.debug() << "Automatic destruction of the " << path() <<" file" ;
 
   fs::remove(path()) ;
 
 }
 
-
+} // namespace Elements
