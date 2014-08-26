@@ -42,7 +42,7 @@ const fs::path ProgramWithConf::getDefaultConfigFile(const
   if (configFile.size() == 0) {
     stringstream error_buffer;
         error_buffer << "No config file " << conf_name.string() << " in " << CONF_ENV_VAR_NAME << "\n";
-        throw ElementsException(error_buffer.str());
+        throw Exception(error_buffer.str());
   }
   return configFile.at(0);
 }
@@ -132,7 +132,7 @@ const po::variables_map ProgramWithConf::getProgramOptions(
   if (!ifs) {
     stringstream error_buffer;
     error_buffer << "Cannot open configuration file: " << config_file << "\n";
-    throw ElementsException(error_buffer.str());
+    throw Exception(error_buffer.str());
   } else {
     /*
      * Parse the configuration file and put option values into the variable map only
@@ -240,13 +240,13 @@ void ProgramWithConf::setup(int argc, char* argv[]) noexcept {
   if (m_variables_map.count("log-level")) {
     logging_level = (Logging::LoggingLevel) m_variables_map["log-level"].as<int>();
   } else {
-     throw ElementsException("Required option log-level is not provided!");
+     throw Exception("Required option log-level is not provided!");
   }
   fs::path log_file_name;
   if (m_variables_map.count("log-file")) {
     log_file_name = m_variables_map["log-file"].as<fs::path>();
   } else {
-     throw ElementsException("Required option log-file is not provided!");
+     throw Exception("Required option log-file is not provided!");
   }
 
 

@@ -220,7 +220,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_Env_Variable_Undefine, Path_Fixt
      vector<fs::path> actualFullPathVector = pathSearchInEnvVariable(file,
           m_env_variable_name);
 
-   } catch (const ElementsException & e) {
+   } catch (const Elements::Exception & e) {
      string exception_str = e.what();
      exception =
      (exception_str.find("Environment variable:") != string::npos);

@@ -87,7 +87,7 @@ vector<fs::path> pathSearchInEnvVariable(std::string file_name,
     stringstream errorBuffer;
     errorBuffer << "Environment variable: " << path_like_env_variable.c_str()
         << " is not defined ! ";
-    throw ElementsException(errorBuffer.str());
+    throw Elements::Exception(errorBuffer.str());
   }
   string multiple_path = multiple_path_ptr;
 
