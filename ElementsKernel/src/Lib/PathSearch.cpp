@@ -9,10 +9,12 @@
 #include <boost/algorithm/string.hpp>
 
 #include "ElementsKernel/PathSearch.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 namespace fs = boost::filesystem;
 using namespace std;
+
+namespace Elements {
 
 //-----------------------------------------------------------------------------
 // Function search
@@ -87,7 +89,7 @@ vector<fs::path> pathSearchInEnvVariable(std::string file_name,
     stringstream errorBuffer;
     errorBuffer << "Environment variable: " << path_like_env_variable.c_str()
         << " is not defined ! ";
-    throw ElementsException(errorBuffer.str());
+    throw Elements::Exception(errorBuffer.str());
   }
   string multiple_path = multiple_path_ptr;
 
@@ -110,3 +112,4 @@ vector<fs::path> pathSearchInEnvVariable(std::string file_name,
   return search_results;
 }
 
+} // Elements namespace

@@ -17,20 +17,21 @@
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
-#include "ElementsKernel/ElementsException.h"
-#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Logging.h"
 #include "ElementsKernel/PathSearch.h"
 
-#include "ElementsKernel/ElementsProgram.h"
+#include "ElementsKernel/Program.h"
 
 using namespace std;
 
+namespace Elements {
 /**
  * @brief Get default config file
  * @todo write a more elaborate version of this taking into account
  * the system and the development location of the default config file
  */
-const fs::path ElementsProgram::getDefaultConfigFile(const
+const fs::path ProgramWithConfFile::getDefaultConfigFile(const
     fs::path & program_name) const {
 
   // .conf as a standard extension for configuration file
@@ -41,7 +42,7 @@ const fs::path ElementsProgram::getDefaultConfigFile(const
   if (configFile.size() == 0) {
     stringstream error_buffer;
         error_buffer << "No config file " << conf_name.string() << " in " << CONF_ENV_VAR_NAME << "\n";
-        throw ElementsException(error_buffer.str());
+        throw Exception(error_buffer.str());
   }
   return configFile.at(0);
 }
@@ -49,19 +50,19 @@ const fs::path ElementsProgram::getDefaultConfigFile(const
 /*
  * Get the default log file, i.e., ./"programName".log
  */
-const fs::path ElementsProgram::getDefaultLogFile(const
+const fs::path ProgramWithConfFile::getDefaultLogFile(const
     fs::path & program_name) const {
   fs::path log_name(program_name);
   log_name.replace_extension("log");
   return getProgramPath() / log_name;
 }
 
-const fs::path ElementsProgram::setProgramName(char* argv) const {
+const fs::path ProgramWithConfFile::setProgramName(char* argv) const {
   fs::path fullPath(argv);
   return fullPath.filename();
 }
 
-const fs::path ElementsProgram::setProgramPath(char* argv) const {
+const fs::path ProgramWithConfFile::setProgramPath(char* argv) const {
   fs::path fullPath(argv);
   return fullPath.parent_path();
 }
@@ -69,7 +70,7 @@ const fs::path ElementsProgram::setProgramPath(char* argv) const {
 /*
  * Get program options
  */
-const po::variables_map ElementsProgram::getProgramOptions(
+const po::variables_map ProgramWithConfFile::getProgramOptions(
     int argc, char* argv[]) {
 
   po::variables_map variables_map { };
@@ -131,7 +132,7 @@ const po::variables_map ElementsProgram::getProgramOptions(
   if (!ifs) {
     stringstream error_buffer;
     error_buffer << "Cannot open configuration file: " << config_file << "\n";
-    throw ElementsException(error_buffer.str());
+    throw Exception(error_buffer.str());
   } else {
     /*
      * Parse the configuration file and put option values into the variable map only
@@ -146,9 +147,9 @@ const po::variables_map ElementsProgram::getProgramOptions(
 }
 
 // Log all options with a header
-void ElementsProgram::logAllOptions(string program_name) {
+void ProgramWithConfFile::logAllOptions(string program_name) {
 
-  ElementsLogging logger = ElementsLogging::getLogger("ElementsProgram");
+  Logging logger = Logging::getLogger("ElementsProgram");
 
   logger.info("##########################################################");
   logger.info("##########################################################");
@@ -225,7 +226,7 @@ void ElementsProgram::logAllOptions(string program_name) {
 }
 
 // Get the program options and setup logging
-void ElementsProgram::setup(int argc, char* argv[]) noexcept {
+void ProgramWithConfFile::setup(int argc, char* argv[]) noexcept {
 
   // store the program name and path in class variable
   m_program_name = setProgramName(argv[0]);
@@ -235,37 +236,39 @@ void ElementsProgram::setup(int argc, char* argv[]) noexcept {
   m_variables_map = getProgramOptions(argc, argv);
 
   // get the program options related to the logging
-  ElementsLogging::LoggingLevel logging_level;
+  Logging::Level logging_level;
   if (m_variables_map.count("log-level")) {
-    logging_level = (ElementsLogging::LoggingLevel) m_variables_map["log-level"].as<int>();
+    logging_level = (Logging::Level) m_variables_map["log-level"].as<int>();
   } else {
-     throw ElementsException("Required option log-level is not provided!");
+     throw Exception("Required option log-level is not provided!");
   }
   fs::path log_file_name;
   if (m_variables_map.count("log-file")) {
     log_file_name = m_variables_map["log-file"].as<fs::path>();
   } else {
-     throw ElementsException("Required option log-file is not provided!");
+     throw Exception("Required option log-file is not provided!");
   }
 
 
   // setup the logging
-  ElementsLogging::setLevel(logging_level);
-  ElementsLogging::setLogFile(log_file_name);
+  Logging::setLevel(logging_level);
+  Logging::setLogFile(log_file_name);
 
   // log all program options
   this->logAllOptions(getProgramName().string());
 }
 
 // This is the method call from the main which does everything
-void ElementsProgram::run(int argc, char* argv[]) {
+ExitCode ProgramWithConfFile::run(int argc, char* argv[]) {
+
+  ExitCode exit_code {ExitCode::OK};
 
   setup(argc, argv);
 
-  ElementsLogging logger = ElementsLogging::getLogger("ElementsProgram");
+  Logging logger = Logging::getLogger("ElementsProgram");
 
   try {
-    mainMethod();
+    exit_code = mainMethod();
   } catch (const exception & e) {
     logger.fatal("# ");
     logger.fatal("# Exception : %s ", e.what());
@@ -275,6 +278,11 @@ void ElementsProgram::run(int argc, char* argv[]) {
     logger.fatal(
         "# An exception of unknown type occured, i.e., an exception not deriving from std::exception ");
     logger.fatal("# ");
+    exit_code = ExitCode::NOT_OK;
   }
+
+  return exit_code ;
+
 }
 
+} // namespace Elements

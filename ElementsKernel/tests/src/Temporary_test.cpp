@@ -14,7 +14,7 @@
 namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Temporary.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 using namespace std;
 
@@ -28,7 +28,7 @@ using namespace std;
 
 struct Temporary_Fixture {
 
-  TempDir m_top_dir{"Temporary_test-%%%%%%%"};
+  Elements::TempDir m_top_dir{"Temporary_test-%%%%%%%"};
 
   Temporary_Fixture() {
     // setup
@@ -50,11 +50,11 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
 
   {
 	// block creation for local variables
-	TempDir one;
+	Elements::TempDir one;
 	test_path = one.path();
 	BOOST_CHECK(fs::exists(test_path));
 
-	TempFile two;
+	Elements::TempFile two;
 	test_file_path = two.path();
 	BOOST_CHECK(fs::exists(test_file_path));
   }
@@ -68,7 +68,7 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
   fs::path test2_file_path ;
 
   {
-	TempDir three;
+  Elements::TempDir three;
 	test2_path = three.path();
 	test2_file_path = test2_path / "toto.txt" ;
 	BOOST_CHECK(!fs::exists(test2_file_path)) ;
@@ -99,7 +99,7 @@ BOOST_FIXTURE_TEST_CASE(TempEnv_test, Temporary_Fixture) {
   // create a new temporary directory that should be rooted at the
   // value of the TMPDIR directory.
 
-  TempDir new_one ;
+  Elements::TempDir new_one ;
 
   // test that the new tmp directory has been created in the right
   // directory (in $TMPDIR)

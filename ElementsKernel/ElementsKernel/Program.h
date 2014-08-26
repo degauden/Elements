@@ -1,5 +1,5 @@
 /**
- * @file ElementsProgram.h
+ * @file ElementsKernel/Program.h
  * @brief define the class for the base Elements program
  * @date Aug 7, 2013
  * @author Pierre Dubath - The Euclid Consortium
@@ -10,31 +10,36 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
-#include "ElementsKernel/ElementsLogging.h"
+
+#include "ElementsKernel/Logging.h"
+#include "ElementsKernel/Exit.h"
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
 /**
  * Macro which must be used to create a main in classes
- * that derived from ElementsProgram, i.e., these derived classes
+ * that derived from Elements::Program, i.e., these derived classes
  * must end with the following line:
  *
- * 		BUILD_MAIN_FOR(ElementsProgramExample)
+ * 		MAIN_FOR(ELEMENTS_PROGRAM_NAME)
  *
  * 	ElementsProgramExample.cpp shows how to use this macro
  */
-#define MAIN_FOR(ElementsProgramName) 		    \
+#define MAIN_FOR(ELEMENTS_PROGRAM_NAME) 		    \
   int main(int argc, char* argv[]) 					        \
   {                               				        	\
-    ElementsProgramName elementProgramInstance {} ;	\
-    elementProgramInstance.run(argc, argv) ;	      \
-    return 0;                                       \
+    ELEMENTS_PROGRAM_NAME elementProgramInstance {} ;	\
+    Elements::ExitCode exit_code = elementProgramInstance.run(argc, argv) ;	      \
+    return static_cast<Elements::ExitCodeType>(exit_code) ;                                       \
   }
+
+
+namespace Elements {
 
 static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
 
 
 /**
- * @class ElementsProgram
+ * @class ProgramWithConf
  * @brief
  * 		Base class for all Elements programs
  * @details
@@ -42,7 +47,7 @@ static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
  * 		all Elements programs, such as those dealing with program
  * 		options and logging.
  */
-class ElementsProgram {
+class ProgramWithConfFile {
 
 public:
 
@@ -56,19 +61,19 @@ public:
    * @param argv
    *   Command line arguments
    */
-  ELEMENTS_API void run(int argc, char* argv[]);
+  ELEMENTS_API ExitCode run(int argc, char* argv[]);
 
 protected:
 
   /**
    * @brief Constructor
    */
-  ElementsProgram() = default;
+  ProgramWithConfFile() = default;
 
   /**
    * @brief Destructor
    */
-  virtual ~ElementsProgram() = default;
+  virtual ~ProgramWithConfFile() = default;
 
   /**
    * @brief
@@ -89,7 +94,7 @@ protected:
    *  This is the second method that must be implemented by all Elements programs. It
    *  represents the entry point, called from run(int argc,char* argv[]).
    */
-  virtual void mainMethod() = 0;
+  virtual ExitCode mainMethod() = 0;
 
   /**
    * @brief
@@ -132,25 +137,6 @@ protected:
   }
 
 private:
-
-
-  /**
-   * This is the BOOST program options variable_map used to store all
-   * program options. It is similar to a std::map but the element can be
-   * of different types. See the pseudoMain() in ElementsProgramExample.cpp
-   * to see how to retrieve options from this map.
-   */
-  boost::program_options::variables_map m_variables_map { };
-
-  /**
-   * Name of the executable (from argv[0])
-   */
-  boost::filesystem::path m_program_name;
-
-  /**
-   * Path of the executable (from argv[0])
-   */
-  boost::filesystem::path m_program_path;
 
   /**
    * @brief
@@ -223,6 +209,30 @@ private:
    */
   void logAllOptions(std::string program_name);
 
+private:
+
+  /**
+   * This is the BOOST program options variable_map used to store all
+   * program options. It is similar to a std::map but the element can be
+   * of different types. See the pseudoMain() in ElementsProgramExample.cpp
+   * to see how to retrieve options from this map.
+   */
+  boost::program_options::variables_map m_variables_map { };
+
+  /**
+   * Name of the executable (from argv[0])
+   */
+  boost::filesystem::path m_program_name;
+
+  /**
+   * Path of the executable (from argv[0])
+   */
+  boost::filesystem::path m_program_path;
+
 };
+
+typedef ProgramWithConfFile Program;
+
+}
 
 #endif /* ELEMENTSPROGRAM_H_ */

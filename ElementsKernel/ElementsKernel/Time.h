@@ -6,7 +6,7 @@
 //   for the architecture independent int64 definition (longlong)
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "ElementsKernel/StreamBuffer.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 /** @class TimeException Time.h ElementsKernel/Time.h
  *
@@ -299,12 +299,12 @@ private:
   inline void TimeAssert(bool cond, const std::string &msg =
       "time assertion failed") const {
     if (!cond)
-      throw ElementsException(msg);
+      throw Exception(msg);
   }
 
 };
 
-}
+} // Elements namespace
 
 #include "ElementsKernel/Time.icpp"
 

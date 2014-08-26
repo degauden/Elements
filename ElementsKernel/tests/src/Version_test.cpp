@@ -29,11 +29,11 @@ BOOST_AUTO_TEST_SUITE (Version_test)
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(getVersionFromSvnKeywords_trunk) {
-  BOOST_CHECK(getVersionFromSvnKeywords(SVN_URL_TRUNK, SVN_ID).find(expectedTrunkVersion) != string::npos );
+  BOOST_CHECK(Elements::getVersionFromSvnKeywords(SVN_URL_TRUNK, SVN_ID).find(expectedTrunkVersion) != string::npos );
 }
 
 BOOST_AUTO_TEST_CASE(getVersionFromSvnKeywords_tags) {
-  BOOST_CHECK(getVersionFromSvnKeywords(SVN_URL_TAGS, SVN_ID).find(expectedTagsVersion) != string::npos );
+  BOOST_CHECK(Elements::getVersionFromSvnKeywords(SVN_URL_TAGS, SVN_ID).find(expectedTagsVersion) != string::npos );
 }
 
 BOOST_AUTO_TEST_SUITE_END ()

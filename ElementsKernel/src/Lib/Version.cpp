@@ -13,6 +13,8 @@
 
 using namespace std;
 
+namespace Elements {
+
 std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId) {
 
      // output to-be-returned version
@@ -42,3 +44,5 @@ std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId) {
     }
     return version;
   }
+
+} // Elements namespace

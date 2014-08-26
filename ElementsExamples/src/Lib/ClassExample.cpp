@@ -9,15 +9,15 @@
 
 
 #include "ElementsExamples/ClassExample.h"
-#include "ElementsKernel/ElementsLogging.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Logging.h"
+#include "ElementsKernel/Exception.h"
 
 
 std::string ClassExample::s_static_string = "This is a static field example";
 
 void ClassExample::summingAndDividing(double first, double second) {
 
-  ElementsLogging logger = ElementsLogging::getLogger("ClassExample");
+  Elements::Logging logger = Elements::Logging::getLogger("ClassExample");
 
   logger.info("#");
   logger.info("#  Logging from the doSomething() class example: ");
@@ -39,7 +39,7 @@ void ClassExample::summingAndDividing(double first, double second) {
     logger.info(
         " Divide two numbers ");
     m_result = this->divideNumbers(first, second);
-  } catch (ElementsException& e) {
+  } catch (Elements::Exception& e) {
     logger.info("#");
     logger.info("  In ClassExample::summingAndDividing(...),");
     logger.info("      an exception: ");
@@ -50,7 +50,7 @@ void ClassExample::summingAndDividing(double first, double second) {
     logger.info("      The exception is thrown again!");
     logger.info("      (assuming we do not what to do to fix it!)");
     logger.info("#");
-    throw ElementsException(e.what());
+    throw Elements::Exception(e.what());
   }
 
 }
@@ -68,7 +68,7 @@ double ClassExample::divideNumbers(double first, double second) const {
     std::stringstream error_buffer;
     error_buffer << "Dividing by " << second
         << " exception in divideNumbers!";
-    throw ElementsException(error_buffer.str());
+    throw Elements::Exception(error_buffer.str());
   }
   return first / second;
 }
