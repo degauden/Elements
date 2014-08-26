@@ -8,6 +8,8 @@
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "boost/shared_ptr.hpp"
 
+namespace Elements {
+
 /**
  * @class StatusCode StatusCode.h ElementsKernel/StatusCode.h
  *
@@ -145,6 +147,8 @@ inline std::ostream& operator<<(std::ostream& s, const StatusCode& sc) {
   }
   return s;
 }
+
+} // Elements namespace
 
 #endif  // ELEMENTSKERNEL_STATUSCODES_H
 
