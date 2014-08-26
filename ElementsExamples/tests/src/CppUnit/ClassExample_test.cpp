@@ -102,8 +102,8 @@ void ClassExampleSuite::gettersTest() {
   CPPUNIT_ASSERT(m_source_id == m_class_example_ptr->getSourceId());
   CPPUNIT_ASSERT_DOUBLES_EQUAL(m_ra, m_class_example_ptr->getRa(), TEST_DOUBLE_TOLERANCE);
   CPPUNIT_ASSERT_DOUBLES_EQUAL(m_dec, m_class_example_ptr->getDec(), TEST_DOUBLE_TOLERANCE);
-  CPPUNIT_ASSERT(isEqual(m_ra,m_class_example_ptr->getRa()));
-  CPPUNIT_ASSERT(isEqual(m_dec, m_class_example_ptr->getDec()));
+  CPPUNIT_ASSERT(Elements::isEqual(m_ra,m_class_example_ptr->getRa()));
+  CPPUNIT_ASSERT(Elements::isEqual(m_dec, m_class_example_ptr->getDec()));
   CPPUNIT_ASSERT(m_expected_static_string == m_class_example_ptr->getStaticString());
 
 }
