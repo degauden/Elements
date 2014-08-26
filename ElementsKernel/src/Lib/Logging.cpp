@@ -53,7 +53,7 @@ void Logging::setLevel(Logging::LoggingLevel level) {
   default:
     std::stringstream error_buffer;
     error_buffer << "Unrecognized logging level: " << level << "\n";
-    throw ElementsException(error_buffer.str());
+    throw Exception(error_buffer.str());
     break;
   }
 }

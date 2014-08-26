@@ -128,7 +128,7 @@ void ClassExampleSuite::divideNumbersByZeroExceptionTest() {
   bool exception = false;
   try {
     m_class_example_ptr->divideNumbers(m_first_number, 0.0);
-  } catch (const ElementsException & e) {
+  } catch (const Elements::Exception & e) {
     //exception = true;
     string exception_str = e.what();
     exception =
@@ -152,7 +152,7 @@ void ClassExampleSuite::summingAndDividingByZeroExceptionTest() {
   bool exception = false;
   try {
     m_class_example_ptr->summingAndDividing(m_first_number, 0.0);
-  } catch (const ElementsException & e) {
+  } catch (const Elements::Exception & e) {
     //exception = true;
     string exception_str = e.what();
     exception =

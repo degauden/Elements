@@ -299,12 +299,12 @@ private:
   inline void TimeAssert(bool cond, const std::string &msg =
       "time assertion failed") const {
     if (!cond)
-      throw ElementsException(msg);
+      throw Exception(msg);
   }
 
 };
 
-}
+} // Elements namespace
 
 #include "ElementsKernel/Time.icpp"
 

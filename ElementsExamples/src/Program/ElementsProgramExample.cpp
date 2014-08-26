@@ -158,7 +158,7 @@ public:
       double a_double = static_cast<double>(long_long_value);
       classExample.summingAndDividing(a_double, double_value);
 
-    } catch (const ElementsException & e) {
+    } catch (const Elements::Exception & e) {
       logger.info("#");
       logger.info("  In ElementsProgramExample::mainMethod(),");
       logger.info("      an exception: ");
@@ -170,7 +170,7 @@ public:
           "      Pretending we do not know what to do, it is thrown again");
       logger.info("      (to show what happens when a program crashes)");
       logger.info("#");
-      throw ElementsException(e.what());
+      throw Elements::Exception(e.what());
     }
 
     // Get the result and log it

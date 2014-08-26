@@ -64,7 +64,7 @@ Time Time::current(void) {
     // 	ElementsException once the old ElementsException is deleted
     //
     string message = msg.str() + tag.str();
-    throw ElementsException(message);
+    throw Exception(message);
   }
   return Time(tv.tv_sec, tv.tv_usec * 1000);
 }
