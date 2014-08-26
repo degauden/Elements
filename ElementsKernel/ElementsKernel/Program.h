@@ -17,10 +17,10 @@
 
 /**
  * Macro which must be used to create a main in classes
- * that derived from ElementsProgram, i.e., these derived classes
+ * that derived from Elements::Program, i.e., these derived classes
  * must end with the following line:
  *
- * 		MAIN_FOR(ElementsProgramExample)
+ * 		MAIN_FOR(ELEMENTS_PROGRAM_NAME)
  *
  * 	ElementsProgramExample.cpp shows how to use this macro
  */
