@@ -1,5 +1,5 @@
 /**
- * @file ElementsProgram.h
+ * @file ElementsKernel/Program.h
  * @brief define the class for the base Elements program
  * @date Aug 7, 2013
  * @author Pierre Dubath - The Euclid Consortium
@@ -24,19 +24,22 @@
  *
  * 	ElementsProgramExample.cpp shows how to use this macro
  */
-#define MAIN_FOR(ElementsProgramName) 		    \
+#define MAIN_FOR(ELEMENTS_PROGRAM_NAME) 		    \
   int main(int argc, char* argv[]) 					        \
   {                               				        	\
-    ElementsProgramName elementProgramInstance {} ;	\
+    ELEMENTS_PROGRAM_NAME elementProgramInstance {} ;	\
     Elements::ExitCode exit_code = elementProgramInstance.run(argc, argv) ;	      \
     return static_cast<Elements::ExitCodeType>(exit_code) ;                                       \
   }
+
+
+namespace Elements {
 
 static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
 
 
 /**
- * @class ElementsProgram
+ * @class ProgramWithConf
  * @brief
  * 		Base class for all Elements programs
  * @details
@@ -44,7 +47,7 @@ static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
  * 		all Elements programs, such as those dealing with program
  * 		options and logging.
  */
-class ElementsProgram {
+class ProgramWithConf {
 
 public:
 
@@ -58,19 +61,19 @@ public:
    * @param argv
    *   Command line arguments
    */
-  ELEMENTS_API Elements::ExitCode run(int argc, char* argv[]);
+  ELEMENTS_API ExitCode run(int argc, char* argv[]);
 
 protected:
 
   /**
    * @brief Constructor
    */
-  ElementsProgram() = default;
+  ProgramWithConf() = default;
 
   /**
    * @brief Destructor
    */
-  virtual ~ElementsProgram() = default;
+  virtual ~ProgramWithConf() = default;
 
   /**
    * @brief
@@ -91,7 +94,7 @@ protected:
    *  This is the second method that must be implemented by all Elements programs. It
    *  represents the entry point, called from run(int argc,char* argv[]).
    */
-  virtual Elements::ExitCode mainMethod() = 0;
+  virtual ExitCode mainMethod() = 0;
 
   /**
    * @brief
@@ -226,5 +229,9 @@ private:
   void logAllOptions(std::string program_name);
 
 };
+
+typedef ProgramWithConf Program;
+
+}
 
 #endif /* ELEMENTSPROGRAM_H_ */

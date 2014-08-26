@@ -36,7 +36,7 @@ namespace po = boost::program_options;
 #include "ElementsKernel/ElementsLogging.h"
 #include "ElementsKernel/ElementsException.h"
 // Other includes
-#include "ElementsKernel/ElementsProgram.h"
+#include "ElementsKernel/Program.h"
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/Version.h"
 
@@ -51,7 +51,7 @@ using namespace std;
  * 		This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
  * 		conveniently to write a new program.
  */
-class ElementsProgramExample: public ElementsProgram {
+class ElementsProgramExample: public Elements::Program {
 
 public:
 
