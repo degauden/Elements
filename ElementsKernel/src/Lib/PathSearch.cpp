@@ -14,6 +14,8 @@
 namespace fs = boost::filesystem;
 using namespace std;
 
+namespace Elements {
+
 //-----------------------------------------------------------------------------
 // Function search
 template<typename T, typename ITER>
@@ -110,3 +112,4 @@ vector<fs::path> pathSearchInEnvVariable(std::string file_name,
   return search_results;
 }
 
+} // Elements namespace
