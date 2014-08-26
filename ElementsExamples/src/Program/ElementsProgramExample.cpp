@@ -33,7 +33,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 // Service includes
-#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Logging.h"
 #include "ElementsKernel/ElementsException.h"
 // Other includes
 #include "ElementsKernel/Program.h"

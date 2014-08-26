@@ -1,5 +1,5 @@
 /**
- * @file ElementsLogging.h
+ * @file Logging.h
  * @date January 13, 2014
  * @author Nikolaos Apostolakos
  */
@@ -15,47 +15,47 @@
 
 /**
  * @class ElementsLogging
- * 
+ *
  * @brief Logging API of the Elements framework
- * 
- * 
+ *
+ *
  * The ElementsLogging class provides the logging API of the Elements framework.
  * To use the logging API the ElementsLogging::getLogger method can be used to
- * retrieve a logger instance, which can be further used for logging messages 
+ * retrieve a logger instance, which can be further used for logging messages
  * of different severities. For construction of more complicated messages, the
  * printf style and stream style syntax are supported. For example:
- * 
+ *
  * \code
  * ElementsLogging logger = ElementsLogging::getLogger("name");
  * logger.debug("A debug message");
  * logger.info("A value %d in a printf style info message", 15);
  * logger.error() << "A value " << 15 << " in a steam style error message";
  * \endcode
- * 
+ *
  * The name given as parameter of the ElementsLogging::getLogger method can be
  * used for identification of the log messages and for further tuning of the
  * underlying logging framework.
- * 
+ *
  * The format of the logged messages follows the format:
  * \code
  * YYYY-MM-DDTHH:MM:SSZ LOGGER LEVEL : MESSAGE
  * \endcode
- * 
+ *
  * For example, the previous code snippet will produce the following messages:
- * 
+ *
  * \code
  * 2014-03-17T16:20:20CET name DEBUG : A debug message
  * 2014-03-17T16:20:20CET name  INFO : A value 15 in a printf style info message
  * 2014-03-17T16:20:20CET name ERROR : A value 15 in a steam style error message
  * \endcode
- * 
+ *
  * By default the logging level is set to INFO and the default behavior is to
  * forward all the messages to the standard error stream. This behavior can be
  * modified by using the method ElementsLogging::setLevel, which can be used
  * to set the level to show, and the method ElementsLogging::setLogFile, which
  * can be used to redirect the messages in a file (in addition to the standard
  * error stream). Note that these methods have a global effect to the application.
- * 
+ *
  * If the ElementsProgram API is used, the logging level and the log file
  * can be set by using the command line parameters <b>--log-level</b> and
  * <b>--log-file</b> and no direct use of the ElementsLogging::setLevel and
@@ -67,13 +67,13 @@
  * stream.
  */
 class ElementsLogging {
-  
+
 private:
-  
+
   // We declare the LogMessageStream here because it is used from the public
   // functions. It is defined in the private section at the end.
   class LogMessageStream;
-  
+
 public:
 
   /**
@@ -91,7 +91,7 @@ public:
     /// Fine-grained informational events
     DEBUG = 500
   } LoggingLevel;
-  
+
   /**
    * Returns an instance of ElementsLogging which can be used for logging
    * messages of different severities.
@@ -99,7 +99,7 @@ public:
    * @return A logger instance
    */
   ELEMENTS_API static ElementsLogging getLogger(const std::string& name = "");
-  
+
   /**
    * @brief
    * Sets the global message level
@@ -107,11 +107,11 @@ public:
    * This call has effect to all the loggers already retrieved as well as loggers
    * which will be retrieved in the future. Exceptions are loggers which have
    * been fine tuned using the underlying framework configuration methods.
-   * 
+   *
    * @param level The new message level
    */
   ELEMENTS_API static void setLevel(LoggingLevel level);
-  
+
   /**
    * @brief
    * Sets the file to store the log messages
@@ -122,14 +122,14 @@ public:
    * just switch the file the messages are stored in. Note that this method does
    * not affect any file handlers attached to specific loggers by using the
    * underlying framework configuration methods.
-   * 
+   *
    * If an empty string is given as fileName, then the loggers will stop storing
    * the messages in any files.
-   * 
+   *
    * @param fileName The file where the log messages will be stored
    */
   ELEMENTS_API static void setLogFile(const boost::filesystem::path& fileName);
-  
+
   /**
    * Logs a debug message.
    * @param logMessage The message to log
@@ -147,7 +147,7 @@ public:
   void debug(const char *stringFormat, Args &&...args) {
     m_log4cppLogger.debug(stringFormat, std::forward<Args>(args)...);
   }
-  
+
   /**
    * Returns an object which can be used for logging a debug message using the
    * "<<" operator.
@@ -174,7 +174,7 @@ public:
   void info(const char *stringFormat, Args &&...args) {
     m_log4cppLogger.info(stringFormat, std::forward<Args>(args)...);
   }
-  
+
   /**
    * Returns an object which can be used for logging a info message using the
    * "<<" operator.
@@ -201,7 +201,7 @@ public:
   void warn(const char *stringFormat, Args &&...args) {
     m_log4cppLogger.warn(stringFormat, std::forward<Args>(args)...);
   }
-  
+
   /**
    * Returns an object which can be used for logging a warn message using the
    * "<<" operator.
@@ -228,7 +228,7 @@ public:
   void error(const char *stringFormat, Args &&...args) {
     m_log4cppLogger.error(stringFormat, std::forward<Args>(args)...);
   }
-  
+
   /**
    * Returns an object which can be used for logging a error message using the
    * "<<" operator.
@@ -255,7 +255,7 @@ public:
   void fatal(const char *stringFormat, Args &&...args) {
     m_log4cppLogger.fatal(stringFormat, std::forward<Args>(args)...);
   }
-  
+
   /**
    * Returns an object which can be used for logging a fatal message using the
    * "<<" operator.
@@ -264,13 +264,13 @@ public:
   LogMessageStream fatal() {
     return LogMessageStream {m_log4cppLogger, &log4cpp::Category::fatal};
   }
-  
+
 private:
-  
+
   ElementsLogging(log4cpp::Category& log4cppLogger);
-  
+
   log4cpp::Category& m_log4cppLogger;
-  
+
   /**
    * @class LogMessageStream
    * @brief A helper class for logging messages using the "<<" operator
@@ -300,7 +300,7 @@ private:
     P_log_func m_log_func;
     std::stringstream m_message {};
   };
-  
+
 }; /* ElementsLogging */
 
 #endif	/* ELEMENTSLOGGING_H */

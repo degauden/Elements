@@ -18,7 +18,7 @@ namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
 #include "ElementsKernel/ElementsException.h"
-#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Logging.h"
 #include "ElementsKernel/PathSearch.h"
 
 #include "ElementsKernel/Program.h"
