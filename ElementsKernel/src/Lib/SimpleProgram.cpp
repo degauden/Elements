@@ -5,20 +5,32 @@
  * @author Hubert Degaudenzi
  */
 
-#include <ElementsKernel/SimpleProgram.h>
+
+#include <iostream>
+
+#include "ElementsKernel/Exit.h"
+#include "ElementsKernel/SimpleProgram.h"
+
+using namespace std;
 
 namespace Elements {
 
-SimpleProgram::SimpleProgram()
-{
-  // @todo Auto-generated constructor stub
+ExitCode Elements::SimpleProgram::run(int /*argc*/ , char** /*argv*/) noexcept {
 
+  ExitCode exit_code {ExitCode::OK};
 
+  try {
+    exit_code = main();
+  } catch (const exception & e) {
+    cerr << "Exception has been thrown : " << e.what() << endl;
+    exit_code = ExitCode::NOT_OK;
+  } catch (...) {
+    cerr << "An unknown exception has been thrown"<< endl;
+    exit_code = ExitCode::NOT_OK;
+  }
+
+  return exit_code;
 }
 
-SimpleProgram::~SimpleProgram()
-{
-  // @todo Auto-generated destructor stub
-}
 
-} // namespace Elements
+}  // namespace Elements
