@@ -18,6 +18,11 @@ elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExampl
                   INCLUDE_DIRS Boost ElementsExamples
                   PUBLIC_HEADERS ElementsExamples)
 
+elements_add_executable(ElementsSimpleProgramExample src/Program/SimpleProgramExample.cpp
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} ElementsKernel
+                  INCLUDE_DIRS ElementsKernel)
+
+
 #===== Boost tests =============================================================
 # Example with automatically generated TestMain.cpp. This is always the case if the TYPE of
 # the test is Boost.
