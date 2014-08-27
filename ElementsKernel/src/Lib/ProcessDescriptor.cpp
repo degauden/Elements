@@ -49,6 +49,7 @@ enum ProcessInfoCommand {
 #include <sys/syscall.h>
 #ifndef __APPLE__
 #include <sys/procfs.h>
+#endif
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <cstdio>
@@ -303,7 +304,6 @@ void readProcStat(long pid, linux_proc& pinfo) {
   }
   close(fd);
 }
-#endif
 
 //static long s_myPid  = ::getpid();
 // In order to properly support e.g. fork() calls, we cannot keep a copy of the pid!
@@ -354,6 +354,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   ProcessHandle h(pid);
   IO_COUNTERS* vb = &m_IO_COUNTERS[h.item()];
   if (fetch == InfoType::IO) {
+#if defined(__linux)
     linux_proc prc;
     readProcStat(processID(pid), prc);
     rusage usage;
@@ -364,6 +365,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     vb->ReadTransferCount = usage.ru_inblock;
     vb->WriteTransferCount = usage.ru_oublock;
     vb->OtherTransferCount = 0;
+#endif
   }
   if (info)
     *info = *vb;
@@ -376,6 +378,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   ProcessHandle h(pid);
   POOLED_USAGE_AND_LIMITS* vb = &m_POOLED_USAGE_AND_LIMITS[h.item()];
   if (fetch == InfoType::Quota) {
+#if defined(__linux)
     //rusage usage;
     //getrusage(RUSAGE_SELF, &usage);
     rlimit lim;
@@ -399,6 +402,9 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     vb->PeakPagefileUsage = prc.rss * pg_size;
     vb->PagefileUsage = prc.rss * pg_size;
     vb->PagefileLimit = 0xFFFFFFFF;
+#elif defined(__APPLE__)
+#else                                     // All Other
+#endif                                    // End ALL OS
   }
   if (info)
     *info = *vb;
@@ -434,6 +440,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   ProcessHandle h(pid);
   VM_COUNTERS* vb = &m_VM_COUNTERS[h.item()];
   if (fetch == InfoType::Memory) {
+#if defined(__linux)
     const ssize_t bufsize = 1024;
     char buf[bufsize];
     sprintf(buf, "/proc/%ld/statm", processID(pid));
@@ -458,6 +465,9 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     vb->PageFaultCount = prc.majflt + prc.minflt;
     vb->PagefileUsage = prc.vsize - resident * pg_size;
     vb->PeakPagefileUsage = prc.vsize - resident * pg_size;
+#elif defined(__APPLE__)
+#else                                     // All Other
+#endif                                    // End ALL OS
   }
   if (info)
     *info = *vb;
@@ -470,6 +480,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   ProcessHandle h(pid);
   QUOTA_LIMITS* vb = &m_QUOTA_LIMITS[h.item()];
   if (fetch == InfoType::Quota) {
+#if defined(__linux)
     // On linux all this stuff typically is not set
     // (ie. rlim_max=RLIM_INFINITY...)
     rlimit lim;
@@ -498,6 +509,9 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     if (lim.rlim_max == RLIM_INFINITY )
       lim.rlim_max = 0xFFFFFFFF;
     vb->TimeLimit = lim.rlim_max;
+#elif defined(__APPLE__)
+#else                                     // All Other
+#endif                                    // End ALL OS
   }
   if (info)
     *info = *vb;
@@ -510,6 +524,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   ProcessHandle h(pid);
   PROCESS_BASIC_INFORMATION* vb = &m_PROCESS_BASIC_INFORMATION[h.item()];
   if (fetch == InfoType::ProcessBasics) {
+#if defined(__linux)
     linux_proc prc;
     readProcStat(processID(pid), prc);
     vb->ExitStatus = 0;
@@ -522,6 +537,8 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     // << prc.flags << endl;
     vb->UniqueProcessId = processID(pid);
     vb->InheritedFromUniqueProcessId = prc.ppid;
+#else                                     // All Other
+#endif                                    // End ALL OS
   }
   if (info)
     *info = *vb;
