@@ -8,6 +8,12 @@
 #ifndef ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 #define ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 
+#include "ElementsKernel/Exit.h"
+#include "ElementsKernel/Export.h" // ELEMENTS_API
+
+#include "ElementsKernel/Main.h"
+
+
 namespace Elements {
 
 class SimpleProgram {
