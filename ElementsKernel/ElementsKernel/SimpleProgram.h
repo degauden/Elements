@@ -8,18 +8,27 @@
 #ifndef ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 #define ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 
-#include "ElementsKernel/Exit.h"
-#include "ElementsKernel/Export.h" // ELEMENTS_API
-
 #include "ElementsKernel/Main.h"
 
 
 namespace Elements {
 
+// Forward declaration. We don't need the definition right now.
+enum class ExitCode;
+
 class SimpleProgram {
+
 public:
-  SimpleProgram();
-  virtual ~SimpleProgram();
+
+  ExitCode run(int argc, char** argv) noexcept;
+
+protected:
+
+  SimpleProgram() = default;
+  virtual ~SimpleProgram() = default;
+
+  virtual ExitCode main() = 0;
+
 };
 
 } // namespace Elements
