@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include "ElementsKernel/Exit.h"
 #include "ElementsKernel/SimpleProgram.h"
 
 using namespace std;
@@ -23,6 +24,7 @@ public:
 
 private:
   ExitCode main();
+  virtual void defineOptions();
 };
 
 
@@ -31,8 +33,14 @@ ExitCode SimpleProgramExample::main()
   ExitCode exit_code {ExitCode::OK};
 
   cout << "This works!!" << endl;
+  cout << getProgramName() << endl;
+  cout << getProgramPath() << endl;
 
   return exit_code;
+}
+
+void SimpleProgramExample::defineOptions() {
+
 }
 
 
