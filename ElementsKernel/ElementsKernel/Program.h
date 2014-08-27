@@ -11,8 +11,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
-#include "ElementsKernel/Logging.h"
-#include "ElementsKernel/Exit.h"
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
 #include "ElementsKernel/Main.h"
@@ -21,6 +19,8 @@ namespace Elements {
 
 static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
 
+// Forward declaration
+enum class ExitCode;
 
 /**
  * @class ProgramWithConf
@@ -173,7 +173,7 @@ private:
    *  Program setup taking care of command line options and logging
    *  initialization
    */
-  void setup(int argc, char* argv[]) noexcept;
+  void setup(int argc, char* argv[]);
 
   /**
    * @brief

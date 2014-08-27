@@ -19,6 +19,7 @@ namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
+#include "ElementsKernel/Exit.h"
 #include "ElementsKernel/PathSearch.h"
 
 #include "ElementsKernel/Program.h"
@@ -226,7 +227,7 @@ void ProgramWithConfFile::logAllOptions(string program_name) {
 }
 
 // Get the program options and setup logging
-void ProgramWithConfFile::setup(int argc, char* argv[]) noexcept {
+void ProgramWithConfFile::setup(int argc, char* argv[]) {
 
   // store the program name and path in class variable
   m_program_name = setProgramName(argv[0]);
