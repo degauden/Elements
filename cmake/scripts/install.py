@@ -230,7 +230,7 @@ def update(src, dest, old_dest=None, syml=False, logdir=realpath(".")):
     dest_path = split(realdest)[0]
     realsrc = normpath(join(dest_path, src))
     # The modification time is compared only with the precision of the second
-    # to avoid a bug in Python 2.5 (Fixed in Python 2.5.1).
+    # to avoid a bug in Python 2.5 + Win32 (Fixed in Python 2.5.1).
     # See:
     #   http://bugs.python.org/issue1671965
     #   http://bugs.python.org/issue1565150
@@ -239,7 +239,7 @@ def update(src, dest, old_dest=None, syml=False, logdir=realpath(".")):
             print "Create dir '%s'" % (dest_path)
             makedirs(dest_path)
         # the destination file is missing or older than the source
-        if syml:
+        if syml and sys.platform != "win32":
             if exists(realdest):
                 remove(realdest, logdir)
             print "Create Link to '%s' in '%s'" % (src, dest_path)
