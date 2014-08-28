@@ -33,8 +33,8 @@ ExitCode SimpleProgramExample::main()
   ExitCode exit_code {ExitCode::OK};
 
   cout << "This works!!" << endl;
-  cout << getProgramName() << endl;
-  cout << getProgramPath() << endl;
+  cout << getProgramName().c_str() << endl;
+  cout << getProgramPath().string() << endl;
 
   return exit_code;
 }
