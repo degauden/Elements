@@ -10,6 +10,7 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include "ElementsKernel/Export.h"
 #include "ElementsKernel/Main.h"
 
 namespace Elements {
@@ -21,9 +22,9 @@ class SimpleProgram {
 
 public:
 
-  ExitCode run(int argc, char** argv) noexcept;
-  const boost::filesystem::path& getProgramPath() const;
-  const boost::filesystem::path& getProgramName() const;
+  ELEMENTS_API ExitCode run(int argc, char** argv) noexcept;
+  ELEMENTS_API const boost::filesystem::path& getProgramPath() const;
+  ELEMENTS_API const boost::filesystem::path& getProgramName() const;
 
 
 protected:
