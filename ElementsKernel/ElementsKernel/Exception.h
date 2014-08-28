@@ -25,7 +25,6 @@ public:
    */
   Exception(ExitCode e=ExitCode::NOT_OK) :
     m_exit_code{e} {
-
   }
 
   /** Constructor (C strings).
