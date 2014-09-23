@@ -275,6 +275,8 @@ macro(elements_project project version)
   find_program(rpmbuild_wrap_cmd rpmbuild_wrap.py HINTS ${binary_paths})
   set(rpmbuild_wrap_cmd ${PYTHON_EXECUTABLE} ${rpmbuild_wrap_cmd})
 
+  find_program(pythonprogramscript_cmd createPythonProgramScript.py HINTS ${binary_paths})
+  set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
 
   mark_as_advanced(env_cmd merge_cmd versheader_cmd boosttestmain_cmd cppunittestmain_cmd
                    zippythondir_cmd elementsrun_cmd
@@ -299,6 +301,7 @@ macro(elements_project project version)
   install(PROGRAMS cmake/scripts/StripPath.csh DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/StripPath.bat DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/ZipPythonDir.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/createPythonProgramScript.py DESTINATION scripts OPTIONAL)
 
   install(PROGRAMS cmake/scripts/env.py DESTINATION scripts OPTIONAL)
   install(DIRECTORY cmake/scripts/EnvConfig DESTINATION scripts
@@ -461,6 +464,7 @@ macro(elements_project project version)
   #   - build dirs
   set(project_build_environment ${project_build_environment}
       PREPEND PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+      PREPEND PATH ${CMAKE_BINARY_DIR}/scripts
       PREPEND LD_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python)
@@ -2721,4 +2725,26 @@ function(elements_generate_project_manifest filename project version)
   get_filename_component(fn ${filename} NAME)
   message(STATUS "Generating ${fn}")
   file(WRITE ${filename} "${data}")
+endfunction()
+
+
+function(elements_add_python_program executable module)
+  # Make the scripts directory in the build directory if it does not exist
+  if(NOT EXISTS ${CMAKE_BINARY_DIR}/scripts)
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/scripts)
+  endif()
+  # Get the name of the file to create
+  set(executable_file ${CMAKE_BINARY_DIR}/scripts/${executable})
+
+  string(REPLACE "." "/" program_file ${module})
+  set(program_file python/${program_file}.py)
+  
+  add_custom_command(OUTPUT ${executable_file}
+                     COMMAND ${pythonprogramscript_cmd} --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable}
+                     DEPENDS ${program_file})
+
+  string(REPLACE "." "_" python_program_target ${module})
+  add_custom_target(${python_program_target} ALL DEPENDS ${executable_file})
+
+  install(PROGRAMS ${executable_file} DESTINATION scripts)
 endfunction()
