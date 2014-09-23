@@ -18,6 +18,9 @@ elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExampl
                   INCLUDE_DIRS Boost ElementsExamples
                   PUBLIC_HEADERS ElementsExamples)
 
+#===== Pyhton programs =========================================================
+elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramExample)
+
 #===== Boost tests =============================================================
 # Example with automatically generated TestMain.cpp. This is always the case if the TYPE of
 # the test is Boost.
@@ -65,6 +68,6 @@ endif()
 
 elements_install_conf_files()
 
-#elements_install_python_modules()
+elements_install_python_modules()
 #elements_install_scripts()
 
