@@ -10,14 +10,14 @@ if (NOT TAR_FOUND)
 	else (TAR_EXECUTABLE)
 		message(FATAL_ERROR "tar not found")
 	endif (TAR_EXECUTABLE)
-	
-# handle the QUIETLY and REQUIRED arguments and set CCFITS_FOUND to TRUE if
+
+# handle the QUIETLY and REQUIRED arguments and set TAR_FOUND to TRUE if
 # all listed variables are TRUE
-    INCLUDE(FindPackageHandleStandardArgs) 
+    INCLUDE(FindPackageHandleStandardArgs)
     FIND_PACKAGE_HANDLE_STANDARD_ARGS(TAR DEFAULT_MSG TAR_EXECUTABLE)
 
-    mark_as_advanced(TAR_FOUND TAR_EXECUTABLE)	
-	
-	
+    mark_as_advanced(TAR_FOUND TAR_EXECUTABLE)
+
+
 endif (NOT TAR_FOUND)
 
