@@ -59,6 +59,10 @@ option(ELEMENTS_LINKOPT
        "Enable Link Time Optimisation"
        OFF)
 
+option(ELEMENTS_DEPENDENCY_CHECK
+       "Enable dependency version mismatch checking"
+       ON)
+
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
