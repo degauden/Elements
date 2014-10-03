@@ -778,8 +778,17 @@ macro(_elements_use_other_projects)
     message(STATUS "Looking for projects")
   endif()
 
-  # this is neede because of the way variable expansion works in macros
+  # this is needed because of the way variable expansion works in macros
   set(ARGN_ ${ARGN})
+
+  # We initialize the other_dependee_list, which keeps who is the dependee of
+  # each entry of the ARGN_ list
+  list(LENGTH ARGN_ len)
+  math(EXPR len "${len}/2")
+  foreach(index RANGE 1 ${len})
+    list(APPEND other_dependee_list ${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_VERSION})
+  endforeach()
+
   while(ARGN_)
     list(LENGTH ARGN_ len)
     if(len LESS 2)
@@ -787,7 +796,10 @@ macro(_elements_use_other_projects)
     endif()
     list(GET ARGN_ 0 other_project)
     list(GET ARGN_ 1 other_project_version)
+    list(GET other_dependee_list 0 other_dependee)
+    list(GET other_dependee_list 1 other_dependee_version)
     list(REMOVE_AT ARGN_ 0 1)
+    list(REMOVE_AT other_dependee_list 0 1)
 
     if(NOT other_project_version MATCHES "^HEAD.*")
       string(REGEX MATCH "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+))?" _version ${other_project_version})
@@ -803,6 +815,35 @@ macro(_elements_use_other_projects)
       set(other_project_cmake_version 999.999)
     endif()
 
+    # Manage the lists which contains the dependencies and the project which
+    # introduced them
+    if(${other_project}_FOUND)
+      # If the dependency is already handled check that the version numbers
+      # much, otherwise raise an error
+      string(COMPARE NOTEQUAL "${${other_project}_VERSION}" "${other_project_cmake_version}" ver_mismatch)
+      if(ver_mismatch)
+        list(FIND dependency_list "${other_project}" dep_index)
+        list(GET dependency_dependee_list ${dep_index} dep_name)
+        math(EXPR dep_index "${dep_index}+1")
+        list(GET dependency_dependee_list ${dep_index} dep_version)
+        set(ver_mis_message "Dependency version mismatch:")
+        set(ver_mis_message "${ver_mis_message} ${other_dependee} ${other_dependee_version}")
+        set(ver_mis_message "${ver_mis_message} -> ${other_project} ${other_project_cmake_version}")
+        set(ver_mis_message "${ver_mis_message} , ${dep_name} ${dep_version}")
+        set(ver_mis_message "${ver_mis_message} -> ${other_project} ${${other_project}_VERSION}")
+        if(ELEMENTS_DEPENDENCY_CHECK)
+          message(FATAL_ERROR ${ver_mis_message})
+        else()
+          message(WARNING ${ver_mis_message})
+        endif()
+      endif()
+    else()
+      # If the dependency is not handled yet populate the dependency lists
+      # (the handling happens right after)
+      list(APPEND dependency_list ${other_project} ${other_project_cmake_version})
+      list(APPEND dependency_dependee_list ${other_dependee} ${other_dependee_version})
+    endif()
+    
     if(NOT ${other_project}_FOUND)
       string(TOUPPER ${other_project} other_project_upcase)
       set(suffixes)
@@ -869,7 +910,15 @@ macro(_elements_use_other_projects)
         # inclusion order in the environment XML.
         set(used_elements_projects ${other_project} ${used_elements_projects})
         if(${other_project}_USES)
+          # Add the project in the ARGN_ list
           list(INSERT ARGN_ 0 ${${other_project}_USES})
+          # Update the other_dependee_list to declare that the ARGN_ entries
+          # have been introduced for the other_project
+          list(LENGTH ${other_project}_USES len)
+          math(EXPR len "${len}/2")
+          foreach(index RANGE 1 ${len})
+            list(INSERT other_dependee_list 0 ${other_project} ${other_project_cmake_version})
+          endforeach()
         endif()
       else()
         message(FATAL_ERROR "Cannot find project ${other_project} ${other_project_version}")
