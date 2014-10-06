@@ -29,11 +29,11 @@ Requires(postun):  /sbin/ldconfig
 
 %description
 @CPACK_RPM_PACKAGE_DESCRIPTION@
- 
+
 %package devel
 Group:  Development/Libraries
 Summary: The development part of the %{name} package
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{version}-%{release}, cmake >= 2.6
 
 %description devel
 The development part of the %{name} package.
@@ -52,7 +52,7 @@ export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 if [[ -z "$EUCLID_BASE" ]]; then
   export CMAKE_PROJECT_PATH=/opt/euclid
-else 
+else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
@@ -66,7 +66,7 @@ export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 if [[ -z "$EUCLID_BASE" ]]; then
   export CMAKE_PROJECT_PATH=/opt/euclid
-else 
+else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
