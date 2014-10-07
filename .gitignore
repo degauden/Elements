@@ -40,3 +40,5 @@ CPackConfig.cmake
 cmake_install.cmake
 ElementsConfig.cmake
 ElementsConfigVersion.cmake
+/gmon.out
+/perf.data
