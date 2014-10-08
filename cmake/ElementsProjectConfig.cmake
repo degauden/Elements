@@ -843,7 +843,7 @@ macro(_elements_use_other_projects)
       list(APPEND dependency_list ${other_project} ${other_project_cmake_version})
       list(APPEND dependency_dependee_list ${other_dependee} ${other_dependee_version})
     endif()
-    
+
     if(NOT ${other_project}_FOUND)
       string(TOUPPER ${other_project} other_project_upcase)
       set(suffixes)
@@ -1864,30 +1864,35 @@ endfunction()
 # prepends the value to the PATH-like variable.
 # The default TYPE is CppUnit and Boost can also be specified.
 #---------------------------------------------------------------------------------------------------
-function(elements_add_unit_test executable)
+function(elements_add_unit_test name)
   if(ELEMENTS_BUILD_TESTS)
 
-    CMAKE_PARSE_ARGUMENTS(${executable}_UNIT_TEST "" "TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT" ${ARGN})
+    CMAKE_PARSE_ARGUMENTS(${name}_UNIT_TEST "" "EXECUTABLE;TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT" ${ARGN})
 
-    elements_common_add_build(${${executable}_UNIT_TEST_UNPARSED_ARGUMENTS})
+    elements_common_add_build(${${name}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
-    if(NOT ${executable}_UNIT_TEST_TYPE)
-      set(${executable}_UNIT_TEST_TYPE None)
+    if(NOT ${name}_UNIT_TEST_TYPE)
+      set(${name}_UNIT_TEST_TYPE None)
     endif()
 
-    if(NOT ${executable}_UNIT_TEST_WORKING_DIRECTORY)
-      set(${executable}_UNIT_TEST_WORKING_DIRECTORY .)
+    if(NOT ${name}_UNIT_TEST_WORKING_DIRECTORY)
+      set(${name}_UNIT_TEST_WORKING_DIRECTORY .)
     endif()
 
+    if(NOT ${name}_UNIT_TEST_EXECUTABLE)
+      set(${name}_UNIT_TEST_EXECUTABLE ${name})
+    endif()
+
+    set(executable ${${name}_UNIT_TEST_EXECUTABLE})
 
     elements_get_package_name(package)
 
 
-    if(NOT ${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
-      if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
+    if(NOT ${${name}_UNIT_TEST_TYPE} STREQUAL "None")
+      if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
         find_package(Boost COMPONENTS unit_test_framework REQUIRED)
       else()
-        find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
+        find_package(${${name}_UNIT_TEST_TYPE} QUIET REQUIRED)
       endif()
       if (NOT TARGET ${package}_tests_dir)
         add_custom_target(${package}_tests_dir
@@ -1897,7 +1902,7 @@ function(elements_add_unit_test executable)
     endif()
 
 
-    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
+    if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
       set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/BoostTestMain.cpp)
       add_custom_command (
                           OUTPUT ${testmain_file}
@@ -1908,7 +1913,7 @@ function(elements_add_unit_test executable)
       set(srcs ${srcs} ${testmain_file})
     endif()
 
-    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "CppUnit")
+    if (${${name}_UNIT_TEST_TYPE} STREQUAL "CppUnit")
       set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/CppUnitTestMain.cpp)
       add_custom_command (
                           OUTPUT ${testmain_file}
@@ -1920,14 +1925,14 @@ function(elements_add_unit_test executable)
     endif()
 
 
-    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
+    if (${${name}_UNIT_TEST_TYPE} STREQUAL "None")
       elements_add_executable(${executable} ${srcs}
                               LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
                               INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
     else()
       elements_add_executable(${executable} ${srcs}
-                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${executable}_UNIT_TEST_TYPE}
-                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${executable}_UNIT_TEST_TYPE})
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE}
+                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_UNIT_TEST_TYPE})
     endif()
 
 
@@ -1936,7 +1941,7 @@ function(elements_add_unit_test executable)
       set(exec_suffix)
     endif()
 
-    foreach(var ${${executable}_UNIT_TEST_ENVIRONMENT})
+    foreach(var ${${name}_UNIT_TEST_ENVIRONMENT})
       string(FIND ${var} "+=" is_prepend)
       if(NOT is_prepend LESS 0)
         # the argument contains +=
@@ -1947,13 +1952,13 @@ function(elements_add_unit_test executable)
       endif()
     endforeach()
 
-    add_test(NAME ${package}.${executable}
-             WORKING_DIRECTORY ${${executable}_UNIT_TEST_WORKING_DIRECTORY}
+    add_test(NAME ${package}.${name}
+             WORKING_DIRECTORY ${${name}_UNIT_TEST_WORKING_DIRECTORY}
              COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
              ${executable}${exec_suffix})
 
-    if(${executable}_UNIT_TEST_TIMEOUT)
-      set_property(TEST ${package}.${executable} PROPERTY TIMEOUT ${${executable}_UNIT_TEST_TIMEOUT})
+    if(${name}_UNIT_TEST_TIMEOUT)
+      set_property(TEST ${package}.${name} PROPERTY TIMEOUT ${${name}_UNIT_TEST_TIMEOUT})
     endif()
 
   endif()
@@ -2787,7 +2792,7 @@ function(elements_add_python_program executable module)
 
   string(REPLACE "." "/" program_file ${module})
   set(program_file python/${program_file}.py)
-  
+
   add_custom_command(OUTPUT ${executable_file}
                      COMMAND ${pythonprogramscript_cmd} --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable}
                      DEPENDS ${program_file})
