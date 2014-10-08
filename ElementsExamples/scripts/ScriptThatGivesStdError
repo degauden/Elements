@@ -1,0 +1,8 @@
+#!/bin/sh
+
+
+echo "This is a good output."
+echo "This a bad output."
+echo "This is a worse output." 1>&2
+
+exit 0

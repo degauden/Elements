@@ -1,0 +1,7 @@
+#!/bin/sh
+
+
+echo "This is a good output."
+
+
+exit 0
