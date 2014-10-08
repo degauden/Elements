@@ -69,5 +69,13 @@ endif()
 elements_install_conf_files()
 
 elements_install_python_modules()
-#elements_install_scripts()
+
+elements_install_scripts()
+
+
+elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds)
+elements_add_test(ScriptThatFails COMMAND ScriptThatFails FAILS)
+elements_add_test(ScriptThatGivesOutput COMMAND ScriptThatGivesOutput PASSREGEX ".*good")
+elements_add_test(ScriptThatGivesError COMMAND ScriptThatGivesError FAILREGEX ".*bad" FAILS)
+elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError FAILREGEX ".*worse" FAILS)
 
