@@ -24,28 +24,32 @@ elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramE
 #===== Boost tests =============================================================
 # Example with automatically generated TestMain.cpp. This is always the case if the TYPE of
 # the test is Boost.
-elements_add_unit_test(ClassExample_test tests/src/Boost/ClassExample_test.cpp
+elements_add_unit_test(BoostClassExample tests/src/Boost/ClassExample_test.cpp
+                       EXECUTABLE BoostClassExample_test
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 # Example with explict TestMain.cpp. Please mind the "unit_test_framework" in the boost components
 # from the find_package command. The Boost components have to be also explicitly added to the
 # LINK_LIBRARIES argument.
-elements_add_unit_test(ClassExample_test2 tests/src/Boost/ClassExample_test.cpp tests/src/Boost/TestMain.cpp
+elements_add_unit_test(BoostClassExampleWithMain tests/src/Boost/ClassExample_test.cpp tests/src/Boost/TestMain.cpp
+                       EXECUTABLE BoostClassExampleWithMain_test
                        LINK_LIBRARIES ElementsExamples Boost)
 
 
-elements_add_unit_test(ElementsExample_all_tests tests/src/Boost/*_test.cpp
+elements_add_unit_test(BoostElementsExampleAllTests tests/src/Boost/*_test.cpp
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 #===== CppUnit tests =============================================================
 
 if(CPPUNIT_FOUND)
 # CppUnit Type test
-elements_add_unit_test(ClassExample_test3 tests/src/CppUnit/ClassExample_test.cpp
+elements_add_unit_test(OtherClassExample tests/src/CppUnit/ClassExample_test.cpp
+                       EXECUTABLE OtherClassExample_test
                        LINK_LIBRARIES ElementsExamples TYPE CppUnit)
 
 # Test with the CppUnit library. The TestMain.cpp is not generated
-elements_add_unit_test(ClassExample_test4 tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
+elements_add_unit_test(OtherClassExampleWithMain tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
+                       EXECUTABLE OtherClassExampleWithMain_test
                        LINK_LIBRARIES ElementsExamples CppUnit)
 endif()
 
@@ -57,9 +61,10 @@ if(USE_ODB)
 #    ODB_WRAP_PGSQL_BOOST(ODB_SRCS ODB_HDRS tests/src/ODB/Source.h)
     if(ODB_SQLITE_LIBRARY)
       ODB_WRAP_SQLITE_BOOST(ODB_SRCS ODB_HDRS tests/src/ODB/Source.h)
-      elements_add_unit_test(test_ODB tests/src/ODB/*.cpp ${ODB_SRCS}
-                           LINK_LIBRARIES ODB
-                           INCLUDE_DIRS ODB tests/src/ODB)
+      elements_add_unit_test(ODB tests/src/ODB/*.cpp ${ODB_SRCS}
+                             EXECUTABLE test_ODB
+                             LINK_LIBRARIES ODB
+                             INCLUDE_DIRS ODB tests/src/ODB)
     endif()
   endif()
 endif()
@@ -73,9 +78,9 @@ elements_install_python_modules()
 elements_install_scripts()
 
 
-elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds)
-elements_add_test(ScriptThatFails COMMAND ScriptThatFails FAILS)
-elements_add_test(ScriptThatGivesOutput COMMAND ScriptThatGivesOutput PASSREGEX ".*good")
-elements_add_test(ScriptThatGivesError COMMAND ScriptThatGivesError FAILREGEX ".*bad" FAILS)
-elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError FAILREGEX ".*worse" FAILS)
+elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test)
+elements_add_test(ScriptThatFails COMMAND ScriptThatFails_test FAILS)
+elements_add_test(ScriptThatGivesOutput COMMAND ScriptThatGivesOutput_test PASSREGEX ".*good")
+elements_add_test(ScriptThatGivesError COMMAND ScriptThatGivesError_test FAILREGEX ".*bad" FAILS)
+elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError_test FAILREGEX ".*worse" FAILS)
 
