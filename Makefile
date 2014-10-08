@@ -72,7 +72,7 @@ purge:
 # delegate any target to the build directory (except 'purge')
 ifneq ($(MAKECMDGOALS),purge)
 %: $(BUILDDIR)/Makefile FORCE
-	$(MAKE) -C build.$(BINARY_TAG) $*
+	$(MAKE) -C $(BUILDDIR) $*
 endif
 
 # aliases
@@ -85,7 +85,7 @@ endif
 	@ # do not delegate further
 
 tests: all
-	-$(MAKE) -C build.$(BINARY_TAG) test
+	-$(MAKE) -C $(BUILDDIR) test
 
 # ensure that the target are always passed to the CMake Makefile
 FORCE:
@@ -103,4 +103,4 @@ $(BUILDDIR)/Makefile: | $(BUILDDIR)
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
-	
+
