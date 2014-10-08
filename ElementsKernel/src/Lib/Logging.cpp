@@ -28,7 +28,9 @@ Logging Logging::getLogger(const std::string& name) {
     log4cpp::OstreamAppender* consoleAppender = new log4cpp::OstreamAppender {"console", &std::cerr};
     consoleAppender->setLayout(getLogLayout().release());
     log4cpp::Category::getRoot().addAppender(consoleAppender);
-    log4cpp::Category::setRootPriority(log4cpp::Priority::INFO);
+    if (log4cpp::Category::getRoot().getPriority() == log4cpp::Priority::NOTSET) {
+      log4cpp::Category::setRootPriority(log4cpp::Priority::INFO);
+    }
   }
   return Logging {log4cpp::Category::getInstance(name)};
 }
