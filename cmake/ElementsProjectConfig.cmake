@@ -2091,6 +2091,20 @@ function(elements_install_headers)
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
 endfunction()
 
+function(add_python_nose_tests subdir)
+
+  if(NOT ${subdir})
+    set(subdir tests/python)
+  endif()
+
+
+  elements_add_test(PythonNose
+                    COMMAND nosetests ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
+
+endfunction()
+
+
+
 #-------------------------------------------------------------------------------
 # elements_install_python_modules()
 #
@@ -2136,6 +2150,9 @@ function(elements_install_python_modules)
     set_property(DIRECTORY APPEND PROPERTY has_python_modules ${modname})
   endforeach()
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
+    add_python_nose_tests(tests/python)
+  endif()
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
