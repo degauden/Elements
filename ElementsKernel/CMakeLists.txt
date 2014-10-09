@@ -59,5 +59,3 @@ endif()
 elements_install_python_modules()
 elements_install_scripts()
 
-elements_add_test(Python
-                  COMMAND nosetests ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
