@@ -90,6 +90,11 @@ include(CMakeParseArguments)
 
 find_package(PythonInterp)
 
+if(PYTHONINTERP_FOUND)
+  find_package(Nose)
+endif()
+
+
 #-------------------------------------------------------------------------------
 # elements_project(project version
 #               [USE proj1 vers1 [proj2 vers2 ...]]
@@ -2091,15 +2096,22 @@ function(elements_install_headers)
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
 endfunction()
 
-function(add_python_nose_tests subdir)
+function(add_python_test_dir subdir)
 
   if(NOT ${subdir})
     set(subdir tests/python)
   endif()
 
+  if(NOSE_FOUND)
+    elements_add_test(PythonNose
+                      COMMAND ${NOSE_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
+  else()
+    if(NOT PYTHON_VERSION_STRING VERSION_LESS "2.7")
+      elements_add_test(Python
+                        COMMAND ${PYTHON_EXECUTABLE} -m unittest discover -s ${CMAKE_CURRENT_SOURCE_DIR}/${subdir} -p "*.py" )
 
-  elements_add_test(PythonNose
-                    COMMAND nosetests ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
+    endif()
+  endif()
 
 endfunction()
 
@@ -2151,7 +2163,7 @@ function(elements_install_python_modules)
   endforeach()
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
-    add_python_nose_tests(tests/python)
+    add_python_test_dir(tests/python)
   endif()
 endfunction()
 
