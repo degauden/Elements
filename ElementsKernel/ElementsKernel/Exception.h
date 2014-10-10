@@ -57,7 +57,8 @@ public:
    * @param args The values to replace the format specifiers with
    */
   template <typename ...Args>
-  explicit Exception(const char* stringFormat, Args &&...args) {
+  explicit Exception(const char* stringFormat, Args &&...args)
+              : m_exit_code{ExitCodeHelper<Args...>{args...}.code} {
     size_t len = snprintf(NULL, 0, stringFormat, std::forward<Args>(args)...)+1;
     char* message = new char[len];
     snprintf(message, len, stringFormat, std::forward<Args>(args)...);
@@ -108,6 +109,39 @@ protected:
    */
   std::string m_error_msg {};
   const ExitCode m_exit_code {ExitCode::NOT_OK};
+  
+private:
+  
+  /// The following class keeps in its member variable 'code' the same ExitCode
+  /// given as the last parameter of its constructor, or ExitCode::NOT_OK if the
+  /// last argument of the constructor is not an ExitCode object.
+  template<typename... Args>
+  struct ExitCodeHelper{};
+  
+  // Specialization which handles the last argument
+  template<typename Last>
+  struct ExitCodeHelper<Last> {
+    ExitCodeHelper(const Last& last) : code{getCode(last)} {}
+    ExitCode code;
+  private:
+    // This method is used if the T is an ExitCode object
+    template<typename T, typename std::enable_if<std::is_same<T,ExitCode>::value>::type* = nullptr>
+    ExitCode getCode(const T& t) {
+      return t;
+    }
+    // This method is used when the T is not an ExitCode object
+    template<typename T, typename std::enable_if<!std::is_same<T,ExitCode>::value>::type* = nullptr>
+    ExitCode getCode(const T&) {
+      return ExitCode::NOT_OK;
+    }
+  };
+  
+  // Specialization which handles two or more arguments
+  template<typename First, typename... Rest>
+  struct ExitCodeHelper<First, Rest...> : ExitCodeHelper<Rest...> {
+    ExitCodeHelper(const First&, const Rest&... rest) : ExitCodeHelper<Rest...>(rest...) {}
+  };
+  
 };
 
 } // namespace Elements
