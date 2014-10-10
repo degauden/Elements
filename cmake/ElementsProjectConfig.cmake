@@ -90,6 +90,11 @@ include(CMakeParseArguments)
 
 find_package(PythonInterp)
 
+if(PYTHONINTERP_FOUND)
+  find_package(Nose)
+endif()
+
+
 #-------------------------------------------------------------------------------
 # elements_project(project version
 #               [USE proj1 vers1 [proj2 vers2 ...]]
@@ -275,6 +280,8 @@ macro(elements_project project version)
   find_program(rpmbuild_wrap_cmd rpmbuild_wrap.py HINTS ${binary_paths})
   set(rpmbuild_wrap_cmd ${PYTHON_EXECUTABLE} ${rpmbuild_wrap_cmd})
 
+  find_program(pythonprogramscript_cmd createPythonProgramScript.py HINTS ${binary_paths})
+  set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
 
   mark_as_advanced(env_cmd merge_cmd versheader_cmd boosttestmain_cmd cppunittestmain_cmd
                    zippythondir_cmd elementsrun_cmd
@@ -299,6 +306,7 @@ macro(elements_project project version)
   install(PROGRAMS cmake/scripts/StripPath.csh DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/StripPath.bat DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/ZipPythonDir.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/createPythonProgramScript.py DESTINATION scripts OPTIONAL)
 
   install(PROGRAMS cmake/scripts/env.py DESTINATION scripts OPTIONAL)
   install(DIRECTORY cmake/scripts/EnvConfig DESTINATION scripts
@@ -461,6 +469,7 @@ macro(elements_project project version)
   #   - build dirs
   set(project_build_environment ${project_build_environment}
       PREPEND PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+      PREPEND PATH ${CMAKE_BINARY_DIR}/scripts
       PREPEND LD_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python)
@@ -774,8 +783,17 @@ macro(_elements_use_other_projects)
     message(STATUS "Looking for projects")
   endif()
 
-  # this is neede because of the way variable expansion works in macros
+  # this is needed because of the way variable expansion works in macros
   set(ARGN_ ${ARGN})
+
+  # We initialize the other_dependee_list, which keeps who is the dependee of
+  # each entry of the ARGN_ list
+  list(LENGTH ARGN_ len)
+  math(EXPR len "${len}/2")
+  foreach(index RANGE 1 ${len})
+    list(APPEND other_dependee_list ${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_VERSION})
+  endforeach()
+
   while(ARGN_)
     list(LENGTH ARGN_ len)
     if(len LESS 2)
@@ -783,7 +801,10 @@ macro(_elements_use_other_projects)
     endif()
     list(GET ARGN_ 0 other_project)
     list(GET ARGN_ 1 other_project_version)
+    list(GET other_dependee_list 0 other_dependee)
+    list(GET other_dependee_list 1 other_dependee_version)
     list(REMOVE_AT ARGN_ 0 1)
+    list(REMOVE_AT other_dependee_list 0 1)
 
     if(NOT other_project_version MATCHES "^HEAD.*")
       string(REGEX MATCH "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+))?" _version ${other_project_version})
@@ -797,6 +818,35 @@ macro(_elements_use_other_projects)
     else()
       # "HEAD" is a special version id (mapped to v999r999).
       set(other_project_cmake_version 999.999)
+    endif()
+
+    # Manage the lists which contains the dependencies and the project which
+    # introduced them
+    if(${other_project}_FOUND)
+      # If the dependency is already handled check that the version numbers
+      # much, otherwise raise an error
+      string(COMPARE NOTEQUAL "${${other_project}_VERSION}" "${other_project_cmake_version}" ver_mismatch)
+      if(ver_mismatch)
+        list(FIND dependency_list "${other_project}" dep_index)
+        list(GET dependency_dependee_list ${dep_index} dep_name)
+        math(EXPR dep_index "${dep_index}+1")
+        list(GET dependency_dependee_list ${dep_index} dep_version)
+        set(ver_mis_message "Dependency version mismatch:")
+        set(ver_mis_message "${ver_mis_message} ${other_dependee} ${other_dependee_version}")
+        set(ver_mis_message "${ver_mis_message} -> ${other_project} ${other_project_cmake_version}")
+        set(ver_mis_message "${ver_mis_message} , ${dep_name} ${dep_version}")
+        set(ver_mis_message "${ver_mis_message} -> ${other_project} ${${other_project}_VERSION}")
+        if(ELEMENTS_DEPENDENCY_CHECK)
+          message(FATAL_ERROR ${ver_mis_message})
+        else()
+          message(WARNING ${ver_mis_message})
+        endif()
+      endif()
+    else()
+      # If the dependency is not handled yet populate the dependency lists
+      # (the handling happens right after)
+      list(APPEND dependency_list ${other_project} ${other_project_cmake_version})
+      list(APPEND dependency_dependee_list ${other_dependee} ${other_dependee_version})
     endif()
 
     if(NOT ${other_project}_FOUND)
@@ -865,7 +915,15 @@ macro(_elements_use_other_projects)
         # inclusion order in the environment XML.
         set(used_elements_projects ${other_project} ${used_elements_projects})
         if(${other_project}_USES)
+          # Add the project in the ARGN_ list
           list(INSERT ARGN_ 0 ${${other_project}_USES})
+          # Update the other_dependee_list to declare that the ARGN_ entries
+          # have been introduced for the other_project
+          list(LENGTH ${other_project}_USES len)
+          math(EXPR len "${len}/2")
+          foreach(index RANGE 1 ${len})
+            list(INSERT other_dependee_list 0 ${other_project} ${other_project_cmake_version})
+          endforeach()
         endif()
       else()
         message(FATAL_ERROR "Cannot find project ${other_project} ${other_project_version}")
@@ -1811,30 +1869,35 @@ endfunction()
 # prepends the value to the PATH-like variable.
 # The default TYPE is CppUnit and Boost can also be specified.
 #---------------------------------------------------------------------------------------------------
-function(elements_add_unit_test executable)
+function(elements_add_unit_test name)
   if(ELEMENTS_BUILD_TESTS)
 
-    CMAKE_PARSE_ARGUMENTS(${executable}_UNIT_TEST "" "TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT" ${ARGN})
+    CMAKE_PARSE_ARGUMENTS(${name}_UNIT_TEST "" "EXECUTABLE;TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT" ${ARGN})
 
-    elements_common_add_build(${${executable}_UNIT_TEST_UNPARSED_ARGUMENTS})
+    elements_common_add_build(${${name}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
-    if(NOT ${executable}_UNIT_TEST_TYPE)
-      set(${executable}_UNIT_TEST_TYPE None)
+    if(NOT ${name}_UNIT_TEST_TYPE)
+      set(${name}_UNIT_TEST_TYPE None)
     endif()
 
-    if(NOT ${executable}_UNIT_TEST_WORKING_DIRECTORY)
-      set(${executable}_UNIT_TEST_WORKING_DIRECTORY .)
+    if(NOT ${name}_UNIT_TEST_WORKING_DIRECTORY)
+      set(${name}_UNIT_TEST_WORKING_DIRECTORY .)
     endif()
 
+    if(NOT ${name}_UNIT_TEST_EXECUTABLE)
+      set(${name}_UNIT_TEST_EXECUTABLE ${name})
+    endif()
+
+    set(executable ${${name}_UNIT_TEST_EXECUTABLE})
 
     elements_get_package_name(package)
 
 
-    if(NOT ${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
-      if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
+    if(NOT ${${name}_UNIT_TEST_TYPE} STREQUAL "None")
+      if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
         find_package(Boost COMPONENTS unit_test_framework REQUIRED)
       else()
-        find_package(${${executable}_UNIT_TEST_TYPE} QUIET REQUIRED)
+        find_package(${${name}_UNIT_TEST_TYPE} QUIET REQUIRED)
       endif()
       if (NOT TARGET ${package}_tests_dir)
         add_custom_target(${package}_tests_dir
@@ -1844,7 +1907,7 @@ function(elements_add_unit_test executable)
     endif()
 
 
-    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "Boost")
+    if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
       set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/BoostTestMain.cpp)
       add_custom_command (
                           OUTPUT ${testmain_file}
@@ -1855,7 +1918,7 @@ function(elements_add_unit_test executable)
       set(srcs ${srcs} ${testmain_file})
     endif()
 
-    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "CppUnit")
+    if (${${name}_UNIT_TEST_TYPE} STREQUAL "CppUnit")
       set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/CppUnitTestMain.cpp)
       add_custom_command (
                           OUTPUT ${testmain_file}
@@ -1867,14 +1930,14 @@ function(elements_add_unit_test executable)
     endif()
 
 
-    if (${${executable}_UNIT_TEST_TYPE} STREQUAL "None")
+    if (${${name}_UNIT_TEST_TYPE} STREQUAL "None")
       elements_add_executable(${executable} ${srcs}
                               LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
                               INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
     else()
       elements_add_executable(${executable} ${srcs}
-                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${executable}_UNIT_TEST_TYPE}
-                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${executable}_UNIT_TEST_TYPE})
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE}
+                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_UNIT_TEST_TYPE})
     endif()
 
 
@@ -1883,7 +1946,7 @@ function(elements_add_unit_test executable)
       set(exec_suffix)
     endif()
 
-    foreach(var ${${executable}_UNIT_TEST_ENVIRONMENT})
+    foreach(var ${${name}_UNIT_TEST_ENVIRONMENT})
       string(FIND ${var} "+=" is_prepend)
       if(NOT is_prepend LESS 0)
         # the argument contains +=
@@ -1894,13 +1957,13 @@ function(elements_add_unit_test executable)
       endif()
     endforeach()
 
-    add_test(NAME ${package}.${executable}
-             WORKING_DIRECTORY ${${executable}_UNIT_TEST_WORKING_DIRECTORY}
+    add_test(NAME ${package}.${name}
+             WORKING_DIRECTORY ${${name}_UNIT_TEST_WORKING_DIRECTORY}
              COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
              ${executable}${exec_suffix})
 
-    if(${executable}_UNIT_TEST_TIMEOUT)
-      set_property(TEST ${package}.${executable} PROPERTY TIMEOUT ${${executable}_UNIT_TEST_TIMEOUT})
+    if(${name}_UNIT_TEST_TIMEOUT)
+      set_property(TEST ${package}.${name} PROPERTY TIMEOUT ${${name}_UNIT_TEST_TIMEOUT})
     endif()
 
   endif()
@@ -2033,6 +2096,27 @@ function(elements_install_headers)
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
 endfunction()
 
+function(add_python_test_dir subdir)
+
+  if(NOT ${subdir})
+    set(subdir tests/python)
+  endif()
+
+  if(NOSE_FOUND)
+    elements_add_test(PythonNose
+                      COMMAND ${NOSE_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
+  else()
+    if(NOT PYTHON_VERSION_STRING VERSION_LESS "2.7")
+      elements_add_test(Python
+                        COMMAND ${PYTHON_EXECUTABLE} -m unittest discover -s ${CMAKE_CURRENT_SOURCE_DIR}/${subdir} -p "*.py" )
+
+    endif()
+  endif()
+
+endfunction()
+
+
+
 #-------------------------------------------------------------------------------
 # elements_install_python_modules()
 #
@@ -2078,6 +2162,9 @@ function(elements_install_python_modules)
     set_property(DIRECTORY APPEND PROPERTY has_python_modules ${modname})
   endforeach()
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
+    add_python_test_dir(tests/python)
+  endif()
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -2721,4 +2808,26 @@ function(elements_generate_project_manifest filename project version)
   get_filename_component(fn ${filename} NAME)
   message(STATUS "Generating ${fn}")
   file(WRITE ${filename} "${data}")
+endfunction()
+
+
+function(elements_add_python_program executable module)
+  # Make the scripts directory in the build directory if it does not exist
+  if(NOT EXISTS ${CMAKE_BINARY_DIR}/scripts)
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/scripts)
+  endif()
+  # Get the name of the file to create
+  set(executable_file ${CMAKE_BINARY_DIR}/scripts/${executable})
+
+  string(REPLACE "." "/" program_file ${module})
+  set(program_file python/${program_file}.py)
+
+  add_custom_command(OUTPUT ${executable_file}
+                     COMMAND ${pythonprogramscript_cmd} --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable}
+                     DEPENDS ${program_file})
+
+  string(REPLACE "." "_" python_program_target ${module})
+  add_custom_target(${python_program_target} ALL DEPENDS ${executable_file})
+
+  install(PROGRAMS ${executable_file} DESTINATION scripts)
 endfunction()
