@@ -19,6 +19,7 @@ namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
+#include "ElementsKernel/Exit.h"
 #include "ElementsKernel/PathSearch.h"
 
 #include "ElementsKernel/Program.h"
@@ -42,7 +43,7 @@ const fs::path ProgramWithConfFile::getDefaultConfigFile(const
   if (configFile.size() == 0) {
     stringstream error_buffer;
         error_buffer << "No config file " << conf_name.string() << " in " << CONF_ENV_VAR_NAME << "\n";
-        throw Exception(error_buffer.str());
+        throw Exception(error_buffer.str(), ExitCode::CONFIG);
   }
   return configFile.at(0);
 }
@@ -132,7 +133,7 @@ const po::variables_map ProgramWithConfFile::getProgramOptions(
   if (!ifs) {
     stringstream error_buffer;
     error_buffer << "Cannot open configuration file: " << config_file << "\n";
-    throw Exception(error_buffer.str());
+    throw Exception(error_buffer.str(), ExitCode::CONFIG);
   } else {
     /*
      * Parse the configuration file and put option values into the variable map only
@@ -226,7 +227,7 @@ void ProgramWithConfFile::logAllOptions(string program_name) {
 }
 
 // Get the program options and setup logging
-void ProgramWithConfFile::setup(int argc, char* argv[]) noexcept {
+void ProgramWithConfFile::setup(int argc, char* argv[]) {
 
   // store the program name and path in class variable
   m_program_name = setProgramName(argv[0]);
@@ -240,13 +241,13 @@ void ProgramWithConfFile::setup(int argc, char* argv[]) noexcept {
   if (m_variables_map.count("log-level")) {
     logging_level = (Logging::Level) m_variables_map["log-level"].as<int>();
   } else {
-     throw Exception("Required option log-level is not provided!");
+     throw Exception("Required option log-level is not provided!", ExitCode::CONFIG);
   }
   fs::path log_file_name;
   if (m_variables_map.count("log-file")) {
     log_file_name = m_variables_map["log-file"].as<fs::path>();
   } else {
-     throw Exception("Required option log-file is not provided!");
+     throw Exception("Required option log-file is not provided!", ExitCode::CONFIG);
   }
 
 
@@ -261,7 +262,7 @@ void ProgramWithConfFile::setup(int argc, char* argv[]) noexcept {
 // This is the method call from the main which does everything
 ExitCode ProgramWithConfFile::run(int argc, char* argv[]) {
 
-  ExitCode exit_code {ExitCode::OK};
+  ExitCode exit_code {ExitCode::NOT_OK};
 
   setup(argc, argv);
 
@@ -269,16 +270,20 @@ ExitCode ProgramWithConfFile::run(int argc, char* argv[]) {
 
   try {
     exit_code = mainMethod();
+  } catch (const Exception & ee) {
+    logger.fatal("# ");
+    logger.fatal("# Elements Exception : %s ", ee.what());
+    logger.fatal("# ");
+    exit_code = ee.exitCode();
   } catch (const exception & e) {
     logger.fatal("# ");
-    logger.fatal("# Exception : %s ", e.what());
+    logger.fatal("# Standard Exception : %s ", e.what());
     logger.fatal("# ");
   } catch (...) {
     logger.fatal("# ");
     logger.fatal(
         "# An exception of unknown type occured, i.e., an exception not deriving from std::exception ");
     logger.fatal("# ");
-    exit_code = ExitCode::NOT_OK;
   }
 
   return exit_code ;

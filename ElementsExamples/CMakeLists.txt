@@ -18,7 +18,11 @@ elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExampl
                   INCLUDE_DIRS Boost ElementsExamples
                   PUBLIC_HEADERS ElementsExamples)
 
-#===== Pyhton programs =========================================================
+elements_add_executable(ElementsSimpleProgramExample src/Program/SimpleProgramExample.cpp
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} ElementsKernel
+                  INCLUDE_DIRS ElementsKernel)
+
+#===== Python programs =========================================================
 elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramExample)
 
 #===== Boost tests =============================================================

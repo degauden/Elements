@@ -14,6 +14,8 @@
 #include <utility>
 #include <exception>
 
+#include "ElementsKernel/Exit.h"
+
 namespace Elements {
 
 class Exception: public std::exception {
@@ -21,7 +23,9 @@ public:
   /**
    * Default constructor. The message is set  to the empty string.
    */
-  Exception() = default;
+  Exception(ExitCode e=ExitCode::NOT_OK) :
+    m_exit_code{e} {
+  }
 
   /** Constructor (C strings).
    *  @param message C-style string error message.
@@ -29,15 +33,15 @@ public:
    *                 Hence, responsibility for deleting the char* lies
    *                 with the caller.
    */
-  explicit Exception(const char* message) :
-      m_error_msg(message) {
+  explicit Exception(const char* message, ExitCode e=ExitCode::NOT_OK) :
+      m_error_msg(message),  m_exit_code{e} {
   }
 
   /** Constructor (C++ STL strings).
    *  @param message The error message.
    */
-  explicit Exception(const std::string& message) :
-      m_error_msg(message) {
+  explicit Exception(const std::string& message, ExitCode e=ExitCode::NOT_OK) :
+      m_error_msg(message), m_exit_code{e} {
   }
 
   /**
@@ -69,6 +73,10 @@ public:
     return m_error_msg.c_str();
   }
 
+  ExitCode exitCode() const noexcept {
+    return m_exit_code;
+  }
+
   /**
    * @brief Appends in the end of the exception message the parameter
    * @details
@@ -89,6 +97,7 @@ protected:
   /** Error message.
    */
   std::string m_error_msg {};
+  const ExitCode m_exit_code {ExitCode::NOT_OK};
 };
 
 } // namespace Elements
