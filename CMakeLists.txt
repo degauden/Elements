@@ -16,5 +16,8 @@ find_package(ElementsProject)
 elements_project(Elements 3.1 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
 # This test does not really fit in a subdirectory.
-elements_add_test(cmake.EnvConfig
-                  COMMAND nosetests ${CMAKE_SOURCE_DIR}/cmake/scripts/EnvConfig)
+
+if(NOSE_FOUND)
+  elements_add_test(cmake.EnvConfig
+                    COMMAND ${NOSE_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/scripts/EnvConfig)
+endif()
