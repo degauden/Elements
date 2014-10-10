@@ -1,5 +1,5 @@
 /**
- * @file ElementsLogging.cpp
+ * @file Logging.cpp
  * @date January 13, 2014
  * @author Nikolaos Apostolakos
  */

@@ -22,6 +22,8 @@ class Exception: public std::exception {
 public:
   /**
    * Default constructor. The message is set  to the empty string.
+   * @param e: this is an optional exit code. By default is is set
+   *           to NOT_OK.
    */
   Exception(ExitCode e=ExitCode::NOT_OK) :
     m_exit_code{e} {
@@ -32,6 +34,8 @@ public:
    *                 The string contents are copied upon construction.
    *                 Hence, responsibility for deleting the char* lies
    *                 with the caller.
+   *  @param e: this is an optional exit code. By default is is set
+   *            to NOT_OK.
    */
   explicit Exception(const char* message, ExitCode e=ExitCode::NOT_OK) :
       m_error_msg(message),  m_exit_code{e} {
@@ -39,6 +43,8 @@ public:
 
   /** Constructor (C++ STL strings).
    *  @param message The error message.
+   *  @param e: this is an optional exit code. By default is is set
+   *            to NOT_OK.
    */
   explicit Exception(const std::string& message, ExitCode e=ExitCode::NOT_OK) :
       m_error_msg(message), m_exit_code{e} {
@@ -73,6 +79,10 @@ public:
     return m_error_msg.c_str();
   }
 
+  /** Return the exit code of the Exception
+   *
+   * @return the exit code
+   */
   ExitCode exitCode() const noexcept {
     return m_exit_code;
   }
