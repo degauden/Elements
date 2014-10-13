@@ -2830,4 +2830,5 @@ function(elements_add_python_program executable module)
   add_custom_target(${python_program_target} ALL DEPENDS ${executable_file})
 
   install(PROGRAMS ${executable_file} DESTINATION scripts)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()
