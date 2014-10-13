@@ -1,5 +1,5 @@
 /**
- * @file ElementsProgram.cpp
+ * @file Program.cpp
  *
  * Created on: Aug 7, 2013
  *     Author: Pierre Dubath
@@ -276,6 +276,8 @@ ExitCode ProgramWithConfFile::run(int argc, char* argv[]) {
     logger.fatal() << "# ";
     exit_code = ee.exitCode();
   } catch (const exception & e) {
+    /// @todo : set the exit code according to the type of exception
+    ///         if a clear match is found.
     logger.fatal() << "# ";
     logger.fatal() << "# Standard Exception : " << e.what() ;
     logger.fatal() << "# ";
