@@ -271,19 +271,19 @@ ExitCode ProgramWithConfFile::run(int argc, char* argv[]) {
   try {
     exit_code = mainMethod();
   } catch (const Exception & ee) {
-    logger.fatal("# ");
-    logger.fatal("# Elements Exception : %s ", ee.what());
-    logger.fatal("# ");
+    logger.fatal() << "# " ;
+    logger.fatal() << "# Elements Exception : " << ee.what();
+    logger.fatal() << "# ";
     exit_code = ee.exitCode();
   } catch (const exception & e) {
-    logger.fatal("# ");
-    logger.fatal("# Standard Exception : %s ", e.what());
-    logger.fatal("# ");
+    logger.fatal() << "# ";
+    logger.fatal() << "# Standard Exception : " << e.what() ;
+    logger.fatal() << "# ";
   } catch (...) {
-    logger.fatal("# ");
-    logger.fatal(
-        "# An exception of unknown type occured, i.e., an exception not deriving from std::exception ");
-    logger.fatal("# ");
+    logger.fatal() << "# ";
+    logger.fatal() << "# An exception of unknown type occured, "
+                   << "i.e., an exception not deriving from std::exception ";
+    logger.fatal() << "# ";
   }
 
   return exit_code ;
