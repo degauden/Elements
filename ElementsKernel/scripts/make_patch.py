@@ -10,7 +10,8 @@ import logging
 
 def command(cmd, *args, **kwargs):
     """
-    Simple wrapper to execute a command and return standard output and standard error.
+    Simple wrapper to execute a command and return standard output and standard
+    error.
     """
     d = {"stdout": PIPE, "stderr": PIPE}
     d.update(kwargs)
@@ -199,7 +200,8 @@ def main():
         opts.exclusions.append(os.environ["CMTCONFIG"])
 
     # check if we are in the cmt directory before broadcasting
-    if not (os.path.basename(os.getcwd()) == "cmt" and os.path.exists("requirements")):
+    if not (os.path.basename(os.getcwd()) == "cmt" 
+            and os.path.exists("requirements")):
         logging.error(
             "This script must be executed from the cmt directory of a package.")
         return 1
