@@ -1,3 +1,8 @@
+##
+# @file ElementsKernel/Logging.py
+#
+
+
 import logging
 
 # Check we are running for the first time. If we are we need to change a bit the
