@@ -604,7 +604,8 @@ inline StreamBuffer::SwapAction StreamBuffer::swapBuffer(int siz) const {
 
 /// Swap bytes from a source buffer to the stream buffer with arbitray size
 inline void StreamBuffer::swapToBuffer(const void* source, int siz) {
-  char buff[8], *tar, *src = (char*) source;
+  char *tar, *src = (char*) source;
+  char buff[8] = "";
   extend(m_pointer + siz);
   tar = (char*) m_buffer + m_pointer;
   switch (swapBuffer(siz)) {
