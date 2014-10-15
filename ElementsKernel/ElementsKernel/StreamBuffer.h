@@ -11,7 +11,9 @@
 #include <typeinfo>
 
 #include "ElementsKernel/Kernel.h" // ELEMENTS_API
-#include "ElementsKernel/swab.h"
+#include <unistd.h>
+
+
 
 // forward declarations
 class StreamBuffer;
@@ -613,7 +615,7 @@ inline void StreamBuffer::swapToBuffer(const void* source, int siz) {
 #ifdef __APPLE__
     for(int i = 0,j = siz-1;i<siz;i++,j--) tar[j] = src[i];
 #else
-    ::_swab (src, buff, siz);
+    ::swab (src, buff, siz);
 #endif
     src = buff;
     /* no break */
@@ -636,7 +638,7 @@ inline void StreamBuffer::swapFromBuffer(void* target, int siz) {
 #ifdef __APPLE__
     for(int i = 0,j = siz-1;i<siz;i++,j--) tar[j] = src[i];
 #else
-    ::_swab (src, tar, siz);
+    ::swab (src, tar, siz);
 #endif
     break;
   case NOSWAP:
