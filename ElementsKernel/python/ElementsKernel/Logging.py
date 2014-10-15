@@ -35,7 +35,7 @@ def setLevel(level):
 
 def setLogFile(filename):
     # If we already have a file appenders remove them
-    for h in [h for h in logging.getLogger().handlers if h.get_name() == 'file']:
+    for h in [hl for hl in logging.getLogger().handlers if hl.get_name() == 'file']:
         logging.getLogger().removeHandler(h)
         h.close()
     # Add the new file handler
