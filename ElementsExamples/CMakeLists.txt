@@ -58,21 +58,6 @@ elements_add_unit_test(OtherClassExampleWithMain tests/src/CppUnit/ClassExample_
 endif()
 
 
-if(USE_ODB)
-  find_package(ODB)
-  if(ODB_FOUND)
-#  if(ODB_PGSQL_LIBRARY)
-#    ODB_WRAP_PGSQL_BOOST(ODB_SRCS ODB_HDRS tests/src/ODB/Source.h)
-    if(ODB_SQLITE_LIBRARY)
-      ODB_WRAP_SQLITE_BOOST(ODB_SRCS ODB_HDRS tests/src/ODB/Source.h)
-      elements_add_unit_test(ODB tests/src/ODB/*.cpp ${ODB_SRCS}
-                             EXECUTABLE test_ODB
-                             LINK_LIBRARIES ODB
-                             INCLUDE_DIRS ODB tests/src/ODB)
-    endif()
-  endif()
-endif()
-
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
 elements_install_conf_files()
