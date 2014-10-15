@@ -2102,9 +2102,11 @@ function(add_python_test_dir subdir)
     set(subdir tests/python)
   endif()
 
+  elements_expand_sources(pysrcs ${CMAKE_CURRENT_SOURCE_DIR}/${subdir}/*.py)
+
   if(NOSE_FOUND)
     elements_add_test(PythonNose
-                      COMMAND ${NOSE_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
+                      COMMAND ${NOSE_EXECUTABLE} ${pysrcs})
   else()
     if(NOT PYTHON_VERSION_STRING VERSION_LESS "2.7")
       elements_add_test(Python
