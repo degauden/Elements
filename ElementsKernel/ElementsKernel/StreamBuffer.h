@@ -11,7 +11,9 @@
 #include <typeinfo>
 
 #include "ElementsKernel/Kernel.h" // ELEMENTS_API
-#include "ElementsKernel/swab.h"
+#include <unistd.h>
+
+
 
 // forward declarations
 class StreamBuffer;
@@ -602,7 +604,8 @@ inline StreamBuffer::SwapAction StreamBuffer::swapBuffer(int siz) const {
 
 /// Swap bytes from a source buffer to the stream buffer with arbitray size
 inline void StreamBuffer::swapToBuffer(const void* source, int siz) {
-  char buff[8], *tar, *src = (char*) source;
+  char *tar, *src = (char*) source;
+  char buff[8] = "";
   extend(m_pointer + siz);
   tar = (char*) m_buffer + m_pointer;
   switch (swapBuffer(siz)) {
@@ -613,7 +616,7 @@ inline void StreamBuffer::swapToBuffer(const void* source, int siz) {
 #ifdef __APPLE__
     for(int i = 0,j = siz-1;i<siz;i++,j--) tar[j] = src[i];
 #else
-    ::_swab (src, buff, siz);
+    ::swab (src, buff, siz);
 #endif
     src = buff;
     /* no break */
@@ -636,7 +639,7 @@ inline void StreamBuffer::swapFromBuffer(void* target, int siz) {
 #ifdef __APPLE__
     for(int i = 0,j = siz-1;i<siz;i++,j--) tar[j] = src[i];
 #else
-    ::_swab (src, tar, siz);
+    ::swab (src, tar, siz);
 #endif
     break;
   case NOSWAP:
