@@ -1,8 +1,9 @@
-# File: AthenaCommon/share/SystemOfUnits.py
-# Author: Wim Lavrijsen (LBNL, WLavrijsen@lbl.gov)
-# Created: 01/21/04
-# Last: 01/21/04
-
+## 
+# @file: ElementsKernel/SystemOfUnits.py
+# @author: Wim Lavrijsen (LBNL, WLavrijsen@lbl.gov)
+# @author: Hubert Degaudenzi (ISDC -- Hubert.Degaudenzi@unige.ch)
+# @date: 01/21/04
+#
 # This script is a direct adaptation of CLHEP/Units/SystemOfUnits.h
 # and the following is the originial CLHEP comment:
 #
@@ -32,18 +33,7 @@
 # The others physical constants are defined in the header file :
 #                       PhysicalConstants.h
 #
-# Authors: M.Maire, S.Giani
-#
-# History:
-#
-# 06.02.96   Created.
-# 28.03.96   Added miscellaneous constants.
-# 05.12.97   E.Tcherniaev: Redefined pascal (to avoid warnings on WinNT)
-# 20.05.98   names: meter, second, gram, radian, degree
-#            (from Brian.Lasiuk@yale.edu (STAR)). Added luminous units.
-# 05.08.98   angstrom, picobarn, microsecond, picosecond, petaelectronvolt
-# 01.03.01   parsec
-# -----
+
 
 #
 # Length [L]
