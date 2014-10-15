@@ -12,7 +12,7 @@ def defineSpecificProgramOptions():
 
 
 def mainMethod(args):
-    logger = log.getLogger('PyhtonProgramExample')
+    logger = log.getLogger('PythonProgramExample')
     
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the PythonProgramExample ')
@@ -23,11 +23,11 @@ def mainMethod(args):
         logger.info('# Adding the values of the int list')
         if not args.int_list:
             raise Exception('--int-list parameter missing')
-        sum = 0
+        arg_sum = 0
         for i in args.int_list:
             logger.debug('Adding %d', i)
-            sum += i
-        logger.info('Sum = %d', sum)
+            arg_sum += i
+        logger.info('Sum = %d', arg_sum)
     except Exception as e:
         logger.error('Something went wrong...')
         logger.exception(e)
