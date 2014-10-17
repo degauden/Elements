@@ -6,11 +6,10 @@
 #ifndef SEARCHPATH_H_
 #define SEARCHPATH_H_
 
-#include <string>
-#include <vector>
 #include <boost/filesystem.hpp>
-#include <boost/regex.hpp>
+
 #include "ElementsKernel/Export.h" // ELEMENTS_API
+
 
 namespace Elements {
 

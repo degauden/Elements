@@ -12,39 +12,32 @@
 //	Changes    :
 //====================================================================
 #define SYSTEM_SYSTEM_CPP
-#include <ctime>
-#include <cstring>
-#include <cstdlib>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <typeinfo>
 
 #include "ElementsKernel/System.h"
+
+#include <cstdlib>                      // for free, getenv, malloc, etc
+#include <typeinfo>                     // for type_info
+#include <sstream>
+#include <iomanip>
+
+
+#include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
+#include <errno.h>                      // for errno
+#include <execinfo.h>                   // for backtrace
+#include <string.h>                     // for strlen
+#include <unistd.h>                     // for environ
+#include <cxxabi.h>
+#include <sys/utsname.h>
+
+#include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
 
 using namespace std;
 
 static const char* SHLIB_SUFFIX = ".so";
-#include <errno.h>
-#include <string.h>
-#include <sys/times.h>
-#include <unistd.h>
-#include <libgen.h>
-#include <cstdio>
-#include <cxxabi.h>
-#include <dlfcn.h>
-#include <sys/utsname.h>
-#include <unistd.h>
 
 
 // Note: __attribute__ is a GCC keyword available since GCC 3.4
-#ifdef __GNUC__
-#  if __GNUC__ < 3 || \
-      (__GNUC__ == 3 && (__GNUC_MINOR__ < 4 ))
-// GCC < 3.4
-#    define __attribute__(x)
-#  endif
-#else
+#ifndef __GNUC__
 // non-GCC
 #  define __attribute__(x)
 #endif
@@ -124,11 +117,7 @@ unsigned long Elements::System::unloadDynamicLib(ImageHandle handle)    {
 /// Get a specific function defined in the DLL
 unsigned long Elements::System::getProcedureByName(ImageHandle handle, const string& name, EntryPoint* pFunction)    {
 #if defined(__linux)
-#if __GNUC__ < 4
-  *pFunction = (EntryPoint)::dlsym(handle, name.c_str());
-#else
   *pFunction = FuncPtrCast<EntryPoint>(::dlsym(handle, name.c_str()));
-#endif
   if ( 0 == *pFunction )    {
     errno = 0xAFFEDEAD;
    // cout << "Elements::System::getProcedureByName>" << getLastErrorString() << endl;

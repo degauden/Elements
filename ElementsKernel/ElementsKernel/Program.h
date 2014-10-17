@@ -12,8 +12,8 @@
 #include <boost/program_options.hpp>
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
-
 #include "ElementsKernel/Main.h"
+
 
 namespace Elements {
 
@@ -96,9 +96,7 @@ protected:
    * @return
    *   The program path
    */
-  const boost::filesystem::path& getProgramPath() const {
-    return m_program_path;
-  }
+  const boost::filesystem::path& getProgramPath() const ;
 
    /**
     * @brief Getter
@@ -106,9 +104,7 @@ protected:
     * @return
     *   The program name
     */
-  const boost::filesystem::path& getProgramName() const {
-    return m_program_name;
-  }
+  const boost::filesystem::path& getProgramName() const ;
 
   /**
    * @brief Getter
@@ -116,9 +112,7 @@ protected:
    * @return
    *   The BOOST variables_map which includes all program options.
    */
-  const boost::program_options::variables_map& getVariablesMap() const {
-    return m_variables_map;
-  }
+  const boost::program_options::variables_map& getVariablesMap() const ;
 
 private:
 
