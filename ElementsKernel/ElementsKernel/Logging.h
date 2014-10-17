@@ -7,10 +7,9 @@
 #ifndef ELEMENTSLOGGING_H
 #define	ELEMENTSLOGGING_H
 
-#include <string>
-#include <sstream>
 #include <boost/filesystem.hpp>
 #include <log4cpp/Category.hh>
+
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
 namespace Elements {

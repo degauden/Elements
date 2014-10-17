@@ -4,13 +4,24 @@
  * @author Nikolaos Apostolakos
  */
 
-#include <sstream>
-#include <memory>
-#include <log4cpp/OstreamAppender.hh>
-#include <log4cpp/FileAppender.hh>
-#include <log4cpp/PatternLayout.hh>
-#include "ElementsKernel/Exception.h"
-#include "ElementsKernel/Logging.h"
+#include "ElementsKernel/Logging.h"     // for Logging, etc
+
+
+#include <cstddef>                      // for NULL
+#include <iostream>                     // for operator<<, stringstream, etc
+#include <boost/filesystem.hpp>
+#include <log4cpp/Category.hh>          // for Category
+#include <log4cpp/FileAppender.hh>      // for FileAppender
+#include <log4cpp/Layout.hh>            // for Layout
+#include <log4cpp/OstreamAppender.hh>   // for OstreamAppender
+#include <log4cpp/PatternLayout.hh>     // for PatternLayout
+#include <log4cpp/Priority.hh>          // for Priority, Priority::::INFO, etc
+#include <memory>                       // for unique_ptr
+#include <string>                       // for char_traits, string
+
+#include "ElementsKernel/Exception.h"   // for Exception
+
+
 
 namespace Elements {
 
