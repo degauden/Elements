@@ -1,15 +1,14 @@
 #ifndef ELEMENTSKERNEL_SYSTEM_H
 #define ELEMENTSKERNEL_SYSTEM_H
 
-// Framework include files
-#include "ElementsKernel/Export.h" // ELEMENTS_API
 // STL include files
-#include <string>
 #include <vector>
 #include <typeinfo>
+#include <string>
 
-#include "ElementsKernel/Timing.h"
-#include "ElementsKernel/ModuleInfo.h"
+// Framework include files
+#include "ElementsKernel/Export.h" // ELEMENTS_API
+
 
 #ifdef __linux
 # include <pthread.h>

@@ -4,12 +4,21 @@
  * Created on: Dec 4, 2013
  *     Author: Pierre Dubath
  */
-#include <iostream>
-#include <sstream>
-#include <boost/algorithm/string.hpp>
 
-#include "ElementsKernel/PathSearch.h"
-#include "ElementsKernel/Exception.h"
+#include "ElementsKernel/PathSearch.h"  // for SearchType, etc
+
+#include <cstdlib>                      // for getenv
+#include <ostream>                      // for operator<<, basic_ostream, etc
+#include <string>                       // for string, char_traits
+#include <vector>                       // for vector
+
+
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
+
+#include "ElementsKernel/Exception.h"   // for Exception
+
+
 
 namespace fs = boost::filesystem;
 using namespace std;

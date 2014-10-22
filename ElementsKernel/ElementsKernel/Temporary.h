@@ -8,11 +8,11 @@
 #ifndef ELEMENTSKERNEL_TEMPORARY_H_
 #define ELEMENTSKERNEL_TEMPORARY_H_
 
-#include <string>
 
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
+
 
 namespace Elements {
 

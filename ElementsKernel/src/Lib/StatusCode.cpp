@@ -1,13 +1,14 @@
 #define ELEMENTSKERNEL_STATUSCODE_CPP 1
 
 #include "ElementsKernel/StatusCode.h"
-#include "ElementsKernel/System.h"
-#include "ElementsKernel/Likely.h"
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <cstdlib>
-#include <exception>
+
+#include <exception>                    // for uncaught_exception
+#include <iostream>                     // for cout
+#include <string>                       // for operator<<, string
+
+#include "ElementsKernel/Likely.h"      // for UNLIKELY
+#include "ElementsKernel/System.h"      // for backTrace, getStackLevel
+
 
 using namespace std;
 
