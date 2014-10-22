@@ -13,17 +13,21 @@
 //====================================================================
 #define ELEMENTSKERNEL_MEMORY_CPP
 
-#include <cerrno>
-#include <cstring>
-#include <sys/times.h>
-#include <unistd.h>
-#include <libgen.h>
-#include <cstdio>
+//#include <cerrno>
+//#include <cstring>
+//#include <sys/times.h>
+//#include <unistd.h>
+//#include <libgen.h>
+//#include <cstdio>
 
-// Framework include files
-#include <climits>
-#include "ElementsKernel/Memory.h"
-#include "ProcessDescriptor.h"
+//#include <climits>
+
+#include "ElementsKernel/Memory.h"      // for MemoryUnit, etc
+
+#include <unistd.h>                     // for getpid
+
+#include "ElementsKernel/SystemBase.h"  // for InfoType, InfoType::NoFetch, etc
+#include "ProcessDescriptor.h"          // for getProcess, etc
 
 /// Convert requested memory value from kByte to requested value
 long Elements::System::adjustMemory( MemoryUnit unit, long value )    {

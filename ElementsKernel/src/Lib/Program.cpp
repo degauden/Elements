@@ -27,6 +27,21 @@ namespace fs = boost::filesystem;
 using namespace std;
 
 namespace Elements {
+
+const boost::filesystem::path& ProgramWithConfFile::getProgramPath() const {
+  return m_program_path;
+}
+
+const boost::filesystem::path& ProgramWithConfFile::getProgramName() const {
+  return m_program_name;
+}
+
+
+const boost::program_options::variables_map& ProgramWithConfFile::getVariablesMap() const {
+  return m_variables_map;
+}
+
+
 /**
  * @brief Get default config file
  * @todo write a more elaborate version of this taking into account
