@@ -17,7 +17,4 @@ elements_project(Elements 3.2 DESCRIPTION "A C++ base framework for the Euclid S
 
 # This test does not really fit in a subdirectory.
 
-if(NOSE_FOUND)
-  elements_add_test(cmake.EnvConfig
-                    COMMAND ${NOSE_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/scripts/EnvConfig)
-endif()
+add_python_test_dir(cmake/scripts/EnvConfig PREFIX cmake.EnvConfig PATTERN "Test*.py")
