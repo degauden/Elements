@@ -25,6 +25,7 @@
 #include "ElementsKernel/NoGlibDebug.h"
 
 // System includes
+#include <map>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -119,7 +120,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  Elements::ExitCode mainMethod() {
+  Elements::ExitCode mainMethod(map<std::string, po::variable_value>& args) {
 
     // Get logger and log the entry into the mainMethod
     Elements::Logging logger = Elements::Logging::getLogger("ElementsProgramExample");
@@ -129,18 +130,15 @@ public:
         "#  Logging from the mainMethod() of the ElementsProgramExample ");
     logger.info("#");
 
-    // Get the map with all program options
-    const po::variables_map variables_map = this->getVariablesMap();
-
-    // Retrieve values from the po::variables_map
+    // Retrieve values from the argumen
     // cppcheck-suppress unreadVariable
-    string string_value = variables_map["string-value"].as<string>();
-    int64_t long_long_value = variables_map["long-long-value"].as<int64_t>();
-    double double_value = variables_map["double-value"].as<double>();
+    string string_value = args["string-value"].as<string>();
+    int64_t long_long_value = args["long-long-value"].as<int64_t>();
+    double double_value = args["double-value"].as<double>();
     // cppcheck-suppress unreadVariable
-    vector<int> int_vector = variables_map["int-vector"].as<vector<int>>();
+    vector<int> int_vector = args["int-vector"].as<vector<int>>();
     // cppcheck-suppress unreadVariable
-    vector<string> string_vector = variables_map["string-vector"].as<vector<string>>();
+    vector<string> string_vector = args["string-vector"].as<vector<string>>();
 
     // creating an instance of ClassExample for later use
     int64_t source_id = long_long_value;
