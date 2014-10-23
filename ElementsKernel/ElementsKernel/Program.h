@@ -8,6 +8,8 @@
 #ifndef ELEMENTSPROGRAM_H_
 #define ELEMENTSPROGRAM_H_
 
+#include <map>
+#include <string>
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
@@ -77,8 +79,14 @@ protected:
    * @details
    *  This is the second method that must be implemented by all Elements programs. It
    *  represents the entry point, called from run(int argc,char* argv[]).
+   * 
+   * @param args
+   *    A map containing the values given by the user for the program options
+   *    defined by the defineSpecificProgramOptions() method
+   * @return
+   *    The exit code which should be returned when the program exits
    */
-  virtual ExitCode mainMethod() = 0;
+  virtual ExitCode mainMethod(std::map<std::string, boost::program_options::variable_value>& args) = 0;
 
   /**
    * @brief
@@ -105,14 +113,6 @@ protected:
     *   The program name
     */
   const boost::filesystem::path& getProgramName() const ;
-
-  /**
-   * @brief Getter
-   *
-   * @return
-   *   The BOOST variables_map which includes all program options.
-   */
-  const boost::program_options::variables_map& getVariablesMap() const ;
 
 private:
 
