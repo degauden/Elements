@@ -15,6 +15,9 @@
 # LOG4CPP_LIBRARIES, the libraries to link against to use pwlib.
 # LOG4CPP_FOUND, If false, don't try to use pwlib.
 
+if(NOT LOG4CPP_FOUND)
+
+
 FIND_PATH(LOG4CPP_INCLUDE_DIR log4cpp/Category.hh
   PATHS
     "$ENV{LOG4CPP}/include"
@@ -40,4 +43,8 @@ ENDIF(LOG4CPP_INCLUDE_DIR)
 MARK_AS_ADVANCED(
   LOG4CPP_INCLUDE_DIR
   LOG4CPP_LIBRARIES
-) 
+  LOG4CPP_FOUND
+)
+
+
+endif()
