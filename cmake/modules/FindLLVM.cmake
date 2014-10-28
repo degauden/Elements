@@ -1,5 +1,7 @@
 # -*- cmake -*-
 
+if(NOT LLVM_FOUND)
+
 find_program(LLVM_AR
              NAMES llvm-ar
          	 DOC "LLVM ar")
@@ -33,3 +35,5 @@ IF(LLVM_FOUND)
     MESSAGE(STATUS "Found LLVM objdump (LLVM_OBJDUMP = ${LLVM_OBJDUMP})")
     MESSAGE(STATUS "Found LLVM ranlib (LLVM_RANLIB = ${LLVM_RANLIB})")
 ENDIF()
+
+endif()
