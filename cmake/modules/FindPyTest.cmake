@@ -8,7 +8,7 @@ if (NOT PYTEST_FOUND)
 			message(STATUS "Path: ${PYTEST_EXECUTABLE}")
 		endif (VERBOSE)
 	else (PYTEST_EXECUTABLE)
-		message(FATAL_ERROR "py.test not found")
+		message(WARNING "py.test not found")
 	endif (PYTEST_EXECUTABLE)
 
 # handle the QUIETLY and REQUIRED arguments and set PYTEST_FOUND to TRUE if
