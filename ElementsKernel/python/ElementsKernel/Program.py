@@ -18,11 +18,21 @@ class Program:
             log.setLogFile(options.log_file)
     
     def _findConfigFile(self):
-        name = os.sep + self._app_module.__name__.replace('.', os.sep) + '.conf'
+        # Create the path which represents the package of the module (if any)
+        rel_path = ''
+        if '.' in self._app_module.__name__:
+            rel_path = self._app_module.__name__[:self._app_module.__name__.index('.')]
+            rel_path = rel_path.replace('.', os.sep)
+        # Get the name of the executable, remove the prefix and change the extension to .conf
+        name = os.path.splitext(os.path.basename(sys.argv[0]))[0] + '.conf'
+        if rel_path:
+            rel_path = rel_path + os.sep + name
+        else:
+            rel_path = name
         conf_file = None
         for conf_path in os.environ.get('ELEMENTS_CONF_PATH').split(':'):
-            if os.path.isfile(conf_path + name):
-                conf_file = conf_path + name
+            if os.path.isfile(conf_path + os.sep + rel_path):
+                conf_file = conf_path + os.sep + rel_path
                 break
         return conf_file
     
