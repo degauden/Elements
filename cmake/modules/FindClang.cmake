@@ -1,5 +1,8 @@
 # -*- cmake -*-
 
+if(NOT CLANG_FOUND)
+
+
 find_package(LLVM)
 
 find_program(CLANG_C_COMPILER
@@ -20,3 +23,5 @@ IF(CLANG_FOUND)
     MESSAGE(STATUS "Found Clang C Compiler (CLANG_C_COMPILER = ${CLANG_C_COMPILER})")
     MESSAGE(STATUS "Found Clang C++ Compiler (CLANG_CXX_COMPILER = ${CLANG_CXX_COMPILER})")
 ENDIF()
+
+endif()
