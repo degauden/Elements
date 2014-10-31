@@ -16,6 +16,9 @@
 #
 
 IF (UNIX)
+
+  if(NOT RPMBUILD_FOUND)
+
   # Look for RPM builder executable
   FIND_PROGRAM(RPMBUILD_EXECUTABLE
     NAMES rpmbuild
@@ -162,6 +165,8 @@ rm -rf build_tree
     ENDMACRO(ADD_RPM_TARGETS)
 
   ENDIF (RPMBUILD_FOUND)
+
+  endif(NOT RPMBUILD_FOUND)
 
 ENDIF (UNIX)
 
