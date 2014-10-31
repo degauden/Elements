@@ -8,7 +8,7 @@ if (NOT NOSE_FOUND)
 			message(STATUS "Path: ${NOSE_EXECUTABLE}")
 		endif (VERBOSE)
 	else (NOSE_EXECUTABLE)
-		message(FATAL_ERROR "nose not found")
+		message(WARNING "nose not found")
 	endif (NOSE_EXECUTABLE)
 
 # handle the QUIETLY and REQUIRED arguments and set NOSE_FOUND to TRUE if

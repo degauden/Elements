@@ -8,7 +8,7 @@ if (NOT TAR_FOUND)
 			message(STATUS "Path: ${TAR_EXECUTABLE}")
 		endif (VERBOSE)
 	else (TAR_EXECUTABLE)
-		message(FATAL_ERROR "tar not found")
+		message(WARNING "tar not found")
 	endif (TAR_EXECUTABLE)
 
 # handle the QUIETLY and REQUIRED arguments and set TAR_FOUND to TRUE if
