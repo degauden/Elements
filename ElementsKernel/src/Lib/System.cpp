@@ -19,6 +19,7 @@
 #include <typeinfo>                     // for type_info
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
@@ -133,7 +134,7 @@ unsigned long Elements::System::getProcedureByName(ImageHandle handle, const str
   }
   if ( 0 == *pFunction )    {
     errno = 0xAFFEDEAD;
-    cout << "Elements::System::getProcedureByName>" << getLastErrorString() << endl;
+    std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
     //cout << "Elements::System::getProcedureByName> failure" << endl;
     return 0;
   }
