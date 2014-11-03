@@ -1,4 +1,4 @@
-elements_subdir(ElementsKernel 1.0)
+elements_subdir(ElementsKernel)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread program_options system regex)
 find_package(Log4CPP)
