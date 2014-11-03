@@ -46,19 +46,26 @@ static const char* SHLIB_SUFFIX = ".so";
 static vector<string> s_argvStrings;
 static vector<const char*> s_argvChars;
 
-static unsigned long doLoad(const string& name, Elements::System::ImageHandle* handle)  {
+
+namespace Elements {
+namespace System {
+
+// --------------------------------------------------------------------------------------
+// Private functions
+// --------------------------------------------------------------------------------------
+static unsigned long doLoad(const string& name, ImageHandle* handle)  {
 # if defined(__linux) || defined(__APPLE__)
    const char* path = name.c_str();
    void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
    *handle = mh;
 # endif
   if ( 0 == *handle )   {
-    return Elements::System::getLastError();
+    return getLastError();
   }
   return 1;
 }
 
-static unsigned long loadWithoutEnvironment(const string& name, Elements::System::ImageHandle* handle)    {
+static unsigned long loadWithoutEnvironment(const string& name, ImageHandle* handle)    {
 
   string dllName = name;
   unsigned long len = static_cast<unsigned long>(strlen(SHLIB_SUFFIX));
@@ -74,8 +81,11 @@ static unsigned long loadWithoutEnvironment(const string& name, Elements::System
   return doLoad(dllName, handle);
 }
 
+// --------------------------------------------------------------------------------------
+
+
 /// Load dynamic link library
-unsigned long Elements::System::loadDynamicLib(const string& name, ImageHandle* handle) {
+unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
   unsigned long res;
   // if name is empty, just load it
   if (name.length() == 0) {
@@ -100,14 +110,13 @@ unsigned long Elements::System::loadDynamicLib(const string& name, ImageHandle* 
 #if defined(__linux) || defined(__APPLE__)
       errno = 0xAFFEDEAD;
 #endif
-     // cout << "Elements::System::loadDynamicLib>" << getLastErrorString() << endl;
     }
   }
   return res;
 }
 
 /// unload dynamic link library
-unsigned long Elements::System::unloadDynamicLib(ImageHandle handle)    {
+unsigned long unloadDynamicLib(ImageHandle handle)    {
   ::dlclose( handle );
   if ( 0 ) {
     return getLastError();
@@ -116,12 +125,11 @@ unsigned long Elements::System::unloadDynamicLib(ImageHandle handle)    {
 }
 
 /// Get a specific function defined in the DLL
-unsigned long Elements::System::getProcedureByName(ImageHandle handle, const string& name, EntryPoint* pFunction)    {
+unsigned long getProcedureByName(ImageHandle handle, const string& name, EntryPoint* pFunction)    {
 #if defined(__linux)
   *pFunction = FuncPtrCast<EntryPoint>(::dlsym(handle, name.c_str()));
   if ( 0 == *pFunction )    {
     errno = 0xAFFEDEAD;
-   // cout << "Elements::System::getProcedureByName>" << getLastErrorString() << endl;
     return 0;
   }
   return 1;
@@ -135,7 +143,6 @@ unsigned long Elements::System::getProcedureByName(ImageHandle handle, const str
   if ( 0 == *pFunction )    {
     errno = 0xAFFEDEAD;
     std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
-    //cout << "Elements::System::getProcedureByName> failure" << endl;
     return 0;
   }
   return 1;
@@ -143,24 +150,24 @@ unsigned long Elements::System::getProcedureByName(ImageHandle handle, const str
 }
 
 /// Get a specific function defined in the DLL
-unsigned long Elements::System::getProcedureByName(ImageHandle handle, const string& name, Creator* pFunction)    {
+unsigned long getProcedureByName(ImageHandle handle, const string& name, Creator* pFunction)    {
   return getProcedureByName(handle, name, (EntryPoint*)pFunction);
 }
 
 /// Retrieve last error code
-unsigned long Elements::System::getLastError()    {
+unsigned long getLastError()    {
   // convert errno (int) to unsigned long
   return static_cast<unsigned long>(static_cast<unsigned int>(errno));
 }
 
 /// Retrieve last error code as string
-const string Elements::System::getLastErrorString()    {
+const string getLastErrorString()    {
   const string errString = getErrorString(getLastError());
   return errString;
 }
 
 /// Retrieve error code as string for a given error
-const string Elements::System::getErrorString(unsigned long error)    {
+const string getErrorString(unsigned long error)    {
   string errString =  "";
   char *cerrString(0);
   // Remember: for linux dl* routines must be handled differently!
@@ -184,11 +191,11 @@ const string Elements::System::getErrorString(unsigned long error)    {
   return errString;
 }
 
-const string Elements::System::typeinfoName( const std::type_info& tinfo) {
+const string typeinfoName( const std::type_info& tinfo) {
   return typeinfoName(tinfo.name());
 }
 
-const string Elements::System::typeinfoName( const char* class_name) {
+const string typeinfoName( const char* class_name) {
   string result;
     if ( ::strlen(class_name) == 1 ) {
       // See http://www.realitydiluted.com/mirrors/reality.sgi.com/dehnert_engr/cxx/abi.pdf
@@ -277,7 +284,7 @@ const string Elements::System::typeinfoName( const char* class_name) {
 }
 
 /// Host name
-const string& Elements::System::hostName() {
+const string& hostName() {
   static string host = "";
   if ( host == "" ) {
     char buffer[512];
@@ -289,7 +296,7 @@ const string& Elements::System::hostName() {
 }
 
 /// OS name
-const string& Elements::System::osName() {
+const string& osName() {
   static string osname = "";
   struct utsname ut;
   if (uname(&ut) == 0) {
@@ -302,7 +309,7 @@ const string& Elements::System::osName() {
 
 
 /// OS version
-const string& Elements::System::osVersion() {
+const string& osVersion() {
   static string osver = "";
   struct utsname ut;
   if (uname(&ut) == 0) {
@@ -314,7 +321,7 @@ const string& Elements::System::osVersion() {
 }
 
 /// Machine type
-const string& Elements::System::machineType() {
+const string& machineType() {
   static string mach = "";
   struct utsname ut;
   if (uname(&ut) == 0) {
@@ -326,7 +333,7 @@ const string& Elements::System::machineType() {
 }
 
 /// User login name
-const string& Elements::System::accountName() {
+const string& accountName() {
   static string account = "";
   if ( account == "" ) {
     const char* acct = ::getlogin();
@@ -338,17 +345,17 @@ const string& Elements::System::accountName() {
 }
 
 /// Number of arguments passed to the commandline
-long Elements::System::numCmdLineArgs()   {
+long numCmdLineArgs()   {
   return cmdLineArgs().size();
 }
 
 /// Number of arguments passed to the commandline
-long Elements::System::argc()    {
+long argc()    {
   return cmdLineArgs().size();
 }
 
 /// Const char** command line arguments including executable name as arg[0]
-const vector<string> Elements::System::cmdLineArgs()    {
+const vector<string> cmdLineArgs()    {
   if ( s_argvChars.size() == 0 )    {
     char exe[1024];
     sprintf(exe, "/proc/%d/cmdline", ::getpid());
@@ -372,7 +379,7 @@ const vector<string> Elements::System::cmdLineArgs()    {
 }
 
 /// Const char** command line arguments including executable name as arg[0]
-char** Elements::System::argv()    {
+char** argv()    {
   ///
   if( s_argvChars.empty() ) { cmdLineArgs(); }  /// added by I.B.
   ///
@@ -382,7 +389,7 @@ char** Elements::System::argv()    {
 
 
 /// get a particular env var, return "UNKNOWN" if not defined
-string Elements::System::getEnv(const char* var) {
+string getEnv(const char* var) {
   char* env;
   if  ( (env = getenv(var)) != 0 ) {
     return env;
@@ -392,7 +399,7 @@ string Elements::System::getEnv(const char* var) {
 }
 
 /// get a particular env var, storing the value in the passed string (if set)
-bool Elements::System::getEnv(const char* var, string &value) {
+bool getEnv(const char* var, string &value) {
   char* env;
   if  ( (env = getenv(var)) != 0 ) {
     value = env;
@@ -402,7 +409,7 @@ bool Elements::System::getEnv(const char* var, string &value) {
   }
 }
 
-bool Elements::System::isEnvSet(const char* var) {
+bool isEnvSet(const char* var) {
   return getenv(var) != 0;
 }
 
@@ -411,7 +418,7 @@ bool Elements::System::isEnvSet(const char* var) {
 // Needed for _NSGetEnviron(void)
 #include "crt_externs.h"
 #endif
-vector<string> Elements::System::getEnv() {
+vector<string> getEnv() {
 #if defined(__APPLE__)
   static char **environ = *_NSGetEnviron();
 #endif
@@ -422,6 +429,15 @@ vector<string> Elements::System::getEnv() {
   return vars;
 }
 
+ThreadHandle threadSelf() {
+#ifdef __linux
+  return pthread_self();
+#else
+  return (void*)0;
+#endif
+}
+
+
 // -----------------------------------------------------------------------------
 // backtrace utilities
 // -----------------------------------------------------------------------------
@@ -429,7 +445,7 @@ vector<string> Elements::System::getEnv() {
 #include <execinfo.h>
 #endif
 
-int Elements::System::backTrace(void** addresses __attribute__ ((unused)),
+int backTrace(void** addresses __attribute__ ((unused)),
                        const int depth __attribute__ ((unused)))
 {
 
@@ -448,7 +464,7 @@ int Elements::System::backTrace(void** addresses __attribute__ ((unused)),
 
 }
 
-bool Elements::System::backTrace(string& btrace, const int depth, const int offset)
+bool backTrace(string& btrace, const int depth, const int offset)
 {
   // Always hide the first two levels of the stack trace (that's us)
   const int totalOffset = offset + 2;
@@ -458,11 +474,11 @@ bool Elements::System::backTrace(string& btrace, const int depth, const int offs
 
   void** addresses = (void**) malloc(totalDepth*sizeof(void *));
   if ( addresses != 0 ){
-    int count = Elements::System::backTrace(addresses,totalDepth);
+    int count = backTrace(addresses,totalDepth);
     for (int i = totalOffset; i < count; ++i) {
       void *addr = 0;
 
-      if (Elements::System::getStackLevel(addresses[i],addr,fnc,lib)) {
+      if (getStackLevel(addresses[i],addr,fnc,lib)) {
         ostringstream ost;
         ost << "#" << setw(3) << setiosflags( ios::left ) << i-totalOffset+1;
         ost << hex << addr << dec << " " << fnc << "  [" << lib << "]" << endl;
@@ -479,7 +495,7 @@ bool Elements::System::backTrace(string& btrace, const int depth, const int offs
   return true;
 }
 
-bool Elements::System::getStackLevel(void* addresses  __attribute__ ((unused)),
+bool getStackLevel(void* addresses  __attribute__ ((unused)),
                            void*& addr      __attribute__ ((unused)),
                            string& fnc __attribute__ ((unused)),
                            string& lib __attribute__ ((unused)))
@@ -518,7 +534,7 @@ bool Elements::System::getStackLevel(void* addresses  __attribute__ ((unused)),
 }
 
 ///set an environment variables. @return 0 if successful, -1 if not
-int Elements::System::setEnv(const string &name, const string &value, int overwrite)
+int setEnv(const string &name, const string &value, int overwrite)
 {
   // UNIX version
   return value.empty() ?
@@ -528,3 +544,6 @@ int Elements::System::setEnv(const string &name, const string &value, int overwr
     ::setenv(name.c_str(),value.c_str(), overwrite);
 
 }
+
+} // namespace System
+} // namespace Elements
