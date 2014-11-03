@@ -35,6 +35,16 @@ typedef void* ProcessHandle;
 typedef unsigned long (*EntryPoint)(const unsigned long iid, void** ppvObject);
 /// Definition of the "generic" DLL entry point function
 typedef void* (*Creator)();
+
+#ifdef __linux
+///A Thread handle
+typedef pthread_t ThreadHandle;
+///thread handle "accessor"
+#else
+///A Thread handle
+typedef void* ThreadHandle;
+#endif
+
 /// Load dynamic link library
 ELEMENTS_API unsigned long loadDynamicLib(const std::string& name,
     ImageHandle* handle);
@@ -92,19 +102,10 @@ ELEMENTS_API int setEnv(const std::string &name, const std::string &value,
     int overwrite = 1);
 /// Check if an environment variable is set or not.
 ELEMENTS_API bool isEnvSet(const char* var);
-#ifdef __linux
-///A Thread handle
-typedef pthread_t ThreadHandle;
+
 ///thread handle "accessor"
-inline ThreadHandle threadSelf() {
-  return pthread_self();
-}
-#else
-///A Thread handle
-typedef void* ThreadHandle;
-///thread handle "accessor"
-inline ThreadHandle threadSelf() {return (void*)0;}
-#endif
+ELEMENTS_API ThreadHandle threadSelf();
+
 ELEMENTS_API int backTrace(void** addresses __attribute__ ((unused)), const int depth __attribute__ ((unused)));
 ELEMENTS_API bool backTrace(std::string& btrace, const int depth,
     const int offset = 0);
@@ -134,6 +135,8 @@ inline DESTPTR FuncPtrCast(SRCPTR ptr) {
   return p2p.dst;
 }
 #endif
-}
-}
+
+} // end of namespace System
+} // end of namespace Elements
+
 #endif    // SYSTEM_SYSTEM_H
