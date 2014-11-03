@@ -451,7 +451,7 @@ int backTrace(void** addresses __attribute__ ((unused)),
 
 #ifdef __linux
 
-  int count = backtrace( addresses, depth );
+  int count = ::backtrace( addresses, depth );
   if ( count > 0 ) {
     return count;
   } else {
