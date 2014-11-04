@@ -1257,8 +1257,7 @@ macro(elements_collect_subdir_deps)
     set(${_p}_DEPENDENCIES)
     # parse the CMakeLists.txt
     file(READ ${CMAKE_SOURCE_DIR}/${_p}/CMakeLists.txt file_contents)
-#    filter_comments(file_contents)
-#    message(STATUS "This is the file contents ------------------->>${file_contents}<<-------------")
+    filter_comments(file_contents)
     string(REGEX MATCHALL "elements_depends_on_subdirs *\\(([^)]+)\\)" vars "${file_contents}")
     foreach(var ${vars})
       # extract the individual subdir names
@@ -1291,18 +1290,20 @@ macro(__visit__ _p)
 endmacro()
 
 
-function(filter_comments contents)
+function(filter_comments var)
   # Convert file contents into a CMake list (where each element in the list
   # is one line of the file)
   #
-  STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-  STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-  foreach(__t ${contents})
+  STRING(REGEX REPLACE ";" "\\\\;" contents2 "${${var}}")
+  STRING(REGEX REPLACE "\n" ";" contents2 "${contents2}")
+  foreach(__t ${contents2})
     if (NOT "${__t}" MATCHES "^ *#+")
-      LIST(APPEND contents2 ${__t})
+      LIST(APPEND contents3 ${__t})
     endif()
   endforeach()
-  set(${contents} ${contents2} PARENT_SCOPE)
+  STRING(REGEX REPLACE ";" "\n" contents3 "${contents3}")
+  STRING(REGEX REPLACE "\\\\;" ";" contents3 "${contents3}")
+  set(${var} ${contents3} PARENT_SCOPE)
 endfunction()
 
 #-------------------------------------------------------------------------------
