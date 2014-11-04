@@ -38,6 +38,7 @@
 #         backward-compatibility target for the CMT generic Makefile
 #
 # :Author: Marco Clemencic
+# :Author: Hubert Degaudenzi
 #
 # .. [*] Targets defined by this Makefile. 
 #

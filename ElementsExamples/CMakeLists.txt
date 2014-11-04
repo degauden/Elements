@@ -1,4 +1,4 @@
-elements_subdir(ElementsExamples 1.0)
+elements_subdir(ElementsExamples)
 
 elements_depends_on_subdirs(ElementsKernel)
 
