@@ -1,7 +1,7 @@
 # - ElementsProject
 # Define the macros used by Elements-based projects.
 #
-# Authors: Pere Mato, Marco Clemencic
+# Authors: Pere Mato, Marco Clemencic, Hubert Degaudenzi
 #
 # Commit Id: $Format:%H$
 
@@ -1287,6 +1287,7 @@ macro(__visit__ _p)
     list(APPEND out_packages ${_p})
   endif()
 endmacro()
+
 #-------------------------------------------------------------------------------
 # elements_sort_subdirectories(var)
 #
@@ -1347,7 +1348,8 @@ endfunction()
 #-------------------------------------------------------------------------------
 # elements_subdir(name version)
 #
-# Declare name and version of the subdirectory.
+# Declare name and version of the subdirectory. The version now is optional.
+# It is recommended not to set one.
 #-------------------------------------------------------------------------------
 macro(elements_subdir name)
   elements_get_package_name(_guessed_name)
