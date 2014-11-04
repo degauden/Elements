@@ -1257,6 +1257,8 @@ macro(elements_collect_subdir_deps)
     set(${_p}_DEPENDENCIES)
     # parse the CMakeLists.txt
     file(READ ${CMAKE_SOURCE_DIR}/${_p}/CMakeLists.txt file_contents)
+#    filter_comments(file_contents)
+#    message(STATUS "This is the file contents ------------------->>${file_contents}<<-------------")
     string(REGEX MATCHALL "elements_depends_on_subdirs *\\(([^)]+)\\)" vars "${file_contents}")
     foreach(var ${vars})
       # extract the individual subdir names
@@ -1286,6 +1288,46 @@ macro(__visit__ _p)
     endif()
     list(APPEND out_packages ${_p})
   endif()
+endmacro()
+
+
+function(filter_comments contents)
+  # Convert file contents into a CMake list (where each element in the list
+  # is one line of the file)
+  #
+  STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+  STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+  foreach(__t ${contents})
+    if (NOT "${__t}" MATCHES "^ *#+")
+      LIST(APPEND contents2 ${__t})
+    endif()
+  endforeach()
+  set(${contents} ${contents2} PARENT_SCOPE)
+endfunction()
+
+#-------------------------------------------------------------------------------
+# elements_test_subdir_deps(subdirectories)
+#
+# look for dependencies declared in the subdirectories
+#-------------------------------------------------------------------------------
+macro(elements_test_subdir_deps)
+  foreach(_t ${ARGN})
+    file(READ ${CMAKE_SOURCE_DIR}/${_t}/CMakeLists.txt file_contents2)
+    filter_comments(${file_contents2})
+#    message(STATUS "This is the content of the file --->${file_contents2}<--------")
+    # Convert file contents into a CMake list (where each element in the list
+    # is one line of the file)
+    #
+#    STRING(REGEX REPLACE ";" "\\\\;" file_contents2 "${file_contents2}")
+#    STRING(REGEX REPLACE "\n" ";" file_contents2 "${file_contents2}")
+#    message(STATUS "This is the content of the file ====>${file_contents2}<======")
+#    foreach(__t ${file_contents2})
+#      message(STATUS "This is the content line of the file ====>${__t}<======")
+#      if (NOT "${__t}" MATCHES "^ *#+")
+#      message(STATUS "This is the content line of the file ====>${__t}<======")
+#      endif()
+#    endforeach()
+  endforeach()
 endmacro()
 
 #-------------------------------------------------------------------------------
