@@ -35,7 +35,8 @@
 #         alias to CMake 'rebuild_cache' target
 #
 #     tests [*]_
-#         backward-compatibility target for the CMT generic Makefile
+#         backward-compatibility target for the CMT generic Makefile. Tt
+#         ensures that the "all" target has been called before.
 #
 # :Author: Marco Clemencic
 # :Author: Hubert Degaudenzi
