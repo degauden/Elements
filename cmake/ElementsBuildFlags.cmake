@@ -12,6 +12,10 @@ if(SGS_COMP STREQUAL "clang")
 endif()
 
 
+if(NOT BUILD_PREFIX_NAME)
+  set(BUILD_PREFIX_NAME "build" CACHE STRING "Prefix name for the build directory" FORCE)
+endif()
+
 # Special defaults
 if ( (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[7-9]")
     OR (SGS_COMP STREQUAL clang AND SGS_COMPVERS MATCHES "3[0-3]") )
