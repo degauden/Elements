@@ -85,6 +85,8 @@ configure: $(BUILDDIR)/Makefile
 endif
 	@ # do not delegate further
 
+# This target ensures that the "all" target is called before
+# running the tests (unlike the "test" default target of CMake)
 tests: all
 	-$(MAKE) -C $(BUILDDIR) test
 
