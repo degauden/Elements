@@ -46,8 +46,9 @@
 
 # settings
 CMAKE = cmake
+BUILD_ROOT_NAME = build
 
-override CMAKEFLAGS += -DUSE_LOCAL_INSTALLAREA=ON
+override CMAKEFLAGS += -DUSE_LOCAL_INSTALLAREA=ON -DBUILD_ROOT_NAME:STRING=$(BUILD_ROOT_NAME)
 
 ifndef BINARY_TAG
   ifdef CMAKECONFIG
@@ -59,7 +60,7 @@ ifndef BINARY_TAG
   endif
 endif
 
-BUILDDIR := $(CURDIR)/build.$(BINARY_TAG)
+BUILDDIR := $(CURDIR)/$(BUILD_ROOT_NAME).$(BINARY_TAG)
 
 
 # default target
