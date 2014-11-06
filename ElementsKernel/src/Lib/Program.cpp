@@ -165,7 +165,7 @@ void ProgramWithConfFile::logAllOptions(string program_name) {
   logger.info("##########################################################");
   logger.info("##########################################################");
   logger.info("#");
-  logger.info("#    %s start ", program_name.c_str());
+  logger.info("#  C++ program:  %s starts ", program_name.c_str());
   logger.info("#");
   logger.info("##########################################################");
   logger.info("#");
