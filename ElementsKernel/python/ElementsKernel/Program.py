@@ -66,8 +66,8 @@ class Program:
         # Add all the options which are common to all the programs
         group = arg_parser.add_argument_group('Generic Options')
         group.add_argument('--config-file', help='Name of a configuration file')
-        group.add_argument('--log-level', help='Log level: FATAL, ERROR, WARN, INFO (default), DEBUG')
         group.add_argument('--log-file', help='Name of a log file')
+        group.add_argument('--log-level', help='Log level: FATAL, ERROR, WARN, INFO (default), DEBUG')
         # Setup the logging
         self._setupLogging(arg_parser)
         # First we get any options from the command line
@@ -82,14 +82,15 @@ class Program:
         self._logger.info("##########################################################")
         self._logger.info("##########################################################")
         self._logger.info("#")
-        self._logger.info("#    %s start ", self._app_module.__name__)
+        self._logger.info("#    Python program: %s starts ", self._app_module.__name__)
         self._logger.info("#")
         self._logger.info("##########################################################")
         self._logger.info("#")
         self._logger.info("# List of all program options")
         self._logger.info("# ---------------------------")
         self._logger.info("#")
-        for (name,value) in [opt for opt in vars(args).iteritems() if opt[1]]:
+        # for (name,value) in [opt for opt in vars(args).iteritems() if opt[1]]:
+        for (name,value) in [opt for opt in vars(args).iteritems()]:
             self._logger.info(name.replace('_','-') + ' = ' + str(value))
         self._logger.info("#")
     
