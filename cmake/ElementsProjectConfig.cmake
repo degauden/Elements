@@ -1307,31 +1307,6 @@ function(filter_comments var)
 endfunction()
 
 #-------------------------------------------------------------------------------
-# elements_test_subdir_deps(subdirectories)
-#
-# look for dependencies declared in the subdirectories
-#-------------------------------------------------------------------------------
-macro(elements_test_subdir_deps)
-  foreach(_t ${ARGN})
-    file(READ ${CMAKE_SOURCE_DIR}/${_t}/CMakeLists.txt file_contents2)
-    filter_comments(${file_contents2})
-#    message(STATUS "This is the content of the file --->${file_contents2}<--------")
-    # Convert file contents into a CMake list (where each element in the list
-    # is one line of the file)
-    #
-#    STRING(REGEX REPLACE ";" "\\\\;" file_contents2 "${file_contents2}")
-#    STRING(REGEX REPLACE "\n" ";" file_contents2 "${file_contents2}")
-#    message(STATUS "This is the content of the file ====>${file_contents2}<======")
-#    foreach(__t ${file_contents2})
-#      message(STATUS "This is the content line of the file ====>${__t}<======")
-#      if (NOT "${__t}" MATCHES "^ *#+")
-#      message(STATUS "This is the content line of the file ====>${__t}<======")
-#      endif()
-#    endforeach()
-  endforeach()
-endmacro()
-
-#-------------------------------------------------------------------------------
 # elements_sort_subdirectories(var)
 #
 # Sort the list of subdirectories in the variable `var` according to the
