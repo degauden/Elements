@@ -3,14 +3,6 @@ if (NOT NOSE_FOUND)
 	find_program(NOSE_EXECUTABLE nosetests)
 	set(NOSE_EXECUTABLE ${NOSE_EXECUTABLE} CACHE STRING "")
 
-	if (NOSE_EXECUTABLE)
-		if (VERBOSE)
-			message(STATUS "Path: ${NOSE_EXECUTABLE}")
-		endif (VERBOSE)
-	else (NOSE_EXECUTABLE)
-		message(WARNING "nose not found")
-	endif (NOSE_EXECUTABLE)
-
 # handle the QUIETLY and REQUIRED arguments and set NOSE_FOUND to TRUE if
 # all listed variables are TRUE
     INCLUDE(FindPackageHandleStandardArgs)
