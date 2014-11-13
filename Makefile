@@ -35,7 +35,8 @@
 #         alias to CMake 'rebuild_cache' target
 #
 #     tests [*]_
-#         backward-compatibility target for the CMT generic Makefile
+#         backward-compatibility target for the CMT generic Makefile. Tt
+#         ensures that the "all" target has been called before.
 #
 # :Author: Marco Clemencic
 # :Author: Hubert Degaudenzi
@@ -86,6 +87,8 @@ configure: $(BUILDDIR)/Makefile
 endif
 	@ # do not delegate further
 
+# This target ensures that the "all" target is called before
+# running the tests (unlike the "test" default target of CMake)
 tests: all
 	-$(MAKE) -C $(BUILDDIR) test
 
