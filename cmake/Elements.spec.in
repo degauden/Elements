@@ -18,6 +18,7 @@ Requires(postun):  /sbin/ldconfig
 
 %define bin_tag @CPACK_SYSTEM_NAME@
 %define _prefix @EUCLID_BASE_DIR@/%{name}/%{version}/InstallArea/%{bin_tag}
+%define build_dir_name @BUILD_PREFIX_NAME@.%{bin_tag}
 %define libdir %{_prefix}/lib
 %define pydir %{_prefix}/python
 %define scriptsdir %{_prefix}/scripts
@@ -56,9 +57,9 @@ else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
-%__mkdir -p build.${BINARY_TAG}
-cd build.${BINARY_TAG}
-%cmake ../
+%__mkdir -p %{build_dir_name}
+cd %{build_dir_name}
+%cmake @CPACK_EXTRA_CMAKEFLAGS@ ../
 %__make VERBOSE=1 %{?_smp_mflags} all
 
 %install
@@ -70,7 +71,7 @@ else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
-cd build.${BINARY_TAG}
+cd %{build_dir_name}
 %__make install VERBOSE=1 DESTDIR=$RPM_BUILD_ROOT
 
 %clean
