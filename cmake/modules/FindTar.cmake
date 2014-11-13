@@ -3,14 +3,6 @@ if (NOT TAR_FOUND)
 	find_program(TAR_EXECUTABLE tar)
 	set(TAR_EXECUTABLE ${TAR_EXECUTABLE} CACHE STRING "")
 
-	if (TAR_EXECUTABLE)
-		if (VERBOSE)
-			message(STATUS "Path: ${TAR_EXECUTABLE}")
-		endif (VERBOSE)
-	else (TAR_EXECUTABLE)
-		message(WARNING "tar not found")
-	endif (TAR_EXECUTABLE)
-
 # handle the QUIETLY and REQUIRED arguments and set TAR_FOUND to TRUE if
 # all listed variables are TRUE
     INCLUDE(FindPackageHandleStandardArgs)
