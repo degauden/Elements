@@ -588,6 +588,17 @@ macro(elements_project project version)
   endif()
 
 #------------------------------------------------------------------------------
+  get_property(cmake_extra_flags GLOBAL PROPERTY CMAKE_EXTRA_FLAGS)
+
+  if(cmake_extra_flags)
+    foreach(_do ${cmake_extra_flags})
+      set(CPACK_EXTRA_CMAKEFLAGS "${CPACK_EXTRA_CMAKEFLAGS} ${_do}")
+    endforeach()
+    #message(STATUS "The extra CMake flags: ${CPACK_EXTRA_CMAKEFLAGS}")
+  endif()
+
+
+#------------------------------------------------------------------------------
   get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
 
   if(regular_lib_objects)

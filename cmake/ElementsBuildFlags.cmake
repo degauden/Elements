@@ -17,6 +17,7 @@ if(NOT BUILD_PREFIX_NAME)
 endif()
 
 message(STATUS "The build prefix is set to ${BUILD_PREFIX_NAME}")
+set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DBUILD_PREFIX_NAME:STRING=${BUILD_PREFIX_NAME}")
 
 
 # Special defaults
