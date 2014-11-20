@@ -181,7 +181,6 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the linker during the creation of modules."
         FORCE)
     set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}"
-#    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags ${CMAKE_EXE_LINKER_FLAGS}"
         CACHE STRING "Flags used by the linker during the creation of exe's."
         FORCE)
   endif()
