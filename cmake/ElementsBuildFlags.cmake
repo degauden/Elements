@@ -180,7 +180,8 @@ if(NOT ELEMENTS_FLAGS_SET)
     set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
         CACHE STRING "Flags used by the linker during the creation of modules."
         FORCE)
-    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags ${CMAKE_EXE_LINKER_FLAGS}"
+    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}"
+#    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags ${CMAKE_EXE_LINKER_FLAGS}"
         CACHE STRING "Flags used by the linker during the creation of exe's."
         FORCE)
   endif()
