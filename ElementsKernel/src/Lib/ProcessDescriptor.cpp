@@ -264,7 +264,7 @@ struct linux_proc {
 #ifdef __APPLE__
 // static long  pg_size = 0;
 #else
-static long pg_size = sysconf(_SC_PAGESIZE); // getpagesize();
+static long pg_size = ::sysconf(_SC_PAGESIZE); // getpagesize();
 #endif
 void readProcStat(long pid, linux_proc& pinfo) {
 
@@ -317,30 +317,13 @@ static inline long processID(long pid) {
 #include "ProcessDescriptor.h"
 #include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/System.h"
+#include "ProcessHandle.h"
 
 Elements::System::ProcessDescriptor* Elements::System::getProcess() {
   static ProcessDescriptor p;
   return &p;
 }
 
-Elements::System::ProcessDescriptor::ProcessHandle::ProcessHandle(long pid) {
-  if (pid > 0) {
-    if (pid != s_myPid) {
-      // Note: the return type of getpid is pid_t, which is int on 64bit machines too
-      m_handle = reinterpret_cast<void*>(static_cast<long>(s_myPid));
-          m_needRelease = true;
-          return;
-        }
-      }
-      m_handle = processHandle();
-      m_needRelease = false;
-    }
-
-Elements::System::ProcessDescriptor::ProcessHandle::~ProcessHandle() {
-  if (m_needRelease) {
-    m_handle = nullptr;
-  }
-}
 
 Elements::System::ProcessDescriptor::ProcessDescriptor() {
 }
@@ -348,7 +331,7 @@ Elements::System::ProcessDescriptor::ProcessDescriptor() {
 Elements::System::ProcessDescriptor::~ProcessDescriptor() {
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long Elements::System::ProcessDescriptor::query(pid_t pid, InfoType fetch,
     IO_COUNTERS* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -372,7 +355,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long Elements::System::ProcessDescriptor::query(pid_t pid, InfoType fetch,
     POOLED_USAGE_AND_LIMITS* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -411,7 +394,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long Elements::System::ProcessDescriptor::query(pid_t pid, InfoType fetch,
     long* info) {
   long status = 1, *vb;
   ProcessHandle h(pid);
@@ -434,7 +417,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long Elements::System::ProcessDescriptor::query(pid_t pid, InfoType fetch,
     VM_COUNTERS* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -474,7 +457,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long Elements::System::ProcessDescriptor::query(pid_t pid, InfoType fetch,
     QUOTA_LIMITS* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -518,7 +501,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long Elements::System::ProcessDescriptor::query(pid_t pid, InfoType fetch,
     PROCESS_BASIC_INFORMATION* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -545,7 +528,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long Elements::System::ProcessDescriptor::query(pid_t pid, InfoType fetch,
     KERNEL_USER_TIMES* info) {
   long status = 1;
   ProcessHandle h(pid);
