@@ -6,6 +6,9 @@
 #include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/System.h"
 
+#include "ProcessHandle.h"
+#include "ProcessID.h"
+
 #include <cerrno>
 #include <string.h>
 #include <sys/times.h>
@@ -21,6 +24,11 @@ static vector<string> s_linkedModules;
 
 namespace Elements {
 namespace System {
+
+void* processHandle()   {
+  return reinterpret_cast<void*>(static_cast<pid_t>(MY_PID));
+}
+
 
 static ImageHandle      ModuleHandle = 0;
 
@@ -44,9 +52,7 @@ const string& moduleNameFull()   {
       char name[PATH_MAX] = {"Unknown.module"};
       name[0] = 0;
       const char *path =
-#  if defined(__linux) || defined(__APPLE__)
           ((Dl_info*)moduleHandle())->dli_fname;
-#  endif
       if (::realpath(path, name))
         module = name;
     }
@@ -70,13 +76,6 @@ ModuleType moduleType()   {
       type = ModuleType::UNKNOWN;
   }
   return type;
-}
-
-/// Retrieve processhandle
-void* processHandle()   {
-  static long pid = ::getpid();
-  static void* hP = (void*)pid;
-  return hP;
 }
 
 void setModuleHandle(ImageHandle handle)    {
