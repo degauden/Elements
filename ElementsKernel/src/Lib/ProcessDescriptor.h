@@ -2,6 +2,8 @@
 #ifndef ELEMENTSKERNEL_PROCESS_H
 #define ELEMENTSKERNEL_PROCESS_H
 
+#include <sys/types.h>
+
 // Framework include files
 #include "ElementsKernel/Kernel.h"
 #include "ElementsKernel/SystemBase.h"
@@ -105,19 +107,17 @@ struct KERNEL_USER_TIMES {
  * @author Sebastien Ponce
  */
 class ProcessDescriptor {
-  class ProcessHandle {
-    void* m_handle;
-    bool m_needRelease;
-  public:
-    ProcessHandle(long pid);
-    virtual ~ProcessHandle();
-    long item() {
-      return m_needRelease ? true : false ;
-    }
-    void* handle() {
-      return m_handle;
-    }
-  };
+public:
+  ProcessDescriptor();
+  virtual ~ProcessDescriptor();
+  long query(pid_t pid, InfoType info, PROCESS_BASIC_INFORMATION* buffer);
+  long query(pid_t pid, InfoType info, POOLED_USAGE_AND_LIMITS* buffer);
+  long query(pid_t pid, InfoType info, KERNEL_USER_TIMES* buffer);
+  long query(pid_t pid, InfoType info, QUOTA_LIMITS* buffer);
+  long query(pid_t pid, InfoType info, VM_COUNTERS* buffer);
+  long query(pid_t pid, InfoType info, IO_COUNTERS* buffer);
+  long query(pid_t pid, InfoType info, long* buffer);
+private:
   long m_PRIORITYBOOST[2]{};
   IO_COUNTERS m_IO_COUNTERS[2]{};
   VM_COUNTERS m_VM_COUNTERS[2]{};
@@ -125,16 +125,6 @@ class ProcessDescriptor {
   POOLED_USAGE_AND_LIMITS m_POOLED_USAGE_AND_LIMITS[2]{};
   QUOTA_LIMITS m_QUOTA_LIMITS[2]{};
   PROCESS_BASIC_INFORMATION m_PROCESS_BASIC_INFORMATION[2]{};
-public:
-  ProcessDescriptor();
-  virtual ~ProcessDescriptor();
-  long query(long pid, InfoType info, PROCESS_BASIC_INFORMATION* buffer);
-  long query(long pid, InfoType info, POOLED_USAGE_AND_LIMITS* buffer);
-  long query(long pid, InfoType info, KERNEL_USER_TIMES* buffer);
-  long query(long pid, InfoType info, QUOTA_LIMITS* buffer);
-  long query(long pid, InfoType info, VM_COUNTERS* buffer);
-  long query(long pid, InfoType info, IO_COUNTERS* buffer);
-  long query(long pid, InfoType info, long* buffer);
 };
 }
 }
