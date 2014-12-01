@@ -29,6 +29,8 @@ namespace Elements {
 namespace System {
 /// Definition of an image handle
 typedef void* ImageHandle;
+/// Definition of the process handle
+typedef void* ProcessHandle;
 /// Definition of the "generic" DLL entry point function
 typedef unsigned long (*EntryPoint)(const unsigned long iid, void** ppvObject);
 /// Definition of the "generic" DLL entry point function

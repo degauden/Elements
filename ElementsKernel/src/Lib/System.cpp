@@ -36,6 +36,7 @@ using namespace std;
 
 static const char* SHLIB_SUFFIX = ".so";
 
+
 // Note: __attribute__ is a GCC keyword available since GCC 3.4
 #ifndef __GNUC__
 // non-GCC
