@@ -40,9 +40,7 @@ const string& Elements::System::moduleNameFull()   {
       char name[PATH_MAX] = {"Unknown.module"};
       name[0] = 0;
       const char *path =
-#  if defined(__linux) || defined(__APPLE__)
           ((Dl_info*)moduleHandle())->dli_fname;
-#  endif
       if (::realpath(path, name))
         module = name;
     }
