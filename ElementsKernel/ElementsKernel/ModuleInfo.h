@@ -20,6 +20,8 @@ enum class ModuleType {
 };
 /// Definition of an image handle
 typedef void* ImageHandle;
+/// Definition of the process handle
+typedef void* ProcessHandle;
 /// Get the name of the (executable/DLL) file without file-type
 ELEMENTS_API const std::string& moduleName();
 /// Get the full name of the (executable/DLL) file
@@ -27,7 +29,7 @@ ELEMENTS_API const std::string& moduleNameFull();
 /// Get type of the module
 ELEMENTS_API ModuleType moduleType();
 /// Handle to running process
-ELEMENTS_API void* processHandle();
+ELEMENTS_API ProcessHandle processHandle();
 /// Handle to currently executed module
 ELEMENTS_API ImageHandle moduleHandle();
 /// Handle to the executable file running

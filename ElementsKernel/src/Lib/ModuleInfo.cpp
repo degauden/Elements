@@ -6,9 +6,6 @@
 #include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/System.h"
 
-#include "ProcessHandle.h"
-#include "ProcessID.h"
-
 #include <cerrno>
 #include <string.h>
 #include <sys/times.h>
@@ -20,20 +17,11 @@
 
 using namespace std;
 
+static Elements::System::ImageHandle      ModuleHandle = 0;
 static vector<string> s_linkedModules;
 
-namespace Elements {
-namespace System {
-
-void* processHandle()   {
-  return reinterpret_cast<void*>(static_cast<pid_t>(MY_PID));
-}
-
-
-static ImageHandle      ModuleHandle = 0;
-
 /// Retrieve base name of module
-const string& moduleName()   {
+const string& Elements::System::moduleName()   {
   static string module("");
   if ( module == "" )   {
     if ( processHandle() && moduleHandle() )    {
@@ -45,14 +33,16 @@ const string& moduleName()   {
 }
 
 /// Retrieve full name of module
-const string& moduleNameFull()   {
+const string& Elements::System::moduleNameFull()   {
   static string module("");
   if ( module == "" )   {
     if ( processHandle() && moduleHandle() )    {
       char name[PATH_MAX] = {"Unknown.module"};
       name[0] = 0;
       const char *path =
+#  if defined(__linux) || defined(__APPLE__)
           ((Dl_info*)moduleHandle())->dli_fname;
+#  endif
       if (::realpath(path, name))
         module = name;
     }
@@ -61,37 +51,44 @@ const string& moduleNameFull()   {
 }
 
 /// Get type of the module
-ModuleType moduleType()   {
-  static ModuleType type = ModuleType::UNKNOWN;
-  if ( type == ModuleType::UNKNOWN )    {
+Elements::System::ModuleType Elements::System::moduleType()   {
+  static ModuleType type = Elements::System::ModuleType::UNKNOWN;
+  if ( type == Elements::System::ModuleType::UNKNOWN )    {
     const string& module = moduleNameFull();
     int loc = module.rfind('.')+1;
     if ( loc == 0 )
-      type = ModuleType::EXECUTABLE;
+      type = Elements::System::ModuleType::EXECUTABLE;
     else if ( module[loc] == 'e' || module[loc] == 'E' )
-      type = ModuleType::EXECUTABLE;
+      type = Elements::System::ModuleType::EXECUTABLE;
     else if ( module[loc] == 's' && module[loc+1] == 'o' )
-      type = ModuleType::SHAREDLIB;
+      type = Elements::System::ModuleType::SHAREDLIB;
     else
-      type = ModuleType::UNKNOWN;
+      type = Elements::System::ModuleType::UNKNOWN;
   }
   return type;
 }
 
-void setModuleHandle(ImageHandle handle)    {
+/// Retrieve processhandle
+void* Elements::System::processHandle()   {
+  static long pid = ::getpid();
+  static void* hP = (void*)pid;
+  return hP;
+}
+
+void Elements::System::setModuleHandle(Elements::System::ImageHandle handle)    {
   ModuleHandle = handle;
 }
 
-ImageHandle moduleHandle()    {
+Elements::System::ImageHandle Elements::System::moduleHandle()    {
   if ( 0 == ModuleHandle )    {
     if ( processHandle() )    {
       static Dl_info info;
       if ( 0 !=
            ::dladdr(
 #if __GNUC__ < 4
-               (void*)moduleHandle
+               (void*)Elements::System::moduleHandle
 #else
-               FuncPtrCast<void*>(moduleHandle)
+               FuncPtrCast<void*>(Elements::System::moduleHandle)
 #endif
                , &info) ) {
 	return &info;
@@ -101,7 +98,7 @@ ImageHandle moduleHandle()    {
   return ModuleHandle;
 }
 
-ImageHandle exeHandle()    {
+Elements::System::ImageHandle Elements::System::exeHandle()    {
   // This does NOT work!
   static Dl_info infoBuf, *info = &infoBuf;
   if ( 0 == info ) {
@@ -121,7 +118,7 @@ ImageHandle exeHandle()    {
   return info;
 }
 
-const string& exeName()    {
+const string& Elements::System::exeName()    {
   static string module("");
   if ( module.length() == 0 )    {
     char name[PATH_MAX] = {"Unknown.module"};
@@ -135,7 +132,7 @@ const string& exeName()    {
   return module;
 }
 
-const vector<string> linkedModules()    {
+const vector<string> Elements::System::linkedModules()    {
   if ( s_linkedModules.size() == 0 )    {
     char ff[512], cmd[1024], fname[1024], buf1[64], buf2[64], buf3[64], buf4[64];
     ::sprintf(ff, "/proc/%d/maps", ::getpid());
@@ -151,7 +148,3 @@ const vector<string> linkedModules()    {
   }
   return s_linkedModules;
 }
-
-} // namespace System
-
-} // namespace Euclid
