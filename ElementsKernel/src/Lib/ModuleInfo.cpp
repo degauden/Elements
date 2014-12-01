@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 #include "ElementsKernel/ModuleInfo.h"
-#include "ElementsKernel/System.h"
+#include "ElementsKernel/FuncPtrCast.h"
 
 #include <cerrno>
 #include <string.h>

@@ -14,6 +14,8 @@
 #define SYSTEM_SYSTEM_CPP
 
 #include "ElementsKernel/System.h"
+#include "ElementsKernel/FuncPtrCast.h"
+
 
 #include <cstdlib>                      // for free, getenv, malloc, etc
 #include <typeinfo>                     // for type_info
