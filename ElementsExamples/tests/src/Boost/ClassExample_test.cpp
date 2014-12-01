@@ -22,7 +22,7 @@ using namespace std;
  */
 struct ClassExampleFixture {
 
-  ClassExample* m_class_example_ptr { nullptr };
+  Elements::ClassExample* m_class_example_ptr { nullptr };
 
   // Some numbers to feed the constructor
   const int64_t m_source_id { 16253 };
@@ -43,11 +43,11 @@ struct ClassExampleFixture {
 
   ClassExampleFixture() {
     // call the constructor
-    m_class_example_ptr = new ClassExample(m_source_id, m_ra, m_dec);
+    m_class_example_ptr = new Elements::ClassExample(m_source_id, m_ra, m_dec);
   }
 
   ClassExampleFixture(const ClassExampleFixture& other)
-  : m_class_example_ptr(new ClassExample(*(other.m_class_example_ptr))){
+  : m_class_example_ptr(new Elements::ClassExample(*(other.m_class_example_ptr))){
   }
 
   ~ClassExampleFixture() {
