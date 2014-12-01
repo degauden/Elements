@@ -13,7 +13,7 @@ elements_add_library(ElementsExamples src/Lib/*.cpp
                     PUBLIC_HEADERS ElementsExamples)
 
 #===== Executables =============================================================
-elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExample.cpp
+elements_add_executable(ElementsProgramExample src/Program/ProgramExample.cpp
                         LINK_LIBRARIES Boost ElementsExamples
                         INCLUDE_DIRS Boost ElementsExamples)
 

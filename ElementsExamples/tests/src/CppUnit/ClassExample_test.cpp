@@ -56,7 +56,7 @@ protected:
 
 private:
 
-  ClassExample* m_class_example_ptr { nullptr };
+  Elements::ClassExample* m_class_example_ptr { nullptr };
 
   // Some numbers to feed the constructor
   const int64_t m_source_id { 16253 };
@@ -81,7 +81,7 @@ private:
 
 
 void ClassExampleSuite::setUp() {
-  m_class_example_ptr = new ClassExample(m_source_id, m_ra, m_dec);
+  m_class_example_ptr = new Elements::ClassExample(m_source_id, m_ra, m_dec);
 }
 
 void ClassExampleSuite::tearDown() {

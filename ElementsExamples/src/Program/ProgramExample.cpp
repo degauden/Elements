@@ -44,6 +44,9 @@ namespace po = boost::program_options;
 
 using namespace std;
 
+namespace Elements {
+
+
 /**
  * @class ElementsProgramExample
  * @brief
@@ -52,20 +55,20 @@ using namespace std;
  * 		This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
  * 		conveniently to write a new program.
  */
-class ElementsProgramExample: public Elements::Program {
+class ProgramExample: public Program {
 
 public:
 
   /**
    * @brief Constructor
    */
-  ElementsProgramExample() {
+  ProgramExample() {
   }
 
   /**
    * @brief Destructor
    */
-  virtual ~ElementsProgramExample() {
+  virtual ~ProgramExample() {
   }
 
   /**
@@ -120,10 +123,10 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  Elements::ExitCode mainMethod(map<std::string, po::variable_value>& args) {
+  ExitCode mainMethod(map<std::string, po::variable_value>& args) {
 
     // Get logger and log the entry into the mainMethod
-    Elements::Logging logger = Elements::Logging::getLogger("ElementsProgramExample");
+    Logging logger = Logging::getLogger("ElementsProgramExample");
 
     logger.info("#");
     logger.info(
@@ -156,7 +159,7 @@ public:
       double a_double = static_cast<double>(long_long_value);
       classExample.summingAndDividing(a_double, double_value);
 
-    } catch (const Elements::Exception & e) {
+    } catch (const Exception & e) {
       logger.info("#");
       logger.info("  In ElementsProgramExample::mainMethod(),");
       logger.info("      an exception: ");
@@ -168,7 +171,7 @@ public:
           "      Pretending we do not know what to do, it is thrown again");
       logger.info("      (to show what happens when a program crashes)");
       logger.info("#");
-      throw Elements::Exception(e.what());
+      throw Exception(e.what());
     }
 
     // Get the result and log it
@@ -181,7 +184,7 @@ public:
      * Here we might later introduce a standard mechanism to persist results
      */
 
-    return Elements::ExitCode::OK;
+    return ExitCode::OK;
 
   }
 
@@ -190,12 +193,14 @@ public:
    * This must be copy/paste in all programs
    */
   string getVersion() {
-    return Elements::getVersionFromSvnKeywords(SVN_URL, SVN_ID);
+    return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
   }
 };
+
+} // namespace Elements
 
 /*
  * Implementation of a main using a base class macro
  * This must be copy/paste in all programs
  */
-MAIN_FOR(ElementsProgramExample)
+MAIN_FOR(Elements::ProgramExample)

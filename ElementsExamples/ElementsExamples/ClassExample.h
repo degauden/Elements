@@ -12,6 +12,8 @@
 #include "ElementsKernel/Export.h"
 
 
+namespace Elements {
+
 /**
  * @class ClassExample
  * @brief
@@ -145,5 +147,7 @@ private:
   double m_result { 0.0 };
 
 };
+
+} // namespace Elements
 
 #endif /* CLASSEXAMPLE_H_ */
