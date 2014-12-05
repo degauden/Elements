@@ -12,6 +12,14 @@ if(SGS_COMP STREQUAL "clang")
 endif()
 
 
+if(NOT BUILD_PREFIX_NAME)
+  set(BUILD_PREFIX_NAME "build" CACHE STRING "Prefix name for the build directory" FORCE)
+endif()
+
+message(STATUS "The build prefix is set to ${BUILD_PREFIX_NAME}")
+set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DBUILD_PREFIX_NAME:STRING=${BUILD_PREFIX_NAME}")
+
+
 # Special defaults
 if ( (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[7-9]")
     OR (SGS_COMP STREQUAL clang AND SGS_COMPVERS MATCHES "3[0-3]") )
@@ -172,7 +180,7 @@ if(NOT ELEMENTS_FLAGS_SET)
     set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
         CACHE STRING "Flags used by the linker during the creation of modules."
         FORCE)
-    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags ${CMAKE_EXE_LINKER_FLAGS}"
+    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}"
         CACHE STRING "Flags used by the linker during the creation of exe's."
         FORCE)
   endif()

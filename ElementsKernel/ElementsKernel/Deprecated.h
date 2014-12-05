@@ -8,6 +8,8 @@
 #ifndef ELEMENTSKERNEL_DEPRECATED_H_
 #define ELEMENTSKERNEL_DEPRECATED_H_
 
+#include "ElementsKernel/Attribute.h"
+
 #if __GNUC__ >= 4
 #  ifndef ELEMENTS_DEPRECATED
 /**

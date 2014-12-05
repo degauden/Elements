@@ -21,6 +21,7 @@
 #ifndef ELEMENTS_EXPORT_H_
 #define ELEMENTS_EXPORT_H_
 
+#include "ElementsKernel/Attribute.h"
 
 // ---------------------------------- Symbol visibility macros (begin)
 // Enabled on in Elements v21 mode

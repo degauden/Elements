@@ -8,19 +8,18 @@ find_package(CppUnit)
 
 #===== Libraries ===============================================================
 elements_add_library(ElementsExamples src/Lib/*.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ElementsKernel
-                  INCLUDE_DIRS Boost ElementsKernel
-                  PUBLIC_HEADERS ElementsExamples)
+                    LINK_LIBRARIES Boost ElementsKernel
+                    INCLUDE_DIRS Boost ElementsKernel
+                    PUBLIC_HEADERS ElementsExamples)
 
 #===== Executables =============================================================
-elements_add_executable(ElementsProgramExample src/Program/ElementsProgramExample.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ElementsExamples
-                  INCLUDE_DIRS Boost ElementsExamples
-                  PUBLIC_HEADERS ElementsExamples)
+elements_add_executable(ElementsProgramExample src/Program/ProgramExample.cpp
+                        LINK_LIBRARIES Boost ElementsExamples
+                        INCLUDE_DIRS Boost ElementsExamples)
 
 elements_add_executable(ElementsSimpleProgramExample src/Program/SimpleProgramExample.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} ElementsKernel
-                  INCLUDE_DIRS ElementsKernel)
+                        LINK_LIBRARIES ElementsKernel
+                        INCLUDE_DIRS ElementsKernel)
 
 #===== Python programs =========================================================
 elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramExample)
@@ -30,6 +29,7 @@ elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramE
 # the test is Boost.
 elements_add_unit_test(BoostClassExample tests/src/Boost/ClassExample_test.cpp
                        EXECUTABLE BoostClassExample_test
+                       INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 # Example with explict TestMain.cpp. Please mind the "unit_test_framework" in the boost components
@@ -37,10 +37,12 @@ elements_add_unit_test(BoostClassExample tests/src/Boost/ClassExample_test.cpp
 # LINK_LIBRARIES argument.
 elements_add_unit_test(BoostClassExampleWithMain tests/src/Boost/ClassExample_test.cpp tests/src/Boost/TestMain.cpp
                        EXECUTABLE BoostClassExampleWithMain_test
-                       LINK_LIBRARIES ElementsExamples Boost)
+                       INCLUDE_DIRS Boost ElementsExamples
+                       LINK_LIBRARIES Boost ElementsExamples)
 
 
 elements_add_unit_test(BoostElementsExampleAllTests tests/src/Boost/*_test.cpp
+                       INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 #===== CppUnit tests =============================================================
@@ -49,12 +51,14 @@ if(CPPUNIT_FOUND)
 # CppUnit Type test
 elements_add_unit_test(OtherClassExample tests/src/CppUnit/ClassExample_test.cpp
                        EXECUTABLE OtherClassExample_test
+                       INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE CppUnit)
 
 # Test with the CppUnit library. The TestMain.cpp is not generated
 elements_add_unit_test(OtherClassExampleWithMain tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
                        EXECUTABLE OtherClassExampleWithMain_test
-                       LINK_LIBRARIES ElementsExamples CppUnit)
+                       INCLUDE_DIRS CppUnit ElementsExamples
+                       LINK_LIBRARIES CppUnit ElementsExamples)
 endif()
 
 

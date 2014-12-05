@@ -112,30 +112,6 @@ ELEMENTS_API bool backTrace(std::string& btrace, const int depth,
 ELEMENTS_API bool getStackLevel(void* addresses __attribute__ ((unused)), void*& addr __attribute__ ((unused)), std::string& fnc __attribute__ ((unused)),
     std::string& lib __attribute__ ((unused)));
 
-#if __GNUC__ >= 4
-/// Small helper function that allows the cast from void * to function pointer
-/// and vice versa without the message
-/// <verbatim>
-/// warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
-/// </verbatim>
-/// It is an ugly trick but works.<br/>
-/// See:
-/// <ul>
-///  <li>http://www.trilithium.com/johan/2004/12/problem-with-dlsym/</li>
-///  <li>http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_active.html#573</li>
-///  <li>http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#195</li>
-/// </ul>
-template<typename DESTPTR, typename SRCPTR>
-inline DESTPTR FuncPtrCast(SRCPTR ptr) {
-  union {
-    SRCPTR src;
-    DESTPTR dst;
-  } p2p;
-  p2p.src = ptr;
-  return p2p.dst;
-}
-#endif
-
 } // end of namespace System
 } // end of namespace Elements
 
