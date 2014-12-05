@@ -14,6 +14,8 @@
 #define SYSTEM_SYSTEM_CPP
 
 #include "ElementsKernel/System.h"
+#include "ElementsKernel/FuncPtrCast.h"
+
 
 #include <cstdlib>                      // for free, getenv, malloc, etc
 #include <typeinfo>                     // for type_info
@@ -31,17 +33,12 @@
 #include <sys/utsname.h>
 
 #include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
+#include "ElementsKernel/Unused.h"   // for ELEMENTS_UNUSED
 
 using namespace std;
 
 static const char* SHLIB_SUFFIX = ".so";
 
-
-// Note: __attribute__ is a GCC keyword available since GCC 3.4
-#ifndef __GNUC__
-// non-GCC
-#  define __attribute__(x)
-#endif
 
 static vector<string> s_argvStrings;
 static vector<const char*> s_argvChars;
@@ -445,8 +442,8 @@ ThreadHandle threadSelf() {
 #include <execinfo.h>
 #endif
 
-int backTrace(void** addresses __attribute__ ((unused)),
-                       const int depth __attribute__ ((unused)))
+int backTrace(void** addresses ELEMENTS_UNUSED,
+              const int depth ELEMENTS_UNUSED)
 {
 
 #ifdef __linux
@@ -495,10 +492,10 @@ bool backTrace(string& btrace, const int depth, const int offset)
   return true;
 }
 
-bool getStackLevel(void* addresses  __attribute__ ((unused)),
-                           void*& addr      __attribute__ ((unused)),
-                           string& fnc __attribute__ ((unused)),
-                           string& lib __attribute__ ((unused)))
+bool getStackLevel(void* addresses ELEMENTS_UNUSED,
+                   void*& addr ELEMENTS_UNUSED,
+                   string& fnc ELEMENTS_UNUSED,
+                   string& lib ELEMENTS_UNUSED)
 {
 
 #ifdef __linux

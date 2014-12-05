@@ -12,6 +12,8 @@
 #include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Exception.h"
 
+namespace Elements {
+
 
 std::string ClassExample::s_static_string = "This is a static field example";
 
@@ -72,3 +74,5 @@ double ClassExample::divideNumbers(double first, double second) const {
   }
   return first / second;
 }
+
+} // namespace Elements

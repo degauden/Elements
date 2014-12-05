@@ -555,7 +555,7 @@ macro(elements_project project version)
   set(CPACK_PACKAGE_RELEASE 1)
   set(CPACK_PACKAGE_VENDOR "The Euclid Consortium")
 
-  set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/build\\\\..*/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
+  set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/${BUILD_PREFIX_NAME}\\\\..*/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
 
   # RPM packaging specific stuff
   set(CPACK_RPM_PACKAGE_RELOCATABLE TRUE)
@@ -586,6 +586,17 @@ macro(elements_project project version)
     endforeach()
     #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
+
+#------------------------------------------------------------------------------
+  get_property(cmake_extra_flags GLOBAL PROPERTY CMAKE_EXTRA_FLAGS)
+
+  if(cmake_extra_flags)
+    foreach(_do ${cmake_extra_flags})
+      set(CPACK_EXTRA_CMAKEFLAGS "${CPACK_EXTRA_CMAKEFLAGS} ${_do}")
+    endforeach()
+    #message(STATUS "The extra CMake flags: ${CPACK_EXTRA_CMAKEFLAGS}")
+  endif()
+
 
 #------------------------------------------------------------------------------
   get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
@@ -722,7 +733,7 @@ macro(elements_project project version)
 
     add_custom_target(targz
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_TARGZ_DIR}
-                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "build.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
+                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "${BUILD_PREFIX_NAME}.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                       COMMENT "Generating The Source TarBall ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz" VERBATIM
     )
@@ -1353,7 +1364,7 @@ function(elements_get_packages var)
   file(GLOB_RECURSE cmakelist_files RELATIVE ${CMAKE_SOURCE_DIR} CMakeLists.txt)
   foreach(file ${cmakelist_files})
     # ignore the source directory itself and files in the build directory
-    if(NOT file STREQUAL CMakeLists.txt AND NOT (file MATCHES "^${rel_build_dir}" OR file MATCHES "^build\\."))
+    if(NOT file STREQUAL CMakeLists.txt AND NOT (file MATCHES "^${rel_build_dir}" OR file MATCHES "^${BUILD_PREFIX_NAME}\\."))
       get_filename_component(package ${file} PATH)
       list(APPEND packages ${package})
     endif()

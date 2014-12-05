@@ -11,12 +11,13 @@
 
 // local
 using namespace std;
-using namespace Elements;
 
 // architecture dependent includes
 
 #include <sys/time.h>
 
+
+namespace Elements {
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : Elements::Time
@@ -289,5 +290,7 @@ Time Time::fromDosDate(unsigned dosDate) {
 
   return Time(mktime(&localtm), 0);
 }
+
+} // namespace Elements
 
 //=============================================================================
