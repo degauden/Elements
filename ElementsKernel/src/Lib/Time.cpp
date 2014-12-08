@@ -49,11 +49,11 @@ Time::Time(int year, int month, int day, int hour, int min, int sec,
 /** Return the current system time.  */
 Time Time::current(void) {
   timeval tv;
-  if (gettimeofday(&tv, 0) != 0) {
+  if (::gettimeofday(&tv, 0) != 0) {
     char buf[256];
     ostringstream tag, msg;
     tag << "errno=" << errno;
-    if (strerror_r(errno, buf, 256) == 0) {
+    if (::strerror_r(errno, buf, 256) == 0) {
       msg << buf;
     } else {
       msg << "Unknown error retrieving current time";
@@ -73,7 +73,7 @@ Time Time::current(void) {
 /** Construct a time from local time @a base and a delta @a diff. */
 Time Time::build(bool local, const tm &base, TimeSpan diff /* = 0 */) {
   tm tmp(base);
-  return Time(local ? mktime(&tmp) : timegm(&tmp), 0) + diff;
+  return Time(local ? ::mktime(&tmp) : ::timegm(&tmp), 0) + diff;
 }
 
 /** Break up the time to the standard representation, either in UTC
@@ -88,9 +88,9 @@ tm Time::split(bool local, int *nsecpart /* = 0 */) const {
 
   tm retval;
   if (local)
-    localtime_r(&val, &retval);
+    ::localtime_r(&val, &retval);
   else
-    gmtime_r(&val, &retval);
+    ::gmtime_r(&val, &retval);
 
   return retval;
 }
@@ -279,7 +279,7 @@ Time Time::fromDosDate(unsigned dosDate) {
   // issue.  Since not much can be known about the origin of the DOS
   // times, it's generally best to present them as such (= in UTC).
   struct tm localtm;
-  memset(&localtm, 0, sizeof(localtm));
+  ::memset(&localtm, 0, sizeof(localtm));
   localtm.tm_mday = (dosDate >> 16) & 0x1f;
   localtm.tm_mon = ((dosDate >> 21) & 0xf) - 1;
   localtm.tm_year = ((dosDate >> 25) & 0x7f) + 80;
@@ -288,7 +288,7 @@ Time Time::fromDosDate(unsigned dosDate) {
   localtm.tm_sec = (dosDate & 0x1f) * 2;
   localtm.tm_isdst = -1;
 
-  return Time(mktime(&localtm), 0);
+  return Time(::mktime(&localtm), 0);
 }
 
 } // namespace Elements
