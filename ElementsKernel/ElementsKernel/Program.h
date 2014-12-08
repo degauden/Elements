@@ -19,7 +19,7 @@
 
 namespace Elements {
 
-static const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
+const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
 
 // Forward declaration
 enum class ExitCode;
@@ -79,7 +79,7 @@ protected:
    * @details
    *  This is the second method that must be implemented by all Elements programs. It
    *  represents the entry point, called from run(int argc,char* argv[]).
-   * 
+   *
    * @param args
    *    A map containing the values given by the user for the program options
    *    defined by the defineSpecificProgramOptions() method
