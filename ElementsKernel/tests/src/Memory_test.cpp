@@ -86,5 +86,11 @@ int main(int /* argc */, char** /* argv */) {
       << setw(8) << right << virtualMemoryLimit(MByte, InfoType::Quota, -1) << " MB "
       << setw(4) << right << virtualMemoryLimit(GByte, InfoType::Quota, -1) << " GB "
       << endl;
+
+  if( (p != nullptr) ) {
+    ::free(p);
+    p = nullptr;
+  }
+
   return 0;
 }
