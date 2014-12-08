@@ -93,7 +93,7 @@ vector<fs::path> pathSearchInEnvVariable(std::string file_name,
   vector<fs::path> single_path_results { };
 
   // get the multiple path from the environment variable
-  char * multiple_path_ptr = getenv(path_like_env_variable.c_str());
+  char * multiple_path_ptr = ::getenv(path_like_env_variable.c_str());
   if (multiple_path_ptr == nullptr) {
     stringstream errorBuffer;
     errorBuffer << "Environment variable: " << path_like_env_variable.c_str()

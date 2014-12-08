@@ -269,7 +269,7 @@ const string typeinfoName( const char* class_name) {
       realname = abi::__cxa_demangle(class_name, 0, 0, &status);
       if (realname == 0) return class_name;
       result = realname;
-      free(realname);
+      ::free(realname);
       /// substitute ', ' with ','
       string::size_type pos = result.find(", ");
       while( string::npos != pos ) {
@@ -359,7 +359,7 @@ const vector<string> cmdLineArgs()    {
     FILE *cmdLine = ::fopen(exe,"r");
     char cmd[1024];
     if ( cmdLine )   {
-      long len = fread(cmd, sizeof(char), sizeof(cmd), cmdLine);
+      long len = ::fread(cmd, sizeof(char), sizeof(cmd), cmdLine);
       if ( len > 0 )   {
         cmd[len] = 0;
         for ( char* token = cmd; token-cmd < len; token += strlen(token)+1 )  {
@@ -502,7 +502,7 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED,
 
   Dl_info info;
 
-  if ( dladdr( addresses, &info ) && info.dli_fname
+  if ( ::dladdr( addresses, &info ) && info.dli_fname
       && info.dli_fname[0] != '\0' ) {
     const char* symbol = info.dli_sname
     && info.dli_sname[0] != '\0' ? info.dli_sname : 0;
@@ -518,7 +518,7 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED,
     } else {
       fnc = "local";
     }
-    free((void*)dmg);
+    ::free((void*)dmg);
     return true ;
   } else {
     return false ;
