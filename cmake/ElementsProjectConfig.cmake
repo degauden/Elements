@@ -203,7 +203,7 @@ macro(elements_project project version)
   # Note: it's a bit a duplicate of the one used in elements_external_project_environment
   #       but we need it here because the other one is meant to include also
   #       the external libraries required by the subdirectories.
-  set(binary_paths)
+  set(binary_paths $ENV{CMAKE_PREFIX_PATH}/scripts)
 
   # environment description
   set(project_environment)
