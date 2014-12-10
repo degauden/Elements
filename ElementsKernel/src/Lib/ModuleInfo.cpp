@@ -88,14 +88,8 @@ ImageHandle moduleHandle()    {
     if ( processHandle() )    {
       static Dl_info info;
       if ( 0 !=
-           ::dladdr(
-#if __GNUC__ < 4
-               (void*)moduleHandle
-#else
-               FuncPtrCast<void*>(moduleHandle)
-#endif
-               , &info) ) {
-	return &info;
+           ::dladdr(FuncPtrCast<void*>(moduleHandle), &info) ) {
+        return &info;
       }
     }
   }
