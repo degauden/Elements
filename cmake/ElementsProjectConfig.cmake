@@ -7,6 +7,16 @@
 
 cmake_minimum_required(VERSION 2.8.5)
 
+# FIXME: use of LOCATION property is deprecated and should be replaced with the
+#        generator expression $<TARGET_FILE>, but the way we use it requires
+#        CMake >= 2.8.12, so we must keep the old behavior until we bump the
+#        cmake_minimum_required version. (policy added in CMake 3.0)
+if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
+  cmake_policy(SET CMP0026 OLD)
+endif()
+
+
+
 # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
 if(NOT CMAKE_MODULE_PATH)
   # Note: this works even if the envirnoment variable is not set.
@@ -193,7 +203,7 @@ macro(elements_project project version)
   # Note: it's a bit a duplicate of the one used in elements_external_project_environment
   #       but we need it here because the other one is meant to include also
   #       the external libraries required by the subdirectories.
-  set(binary_paths)
+  set(binary_paths $ENV{CMAKE_PREFIX_PATH}/scripts)
 
   # environment description
   set(project_environment)

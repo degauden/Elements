@@ -16,13 +16,11 @@
 #include "ElementsKernel/System.h"
 #include "ElementsKernel/FuncPtrCast.h"
 
-
 #include <cstdlib>                      // for free, getenv, malloc, etc
 #include <typeinfo>                     // for type_info
 #include <sstream>
 #include <iomanip>
 #include <iostream>
-
 
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
 #include <errno.h>                      // for errno
@@ -39,10 +37,8 @@ using namespace std;
 
 static const char* SHLIB_SUFFIX = ".so";
 
-
 static vector<string> s_argvStrings;
 static vector<const char*> s_argvChars;
-
 
 namespace Elements {
 namespace System {
@@ -50,27 +46,30 @@ namespace System {
 // --------------------------------------------------------------------------------------
 // Private functions
 // --------------------------------------------------------------------------------------
-static unsigned long doLoad(const string& name, ImageHandle* handle)  {
+static unsigned long doLoad(const string& name, ImageHandle* handle) {
 # if defined(__linux) || defined(__APPLE__)
-   const char* path = name.c_str();
-   void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
-   *handle = mh;
+  const char* path = name.c_str();
+  void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
+  *handle = mh;
 # endif
-  if ( 0 == *handle )   {
+  if (0 == *handle) {
     return getLastError();
   }
   return 1;
 }
 
-static unsigned long loadWithoutEnvironment(const string& name, ImageHandle* handle)    {
+static unsigned long loadWithoutEnvironment(const string& name,
+    ImageHandle* handle) {
 
   string dllName = name;
   unsigned long len = static_cast<unsigned long>(strlen(SHLIB_SUFFIX));
 
   // Add the suffix at the end of the library name only if necessary
   /// @todo cure the logic
-  if ((dllName.length() != 0) &&
-      ::strncasecmp(static_cast<const char *>(dllName.data()+dllName.length()-len), SHLIB_SUFFIX, len) != 0) {
+  if ((dllName.length() != 0)
+      && ::strncasecmp(
+          static_cast<const char *>(dllName.data() + dllName.length() - len),
+          SHLIB_SUFFIX, len) != 0) {
     dllName += SHLIB_SUFFIX;
   }
 
@@ -79,7 +78,6 @@ static unsigned long loadWithoutEnvironment(const string& name, ImageHandle* han
 }
 
 // --------------------------------------------------------------------------------------
-
 
 /// Load dynamic link library
 unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
@@ -91,7 +89,7 @@ unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
     // If the name is a logical name (environment variable), the try
     // to load the corresponding library from there.
     string imgName;
-    if ( getEnv(name, imgName) )    {
+    if (getEnv(name, imgName)) {
       res = loadWithoutEnvironment(imgName, handle);
     } else {
       // build the dll name
@@ -103,7 +101,7 @@ unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
       // try to locate the dll using the standard PATH
       res = loadWithoutEnvironment(dllName, handle);
     }
-    if ( res != 1 ) {
+    if (res != 1) {
 #if defined(__linux) || defined(__APPLE__)
       errno = 0xAFFEDEAD;
 #endif
@@ -113,19 +111,20 @@ unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
 }
 
 /// unload dynamic link library
-unsigned long unloadDynamicLib(ImageHandle handle)    {
-  ::dlclose( handle );
-  if ( 0 ) {
+unsigned long unloadDynamicLib(ImageHandle handle) {
+  ::dlclose(handle);
+  if (0) {
     return getLastError();
   }
   return 1;
 }
 
 /// Get a specific function defined in the DLL
-unsigned long getProcedureByName(ImageHandle handle, const string& name, EntryPoint* pFunction)    {
+unsigned long getProcedureByName(ImageHandle handle, const string& name,
+    EntryPoint* pFunction) {
 #if defined(__linux)
   *pFunction = FuncPtrCast<EntryPoint>(::dlsym(handle, name.c_str()));
-  if ( 0 == *pFunction )    {
+  if (0 == *pFunction) {
     errno = 0xAFFEDEAD;
     return 0;
   }
@@ -137,7 +136,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name, EntryPo
     string sname = "_" + name;
     *pFunction = (EntryPoint)::dlsym(handle, sname.c_str());
   }
-  if ( 0 == *pFunction )    {
+  if ( 0 == *pFunction ) {
     errno = 0xAFFEDEAD;
     std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
     return 0;
@@ -147,57 +146,57 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name, EntryPo
 }
 
 /// Get a specific function defined in the DLL
-unsigned long getProcedureByName(ImageHandle handle, const string& name, Creator* pFunction)    {
-  return getProcedureByName(handle, name, (EntryPoint*)pFunction);
+unsigned long getProcedureByName(ImageHandle handle, const string& name,
+    Creator* pFunction) {
+  return getProcedureByName(handle, name, (EntryPoint*) pFunction);
 }
 
 /// Retrieve last error code
-unsigned long getLastError()    {
+unsigned long getLastError() {
   // convert errno (int) to unsigned long
   return static_cast<unsigned long>(static_cast<unsigned int>(errno));
 }
 
 /// Retrieve last error code as string
-const string getLastErrorString()    {
+const string getLastErrorString() {
   const string errString = getErrorString(getLastError());
   return errString;
 }
 
 /// Retrieve error code as string for a given error
-const string getErrorString(unsigned long error)    {
-  string errString =  "";
+const string getErrorString(unsigned long error) {
+  string errString = "";
   char *cerrString(0);
   // Remember: for linux dl* routines must be handled differently!
-  if ( error == 0xAFFEDEAD ) {
-    cerrString = (char*)::dlerror();
-    if ( 0 == cerrString ) {
+  if (error == 0xAFFEDEAD) {
+    cerrString = (char*) ::dlerror();
+    if (0 == cerrString) {
       cerrString = ::strerror(error);
     }
-    if ( 0 == cerrString ) {
-      cerrString = (char *)"Unknown error. No information found in strerror()!";
-    }
-    else {
+    if (0 == cerrString) {
+      cerrString =
+          (char *) "Unknown error. No information found in strerror()!";
+    } else {
       errString = string(cerrString);
     }
     errno = 0;
-  }
-  else    {
+  } else {
     cerrString = ::strerror(error);
     errString = string(cerrString);
   }
   return errString;
 }
 
-const string typeinfoName( const std::type_info& tinfo) {
+const string typeinfoName(const std::type_info& tinfo) {
   return typeinfoName(tinfo.name());
 }
 
-const string typeinfoName( const char* class_name) {
+const string typeinfoName(const char* class_name) {
   string result;
-    if ( ::strlen(class_name) == 1 ) {
-      // See http://www.realitydiluted.com/mirrors/reality.sgi.com/dehnert_engr/cxx/abi.pdf
-      // for details
-      switch(class_name[0]) {
+  if (::strlen(class_name) == 1) {
+    // See http://www.realitydiluted.com/mirrors/reality.sgi.com/dehnert_engr/cxx/abi.pdf
+    // for details
+    switch (class_name[0]) {
       case 'v':
         result = "void";
         break;
@@ -261,31 +260,31 @@ const string typeinfoName( const char* class_name) {
       case 'z':
         result = "ellipsis";
         break;
-      }
     }
-    else  {
-      int   status;
-      char* realname;
-      realname = abi::__cxa_demangle(class_name, 0, 0, &status);
-      if (realname == 0) return class_name;
-      result = realname;
-      free(realname);
-      /// substitute ', ' with ','
-      string::size_type pos = result.find(", ");
-      while( string::npos != pos ) {
-        result.replace( pos , static_cast<string::size_type>(2) , "," ) ;
-        pos = result.find(", ");
-      }
+  } else {
+    int status;
+    char* realname;
+    realname = abi::__cxa_demangle(class_name, 0, 0, &status);
+    if (realname == 0)
+      return class_name;
+    result = realname;
+    ::free(realname);
+    /// substitute ', ' with ','
+    string::size_type pos = result.find(", ");
+    while (string::npos != pos) {
+      result.replace(pos, static_cast<string::size_type>(2), ",");
+      pos = result.find(", ");
     }
+  }
   return result;
 }
 
 /// Host name
 const string& hostName() {
   static string host = "";
-  if ( host == "" ) {
+  if (host == "") {
     char buffer[512];
-    memset(buffer,0,sizeof(buffer));
+    ::memset(buffer, 0, sizeof(buffer));
     ::gethostname(buffer, sizeof(buffer));
     host = buffer;
   }
@@ -303,7 +302,6 @@ const string& osName() {
   }
   return osname;
 }
-
 
 /// OS version
 const string& osVersion() {
@@ -332,42 +330,44 @@ const string& machineType() {
 /// User login name
 const string& accountName() {
   static string account = "";
-  if ( account == "" ) {
+  if (account == "") {
     const char* acct = ::getlogin();
-    if ( 0 == acct ) acct = ::getenv("LOGNAME");
-    if ( 0 == acct ) acct = ::getenv("USER");
+    if (0 == acct)
+      acct = ::getenv("LOGNAME");
+    if (0 == acct)
+      acct = ::getenv("USER");
     account = (acct) ? acct : "Unknown";
   }
   return account;
 }
 
 /// Number of arguments passed to the commandline
-long numCmdLineArgs()   {
+long numCmdLineArgs() {
   return cmdLineArgs().size();
 }
 
 /// Number of arguments passed to the commandline
-long argc()    {
+long argc() {
   return cmdLineArgs().size();
 }
 
 /// Const char** command line arguments including executable name as arg[0]
-const vector<string> cmdLineArgs()    {
-  if ( s_argvChars.size() == 0 )    {
+const vector<string> cmdLineArgs() {
+  if (s_argvChars.size() == 0) {
     char exe[1024];
     sprintf(exe, "/proc/%d/cmdline", ::getpid());
-    FILE *cmdLine = ::fopen(exe,"r");
+    FILE *cmdLine = ::fopen(exe, "r");
     char cmd[1024];
-    if ( cmdLine )   {
-      long len = fread(cmd, sizeof(char), sizeof(cmd), cmdLine);
-      if ( len > 0 )   {
+    if (cmdLine) {
+      long len = ::fread(cmd, sizeof(char), sizeof(cmd), cmdLine);
+      if (len > 0) {
         cmd[len] = 0;
-        for ( char* token = cmd; token-cmd < len; token += strlen(token)+1 )  {
+        for (char* token = cmd; token - cmd < len; token += strlen(token) + 1) {
           s_argvStrings.push_back(token);
-          s_argvChars.push_back( s_argvStrings.back().c_str());
+          s_argvChars.push_back(s_argvStrings.back().c_str());
         }
         s_argvStrings[0] = exeName();
-        s_argvChars[0]   = s_argvStrings[0].c_str();
+        s_argvChars[0] = s_argvStrings[0].c_str();
       }
       ::fclose(cmdLine);
     }
@@ -376,19 +376,20 @@ const vector<string> cmdLineArgs()    {
 }
 
 /// Const char** command line arguments including executable name as arg[0]
-char** argv()    {
+char** argv() {
   ///
-  if( s_argvChars.empty() ) { cmdLineArgs(); }  /// added by I.B.
+  if (s_argvChars.empty()) {
+    cmdLineArgs();
+  }  /// added by I.B.
   ///
   // We rely here on the fact that a vector's allocation table is contiguous
-  return (char**)&s_argvChars[0];
+  return (char**) &s_argvChars[0];
 }
-
 
 /// get a particular env var, return "UNKNOWN" if not defined
 string getEnv(const char* var) {
   char* env;
-  if  ( (env = getenv(var)) != 0 ) {
+  if ((env = ::getenv(var)) != 0) {
     return env;
   } else {
     return "UNKNOWN";
@@ -398,7 +399,7 @@ string getEnv(const char* var) {
 /// get a particular env var, storing the value in the passed string (if set)
 bool getEnv(const char* var, string &value) {
   char* env;
-  if  ( (env = getenv(var)) != 0 ) {
+  if ((env = ::getenv(var)) != 0) {
     value = env;
     return true;
   } else {
@@ -407,7 +408,7 @@ bool getEnv(const char* var, string &value) {
 }
 
 bool isEnvSet(const char* var) {
-  return getenv(var) != 0;
+  return ::getenv(var) != 0;
 }
 
 /// get all defined environment vars
@@ -420,7 +421,7 @@ vector<string> getEnv() {
   static char **environ = *_NSGetEnviron();
 #endif
   vector<string> vars;
-  for (int i=0; environ[i] != 0; ++i) {
+  for (int i = 0; environ[i] != 0; ++i) {
     vars.push_back(environ[i]);
   }
   return vars;
@@ -434,7 +435,6 @@ ThreadHandle threadSelf() {
 #endif
 }
 
-
 // -----------------------------------------------------------------------------
 // backtrace utilities
 // -----------------------------------------------------------------------------
@@ -443,13 +443,12 @@ ThreadHandle threadSelf() {
 #endif
 
 int backTrace(void** addresses ELEMENTS_UNUSED,
-              const int depth ELEMENTS_UNUSED)
-{
+    const int depth ELEMENTS_UNUSED) {
 
 #ifdef __linux
 
-  int count = ::backtrace( addresses, depth );
-  if ( count > 0 ) {
+  int count = ::backtrace(addresses, depth);
+  if (count > 0) {
     return count;
   } else {
     return 0;
@@ -461,51 +460,46 @@ int backTrace(void** addresses ELEMENTS_UNUSED,
 
 }
 
-bool backTrace(string& btrace, const int depth, const int offset)
-{
+bool backTrace(string& btrace, const int depth, const int offset) {
   // Always hide the first two levels of the stack trace (that's us)
   const int totalOffset = offset + 2;
   const int totalDepth = depth + totalOffset;
+  bool result = false;
 
   string fnc, lib;
 
-  void** addresses = (void**) malloc(totalDepth*sizeof(void *));
-  if ( addresses != 0 ){
-    int count = backTrace(addresses,totalDepth);
+  void** addresses = (void**) malloc(totalDepth * sizeof(void *));
+  if (addresses != NULL) {
+    int count = backTrace(addresses, totalDepth);
     for (int i = totalOffset; i < count; ++i) {
       void *addr = 0;
 
-      if (getStackLevel(addresses[i],addr,fnc,lib)) {
+      if (getStackLevel(addresses[i], addr, fnc, lib)) {
         ostringstream ost;
-        ost << "#" << setw(3) << setiosflags( ios::left ) << i-totalOffset+1;
+        ost << "#" << setw(3) << setiosflags(ios::left) << i - totalOffset + 1;
         ost << hex << addr << dec << " " << fnc << "  [" << lib << "]" << endl;
         btrace += ost.str();
       }
     }
-    free(addresses);
-  }
-  else {
-    free(addresses);
-    return false;
+    ::free(addresses);
+    addresses = NULL;
+    result = true;
   }
 
-  return true;
+  return result;
 }
 
-bool getStackLevel(void* addresses ELEMENTS_UNUSED,
-                   void*& addr ELEMENTS_UNUSED,
-                   string& fnc ELEMENTS_UNUSED,
-                   string& lib ELEMENTS_UNUSED)
-{
+bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
+    string& fnc ELEMENTS_UNUSED, string& lib ELEMENTS_UNUSED) {
 
 #ifdef __linux
 
   Dl_info info;
 
-  if ( dladdr( addresses, &info ) && info.dli_fname
-      && info.dli_fname[0] != '\0' ) {
-    const char* symbol = info.dli_sname
-    && info.dli_sname[0] != '\0' ? info.dli_sname : 0;
+  if (::dladdr(addresses, &info) && info.dli_fname
+      && info.dli_fname[0] != '\0') {
+    const char* symbol =
+        info.dli_sname && info.dli_sname[0] != '\0' ? info.dli_sname : 0;
 
     lib = info.dli_fname;
     addr = info.dli_saddr;
@@ -513,32 +507,31 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED,
 
     if (symbol != 0) {
       int stat;
-      dmg = abi::__cxa_demangle(symbol,0,0,&stat);
+      dmg = abi::__cxa_demangle(symbol, 0, 0, &stat);
       fnc = (stat == 0) ? dmg : symbol;
     } else {
       fnc = "local";
     }
-    free((void*)dmg);
-    return true ;
+    ::free((void*) dmg);
+    return true;
   } else {
-    return false ;
+    return false;
   }
 
 #else // not implemented for windows and osx
-  return false ;
+  return false;
 #endif
 
 }
 
 ///set an environment variables. @return 0 if successful, -1 if not
-int setEnv(const string &name, const string &value, int overwrite)
-{
+int setEnv(const string &name, const string &value, int overwrite) {
   // UNIX version
   return value.empty() ?
-    // remove if set to nothing (and return success)
-    ::unsetenv(name.c_str()) , 0 :
-    // set the value
-    ::setenv(name.c_str(),value.c_str(), overwrite);
+  // remove if set to nothing (and return success)
+      ::unsetenv(name.c_str()), 0 :
+      // set the value
+      ::setenv(name.c_str(), value.c_str(), overwrite);
 
 }
 
