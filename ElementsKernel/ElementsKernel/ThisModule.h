@@ -8,6 +8,11 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_THISMODULE_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_THISMODULE_H_
 
+#include <memory>
+#include <dlfcn.h>
+
+#include "ElementsKernel/FuncPtrCast.h"
+
 
 namespace Elements {
 namespace System {
@@ -19,7 +24,7 @@ static inline const Dl_info& getThisModuleInfo() {
 
   if ( this_module == nullptr) {
     this_module.reset(new Dl_info);
-    ::dladdr((void*)getThisModuleInfo, this_module.get());
+    ::dladdr(FuncPtrCast<void*>(getThisModuleInfo), this_module.get());
   }
 
   return *this_module;
