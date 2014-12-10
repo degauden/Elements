@@ -7,7 +7,6 @@
 
 #include "ElementsKernel/ThisModule.h"
 
-#include <iostream>
 #include <boost/test/unit_test.hpp>
 
 using namespace std;
@@ -21,9 +20,15 @@ BOOST_AUTO_TEST_CASE(ThisModuleName_test) {
   // Get the present module. Here this must be the test executable
   BOOST_CHECK_EQUAL(Elements::System::getThisModuleName(), "ThisModule_test");
 
-
 }
 
+BOOST_AUTO_TEST_CASE(ThisExeName_test) {
+
+  // Get the present module. Here this must be the test executable
+
+  BOOST_CHECK_EQUAL(Elements::System::getThisExecutableName(), "ThisModule_test");
+
+}
 
 
 //-----------------------------------------------------------------------------

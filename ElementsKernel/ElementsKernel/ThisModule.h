@@ -18,9 +18,9 @@ namespace Elements {
 namespace System {
 
 
-static std::unique_ptr<Dl_info> this_module;
-
 static inline const Dl_info& getThisModuleInfo() {
+
+  static std::unique_ptr<Dl_info> this_module;
 
   if ( this_module == nullptr) {
     this_module.reset(new Dl_info);
@@ -30,10 +30,14 @@ static inline const Dl_info& getThisModuleInfo() {
   return *this_module;
 }
 
-
 static inline std::string getThisModuleName() {
   return std::string(getThisModuleInfo().dli_fname);
 }
+
+const Dl_info& getThisExecutableInfo();
+
+std::string getThisExecutableName();
+
 
 } // namespace System
 } // namespace Elements
