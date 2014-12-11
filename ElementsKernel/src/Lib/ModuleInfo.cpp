@@ -38,6 +38,10 @@ bool ModuleInfo::isEmpty() const {
   return (m_dlinfo == nullptr);
 }
 
+ModuleInfo::operator const Dl_info&() const {
+    return *m_dlinfo;
+}
+
 static ImageHandle      ModuleHandle = 0;
 
 /// Retrieve base name of module

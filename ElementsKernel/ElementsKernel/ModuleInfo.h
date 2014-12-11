@@ -1,14 +1,14 @@
 #ifndef ELEMENTSKERNEL_MODULEINFO_H
 #define ELEMENTSKERNEL_MODULEINFO_H
 
-// Framework include files
-#include "ElementsKernel/Export.h" // ELEMENTS_API
 // STL include files
 #include <string>
 #include <vector>
 #include <memory>
 #include <dlfcn.h>
 
+// Framework include files
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 /** ModuleInfo: OS specific details to access at run-time the module
  configuration of the process.
 
@@ -22,6 +22,7 @@ public:
   ModuleInfo();
   ModuleInfo(void *);
   const std::string name() const;
+  operator const Dl_info&() const ;
   bool isEmpty() const;
 private:
   std::unique_ptr<Dl_info> m_dlinfo;
