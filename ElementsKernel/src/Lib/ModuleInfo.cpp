@@ -22,7 +22,21 @@ static vector<string> s_linkedModules;
 namespace Elements {
 namespace System {
 
+ModuleInfo::ModuleInfo() : m_dlinfo{nullptr} {
+}
 
+ModuleInfo::ModuleInfo(void *funct) {
+  m_dlinfo.reset(new Dl_info);
+  ::dladdr(FuncPtrCast<void*>(funct), m_dlinfo.get());
+}
+
+const string ModuleInfo::name() const {
+  return m_dlinfo->dli_fname ;
+}
+
+bool ModuleInfo::isEmpty() const {
+  return (m_dlinfo == nullptr);
+}
 
 static ImageHandle      ModuleHandle = 0;
 
