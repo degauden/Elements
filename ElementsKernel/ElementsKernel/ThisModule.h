@@ -11,32 +11,25 @@
 #include <memory>
 #include <dlfcn.h>
 
+#include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/FuncPtrCast.h"
 
 
 namespace Elements {
 namespace System {
 
-
-static inline const Dl_info& getThisModuleInfo() {
-
-  static std::unique_ptr<Dl_info> this_module;
-
-  if ( this_module == nullptr) {
-    this_module.reset(new Dl_info);
-    ::dladdr(FuncPtrCast<void*>(getThisModuleInfo), this_module.get());
+static inline const ModuleInfo& getThisModuleInfo() {
+  static ModuleInfo this_module;
+  if (this_module.isEmpty()) {
+    this_module = ModuleInfo(FuncPtrCast<void*>(getThisModuleInfo));
   }
 
-  return *this_module;
+  return this_module;
 }
 
-static inline std::string getThisModuleName() {
-  return std::string(getThisModuleInfo().dli_fname);
-}
 
-const Dl_info& getThisExecutableInfo();
+const ModuleInfo& getThisExecutableInfo();
 
-std::string getThisExecutableName();
 
 
 } // namespace System

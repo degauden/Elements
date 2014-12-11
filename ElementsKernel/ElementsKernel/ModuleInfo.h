@@ -6,6 +6,8 @@
 // STL include files
 #include <string>
 #include <vector>
+#include <memory>
+#include <dlfcn.h>
 
 /** ModuleInfo: OS specific details to access at run-time the module
  configuration of the process.
@@ -14,6 +16,17 @@
  */
 namespace Elements {
 namespace System {
+
+class ModuleInfo {
+public:
+  ModuleInfo();
+  ModuleInfo(void *);
+  const std::string name() const;
+  bool isEmpty() const;
+private:
+  std::unique_ptr<Dl_info> m_dlinfo;
+};
+
 
 enum class ModuleType {
   UNKNOWN, SHAREDLIB, EXECUTABLE

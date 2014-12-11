@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_SUITE (ThisModule_test)
 BOOST_AUTO_TEST_CASE(ThisModuleName_test) {
 
   // Get the present module. Here this must be the test executable
-  BOOST_CHECK_EQUAL(Elements::System::getThisModuleName(), "ThisModule_test");
+  BOOST_CHECK_EQUAL(Elements::System::getThisModuleInfo().name(), "ThisModule_test");
 
 }
 
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(ThisExeName_test) {
 
   // Get the present module. Here this must be the test executable
 
-  BOOST_CHECK_EQUAL(Elements::System::getThisExecutableName(), "ThisModule_test");
+  BOOST_CHECK_EQUAL(Elements::System::getThisExecutableInfo().name(), "ThisModule_test");
 
 }
 
