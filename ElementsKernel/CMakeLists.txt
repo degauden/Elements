@@ -54,7 +54,7 @@ elements_add_unit_test(Temporary tests/src/Temporary_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #-----------------------
-# Temporary_test
+# ThisModule_test
 elements_add_unit_test(ThisModule tests/src/ThisModule_test.cpp
                        EXECUTABLE ThisModule_test
                        INCLUDE_DIRS ElementsKernel
