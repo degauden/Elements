@@ -1987,15 +1987,18 @@ function(elements_add_unit_test name)
                           COMMENT "Generating The ${package}/tests directory" VERBATIM)
       endif()
       set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/${${name}_UNIT_TEST_TYPE}TestMain.cpp)
-      add_custom_command (
-                          OUTPUT ${testmain_file}
+      set_source_files_properties(${testmain_file} PROPERTIES GENERATED TRUE)
+      if(NOT TARGET ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
+        add_custom_target(${package}_${${name}_UNIT_TEST_TYPE}TestMain
                           COMMAND ${${${name}_UNIT_TEST_TYPE}_testmain_cmd} --quiet ${package} ${testmain_file}
                           DEPENDS ${package}_tests_dir
-                         )
+                          COMMENT "Generating the ${package} ${${name}_UNIT_TEST_TYPE}TestMain.cpp" VERBATIM)
+      endif()
       set(srcs ${srcs} ${testmain_file})
       elements_add_executable(${executable} ${srcs}
                               LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE}
                               INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_UNIT_TEST_TYPE})
+      add_dependencies(${executable} ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
 
     else()
       elements_add_executable(${executable} ${srcs}
