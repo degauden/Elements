@@ -6,7 +6,7 @@
  */
 
 #ifndef ELEMENTSKERNEL_MATHCONSTANTS_H_
-#define ELELEMTSKERNEL_MATHCONSTANTS_H_
+#define ELEMENTSKERNEL_MATHCONSTANTS_H_
 
 namespace Elements {
 namespace Units {
@@ -27,4 +27,4 @@ static const double     pi2 = pi*pi;
 
 
 
-#endif /* ELELMENTSKERNEL_MATHCONSTANTS_H_ */
+#endif /* ELEMENTSKERNEL_MATHCONSTANTS_H_ */

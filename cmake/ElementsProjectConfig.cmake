@@ -1996,7 +1996,6 @@ function(elements_add_unit_test name)
                           COMMAND ${boosttestmain_cmd} --quiet ${package} ${testmain_file}
                           DEPENDS ${package}_tests_dir
                          )
-#      set_property(TARGET testmain_file DEPENDS ${package}_tests_dir)
       set(srcs ${srcs} ${testmain_file})
     endif()
 
@@ -2007,7 +2006,6 @@ function(elements_add_unit_test name)
                           COMMAND ${cppunittestmain_cmd} --quiet ${package} ${testmain_file}
                           DEPENDS ${package}_tests_dir
                          )
-#      set_property(TARGET testmain_file DEPENDS ${package}_tests_dir)
       set(srcs ${srcs} ${testmain_file})
     endif()
 
