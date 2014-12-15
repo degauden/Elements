@@ -8,6 +8,8 @@
 #include "ElementsKernel/ThisModule.h"
 
 #include <boost/test/unit_test.hpp>
+#include <libgen.h>
+
 
 using namespace std;
 
@@ -34,7 +36,7 @@ BOOST_AUTO_TEST_CASE(ThisModuleConversion_test) {
 
   Dl_info info = Elements::System::getThisModuleInfo();
 
-  BOOST_CHECK_EQUAL(::basename(info.dli_fname), "ThisModule_test");
+  BOOST_CHECK_EQUAL(::basename(const_cast<char*>(info.dli_fname)), "ThisModule_test");
 
 }
 
