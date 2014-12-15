@@ -31,7 +31,7 @@ ModuleInfo::ModuleInfo(void *funct) {
 }
 
 const string ModuleInfo::name() const {
-  return m_dlinfo->dli_fname ;
+  return ::basename(const_cast<char*>(m_dlinfo->dli_fname)) ;
 }
 
 bool ModuleInfo::isEmpty() const {
