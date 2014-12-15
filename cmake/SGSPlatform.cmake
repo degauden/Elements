@@ -228,7 +228,7 @@ function(sgs_get_target_platform)
   # system name
   if(SGS_OS STREQUAL "winxp")
     set(CMAKE_SYSTEM_NAME Windows PARENT_SCOPE)
-  elseif(SGS_OS STREQUAL "mac")
+  elseif(SGS_OS STREQUAL "mac" OR SGS_OS STREQUAL "osx")
     set(CMAKE_SYSTEM_NAME Darwin PARENT_SCOPE)
   elseif(SGS_OS STREQUAL "slc" OR SGS_OS STREQUAL "sl" OR SGS_OS STREQUAL "ubuntu" OR SGS_OS STREQUAL "fc" OR SGS_OS STREQUAL "co" OR SGS_OS STREQUAL "linux")
     set(CMAKE_SYSTEM_NAME Linux PARENT_SCOPE)
