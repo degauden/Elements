@@ -13,6 +13,9 @@ cmake_minimum_required(VERSION 2.8.5)
 #        cmake_minimum_required version. (policy added in CMake 3.0)
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
   cmake_policy(SET CMP0026 OLD)
+  if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    cmake_policy(SET CMP0042 OLD)
+  endif()
 endif()
 
 
