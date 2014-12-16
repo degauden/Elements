@@ -504,6 +504,14 @@ inline bool isGreaterOrEqual(const double& l, const double& r)
   return (isGreaterOrEqual<double,max_ulps>(l,r)) ;
 }
 
+bool realBitwiseEqual(float x, float y) ;
+
+bool realBitwiseEqual(double x, double y) ;
+
+
 } // Elements namespace
+
+
+
 
 #endif /* REAL_H_ */

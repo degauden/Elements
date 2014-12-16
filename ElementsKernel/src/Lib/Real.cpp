@@ -30,7 +30,7 @@ bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps
     int b_int = *reinterpret_cast<const int *>(&b);
     if (b_int < 0)
         b_int = 0x80000000 - b_int;
-    int int_diff = ::abs(a_int - b_int);
+    int int_diff = std::abs(a_int - b_int);
     if (int_diff <= max_ulps)
         return true;
     return false;
@@ -53,11 +53,24 @@ bool almostEqual2sComplement(const double& a, const double& b, const int& max_ul
     if (b_int < 0)
         b_int = 0x8000000000000000 - b_int;
 
-    long long int_diff = ::abs(a_int - b_int);
+    long long int_diff = std::abs(a_int - b_int);
     if (int_diff <= max_ulps && -max_ulps <= int_diff)
     //if (int_diff <= maxUlps)
         return true;
     return false;
 }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
+
+bool realBitwiseEqual(float x, float y) {
+  return (x==y) ;
+}
+
+bool realBitwiseEqual(double x, double y) {
+  return (x==y) ;
+}
+
+#pragma GCC diagnostic pop
 
 } // Elements namespace

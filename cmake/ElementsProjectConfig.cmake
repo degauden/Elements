@@ -13,6 +13,9 @@ cmake_minimum_required(VERSION 2.8.5)
 #        cmake_minimum_required version. (policy added in CMake 3.0)
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
   cmake_policy(SET CMP0026 OLD)
+  if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    cmake_policy(SET CMP0042 OLD)
+  endif()
 endif()
 
 
@@ -203,7 +206,7 @@ macro(elements_project project version)
   # Note: it's a bit a duplicate of the one used in elements_external_project_environment
   #       but we need it here because the other one is meant to include also
   #       the external libraries required by the subdirectories.
-  set(binary_paths)
+  set(binary_paths $ENV{CMAKE_PREFIX_PATH}/scripts)
 
   # environment description
   set(project_environment)
@@ -262,14 +265,14 @@ macro(elements_project project version)
     set(versheader_cmd ${PYTHON_EXECUTABLE} ${versheader_cmd})
   endif()
 
-  find_program(boosttestmain_cmd createBoostTestMain.py HINTS ${binary_paths})
-  if(boosttestmain_cmd)
-    set(boosttestmain_cmd ${PYTHON_EXECUTABLE} ${boosttestmain_cmd})
+  find_program(Boost_testmain_cmd createBoostTestMain.py HINTS ${binary_paths})
+  if(Boost_testmain_cmd)
+    set(Boost_testmain_cmd ${PYTHON_EXECUTABLE} ${Boost_testmain_cmd})
   endif()
 
-  find_program(cppunittestmain_cmd createCppUnitTestMain.py HINTS ${binary_paths})
-  if(cppunittestmain_cmd)
-    set(cppunittestmain_cmd ${PYTHON_EXECUTABLE} ${cppunittestmain_cmd})
+  find_program(CppUnit_testmain_cmd createCppUnitTestMain.py HINTS ${binary_paths})
+  if(CppUnit_testmain_cmd)
+    set(CppUnit_testmain_cmd ${PYTHON_EXECUTABLE} ${CppUnit_testmain_cmd})
   endif()
 
 
@@ -288,7 +291,7 @@ macro(elements_project project version)
   find_program(pythonprogramscript_cmd createPythonProgramScript.py HINTS ${binary_paths})
   set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
 
-  mark_as_advanced(env_cmd merge_cmd versheader_cmd boosttestmain_cmd cppunittestmain_cmd
+  mark_as_advanced(env_cmd merge_cmd versheader_cmd Boost_testmain_cmd CppUnit_testmain_cmd
                    zippythondir_cmd elementsrun_cmd
                    rpmbuild_wrap_cmd)
 
@@ -1986,40 +1989,24 @@ function(elements_add_unit_test name)
                           COMMAND  ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/tests
                           COMMENT "Generating The ${package}/tests directory" VERBATIM)
       endif()
-    endif()
-
-
-    if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
-      set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/BoostTestMain.cpp)
-      add_custom_command (
-                          OUTPUT ${testmain_file}
-                          COMMAND ${boosttestmain_cmd} --quiet ${package} ${testmain_file}
+      set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/${${name}_UNIT_TEST_TYPE}TestMain.cpp)
+      set_source_files_properties(${testmain_file} PROPERTIES GENERATED TRUE)
+      if(NOT TARGET ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
+        add_custom_target(${package}_${${name}_UNIT_TEST_TYPE}TestMain
+                          COMMAND ${${${name}_UNIT_TEST_TYPE}_testmain_cmd} --quiet ${package} ${testmain_file}
                           DEPENDS ${package}_tests_dir
-                         )
-#      set_property(TARGET testmain_file DEPENDS ${package}_tests_dir)
+                          COMMENT "Generating the ${package} ${${name}_UNIT_TEST_TYPE}TestMain.cpp" VERBATIM)
+      endif()
       set(srcs ${srcs} ${testmain_file})
-    endif()
-
-    if (${${name}_UNIT_TEST_TYPE} STREQUAL "CppUnit")
-      set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/CppUnitTestMain.cpp)
-      add_custom_command (
-                          OUTPUT ${testmain_file}
-                          COMMAND ${cppunittestmain_cmd} --quiet ${package} ${testmain_file}
-                          DEPENDS ${package}_tests_dir
-                         )
-#      set_property(TARGET testmain_file DEPENDS ${package}_tests_dir)
-      set(srcs ${srcs} ${testmain_file})
-    endif()
-
-
-    if (${${name}_UNIT_TEST_TYPE} STREQUAL "None")
-      elements_add_executable(${executable} ${srcs}
-                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
-                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-    else()
       elements_add_executable(${executable} ${srcs}
                               LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE}
                               INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_UNIT_TEST_TYPE})
+      add_dependencies(${executable} ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
+
+    else()
+      elements_add_executable(${executable} ${srcs}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
     endif()
 
 
