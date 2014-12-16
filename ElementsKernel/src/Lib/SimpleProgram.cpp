@@ -18,6 +18,7 @@ namespace fs = boost::filesystem;
 
 namespace Elements {
 
+SimpleProgram::~SimpleProgram() {}
 
 ExitCode SimpleProgram::run(int argc , char** argv) noexcept {
 
