@@ -33,7 +33,7 @@ enum class ExitCode;
  * 		all Elements programs, such as those dealing with program
  * 		options and logging.
  */
-class ProgramWithConfFile {
+class ELEMENTS_API ProgramWithConfFile {
 
 public:
 
@@ -59,7 +59,7 @@ protected:
   /**
    * @brief Destructor
    */
-  virtual ~ProgramWithConfFile() = default;
+  virtual ~ProgramWithConfFile();
 
   /**
    * @brief

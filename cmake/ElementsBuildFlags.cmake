@@ -285,12 +285,17 @@ endif()
 #--- Special flags -------------------------------------------------------------
 add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 
-if((SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "47|48|max") OR ELEMENTS_CPP11)
+if((SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "47|48|49|max") OR ELEMENTS_CPP11)
   set(GCCXML_CXX_FLAGS "${GCCXML_CXX_FLAGS} -D__STRICT_ANSI__")
 endif()
 
-if(SGS_COMP STREQUAL gcc AND SGS_COMPVERS STREQUAL 43)
-  # The -pedantic flag gives problems on GCC 4.3.
-  string(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-  string(REPLACE "-pedantic" "" CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}")
+if(SGS_COMP STREQUAL gcc)
+  if(SGS_COMPVERS STREQUAL 43)
+    # The -pedantic flag gives problems on GCC 4.3.
+    string(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-pedantic" "" CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}")
+  elseif(SGS_COMPVERS MATCHES "4[8-9]")
+    string(REPLACE "-pedantic" "-Wpedantic" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-pedantic" "-Wpedantic" CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}")
+  endif()
 endif()
