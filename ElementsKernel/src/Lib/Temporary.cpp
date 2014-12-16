@@ -31,7 +31,7 @@ TempPath::TempPath(const string& motif) : m_motif(motif) {
 
 }
 
-
+TempPath::~TempPath() {}
 
 fs::path TempPath::path() const {
   return m_path ;
