@@ -17,7 +17,7 @@
 namespace Elements {
 namespace System {
 
-class ModuleInfo {
+class ELEMENTS_API ModuleInfo {
 public:
   ModuleInfo();
   ModuleInfo(void *);

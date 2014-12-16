@@ -28,6 +28,8 @@ using namespace std;
 
 namespace Elements {
 
+ProgramWithConfFile::~ProgramWithConfFile(){}
+
 const boost::filesystem::path& ProgramWithConfFile::getProgramPath() const {
   return m_program_path;
 }
