@@ -28,7 +28,7 @@ static inline const ModuleInfo& getThisModuleInfo() {
 }
 
 
-const ModuleInfo& getThisExecutableInfo();
+ELEMENTS_API const ModuleInfo& getThisExecutableInfo();
 
 
 
