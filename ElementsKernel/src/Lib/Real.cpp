@@ -60,4 +60,17 @@ bool almostEqual2sComplement(const double& a, const double& b, const int& max_ul
     return false;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
+
+bool realBitwiseEqual(float x, float y) {
+  return (x==y) ;
+}
+
+bool realBitwiseEqual(double x, double y) {
+  return (x==y) ;
+}
+
+#pragma GCC diagnostic pop
+
 } // Elements namespace
