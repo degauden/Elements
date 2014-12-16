@@ -22,7 +22,25 @@ static vector<string> s_linkedModules;
 namespace Elements {
 namespace System {
 
+ModuleInfo::ModuleInfo() : m_dlinfo{nullptr} {
+}
 
+ModuleInfo::ModuleInfo(void *funct) {
+  m_dlinfo.reset(new Dl_info);
+  ::dladdr(FuncPtrCast<void*>(funct), m_dlinfo.get());
+}
+
+const string ModuleInfo::name() const {
+  return ::basename(const_cast<char*>(m_dlinfo->dli_fname)) ;
+}
+
+bool ModuleInfo::isEmpty() const {
+  return (m_dlinfo == nullptr);
+}
+
+ModuleInfo::operator const Dl_info&() const {
+    return *m_dlinfo;
+}
 
 static ImageHandle      ModuleHandle = 0;
 
@@ -88,14 +106,8 @@ ImageHandle moduleHandle()    {
     if ( processHandle() )    {
       static Dl_info info;
       if ( 0 !=
-           ::dladdr(
-#if __GNUC__ < 4
-               (void*)moduleHandle
-#else
-               FuncPtrCast<void*>(moduleHandle)
-#endif
-               , &info) ) {
-	return &info;
+           ::dladdr(FuncPtrCast<void*>(moduleHandle), &info) ) {
+        return &info;
       }
     }
   }

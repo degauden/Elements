@@ -110,7 +110,7 @@ inline TimeSpan::TimeSpan(ValueType secs, int nsecs) :
  @param mins  Whole minutes.
  @param secs  Whole seconds.
  @param nsecs Nanoseconds.  */
-inline TimeSpan::TimeSpan(int days, int hours, int mins, int secs, int nsecs) 
+inline TimeSpan::TimeSpan(int days, int hours, int mins, int secs, int nsecs)
                          : m_nsecs((secs + 60 * (mins + 60 * (hours + 24 * days))) * Time::SEC_NSECS + nsecs)
 {
 }
@@ -335,18 +335,5 @@ inline bool operator!(const Elements::TimeSpan &ts) {
   return !ts.ns();
 }
 
-// --- operators for serialization ---
-
-// Output serialization
-inline StreamBuffer& operator<<(StreamBuffer &s, const Elements::Time &t) {
-  return s << t.ns();
-}
-// Input serialization
-inline StreamBuffer& operator>>(StreamBuffer &s, Elements::Time &t) {
-  Elements::Time::ValueType tmp;
-  s >> tmp;
-  t = Elements::Time(tmp);
-  return s;
-}
 
 #endif
