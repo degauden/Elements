@@ -11,7 +11,6 @@
 //  Created    : 13/1/99
 //	Changes    :
 //====================================================================
-#define SYSTEM_SYSTEM_CPP
 
 #include "ElementsKernel/System.h"
 #include "ElementsKernel/FuncPtrCast.h"

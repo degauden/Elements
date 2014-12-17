@@ -11,7 +11,6 @@
 //  Created    : 13/1/99
 //	Changes    :
 //====================================================================
-#define ELEMENTSKERNEL_TIMING_CPP
 
 #include "ElementsKernel/Timing.h"
 #include "ProcessDescriptor.h"

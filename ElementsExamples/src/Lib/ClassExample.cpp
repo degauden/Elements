@@ -17,6 +17,8 @@ namespace Elements {
 
 std::string ClassExample::s_static_string = "This is a static field example";
 
+ClassExample::~ClassExample() {}
+
 void ClassExample::summingAndDividing(double first, double second) {
 
   Elements::Logging logger = Elements::Logging::getLogger("ClassExample");

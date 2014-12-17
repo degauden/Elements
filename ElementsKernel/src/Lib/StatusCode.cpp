@@ -1,4 +1,3 @@
-#define ELEMENTSKERNEL_STATUSCODE_CPP 1
 
 #include "ElementsKernel/StatusCode.h"
 

@@ -22,7 +22,7 @@ namespace Elements {
  * 		The naming convention and coding standard displayed in this
  * 		class can be used as a model for other classes
  */
-class ClassExample {
+class ELEMENTS_API ClassExample {
 
 public:
 
@@ -37,7 +37,7 @@ public:
   /**
    * @brief Destructor
    */
-  ELEMENTS_API virtual ~ClassExample() {};
+  ELEMENTS_API virtual ~ClassExample();
 
   /**
    * @brief

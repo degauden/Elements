@@ -11,7 +11,6 @@
 //	Changes    :
 //
 //====================================================================
-#define ELEMENTSKERNEL_MEMORY_CPP
 
 //#include <cerrno>
 //#include <cstring>
