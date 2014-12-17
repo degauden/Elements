@@ -19,7 +19,7 @@ namespace Elements {
 class TempPath {
 public:
   TempPath(const std::string& motif) ;
-  virtual ~TempPath() {};
+  virtual ~TempPath();
   ELEMENTS_API boost::filesystem::path path() const;
   ELEMENTS_API std::string motif() const;
 private:

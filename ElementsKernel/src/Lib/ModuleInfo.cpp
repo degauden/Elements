@@ -1,4 +1,3 @@
-#define SYSTEM_MODULEINFO_CPP
 
 #include <cstring>
 #include <cstdlib>
