@@ -5,9 +5,9 @@ find_package(Log4CPP)
 
 #---Libraries---------------------------------------------------------------
 elements_add_library(ElementsKernel src/Lib/*.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Log4CPP
-                  INCLUDE_DIRS Boost Log4CPP
-                  PUBLIC_HEADERS ElementsKernel)
+                    LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Log4CPP
+                    INCLUDE_DIRS Boost Log4CPP
+                    PUBLIC_HEADERS ElementsKernel)
 
 #---Tests-------------------------------------------------------------------
 elements_add_unit_test(Time tests/src/ElementsTime_test.cpp
@@ -66,7 +66,7 @@ if(ELEMENTS_HIDE_WARNINGS)
   if(UNIX)
     # This hides warnings from a broken header file in CppUnit, but may
     # hide problems in the actual test source
-    set_property(SOURCE tests/src/test_ElementsTime.cpp
+    set_property(SOURCE tests/src/ElementsTime_test.cpp
                  PROPERTY COMPILE_FLAGS -Wno-unused-parameter)
   endif()
 endif()
