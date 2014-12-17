@@ -519,8 +519,8 @@ class Test(unittest.TestCase):
         try:
             control = Control.Environment()
             control.loadXML('env.xml')
-            self.assertEqual(str(control['mydirs']), tmp())
-            self.assertEqual(str(control['myparent']), os.path.dirname(tmp()))
+            self.assertTrue(os.path.samefile(str(control['mydirs']), tmp()))
+            self.assertTrue(os.path.samefile(str(control['myparent']), os.path.dirname(tmp())))
         finally:
             os.chdir(olddir)
 
