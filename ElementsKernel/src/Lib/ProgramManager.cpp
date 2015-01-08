@@ -58,17 +58,6 @@ const fs::path ProgramManager::getDefaultConfigFile(const
   return configFile.at(0);
 }
 
-/*
- * Get the default log file, i.e., ./"programName".log
- */
-// TODO remove
-const fs::path ProgramManager::getDefaultLogFile(const
-    fs::path & program_name) const {
-  fs::path log_name(program_name);
-  log_name.replace_extension("log");
-  return getProgramPath() / log_name;
-}
-
 const fs::path ProgramManager::setProgramName(char* argv) const {
   fs::path fullPath(argv);
   return fullPath.filename();
@@ -95,7 +84,6 @@ const po::variables_map ProgramManager::getProgramOptions(
 
   // Get defaults
   fs::path default_config_file = getDefaultConfigFile(getProgramName());
-  fs::path default_log_file = getDefaultLogFile(getProgramName());
 
   // Define the Generic options
   po::options_description generic_options("Generic options");
@@ -113,16 +101,10 @@ const po::variables_map ProgramManager::getProgramOptions(
       "Log level: NONE=0, FATAL=100, ERROR=200, WARN=300, INFO=400 (default), DEBUG=500")
   //
   ("log-file",
-      po::value<fs::path>()->default_value(default_log_file),
-      "Name of a log file"); // without default value TODO
+      po::value<fs::path>(),"Name of a log file");
 
   // Get the definition of the specific options from the derived class
-  po::options_description config_file_options =
-   //
-   //TODO
-   //
-   // this->defineSpecificProgramOptions();
-      m_program_ptr->defineSpecificProgramOptions();
+  po::options_description config_file_options =  m_program_ptr->defineSpecificProgramOptions();
 
   // Put all options together
   po::options_description all_options;
@@ -265,16 +247,14 @@ void ProgramManager::setup(int argc, char* argv[]) {
      throw Exception("Required option log-level is not provided!", ExitCode::CONFIG);
   }
   fs::path log_file_name;
-  if (m_variables_map.count("log-file")) {
-    log_file_name = m_variables_map["log-file"].as<fs::path>(); // TODO
-  } else {
-     throw Exception("Required option log-file is not provided!", ExitCode::CONFIG);
-  }
 
+  if (m_variables_map.count("log-file")) {
+    log_file_name = m_variables_map["log-file"].as<fs::path>();
+    Logging::setLogFile(log_file_name);
+  }
 
   // setup the logging
   Logging::setLevel(logging_level);
-  Logging::setLogFile(log_file_name); // TODO if user pass logfile or not called otherwise
 
   // log all program options
   this->logAllOptions(getProgramName().string());
@@ -290,12 +270,7 @@ ExitCode ProgramManager::run(int argc, char* argv[]) {
   Logging logger = Logging::getLogger("ElementsProgram");
 
   try {
-    //
-    // TODO
-    //
-    //exit_code =  mainMethod(m_variables_map);
     exit_code =  m_program_ptr->mainMethod(m_variables_map);
-    //
   } catch (const Exception & ee) {
     logger.fatal() << "# " ;
     logger.fatal() << "# Elements Exception : " << ee.what();
