@@ -5,10 +5,11 @@
  * @author Hubert Degaudenzi
  */
 
-#ifndef ELELMENTSKERNEL_MAIN_H_
-#define ELELMENTSKERNEL_MAIN_H_
+#ifndef ELEMENTSKERNEL_MAIN_H_
+#define ELEMENTSKERNEL_MAIN_H_
 
 #include "ElementsKernel/Exit.h"
+#include "ElementsKernel/ProgramManager.h"
 
 /**
  * Macro which must be used to create a main in classes
@@ -20,15 +21,11 @@
  *  ElementsProgramExample.cpp shows how to use this macro
  */
 #define MAIN_FOR(ELEMENTS_PROGRAM_NAME)         \
-  int main(int argc, char* argv[])                  \
-  {                                                 \
-    ELEMENTS_PROGRAM_NAME elementProgramInstance {} ; \
-    Elements::ExitCode exit_code = elementProgramInstance.run(argc, argv) ;       \
-    return static_cast<Elements::ExitCodeType>(exit_code) ;                                       \
+  int main(int argc, char* argv[])              \
+  {                                             \
+    Elements::ProgramManager man {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}}; \
+    Elements::ExitCode exit_code =  man.run(argc, argv);   \
+    return static_cast<Elements::ExitCodeType>(exit_code);    \
   }
 
-
-
-
-
-#endif // ELELMENTSKERNEL_MAIN_H_
+#endif // ELEMENTSKERNEL_MAIN_H_

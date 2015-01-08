@@ -22,19 +22,17 @@ namespace fs = boost::filesystem;
 #include "ElementsKernel/Exit.h"
 #include "ElementsKernel/PathSearch.h"
 
-#include "ElementsKernel/Program.h"
+#include "ElementsKernel/ProgramManager.h"
 
 using namespace std;
 
 namespace Elements {
 
-ProgramWithConfFile::~ProgramWithConfFile(){}
-
-const boost::filesystem::path& ProgramWithConfFile::getProgramPath() const {
+const boost::filesystem::path& ProgramManager::getProgramPath() const {
   return m_program_path;
 }
 
-const boost::filesystem::path& ProgramWithConfFile::getProgramName() const {
+const boost::filesystem::path& ProgramManager::getProgramName() const {
   return m_program_name;
 }
 
@@ -44,7 +42,7 @@ const boost::filesystem::path& ProgramWithConfFile::getProgramName() const {
  * @todo write a more elaborate version of this taking into account
  * the system and the development location of the default config file
  */
-const fs::path ProgramWithConfFile::getDefaultConfigFile(const
+const fs::path ProgramManager::getDefaultConfigFile(const
     fs::path & program_name) const {
 
   // .conf as a standard extension for configuration file
@@ -63,19 +61,20 @@ const fs::path ProgramWithConfFile::getDefaultConfigFile(const
 /*
  * Get the default log file, i.e., ./"programName".log
  */
-const fs::path ProgramWithConfFile::getDefaultLogFile(const
+// TODO remove
+const fs::path ProgramManager::getDefaultLogFile(const
     fs::path & program_name) const {
   fs::path log_name(program_name);
   log_name.replace_extension("log");
   return getProgramPath() / log_name;
 }
 
-const fs::path ProgramWithConfFile::setProgramName(char* argv) const {
+const fs::path ProgramManager::setProgramName(char* argv) const {
   fs::path fullPath(argv);
   return fullPath.filename();
 }
 
-const fs::path ProgramWithConfFile::setProgramPath(char* argv) const {
+const fs::path ProgramManager::setProgramPath(char* argv) const {
   fs::path fullPath(argv);
   return fullPath.parent_path();
 }
@@ -83,7 +82,9 @@ const fs::path ProgramWithConfFile::setProgramPath(char* argv) const {
 /*
  * Get program options
  */
-const po::variables_map ProgramWithConfFile::getProgramOptions(
+// TODO why is the configuration file mandatory
+// can we be OK without conf file
+const po::variables_map ProgramManager::getProgramOptions(
     int argc, char* argv[]) {
 
   po::variables_map variables_map { };
@@ -113,11 +114,15 @@ const po::variables_map ProgramWithConfFile::getProgramOptions(
   //
   ("log-file",
       po::value<fs::path>()->default_value(default_log_file),
-      "Name of a log file");
+      "Name of a log file"); // without default value TODO
 
   // Get the definition of the specific options from the derived class
   po::options_description config_file_options =
-      this->defineSpecificProgramOptions();
+   //
+   //TODO
+   //
+   // this->defineSpecificProgramOptions();
+      m_program_ptr->defineSpecificProgramOptions();
 
   // Put all options together
   po::options_description all_options;
@@ -136,7 +141,11 @@ const po::variables_map ProgramWithConfFile::getProgramOptions(
 
   // Deal with the "version" option
   if (variables_map.count("version")) {
-    cout << this->getVersion() << endl;
+    //
+    // TODO
+    //
+    //cout << this->getVersion() << endl;
+    cout << m_program_ptr->getVersion() << endl;
     exit(0);
   }
 
@@ -160,7 +169,7 @@ const po::variables_map ProgramWithConfFile::getProgramOptions(
 }
 
 // Log all options with a header
-void ProgramWithConfFile::logAllOptions(string program_name) {
+void ProgramManager::logAllOptions(string program_name) {
 
   Logging logger = Logging::getLogger("ElementsProgram");
 
@@ -239,7 +248,7 @@ void ProgramWithConfFile::logAllOptions(string program_name) {
 }
 
 // Get the program options and setup logging
-void ProgramWithConfFile::setup(int argc, char* argv[]) {
+void ProgramManager::setup(int argc, char* argv[]) {
 
   // store the program name and path in class variable
   m_program_name = setProgramName(argv[0]);
@@ -257,7 +266,7 @@ void ProgramWithConfFile::setup(int argc, char* argv[]) {
   }
   fs::path log_file_name;
   if (m_variables_map.count("log-file")) {
-    log_file_name = m_variables_map["log-file"].as<fs::path>();
+    log_file_name = m_variables_map["log-file"].as<fs::path>(); // TODO
   } else {
      throw Exception("Required option log-file is not provided!", ExitCode::CONFIG);
   }
@@ -265,14 +274,14 @@ void ProgramWithConfFile::setup(int argc, char* argv[]) {
 
   // setup the logging
   Logging::setLevel(logging_level);
-  Logging::setLogFile(log_file_name);
+  Logging::setLogFile(log_file_name); // TODO if user pass logfile or not called otherwise
 
   // log all program options
   this->logAllOptions(getProgramName().string());
 }
 
 // This is the method call from the main which does everything
-ExitCode ProgramWithConfFile::run(int argc, char* argv[]) {
+ExitCode ProgramManager::run(int argc, char* argv[]) {
 
   ExitCode exit_code {ExitCode::NOT_OK};
 
@@ -281,7 +290,12 @@ ExitCode ProgramWithConfFile::run(int argc, char* argv[]) {
   Logging logger = Logging::getLogger("ElementsProgram");
 
   try {
-    exit_code = mainMethod(m_variables_map);
+    //
+    // TODO
+    //
+    //exit_code =  mainMethod(m_variables_map);
+    exit_code =  m_program_ptr->mainMethod(m_variables_map);
+    //
   } catch (const Exception & ee) {
     logger.fatal() << "# " ;
     logger.fatal() << "# Elements Exception : " << ee.what();

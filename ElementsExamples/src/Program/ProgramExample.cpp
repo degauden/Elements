@@ -38,6 +38,8 @@ namespace po = boost::program_options;
 #include "ElementsKernel/Exception.h"
 // Other includes
 #include "ElementsKernel/Program.h"
+// TODO
+#include "ElementsKernel/Main.h"
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/Version.h"
 
@@ -204,3 +206,6 @@ public:
  * This must be copy/paste in all programs
  */
 MAIN_FOR(Elements::ProgramExample)
+
+
+
