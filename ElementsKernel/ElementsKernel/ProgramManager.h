@@ -95,21 +95,6 @@ private:
 
   /**
    * @brief
-   *   Get a default log file name and path, to be used if not
-   *   provided as a command line option. By default a log file
-   *
-   *     ./"programName".log
-   *
-   *    will be returned
-   *
-   * @return
-   *   A complete name/path to the default log file
-   */
-  const boost::filesystem::path getDefaultLogFile(
-      const boost::filesystem::path & program_name) const;
-
-  /**
-   * @brief
    *    Strip the path from argv[0] to set the program name
    * @param argv
    *    The first element of the command line, i.e., argv[0]
