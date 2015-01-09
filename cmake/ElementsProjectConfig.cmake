@@ -2041,12 +2041,12 @@ endfunction()
 
 #-------------------------------------------------------------------------------
 # elements_add_test(<name>
-#                [FRAMEWORK options1 options2 ...|COMMAND cmd args ...]
-#                [WORKING_DIRECTORY dir]
-#                [ENVIRONMENT variable[+]=value ...]
-#                [DEPENDS other_test ...]
-#                [FAILS] [PASSREGEX regex] [FAILREGEX regex]
-#                [TIMEOUT seconds])
+#                   [FRAMEWORK options1 options2 ...|COMMAND cmd args ...]
+#                   [WORKING_DIRECTORY dir]
+#                   [ENVIRONMENT variable[+]=value ...]
+#                   [DEPENDS other_test ...]
+#                   [FAILS] [PASSREGEX regex] [FAILREGEX regex]
+#                   [TIMEOUT seconds])
 #
 # Declare a run-time test in the subdirectory.
 # The test can be of the types:
