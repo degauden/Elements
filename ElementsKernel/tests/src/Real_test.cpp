@@ -420,21 +420,6 @@ BOOST_FIXTURE_TEST_CASE( DoubleCompare7_test, RealFix ) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //-----------------------------------------------------------------------------
 // End of the Boost tests
 BOOST_AUTO_TEST_SUITE_END ()
