@@ -1,7 +1,7 @@
 /**
- * @file Program.cpp
+ * @file ProgramManager.cpp
  *
- * Created on: Aug 7, 2013
+ * Created on: Jan 7, 2015
  *     Author: Pierre Dubath
  */
 
@@ -39,23 +39,22 @@ const boost::filesystem::path& ProgramManager::getProgramName() const {
 
 /**
  * @brief Get default config file
- * @todo write a more elaborate version of this taking into account
- * the system and the development location of the default config file
- */
+ * @todo check whether priotities are correct if more than one
+ * config file is found in pathSearchInEnvVariable
+ * */
 const fs::path ProgramManager::getDefaultConfigFile(const
     fs::path & program_name) const {
 
-  // .conf as a standard extension for configuration file
+  fs::path default_config_file{};
+  // .conf is the standard extension for configuration file
   fs::path conf_name(program_name);
   conf_name.replace_extension("conf");
   // Construct and return the full path
   vector<fs::path> configFile = pathSearchInEnvVariable(conf_name.string(), CONF_ENV_VAR_NAME);
-  if (configFile.size() == 0) {
-    stringstream error_buffer;
-        error_buffer << "No config file " << conf_name.string() << " in " << CONF_ENV_VAR_NAME << "\n";
-        throw Exception(error_buffer.str(), ExitCode::CONFIG);
+  if (configFile.size() != 0) {
+    default_config_file = configFile.at(0);
   }
-  return configFile.at(0);
+  return default_config_file;
 }
 
 const fs::path ProgramManager::setProgramName(char* argv) const {
@@ -71,15 +70,15 @@ const fs::path ProgramManager::setProgramPath(char* argv) const {
 /*
  * Get program options
  */
-// TODO why is the configuration file mandatory
-// can we be OK without conf file
 const po::variables_map ProgramManager::getProgramOptions(
     int argc, char* argv[]) {
 
   po::variables_map variables_map { };
 
-  // Initialization
+  // default value for default_log_level option
   int default_log_level = 400;
+
+  // Initialization
   fs::path config_file;
 
   // Get defaults
@@ -104,11 +103,11 @@ const po::variables_map ProgramManager::getProgramOptions(
       po::value<fs::path>(),"Name of a log file");
 
   // Get the definition of the specific options from the derived class
-  po::options_description config_file_options =  m_program_ptr->defineSpecificProgramOptions();
+  po::options_description specific_options =  m_program_ptr->defineSpecificProgramOptions();
 
   // Put all options together
   po::options_description all_options;
-  all_options.add(generic_options).add(config_file_options);
+  all_options.add(generic_options).add(specific_options);
 
   // Parse the command line and store the options in the variable map
   po::store(po::parse_command_line(argc, argv, all_options),
@@ -123,29 +122,20 @@ const po::variables_map ProgramManager::getProgramOptions(
 
   // Deal with the "version" option
   if (variables_map.count("version")) {
-    //
-    // TODO
-    //
-    //cout << this->getVersion() << endl;
     cout << m_program_ptr->getVersion() << endl;
     exit(0);
   }
 
   // Open the configuration file
   ifstream ifs(config_file.c_str());
-  if (!ifs) {
-    stringstream error_buffer;
-    error_buffer << "Cannot open configuration file: " << config_file << "\n";
-    throw Exception(error_buffer.str(), ExitCode::CONFIG);
-  } else {
+  if (ifs) {
     /*
      * Parse the configuration file and put option values into the variable map only
      * if they were not already specified on the command line
      */
-    po::store(parse_config_file(ifs, config_file_options), variables_map);
+    po::store(parse_config_file(ifs, specific_options), variables_map);
     po::notify(variables_map);
   }
-
   // return the variable_map load with all options
   return variables_map;
 }

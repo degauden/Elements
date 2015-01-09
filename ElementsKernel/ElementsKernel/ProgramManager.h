@@ -22,10 +22,11 @@
 
 namespace Elements {
 
-const std::string CONF_ENV_VAR_NAME {"ELEMENTS_CONF_PATH"};
+const std::string CONF_ENV_VAR_NAME { "ELEMENTS_CONF_PATH" };
 
 // Forward declaration
-enum class ExitCode;
+enum class ExitCode
+;
 
 /**
  * @class ProgramWithConf
@@ -40,17 +41,18 @@ class ELEMENTS_API ProgramManager {
 
 public:
 
-   /**
+  /**
    * @brief Constructor
    */
-  ProgramManager(std::unique_ptr<Elements::Program> program_ptr) : m_program_ptr(std::move(program_ptr)) {
+  ProgramManager(std::unique_ptr<Elements::Program> program_ptr) :
+      m_program_ptr(std::move(program_ptr)) {
   }
 
   /**
-     * @brief Destructor
-     */
-    virtual ~ProgramManager() {
-    }
+   * @brief Destructor
+   */
+  virtual ~ProgramManager() {
+  }
 
   /**
    * @brief
@@ -62,7 +64,8 @@ public:
    * @param argv
    *   Command line arguments
    */
-  ELEMENTS_API ExitCode run(int argc, char* argv[]);
+  ELEMENTS_API
+  ExitCode run(int argc, char* argv[]);
 
 private:
 
@@ -72,15 +75,15 @@ private:
    * @return
    *   The program path
    */
-  const boost::filesystem::path& getProgramPath() const ;
+  const boost::filesystem::path& getProgramPath() const;
 
-   /**
-    * @brief Getter
-    *
-    * @return
-    *   The program name
-    */
-  const boost::filesystem::path& getProgramName() const ;
+  /**
+   * @brief Getter
+   *
+   * @return
+   *   The program name
+   */
+  const boost::filesystem::path& getProgramName() const;
 
   /**
    * @brief
@@ -90,8 +93,8 @@ private:
    * @return
    *   A complete name/path to the default configuration file
    */
-   const boost::filesystem::path getDefaultConfigFile(
-       const boost::filesystem::path & program_name) const;
+  const boost::filesystem::path getDefaultConfigFile(
+      const boost::filesystem::path & program_name) const;
 
   /**
    * @brief
@@ -158,7 +161,13 @@ private:
    */
   boost::filesystem::path m_program_path;
 
-  // TODO
+  /**
+    * Pointer to a program interface, which provides three methods
+    *   defineSpecificProgramOption()
+    *   mainMethod()
+    *   getVersion()
+    *
+    */
   std::unique_ptr<Elements::Program> m_program_ptr;
 
 };
