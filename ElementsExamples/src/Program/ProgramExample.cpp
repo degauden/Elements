@@ -21,27 +21,10 @@
 #define SVN_ID "SVN $Id$"
 #define SVN_URL "SVN $HeadURL$"
 
-// there is no version of boost with the std::__debug namespace
-#include "ElementsKernel/NoGlibDebug.h"
-
-// System includes
-#include <map>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <iostream>
-// BOOST includes
-#include <boost/program_options.hpp>
+#include "ElementsKernel/ProgramHeaders.h"
 namespace po = boost::program_options;
-// Service includes
-#include "ElementsKernel/Logging.h"
-#include "ElementsKernel/Exception.h"
-// Other includes
-//#include "ElementsKernel/Program.h"
-// TODO
-#include "ElementsKernel/Main.h"
+
 #include "ElementsExamples/ClassExample.h"
-#include "ElementsKernel/Version.h"
 
 
 using namespace std;
