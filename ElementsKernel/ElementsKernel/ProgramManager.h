@@ -16,8 +16,6 @@
 #include <boost/program_options.hpp>
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
-#include "ElementsKernel/Main.h"
-
 #include "ElementsKernel/Program.h"
 
 namespace Elements {
@@ -171,8 +169,6 @@ private:
   std::unique_ptr<Elements::Program> m_program_ptr;
 
 };
-
-//typedef ProgramManager Program;
 
 }
 

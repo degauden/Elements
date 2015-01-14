@@ -37,7 +37,7 @@ namespace po = boost::program_options;
 #include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Exception.h"
 // Other includes
-#include "ElementsKernel/Program.h"
+//#include "ElementsKernel/Program.h"
 // TODO
 #include "ElementsKernel/Main.h"
 #include "ElementsExamples/ClassExample.h"
