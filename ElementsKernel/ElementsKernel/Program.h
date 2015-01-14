@@ -8,6 +8,11 @@
 #ifndef ELEMENTSPROGRAM_H_
 #define ELEMENTSPROGRAM_H_
 
+#include <string>
+#include <boost/program_options.hpp>
+#include "ElementsKernel/Export.h"      // ELEMENTS_API
+#include "ElementsKernel/Exit.h"        // for ExitCode, ExitCode::OK
+
 namespace Elements {
 
 /**

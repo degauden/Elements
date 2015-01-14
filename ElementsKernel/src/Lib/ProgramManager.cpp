@@ -6,23 +6,21 @@
  */
 
 // there is no version of boost with the std::__debug namespace
+// TODO question to Hubert: what is this???
 #include "ElementsKernel/NoGlibDebug.h"
 
-#include <string>
 #include <fstream>
 #include <iostream>
 
-#include <boost/filesystem.hpp>
-#include <boost/program_options.hpp>
+#include "ElementsKernel/ProgramManager.h"
+
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
-#include "ElementsKernel/Exit.h"
-#include "ElementsKernel/PathSearch.h"
 
-#include "ElementsKernel/ProgramManager.h"
+#include "ElementsKernel/PathSearch.h"
 
 using namespace std;
 
