@@ -17,17 +17,17 @@ using namespace std;
 namespace Elements {
 namespace Units {
 
-map<StorageType, string> StorageShortName      { { StorageType::Byte,             string("B")},
-                                                 { StorageType::KiloByte,        string("KB")},
-                                                 { StorageType::MegaByte,        string("MB")},
-                                                 { StorageType::GigaByte,        string("GB")},
-                                                 { StorageType::TeraByte,        string("TB")},
-                                                 { StorageType::PetaByte,        string("PB")},
-                                                 { StorageType::MetricKiloByte, string("KiB")},
-                                                 { StorageType::MetricMegaByte, string("MiB")},
-                                                 { StorageType::MetricGigaByte, string("GiB")},
-                                                 { StorageType::MetricTeraByte, string("TiB")},
-                                                 { StorageType::MetricPetaByte, string("PiB")} };
+map<StorageType, string> StorageShortName      { { StorageType::Byte,             "B"},
+                                                 { StorageType::KiloByte,        "KB"},
+                                                 { StorageType::MegaByte,        "MB"},
+                                                 { StorageType::GigaByte,        "GB"},
+                                                 { StorageType::TeraByte,        "TB"},
+                                                 { StorageType::PetaByte,        "PB"},
+                                                 { StorageType::MetricKiloByte, "KiB"},
+                                                 { StorageType::MetricMegaByte, "MiB"},
+                                                 { StorageType::MetricGigaByte, "GiB"},
+                                                 { StorageType::MetricTeraByte, "TiB"},
+                                                 { StorageType::MetricPetaByte, "PiB"} };
 
 
 map<StorageType, int64_t> StorageFactor        { { StorageType::Byte,                    1},
