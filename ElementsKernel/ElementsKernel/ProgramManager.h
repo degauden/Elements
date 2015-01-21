@@ -1,9 +1,10 @@
 /**
- * @file ElementsKernel/Program.h
- * @brief define the class for the base Elements program
- * @date Aug 7, 2013
- * @author Pierre Dubath - The Euclid Consortium
+ * @file ProgramManager.h
+ *
+ * Created on: Jan 7, 2015
+ *     Author: Pierre Dubath
  */
+
 
 #ifndef ELEMENTSPROGRAMMANAGER_H_
 #define ELEMENTSPROGRAMMANAGER_H_
@@ -16,20 +17,17 @@
 #include <boost/program_options.hpp>
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
+#include "ElementsKernel/Exit.h"
 #include "ElementsKernel/Program.h"
 
 namespace Elements {
 
 const std::string CONF_ENV_VAR_NAME { "ELEMENTS_CONF_PATH" };
 
-// Forward declaration
-enum class ExitCode
-;
-
 /**
- * @class ProgramWithConf
+ * @class ProgramManager
  * @brief
- * 		Base class for all Elements programs
+ * 		Class for managing all Elements programs
  * @details
  * 		This base class offers solutions for the common needs of
  * 		all Elements programs, such as those dealing with program
