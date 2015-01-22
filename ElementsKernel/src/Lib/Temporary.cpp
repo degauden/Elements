@@ -5,7 +5,6 @@
  * @author hubert degaudenzi
  */
 
-
 #include <string>
 #include <iostream>
 
@@ -15,15 +14,15 @@
 #include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Temporary.h"
 
-
 using namespace std;
-namespace fs = boost::filesystem ;
+namespace fs = boost::filesystem;
 
 namespace Elements {
 
-TempPath::TempPath(const string& motif) : m_motif(motif) {
+TempPath::TempPath(const string& motif) :
+    m_motif(motif) {
 
-  if (m_motif != "" ) {
+  if (m_motif != "") {
     m_path = fs::temp_directory_path() / fs::unique_path(m_motif);
   } else {
     m_path = fs::temp_directory_path() / fs::unique_path();
@@ -31,39 +30,42 @@ TempPath::TempPath(const string& motif) : m_motif(motif) {
 
 }
 
-TempPath::~TempPath() {}
+TempPath::~TempPath() {
+}
 
 fs::path TempPath::path() const {
-  return m_path ;
+  return m_path;
 }
 
 string TempPath::motif() const {
-  return m_motif ;
+  return m_motif;
 }
 
-TempDir::TempDir(const string& motif) : TempPath(motif) {
+TempDir::TempDir(const string& motif) :
+    TempPath(motif) {
 
-  Logging logger = Logging::getLogger() ;
-  logger.debug() << "Creation of the " << path() <<" temporary directory" ;
+  Logging logger = Logging::getLogger();
+  logger.debug() << "Creation of the " << path() << " temporary directory";
 
-  fs::create_directory(path()) ;
+  fs::create_directory(path());
 
 }
 
 TempDir::~TempDir() {
 
-  Logging logger = Logging::getLogger() ;
-  logger.debug() << "Automatic destruction of the " << path() <<" temporary directory" ;
+  Logging logger = Logging::getLogger();
+  logger.debug() << "Automatic destruction of the " << path()
+      << " temporary directory";
 
-  fs::remove_all(path()) ;
+  fs::remove_all(path());
 
 }
 
+TempFile::TempFile(const string& motif) :
+    TempPath(motif) {
 
-TempFile::TempFile(const string& motif) : TempPath(motif) {
-
-  Logging logger = Logging::getLogger() ;
-  logger.debug() << "Creation of the " << path() <<" temporary file" ;
+  Logging logger = Logging::getLogger();
+  logger.debug() << "Creation of the " << path() << " temporary file";
 
   fs::ofstream ofs(path());
   ofs.close();
@@ -72,10 +74,10 @@ TempFile::TempFile(const string& motif) : TempPath(motif) {
 
 TempFile::~TempFile() {
 
-  Logging logger = Logging::getLogger() ;
-  logger.debug() << "Automatic destruction of the " << path() <<" file" ;
+  Logging logger = Logging::getLogger();
+  logger.debug() << "Automatic destruction of the " << path() << " file";
 
-  fs::remove(path()) ;
+  fs::remove(path());
 
 }
 
