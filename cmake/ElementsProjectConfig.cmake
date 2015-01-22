@@ -448,7 +448,7 @@ macro(elements_project project version)
         PREPEND PYTHONPATH \${.}/python
         PREPEND PYTHONPATH \${.}/python/lib-dynload
         PREPEND ELEMENTS_CONF_PATH \${.}/conf
-        PREPEND ELEMENTS_AUX_PATH \${.}/aux)
+        PREPEND ELEMENTS_AUX_PATH \${.}/auxdir)
   #     (installation dirs added to build env to be able to test pre-built bins)
   set(project_build_environment ${project_build_environment}
         PREPEND PATH ${CMAKE_INSTALL_PREFIX}/scripts
@@ -457,7 +457,7 @@ macro(elements_project project version)
         PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python
         PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python/lib-dynload
         PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/conf
-        PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/aux)
+        PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/auxdir)
 
   message(STATUS "  environment for local subdirectories")
   #   - project root (for relocatability)
@@ -507,6 +507,11 @@ macro(elements_project project version)
     if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/aux)
       set(project_build_environment ${project_build_environment}
           PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/aux)
+    endif()
+
+    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/auxdir)
+      set(project_build_environment ${project_build_environment}
+          PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/auxdir)
     endif()
 
 
@@ -2289,8 +2294,8 @@ endfunction()
 # Declare that the package needs to install the content of the 'aux' directory.
 #---------------------------------------------------------------------------------------------------
 function(elements_install_aux_files)
-  install(DIRECTORY aux/
-          DESTINATION aux
+  install(DIRECTORY aux/ auxdir/
+          DESTINATION auxdir
           PATTERN "CVS" EXCLUDE
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE)
@@ -2481,7 +2486,7 @@ set(${CMAKE_PROJECT_NAME}_LIBRARY_DIRS \${_dir}/lib)
 set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_dir}/bin \${_dir}/scripts)
 set(${CMAKE_PROJECT_NAME}_PYTHON_PATH \${_dir}/python)
 set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_dir}/conf)
-set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/aux)
+set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/auxdir)
 
 set(${CMAKE_PROJECT_NAME}_COMPONENT_LIBRARIES ${component_libraries})
 set(${CMAKE_PROJECT_NAME}_LINKER_LIBRARIES ${linker_libraries})
