@@ -2309,6 +2309,7 @@ function(elements_install_aux_files)
   # early check at configure time for the existence of the directory
   if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/auxdir)
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux)
+      message(WARNING "The aux directory name in the ${CMAKE_CURRENT_SOURCE_DIR} location is dangerous. Please rename it to auxdir")
       install(DIRECTORY aux/
               DESTINATION auxdir
               PATTERN "CVS" EXCLUDE
