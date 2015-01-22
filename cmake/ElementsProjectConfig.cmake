@@ -2294,12 +2294,26 @@ endfunction()
 # Declare that the package needs to install the content of the 'aux' directory.
 #---------------------------------------------------------------------------------------------------
 function(elements_install_aux_files)
-  install(DIRECTORY aux/ auxdir/
-          DESTINATION auxdir
-          PATTERN "CVS" EXCLUDE
-          PATTERN ".svn" EXCLUDE
-          PATTERN "*~" EXCLUDE)
-  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_AUX TRUE)
+  # early check at configure time for the existence of the directory
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/auxdir)
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux)
+      install(DIRECTORY aux/
+              DESTINATION auxdir
+              PATTERN "CVS" EXCLUDE
+              PATTERN ".svn" EXCLUDE
+              PATTERN "*~" EXCLUDE)
+    endif()
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/auxdir)
+      install(DIRECTORY auxdir/
+              DESTINATION auxdir
+              PATTERN "CVS" EXCLUDE
+              PATTERN ".svn" EXCLUDE
+              PATTERN "*~" EXCLUDE)
+    endif()
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_AUX TRUE)
+  else()
+    message(FATAL_ERROR "No auxdir directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+  endif()
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
