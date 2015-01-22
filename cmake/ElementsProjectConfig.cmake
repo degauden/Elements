@@ -2148,17 +2148,21 @@ endfunction()
 function(elements_install_headers)
   set(has_local_headers FALSE)
   foreach(hdr_dir ${ARGN})
-    install(DIRECTORY ${hdr_dir}
-            DESTINATION include
-            FILES_MATCHING
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${hdr_dir})
+      install(DIRECTORY ${hdr_dir}
+              DESTINATION include
+              FILES_MATCHING
               PATTERN "*.h"
               PATTERN "*.icpp"
               PATTERN "*.hpp"
               PATTERN "*.hxx"
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE)
-    if(NOT IS_ABSOLUTE ${hdr_dir})
-      set(has_local_headers TRUE)
+      if(NOT IS_ABSOLUTE ${hdr_dir})
+        set(has_local_headers TRUE)
+      endif()
+    else()
+      message(FATAL_ERROR "No ${hdr_dir} directory for header files in the ${CMAKE_CURRENT_SOURCE_DIR} location")
     endif()
   endforeach()
   # flag the current directory as one that installs headers
@@ -2166,8 +2170,8 @@ function(elements_install_headers)
   #   dependent subdirs
   if(has_local_headers)
     set_property(DIRECTORY PROPERTY INSTALLS_LOCAL_HEADERS TRUE)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
-  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -2240,34 +2244,38 @@ endfunction()
 # FIXME: it should be cleaner
 #-------------------------------------------------------------------------------
 function(elements_install_python_modules)
-  install(DIRECTORY python/
-          DESTINATION python
-          FILES_MATCHING
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python)
+    install(DIRECTORY python/
+            DESTINATION python
+            FILES_MATCHING
             PATTERN "*.py"
             PATTERN "CVS" EXCLUDE
             PATTERN ".svn" EXCLUDE)
-  # check for the presence of the __init__.py's and install them if needed
-  file(GLOB sub-dir RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} python/*)
-  foreach(dir ${sub-dir})
-    if(NOT dir STREQUAL python/.svn
-       AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}
-       AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
-      set(pyfile ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
-      file(RELATIVE_PATH pyfile ${CMAKE_BINARY_DIR} ${pyfile})
-      message(WARNING "The file  ${pyfile} is missing. I shall install an empty one.")
-      if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/__init__.py)
-        file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/__init__.py "# Empty file generated automatically\n")
+    # check for the presence of the __init__.py's and install them if needed
+    file(GLOB sub-dir RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} python/*)
+    foreach(dir ${sub-dir})
+      if(NOT dir STREQUAL python/.svn
+         AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}
+         AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
+        set(pyfile ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
+        file(RELATIVE_PATH pyfile ${CMAKE_BINARY_DIR} ${pyfile})
+        message(WARNING "The file  ${pyfile} is missing. I shall install an empty one.")
+        if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/__init__.py)
+          file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/__init__.py "# Empty file generated automatically\n")
+        endif()
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/${dir})
       endif()
-      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
-              DESTINATION ${CMAKE_INSTALL_PREFIX}/${dir})
+      # Add the Python module name to the list of provided ones.
+      get_filename_component(modname ${dir} NAME)
+      set_property(DIRECTORY APPEND PROPERTY has_python_modules ${modname})
+    endforeach()
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
+      add_python_test_dir(tests/python)
     endif()
-    # Add the Python module name to the list of provided ones.
-    get_filename_component(modname ${dir} NAME)
-    set_property(DIRECTORY APPEND PROPERTY has_python_modules ${modname})
-  endforeach()
-  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
-  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
-    add_python_test_dir(tests/python)
+  else()
+    message(FATAL_ERROR "No python directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
   endif()
 endfunction()
 
@@ -2277,15 +2285,19 @@ endfunction()
 # Declare that the package needs to install the content of the 'scripts' directory.
 #---------------------------------------------------------------------------------------------------
 function(elements_install_scripts)
-  install(DIRECTORY scripts/ DESTINATION scripts
-          FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-                           GROUP_EXECUTE GROUP_READ
-                           WORLD_EXECUTE WORLD_READ
-          PATTERN "CVS" EXCLUDE
-          PATTERN ".svn" EXCLUDE
-          PATTERN "*~" EXCLUDE
-          PATTERN "*.pyc" EXCLUDE)
-  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
+    install(DIRECTORY scripts/ DESTINATION scripts
+            FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                             GROUP_EXECUTE GROUP_READ
+                             WORLD_EXECUTE WORLD_READ
+            PATTERN "CVS" EXCLUDE
+            PATTERN ".svn" EXCLUDE
+            PATTERN "*~" EXCLUDE
+            PATTERN "*.pyc" EXCLUDE)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
+  else()
+    message(FATAL_ERROR "No scripts directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+  endif()
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -2322,12 +2334,16 @@ endfunction()
 # Declare that the package needs to install the content of the 'conf' directory.
 #---------------------------------------------------------------------------------------------------
 function(elements_install_conf_files)
-  install(DIRECTORY conf/
-          DESTINATION conf
-          PATTERN "CVS" EXCLUDE
-          PATTERN ".svn" EXCLUDE
-          PATTERN "*~" EXCLUDE)
-  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CONF TRUE)
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/conf)
+    install(DIRECTORY conf/
+            DESTINATION conf
+            PATTERN "CVS" EXCLUDE
+            PATTERN ".svn" EXCLUDE
+            PATTERN "*~" EXCLUDE)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CONF TRUE)
+  else()
+    message(FATAL_ERROR "No conf directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+  endif()
 endfunction()
 
 
