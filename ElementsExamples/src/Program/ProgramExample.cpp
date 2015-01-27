@@ -1,7 +1,6 @@
 /**
- * @file ElementsProgramExample.cpp
+ * @file ProgramExample.cpp
  * @date Aug 8, 2013
- * @brief implementation of the ElementsProgramExample.h
  * @author Pierre Dubath
  */
 
