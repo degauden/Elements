@@ -46,7 +46,7 @@ public:
    * @return
    *   A BOOST options description
    */
-  virtual boost::program_options::options_description defineSpecificProgramOptions() = 0;
+  virtual boost::program_options::options_description defineSpecificProgramOptions() ;
 
   /**
    * @brief
