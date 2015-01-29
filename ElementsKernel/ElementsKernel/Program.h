@@ -46,7 +46,7 @@ public:
    * @return
    *   A BOOST options description
    */
-  virtual boost::program_options::options_description defineSpecificProgramOptions() = 0;
+  virtual boost::program_options::options_description defineSpecificProgramOptions() ;
 
   /**
    * @brief
@@ -62,16 +62,6 @@ public:
    *    The exit code which should be returned when the program exits
    */
   virtual ExitCode mainMethod(std::map<std::string, boost::program_options::variable_value>& args) = 0;
-
-  /**
-   * @brief
-   *   Get the program version from svn tags
-   * @details
-    *
-   * @return
-   *   A string with the version information
-   */
-  virtual std::string getVersion() = 0;
 
 };
 
