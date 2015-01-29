@@ -44,12 +44,12 @@ def main():
     outputdata = """#ifndef %(proj)s_VERSION
 /* Automatically generated file: do not modify! */
 #ifndef CALC_ELEMENTS_VERSION
-#define CALC_ELEMENTS_VERSION(maj,min) (((maj) << 16) + (min))
+#define CALC_ELEMENTS_VERSION(maj,min,pat) (((maj) << 32) + ((min) << 16) + (pat))
 #endif
 #define %(proj)s_MAJOR_VERSION %(maj)d
 #define %(proj)s_MINOR_VERSION %(min)d
 #define %(proj)s_PATCH_VERSION %(pat)d
-#define %(proj)s_VERSION CALC_ELEMENTS_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION)
+#define %(proj)s_VERSION CALC_ELEMENTS_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)
 #endif
 """ % { 'proj': project.upper(), 'min': minver, 'maj': majver, 'pat': patver }
 
