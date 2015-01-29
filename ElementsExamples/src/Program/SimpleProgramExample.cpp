@@ -7,41 +7,53 @@
 
 #include <iostream>
 
-#include "ElementsKernel/Exit.h"
-#include "ElementsKernel/SimpleProgram.h"
+#include "ElementsKernel/ProgramHeaders.h"
+namespace po = boost::program_options;
 
 using namespace std;
 
-
-
 namespace Elements {
 
-class SimpleProgramExample : public SimpleProgram {
+
+/**
+ * @class ElementsProgramExample
+ * @brief
+ *    Example of an Elements program
+ * @details
+ *    This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
+ *    conveniently to write a new program.
+ */
+class SimpleProgramExample: public Program {
 
 public:
-  SimpleProgramExample() = default ;
-  virtual ~SimpleProgramExample() = default ;
 
-private:
-  ExitCode main();
-  virtual void defineOptions();
+  /**
+   * @brief
+   *    The "main" method.
+   * @details
+   *    This method is the entry point to the program. In this sense, it is similar to a main
+   *    (and it is why it is called mainMethod()). The code below provides only example stuff
+   *    which should be replaced by real code in any program.
+   *
+   *    See the ElementsProgram documentation for more details.
+   *
+   */
+  ExitCode mainMethod(map<std::string, po::variable_value>& /*args*/) {
+
+    // Get logger and log the entry into the mainMethod
+    Logging logger = Logging::getLogger();
+
+    logger.info("This Works");
+
+    cout << "This Works too!" << endl;
+
+    return ExitCode::OK;
+
+  }
+
 };
 
 
-ExitCode SimpleProgramExample::main()
-{
-  ExitCode exit_code {ExitCode::OK};
-
-  cout << "This works!!" << endl;
-  cout << getProgramName().c_str() << endl;
-  cout << getProgramPath().string() << endl;
-
-  return exit_code;
-}
-
-void SimpleProgramExample::defineOptions() {
-
-}
 
 
 }  // namespace Elements

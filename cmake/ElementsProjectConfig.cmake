@@ -265,6 +265,12 @@ macro(elements_project project version)
     set(versheader_cmd ${PYTHON_EXECUTABLE} ${versheader_cmd})
   endif()
 
+  find_program(thisheader_cmd createThisProjHeader.py HINTS ${binary_paths})
+  if(thisheader_cmd)
+    set(thisheader_cmd ${PYTHON_EXECUTABLE} ${thisheader_cmd})
+  endif()
+
+
   find_program(Boost_testmain_cmd createBoostTestMain.py HINTS ${binary_paths})
   if(Boost_testmain_cmd)
     set(Boost_testmain_cmd ${PYTHON_EXECUTABLE} ${Boost_testmain_cmd})
@@ -291,7 +297,7 @@ macro(elements_project project version)
   find_program(pythonprogramscript_cmd createPythonProgramScript.py HINTS ${binary_paths})
   set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
 
-  mark_as_advanced(env_cmd merge_cmd versheader_cmd Boost_testmain_cmd CppUnit_testmain_cmd
+  mark_as_advanced(env_cmd merge_cmd versheader_cmd thisheader_cmd Boost_testmain_cmd CppUnit_testmain_cmd
                    zippythondir_cmd elementsrun_cmd
                    rpmbuild_wrap_cmd)
 
@@ -304,6 +310,7 @@ macro(elements_project project version)
 
   install(PROGRAMS cmake/scripts/rpmbuild_wrap.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/createProjVersHeader.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/createThisProjHeader.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/createBoostTestMain.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/install.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/locker.py DESTINATION scripts OPTIONAL)
@@ -372,6 +379,13 @@ macro(elements_project project version)
     install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h DESTINATION include)
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
+
+  if(thisheader_cmd)
+    execute_process(COMMAND
+                    ${thisheader_cmd} --quiet
+                    ${project} ${CMAKE_BINARY_DIR}/include/ThisProject.h)
+  endif()
+
   # Add generated headers to the include path.
   include_directories(${CMAKE_BINARY_DIR}/include)
 

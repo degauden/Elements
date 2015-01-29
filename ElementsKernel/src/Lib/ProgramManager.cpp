@@ -120,7 +120,7 @@ const po::variables_map ProgramManager::getProgramOptions(
 
   // Deal with the "version" option
   if (variables_map.count("version")) {
-    cout << m_program_ptr->getVersion() << endl;
+    cout << getVersion() << endl;
     exit(0);
   }
 
@@ -280,5 +280,13 @@ ExitCode ProgramManager::run(int argc, char* argv[]) {
   return exit_code ;
 
 }
+
+string ProgramManager::getVersion() const {
+
+  string version = m_parent_project_name + " " + m_parent_project_version;
+
+  return version;
+}
+
 
 } // namespace Elements

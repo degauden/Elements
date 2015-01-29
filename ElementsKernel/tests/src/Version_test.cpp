@@ -36,4 +36,11 @@ BOOST_AUTO_TEST_CASE(getVersionFromSvnKeywords_tags) {
   BOOST_CHECK(Elements::getVersionFromSvnKeywords(SVN_URL_TAGS, SVN_ID).find(expectedTagsVersion) != string::npos );
 }
 
+BOOST_AUTO_TEST_CASE(getVersionFromString_test) {
+  BOOST_CHECK(Elements::getVersionString(1,2) == string("1.2"));
+  BOOST_CHECK(Elements::getVersionString(3,2,1) == string("3.2.1"));
+  BOOST_CHECK(Elements::getVersionString(4,7,0) == string("4.7"));
+}
+
+
 BOOST_AUTO_TEST_SUITE_END ()
