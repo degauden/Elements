@@ -4,21 +4,6 @@
  * @author Pierre Dubath
  */
 
-/**
- * This macro includes svn tags that are expanded upon any commit. The program version
- * output on screen with the option --version is extracted from these keywords
- *
- * When creating a new ElementsProgram file, naked svn tags should be introduced
- * (they are then expanded with the first commit), and the svn property svn:keywords
- * must be set with the command:
- *
- * svn propset svn:keywords 'Id Revision HeadURL' filename
- *
- * For more information (and examples of naked svn tags) see the documentation
- * of the getVersionFromKeywords() method in the Version.h file.
- */
-#define SVN_ID "SVN $Id$"
-#define SVN_URL "SVN $HeadURL$"
 
 #include "ElementsKernel/ProgramHeaders.h"
 namespace po = boost::program_options;
@@ -32,11 +17,11 @@ namespace Elements {
 
 
 /**
- * @class ElementsProgramExample
+ * @class ProgramExample
  * @brief
  * 		Example of an Elements program
  * @details
- * 		This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
+ * 		This class is an example of a program based on the Elements::Program class. It can be copied/pasted
  * 		conveniently to write a new program.
  */
 class ProgramExample: public Program {
@@ -60,7 +45,7 @@ public:
    *    Allows to define the (command line and configuration file) options specific to
    *    this program
    * @details
-   *    See the ElementsProgram documentation for more details.
+   *    See the Elements::Program documentation for more details.
    * @return
    *    A BOOST program options_description
    */
@@ -172,13 +157,6 @@ public:
 
   }
 
-  /*
-   * This is a standard implementation of getVersion()
-   * This must be copy/paste in all programs
-   */
-  string getVersion() {
-    return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
-  }
 };
 
 } // namespace Elements
