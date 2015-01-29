@@ -10,6 +10,7 @@
 
 #include "ElementsKernel/Exit.h"
 #include "ElementsKernel/ProgramManager.h"
+#include "ThisProject.h"
 
 /**
  * Macro which must be used to create a main in classes
@@ -23,7 +24,8 @@
 #define MAIN_FOR(ELEMENTS_PROGRAM_NAME)         \
   int main(int argc, char* argv[])              \
   {                                             \
-    Elements::ProgramManager man {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}}; \
+    Elements::ProgramManager man {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
+                                  THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING}; \
     Elements::ExitCode exit_code =  man.run(argc, argv);   \
     return static_cast<Elements::ExitCodeType>(exit_code);    \
   }

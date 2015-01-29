@@ -40,8 +40,12 @@ public:
   /**
    * @brief Constructor
    */
-  ProgramManager(std::unique_ptr<Elements::Program> program_ptr) :
-      m_program_ptr(std::move(program_ptr)) {
+  ProgramManager(std::unique_ptr<Elements::Program> program_ptr,
+                 std::string parent_project_version="",
+                 std::string parent_project_name="") :
+      m_program_ptr(std::move(program_ptr)),
+      m_parent_project_version(std::move(parent_project_version)),
+      m_parent_project_name(std::move(parent_project_name)){
   }
 
   /**
@@ -62,6 +66,8 @@ public:
    */
   ELEMENTS_API
   ExitCode run(int argc, char* argv[]);
+
+  ELEMENTS_API std::string getVersion() const;
 
 private:
 
@@ -158,13 +164,27 @@ private:
   boost::filesystem::path m_program_path;
 
   /**
-    * Pointer to a program interface, which provides three methods
-    *   defineSpecificProgramOption()
-    *   mainMethod()
-    *   getVersion()
-    *
-    */
+   * Pointer to a program interface, which provides two methods
+   *   defineSpecificProgramOption()
+   *   mainMethod()
+   *
+   */
   std::unique_ptr<Elements::Program> m_program_ptr;
+
+  /**
+   * Internal version of the program. By convention, it is the same
+   * as the version of the parent project
+   */
+  std::string m_parent_project_version;
+
+  /**
+   * Name of the parent project. To avoid ambiguities and because a module
+   * can be moved from one project to another, the full version of the
+   * program will look like
+   *
+   *     m_parent_project_version [m_parent_project_name]
+   */
+  std::string m_parent_project_name;
 
 };
 

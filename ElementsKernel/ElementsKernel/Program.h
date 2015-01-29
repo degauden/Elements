@@ -63,16 +63,6 @@ public:
    */
   virtual ExitCode mainMethod(std::map<std::string, boost::program_options::variable_value>& args) = 0;
 
-  /**
-   * @brief
-   *   Get the program version from svn tags
-   * @details
-    *
-   * @return
-   *   A string with the version information
-   */
-  virtual std::string getVersion() = 0;
-
 };
 
 }
