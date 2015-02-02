@@ -5,9 +5,12 @@ import os
 import stat
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--module', required=True, help='The module containing the program implementation')
-parser.add_argument('--outdir', required=True, help='The directory to generate the script in')
-parser.add_argument('--execname', required=True, help='The name of the executable script to generate')
+parser.add_argument('--module', required=True,
+                    help='The module containing the program implementation')
+parser.add_argument(
+    '--outdir', required=True, help='The directory to generate the script in')
+parser.add_argument('--execname', required=True,
+                    help='The name of the executable script to generate')
 args = parser.parse_args()
 
 if not os.path.exists(args.outdir):
@@ -20,13 +23,15 @@ template = """\
 #!/usr/bin/env python
 # Automatically generated file: do not modify!
 
+from ThisProject import THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME
+
 from ElementsKernel.Program import Program
 
-p = Program('%(MODULE_NAME)s')
+p = Program('%(MODULE_NAME)s', THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME)
 exit(p.runProgram())
 """ % { 'MODULE_NAME' : args.module }
 
-filename = args.outdir + os.sep + args.execname
+filename = os.path.join(args.outdir, args.execname)
 
 with open(filename, 'w') as f:
     f.write(template)
