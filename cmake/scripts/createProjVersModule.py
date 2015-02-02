@@ -41,16 +41,12 @@ def main():
         os.makedirs(outdir)
 
     # Prepare data to be written
-    outputdata = """#ifndef %(proj)s_VERSION
-/* Automatically generated file: do not modify! */
-#ifndef CALC_ELEMENTS_VERSION
-#define CALC_ELEMENTS_VERSION(maj,min,pat) (((maj) << 32) + ((min) << 16) + (pat))
-#endif
-#define %(proj)s_MAJOR_VERSION %(maj)d
-#define %(proj)s_MINOR_VERSION %(min)d
-#define %(proj)s_PATCH_VERSION %(pat)d
-#define %(proj)s_VERSION CALC_ELEMENTS_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)
-#endif
+    outputdata = """# Automatically generated file: do not modify!
+%(proj)s_MAJOR_VERSION = %(maj)d
+%(proj)s_MINOR_VERSION = %(min)d
+%(proj)s_PATCH_VERSION = %(pat)d
+%(proj)s_VERSION = (%(maj)d << 32) + (%(min)d << 16 ) + (%(pat)d)
+
 """ % { 'proj': project.upper(), 'min': minver, 'maj': majver, 'pat': patver }
 
     # Get the current content of the destination file (if any)

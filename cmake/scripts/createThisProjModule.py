@@ -26,19 +26,18 @@ def main():
         os.makedirs(outdir)
 
     # Prepare data to be written
-    outputdata = """#ifndef _THIS_PROJECT_H_
-#define _THIS_PROJECT_H_
-/* Automatically generated file: do not modify! */
-#include "%(proj)s_VERSION.h"
-#include "ElementsKernel/Version.h"
-#define THIS_PROJECT_MAJOR_VERSION %(proj)s_MAJOR_VERSION
-#define THIS_PROJECT_MINOR_VERSION %(proj)s_MINOR_VERSION
-#define THIS_PROJECT_PATCH_VERSION %(proj)s_PATCH_VERSION
-#define THIS_PROJECT_VERSION CALC_ELEMENTS_VERSION(THIS_PROJECT_MAJOR_VERSION,THIS_PROJECT_MINOR_VERSION,THIS_PROJECT_PATCH_VERSION)
-#define THIS_PROJECT_VERSION_STRING Elements::getVersionString(THIS_PROJECT_MAJOR_VERSION,THIS_PROJECT_MINOR_VERSION,THIS_PROJECT_PATCH_VERSION)
-#define THIS_PROJECT_NAME %(Proj)s
-#define THIS_PROJECT_NAME_STRING std::string("%(Proj)s")
-#endif
+    outputdata = """# Automatically generated file: do not modify!
+
+from ElementsKernel.Version import getVersionString
+from %(proj)s_VERSION import %(proj)s_MAJOR_VERSION, %(proj)s_MINOR_VERSION, %(proj)s_PATCH_VERSION
+from %(proj)s_VERSION import %(proj)s_VERSION
+
+THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION
+THIS_PROJECT_MINOR_VERSION = %(proj)s_MINOR_VERSION
+THIS_PROJECT_PATCH_VERSION = %(proj)s_PATCH_VERSION
+THIS_PROJECT_VERSION = %(proj)s_VERSION
+THIS_PROJECT_VERSION_STRING = getVersionString(THIS_PROJECT_MAJOR_VERSION,THIS_PROJECT_MINOR_VERSION,THIS_PROJECT_PATCH_VERSION)
+THIS_PROJECT_NAME = "%(Proj)s"
 """ % { 'proj': project.upper(), 'Proj': project}
 
     # Get the current content of the destination file (if any)

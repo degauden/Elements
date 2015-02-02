@@ -265,9 +265,19 @@ macro(elements_project project version)
     set(versheader_cmd ${PYTHON_EXECUTABLE} ${versheader_cmd})
   endif()
 
+  find_program(versmodule_cmd createProjVersModule.py HINTS ${binary_paths})
+  if(versmodule_cmd)
+    set(versmodule_cmd ${PYTHON_EXECUTABLE} ${versmodule_cmd})
+  endif()
+
   find_program(thisheader_cmd createThisProjHeader.py HINTS ${binary_paths})
   if(thisheader_cmd)
     set(thisheader_cmd ${PYTHON_EXECUTABLE} ${thisheader_cmd})
+  endif()
+
+  find_program(thismodule_cmd createThisProjModule.py HINTS ${binary_paths})
+  if(thismodule_cmd)
+    set(thismodule_cmd ${PYTHON_EXECUTABLE} ${thismodule_cmd})
   endif()
 
 
@@ -297,7 +307,9 @@ macro(elements_project project version)
   find_program(pythonprogramscript_cmd createPythonProgramScript.py HINTS ${binary_paths})
   set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
 
-  mark_as_advanced(env_cmd merge_cmd versheader_cmd thisheader_cmd Boost_testmain_cmd CppUnit_testmain_cmd
+  mark_as_advanced(env_cmd merge_cmd versheader_cmd versmodule_cmd
+                   thisheader_cmd thismodule_cmd
+                   Boost_testmain_cmd CppUnit_testmain_cmd
                    zippythondir_cmd elementsrun_cmd
                    rpmbuild_wrap_cmd)
 
@@ -310,7 +322,9 @@ macro(elements_project project version)
 
   install(PROGRAMS cmake/scripts/rpmbuild_wrap.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/createProjVersHeader.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/createProjVersModule.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/createThisProjHeader.py DESTINATION scripts OPTIONAL)
+  install(PROGRAMS cmake/scripts/createThisProjModule.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/createBoostTestMain.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/install.py DESTINATION scripts OPTIONAL)
   install(PROGRAMS cmake/scripts/locker.py DESTINATION scripts OPTIONAL)
@@ -372,6 +386,7 @@ macro(elements_project project version)
 
   # Generate the version header for the project.
   string(TOUPPER ${project} _proj)
+
   if(versheader_cmd)
     execute_process(COMMAND
                     ${versheader_cmd} --quiet
@@ -384,10 +399,29 @@ macro(elements_project project version)
     execute_process(COMMAND
                     ${thisheader_cmd} --quiet
                     ${project} ${CMAKE_BINARY_DIR}/include/ThisProject.h)
+    # This header is by design only local. It is then not installed
   endif()
 
   # Add generated headers to the include path.
   include_directories(${CMAKE_BINARY_DIR}/include)
+
+  if(versmodule_cmd)
+    execute_process(COMMAND
+                    ${versmodule_cmd} --quiet
+                    ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py)
+    install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py DESTINATION python)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+  endif()
+
+  if(thismodule_cmd)
+    execute_process(COMMAND
+                    ${thismodule_cmd} --quiet
+                    ${project} ${CMAKE_BINARY_DIR}/python/ThisProject.py)
+    install(FILES ${CMAKE_BINARY_DIR}/python/ThisProject.py DESTINATION python)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+  endif()
+
+
 
   #--- Collect settings for subdirectories
   set(library_path)
