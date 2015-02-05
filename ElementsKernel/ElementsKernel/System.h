@@ -28,21 +28,21 @@
 namespace Elements {
 namespace System {
 /// Definition of an image handle
-typedef void* ImageHandle;
+using ImageHandle = void*;
 /// Definition of the process handle
-typedef void* ProcessHandle;
+using ProcessHandle = void*;
 /// Definition of the "generic" DLL entry point function
-typedef unsigned long (*EntryPoint)(const unsigned long iid, void** ppvObject);
+using EntryPoint = unsigned long (*)(const unsigned long iid, void** ppvObject);
 /// Definition of the "generic" DLL entry point function
-typedef void* (*Creator)();
+using Creator = void* (*)();
 
 #ifdef __linux
 ///A Thread handle
-typedef pthread_t ThreadHandle;
+using ThreadHandle = pthread_t;
 ///thread handle "accessor"
 #else
 ///A Thread handle
-typedef void* ThreadHandle;
+using ThreadHandle = void*;
 #endif
 
 /// Load dynamic link library

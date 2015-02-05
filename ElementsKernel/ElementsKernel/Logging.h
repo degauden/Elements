@@ -80,7 +80,7 @@ public:
   /**
    * The different available levels of logging
    */
-  typedef enum {
+  using Level = enum {
     /// Very severe error events that will lead the application to abort
     FATAL = 100,
     /// Error events that might still allow the application to continue running
@@ -91,7 +91,7 @@ public:
     INFO = 400,
     /// Fine-grained informational events
     DEBUG = 500
-  } Level;
+  };
 
   /**
    * Returns an instance of Elements::Logging which can be used for logging
