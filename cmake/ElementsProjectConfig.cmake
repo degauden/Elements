@@ -2196,7 +2196,12 @@ endfunction()
 function(elements_install_headers)
   set(has_local_headers FALSE)
   foreach(hdr_dir ${ARGN})
-    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${hdr_dir})
+    if(NOT IS_ABSOLUTE ${hdr_dir})
+      set(full_hdr_dir ${CMAKE_CURRENT_SOURCE_DIR}/${hdr_dir})
+    else()
+      set(full_hdr_dir ${hdr_dir})
+    endif()
+    if(IS_DIRECTORY ${full_hdr_dir})
       install(DIRECTORY ${hdr_dir}
               DESTINATION include
               FILES_MATCHING

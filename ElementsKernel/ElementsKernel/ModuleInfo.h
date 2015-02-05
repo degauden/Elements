@@ -33,9 +33,9 @@ enum class ModuleType {
   UNKNOWN, SHAREDLIB, EXECUTABLE
 };
 /// Definition of an image handle
-typedef void* ImageHandle;
+using ImageHandle = void*;
 /// Definition of the process handle
-typedef void* ProcessHandle;
+using ProcessHandle = void*;
 /// Get the name of the (executable/DLL) file without file-type
 ELEMENTS_API const std::string& moduleName();
 /// Get the full name of the (executable/DLL) file
