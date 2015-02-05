@@ -60,7 +60,7 @@ class TimeSpan;
 class ELEMENTS_API TimeSpan {
   friend class Time;
 public:
-  typedef long long ValueType;
+  using ValueType = long long;
 
   TimeSpan(void);
   TimeSpan(Time t);
@@ -216,7 +216,7 @@ private:
 class ELEMENTS_API Time {
   friend class TimeSpan;
 public:
-  typedef long long ValueType;
+  using ValueType = long long;
 
   /** Symbolic names for months */
   enum Months {

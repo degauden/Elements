@@ -99,7 +99,7 @@ enum class ExitCode : int {
 };
 
 /// Underlying type of the ExitCode class
-typedef std::underlying_type<ExitCode>::type ExitCodeType;
+using ExitCodeType = std::underlying_type<ExitCode>::type;
 
 
 } // namespace Elements
