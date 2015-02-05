@@ -126,7 +126,7 @@ ELEMENTS_API int64_t tickCount();
  */
 class ProcessTime {
 public:
-  typedef int64_t TimeValueType;
+  using TimeValueType = int64_t;
 
   /// Constructor
   ProcessTime() :

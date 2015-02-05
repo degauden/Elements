@@ -67,7 +67,7 @@ class TypeWithSize {
 public:
   // This prevents the user from using TypeWithSize<N> with incorrect
   // values of N.
-  typedef void UInt;
+  using UInt = void;
 };
 
 // The specialization for size 4.
@@ -78,16 +78,16 @@ public:
   //
   // As base/basictypes.h doesn't compile on Windows, we cannot use
   // uint32, uint64, and etc here.
-  typedef int Int;
-  typedef unsigned int UInt;
+  using Int = int;
+  using UInt = unsigned int;
 };
 
 // The specialization for size 8.
 template<>
 class TypeWithSize<8> {
 public:
-  typedef long long Int;  // NOLINT
-  typedef unsigned long long UInt;  // NOLINT
+  using Int = long long; // NOLINT
+  using UInt = unsigned long long; // NOLINT
 };
 
 template <typename RawType>
@@ -143,7 +143,7 @@ class FloatingPoint {
 public:
   // Defines the unsigned integer type that has the same size as the
   // floating point number.
-  typedef typename TypeWithSize<sizeof(RawType)>::UInt Bits;
+  using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
 
   // Constants.
 
@@ -341,7 +341,7 @@ ELEMENTS_API bool almostEqual2sComplement(const double& a, const double& b, cons
 template <typename RawType>
 bool isNan(const RawType& x)
 {
-  typedef typename TypeWithSize<sizeof(RawType)>::UInt Bits;
+  using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
   Bits x_bits = *reinterpret_cast<const Bits *>(&x);
 
   Bits x_exp_bits = FloatingPoint<RawType>::s_exponent_bitmask & x_bits ;
@@ -357,7 +357,7 @@ bool isEqual(const RawType& l, const RawType& r)
   bool is_equal{false} ;
 
   if ( ! (isNan<RawType>(l) || isNan<RawType>(r)) ) {
-    typedef typename TypeWithSize<sizeof(RawType)>::UInt Bits;
+    using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
     Bits l_bits = *reinterpret_cast<const Bits *>(&l);
     Bits r_bits = *reinterpret_cast<const Bits *>(&r);
     is_equal = (FloatingPoint<RawType>::distanceBetweenSignAndMagnitudeNumbers(l_bits, r_bits) <= max_ulps);

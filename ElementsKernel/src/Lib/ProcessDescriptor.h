@@ -16,7 +16,7 @@ ProcessDescriptor* getProcess();
 /** Basic Process Information
  NtQueryInformationProcess using ProcessBasicInfo
  */
-typedef struct _PEB *PPEB;
+using PPEB = struct _PEB *;
 struct PROCESS_BASIC_INFORMATION {
   long ExitStatus;
   PPEB PebBaseAddress;
