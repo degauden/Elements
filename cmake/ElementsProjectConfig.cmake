@@ -635,7 +635,8 @@ macro(elements_project project version)
 
   set(CPACK_RPM_REGULAR_FILES "%files")
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%defattr(-,root,root,-)")
+%defattr(-,root,root,-)
+%{_prefix}")
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{_prefix}/${CPACK_PACKAGE_NAME}Environment.xml")
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
@@ -645,6 +646,8 @@ macro(elements_project project version)
   get_property(regular_bin_objects GLOBAL PROPERTY REGULAR_BIN_OBJECTS)
 
   if(regular_bin_objects)
+    set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{_bindir}")
     list(SORT regular_bin_objects)
     foreach(_do ${regular_bin_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
@@ -668,6 +671,8 @@ macro(elements_project project version)
   get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
 
   if(regular_lib_objects)
+    set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
+%{libdir}")
     list(SORT regular_lib_objects)
     foreach(_do ${regular_lib_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
