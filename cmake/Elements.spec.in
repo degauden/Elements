@@ -17,7 +17,11 @@ Requires(post):    /sbin/ldconfig
 Requires(postun):  /sbin/ldconfig
 
 %define bin_tag @CPACK_SYSTEM_NAME@
-%define _prefix @EUCLID_BASE_DIR@/%{name}/%{version}/InstallArea/%{bin_tag}
+%define _proj_base_dir @EUCLID_BASE_DIR@
+%define _proj_name_dir %{_proj_base_dir}/%{name}
+%define _proj_vers_dir %{_proj_name_dir}/%{version}
+%define _proj_ia_dir %{_proj_vers_dir}/InstallArea
+%define _prefix %{_proj_ia_dir}/%{bin_tag}
 %define build_dir_name @BUILD_PREFIX_NAME@.%{bin_tag}
 %define libdir %{_prefix}/lib
 %define pydir %{_prefix}/python
@@ -79,7 +83,15 @@ cd %{build_dir_name}
 
 %post -p /sbin/ldconfig
 
-%postun -p /sbin/ldconfig
+%postun
+for d in  %{_proj_ia_dir}  %{_proj_vers_dir} %{_proj_name_dir}; do
+  if [[ -d "${d}" ]]; then
+    if [[ ! "$(ls -A ${d})" ]]; then
+      echo "Removing the ${d} empty directory ..."
+      rmdir ${d}
+    fi
+  fi
+done
 
 @CPACK_RPM_REGULAR_FILES@
 
