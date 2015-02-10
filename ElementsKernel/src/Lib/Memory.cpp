@@ -37,13 +37,13 @@ namespace System {
 long adjustMemory( MemoryUnit unit, long value )    {
   if ( value != -1 )    {
     switch ( unit )   {
-    case Byte:   break;
-    case kByte:     value =       value/1024;    break;
-    case MByte:     value =      (value/1024)/1024;    break;
-    case GByte:     value =     ((value/1024)/1024)/1024;    break;
-    case TByte:     value =    (((value/1024)/1024)/1024)/1024;    break;
-    case PByte:     value =   ((((value/1024)/1024)/1024)/1024)/1024;    break;
-    case EByte:     value =  (((((value/1024)/1024)/1024)/1024)/1024)/1024;    break;
+    case MemoryUnit::Byte:   break;
+    case MemoryUnit::kByte:     value =       value/1024;    break;
+    case MemoryUnit::MByte:     value =      (value/1024)/1024;    break;
+    case MemoryUnit::GByte:     value =     ((value/1024)/1024)/1024;    break;
+    case MemoryUnit::TByte:     value =    (((value/1024)/1024)/1024)/1024;    break;
+    case MemoryUnit::PByte:     value =   ((((value/1024)/1024)/1024)/1024)/1024;    break;
+    case MemoryUnit::EByte:     value =  (((((value/1024)/1024)/1024)/1024)/1024)/1024;    break;
     default:        value =  -1;    break;
     }
   }
