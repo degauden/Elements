@@ -84,6 +84,7 @@ cd %{build_dir_name}
 %post -p /sbin/ldconfig
 
 %postun
+/sbin/ldconfig
 for d in  %{_proj_ia_dir}  %{_proj_vers_dir} %{_proj_name_dir}; do
   if [[ -d "${d}" ]]; then
     if [[ ! "$(ls -A ${d})" ]]; then
