@@ -8,6 +8,8 @@
 #include <iostream>
 
 #include "ElementsKernel/ProgramHeaders.h"
+#include "ElementsKernel/Unused.h"
+
 namespace po = boost::program_options;
 
 using namespace std;
@@ -38,7 +40,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(map<std::string, po::variable_value>& /*args*/) {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<std::string, po::variable_value>& args) {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();
