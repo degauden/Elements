@@ -1,5 +1,5 @@
 /**
- * @file ModuleInfo.h
+ * @file ElementsExamples/ModuleInfo.h
  *
  * @date Feb 12, 2015
  * @author hubert
