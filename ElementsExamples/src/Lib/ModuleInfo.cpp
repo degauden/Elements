@@ -1,5 +1,5 @@
 /**
- * @file ExampleModuleInfo.cpp
+ * @file ModuleInfo.cpp
  *
  * @date Feb 12, 2015
  * @author hubert
