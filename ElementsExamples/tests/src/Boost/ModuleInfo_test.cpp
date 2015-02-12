@@ -40,7 +40,9 @@ BOOST_AUTO_TEST_SUITE (ModuleInfo_test)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ModuleName_test, ModuleInfoFixture ) {
-  BOOST_CHECK_EQUAL(getModuleInfo().name(), string("libElementsExamples.so"));
+  BOOST_CHECK_EQUAL(getModuleInfo().name(), string(System::LIB_PREFIX
+                                                    + "ElementsExamples"
+                                                    + System::LIB_SUFFIX));
 }
 
 //-----------------------------------------------------------------------------
