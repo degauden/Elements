@@ -1,4 +1,8 @@
+
 #include "ElementsKernel/Memory.h"
+
+#include "ElementsKernel/Unused.h"
+
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
@@ -6,7 +10,7 @@
 using namespace std;
 using namespace Elements::System;
 
-int main(int /* argc */, char** /* argv */) {
+int main(ELEMENTS_UNUSED int argc, ELEMENTS_UNUSED char** argv) {
   size_t kB = size_t(1024);
   size_t nBytes = kB * kB * size_t(500);
   void* p = ::malloc(nBytes);

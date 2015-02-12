@@ -11,6 +11,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include "ElementsKernel/Exit.h"
+#include "ElementsKernel/Unused.h"
 #include "ElementsKernel/SimpleProgram.h"
 
 using namespace std;
@@ -40,7 +41,7 @@ ExitCode SimpleProgram::run(int argc , char** argv) noexcept {
 }
 
 
-void SimpleProgram::setup(int /*argc*/, char** argv) {
+void SimpleProgram::setup(ELEMENTS_UNUSED int argc, char** argv) {
 
   fs::path prog_path {argv[0]};
 
