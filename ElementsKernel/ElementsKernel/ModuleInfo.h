@@ -17,6 +17,10 @@
 namespace Elements {
 namespace System {
 
+static std::string LIB_PREFIX = std::string("lib");
+static std::string LIB_EXTENSION = std::string("so");
+static std::string LIB_SUFFIX = "." + LIB_EXTENSION;
+
 class ELEMENTS_API ModuleInfo {
 public:
   ModuleInfo();
