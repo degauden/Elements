@@ -29,7 +29,9 @@ def main():
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
 
-int main( int /* argc */, char ** /* argv */)
+#include "ElementsKernel/Unused.h"
+
+int main(ELEMENTS_UNUSED int argc, ELEMENTS_UNUSED char **argv)
 {
   CppUnit::TextUi::TestRunner runner;
   CppUnit::TestFactoryRegistry &registry = CppUnit::TestFactoryRegistry::getRegistry();
