@@ -40,8 +40,14 @@ elements_add_unit_test(BoostClassExampleWithMain tests/src/Boost/ClassExample_te
                        INCLUDE_DIRS Boost ElementsExamples
                        LINK_LIBRARIES Boost ElementsExamples)
 
+elements_add_unit_test(ModuleInfo tests/src/Boost/ModuleInfo_test.cpp
+                       EXECUTABLE ElementsExamplesModuleInfo_test
+                       INCLUDE_DIRS ElementsExamples
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 
-elements_add_unit_test(BoostElementsExampleAllTests tests/src/Boost/*_test.cpp
+
+elements_add_unit_test(AllTests tests/src/Boost/*_test.cpp
+                       EXECUTABLE BoostElementsExampleAllTests
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
