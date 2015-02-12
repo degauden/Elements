@@ -75,5 +75,4 @@ endif()
 #---Python and Scripts ------------------------------------------------------------
 
 elements_install_python_modules()
-elements_install_scripts()
 
