@@ -8,7 +8,7 @@
 
 // Framework include files
 #include "ElementsKernel/Export.h" // ELEMENTS_API
-
+#include "ElementsKernel/Unused.h" // ELEMENTS_UNUSED
 
 #ifdef __linux
 # include <pthread.h>
@@ -106,11 +106,10 @@ ELEMENTS_API bool isEnvSet(const char* var);
 ///thread handle "accessor"
 ELEMENTS_API ThreadHandle threadSelf();
 
-ELEMENTS_API int backTrace(void** addresses __attribute__ ((unused)), const int depth __attribute__ ((unused)));
-ELEMENTS_API bool backTrace(std::string& btrace, const int depth,
-    const int offset = 0);
-ELEMENTS_API bool getStackLevel(void* addresses __attribute__ ((unused)), void*& addr __attribute__ ((unused)), std::string& fnc __attribute__ ((unused)),
-    std::string& lib __attribute__ ((unused)));
+ELEMENTS_API int backTrace(ELEMENTS_UNUSED void** addresses, ELEMENTS_UNUSED const int depth);
+ELEMENTS_API bool backTrace(std::string& btrace, const int depth, const int offset = 0);
+ELEMENTS_API bool getStackLevel(ELEMENTS_UNUSED void* addresses, ELEMENTS_UNUSED void*& addr,
+                                ELEMENTS_UNUSED std::string& fnc, ELEMENTS_UNUSED std::string& lib);
 
 } // end of namespace System
 } // end of namespace Elements
