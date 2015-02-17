@@ -272,10 +272,12 @@ void readProcStat(long pid, linux_proc& pinfo) {
   close(fd);
 }
 
+#include "ElementsKernel/Unused.h"
+
 //static long s_myPid  = ::getpid();
 // In order to properly support e.g. fork() calls, we cannot keep a copy of the pid!
 #define s_myPid (::getpid())
-static inline long processID(long pid) {
+ELEMENTS_UNUSED static inline long processID(long pid) {
   long thePid = (pid > 0) ? pid : s_myPid;
   return thePid;
 }
@@ -285,8 +287,7 @@ static inline long processID(long pid) {
 #include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/System.h"
 
-
-static const long TICK_TO_100NSEC = 100000;
+ELEMENTS_UNUSED static const long TICK_TO_100NSEC = 100000;
 
 namespace Elements {
 namespace System {
