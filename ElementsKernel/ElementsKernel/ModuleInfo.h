@@ -18,7 +18,11 @@ namespace Elements {
 namespace System {
 
 static std::string LIB_PREFIX = std::string("lib");
+#ifndef __APPLE__
 static std::string LIB_EXTENSION = std::string("so");
+#else
+static std::string LIB_EXTENSION = std::string("dylib");
+#endif
 static std::string LIB_SUFFIX = "." + LIB_EXTENSION;
 
 class ELEMENTS_API ModuleInfo {
