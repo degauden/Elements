@@ -5,11 +5,11 @@ Created on Jan 29, 2015
 '''
 
 
-def getVersionString(maj, min, pat=0):
+def getVersionString(major, minor, patch=0):
 
-    version = "%d.%d" % (maj, min)
+    version = "%d.%d" % (major, minor)
 
-    if pat:
-        version += ".%d" % pat
+    if patch:
+        version += ".%d" % patch
 
     return version
