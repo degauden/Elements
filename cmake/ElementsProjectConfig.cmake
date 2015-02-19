@@ -1014,7 +1014,13 @@ macro(_elements_use_other_projects)
   Check your configuration.
 ")
         endif()
-        include_directories(${${other_project}_INCLUDE_DIRS})
+        # include directories of other projects must be appended to the current
+        # list to preserve the order of overriding
+        include_directories(AFTER ${${other_project}_INCLUDE_DIRS})
+        # but in the INCLUDE_PATHS property the order gets reversed afterwards
+        # so we need to prepend instead of append
+        get_property(_inc_dirs GLOBAL PROPERTY INCLUDE_PATHS)
+        set_property(GLOBAL PROPERTY INCLUDE_PATHS ${${other_project}_INCLUDE_DIRS} ${_inc_dirs})
         set(binary_paths ${${other_project}_BINARY_PATH} ${binary_paths})
         foreach(exported ${${other_project}_EXPORTED_SUBDIRS})
           list(FIND known_packages ${exported} is_needed)
