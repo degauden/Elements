@@ -83,3 +83,5 @@ elements_add_test(ScriptThatGivesOutput COMMAND ScriptThatGivesOutput_test PASSR
 elements_add_test(ScriptThatGivesError COMMAND ScriptThatGivesError_test FAILREGEX ".*bad" FAILS)
 elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError_test FAILREGEX ".*worse" FAILS)
 
+elements_add_test(ProgramExample COMMAND ElementsProgramExample)
+elements_add_test(SimpleProgramExample COMMAND ElementsSimpleProgramExample)
