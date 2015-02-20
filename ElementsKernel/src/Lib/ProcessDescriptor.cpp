@@ -259,7 +259,7 @@ void readProcStat(long pid, linux_proc& pinfo) {
     buf[cnt] = '\0';
     sscanf(buf,
         //1  2  3  4  5  6  7  8  9  10  1   2   3   4   5   6   7   8   9   20  1   2   3   4   5   6   7   8   9   30  1   2   3   4   5
-        "%d %s %c %d %d %d %d %d %lu %lu %lu %lu %lu %lu %lu %ld %ld %ld %ld %ld %ld %llu %lu %ld %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
+        "%d %399s %c %d %d %d %d %d %lu %lu %lu %lu %lu %lu %lu %ld %ld %ld %ld %ld %ld %llu %lu %ld %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
         &pinfo.pid, pinfo.comm, &pinfo.state, &pinfo.ppid, &pinfo.pgrp,
         &pinfo.session, &pinfo.tty, &pinfo.tpgid, &pinfo.flags, &pinfo.minflt,
         &pinfo.cminflt, &pinfo.majflt, &pinfo.cmajflt, &pinfo.utime,

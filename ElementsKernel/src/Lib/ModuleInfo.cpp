@@ -154,7 +154,7 @@ const vector<string> linkedModules()    {
     FILE* maps = ::fopen(ff, "r");
     while( ::fgets(cmd, sizeof(cmd), maps) ) {
       int len;
-      ::sscanf(cmd, "%s %s %s %s %d %s", buf1, buf2, buf3, buf4, &len, fname);
+      ::sscanf(cmd, "%63s %63s %63s %63s %d %1023s", buf1, buf2, buf3, buf4, &len, fname);
       if ( len > 0 && strncmp(buf2,"r-xp",strlen("r-xp")) == 0 ) {
         s_linkedModules.push_back(fname);
       }
