@@ -2095,9 +2095,9 @@ function(elements_add_unit_test name)
              COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
              ${executable}${exec_suffix})
 
-    set_property(TEST ${package}.${name} PROPERTY LABELS UnitTest ${package})
+    set_property(TEST ${package}.${name} APPEND PROPERTY LABELS UnitTest ${package} Binary)
     if(NOT ${${name}_UNIT_TEST_TYPE} STREQUAL "None")
-      set_property(TEST ${package}.${name} PROPERTY LABELS ${${name}_UNIT_TEST_TYPE})
+      set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${${name}_UNIT_TEST_TYPE})
     endif()
 
     if(${name}_UNIT_TEST_TIMEOUT)
@@ -2176,7 +2176,7 @@ function(elements_add_test name)
            COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
            ${cmdline})
 
-  set_property(TEST ${package}.${name} PROPERTY LABELS ${package})
+  set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${package})
 
 
   if(ARG_DEPENDS)
@@ -2285,12 +2285,12 @@ function(add_python_test_dir subdir)
   if(PYFRMK_TEST)
     elements_add_test(${pytest_name}
                       COMMAND ${PYFRMK_TEST} ${pysrcs})
-    set_property(TEST ${package}.${pytest_name} PROPERTY LABELS Python UnitTest ${PYFRMK_NAME})
+    set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest ${PYFRMK_NAME})
   else()
     if(NOT PYTHON_VERSION_STRING VERSION_LESS "2.7")
       elements_add_test(${pytest_name}
                         COMMAND ${PYTHON_EXECUTABLE} -m unittest discover -s ${CMAKE_CURRENT_SOURCE_DIR}/${subdir} -p "${PYTEST_ARG_PATTERN}" )
-      set_property(TEST ${package}.${pytest_name} PROPERTY LABELS Python UnitTest)
+      set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest)
     endif()
   endif()
 
