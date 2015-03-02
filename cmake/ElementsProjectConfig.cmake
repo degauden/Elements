@@ -187,6 +187,7 @@ macro(elements_project project version)
 
   if(ELEMENTS_BUILD_TESTS)
     enable_testing()
+    include(CTest)
   endif()
 
   #--- Find subdirectories
