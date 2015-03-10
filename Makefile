@@ -46,22 +46,46 @@
 ################################################################################
 
 # settings
-CMAKE = cmake
-BUILD_PREFIX_NAME = build
+CMAKE := cmake
+CTEST := ctest
+NINJA := $(shell which ninja-build 2> /dev/null)
+ifeq ($(NINJA),)
+  NINJA := $(shell which ninja 2> /dev/null)
+endif
+
+
+BUILD_PREFIX_NAME := build
 
 override CMAKEFLAGS += -DUSE_LOCAL_INSTALLAREA=ON -DBUILD_PREFIX_NAME:STRING=$(BUILD_PREFIX_NAME)
 
 ifndef BINARY_TAG
   ifdef CMAKECONFIG
-    BINARY_TAG=${CMAKECONFIG}
+    BINARY_TAG := ${CMAKECONFIG}
   else 
     ifdef CMTCONFIG
-      BINARY_TAG=${CMTCONFIG}
+      BINARY_TAG := ${CMTCONFIG}
     endif
   endif
 endif
 
 BUILDDIR := $(CURDIR)/$(BUILD_PREFIX_NAME).$(BINARY_TAG)
+
+# build tool
+
+ifneq ($(USE_NINJA),)
+  # enable Ninja
+  override CMAKEFLAGS += -GNinja
+  ifneq ($(VERBOSE),)
+    NINJAFLAGS := -v $(NINJAFLAGS)
+  endif
+  BUILD_CONF_FILE := build.ninja
+  BUILD_CMD := $(NINJA) -C $(BUILD_PREFIX_NAME).$(BINARY_TAG) $(NINJAFLAGS)
+#  BUILD_CMD := cd $(BUILD_PREFIX_NAME).$(BINARY_TAG) && $(NINJA) $(NINJAFLAGS)
+else
+  BUILD_CONF_FILE := Makefile
+  BUILD_CMD := $(MAKE) -C $(BUILD_PREFIX_NAME).$(BINARY_TAG)
+endif
+
 
 
 # default target
@@ -74,23 +98,30 @@ purge:
 
 # delegate any target to the build directory (except 'purge')
 ifneq ($(MAKECMDGOALS),purge)
-%: $(BUILDDIR)/Makefile FORCE
-	$(MAKE) -C $(BUILDDIR) $*
+%: $(BUILDDIR)/$(BUILD_CONF_FILE) FORCE
+	+$(BUILD_CMD) $*
 endif
 
 # aliases
 .PHONY: configure tests FORCE
-ifneq ($(wildcard $(BUILDDIR)/Makefile),)
+ifneq ($(wildcard $(BUILDDIR)/$(BUILD_CONF_FILE)),)
 configure: rebuild_cache
 else
-configure: $(BUILDDIR)/Makefile
+configure: $(BUILDDIR)/$(BUILD_CONF_FILE)
 endif
 	@ # do not delegate further
+
+
+# This wrapping around the test target is used to ensure the generation of
+# the XML output from ctest. 
+test: $(BUILDDIR)/$(BUILD_CONF_FILE)
+	cd $(BUILDDIR) && $(CTEST) -T Test $(ARGS)
+
 
 # This target ensures that the "all" target is called before
 # running the tests (unlike the "test" default target of CMake)
 tests: all
-	-$(MAKE) -C $(BUILDDIR) test
+	-$(BUILD_CMD) test
 
 # ensure that the target are always passed to the CMake Makefile
 FORCE:
@@ -103,7 +134,7 @@ $(lastword $(MAKEFILE_LIST)):
 	@ # do not delegate further
 
 # trigger CMake configuration
-$(BUILDDIR)/Makefile: | $(BUILDDIR)
+$(BUILDDIR)/$(BUILD_CONF_FILE): | $(BUILDDIR)
 	cd $(BUILDDIR) && $(CMAKE) $(CMAKEFLAGS) $(CURDIR)
 
 $(BUILDDIR):
