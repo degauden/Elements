@@ -186,6 +186,8 @@ macro(elements_project project version)
                    env_xml env_release_xml)
 
   if(ELEMENTS_BUILD_TESTS)
+    find_program(MEMORYCHECK_COMMAND valgrind)
+    set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all" )
     enable_testing()
     include(CTest)
   endif()
