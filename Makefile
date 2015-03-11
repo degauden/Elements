@@ -127,11 +127,11 @@ tests: all
 FORCE:
 	@ # dummy target
 
-# Special trick to allow a non-standard makefile name
-#  If the makefile is not called 'Makefile', we get its update delegated to
-#  cmake, unless we block the delegation.
-$(lastword $(MAKEFILE_LIST)):
+# Makefiles are used as implicit targets in make, but we should not consider
+# them for delegation.
+$(MAKEFILE_LIST):
 	@ # do not delegate further
+
 
 # trigger CMake configuration
 $(BUILDDIR)/$(BUILD_CONF_FILE): | $(BUILDDIR)
