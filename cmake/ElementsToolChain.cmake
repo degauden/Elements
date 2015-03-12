@@ -1,3 +1,6 @@
+if (NOT HAS_ELEMENTS_TOOLCHAIN)
+
+
 
 message(STATUS "-----------------------------------------------------------------------")
 message(STATUS "                  --- ElementsToolChain ---                            ")
@@ -9,10 +12,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_MODULE_PATH})
 # Remove duplicates
 list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 
-# Options
-option(USE_DEBUG_PRINT
-       "make the debug_print_var macro talkative"
-       ON)
 
 # Loading the ToolChain library macros and functions
 
@@ -26,3 +25,7 @@ debug_message(STATUS "This is the CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 
 
 debug_message(STATUS "-----------------------------------------------------------------------")
+
+set(HAS_ELEMENTS_TOOLCHAIN ON)
+
+endif()
