@@ -7,21 +7,23 @@ message(STATUS "                  --- ElementsToolChain ---                     
 message(STATUS "-----------------------------------------------------------------------")
 
 # Bootstrap the directory containing this very file
+if(IS_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/modules)
+  set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/modules ${CMAKE_MODULE_PATH})
+endif()
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_MODULE_PATH})
 
 # Remove duplicates
 list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 
-
 # Loading the ToolChain library macros and functions
 
 INCLUDE(ElementsToolChainMacros)
 
+preload_local_module_path()
+
 debug_print_var(CMAKE_CURRENT_LIST_DIR)
 debug_print_var(CMAKE_MODULE_PATH)
-
-debug_message(STATUS "This is the CMAKE_CURRENT_LIST_DIR: ${CMAKE_CURRENT_LIST_DIR}")
-debug_message(STATUS "This is the CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+debug_print_var(CMAKE_SOURCE_DIR)
 
 
 debug_message(STATUS "-----------------------------------------------------------------------")

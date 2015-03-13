@@ -18,23 +18,32 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
   endif()
 endif()
 
-# Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
-if(NOT CMAKE_MODULE_PATH)
-  # Note: this works even if the envirnoment variable is not set.
-  file(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" CMAKE_MODULE_PATH)
+if (NOT HAS_ELEMENTS_TOOLCHAIN)
+  # this is the call to the preload_local_module_path is the toolchain has not been called
+  # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
+  if(NOT CMAKE_MODULE_PATH)
+    # Note: this works even if the envirnoment variable is not set.
+    file(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" CMAKE_MODULE_PATH)
+  endif()
+
+  # Add the directory containing this file and the to the modules search path
+  set(CMAKE_MODULE_PATH ${ElementsProject_DIR} ${ElementsProject_DIR}/modules ${CMAKE_MODULE_PATH})
+  # Automatically add the modules directory provided by the project.
+  if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
+    if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/modules)
+      set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+    endif()
+    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+  endif()
+
+  # Remove duplicates
+  list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
+
 endif()
 
-# Add the directory containing this file and the to the modules search path
-set(CMAKE_MODULE_PATH ${ElementsProject_DIR} ${ElementsProject_DIR}/modules ${CMAKE_MODULE_PATH})
-# Automatically add the modules directory provided by the project.
-if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
-  if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/modules)
-    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
-  endif()
-  set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
-endif()
 
 include(ElementsUtils)
+
 
 
 #-------------------------------------------------------------------------------
