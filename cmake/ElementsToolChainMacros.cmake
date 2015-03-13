@@ -23,3 +23,16 @@ macro(preload_local_module_path)
   list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 
 endmacro()
+
+
+## Initialize common variables.
+macro(init)
+  preload_local_module_path()
+  if(NOT BINARY_TAG)
+    include(SGSPlatform)
+    sgs_get_target_platform()
+  endif()
+endmacro()
+
+
+include(CMakeParseArguments)

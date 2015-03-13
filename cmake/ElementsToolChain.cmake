@@ -19,7 +19,7 @@ list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 
 INCLUDE(ElementsToolChainMacros)
 
-preload_local_module_path()
+init()
 
 debug_print_var(CMAKE_CURRENT_LIST_DIR)
 debug_print_var(CMAKE_MODULE_PATH)
