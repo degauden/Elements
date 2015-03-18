@@ -20,6 +20,8 @@ list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 INCLUDE(ElementsToolChainMacros)
 
 init()
+find_projects(projects ${CMAKE_SOURCE_DIR}/CMakeLists.txt)
+set_paths_from_projects(${projects})
 
 debug_print_var(CMAKE_CURRENT_LIST_DIR)
 debug_print_var(CMAKE_MODULE_PATH)
