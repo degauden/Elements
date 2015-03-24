@@ -983,7 +983,6 @@ macro(_elements_use_other_projects)
         endforeach()
       endforeach()
       list(REMOVE_DUPLICATES suffixes)
-      message(STATUS "suffixes ${suffixes}")
       find_package(${other_project} ${other_project_cmake_version}
                    HINTS ${projects_search_path}
                    PATH_SUFFIXES ${suffixes})
@@ -1045,7 +1044,9 @@ macro(_elements_use_other_projects)
           endforeach()
         endif()
       else()
+        message(STATUS "suffixes ${suffixes}")
         message(FATAL_ERROR "Cannot find project ${other_project} ${other_project_version}")
+
       endif()
       #message(STATUS "know_packages (after ${other_project}) ${known_packages}")
     endif()
