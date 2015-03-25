@@ -60,6 +60,78 @@ function(filter_comments var)
 endfunction()
 
 
+function(get_full_binary_list binary_tag binary_base full_list)
+
+  set(the_list "")
+
+  if(NOT binary_tag STREQUAL "")
+    set(the_list ${the_list} "${binary_tag}")
+  endif()
+
+  message(STATUS "Elements use strict binary dependencies: ${ELEMENTS_USE_STRICT_BINARY_DEP}")
+
+  if(SGS_BUILD_TYPE_SHORT_NAMES AND NOT ELEMENTS_USE_STRICT_BINARY_DEP)
+    foreach(_s3 ${SGS_BUILD_TYPE_SHORT_NAMES})
+      set(the_list ${the_list} "${binary_base}-${_s3}")
+    endforeach()
+  endif()
+
+  list(REMOVE_DUPLICATES the_list)
+
+  set(${full_list} ${the_list} PARENT_SCOPE)
+
+endfunction()
+
+function(get_project_bases project version full_list)
+
+  set(the_list ${project})
+  if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
+    string(TOUPPER ${project} project_upcase)
+    set(the_list ${the_list} ${project_upcase}/${project_upcase}_${version})
+  endif()
+
+  set(the_list ${the_list} ${project}/${version})
+
+  if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
+    set(the_list ${the_list} ${project_upcase})
+  endif()
+
+  list(REMOVE_DUPLICATES the_list)
+
+  set(${full_list} ${the_list} PARENT_SCOPE)
+
+endfunction()
+
+
+function(get_project_suffixes project version binary_tag binary_base suffixes)
+
+  get_full_binary_list(${binary_tag} ${binary_base} full_binary_list)
+
+  get_project_bases(${project} ${version} full_bases_list)
+
+  set(install_base "" "InstallArea")
+
+  set(the_list)
+
+  foreach(_s1 ${full_bases_list})
+    foreach(_s2 ${install_base})
+      foreach(_s3 ${full_binary_list})
+        if(_s2)
+          set(the_list ${the_list} ${_s1}/${_s2}/${_s3})
+        else()
+          set(the_list ${the_list} ${_s1}/${_s3})
+        endif()
+      endforeach()
+    endforeach()
+  endforeach()
+
+  list(REMOVE_DUPLICATES the_list)
+
+
+  set(${suffixes} ${the_list} PARENT_SCOPE)
+
+endfunction()
+
 
 set(HAS_ELEMENTS_UTILS ON)
 endif()

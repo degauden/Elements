@@ -222,6 +222,8 @@ function(sgs_get_target_platform)
   set(CMAKE_BUILD_TYPE ${type} CACHE STRING
       "Choose the type of build, options are: empty, Debug, Release, Coverage, Profile, RelWithDebInfo, MinSizeRel." FORCE)
 
+  set(SGS_BUILD_TYPE_SHORT_NAMES o2g opt dbg pro cov min PARENT_SCOPE)
+
   # architecture
   set(CMAKE_SYSTEM_PROCESSOR ${SGS_ARCH} PARENT_SCOPE)
 

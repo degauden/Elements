@@ -96,6 +96,7 @@ endif()
 
 option(USE_ODB "Use the ODB libraries" OFF)
 option(ELEMENTS_USE_STRICT_BINARY_DEP "Flag to force the strict binary dependencies" OFF)
+option(ELEMENTS_USE_CASE_SENSITIVE_PROJECTS "No uppercase projects allowed" ON)
 
 if(DEFINED ENV{EUCLID_BASE})
   set(EUCLID_BASE_DIR "$ENV{EUCLID_BASE}" CACHE STRING "Euclid Base Install Directory")
@@ -963,26 +964,8 @@ macro(_elements_use_other_projects)
     endif()
 
     if(NOT ${other_project}_FOUND)
-      string(TOUPPER ${other_project} other_project_upcase)
       set(suffixes)
-      message(STATUS "Elements use strict binary dependencies: ${ELEMENTS_USE_STRICT_BINARY_DEP}")
-      if(ELEMENTS_USE_STRICT_BINARY_DEP)
-        set(binary_suffixes "" "/${BINARY_TAG}" "/${SGS_platform}" "/${SGS_system}")
-      else()
-        set(binary_suffixes "" "/${BINARY_TAG}" "/${SGS_SYSTEM}-o2g" "/${SGS_SYSTEM}-opt" "/${SGS_SYSTEM}-dbg" "/${SGS_SYSTEM}-pro" "/${SGS_SYSTEM}-cov" "/${SGS_SYSTEM}-min" "/${SGS_platform}" "/${SGS_system}")
-      endif()
-      # Look for all possible project version combination.
-      foreach(_s1 ${other_project}
-                  ${other_project_upcase}/${other_project_upcase}_${other_project_version}
-                  ${other_project}/${other_project_version}
-                  ${other_project_upcase})
-        foreach(_s2 "" "/InstallArea")
-          foreach(_s3 ${binary_suffixes})
-            set(suffixes ${suffixes} ${_s1}${_s2}${_s3})
-          endforeach()
-        endforeach()
-      endforeach()
-      list(REMOVE_DUPLICATES suffixes)
+      get_project_suffixes(${other_project} ${other_project_version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
       find_package(${other_project} ${other_project_cmake_version}
                    HINTS ${projects_search_path}
                    PATH_SUFFIXES ${suffixes})
