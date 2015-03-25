@@ -224,8 +224,8 @@ macro(elements_project project version)
 
   # environment description
   set(project_environment)
-  set(used_elements_projects)
 
+  set(used_elements_projects)
   # Locate and import used projects.
   if(PROJECT_USE)
     _elements_use_other_projects(${PROJECT_USE})
@@ -971,29 +971,6 @@ macro(_elements_use_other_projects)
                    PATH_SUFFIXES ${suffixes})
       if(${other_project}_FOUND)
         message(STATUS "  found ${other_project} ${${other_project}_VERSION} ${${other_project}_DIR}")
-        if(astrotools_version)
-          if(NOT astrotools_version STREQUAL ${other_project}_astrotools_version)
-            if(${other_project}_astrotools_version)
-              set(hint_message "with the option '-DCMAKE_TOOLCHAIN_FILE=.../astrotools-${${other_project}_astrotools_version}.cmake'")
-            else()
-              set(hint_message "without the option '-DCMAKE_TOOLCHAIN_FILE=...'")
-            endif()
-            message(FATAL_ERROR "Incompatible versions of astrotools toolchains:
-  ${CMAKE_PROJECT_NAME} -> ${astrotools_version}
-  ${other_project} ${${other_project}_VERSION} -> ${${other_project}_astrotools_version}
-
-  You need to call cmake ${hint_message}
-")
-          endif()
-        endif()
-        if(NOT SGS_SYSTEM STREQUAL ${other_project}_astrotools_system)
-          message(FATAL_ERROR "Incompatible values of SGS_SYSTEM:
-  ${CMAKE_PROJECT_NAME} -> ${SGS_SYSTEM}
-  ${other_project} ${${other_project}_VERSION} -> ${${other_project}_astrotools_system}
-
-  Check your configuration.
-")
-        endif()
         # include directories of other projects must be appended to the current
         # list to preserve the order of overriding
         include_directories(AFTER ${${other_project}_INCLUDE_DIRS})
@@ -2482,8 +2459,6 @@ macro(elements_generate_project_config_file)
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/config)
   file(WRITE ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake
 "# File automatically generated: DO NOT EDIT.
-set(${CMAKE_PROJECT_NAME}_astrotools_version ${astrotools_version})
-set(${CMAKE_PROJECT_NAME}_astrotools_system ${SGS_SYSTEM})
 
 set(${CMAKE_PROJECT_NAME}_PLATFORM ${BINARY_TAG})
 
@@ -2909,17 +2884,6 @@ function(elements_generate_project_manifest filename project version)
 
   # Project name and version
   set(data "${data}  <project name=\"${project}\" version=\"${version}\" />\n")
-
-  # Astro toolchain infos
-  if(astrotools_version)
-    set(data "${data}  <astrotools>\n")
-    # version
-    set(data "${data}    <version>${astrotools_version}</version>\n")
-    # platform specifications
-    set(data "${data}    <binary_tag>${BINARY_TAG}</binary_tag>\n")
-    set(data "${data}    <sgs_system>${SGS_SYSTEM}</sgs_system>\n")
-    set(data "${data}  </astrotools>\n")
-  endif()
 
   # Build options
   # FIXME: I need an explicit list of options to store
