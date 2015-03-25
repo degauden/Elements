@@ -18,7 +18,8 @@ macro(debug_message)
   if(USE_DEBUG_PRINT)
     message(${ARGN})
   endif()
-ENDMACRO()
+endmacro()
+
 
 #-------------------------------------------------------------------------------
 # elements_expand_sources(<variable> source_pattern1 source_pattern2 ...)

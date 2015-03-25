@@ -1004,9 +1004,11 @@ macro(_elements_use_other_projects)
           endforeach()
         endif()
       else()
-        message(STATUS "suffixes ${suffixes}")
-        message(FATAL_ERROR "Cannot find project ${other_project} ${other_project_version}")
-
+        message(FATAL_ERROR "
+Cannot find project ${other_project} ${other_project_version}
+with the suffixes: ${suffixes}
+in the paths: ${projects_search_path}
+")
       endif()
       #message(STATUS "know_packages (after ${other_project}) ${known_packages}")
     endif()
