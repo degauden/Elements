@@ -1,7 +1,5 @@
 if (NOT HAS_ELEMENTS_TOOLCHAIN)
 
-
-
 message(STATUS "-----------------------------------------------------------------------")
 message(STATUS "                  --- ElementsToolChain ---                            ")
 message(STATUS "-----------------------------------------------------------------------")
@@ -26,6 +24,8 @@ set_paths_from_projects(${projects})
 debug_print_var(CMAKE_CURRENT_LIST_DIR)
 debug_print_var(CMAKE_MODULE_PATH)
 debug_print_var(CMAKE_SOURCE_DIR)
+
+recurse_test(19)
 
 
 debug_message(STATUS "-----------------------------------------------------------------------")
