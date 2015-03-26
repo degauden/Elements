@@ -20,6 +20,13 @@ macro(debug_message)
   endif()
 endmacro()
 
+function(recurse_test nb)
+  message(STATUS "This is the number ${nb}")
+  math(EXPR nb "${nb}-1")
+  if(nb GREATER 0)
+    recurse_test(${nb})
+  endif()
+endfunction()
 
 #-------------------------------------------------------------------------------
 # elements_expand_sources(<variable> source_pattern1 source_pattern2 ...)
@@ -59,6 +66,10 @@ function(filter_comments var)
   STRING(REGEX REPLACE "\\\\;" ";" contents3 "${contents3}")
   set(${var} ${contents3} PARENT_SCOPE)
 endfunction()
+
+#-------------------------------------------------------------------------------
+# Functions for the crawling of the project dependence tree
+#-------------------------------------------------------------------------------
 
 
 function(get_full_binary_list binary_tag binary_base full_list)
@@ -128,10 +139,81 @@ function(get_project_suffixes project version binary_tag binary_base suffixes)
 
   list(REMOVE_DUPLICATES the_list)
 
+  set(${suffixes} ${the_list} PARENT_SCOPE)
+
+endfunction()
+
+
+
+function(get_local_project_suffixes project version suffixes)
+
+  get_project_bases(${project} ${version} full_bases_list)
+
+  list(REMOVE_DUPLICATES full_bases_list)
+
+  set(${suffixes} ${full_bases_list} PARENT_SCOPE)
+
+endfunction()
+
+
+
+function(get_installed_project_suffixes project version binary_tag binary_base suffixes)
+
+  get_full_binary_list(${binary_tag} ${binary_base} full_binary_list)
+
+  get_project_bases(${project} ${version} full_bases_list)
+
+  set(install_base "InstallArea")
+
+  set(the_list)
+
+  foreach(_s1 ${full_bases_list})
+    foreach(_s3 ${full_binary_list})
+      set(the_list ${the_list} ${_s1}/${install_base}/${_s3})
+    endforeach()
+  endforeach()
+
+  list(REMOVE_DUPLICATES the_list)
 
   set(${suffixes} ${the_list} PARENT_SCOPE)
 
 endfunction()
+
+
+
+function(find_local_project project version path_list proj_loc)
+  get_local_project_suffixes(${project} ${version} suffixes)
+  find_path(this_location CMakeLists.txt
+            HINTS ${path_list}
+            PATH_SUFFIXES ${suffixes})
+
+
+  set(${proj_loc} ${this_location} PARENT_SCOPE)
+
+endfunction()
+
+
+
+function(find_installed_project project version binary_tag binary_base proj_loc)
+  get_local_project_suffixes(${project} ${version} ${binary_tag} ${binary_base} suffixes)
+
+
+
+endfunction()
+
+
+# check if the project is already present in the dependency
+# tree. If so, and if the version is not the same, it breaks
+function(check_project_consistency project version dep_tree)
+
+endfunction()
+
+# recursing function to find all the dependencies
+function(find_project_dependency_tree project version path_list dep_tree)
+
+endfunction()
+
+
 
 
 set(HAS_ELEMENTS_UTILS ON)

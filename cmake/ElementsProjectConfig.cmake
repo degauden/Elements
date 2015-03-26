@@ -961,9 +961,7 @@ macro(_elements_use_other_projects)
       # (the handling happens right after)
       list(APPEND dependency_list ${other_project} ${other_project_cmake_version})
       list(APPEND dependency_dependee_list ${other_dependee} ${other_dependee_version})
-    endif()
 
-    if(NOT ${other_project}_FOUND)
       set(suffixes)
       get_project_suffixes(${other_project} ${other_project_version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
       find_package(${other_project} ${other_project_cmake_version}
