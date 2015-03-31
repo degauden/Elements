@@ -74,17 +74,15 @@ endfunction()
 
 function(get_full_binary_list binary_tag binary_base full_list)
 
-  set(the_list "")
-
   if(NOT binary_tag STREQUAL "")
-    set(the_list ${the_list} "${binary_tag}")
+    list(APPEND the_list "${binary_tag}")
   endif()
 
   message(STATUS "Elements use strict binary dependencies: ${ELEMENTS_USE_STRICT_BINARY_DEP}")
 
   if(SGS_BUILD_TYPE_SHORT_NAMES AND NOT ELEMENTS_USE_STRICT_BINARY_DEP)
     foreach(_s3 ${SGS_BUILD_TYPE_SHORT_NAMES})
-      set(the_list ${the_list} "${binary_base}-${_s3}")
+      list(APPEND the_list "${binary_base}-${_s3}")
     endforeach()
   endif()
 
@@ -99,13 +97,13 @@ function(get_project_bases project version full_list)
   set(the_list ${project})
   if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
     string(TOUPPER ${project} project_upcase)
-    set(the_list ${the_list} ${project_upcase}/${project_upcase}_${version})
+    list(APPEND the_list ${project_upcase}/${project_upcase}_${version})
   endif()
 
-  set(the_list ${the_list} ${project}/${version})
+  list(APPEND the_list ${project}/${version})
 
   if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
-    set(the_list ${the_list} ${project_upcase})
+    list(APPEND the_list ${project_upcase})
   endif()
 
   list(REMOVE_DUPLICATES the_list)
@@ -129,9 +127,9 @@ function(get_project_suffixes project version binary_tag binary_base suffixes)
     foreach(_s2 ${install_base})
       foreach(_s3 ${full_binary_list})
         if(_s2)
-          set(the_list ${the_list} ${_s1}/${_s2}/${_s3})
+          list(APPEND the_list ${_s1}/${_s2}/${_s3})
         else()
-          set(the_list ${the_list} ${_s1}/${_s3})
+          list(APPEND the_list ${_s1}/${_s3})
         endif()
       endforeach()
     endforeach()
@@ -169,7 +167,7 @@ function(get_installed_project_suffixes project version binary_tag binary_base s
 
   foreach(_s1 ${full_bases_list})
     foreach(_s3 ${full_binary_list})
-      set(the_list ${the_list} ${_s1}/${install_base}/${_s3})
+      list(APPEND the_list ${_s1}/${install_base}/${_s3})
     endforeach()
   endforeach()
 
@@ -180,41 +178,177 @@ function(get_installed_project_suffixes project version binary_tag binary_base s
 endfunction()
 
 
+function(get_local_project_version project projec_loc loc_version)
+
+endfunction()
+
+
+
+function(get_installed_project_version project projec_loc inst_version)
+
+endfunction()
+
+
+
+function(check_local_project_version project version proj_loc)
+
+endfunction()
+
+
+
+function(check_installed_project_version project version proj_loc)
+
+endfunction()
+
+
 
 function(find_local_project project version path_list proj_loc)
   get_local_project_suffixes(${project} ${version} suffixes)
+
+  debug_message(STATUS "This are the suffixes: ${suffixes}")
+  debug_message(STATUS "This are the paths: ${path_list}")
+
   find_path(this_location CMakeLists.txt
             HINTS ${path_list}
             PATH_SUFFIXES ${suffixes})
 
 
-  set(${proj_loc} ${this_location} PARENT_SCOPE)
+  debug_message(STATUS "This are the proj location: ${this_location}")
 
+
+  check_local_project_version(${project} ${version} ${this_location})
+
+  set(${proj_loc} ${this_location} PARENT_SCOPE)
 endfunction()
 
 
 
-function(find_installed_project project version binary_tag binary_base proj_loc)
+function(find_installed_project project version binary_tag binary_base path_list proj_loc)
   get_local_project_suffixes(${project} ${version} ${binary_tag} ${binary_base} suffixes)
 
+  find_path(this_location manifest.xml
+            HINTS ${path_list}
+            PATH_SUFFIXES ${suffixes})
 
 
+  check_installed_project_version(${project} ${version} ${this_location})
+
+  set(${proj_loc} ${this_location} PARENT_SCOPE)
 endfunction()
 
 
 # check if the project is already present in the dependency
 # tree. If so, and if the version is not the same, it breaks
-function(check_project_consistency project version dep_tree)
+function(check_project_consistency project version dep_tree mismatch)
+
+  list(LENGTH dep_tree len)
+  if(len LESS 2)
+    message(FATAL_ERROR "Wrong number of item in the dependency tree")
+  endif()
+
+  set(dependee_list ${dep_tree})
+  math(EXPR half_len "${len}/2")
+  foreach(index RANGE 1 ${half_len})
+    list(GET dependee_list 0 other_proj)
+    list(GET dependee_list 1 other_proj_version)
+    list(REMOVE_AT dependee_list 0 1)
+    if( "${project}" STREQUAL "${other_proj}")
+      string(COMPARE NOTEQUAL "${version}" "${other_proj_version}" ver_mismatch)
+    endif()
+  endforeach()
+
+  set(${mismatch} ${ver_mismatch} PARENT_SCOPE)
 
 endfunction()
 
 # recursing function to find all the dependencies
 function(find_project_dependency_tree project version path_list dep_tree)
 
+
+
 endfunction()
 
 
 
+
+
+
+
+
+function(get_project_from_file config_file project version dep_list)
+  debug_message(STATUS "This is the config file: ${config_file}")
+  get_filename_component(cfg_file ${config_file} NAME)
+
+  file(READ ${config_file} config_file_data)
+  filter_comments(config_file_data)
+
+  if(cfg_file STREQUAL "CMakeLists.txt")
+
+    debug_message(STATUS "This is the config file: ${cfg_file}")
+
+    string(REGEX MATCH "[ \t]*(elements_project)[ \t]*\\(([^)]+)\\)" match_use ${config_file_data})
+    set(match_use ${CMAKE_MATCH_2})
+    debug_message(STATUS "find_used_projects: match_use -> ${match_use}")
+    if(match_use STREQUAL "")
+      message(FATAL_ERROR "${config_file} does not contain elements_project")
+    endif()
+    # (replace space-type chars with spaces)
+    string(REGEX REPLACE "[ \t\r\n]+" " " args "${match_use}")
+    separate_arguments(args)
+    CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "USE;DATA;DESCRIPTION" ${args})
+
+    # get the project name and add it to the list of used projects
+    list(GET PROJECT_UNPARSED_ARGUMENTS 0 proj_name)
+    debug_print_var(proj_name)
+    set(${project} ${proj_name} PARENT_SCOPE)
+
+    list(GET PROJECT_UNPARSED_ARGUMENTS 1 vers_name)
+    debug_print_var(vers_name)
+    set(${version} ${vers_name} PARENT_SCOPE)
+
+    set(${dep_list} ${PROJECT_USE} PARENT_SCOPE)
+
+  elseif(cfg_file MATCHES "([^)]+)Config.cmake")
+
+    debug_message(STATUS "This is the other config file: ${cfg_file}")
+    string(REGEX MATCH "([^)]+)Config.cmake" match_proj ${cfg_file})
+    set(match_proj ${CMAKE_MATCH_1})
+    debug_print_var(match_proj)
+    set(${project} ${match_proj} PARENT_SCOPE)
+
+    string(REGEX MATCH "[ \t]*(set)[ \t]*\\(([^)]+_VERSION[^)]+)\\)" match_use ${config_file_data})
+    set(match_use ${CMAKE_MATCH_2})
+    debug_message(STATUS "find_used_projects: match_use -> ${match_use}")
+    if(match_use STREQUAL "")
+      message(FATAL_ERROR "${config_file} does not contain any version")
+    endif()
+    # (replace space-type chars with spaces)
+    string(REGEX REPLACE "[ \t\r\n]+" " " args "${match_use}")
+    separate_arguments(args)
+    CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "${match_proj}_VERSION" ${args})
+    debug_print_var(PROJECT_${match_proj}_VERSION)
+    set(${version} ${PROJECT_${match_proj}_VERSION} PARENT_SCOPE)
+
+    string(REGEX MATCH "[ \t]*(set)[ \t]*\\(([^)]+_USES[^)]+)\\)" match_use ${config_file_data})
+    set(match_use ${CMAKE_MATCH_2})
+    debug_message(STATUS "find_used_projects: match_use -> ${match_use}")
+    # (replace space-type chars with spaces)
+    string(REGEX REPLACE "[ \t\r\n]+" " " args "${match_use}")
+    debug_message(STATUS "find_used_projects: args -> ${args}")
+
+    if(match_use STREQUAL "")
+      message(FATAL_ERROR "${config_file} does not contain any uses")
+    endif()
+    separate_arguments(args)
+    CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "${match_proj}_USES" ${args})
+    debug_print_var(PROJECT_${match_proj}_USES)
+    set(${dep_list} ${PROJECT_${match_proj}_USES} PARENT_SCOPE)
+
+
+
+  endif()
+
+endfunction()
 
 set(HAS_ELEMENTS_UTILS ON)
 endif()

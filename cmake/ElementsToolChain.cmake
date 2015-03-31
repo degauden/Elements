@@ -25,7 +25,8 @@ debug_print_var(CMAKE_CURRENT_LIST_DIR)
 debug_print_var(CMAKE_MODULE_PATH)
 debug_print_var(CMAKE_SOURCE_DIR)
 
-recurse_test(19)
+
+include(tests/UtilsTests)
 
 
 debug_message(STATUS "-----------------------------------------------------------------------")
