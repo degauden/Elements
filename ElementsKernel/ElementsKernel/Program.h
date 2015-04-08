@@ -65,6 +65,12 @@ public:
 
 };
 
+/** These are examples of how to create a executable program using
+ * the Program class.
+ * @example ElementsExamples/src/Program/SimpleProgramExample.cpp
+ * @include ElementsExamples/src/Program/ProgramExample.cpp
+ */
+
 }
 
 #endif /* ELEMENTSPROGRAM_H_ */

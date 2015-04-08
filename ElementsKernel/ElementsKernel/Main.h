@@ -12,14 +12,15 @@
 #include "ElementsKernel/ProgramManager.h"
 #include "ThisProject.h"
 
-/**
+/** @def MAIN_FOR(ELEMENTS_PROGRAM_NAME)
  * Macro which must be used to create a main in classes
  * that derived from Elements::Program, i.e., these derived classes
  * must end with the following line:
- *
+ * @code
  *    MAIN_FOR(ELEMENTS_PROGRAM_NAME)
- *
- *  ElementsProgramExample.cpp shows how to use this macro
+ * @endcode
+ * @param ELEMENTS_PROGRAM_NAME name of the main program class, derived from
+ * the class Elements::Program class.
  */
 #define MAIN_FOR(ELEMENTS_PROGRAM_NAME)         \
   int main(int argc, char* argv[])              \
@@ -31,3 +32,8 @@
   }
 
 #endif // ELEMENTSKERNEL_MAIN_H_
+
+
+/** \example ElementsExamples/src/Program/ProgramExample.cpp
+ * Example that shows the usage of the MAIN_FOR macro
+ */
