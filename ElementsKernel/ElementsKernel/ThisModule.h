@@ -1,6 +1,6 @@
 /**
  * @file ThisModule.h
- *
+ * @brief header to get the module info statically
  * @date Dec 1, 2014
  * @author hubert
  */

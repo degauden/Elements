@@ -17,14 +17,7 @@
 #endif
 #endif
 
-/** Note: OS specific details as well as Elements details may not occur
- in this definition file, because this header is the used by both, the
- OS specific implementations and the elements specific implementation.
- Since e.g. IID is defined in both, this would lead automatically to
- complete comilation failures.....
 
- @author M.Frank
- */
 namespace Elements {
 namespace System {
 /// Definition of an image handle
