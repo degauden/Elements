@@ -578,6 +578,7 @@ macro(elements_project project version)
   install(FILES ${env_release_xml} DESTINATION .)
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
+  install(FILES ${env_xml} DESTINATION .)
   #   add a small wrapper script in the build directory to easily run anything
   set(_env_cmd_line)
   foreach(t ${env_cmd}) # transform the env_cmd list in a space separated string
@@ -635,7 +636,7 @@ macro(elements_project project version)
   set(CPACK_RPM_REGULAR_FILES "%files")
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %defattr(-,root,root,-)
-%{_prefix}")
+%dir %{_prefix}")
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{_prefix}/${CPACK_PACKAGE_NAME}Environment.xml")
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
@@ -646,7 +647,7 @@ macro(elements_project project version)
 
   if(regular_bin_objects)
     set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%{_bindir}")
+%dir %{_bindir}")
     list(SORT regular_bin_objects)
     foreach(_do ${regular_bin_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
@@ -671,7 +672,7 @@ macro(elements_project project version)
 
   if(regular_lib_objects)
     set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%{libdir}")
+%dir %{libdir}")
     list(SORT regular_lib_objects)
     foreach(_do ${regular_lib_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
@@ -722,7 +723,8 @@ macro(elements_project project version)
   set(CPACK_RPM_DEVEL_FILES "%files devel")
   set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %defattr(-,root,root,-)")
-
+  set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{_prefix}/${CPACK_PACKAGE_NAME}BuildEnvironment.xml")
 #------------------------------------------------------------------------------
   get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
 
@@ -969,6 +971,14 @@ macro(_elements_use_other_projects)
                    PATH_SUFFIXES ${suffixes})
       if(${other_project}_FOUND)
         message(STATUS "  found ${other_project} ${${other_project}_VERSION} ${${other_project}_DIR}")
+        if(NOT SGS_SYSTEM STREQUAL ${other_project}_astrotools_system)
+          message(FATAL_ERROR "Incompatible values of SGS_SYSTEM:
+  ${CMAKE_PROJECT_NAME} -> ${SGS_SYSTEM}
+  ${other_project} ${${other_project}_VERSION} -> ${${other_project}_astrotools_system}
+
+  Check your configuration.
+")
+        endif()
         # include directories of other projects must be appended to the current
         # list to preserve the order of overriding
         include_directories(AFTER ${${other_project}_INCLUDE_DIRS})
@@ -2459,6 +2469,8 @@ macro(elements_generate_project_config_file)
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/config)
   file(WRITE ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake
 "# File automatically generated: DO NOT EDIT.
+set(${CMAKE_PROJECT_NAME}_astrotools_version ${astrotools_version})
+set(${CMAKE_PROJECT_NAME}_astrotools_system ${SGS_SYSTEM})
 
 set(${CMAKE_PROJECT_NAME}_PLATFORM ${BINARY_TAG})
 
@@ -2884,6 +2896,17 @@ function(elements_generate_project_manifest filename project version)
 
   # Project name and version
   set(data "${data}  <project name=\"${project}\" version=\"${version}\" />\n")
+
+  # Astro toolchain infos
+  if(astrotools_version)
+    set(data "${data}  <astrotools>\n")
+    # version
+    set(data "${data}    <version>${astrotools_version}</version>\n")
+    # platform specifications
+    set(data "${data}    <binary_tag>${BINARY_TAG}</binary_tag>\n")
+    set(data "${data}    <sgs_system>${SGS_SYSTEM}</sgs_system>\n")
+    set(data "${data}  </astrotools>\n")
+  endif()
 
   # Build options
   # FIXME: I need an explicit list of options to store

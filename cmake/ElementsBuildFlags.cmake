@@ -19,6 +19,15 @@ endif()
 message(STATUS "The build prefix is set to ${BUILD_PREFIX_NAME}")
 set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DBUILD_PREFIX_NAME:STRING=${BUILD_PREFIX_NAME}")
 
+if(NOT BUILD_SUBDIR)
+  file(RELATIVE_PATH build_subdir_name ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+  set(BUILD_SUBDIR ${build_subdir_name} CACHE STRING "Relative location for the build" FORCE)
+endif()
+
+message(STATUS "The path to the sources is set to ${CMAKE_SOURCE_DIR}")
+message(STATUS "The path to the build is set to ${CMAKE_BINARY_DIR}")
+message(STATUS "The relative location for the build is set to ${BUILD_SUBDIR}")
+
 
 # Special defaults
 if ( (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[7-9]")
