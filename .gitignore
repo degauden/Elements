@@ -42,3 +42,4 @@ ElementsConfig.cmake
 ElementsConfigVersion.cmake
 /gmon.out
 /perf.data
+/build
