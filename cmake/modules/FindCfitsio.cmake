@@ -24,9 +24,14 @@
 
 if(NOT CFITSIO_FOUND)
 
-  find_path(CFITSIO_INCLUDE_DIR fitsio.h PATH_SUFFIXES cfitsio)
+  if(CFITSIO_ROOT_DIR)
+    find_path(CFITSIO_INCLUDE_DIR fitsio.h PATHS ${CFITSIO_ROOT_DIR} PATH_SUFFIXES include include/cfitsio NO_DEFAULT_PATH)
+    find_library(CFITSIO_LIBRARIES cfitsio PATHS ${CFITSIO_ROOT_DIR} PATH_SUFFIXES lib NO_DEFAULT_PATH)
+  else()
+    find_path(CFITSIO_INCLUDE_DIR fitsio.h PATH_SUFFIXES cfitsio)
+    find_library(CFITSIO_LIBRARIES NAMES cfitsio)
+  endif()
 
-  find_library(CFITSIO_LIBRARIES NAMES cfitsio)
 
   set(CFITSIO_INCLUDE_DIRS ${CFITSIO_INCLUDE_DIR})
 
