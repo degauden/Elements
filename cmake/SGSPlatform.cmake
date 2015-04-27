@@ -95,6 +95,7 @@ endfunction()
 ################################################################################
 # Get system compiler.
 function(sgs_find_host_compiler)
+  message(STATUS "--------------------------------------------------->> This is the COMPILER_ID ${CMAKE_CXX_COMPILER_ID}")
   if(NOT SGS_HOST_COMP OR NOT SGS_HOST_COMPVERS)
     find_program(SGS_HOST_C_COMPILER   NAMES gcc cc cl clang icc bcc xlc
                  DOC "Host C compiler")
