@@ -51,7 +51,7 @@ endfunction()
 function(sgs_find_host_os)
   if(NOT SGS_HOST_OS OR NOT SGS_HOST_OSVERS)
     if(APPLE)
-      set(os mac)
+      set(os osx)
       execute_process(COMMAND sw_vers "-productVersion"
                       COMMAND cut -d . -f 1-2
                       OUTPUT_VARIABLE osvers OUTPUT_STRIP_TRAILING_WHITESPACE)
