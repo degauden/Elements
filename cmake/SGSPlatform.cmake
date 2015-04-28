@@ -95,8 +95,6 @@ endfunction()
 ################################################################################
 # Get system compiler.
 function(sgs_find_host_compiler)
-  message(STATUS "--------------------------------------------------->> This is the COMPILER_ID ${CMAKE_CXX_COMPILER_ID}")
-  message(STATUS "--------------------------------------------------->> This is the Clang version ${CLANG_VERSION_STRING}")
   if(NOT SGS_HOST_COMP OR NOT SGS_HOST_COMPVERS)
     find_program(SGS_HOST_C_COMPILER   NAMES gcc cc cl clang icc bcc xlc
                  DOC "Host C compiler")
@@ -136,9 +134,15 @@ function(sgs_find_host_compiler)
 
     if(compiler STREQUAL "clang")
       execute_process(COMMAND ${SGS_HOST_C_COMPILER} --version OUTPUT_VARIABLE CLANG_VERSION)
-      string(REGEX MATCHALL "[0-9]+" CLANG_VERSION_COMPONENTS ${CLANG_VERSION})
-      list(GET CLANG_VERSION_COMPONENTS 0 CLANG_MAJOR)
-      list(GET CLANG_VERSION_COMPONENTS 1 CLANG_MINOR)
+      if(APPLE)
+        string(REGEX MATCH "LLVM[ \t]+([0-9]+)[.]([0-9]+)" CLANG_VERSION_COMPONENTS ${CLANG_VERSION})
+        set(CLANG_MAJOR ${CMAKE_MATCH_1})
+        set(CLANG_MINOR ${CMAKE_MATCH_2})
+      else()
+        string(REGEX MATCHALL "[0-9]+" CLANG_VERSION_COMPONENTS ${CLANG_VERSION})
+        list(GET CLANG_VERSION_COMPONENTS 0 CLANG_MAJOR)
+        list(GET CLANG_VERSION_COMPONENTS 1 CLANG_MINOR)
+      endif()
       set(cvers ${CLANG_MAJOR}${CLANG_MINOR})
     endif()
 
