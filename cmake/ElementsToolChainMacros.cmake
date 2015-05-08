@@ -38,6 +38,15 @@ endmacro()
 
 include(CMakeParseArguments)
 
+function(_internal_find_local_project projects_var config_file)
+
+endfunction()
+
+
+function(_internal_find_installed_project projects_var config_file)
+
+endfunction()
+
 
 ## Helper for recursion and ordering of found projects.
 function(_internal_find_projects projects_var config_file)

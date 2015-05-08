@@ -33,4 +33,10 @@ debug_message(STATUS "----------------------------------------------------------
 
 set(HAS_ELEMENTS_TOOLCHAIN ON)
 
+
+message(STATUS "-----------------------------------------------------------------------")
+message(STATUS "                  --- End of ElementsToolChain ---                     ")
+message(STATUS "-----------------------------------------------------------------------")
+
+
 endif()
