@@ -575,10 +575,10 @@ macro(elements_project project version)
   # - produce environment XML description
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
-  install(FILES ${env_release_xml} DESTINATION .)
+  install(FILES ${env_release_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
-  install(FILES ${env_xml} DESTINATION .)
+  install(FILES ${env_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
   #   add a small wrapper script in the build directory to easily run anything
   set(_env_cmd_line)
   foreach(t ${env_cmd}) # transform the env_cmd list in a space separated string
@@ -600,7 +600,7 @@ macro(elements_project project version)
 
   #--- Generate the manifest.xml file.
   elements_generate_project_manifest(${CMAKE_BINARY_DIR}/manifest.xml ${ARGV})
-  install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION .)
+  install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION ${CMAKE_INSTALL_PREFIX})
 
   #--- CPack configuration
   # Please have a look at the general CPack documentation at
@@ -2455,7 +2455,7 @@ if(PACKAGE_NAME STREQUAL PACKAGE_FIND_NAME)
   endif()
 endif()
 ")
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION .)
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_PREFIX})
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}ConfigVersion.cmake)
 endmacro()
 
@@ -2485,7 +2485,7 @@ list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake/modules)
 list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake)
 include(${CMAKE_PROJECT_NAME}PlatformConfig)
 ")
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION .)
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION ${CMAKE_INSTALL_PREFIX})
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}Config.cmake)
 endmacro()
 
