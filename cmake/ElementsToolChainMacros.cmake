@@ -38,13 +38,71 @@ endmacro()
 
 include(CMakeParseArguments)
 
-function(_internal_find_local_project projects_var config_file)
+function(_internal_find_local_project projects_var project_uses_var config_file)
+
+  file(READ ${config_file} config_file_data)
+  filter_comments(config_file_data)
+  string(REGEX MATCH "[ \t]*(elements_project)[ \t]*\\(([^)]+)\\)" match_use ${config_file_data})
+  set(match_use ${CMAKE_MATCH_2})
+
+  if(match_use STREQUAL "")
+    message(FATAL_ERROR "${config_file} does not contain elements_project")
+  endif()
+
+  string(REGEX REPLACE "[ \t\r\n]+" " " args "${match_use}")
+  separate_arguments(args)
+  CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "USE;DATA;DESCRIPTION" ${args})
+
+  list(GET PROJECT_UNPARSED_ARGUMENTS 0 proj_name)
+
+  string(TOUPPER ${proj_name} proj_upper_name)
+
+  set(projects ${proj_name} ${${projects_var}})
+
+  if(NOT ${proj_upper_name}_CONFIG_FILE)
+    get_filename_component(${proj_upper_name}_CONFIG_FILE ${config_file} ABSOLUTE CACHE)
+  endif()
+  get_filename_component(${proj_upper_name}_ROOT_DIR ${${proj_upper_name}_CONFIG_FILE} PATH CACHE)
+
+  set(${projects_uses_var} ${PROJECT_USE} PARENT_SCOPE)
+  set(${projects_var} ${projects} PARENT_SCOPE)
 
 endfunction()
 
 
-function(_internal_find_installed_project projects_var config_file)
+function(_internal_find_installed_project projects_var project_uses_var config_file)
 
+  file(READ ${config_file} config_file_data)
+  filter_comments(config_file_data)
+  string(REGEX MATCH "[ \t]*(elements_project)[ \t]*\\(([^)]+)\\)" match_use ${config_file_data})
+  string(REGEX MATCH "[ \t]*(set[ \t]*\\([ \t]*)([^_])_USES[ \t]+([^)]+)\\)" match_use ${config_file_data})
+  set(match_use ${CMAKE_MATCH_3})
+
+  if(match_use STREQUAL "")
+    message(FATAL_ERROR "${config_file} does not contain elements_project")
+  endif()
+
+  string(REGEX REPLACE "[ \t\r\n;]+" " " args "${match_use}")
+  separate_arguments(args)
+
+  set(proj_name ${CMAKE_MATCH_2})
+  string(TOUPPER ${proj_name} proj_upper_name)
+
+  set(projects ${proj_name} ${${projects_var}})
+
+  if(NOT ${proj_upper_name}_CONFIG_FILE)
+    get_filename_component(${proj_upper_name}_CONFIG_FILE ${config_file} ABSOLUTE CACHE)
+  endif()
+
+  get_filename_component(tmp_dir_name ${${proj_upper_name}_CONFIG_FILE} PATH)
+
+  get_filename_component(tmp_dir_name ${tmp_dir_name} PATH)
+
+  get_filename_component(${proj_upper_name}_ROOT_DIR ${tmp_dir_name} PATH CACHE)
+
+
+  set(${projects_uses_var} ${PROJECT_USE} PARENT_SCOPE)
+  set(${projects_var} ${projects} PARENT_SCOPE)
 endfunction()
 
 
