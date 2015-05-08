@@ -59,6 +59,3 @@ debug_message(STATUS "project ${project} ${version} ${dep_list}")
 
 debug_message(STATUS "===================${CMAKE_SOURCE_DIR}/InstallArea/x86_64-fc21-gcc49-dbg/BaseProjConfig.cmake")
 
-get_project_from_file(/tmp/BaseProjConfig.cmake project2 version2 dep_list2)
-
-debug_message(STATUS "project ${project2} ${version2} ${dep_list2}")
