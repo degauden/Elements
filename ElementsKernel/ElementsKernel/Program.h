@@ -9,7 +9,10 @@
 #define ELEMENTSPROGRAM_H_
 
 #include <string>
+#include <utility>
+
 #include <boost/program_options.hpp>
+
 #include "ElementsKernel/Export.h"      // ELEMENTS_API
 #include "ElementsKernel/Exit.h"        // for ExitCode, ExitCode::OK
 
@@ -47,6 +50,17 @@ public:
    *   A BOOST options description
    */
   virtual boost::program_options::options_description defineSpecificProgramOptions() ;
+
+  /**
+   * @brief
+   *   This methods must be used to the program arguments.
+   * @details
+   *  This is the second method that must be implemented by all Elements programs
+   *
+   * @return
+   *   a pair of  BOOST options description and positional_options_description
+   */
+  virtual std::pair<boost::program_options::options_description,boost::program_options::positional_options_description> defineProgramArguments() ;
 
   /**
    * @brief
