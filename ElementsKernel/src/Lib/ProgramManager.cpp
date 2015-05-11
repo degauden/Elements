@@ -102,14 +102,17 @@ const po::variables_map ProgramManager::getProgramOptions(
 
   // Get the definition of the specific options from the derived class
   po::options_description specific_options =  m_program_ptr->defineSpecificProgramOptions();
+  pair<po::options_description,po::positional_options_description> program_arguments = m_program_ptr->defineProgramArguments();
 
   // Put all options together
   po::options_description all_options;
-  all_options.add(generic_options).add(specific_options);
+  all_options.add(generic_options).add(specific_options).add(program_arguments.first);
 
   // Parse the command line and store the options in the variable map
-  po::store(po::parse_command_line(argc, argv, all_options),
-      variables_map);
+//  po::store(po::parse_command_line(argc, argv, all_options),
+//      variables_map);
+  po::store(po::command_line_parser(argc,argv).options(all_options).positional(program_arguments.second).run(),
+            variables_map);
   po::notify(variables_map);
 
   // Deal with the "help" option
