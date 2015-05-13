@@ -1934,6 +1934,71 @@ macro(elements_component_library)
   elements_add_module(${ARGN})
 endmacro()
 
+#-------------------------------------------------------------------------------
+# elements_add_dictionary(dictionary header selection
+#                      LINK_LIBRARIES ...
+#                      INCLUDE_DIRS ...
+#                      OPTIONS ...
+#                      [SPLIT_CLASSDEF])
+#
+# Find all the CMakeLists.txt files in the sub-directories and add their
+# directories to the variable.
+#-------------------------------------------------------------------------------
+function(elements_add_dictionary dictionary header selection)
+  # ensure that we can produce dictionaries
+  find_package(ROOT QUIET)
+  if(NOT ROOT_REFLEX_DICT_ENABLED)
+    message(FATAL_ERROR "ROOT cannot produce dictionaries with genreflex.")
+  endif()
+  # this function uses an extra option: 'OPTIONS'
+  CMAKE_PARSE_ARGUMENTS(ARG "SPLIT_CLASSDEF" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;OPTIONS" ${ARGN})
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS} LIBRARIES ${ARG_LIBRARIES} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+  # FIXME: With ROOT 6 the '_Instantiations' dummy class used in the
+  #        dictionaries must have a different name in each dictionary.
+  set(ARG_OPTIONS ${ARG_OPTIONS}
+      -U_Instantiations
+      -D_Instantiations=${dictionary}_Instantiations)
+
+  # override the genreflex call to wrap it in the right environment
+  set(ROOT_genreflex_CMD ${env_cmd} --xml ${env_xml} ${ROOT_genreflex_CMD})
+
+  # we need to forward the SPLIT_CLASSDEF option to reflex_dictionary()
+  if(ARG_SPLIT_CLASSDEF)
+    set(ARG_SPLIT_CLASSDEF SPLIT_CLASSDEF)
+  else()
+    set(ARG_SPLIT_CLASSDEF)
+  endif()
+  reflex_dictionary(${dictionary} ${header} ${selection} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} OPTIONS ${ARG_OPTIONS} ${ARG_SPLIT_CLASSDEF})
+  set_target_properties(${dictionary}Dict PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual")
+  _elements_detach_debinfo(${dictionary}Dict)
+
+  if(TARGET ${dictionary}GenDeps)
+    elements_add_genheader_dependencies(${dictionary}GenDeps)
+  else()
+    elements_add_genheader_dependencies(${dictionary}Gen)
+  endif()
+
+  # Notify the project level target
+  get_property(rootmapname TARGET ${dictionary}Gen PROPERTY ROOTMAPFILE)
+  elements_merge_files_append(DictRootmap ${dictionary}Gen ${CMAKE_CURRENT_BINARY_DIR}/${rootmapname})
+
+  if(ROOT_HAS_PCMS)
+    get_property(pcmname TARGET ${dictionary}Gen PROPERTY PCMFILE)
+    add_custom_command(OUTPUT ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname}
+                       COMMAND ${CMAKE_COMMAND} -E copy ${pcmname} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname}
+                       DEPENDS ${dictionary}Gen)
+    add_custom_target(${dictionary}PCM ALL
+                      DEPENDS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname})
+  endif()
+
+  #----Installation details-------------------------------------------------------
+  install(TARGETS ${dictionary}Dict LIBRARY DESTINATION lib OPTIONAL)
+  if(ROOT_HAS_PCMS)
+    install(FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname} DESTINATION lib OPTIONAL)
+  endif()
+endfunction()
+
 #---------------------------------------------------------------------------------------------------
 # elements_add_python_module(name
 #                         sources ...
