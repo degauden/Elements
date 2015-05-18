@@ -167,28 +167,7 @@ macro(elements_project project version)
     endif()
   endif()
 
-  #------------------------------------------------------------------------------------------------
-  # RPATH business
-  if(ELEMENTS_USE_RPATH)
 
-    if (CMAKE_SYSTEM_NAME MATCHES Linux)
-      SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-
-      # add the automatically determined parts of the RPATH
-      # which point to directories outside the build tree to the install RPATH
-      SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-
-      # the RPATH to be used when installing, but only if it's not a system directory
-      LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "$ORIGIN/../lib" isSystemDir)
-      IF("${isSystemDir}" STREQUAL "-1")
-        SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-      ENDIF()
-    endif()
-
-  endif()
-
-  #------------------------------------------------------------------------------------------------
 
 
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
@@ -358,6 +337,31 @@ macro(elements_project project version)
   #--- Global actions for the project
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
   include(ElementsBuildFlags)
+
+
+  #------------------------------------------------------------------------------------------------
+  # RPATH business
+
+  if(ELEMENTS_USE_RPATH)
+
+    if (CMAKE_SYSTEM_NAME MATCHES Linux)
+      SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+
+      # add the automatically determined parts of the RPATH
+      # which point to directories outside the build tree to the install RPATH
+      SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+      # the RPATH to be used when installing, but only if it's not a system directory
+      LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "$ORIGIN/../lib" isSystemDir)
+      IF("${isSystemDir}" STREQUAL "-1")
+        SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+      ENDIF()
+    endif()
+
+  endif()
+
+  #------------------------------------------------------------------------------------------------
 
   # get the python test framework
 
