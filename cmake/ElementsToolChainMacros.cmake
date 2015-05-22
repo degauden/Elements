@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
 
 include(ElementsUtils)
 
+
 macro(preset_module_path_from_env)
 
   # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
@@ -11,6 +12,26 @@ macro(preset_module_path_from_env)
   endif()
 
 endmacro()
+
+
+
+macro(preload_toolchain_module_path)
+
+  preset_module_path_from_env()
+
+  # Automatically add the modules directory provided by the project.
+  if(IS_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+    if(IS_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/modules)
+      set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/modules ${CMAKE_MODULE_PATH})
+    endif()
+    set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_MODULE_PATH})
+  endif()
+
+  # Remove duplicates
+  list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
+
+endmacro()
+
 
 
 macro(preload_local_module_path)
@@ -27,12 +48,14 @@ macro(preload_local_module_path)
 
   # Remove duplicates
   list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
+  message(STATUS "------------------============>>>>>>>>>>> This is the CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 
 endmacro()
 
 
 ## Initialize common variables.
 macro(init)
+  preload_toolchain_module_path()
   preload_local_module_path()
   if(NOT BINARY_TAG)
     include(SGSPlatform)
