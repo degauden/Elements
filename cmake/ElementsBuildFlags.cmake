@@ -87,7 +87,7 @@ if(NOT ELEMENTS_FLAGS_SET)
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
   set(CMAKE_C_FLAGS
-      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal"
+      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -Wno-unused-parameter"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
