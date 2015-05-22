@@ -2,14 +2,20 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
 
 include(ElementsUtils)
 
-
-macro(preload_local_module_path)
+macro(preset_module_path_from_env)
 
   # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
   if(NOT CMAKE_MODULE_PATH)
     # Note: this works even if the envirnoment variable is not set.
     file(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" CMAKE_MODULE_PATH)
   endif()
+
+endmacro()
+
+
+macro(preload_local_module_path)
+
+  preset_module_path_from_env()
 
   # Automatically add the modules directory provided by the project.
   if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
