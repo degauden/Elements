@@ -103,7 +103,6 @@ function(_internal_find_installed_project projects_var project_uses_var config_f
 
   file(READ ${config_file} config_file_data)
   filter_comments(config_file_data)
-  string(REGEX MATCH "[ \t]*(elements_project)[ \t]*\\(([^)]+)\\)" match_use ${config_file_data})
   string(REGEX MATCH "[ \t]*(set[ \t]*\\([ \t]*)([^_])_USES[ \t]+([^)]+)\\)" match_use ${config_file_data})
   set(match_use ${CMAKE_MATCH_3})
 
@@ -199,6 +198,106 @@ function(_internal_find_projects projects_var config_file)
 endfunction()
 
 
+## Helper for recursion and ordering of found projects.
+function(_internal_find_projects2 projects_var config_file)
+
+    debug_message(STATUS "///////////////////////////////////////////////////////////////////")
+    debug_message(STATUS "processing ${config_file}")
+
+#    set(collected_config ${collected_config} ${config_file})
+
+    debug_message(STATUS "Collected Configs 2 ${collected_config2}")
+
+
+    set(collected_config2 ${collected_config2})
+
+
+    debug_message(STATUS "Collected Configs 2 ${collected_config2}")
+
+
+    get_project_from_file(${config_file} project_name version_name project_dep_list)
+    debug_print_var(project_name)
+    debug_print_var(version_name)
+    debug_print_var(project_dep_list)
+
+    set(projects2 ${${projects_var}} ${project_name})
+
+    string(TOUPPER ${project_name} upper_proj_name)
+    debug_print_var(upper_proj_name)
+
+
+
+    list(FIND collected_config2 ${${upper_proj_name}_CONFIG_FILE} conf_pos)
+    if(conf_pos EQUAL -1)
+      list(APPEND collected_config2 ${${upper_proj_name}_CONFIG_FILE})
+    endif()
+
+    debug_message(STATUS "Collected Configs 2 ${collected_config2}")
+
+
+    # define cache variables for this project
+    if(NOT ${upper_proj_name}_CONFIG_FILE)
+      get_filename_component(${upper_proj_name}_CONFIG_FILE ${config_file} ABSOLUTE CACHE)
+    endif()
+
+    get_filename_component(cfg_file ${upper_proj_name}_CONFIG_FILE NAME)
+
+    if(cfg_file STREQUAL "CMakeLists.txt")
+      get_filename_component(${upper_proj_name}_ROOT_DIR ${${upper_proj_name}_CONFIG_FILE} PATH CACHE)
+    else()
+      get_filename_component(root_dir1 ${${upper_proj_name}_CONFIG_FILE} PATH)
+      get_filename_component(root_dir2 ${root_dir1} PATH)
+      get_filename_component(${upper_proj_name}_ROOT_DIR ${root_dir2} PATH CACHE)
+      debug_print_var(root_dir1)
+      debug_print_var(root_dir)
+    endif()
+
+    debug_print_var(${upper_proj_name}_CONFIG_FILE)
+    debug_print_var(${upper_proj_name}_ROOT_DIR)
+
+
+
+    # then we look for the used projects
+    debug_print_var(project_dep_list)
+    while(project_dep_list)
+        # project_dep_list format is "<proj1> <vers1> <proj2> <vers2>..."
+        # we extract two entries per iteration
+        list(GET project_dep_list 0 name)
+           list(GET project_dep_list 1 version)
+           list(REMOVE_AT project_dep_list 0 1)
+           string(TOUPPER ${name} name_upper)
+           # look for the configuration file of the project
+           find_file(${name_upper}_CONFIG_FILE NAMES ${name}Config.cmake
+                     PATH_SUFFIXES ${name}/${version}/InstallArea/${BINARY_TAG}
+                                   ${name}/InstallArea/${BINARY_TAG}
+                     PATHS ENV CMAKE_PROJECT_PATH
+                     NO_DEFAULT_PATH)
+           debug_message("This is a ${name}Config.cmake file: ${${name_upper}_CONFIG_FILE}!!!!!!!!!!")
+
+        # recursion
+        if(${name_upper}_CONFIG_FILE)
+            # protect against infinite recursion
+            list(FIND collected_config2 ${${name_upper}_CONFIG_FILE} conf_pos)
+#            if(NOT conf_pos EQUAL -1)
+              # message(FATAL_ERROR "Infinite recursion detected at project ${name}")
+#            endif()
+            _internal_find_projects2(projects2 ${${name_upper}_CONFIG_FILE})
+        endif()
+    endwhile()
+
+    debug_message(STATUS "-------->>> Collected Configs 2 ${collected_config2} <<< -------")
+
+
+    # propagate the full list of projects to the caller
+    set(${projects_var} ${projects2} PARENT_SCOPE)
+    set(collected_config2 ${collected_config2} PARENT_SCOPE)
+
+    debug_message(STATUS "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\")
+
+
+endfunction()
+
+
 ## Look for used projects
 function(find_projects projects_var config_file)
   set(projects)
@@ -210,6 +309,21 @@ function(find_projects projects_var config_file)
   endif()
   debug_print_var(projects)
   set(${projects_var} ${projects} PARENT_SCOPE)
+endfunction()
+
+
+function(find_projects2 projects_var collected_var config_file)
+  set(projects2)
+  set(collected_config2)
+  _internal_find_projects2(projects2 ${config_file})
+  if(projects2)
+    list(REMOVE_DUPLICATES projects2)
+    list(REVERSE projects2)
+  endif()
+  debug_print_var(projects2)
+  debug_print_var(collected_config2)
+  set(${projects_var} ${projects2} PARENT_SCOPE)
+  set(${collected_var} ${collected_config2} PARENT_SCOPE)
 endfunction()
 
 
