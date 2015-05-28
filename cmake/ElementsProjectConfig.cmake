@@ -196,6 +196,10 @@ macro(elements_project project version)
   mark_as_advanced(CMAKE_RUNTIME_OUTPUT_DIRECTORY CMAKE_LIBRARY_OUTPUT_DIRECTORY
                    env_xml env_release_xml)
 
+  set(CONF_DIR_NAME "conf" CACHE STRING "Name of the configuration files directory")
+  set(AUX_DIR_NAME "auxdir" CACHE STRING "Name of the auxiliary files directory")
+
+
   if(ELEMENTS_BUILD_TESTS)
     find_program(MEMORYCHECK_COMMAND valgrind)
     set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all" )
@@ -494,8 +498,8 @@ macro(elements_project project version)
         PREPEND LD_LIBRARY_PATH \${.}/lib
         PREPEND PYTHONPATH \${.}/python
         PREPEND PYTHONPATH \${.}/python/lib-dynload
-        PREPEND ELEMENTS_CONF_PATH \${.}/conf
-        PREPEND ELEMENTS_AUX_PATH \${.}/auxdir)
+        PREPEND ELEMENTS_CONF_PATH \${.}/${CONF_DIR_NAME}
+        PREPEND ELEMENTS_AUX_PATH \${.}/${AUX_DIR_NAME})
   #     (installation dirs added to build env to be able to test pre-built bins)
   set(project_build_environment ${project_build_environment}
         PREPEND PATH ${CMAKE_INSTALL_PREFIX}/scripts
@@ -503,8 +507,8 @@ macro(elements_project project version)
         PREPEND LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib
         PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python
         PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python/lib-dynload
-        PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/conf
-        PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/auxdir)
+        PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/${CONF_DIR_NAME}
+        PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/${AUX_DIR_NAME})
 
   message(STATUS "  environment for local subdirectories")
   #   - project root (for relocatability)
@@ -546,9 +550,9 @@ macro(elements_project project version)
           PREPEND PATH \${${_proj}_PROJECT_ROOT}/${package}/scripts)
     endif()
 
-    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/conf)
+    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/${CONF_DIR_NAME})
       set(project_build_environment ${project_build_environment}
-          PREPEND ELEMENTS_CONF_PATH \${${_proj}_PROJECT_ROOT}/${package}/conf)
+          PREPEND ELEMENTS_CONF_PATH \${${_proj}_PROJECT_ROOT}/${package}/${CONF_DIR_NAME})
     endif()
 
     if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/aux)
@@ -556,9 +560,9 @@ macro(elements_project project version)
           PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/aux)
     endif()
 
-    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/auxdir)
+    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/${AUX_DIR_NAME})
       set(project_build_environment ${project_build_environment}
-          PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/auxdir)
+          PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/${AUX_DIR_NAME})
     endif()
 
 
@@ -2376,25 +2380,25 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(elements_install_aux_files)
   # early check at configure time for the existence of the directory
-  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/auxdir)
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME})
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux)
-      message(WARNING "The aux directory name in the ${CMAKE_CURRENT_SOURCE_DIR} location is dangerous. Please rename it to auxdir")
+      message(WARNING "The aux directory name in the ${CMAKE_CURRENT_SOURCE_DIR} location is dangerous. Please rename it to ${AUX_DIR_NAME}")
       install(DIRECTORY aux/
-              DESTINATION auxdir
+              DESTINATION ${AUX_DIR_NAME}
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE
               PATTERN "*~" EXCLUDE)
     endif()
-    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/auxdir)
-      install(DIRECTORY auxdir/
-              DESTINATION auxdir
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME})
+      install(DIRECTORY ${AUX_DIR_NAME}/
+              DESTINATION ${AUX_DIR_NAME}
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE
               PATTERN "*~" EXCLUDE)
     endif()
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_AUX TRUE)
   else()
-    message(FATAL_ERROR "No auxdir directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+    message(FATAL_ERROR "No ${AUX_DIR_NAME} directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
   endif()
 endfunction()
 
@@ -2405,14 +2409,14 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(elements_install_conf_files)
   if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/conf)
-    install(DIRECTORY conf/
-            DESTINATION conf
+    install(DIRECTORY ${CONF_DIR_NAME}/
+            DESTINATION ${CONF_DIR_NAME}
             PATTERN "CVS" EXCLUDE
             PATTERN ".svn" EXCLUDE
             PATTERN "*~" EXCLUDE)
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CONF TRUE)
   else()
-    message(FATAL_ERROR "No conf directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+    message(FATAL_ERROR "No ${CONF_DIR_NAME} directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
   endif()
 endfunction()
 
@@ -2585,8 +2589,8 @@ set(${CMAKE_PROJECT_NAME}_LIBRARY_DIRS \${_dir}/lib)
 
 set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_dir}/bin \${_dir}/scripts)
 set(${CMAKE_PROJECT_NAME}_PYTHON_PATH \${_dir}/python)
-set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_dir}/conf)
-set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/auxdir)
+set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_dir}/${CONF_DIR_NAME})
+set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/${AUX_DIR_NAME})
 
 set(${CMAKE_PROJECT_NAME}_COMPONENT_LIBRARIES ${component_libraries})
 set(${CMAKE_PROJECT_NAME}_LINKER_LIBRARIES ${linker_libraries})
@@ -2654,8 +2658,6 @@ macro(_env_conf_pop_instruction instr lst)
     list(GET ${lst} 0 1 2 ${instr})
     list(REMOVE_AT ${lst} 0 1 2)
   endif()
-  #message(STATUS "_env_conf_pop_instruction ${instr} => ${${instr}}")
-  #message(STATUS "_env_conf_pop_instruction ${lst} => ${${lst}}")
 endmacro()
 
 #-------------------------------------------------------------------------------
