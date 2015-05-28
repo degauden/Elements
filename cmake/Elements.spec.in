@@ -27,8 +27,8 @@ Requires(postun):  /sbin/ldconfig
 %define pydir %{_prefix}/python
 %define scriptsdir %{_prefix}/scripts
 %define cmakedir %{_prefix}/cmake
-%define confdir %{_prefix}/conf
-%define auxdir %{_prefix}/aux
+%define confdir %{_prefix}/@CONF_DIR_NAME@
+%define auxdir %{_prefix}/@AUX_DIR_NAME@
 
 %define debug_package %{nil}
 
