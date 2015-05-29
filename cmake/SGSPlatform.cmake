@@ -16,10 +16,7 @@
 #                      should be set to x86_64-slc6-gcc46.
 ################################################################################
 
-if(SGSPlatform_included)
-  return()
-endif(SGSPlatform_included)
-set(SGSPlatform_included true)
+include_guard()
 
 ################################################################################
 # Functions to get system informations for the SGS configuration.

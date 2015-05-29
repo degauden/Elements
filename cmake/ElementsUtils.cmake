@@ -1,5 +1,23 @@
-if (NOT HAS_ELEMENTS_UTILS)
+macro(include_guard)
+  get_filename_component(file_to_include ${CMAKE_CURRENT_LIST_FILE} NAME_WE)
+  string(TOUPPER ${file_to_include} file_to_include_upcase)
+  if(${file_to_include_upcase}_IS_INCLUDED)
+    return()
+  else()
+    set(${file_to_include_upcase}_IS_INCLUDED 1)
+    set(FULL_INCLUDE_FILE_LIST ${FULL_INCLUDE_FILE_LIST} ${file_to_include_upcase}_IS_INCLUDED)
+  endif()
+endmacro()
 
+include_guard()
+
+macro(reset_include_guards)
+
+  foreach(_s1 ${FULL_INCLUDE_FILE_LIST})
+    set(${_s1} 0)
+  endforeach()
+
+endmacro()
 
 # Options
 option(USE_DEBUG_PRINT
@@ -20,6 +38,7 @@ macro(debug_message)
   endif()
 endmacro()
 
+
 function(recurse_test nb)
   message(STATUS "This is the number ${nb}")
   math(EXPR nb "${nb}-1")
@@ -27,6 +46,9 @@ function(recurse_test nb)
     recurse_test(${nb})
   endif()
 endfunction()
+
+
+
 
 #-------------------------------------------------------------------------------
 # elements_expand_sources(<variable> source_pattern1 source_pattern2 ...)
@@ -351,5 +373,3 @@ function(get_project_from_file config_file project version dep_list)
 endfunction()
 
 
-set(HAS_ELEMENTS_UTILS ON)
-endif()

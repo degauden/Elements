@@ -1,3 +1,6 @@
+include_guard()
+
+
 include(SGSPlatform)
 
 if(SGS_COMP STREQUAL "clang")
