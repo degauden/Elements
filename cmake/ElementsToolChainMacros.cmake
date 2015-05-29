@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
 
 include(ElementsUtils)
 
+include_guard()
 
 macro(preset_module_path_from_env)
 
@@ -56,7 +57,7 @@ endmacro()
 ## Initialize common variables.
 macro(init)
   preload_toolchain_module_path()
-  preload_local_module_path()
+#  preload_local_module_path()
   if(NOT BINARY_TAG)
     include(SGSPlatform)
     sgs_get_target_platform()
@@ -206,9 +207,6 @@ function(_internal_find_projects2 projects_var config_file)
 
 #    set(collected_config ${collected_config} ${config_file})
 
-    debug_message(STATUS "Collected Configs 2 ${collected_config2}")
-
-
     set(collected_config2 ${collected_config2})
 
 
@@ -225,7 +223,10 @@ function(_internal_find_projects2 projects_var config_file)
     string(TOUPPER ${project_name} upper_proj_name)
     debug_print_var(upper_proj_name)
 
-
+    # define cache variables for this project
+    if(NOT ${upper_proj_name}_CONFIG_FILE)
+      get_filename_component(${upper_proj_name}_CONFIG_FILE ${config_file} ABSOLUTE CACHE)
+    endif()
 
     list(FIND collected_config2 ${${upper_proj_name}_CONFIG_FILE} conf_pos)
     if(conf_pos EQUAL -1)
@@ -235,10 +236,6 @@ function(_internal_find_projects2 projects_var config_file)
     debug_message(STATUS "Collected Configs 2 ${collected_config2}")
 
 
-    # define cache variables for this project
-    if(NOT ${upper_proj_name}_CONFIG_FILE)
-      get_filename_component(${upper_proj_name}_CONFIG_FILE ${config_file} ABSOLUTE CACHE)
-    endif()
 
     get_filename_component(cfg_file ${upper_proj_name}_CONFIG_FILE NAME)
 
@@ -248,8 +245,6 @@ function(_internal_find_projects2 projects_var config_file)
       get_filename_component(root_dir1 ${${upper_proj_name}_CONFIG_FILE} PATH)
       get_filename_component(root_dir2 ${root_dir1} PATH)
       get_filename_component(${upper_proj_name}_ROOT_DIR ${root_dir2} PATH CACHE)
-      debug_print_var(root_dir1)
-      debug_print_var(root_dir)
     endif()
 
     debug_print_var(${upper_proj_name}_CONFIG_FILE)
@@ -272,7 +267,6 @@ function(_internal_find_projects2 projects_var config_file)
                                    ${name}/InstallArea/${BINARY_TAG}
                      PATHS ENV CMAKE_PROJECT_PATH
                      NO_DEFAULT_PATH)
-           debug_message("This is a ${name}Config.cmake file: ${${name_upper}_CONFIG_FILE}!!!!!!!!!!")
 
         # recursion
         if(${name_upper}_CONFIG_FILE)
@@ -320,8 +314,6 @@ function(find_projects2 projects_var collected_var config_file)
     list(REMOVE_DUPLICATES projects2)
     list(REVERSE projects2)
   endif()
-  debug_print_var(projects2)
-  debug_print_var(collected_config2)
   set(${projects_var} ${projects2} PARENT_SCOPE)
   set(${collected_var} ${collected_config2} PARENT_SCOPE)
 endfunction()
@@ -362,6 +354,49 @@ macro(set_paths_from_projects)
     foreach(_extra_toolchain ${_extra_toolchains})
       include(${_extra_toolchain})
     endforeach()
+endmacro()
+
+macro(set_paths_from_projects2)
+
+    # we need to reverse the list of arguments because we will prepend to the
+    # search paths in a loop
+    set(_entries ${ARGN})
+
+    # prepare the helper variable
+    set(_path)
+    # and the variable for the extension of the toolchain (e.g. override externals)
+    set(_extra_toolchains)
+    foreach(_entry ${_entries})
+        string(TOUPPER "${_entry}" _entry)
+        set(_root ${${_entry}_ROOT_DIR})
+        set(_conf ${${_entry}_CONFIG_FILE})
+
+        get_filename_component(cfg_file ${_conf} NAME)
+        get_filename_component(_root ${_conf} PATH)
+
+        # we add the tool/project directory ...
+        # ... and some optional extra entries
+        foreach(_root ${_root}/cmake ${_root}/cmake/modules)
+          if(EXISTS ${_root})
+            debug_message(STATUS "The ${_root} path will be prepended to the CMAKE_MODULE_PATH")
+            set(_path ${_root} ${_path})
+          else()
+            debug_message(STATUS "The ${_root} path doesn't exist")
+          endif()
+        endforeach()
+        if(EXISTS ${_root}/cmake/extra-toolchain.cmake)
+          list(APPEND _extra_toolchains ${_root}/cmake/extra-toolchain.cmake)
+        endif()
+    endforeach()
+
+    # set the real search paths variables
+    set(CMAKE_MODULE_PATH ${_path} ${CMAKE_MODULE_PATH})
+    # include all the toolchain extensions (they should be prepending entries to CMAKE_MODULE_PATH)
+    foreach(_extra_toolchain ${_extra_toolchains})
+      include(${_extra_toolchain})
+    endforeach()
+
+
 endmacro()
 
 ## How to use these functions in a toolchain:
