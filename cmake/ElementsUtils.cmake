@@ -39,6 +39,27 @@ macro(debug_message)
 endmacro()
 
 
+set(FULL_MESSAGE_LIST "" CACHE INTERNAL "This is the full list of guarded messages")
+
+macro(guarded_message)
+  string(MD5 this_guard "${ARGN}")
+  if(NOT ${this_guard})
+    set(${this_guard} TRUE CACHE INTERNAL "")
+    set(FULL_MESSAGE_LIST ${FULL_MESSAGE_LIST} ${this_guard})
+    message(${ARGN})
+  endif()
+endmacro()
+
+
+macro(reset_message_guards)
+
+  foreach(_s1 ${FULL_MESSAGE_LIST})
+    set(${_s1} 0)
+  endforeach()
+
+endmacro()
+
+
 function(recurse_test nb)
   message(STATUS "This is the number ${nb}")
   math(EXPR nb "${nb}-1")
@@ -46,7 +67,6 @@ function(recurse_test nb)
     recurse_test(${nb})
   endif()
 endfunction()
-
 
 
 
@@ -100,7 +120,7 @@ function(get_full_binary_list binary_tag binary_base full_list)
     list(APPEND the_list "${binary_tag}")
   endif()
 
-  message(STATUS "Elements use strict binary dependencies: ${ELEMENTS_USE_STRICT_BINARY_DEP}")
+  guarded_message(STATUS "Elements use strict binary dependencies: ${ELEMENTS_USE_STRICT_BINARY_DEP}")
 
   if(SGS_BUILD_TYPE_SHORT_NAMES AND NOT ELEMENTS_USE_STRICT_BINARY_DEP)
     foreach(_s3 ${SGS_BUILD_TYPE_SHORT_NAMES})
@@ -298,7 +318,7 @@ endfunction()
 
 
 function(get_project_from_file config_file project version dep_list)
-  debug_message(STATUS "This is the config file: ${config_file}")
+
   get_filename_component(cfg_file ${config_file} NAME)
 
   file(READ ${config_file} config_file_data)
@@ -306,14 +326,13 @@ function(get_project_from_file config_file project version dep_list)
 
   if(cfg_file STREQUAL "CMakeLists.txt")
 
-    debug_message(STATUS "This is the config file: ${cfg_file}")
-
     string(REGEX MATCH "[ \t]*(elements_project)[ \t]*\\(([^)]+)\\)" match_use ${config_file_data})
     set(match_use ${CMAKE_MATCH_2})
-    debug_message(STATUS "find_used_projects: match_use -> ${match_use}")
+
     if(match_use STREQUAL "")
       message(FATAL_ERROR "${config_file} does not contain elements_project")
     endif()
+
     # (replace space-type chars with spaces)
     string(REGEX REPLACE "[ \t\r\n]+" " " args "${match_use}")
     separate_arguments(args)
@@ -321,26 +340,21 @@ function(get_project_from_file config_file project version dep_list)
 
     # get the project name and add it to the list of used projects
     list(GET PROJECT_UNPARSED_ARGUMENTS 0 proj_name)
-    debug_print_var(proj_name)
     set(${project} ${proj_name} PARENT_SCOPE)
 
     list(GET PROJECT_UNPARSED_ARGUMENTS 1 vers_name)
-    debug_print_var(vers_name)
     set(${version} ${vers_name} PARENT_SCOPE)
 
     set(${dep_list} ${PROJECT_USE} PARENT_SCOPE)
 
   elseif(cfg_file MATCHES "([^)]+)Config.cmake")
 
-    debug_message(STATUS "This is the other config file: ${cfg_file}")
     string(REGEX MATCH "([^)]+)Config.cmake" match_proj ${cfg_file})
     set(match_proj ${CMAKE_MATCH_1})
-    debug_print_var(match_proj)
     set(${project} ${match_proj} PARENT_SCOPE)
 
     string(REGEX MATCH "[ \t]*(set)[ \t]*\\(([^)]+_VERSION[^)]+)\\)" match_use ${config_file_data})
     set(match_use ${CMAKE_MATCH_2})
-    debug_message(STATUS "find_used_projects: match_use -> ${match_use}")
     if(match_use STREQUAL "")
       message(FATAL_ERROR "${config_file} does not contain any version")
     endif()
@@ -348,22 +362,18 @@ function(get_project_from_file config_file project version dep_list)
     string(REGEX REPLACE "[ \t\r\n]+" " " args "${match_use}")
     separate_arguments(args)
     CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "${match_proj}_VERSION" ${args})
-    debug_print_var(PROJECT_${match_proj}_VERSION)
     set(${version} ${PROJECT_${match_proj}_VERSION} PARENT_SCOPE)
 
     string(REGEX MATCH "[ \t]*(set)[ \t]*\\(([^)]+_USES[^)]+)\\)" match_use ${config_file_data})
     set(match_use ${CMAKE_MATCH_2})
-    debug_message(STATUS "find_used_projects: match_use -> ${match_use}")
     # (replace space-type chars with spaces)
     string(REGEX REPLACE "[ \t\r\n]+" " " args "${match_use}")
-    debug_message(STATUS "find_used_projects: args -> ${args}")
 
     if(match_use STREQUAL "")
       message(FATAL_ERROR "${config_file} does not contain any uses")
     endif()
     separate_arguments(args)
     CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "${match_proj}_USES" ${args})
-    debug_print_var(PROJECT_${match_proj}_USES)
     set(${dep_list} ${PROJECT_${match_proj}_USES} PARENT_SCOPE)
 
 
