@@ -49,7 +49,6 @@ macro(preload_local_module_path)
 
   # Remove duplicates
   list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
-  message(STATUS "------------------============>>>>>>>>>>> This is the CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 
 endmacro()
 
@@ -57,7 +56,6 @@ endmacro()
 ## Initialize common variables.
 macro(init)
   preload_toolchain_module_path()
-#  preload_local_module_path()
   if(NOT BINARY_TAG)
     include(SGSPlatform)
     sgs_get_target_platform()
@@ -202,26 +200,15 @@ endfunction()
 ## Helper for recursion and ordering of found projects.
 function(_internal_find_projects2 projects_var config_file)
 
-    debug_message(STATUS "///////////////////////////////////////////////////////////////////")
     debug_message(STATUS "processing ${config_file}")
-
-#    set(collected_config ${collected_config} ${config_file})
 
     set(collected_config2 ${collected_config2})
 
-
-    debug_message(STATUS "Collected Configs 2 ${collected_config2}")
-
-
     get_project_from_file(${config_file} project_name version_name project_dep_list)
-    debug_print_var(project_name)
-    debug_print_var(version_name)
-    debug_print_var(project_dep_list)
 
     set(projects2 ${${projects_var}} ${project_name})
 
     string(TOUPPER ${project_name} upper_proj_name)
-    debug_print_var(upper_proj_name)
 
     # define cache variables for this project
     if(NOT ${upper_proj_name}_CONFIG_FILE)
@@ -232,9 +219,6 @@ function(_internal_find_projects2 projects_var config_file)
     if(conf_pos EQUAL -1)
       list(APPEND collected_config2 ${${upper_proj_name}_CONFIG_FILE})
     endif()
-
-    debug_message(STATUS "Collected Configs 2 ${collected_config2}")
-
 
 
     get_filename_component(cfg_file ${upper_proj_name}_CONFIG_FILE NAME)
@@ -247,13 +231,8 @@ function(_internal_find_projects2 projects_var config_file)
       get_filename_component(${upper_proj_name}_ROOT_DIR ${root_dir2} PATH CACHE)
     endif()
 
-    debug_print_var(${upper_proj_name}_CONFIG_FILE)
-    debug_print_var(${upper_proj_name}_ROOT_DIR)
-
-
 
     # then we look for the used projects
-    debug_print_var(project_dep_list)
     while(project_dep_list)
         # project_dep_list format is "<proj1> <vers1> <proj2> <vers2>..."
         # we extract two entries per iteration
@@ -262,9 +241,10 @@ function(_internal_find_projects2 projects_var config_file)
            list(REMOVE_AT project_dep_list 0 1)
            string(TOUPPER ${name} name_upper)
            # look for the configuration file of the project
+           set(suffixes)
+           get_installed_project_suffixes(${name} ${version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
            find_file(${name_upper}_CONFIG_FILE NAMES ${name}Config.cmake
-                     PATH_SUFFIXES ${name}/${version}/InstallArea/${BINARY_TAG}
-                                   ${name}/InstallArea/${BINARY_TAG}
+                     PATH_SUFFIXES ${suffixes}
                      PATHS ENV CMAKE_PROJECT_PATH
                      NO_DEFAULT_PATH)
 
@@ -279,14 +259,9 @@ function(_internal_find_projects2 projects_var config_file)
         endif()
     endwhile()
 
-    debug_message(STATUS "-------->>> Collected Configs 2 ${collected_config2} <<< -------")
-
-
     # propagate the full list of projects to the caller
     set(${projects_var} ${projects2} PARENT_SCOPE)
     set(collected_config2 ${collected_config2} PARENT_SCOPE)
-
-    debug_message(STATUS "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\")
 
 
 endfunction()
@@ -378,10 +353,7 @@ macro(set_paths_from_projects2)
         # ... and some optional extra entries
         foreach(_root ${_root}/cmake ${_root}/cmake/modules)
           if(EXISTS ${_root})
-            debug_message(STATUS "The ${_root} path will be prepended to the CMAKE_MODULE_PATH")
             set(_path ${_root} ${_path})
-          else()
-            debug_message(STATUS "The ${_root} path doesn't exist")
           endif()
         endforeach()
         if(EXISTS ${_root}/cmake/extra-toolchain.cmake)
