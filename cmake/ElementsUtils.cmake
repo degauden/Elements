@@ -54,7 +54,7 @@ endmacro()
 macro(reset_message_guards)
 
   foreach(_s1 ${FULL_MESSAGE_LIST})
-    set(${_s1} 0)
+    set(${_s1} FALSE CACHE INTERNAL "")
   endforeach()
 
 endmacro()
@@ -216,29 +216,6 @@ function(get_installed_project_suffixes project version binary_tag binary_base s
   list(REMOVE_DUPLICATES the_list)
 
   set(${suffixes} ${the_list} PARENT_SCOPE)
-
-endfunction()
-
-
-function(get_local_project_version project projec_loc loc_version)
-
-endfunction()
-
-
-
-function(get_installed_project_version project projec_loc inst_version)
-
-endfunction()
-
-
-
-function(check_local_project_version project version proj_loc)
-
-endfunction()
-
-
-
-function(check_installed_project_version project version proj_loc)
 
 endfunction()
 
