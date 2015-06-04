@@ -251,11 +251,20 @@ function(_internal_find_projects2 projects_var config_file)
         # recursion
         if(${name_upper}_CONFIG_FILE)
             # protect against infinite recursion
-            list(FIND collected_config2 ${${name_upper}_CONFIG_FILE} conf_pos)
+#            list(FIND collected_config2 ${${name_upper}_CONFIG_FILE} conf_pos)
 #            if(NOT conf_pos EQUAL -1)
               # message(FATAL_ERROR "Infinite recursion detected at project ${name}")
 #            endif()
-            _internal_find_projects2(projects2 ${${name_upper}_CONFIG_FILE})
+            list(FIND collected_config2 ${${name_upper}_CONFIG_FILE} conf_pos)
+
+            if(conf_pos EQUAL -1)
+              check_project_version_from_file(${${name_upper}_CONFIG_FILE} ${name} ${version} match_found)
+              if(${match_found})
+                _internal_find_projects2(projects2 ${${name_upper}_CONFIG_FILE})
+              else()
+                unset(${name_upper}_CONFIG_FILE)
+              endif()
+            endif()
         endif()
     endwhile()
 
@@ -367,6 +376,8 @@ macro(set_paths_from_projects2)
     foreach(_extra_toolchain ${_extra_toolchains})
       include(${_extra_toolchain})
     endforeach()
+
+    list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 
 
 endmacro()

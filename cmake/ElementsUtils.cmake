@@ -360,3 +360,16 @@ function(get_project_from_file config_file project version dep_list)
 endfunction()
 
 
+function(check_project_version_from_file config_file project version match_found)
+
+  set(has_found FALSE)
+
+  get_project_from_file(${config_file} file_project_name file_version_name file_project_dep_list)
+
+  if( (project STREQUAL file_project_name) AND (version STREQUAL file_version_name) )
+    set(has_found TRUE)
+  endif()
+
+  set(${match_found} ${has_found} PARENT_SCOPE)
+
+endfunction()
