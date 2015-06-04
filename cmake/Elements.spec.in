@@ -22,13 +22,13 @@ Requires(postun):  /sbin/ldconfig
 %define _proj_vers_dir %{_proj_name_dir}/%{version}
 %define _proj_ia_dir %{_proj_vers_dir}/InstallArea
 %define _prefix %{_proj_ia_dir}/%{bin_tag}
-%define build_dir_name @BUILD_PREFIX_NAME@.%{bin_tag}
+%define build_dir_name @BUILD_SUBDIR@
 %define libdir %{_prefix}/lib
 %define pydir %{_prefix}/python
 %define scriptsdir %{_prefix}/scripts
 %define cmakedir %{_prefix}/cmake
-%define confdir %{_prefix}/conf
-%define auxdir %{_prefix}/aux
+%define confdir %{_prefix}/@CONF_DIR_NAME@
+%define auxdir %{_prefix}/@AUX_DIR_NAME@
 
 %define debug_package %{nil}
 

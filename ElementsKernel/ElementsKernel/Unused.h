@@ -10,7 +10,7 @@
 
 #include "ElementsKernel/Attribute.h"
 
-/**
+/** @def ELEMENTS_UNUSED
  * This macro is there to
  * - allows to pass the argument name, even if it is not used.
  *   it will silence the compiler warning about this
