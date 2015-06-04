@@ -18,23 +18,33 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
   endif()
 endif()
 
-
-
-# Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
-if(NOT CMAKE_MODULE_PATH)
-  # Note: this works even if the envirnoment variable is not set.
-  file(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" CMAKE_MODULE_PATH)
-endif()
-
-# Add the directory containing this file and the to the modules search path
-set(CMAKE_MODULE_PATH ${ElementsProject_DIR} ${ElementsProject_DIR}/modules ${CMAKE_MODULE_PATH})
-# Automatically add the modules directory provided by the project.
-if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
-  if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/modules)
-    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+if (NOT HAS_ELEMENTS_TOOLCHAIN)
+  # this is the call to the preload_local_module_path is the toolchain has not been called
+  # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
+  if(NOT CMAKE_MODULE_PATH)
+    # Note: this works even if the envirnoment variable is not set.
+    file(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" CMAKE_MODULE_PATH)
   endif()
-  set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+
+  # Add the directory containing this file and the to the modules search path
+  set(CMAKE_MODULE_PATH ${ElementsProject_DIR} ${ElementsProject_DIR}/modules ${CMAKE_MODULE_PATH})
+  # Automatically add the modules directory provided by the project.
+  if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
+    if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/modules)
+      set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+    endif()
+    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+  endif()
+
+  # Remove duplicates
+  list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
+
 endif()
+
+
+include(ElementsUtils)
+
+
 
 #-------------------------------------------------------------------------------
 # Basic configuration
@@ -86,6 +96,7 @@ endif()
 
 option(USE_ODB "Use the ODB libraries" OFF)
 option(ELEMENTS_USE_STRICT_BINARY_DEP "Flag to force the strict binary dependencies" OFF)
+option(ELEMENTS_USE_CASE_SENSITIVE_PROJECTS "No uppercase projects allowed" ON)
 
 if(DEFINED ENV{EUCLID_BASE})
   set(EUCLID_BASE_DIR "$ENV{EUCLID_BASE}" CACHE STRING "Euclid Base Install Directory")
@@ -185,6 +196,10 @@ macro(elements_project project version)
   mark_as_advanced(CMAKE_RUNTIME_OUTPUT_DIRECTORY CMAKE_LIBRARY_OUTPUT_DIRECTORY
                    env_xml env_release_xml)
 
+  set(CONF_DIR_NAME "conf" CACHE STRING "Name of the configuration files directory")
+  set(AUX_DIR_NAME "auxdir" CACHE STRING "Name of the auxiliary files directory")
+
+
   if(ELEMENTS_BUILD_TESTS)
     find_program(MEMORYCHECK_COMMAND valgrind)
     set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all" )
@@ -213,8 +228,8 @@ macro(elements_project project version)
 
   # environment description
   set(project_environment)
-  set(used_elements_projects)
 
+  set(used_elements_projects)
   # Locate and import used projects.
   if(PROJECT_USE)
     _elements_use_other_projects(${PROJECT_USE})
@@ -483,8 +498,8 @@ macro(elements_project project version)
         PREPEND LD_LIBRARY_PATH \${.}/lib
         PREPEND PYTHONPATH \${.}/python
         PREPEND PYTHONPATH \${.}/python/lib-dynload
-        PREPEND ELEMENTS_CONF_PATH \${.}/conf
-        PREPEND ELEMENTS_AUX_PATH \${.}/auxdir)
+        PREPEND ELEMENTS_CONF_PATH \${.}/${CONF_DIR_NAME}
+        PREPEND ELEMENTS_AUX_PATH \${.}/${AUX_DIR_NAME})
   #     (installation dirs added to build env to be able to test pre-built bins)
   set(project_build_environment ${project_build_environment}
         PREPEND PATH ${CMAKE_INSTALL_PREFIX}/scripts
@@ -492,8 +507,8 @@ macro(elements_project project version)
         PREPEND LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib
         PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python
         PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python/lib-dynload
-        PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/conf
-        PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/auxdir)
+        PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/${CONF_DIR_NAME}
+        PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/${AUX_DIR_NAME})
 
   message(STATUS "  environment for local subdirectories")
   #   - project root (for relocatability)
@@ -535,9 +550,9 @@ macro(elements_project project version)
           PREPEND PATH \${${_proj}_PROJECT_ROOT}/${package}/scripts)
     endif()
 
-    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/conf)
+    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/${CONF_DIR_NAME})
       set(project_build_environment ${project_build_environment}
-          PREPEND ELEMENTS_CONF_PATH \${${_proj}_PROJECT_ROOT}/${package}/conf)
+          PREPEND ELEMENTS_CONF_PATH \${${_proj}_PROJECT_ROOT}/${package}/${CONF_DIR_NAME})
     endif()
 
     if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/aux)
@@ -545,9 +560,9 @@ macro(elements_project project version)
           PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/aux)
     endif()
 
-    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/auxdir)
+    if(EXISTS ${CMAKE_SOURCE_DIR}/${package}/${AUX_DIR_NAME})
       set(project_build_environment ${project_build_environment}
-          PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/auxdir)
+          PREPEND ELEMENTS_AUX_PATH \${${_proj}_PROJECT_ROOT}/${package}/${AUX_DIR_NAME})
     endif()
 
 
@@ -564,9 +579,10 @@ macro(elements_project project version)
   # - produce environment XML description
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
-  install(FILES ${env_release_xml} DESTINATION .)
+  install(FILES ${env_release_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
+  install(FILES ${env_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
   #   add a small wrapper script in the build directory to easily run anything
   set(_env_cmd_line)
   foreach(t ${env_cmd}) # transform the env_cmd list in a space separated string
@@ -588,7 +604,7 @@ macro(elements_project project version)
 
   #--- Generate the manifest.xml file.
   elements_generate_project_manifest(${CMAKE_BINARY_DIR}/manifest.xml ${ARGV})
-  install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION .)
+  install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION ${CMAKE_INSTALL_PREFIX})
 
   #--- CPack configuration
   # Please have a look at the general CPack documentation at
@@ -609,7 +625,7 @@ macro(elements_project project version)
   set(CPACK_PACKAGE_RELEASE 1)
   set(CPACK_PACKAGE_VENDOR "The Euclid Consortium")
 
-  set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/${BUILD_PREFIX_NAME}\\\\..*/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
+  set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/${BUILD_PREFIX_NAME}\\\\..*/;/${BUILD_SUBDIR}/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
 
   # RPM packaging specific stuff
   set(CPACK_RPM_PACKAGE_RELOCATABLE TRUE)
@@ -624,7 +640,7 @@ macro(elements_project project version)
   set(CPACK_RPM_REGULAR_FILES "%files")
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %defattr(-,root,root,-)
-%{_prefix}")
+%dir %{_prefix}")
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{_prefix}/${CPACK_PACKAGE_NAME}Environment.xml")
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
@@ -635,7 +651,7 @@ macro(elements_project project version)
 
   if(regular_bin_objects)
     set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%{_bindir}")
+%dir %{_bindir}")
     list(SORT regular_bin_objects)
     foreach(_do ${regular_bin_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
@@ -660,7 +676,7 @@ macro(elements_project project version)
 
   if(regular_lib_objects)
     set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%{libdir}")
+%dir %{libdir}")
     list(SORT regular_lib_objects)
     foreach(_do ${regular_lib_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
@@ -711,7 +727,8 @@ macro(elements_project project version)
   set(CPACK_RPM_DEVEL_FILES "%files devel")
   set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %defattr(-,root,root,-)")
-
+  set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{_prefix}/${CPACK_PACKAGE_NAME}BuildEnvironment.xml")
 #------------------------------------------------------------------------------
   get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
 
@@ -792,7 +809,7 @@ macro(elements_project project version)
 
     add_custom_target(targz
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_TARGZ_DIR}
-                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "${BUILD_PREFIX_NAME}.*" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
+                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "${BUILD_PREFIX_NAME}.*" --exclude "./${BUILD_SUBDIR}" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                       COMMENT "Generating The Source TarBall ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz" VERBATIM
     )
@@ -950,50 +967,14 @@ macro(_elements_use_other_projects)
       # (the handling happens right after)
       list(APPEND dependency_list ${other_project} ${other_project_cmake_version})
       list(APPEND dependency_dependee_list ${other_dependee} ${other_dependee_version})
-    endif()
 
-    if(NOT ${other_project}_FOUND)
-      string(TOUPPER ${other_project} other_project_upcase)
       set(suffixes)
-      message(STATUS "Elements use strict binary dependencies: ${ELEMENTS_USE_STRICT_BINARY_DEP}")
-      if(ELEMENTS_USE_STRICT_BINARY_DEP)
-        set(binary_suffixes "" "/${BINARY_TAG}" "/${SGS_platform}" "/${SGS_system}")
-      else()
-        set(binary_suffixes "" "/${BINARY_TAG}" "/${SGS_SYSTEM}-o2g" "/${SGS_SYSTEM}-opt" "/${SGS_SYSTEM}-dbg" "/${SGS_SYSTEM}-pro" "/${SGS_SYSTEM}-cov" "/${SGS_SYSTEM}-min" "/${SGS_platform}" "/${SGS_system}")
-      endif()
-      # Look for all possible project version combination.
-      foreach(_s1 ${other_project}
-                  ${other_project_upcase}/${other_project_upcase}_${other_project_version}
-                  ${other_project}/${other_project_version}
-                  ${other_project_upcase})
-        foreach(_s2 "" "/InstallArea")
-          foreach(_s3 ${binary_suffixes})
-            set(suffixes ${suffixes} ${_s1}${_s2}${_s3})
-          endforeach()
-        endforeach()
-      endforeach()
-      list(REMOVE_DUPLICATES suffixes)
-      message(STATUS "suffixes ${suffixes}")
+      get_project_suffixes(${other_project} ${other_project_version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
       find_package(${other_project} ${other_project_cmake_version}
                    HINTS ${projects_search_path}
                    PATH_SUFFIXES ${suffixes})
       if(${other_project}_FOUND)
         message(STATUS "  found ${other_project} ${${other_project}_VERSION} ${${other_project}_DIR}")
-        if(astrotools_version)
-          if(NOT astrotools_version STREQUAL ${other_project}_astrotools_version)
-            if(${other_project}_astrotools_version)
-              set(hint_message "with the option '-DCMAKE_TOOLCHAIN_FILE=.../astrotools-${${other_project}_astrotools_version}.cmake'")
-            else()
-              set(hint_message "without the option '-DCMAKE_TOOLCHAIN_FILE=...'")
-            endif()
-            message(FATAL_ERROR "Incompatible versions of astrotools toolchains:
-  ${CMAKE_PROJECT_NAME} -> ${astrotools_version}
-  ${other_project} ${${other_project}_VERSION} -> ${${other_project}_astrotools_version}
-
-  You need to call cmake ${hint_message}
-")
-          endif()
-        endif()
         if(NOT SGS_SYSTEM STREQUAL ${other_project}_astrotools_system)
           message(FATAL_ERROR "Incompatible values of SGS_SYSTEM:
   ${CMAKE_PROJECT_NAME} -> ${SGS_SYSTEM}
@@ -1035,7 +1016,11 @@ macro(_elements_use_other_projects)
           endforeach()
         endif()
       else()
-        message(FATAL_ERROR "Cannot find project ${other_project} ${other_project_version}")
+        message(FATAL_ERROR "
+Cannot find project ${other_project} ${other_project_version}
+with the suffixes: ${suffixes}
+in the paths: ${projects_search_path}
+")
       endif()
       #message(STATUS "know_packages (after ${other_project}) ${known_packages}")
     endif()
@@ -1230,7 +1215,7 @@ endmacro()
 #-------------------------------------------------------------------------------
 # include_package_directories(Package1 [Package2 ...])
 #
-# Adde the include directories of each package to the include directories.
+# Add the include directories of each package to the include directories.
 #-------------------------------------------------------------------------------
 function(include_package_directories)
   #message(STATUS "include_package_directories(${ARGN})")
@@ -1365,22 +1350,6 @@ macro(__visit__ _p)
   endif()
 endmacro()
 
-
-function(filter_comments var)
-  # Convert file contents into a CMake list (where each element in the list
-  # is one line of the file)
-  #
-  STRING(REGEX REPLACE ";" "\\\\;" contents2 "${${var}}")
-  STRING(REGEX REPLACE "\n" ";" contents2 "${contents2}")
-  foreach(__t ${contents2})
-    if (NOT "${__t}" MATCHES "^ *#+")
-      LIST(APPEND contents3 ${__t})
-    endif()
-  endforeach()
-  STRING(REGEX REPLACE ";" "\n" contents3 "${contents3}")
-  STRING(REGEX REPLACE "\\\\;" ";" contents3 "${contents3}")
-  set(${var} ${contents3} PARENT_SCOPE)
-endfunction()
 
 #-------------------------------------------------------------------------------
 # elements_sort_subdirectories(var)
@@ -1710,30 +1679,6 @@ function(elements_get_required_library_dirs output)
   endif()
 endfunction()
 
-#-------------------------------------------------------------------------------
-# elements_expand_sources(<variable> source_pattern1 source_pattern2 ...)
-#
-# Expand glob patterns for input files to a list of files, first searching in
-# ``src`` then in the current directory.
-#-------------------------------------------------------------------------------
-macro(elements_expand_sources VAR)
-  #message(STATUS "Expand ${ARGN} in ${VAR}")
-  set(${VAR})
-  foreach(fp ${ARGN})
-    file(GLOB files src/${fp})
-    if(files)
-      set(${VAR} ${${VAR}} ${files})
-    else()
-      file(GLOB files ${fp})
-      if(files)
-        set(${VAR} ${${VAR}} ${files})
-      else()
-        set(${VAR} ${${VAR}} ${fp})
-      endif()
-    endif()
-  endforeach()
-  #message(STATUS "  result: ${${VAR}}")
-endmacro()
 
 #-------------------------------------------------------------------------------
 # elements_get_genheader_targets(<variable> [subdir1 ...])
@@ -1933,6 +1878,71 @@ macro(elements_component_library)
   message(WARNING "Deprecated function 'elements_component_library', use 'elements_add_module' instead")
   elements_add_module(${ARGN})
 endmacro()
+
+#-------------------------------------------------------------------------------
+# elements_add_dictionary(dictionary header selection
+#                      LINK_LIBRARIES ...
+#                      INCLUDE_DIRS ...
+#                      OPTIONS ...
+#                      [SPLIT_CLASSDEF])
+#
+# Find all the CMakeLists.txt files in the sub-directories and add their
+# directories to the variable.
+#-------------------------------------------------------------------------------
+function(elements_add_dictionary dictionary header selection)
+  # ensure that we can produce dictionaries
+  find_package(ROOT QUIET)
+  if(NOT ROOT_REFLEX_DICT_ENABLED)
+    message(FATAL_ERROR "ROOT cannot produce dictionaries with genreflex.")
+  endif()
+  # this function uses an extra option: 'OPTIONS'
+  CMAKE_PARSE_ARGUMENTS(ARG "SPLIT_CLASSDEF" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;OPTIONS" ${ARGN})
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS} LIBRARIES ${ARG_LIBRARIES} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+  # FIXME: With ROOT 6 the '_Instantiations' dummy class used in the
+  #        dictionaries must have a different name in each dictionary.
+  set(ARG_OPTIONS ${ARG_OPTIONS}
+      -U_Instantiations
+      -D_Instantiations=${dictionary}_Instantiations)
+
+  # override the genreflex call to wrap it in the right environment
+  set(ROOT_genreflex_CMD ${env_cmd} --xml ${env_xml} ${ROOT_genreflex_CMD})
+
+  # we need to forward the SPLIT_CLASSDEF option to reflex_dictionary()
+  if(ARG_SPLIT_CLASSDEF)
+    set(ARG_SPLIT_CLASSDEF SPLIT_CLASSDEF)
+  else()
+    set(ARG_SPLIT_CLASSDEF)
+  endif()
+  reflex_dictionary(${dictionary} ${header} ${selection} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} OPTIONS ${ARG_OPTIONS} ${ARG_SPLIT_CLASSDEF})
+  set_target_properties(${dictionary}Dict PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual")
+  _elements_detach_debinfo(${dictionary}Dict)
+
+  if(TARGET ${dictionary}GenDeps)
+    elements_add_genheader_dependencies(${dictionary}GenDeps)
+  else()
+    elements_add_genheader_dependencies(${dictionary}Gen)
+  endif()
+
+  # Notify the project level target
+  get_property(rootmapname TARGET ${dictionary}Gen PROPERTY ROOTMAPFILE)
+  elements_merge_files_append(DictRootmap ${dictionary}Gen ${CMAKE_CURRENT_BINARY_DIR}/${rootmapname})
+
+  if(ROOT_HAS_PCMS)
+    get_property(pcmname TARGET ${dictionary}Gen PROPERTY PCMFILE)
+    add_custom_command(OUTPUT ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname}
+                       COMMAND ${CMAKE_COMMAND} -E copy ${pcmname} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname}
+                       DEPENDS ${dictionary}Gen)
+    add_custom_target(${dictionary}PCM ALL
+                      DEPENDS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname})
+  endif()
+
+  #----Installation details-------------------------------------------------------
+  install(TARGETS ${dictionary}Dict LIBRARY DESTINATION lib OPTIONAL)
+  if(ROOT_HAS_PCMS)
+    install(FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname} DESTINATION lib OPTIONAL)
+  endif()
+endfunction()
 
 #---------------------------------------------------------------------------------------------------
 # elements_add_python_module(name
@@ -2370,25 +2380,25 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(elements_install_aux_files)
   # early check at configure time for the existence of the directory
-  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/auxdir)
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME})
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux)
-      message(WARNING "The aux directory name in the ${CMAKE_CURRENT_SOURCE_DIR} location is dangerous. Please rename it to auxdir")
+      message(WARNING "The aux directory name in the ${CMAKE_CURRENT_SOURCE_DIR} location is dangerous. Please rename it to ${AUX_DIR_NAME}")
       install(DIRECTORY aux/
-              DESTINATION auxdir
+              DESTINATION ${AUX_DIR_NAME}
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE
               PATTERN "*~" EXCLUDE)
     endif()
-    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/auxdir)
-      install(DIRECTORY auxdir/
-              DESTINATION auxdir
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME})
+      install(DIRECTORY ${AUX_DIR_NAME}/
+              DESTINATION ${AUX_DIR_NAME}
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE
               PATTERN "*~" EXCLUDE)
     endif()
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_AUX TRUE)
   else()
-    message(FATAL_ERROR "No auxdir directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+    message(FATAL_ERROR "No ${AUX_DIR_NAME} directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
   endif()
 endfunction()
 
@@ -2399,14 +2409,14 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(elements_install_conf_files)
   if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/conf)
-    install(DIRECTORY conf/
-            DESTINATION conf
+    install(DIRECTORY ${CONF_DIR_NAME}/
+            DESTINATION ${CONF_DIR_NAME}
             PATTERN "CVS" EXCLUDE
             PATTERN ".svn" EXCLUDE
             PATTERN "*~" EXCLUDE)
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CONF TRUE)
   else()
-    message(FATAL_ERROR "No conf directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+    message(FATAL_ERROR "No ${CONF_DIR_NAME} directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
   endif()
 endfunction()
 
@@ -2514,7 +2524,7 @@ if(PACKAGE_NAME STREQUAL PACKAGE_FIND_NAME)
   endif()
 endif()
 ")
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION .)
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_PREFIX})
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}ConfigVersion.cmake)
 endmacro()
 
@@ -2544,7 +2554,7 @@ list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake/modules)
 list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake)
 include(${CMAKE_PROJECT_NAME}PlatformConfig)
 ")
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION .)
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION ${CMAKE_INSTALL_PREFIX})
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}Config.cmake)
 endmacro()
 
@@ -2579,8 +2589,8 @@ set(${CMAKE_PROJECT_NAME}_LIBRARY_DIRS \${_dir}/lib)
 
 set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_dir}/bin \${_dir}/scripts)
 set(${CMAKE_PROJECT_NAME}_PYTHON_PATH \${_dir}/python)
-set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_dir}/conf)
-set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/auxdir)
+set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_dir}/${CONF_DIR_NAME})
+set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/${AUX_DIR_NAME})
 
 set(${CMAKE_PROJECT_NAME}_COMPONENT_LIBRARIES ${component_libraries})
 set(${CMAKE_PROJECT_NAME}_LINKER_LIBRARIES ${linker_libraries})
@@ -2648,8 +2658,6 @@ macro(_env_conf_pop_instruction instr lst)
     list(GET ${lst} 0 1 2 ${instr})
     list(REMOVE_AT ${lst} 0 1 2)
   endif()
-  #message(STATUS "_env_conf_pop_instruction ${instr} => ${${instr}}")
-  #message(STATUS "_env_conf_pop_instruction ${lst} => ${${lst}}")
 endmacro()
 
 #-------------------------------------------------------------------------------
