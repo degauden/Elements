@@ -93,10 +93,17 @@ endfunction()
 # Get system compiler.
 function(sgs_find_host_compiler)
   if(NOT SGS_HOST_COMP OR NOT SGS_HOST_COMPVERS)
-    find_program(SGS_HOST_C_COMPILER   NAMES gcc cc cl clang icc bcc xlc
-                 DOC "Host C compiler")
-    find_program(SGS_HOST_CXX_COMPILER NAMES c++ g++ cl clang++ icpc CC aCC bcc xlC
-                 DOC "Host C++ compiler")
+    if(APPLE)
+      find_program(SGS_HOST_C_COMPILER   NAMES clang cc gcc cl clang icc bcc xlc
+                   DOC "Host C compiler")
+      find_program(SGS_HOST_CXX_COMPILER NAMES clang++ c++ g++ cl clang++ icpc CC aCC bcc xlC
+                   DOC "Host C++ compiler")
+    else()
+      find_program(SGS_HOST_C_COMPILER   NAMES cc gcc cl clang icc bcc xlc
+                   DOC "Host C compiler")
+      find_program(SGS_HOST_CXX_COMPILER NAMES c++ g++ cl clang++ icpc CC aCC bcc xlC
+                   DOC "Host C++ compiler")
+    endif()
     mark_as_advanced(SGS_HOST_C_COMPILER SGS_HOST_CXX_COMPILER)
     if(SGS_HOST_C_COMPILER MATCHES /gcc)
       if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
