@@ -94,12 +94,12 @@ endfunction()
 function(sgs_find_host_compiler)
   if(NOT SGS_HOST_COMP OR NOT SGS_HOST_COMPVERS)
     if(APPLE)
-      find_program(SGS_HOST_C_COMPILER   NAMES clang cc gcc cl clang icc bcc xlc
+      find_program(SGS_HOST_C_COMPILER   NAMES clang gcc cc cl clang icc bcc xlc
                    DOC "Host C compiler")
       find_program(SGS_HOST_CXX_COMPILER NAMES clang++ c++ g++ cl clang++ icpc CC aCC bcc xlC
                    DOC "Host C++ compiler")
     else()
-      find_program(SGS_HOST_C_COMPILER   NAMES cc gcc cl clang icc bcc xlc
+      find_program(SGS_HOST_C_COMPILER   NAMES gcc cc cl clang icc bcc xlc
                    DOC "Host C compiler")
       find_program(SGS_HOST_CXX_COMPILER NAMES c++ g++ cl clang++ icpc CC aCC bcc xlC
                    DOC "Host C++ compiler")
