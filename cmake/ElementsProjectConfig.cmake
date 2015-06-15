@@ -218,13 +218,18 @@ macro(elements_project project version)
 
   # List of all known packages, including those exported by other projects
   set(known_packages ${packages} ${override_subdirs})
-  #message(STATUS "known_packages (initial) ${known_packages}")
 
   # paths where to locate scripts and executables
-  # Note: it's a bit a duplicate of the one used in elements_external_project_environment
-  #       but we need it here because the other one is meant to include also
-  #       the external libraries required by the subdirectories.
-  set(binary_paths $ENV{CMAKE_PREFIX_PATH}/scripts)
+  set(binary_paths)
+  foreach(modp ${CMAKE_MODULE_PATH})
+    debug_print_var(modp)
+    if(EXISTS ${modp}/scripts)
+      set(binary_paths ${binary_paths} ${modp}/scripts)
+    endif()
+  endforeach()
+
+  list(REMOVE_DUPLICATES binary_paths)
+
 
   # environment description
   set(project_environment)
@@ -270,7 +275,7 @@ macro(elements_project project version)
 
   #--- commands required to build cached variable
   # (python scripts are located as such but run through python)
-  set(binary_paths ${CMAKE_SOURCE_DIR}/cmake/scripts ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/ElementsPolicy/scripts ${CMAKE_SOURCE_DIR}/ElementsKernel/scripts ${CMAKE_SOURCE_DIR}/Elements/scripts ${binary_paths})
+  set(binary_paths ${CMAKE_SOURCE_DIR}/cmake/scripts ${binary_paths})
 
   find_program(env_cmd env.py HINTS ${binary_paths})
   set(env_cmd ${PYTHON_EXECUTABLE} ${env_cmd})
