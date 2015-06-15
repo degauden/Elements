@@ -44,8 +44,6 @@ endif()
 
 include(ElementsUtils)
 
-
-
 #-------------------------------------------------------------------------------
 # Basic configuration
 #-------------------------------------------------------------------------------
@@ -242,7 +240,6 @@ macro(elements_project project version)
   if(used_elements_projects)
     list(REMOVE_DUPLICATES used_elements_projects)
   endif()
-  #message(STATUS "used_elements_projects -> ${used_elements_projects}")
 
   if(NOT PROJECT_DESCRIPTION)
     set(PROJECT_DESCRIPTION "Please provide a description of the project.")
@@ -820,6 +817,14 @@ macro(elements_project project version)
     )
 
     if (RPMBUILD_FOUND)
+
+
+      get_rpm_dep_list("${PROJECT_USE}" "debuginfo" RPM_DEBUGINFO_DEP_LIST)
+
+      get_rpm_dep_list("${PROJECT_USE}" "devel" RPM_DEVEL_DEP_LIST)
+
+      get_rpm_dep_list("${PROJECT_USE}" "" RPM_DEP_LIST)
+
 
       find_file(spec_file_template
                 NAMES Elements.spec.in
