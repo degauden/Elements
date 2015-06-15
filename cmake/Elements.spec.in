@@ -61,9 +61,21 @@ else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
+toolchain_name=ElementsToolChain.cmake
+if [[ -f "${PWD}/cmake/${toolchain_name}" ]]; then
+  toolchain_file=${PWD}/cmake/${toolchain_name}
+else
+  if [[ -f "/usr/share/EuclidEnv/cmake/${toolchain_name}" ]]; then
+    toolchain_file=/usr/share/EuclidEnv/cmake/${toolchain_name}
+  fi
+fi
 %__mkdir -p %{build_dir_name}
 cd %{build_dir_name}
-%cmake @CPACK_EXTRA_CMAKEFLAGS@ ../
+if [[ -z "${toolchain_file}" ]]; then
+  %cmake @CPACK_EXTRA_CMAKEFLAGS@ ../
+else
+  %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} ../
+fi
 %__make VERBOSE=1 %{?_smp_mflags} all
 
 %install
