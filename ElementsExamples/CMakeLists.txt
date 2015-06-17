@@ -69,7 +69,8 @@ elements_add_unit_test(OtherClassExample tests/src/CppUnit/ClassExample_test.cpp
 elements_add_unit_test(OtherClassExampleWithMain tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
                        EXECUTABLE OtherClassExampleWithMain_test
                        INCLUDE_DIRS CppUnit ElementsExamples
-                       LINK_LIBRARIES CppUnit ElementsExamples)
+                       LINK_LIBRARIES CppUnit ElementsExamples
+                       LABELS CustomLabel)
 endif()
 
 
@@ -82,7 +83,7 @@ elements_install_python_modules()
 elements_install_scripts()
 
 
-elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test)
+elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test LABELS CustomLabel)
 elements_add_test(ScriptThatFails COMMAND ScriptThatFails_test FAILS)
 elements_add_test(ScriptThatGivesOutput COMMAND ScriptThatGivesOutput_test PASSREGEX ".*good")
 elements_add_test(ScriptThatGivesError COMMAND ScriptThatGivesError_test FAILREGEX ".*bad" FAILS)
