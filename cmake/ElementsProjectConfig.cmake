@@ -2029,7 +2029,7 @@ endfunction()
 function(elements_add_unit_test name)
   if(ELEMENTS_BUILD_TESTS)
 
-    CMAKE_PARSE_ARGUMENTS(${name}_UNIT_TEST "" "EXECUTABLE;TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT" ${ARGN})
+    CMAKE_PARSE_ARGUMENTS(${name}_UNIT_TEST "" "EXECUTABLE;TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT;LABELS" ${ARGN})
 
     elements_common_add_build(${${name}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
@@ -2108,6 +2108,10 @@ function(elements_add_unit_test name)
       set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${${name}_UNIT_TEST_TYPE})
     endif()
 
+    foreach(t ${${name}_UNIT_TEST_LABELS})
+      set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${t})
+    endforeach()
+
     if(${name}_UNIT_TEST_TIMEOUT)
       set_property(TEST ${package}.${name} PROPERTY TIMEOUT ${${name}_UNIT_TEST_TIMEOUT})
     endif()
@@ -2143,7 +2147,7 @@ endfunction()
 #
 #-------------------------------------------------------------------------------
 function(elements_add_test name)
-  CMAKE_PARSE_ARGUMENTS(ARG "FAILS" "TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT;FRAMEWORK;COMMAND;DEPENDS;PASSREGEX;FAILREGEX" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "FAILS" "TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT;FRAMEWORK;COMMAND;DEPENDS;PASSREGEX;FAILREGEX;LABELS" ${ARGN})
   elements_get_package_name(package)
 
   if(ARG_FRAMEWORK)
@@ -2185,6 +2189,10 @@ function(elements_add_test name)
            ${cmdline})
 
   set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${package})
+
+  foreach(t ${ARG_LABELS})
+    set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${t})
+  endforeach()
 
 
   if(ARG_DEPENDS)
