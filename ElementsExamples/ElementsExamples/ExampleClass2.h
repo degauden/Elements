@@ -11,7 +11,7 @@
 
 namespace Elements {
 
-class ExampleClass2{
+class ELEMENTS_API ExampleClass2{
 public:
   template<typename RedshifCalculator>
   ExampleClass2(const RedshifCalculator& redshift_calculator,
@@ -23,7 +23,7 @@ public:
 
   virtual ~ExampleClass2() = default;
 
-  ELEMENTS_API const std::map<double,std::pair<double,double>> & getRedshiftedMap() const ;
+  const std::map<double,std::pair<double,double>> & getRedshiftedMap() const ;
 
 private:
   std::map<double,std::pair<double,double>> m_redshifted_map {};
