@@ -220,7 +220,6 @@ macro(elements_project project version)
   # paths where to locate scripts and executables
   set(binary_paths)
   foreach(modp ${CMAKE_MODULE_PATH})
-    debug_print_var(modp)
     if(EXISTS ${modp}/scripts)
       set(binary_paths ${binary_paths} ${modp}/scripts)
     endif()
