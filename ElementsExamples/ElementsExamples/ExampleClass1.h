@@ -8,13 +8,13 @@
 
 namespace Elements {
 
-class ExampleClass1{
+class ELEMENTS_API ExampleClass1{
 public:
-  ELEMENTS_API ExampleClass1(double flux, double lambda);
+  ExampleClass1(double flux, double lambda);
 
   virtual ~ExampleClass1() = default;
 
-  ELEMENTS_API virtual std::pair<double,double> getRedshiftedValue(double z) const;
+  virtual std::pair<double,double> getRedshiftedValue(double z) const;
 
 private:
   double m_flux;
