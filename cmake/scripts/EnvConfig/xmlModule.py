@@ -8,6 +8,7 @@ from xml.dom import minidom
 import logging
 from cPickle import load, dump
 from hashlib import md5  # pylint: disable=E0611
+import os
 
 
 class XMLFile(object):
@@ -15,7 +16,8 @@ class XMLFile(object):
     '''Takes care of XML file operations such as reading and writing.'''
 
     def __init__(self):
-        self.xmlResult = '<?xml version="1.0" encoding="UTF-8"?><env:config xmlns:env="EnvSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="EnvSchema ./EnvSchema.xsd ">\n'
+        self.xmlResult = '<?xml version="1.0" encoding="UTF-8"?><env:config xmlns:env="EnvSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="EnvSchema ./EnvSchema.xsd ">' + \
+            os.linesep
         self.declaredVars = []
         self.log = logging.getLogger('XMLFile')
 
@@ -102,7 +104,8 @@ class XMLFile(object):
 
     def resetWriter(self):
         '''resets the buffer of writer'''
-        self.xmlResult = '<?xml version="1.0" encoding="UTF-8"?><env:config xmlns:env="EnvSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="EnvSchema ./EnvSchema.xsd ">\n'
+        self.xmlResult = '<?xml version="1.0" encoding="UTF-8"?><env:config xmlns:env="EnvSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="EnvSchema ./EnvSchema.xsd ">' + \
+            os.linesep
         self.declaredVars = []
 
     def writeToFile(self, outputFile=None):
@@ -121,13 +124,15 @@ class XMLFile(object):
         '''Writes a action to a file. Declare undeclared elements (non-local list is default type).'''
         if action == 'declare':
             self.xmlResult += '<env:declare variable="' + varName + '" type="' + \
-                vartype.lower() + '" local="' + (str(local)).lower() + '" />\n'
+                vartype.lower() + '" local="' + (str(local)).lower() + \
+                '" />' + os.linesep
             self.declaredVars.append(varName)
             return
 
         if varName not in self.declaredVars:
             self.xmlResult += '<env:declare variable="' + varName + '" type="' + \
-                vartype + '" local="' + (str(local)).lower() + '" />\n'
+                vartype + '" local="' + \
+                (str(local)).lower() + '" />' + os.linesep
             self.declaredVars.append(varName)
         self.xmlResult += '<env:' + action + ' variable="' + \
-            varName + '">' + value + '</env:' + action + '>\n'
+            varName + '">' + value + '</env:' + action + '>' + os.linesep

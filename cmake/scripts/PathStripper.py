@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from sys import stdout
-from os import pathsep, listdir, environ, fdopen
+from os import pathsep, listdir, environ, fdopen, linesep
 from os.path import exists, isdir, realpath
 from optparse import OptionParser, OptionValueError
 from tempfile import mkstemp
@@ -26,11 +26,11 @@ def CleanVariable(varname, shell, out):
     if environ.has_key(varname):
         pth = StripPath(environ[varname])
         if shell == "csh" or shell.find("csh") != -1:
-            out.write("setenv %s %s\n" % (varname, pth))
+            out.write("setenv %s %s" % (varname, pth) + linesep)
         elif shell == "sh" or shell.find("sh") != -1:
-            out.write("export %s=%s\n" % (varname, pth))
+            out.write("export %s=%s" % (varname, pth) + linesep)
         elif shell == "bat":
-            out.write("set %s=%s\n" % (varname, pth))
+            out.write("set %s=%s" % (varname, pth) + linesep)
 
 
 def _check_output_options_cb(option, opt_str, value, parser):
