@@ -373,3 +373,32 @@ function(check_project_version_from_file config_file project version match_found
   set(${match_found} ${has_found} PARENT_SCOPE)
 
 endfunction()
+
+
+function(get_rpm_dep_list project_use package_suffix output_var)
+
+  set(output_str_list)
+
+  set(ARGN_ ${project_use})
+
+  while(ARGN_)
+    list(LENGTH ARGN_ len)
+    if(len LESS 2)
+      message(FATAL_ERROR "Wrong number of arguments to USE option")
+    endif()
+    list(GET ARGN_ 0 other_project)
+    list(GET ARGN_ 1 other_project_version)
+
+
+    if(package_suffix)
+      set(output_str_list "${output_str_list}, ${other_project}-${package_suffix} = ${other_project_version}")
+    else()
+      set(output_str_list "${output_str_list}, ${other_project} = ${other_project_version}")
+    endif()
+
+    list(REMOVE_AT ARGN_ 0 1)
+  endwhile()
+
+  set(${output_var} ${output_str_list} PARENT_SCOPE)
+
+endfunction()

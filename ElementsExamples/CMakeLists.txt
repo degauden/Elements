@@ -5,6 +5,7 @@ elements_depends_on_subdirs(ElementsKernel)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread system program_options unit_test_framework)
 find_package(CppUnit)
+find_package(GMock)
 
 #===== Libraries ===============================================================
 elements_add_library(ElementsExamples src/Lib/*.cpp
@@ -69,9 +70,23 @@ elements_add_unit_test(OtherClassExample tests/src/CppUnit/ClassExample_test.cpp
 elements_add_unit_test(OtherClassExampleWithMain tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
                        EXECUTABLE OtherClassExampleWithMain_test
                        INCLUDE_DIRS CppUnit ElementsExamples
-                       LINK_LIBRARIES CppUnit ElementsExamples)
+                       LINK_LIBRARIES CppUnit ElementsExamples
+                       LABELS CustomLabel)
 endif()
 
+#===== Tests using GMock =======================================================
+
+elements_add_unit_test(ExampleClass1 tests/src/GMock/ExampleClass1_test.cpp
+                       EXECUTABLE ExampleClass1_test
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+
+if(GMOCK_FOUND)
+  elements_add_unit_test(ExampleClass2 tests/src/GMock/ExampleClass2_test.cpp
+                         EXECUTABLE ExampleClass2_test
+                         LINK_LIBRARIES GMock ElementsExamples TYPE Boost
+                         INCLUDE_DIRS GMock ElementsExamples
+                         LABELS GMock)
+endif(GMOCK_FOUND)
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
@@ -82,7 +97,7 @@ elements_install_python_modules()
 elements_install_scripts()
 
 
-elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test)
+elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test LABELS CustomLabel)
 elements_add_test(ScriptThatFails COMMAND ScriptThatFails_test FAILS)
 elements_add_test(ScriptThatGivesOutput COMMAND ScriptThatGivesOutput_test PASSREGEX ".*good")
 elements_add_test(ScriptThatGivesError COMMAND ScriptThatGivesError_test FAILREGEX ".*bad" FAILS)
@@ -90,3 +105,4 @@ elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError_test F
 
 elements_add_test(ProgramExample COMMAND ElementsProgramExample)
 elements_add_test(SimpleProgramExample COMMAND ElementsSimpleProgramExample)
+
