@@ -44,8 +44,6 @@ endif()
 
 include(ElementsUtils)
 
-
-
 #-------------------------------------------------------------------------------
 # Basic configuration
 #-------------------------------------------------------------------------------
@@ -218,13 +216,17 @@ macro(elements_project project version)
 
   # List of all known packages, including those exported by other projects
   set(known_packages ${packages} ${override_subdirs})
-  #message(STATUS "known_packages (initial) ${known_packages}")
 
   # paths where to locate scripts and executables
-  # Note: it's a bit a duplicate of the one used in elements_external_project_environment
-  #       but we need it here because the other one is meant to include also
-  #       the external libraries required by the subdirectories.
-  set(binary_paths $ENV{CMAKE_PREFIX_PATH}/scripts)
+  set(binary_paths)
+  foreach(modp ${CMAKE_MODULE_PATH})
+    if(EXISTS ${modp}/scripts)
+      set(binary_paths ${binary_paths} ${modp}/scripts)
+    endif()
+  endforeach()
+
+  list(REMOVE_DUPLICATES binary_paths)
+
 
   # environment description
   set(project_environment)
@@ -237,7 +239,6 @@ macro(elements_project project version)
   if(used_elements_projects)
     list(REMOVE_DUPLICATES used_elements_projects)
   endif()
-  #message(STATUS "used_elements_projects -> ${used_elements_projects}")
 
   if(NOT PROJECT_DESCRIPTION)
     set(PROJECT_DESCRIPTION "Please provide a description of the project.")
@@ -270,7 +271,7 @@ macro(elements_project project version)
 
   #--- commands required to build cached variable
   # (python scripts are located as such but run through python)
-  set(binary_paths ${CMAKE_SOURCE_DIR}/cmake/scripts ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/ElementsPolicy/scripts ${CMAKE_SOURCE_DIR}/ElementsKernel/scripts ${CMAKE_SOURCE_DIR}/Elements/scripts ${binary_paths})
+  set(binary_paths ${CMAKE_SOURCE_DIR}/cmake/scripts ${binary_paths})
 
   find_program(env_cmd env.py HINTS ${binary_paths})
   set(env_cmd ${PYTHON_EXECUTABLE} ${env_cmd})
@@ -815,6 +816,14 @@ macro(elements_project project version)
     )
 
     if (RPMBUILD_FOUND)
+
+
+      get_rpm_dep_list("${PROJECT_USE}" "debuginfo" RPM_DEBUGINFO_DEP_LIST)
+
+      get_rpm_dep_list("${PROJECT_USE}" "devel" RPM_DEVEL_DEP_LIST)
+
+      get_rpm_dep_list("${PROJECT_USE}" "" RPM_DEP_LIST)
+
 
       find_file(spec_file_template
                 NAMES Elements.spec.in
@@ -2019,7 +2028,7 @@ endfunction()
 function(elements_add_unit_test name)
   if(ELEMENTS_BUILD_TESTS)
 
-    CMAKE_PARSE_ARGUMENTS(${name}_UNIT_TEST "" "EXECUTABLE;TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT" ${ARGN})
+    CMAKE_PARSE_ARGUMENTS(${name}_UNIT_TEST "" "EXECUTABLE;TYPE;TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT;LABELS" ${ARGN})
 
     elements_common_add_build(${${name}_UNIT_TEST_UNPARSED_ARGUMENTS})
 
@@ -2098,6 +2107,10 @@ function(elements_add_unit_test name)
       set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${${name}_UNIT_TEST_TYPE})
     endif()
 
+    foreach(t ${${name}_UNIT_TEST_LABELS})
+      set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${t})
+    endforeach()
+
     if(${name}_UNIT_TEST_TIMEOUT)
       set_property(TEST ${package}.${name} PROPERTY TIMEOUT ${${name}_UNIT_TEST_TIMEOUT})
     endif()
@@ -2133,7 +2146,7 @@ endfunction()
 #
 #-------------------------------------------------------------------------------
 function(elements_add_test name)
-  CMAKE_PARSE_ARGUMENTS(ARG "FAILS" "TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT;FRAMEWORK;COMMAND;DEPENDS;PASSREGEX;FAILREGEX" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "FAILS" "TIMEOUT;WORKING_DIRECTORY" "ENVIRONMENT;FRAMEWORK;COMMAND;DEPENDS;PASSREGEX;FAILREGEX;LABELS" ${ARGN})
   elements_get_package_name(package)
 
   if(ARG_FRAMEWORK)
@@ -2175,6 +2188,10 @@ function(elements_add_test name)
            ${cmdline})
 
   set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${package})
+
+  foreach(t ${ARG_LABELS})
+    set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${t})
+  endforeach()
 
 
   if(ARG_DEPENDS)
