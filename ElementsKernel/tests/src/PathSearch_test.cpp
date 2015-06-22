@@ -215,17 +215,10 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_Env_Variable_Undefine, Path_Fixt
   unsetenv(m_env_variable_name.c_str());
   string file { "MockFile_replicate.conf" };
 
-  bool exception = false;
-   try {
-     vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
+  vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
           m_env_variable_name);
-
-   } catch (const Elements::Exception & e) {
-     string exception_str = e.what();
-     exception =
-     (exception_str.find("Environment variable:") != string::npos);
-   }
-   BOOST_CHECK(exception);
+  
+  BOOST_CHECK(actualFullPathVector.empty());
 }
 
 BOOST_AUTO_TEST_SUITE_END ()
