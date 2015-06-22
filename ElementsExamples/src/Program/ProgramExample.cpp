@@ -56,8 +56,8 @@ public:
      */
     po::options_description config_file_options("Configuration options");
     config_file_options.add_options()
-    // A example string option
-    ("string-value", po::value<string>()->default_value(string { }),
+    // A example string option, which is required (must be given in conf file or command line)
+    ("string-value", po::value<string>()->required(),
         "A string option")
     // A example long int option
     ("long-long-value", po::value<int64_t>()->default_value(int64_t { }),
