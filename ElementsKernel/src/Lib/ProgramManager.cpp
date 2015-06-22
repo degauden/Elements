@@ -146,7 +146,6 @@ const po::variables_map ProgramManager::getProgramOptions(
   
   // Parse from the command line the rest of the options. Here we also handle
   // the positional arguments.
-  variables_map.clear();
   auto leftover_cmd_options = po::collect_unrecognized(cmd_parsed_options.options,
                                                        po::include_positional);
   po::store(po::command_line_parser(leftover_cmd_options)
