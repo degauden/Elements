@@ -10,6 +10,7 @@
 
 #include <string>
 #include <utility>
+#include <map>
 
 #include <boost/program_options.hpp>
 
@@ -84,7 +85,6 @@ public:
  * @example ElementsExamples/src/Program/SimpleProgramExample.cpp
  * @include ElementsExamples/src/Program/ProgramExample.cpp
  */
-
 }
 
 #endif /* ELEMENTSPROGRAM_H_ */
