@@ -6,6 +6,7 @@ elements_depends_on_subdirs(ElementsKernel)
 find_package(Boost REQUIRED COMPONENTS filesystem thread system program_options unit_test_framework)
 find_package(CppUnit)
 find_package(GMock)
+find_package(GTest)
 
 #===== Libraries ===============================================================
 elements_add_library(ElementsExamples src/Lib/*.cpp
@@ -80,13 +81,13 @@ elements_add_unit_test(ExampleClass1 tests/src/GMock/ExampleClass1_test.cpp
                        EXECUTABLE ExampleClass1_test
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
-if(GMOCK_FOUND)
+if(GMOCK_FOUND AND GTEST_FOUND)
   elements_add_unit_test(ExampleClass2 tests/src/GMock/ExampleClass2_test.cpp
                          EXECUTABLE ExampleClass2_test
-                         LINK_LIBRARIES GMock ElementsExamples TYPE Boost
-                         INCLUDE_DIRS GMock ElementsExamples
+                         LINK_LIBRARIES GMock GTest ElementsExamples TYPE Boost
+                         INCLUDE_DIRS GMock GTest ElementsExamples
                          LABELS GMock)
-endif(GMOCK_FOUND)
+endif()
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
