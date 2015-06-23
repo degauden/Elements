@@ -4,15 +4,15 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef ENABLEGMOCK_H
-#define ENABLEGMOCK_H
+#ifndef ELEMENTSKERNEL_ENABLEGMOCK_H
+#define ELEMENTSKERNEL_ENABLEGMOCK_H
 
 #include <gmock/gmock.h>
 #include <boost/test/unit_test.hpp>
 
-#include "ElementsKernel/Export.h" // ELEMENTS_API
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
 
-class BoostTestAdapter : public testing::EmptyTestEventListener {
+class BoostTestAdapter: public testing::EmptyTestEventListener {
 
   virtual void OnTestPartResult(const testing::TestPartResult& testPartResult) {
     if (testPartResult.failed()) {
@@ -28,8 +28,8 @@ public:
 
   GoogleMockSetupFixture() {
     testing::InitGoogleMock(
-                            &boost::unit_test::framework::master_test_suite().argc,
-                            boost::unit_test::framework::master_test_suite().argv);
+        &boost::unit_test::framework::master_test_suite().argc,
+        boost::unit_test::framework::master_test_suite().argv);
     auto& listeners = testing::UnitTest::GetInstance()->listeners();
     delete listeners.Release(listeners.default_result_printer());
     listeners.Append(new BoostTestAdapter);
@@ -39,5 +39,4 @@ public:
 
 BOOST_GLOBAL_FIXTURE(GoogleMockSetupFixture)
 
-#endif	/* ENABLEGMOCK_H */
-
+#endif /* ELEMENTSKERNEL_ENABLEGMOCK_H */
