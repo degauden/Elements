@@ -239,7 +239,7 @@ void ProgramManager::logAllOptions(string program_name) {
     } else {
       log_message << "Option " << iter->first << " of type "
           << iter->second.value().type().name() << " not supported in logging !"
-          << "\n";
+          << std::endl;
     }
     // write the log message
     logger.info(log_message.str());
