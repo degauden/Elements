@@ -17,6 +17,6 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GMock  DEFAULT_MSG
                                   GMOCK_LIBRARY GMOCK_INCLUDE_DIR)
 
-mark_as_advanced(GMOCK_INCLUDE_DIR GMOCK_LIBRARY )
+mark_as_advanced(GMOCK_FOUND GMOCK_INCLUDE_DIR GMOCK_LIBRARY)
 
 endif()

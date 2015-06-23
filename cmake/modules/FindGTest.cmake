@@ -15,7 +15,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GTest  DEFAULT_MSG
                                   GTEST_LIBRARY GTEST_INCLUDE_DIR)
 
-mark_as_advanced(GTEST_INCLUDE_DIR GTEST_LIBRARY )
+mark_as_advanced(GTEST_FOUND GTEST_INCLUDE_DIR GTEST_LIBRARY )
 
 endif()
 
