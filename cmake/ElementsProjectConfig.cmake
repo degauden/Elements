@@ -2844,6 +2844,17 @@ macro(elements_external_project_environment)
     endif()
   endforeach()
 
+  # Remove system paths from the binary_path
+  #list(REMOVE_ITEM binary_path /usr/bin /bin)
+  set(old_binary_path ${binary_path})
+  set(binary_path)
+  foreach(d ${old_binary_path})
+    if(NOT d MATCHES "^(/usr|/usr/local)?/bin")
+      set(binary_path ${binary_path} ${d})
+    endif()
+  endforeach()
+
+
   foreach(var library_path python_path binary_path conf_path aux_path)
     if(${var})
       list(REMOVE_DUPLICATES ${var})
