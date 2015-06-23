@@ -286,25 +286,25 @@ class Environment(object):
         '''Creates an output file with a specified name to be used for setting variables by sourcing this file'''
         f = open(fileName, 'w')
         if shell == 'sh':
-            f.write('#!/bin/bash\n')
+            f.write('#!/bin/bash' + os.linesep)
             for variable in self.variables:
                 if not self[variable].local:
                     f.write(
-                        'export ' + variable + '=' + self[variable].value(True, os.pathsep) + '\n')
+                        'export ' + variable + '=' + self[variable].value(True, os.pathsep) + os.linesep)
         elif shell == 'csh':
-            f.write('#!/bin/csh\n')
+            f.write('#!/bin/csh' + os.linesep)
             for variable in self.variables:
                 if not self[variable].local:
                     f.write(
-                        'setenv ' + variable + ' ' + self[variable].value(True, os.pathsep) + '\n')
+                        'setenv ' + variable + ' ' + self[variable].value(True, os.pathsep) + os.linesep)
         else:
             f.write('')
             f.write('REM This is an enviroment settings file generated on ' +
-                    strftime("%a, %d %b %Y %H:%M:%S\n", gmtime()))
+                    strftime("%a, %d %b %Y %H:%M:%S", gmtime()) + os.linesep)
             for variable in self.variables:
                 if not self[variable].local:
                     f.write(
-                        'set ' + variable + '=' + self[variable].value(True, os.pathsep) + '\n')
+                        'set ' + variable + '=' + self[variable].value(True, os.pathsep) + os.linesep)
 
         f.close()
 

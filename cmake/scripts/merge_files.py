@@ -60,15 +60,15 @@ def mergeFiles(fragFileNames, mergedFileName, commentChar, doMerge, ignoreMissin
                     continue
                 # I do not want to add 2 empty lines at the beginning of a file
                 if newLines:
-                    newLines.append('\n\n')
+                    newLines.append(os.linesep + os.linesep)
                 bf = os.path.basename(f)
-                newLines.append(startMark + bf + '\n')
-                newLines.append(timeMark + '\n')
+                newLines.append(startMark + bf + os.linesep)
+                newLines.append(timeMark + os.linesep)
                 fileData = open(f, 'r').read()
                 newLines.append(fileData)
-                if fileData and fileData[-1] != '\n':
-                    newLines.append('\n')
-                newLines.append(endMark + bf + '\n')
+                if fileData and fileData[-1] != os.linesep:
+                    newLines.append(os.linesep)
+                newLines.append(endMark + bf + os.linesep)
 
         mergedFile.seek(0)
         mergedFile.truncate(0)
