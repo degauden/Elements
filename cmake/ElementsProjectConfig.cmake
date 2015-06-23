@@ -44,6 +44,8 @@ endif()
 
 include(ElementsUtils)
 
+debug_message("    <---- Elements Main config: ${CMAKE_CURRENT_LIST_FILE} ---->   ")
+
 #-------------------------------------------------------------------------------
 # Basic configuration
 #-------------------------------------------------------------------------------
