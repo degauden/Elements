@@ -166,7 +166,7 @@ const po::variables_map ProgramManager::getProgramOptions(
   // map, so we can get any messages for missing parameters
   po::notify(variables_map);
 
-  // return the variable_map load with all options
+  // return the variable_map loaded with all options
   return variables_map;
 }
 
