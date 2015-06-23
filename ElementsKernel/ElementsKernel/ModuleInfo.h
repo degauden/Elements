@@ -38,12 +38,11 @@ public:
   ModuleInfo();
   ModuleInfo(void *);
   const std::string name() const;
-  operator const Dl_info&() const ;
+  operator const Dl_info&() const;
   bool isEmpty() const;
 private:
   std::unique_ptr<Dl_info> m_dlinfo;
 };
-
 
 enum class ModuleType {
   UNKNOWN, SHAREDLIB, EXECUTABLE
