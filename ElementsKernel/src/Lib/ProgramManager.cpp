@@ -74,7 +74,7 @@ const po::variables_map ProgramManager::getProgramOptions(
   po::variables_map variables_map { };
 
   // default value for default_log_level option
-  int default_log_level = 400;
+  std::string default_log_level = "INFO";
 
   // Get defaults
   fs::path default_config_file = getDefaultConfigFile(getProgramName());
@@ -91,8 +91,8 @@ const po::variables_map ProgramManager::getProgramOptions(
   // Define the options which can be given both at command line and conf file
   po::options_description cmd_and_file_generic_options {};
   cmd_and_file_generic_options.add_options()
-      ("log-level", po::value<int>()->default_value(default_log_level),
-         "Log level: NONE=0, FATAL=100, ERROR=200, WARN=300, INFO=400 (default), DEBUG=500")
+      ("log-level", po::value<std::string>()->default_value(default_log_level),
+         "Log level: FATAL, ERROR, WARN, INFO (default), DEBUG")
       ("log-file",
          po::value<fs::path>(),"Name of a log file");
   
@@ -260,9 +260,9 @@ void ProgramManager::setup(int argc, char* argv[]) {
   m_variables_map = getProgramOptions(argc, argv);
 
   // get the program options related to the logging
-  Logging::Level logging_level;
+  std::string logging_level;
   if (m_variables_map.count("log-level")) {
-    logging_level = (Logging::Level) m_variables_map["log-level"].as<int>();
+    logging_level = m_variables_map["log-level"].as<string>();
   } else {
      throw Exception("Required option log-level is not provided!", ExitCode::CONFIG);
   }

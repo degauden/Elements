@@ -18,12 +18,21 @@
 #include <log4cpp/Priority.hh>          // for Priority, Priority::::INFO, etc
 #include <memory>                       // for unique_ptr
 #include <string>                       // for char_traits, string
+#include <boost/algorithm/string.hpp>
 
 #include "ElementsKernel/Exception.h"   // for Exception
 
 
 
 namespace Elements {
+
+static const std::map<std::string, const int> LOG_LEVEL {{"FATAL", log4cpp::Priority::FATAL},
+                                                         {"ERROR", log4cpp::Priority::ERROR},
+                                                         {"WARN", log4cpp::Priority::WARN},
+                                                         {"INFO", log4cpp::Priority::INFO},
+                                                         {"DEBUG", log4cpp::Priority::DEBUG}};
+
+
 
 std::unique_ptr<log4cpp::Layout> getLogLayout() {
   log4cpp::PatternLayout* layout = new log4cpp::PatternLayout {};
@@ -46,28 +55,16 @@ Logging Logging::getLogger(const std::string& name) {
   return Logging {log4cpp::Category::getInstance(name)};
 }
 
-void Logging::setLevel(Logging::Level level) {
-  switch (level) {
-  case Logging::Level::DEBUG:
-    log4cpp::Category::setRootPriority(log4cpp::Priority::DEBUG);
-    break;
-  case Logging::Level::INFO:
-    log4cpp::Category::setRootPriority(log4cpp::Priority::INFO);
-    break;
-  case Logging::Level::WARN:
-    log4cpp::Category::setRootPriority(log4cpp::Priority::WARN);
-    break;
-  case Logging::Level::ERROR:
-    log4cpp::Category::setRootPriority(log4cpp::Priority::ERROR);
-    break;
-  case Logging::Level::FATAL:
-    log4cpp::Category::setRootPriority(log4cpp::Priority::FATAL);
-    break;
-  default:
+
+void Logging::setLevel(std::string level) {
+  boost::to_upper(level);
+  auto it = LOG_LEVEL.find(level);
+  if ( it != LOG_LEVEL.end() ) {
+    log4cpp::Category::setRootPriority(it->second);
+  } else {
     std::stringstream error_buffer;
     error_buffer << "Unrecognized logging level: " << level << std::endl; ;
     throw Exception(error_buffer.str());
-    break;
   }
 }
 
