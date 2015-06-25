@@ -20,6 +20,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <string>                       // for string
 
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
 #include <errno.h>                      // for errno
@@ -327,16 +328,15 @@ const string& machineType() {
 }
 
 /// User login name
-const string& accountName() {
-  static string account = "";
-  if (account == "") {
-    const char* acct = ::getlogin();
-    if (0 == acct)
-      acct = ::getenv("LOGNAME");
-    if (0 == acct)
-      acct = ::getenv("USER");
-    account = (acct) ? acct : "Unknown";
-  }
+string accountName() {
+  string account = ::getlogin();
+    if (0 == account.size())
+      account = getEnv("LOGNAME");
+    if (0 == account.size())
+      account = getEnv("USER");
+    if (0 == account.size())
+      account = "Unknown";
+
   return account;
 }
 
@@ -394,6 +394,11 @@ string getEnv(const char* var) {
     return "UNKNOWN";
   }
 }
+
+string getEnv(const string& var) {
+  return getEnv(var.c_str());
+}
+
 
 /// get a particular env var, storing the value in the passed string (if set)
 bool getEnv(const char* var, string &value) {
@@ -528,11 +533,16 @@ int setEnv(const string &name, const string &value, int overwrite) {
   // UNIX version
   return value.empty() ?
   // remove if set to nothing (and return success)
-      ::unsetenv(name.c_str()), 0 :
+      unSetEnv(name), 0 :
       // set the value
       ::setenv(name.c_str(), value.c_str(), overwrite);
 
 }
+
+int unSetEnv(const string& name) {
+  return ::unsetenv(name.c_str());
+}
+
 
 } // namespace System
 } // namespace Elements

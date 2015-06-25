@@ -7,7 +7,6 @@
 
 #include "ElementsKernel/PathSearch.h"  // for SearchType, etc
 
-#include <cstdlib>                      // for getenv
 #include <ostream>                      // for operator<<, basic_ostream, etc
 #include <string>                       // for string, char_traits
 #include <vector>                       // for vector
@@ -98,7 +97,7 @@ vector<fs::path> pathSearchInEnvVariable(std::string file_name,
   // get the multiple path from the environment variable
   string multiple_path {};
   if (!System::getEnv(path_like_env_variable.c_str(), multiple_path)) {
-    logger.warn() << "Environment variable \"" << path_like_env_variable 
+    logger.warn() << "Environment variable \"" << path_like_env_variable
                   << "\" is not defined !";
   }
 
