@@ -18,7 +18,7 @@ set(ELEMENTS_HIDE_SYMBOLS ON
     FORCE)
 
 
-elements_project(Elements 3.6 DESCRIPTION "A C++ base framework for the Euclid Software.")
+elements_project(Elements 3.7 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
 
 # This test does not really fit in a subdirectory.
