@@ -26,6 +26,10 @@ static const double sqrt_of_two    = 1.41421356237309504880;
 /// @brief \f$\sqrt{\frac{\pi}{2}}\f$
 static const double sqrt_of_halfpi = 1.25331413731550025121;
 
+/// @brief The Euler-Mascheroni \f$\gamma\f$ constant
+static const double gamma          = 0.57721566490153286061;
+/// @brief The base of the natural logarithm \f$e\f$
+static const double e              = 2.71828182845904523536;
 
 }  // namespace Units
 }  // namespace Elements
