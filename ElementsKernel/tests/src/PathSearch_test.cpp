@@ -15,8 +15,12 @@ namespace fs = boost::filesystem;
 
 #include "ElementsKernel/PathSearch.h"
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/System.h"  // for getEnv
 
 using namespace std;
+using Elements::System::getEnv;
+using Elements::System::setEnv;
+
 
 //-----------------------------------------------------------------------------
 
@@ -28,11 +32,12 @@ using namespace std;
 
 struct Path_Fixture {
 
+
   string m_env_variable_name = "ELEMENTS_CONF_PATH";
   // store the original value of the environment variable to set it again correctly after the test
-  const char * m_tmp_char_ptr = ::getenv(m_env_variable_name.c_str());
+  const string m_tmp_char_ptr = getEnv(m_env_variable_name);
 
-  string m_root_path = ::getenv("ELEMENTSKERNELROOT");
+  string m_root_path = getEnv("ELEMENTSKERNELROOT");
   string m_string_full_path = m_root_path + "/tests/data/PathSearch/";
   fs::path m_full_path { m_string_full_path };
 
@@ -47,8 +52,8 @@ struct Path_Fixture {
   }
   ~Path_Fixture() {
     // teardown
-    if (m_tmp_char_ptr != nullptr) {
-      ::setenv(m_env_variable_name.c_str(), m_tmp_char_ptr, 1);
+    if (m_tmp_char_ptr.size() != 0) {
+      setEnv(m_env_variable_name, m_tmp_char_ptr, 1);
     }
   }
 };
@@ -133,7 +138,7 @@ BOOST_FIXTURE_TEST_CASE(duplicate_file_search, Path_Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_single_file, Path_Fixture) {
 
-  setenv(m_env_variable_name.c_str(), m_multiple_path.c_str(), 1);
+  setEnv(m_env_variable_name, m_multiple_path, 1);
   string file { "MockFile_in_ElementsKernel_up.conf" };
 
   vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
@@ -149,7 +154,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_single_file, Path_Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_multiple_file, Path_Fixture) {
 
-  setenv(m_env_variable_name.c_str(), m_multiple_path.c_str(), 1);
+  setEnv(m_env_variable_name, m_multiple_path, 1);
   string file { "MockFile_replicate.conf" };
 
   vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
@@ -180,7 +185,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_order, Path_Fixture) {
   // first order
   string multiple_path = "/opt/local/bin:" + m_full_path_1 + ":" + m_full_path_2
       + ":/bin";
-  setenv(m_env_variable_name.c_str(), multiple_path.c_str(), 1);
+  setEnv(m_env_variable_name, multiple_path, 1);
   string file_1 { "MockFile_replicate.conf" };
 
   vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file_1,
@@ -191,7 +196,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_order, Path_Fixture) {
 
   // Opposite order
   multiple_path = "/opt/local/bin:" + m_full_path_2 + ":" + m_full_path_1 + ":/bin";
-  setenv(m_env_variable_name.c_str(), multiple_path.c_str(), 1);
+  setEnv(m_env_variable_name, multiple_path, 1);
   string file_2 { "MockFile_replicate.conf" };
 
   actualFullPathVector = Elements::pathSearchInEnvVariable(file_2, m_env_variable_name);
@@ -201,7 +206,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_order, Path_Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_file_not_found, Path_Fixture) {
 
-  setenv(m_env_variable_name.c_str(), m_multiple_path.c_str(), 1);
+  setEnv(m_env_variable_name, m_multiple_path, 1);
   string file { "NonExistentFile.conf" };
 
   vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
@@ -212,12 +217,14 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_file_not_found, Path_Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_Env_Variable_Undefine, Path_Fixture) {
 
-  unsetenv(m_env_variable_name.c_str());
+  using Elements::System::unSetEnv;
+
+  unSetEnv(m_env_variable_name);
   string file { "MockFile_replicate.conf" };
 
   vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
           m_env_variable_name);
-  
+
   BOOST_CHECK(actualFullPathVector.empty());
 }
 

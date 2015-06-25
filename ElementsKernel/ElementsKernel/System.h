@@ -67,7 +67,7 @@ ELEMENTS_API const std::string& osVersion();
 /// Machine type
 ELEMENTS_API const std::string& machineType();
 /// User login name
-ELEMENTS_API const std::string& accountName();
+ELEMENTS_API std::string accountName();
 /// Number of arguments passed to the commandline
 ELEMENTS_API long numCmdLineArgs();
 /// Number of arguments passed to the commandline (==numCmdLineArgs()); just to match argv call...
@@ -78,6 +78,7 @@ ELEMENTS_API const std::vector<std::string> cmdLineArgs();
 ELEMENTS_API char** argv();
 ///get a particular environment variable (returning "UNKNOWN" if not set)
 ELEMENTS_API std::string getEnv(const char* var);
+ELEMENTS_API std::string getEnv(const std::string& var);
 /// get a particular environment variable, storing the value in the passed string if the
 /// variable is set. Returns true if the variable is set, false otherwise.
 ELEMENTS_API bool getEnv(const char* var, std::string &value);
@@ -93,6 +94,8 @@ ELEMENTS_API std::vector<std::string> getEnv();
 ///See man 3 setenv.
 ELEMENTS_API int setEnv(const std::string &name, const std::string &value,
     int overwrite = 1);
+/// Simple wrap around ::unsetenv for strings
+ELEMENTS_API int unSetEnv(const std::string& name);
 /// Check if an environment variable is set or not.
 ELEMENTS_API bool isEnvSet(const char* var);
 
