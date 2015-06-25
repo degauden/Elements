@@ -56,9 +56,17 @@ elements_add_unit_test(ThisModule tests/src/ThisModule_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #-----------------------
-# ThisModule_test
+# Storage_test
 elements_add_unit_test(Storage tests/src/Storage_test.cpp
                        EXECUTABLE Storage_test
+                       INCLUDE_DIRS ElementsKernel
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
+#-----------------------
+# MathConstants_test
+elements_add_unit_test(MathConstants tests/src/MathConstants_test.cpp
+                       EXECUTABLE MathConstants_test
                        INCLUDE_DIRS ElementsKernel
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
