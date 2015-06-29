@@ -5,12 +5,23 @@
 
 #include <cstdlib>
 #include <iomanip>
-#include <iostream>
+#include <iostream>   // for std::cout
 
-using namespace std;
-using namespace Elements::System;
+//using namespace std;
+//using namespace Elements::System;
 
 int main(ELEMENTS_UNUSED int argc, ELEMENTS_UNUSED char** argv) {
+
+  using std::cout;
+  using std::size_t;
+  using std::endl;
+  using std::setw;
+  using std::left;
+  using std::right;
+
+  using Elements::System::MemoryUnit;
+  using Elements::System::InfoType;
+
   size_t kB = size_t(1024);
   size_t nBytes = kB * kB * size_t(500);
   void* p = ::malloc(nBytes);
@@ -91,7 +102,7 @@ int main(ELEMENTS_UNUSED int argc, ELEMENTS_UNUSED char** argv) {
       << setw(4) << right << virtualMemoryLimit(MemoryUnit::GByte, InfoType::Quota, -1) << " GB "
       << endl;
 
-  if( (p != nullptr) ) {
+  if ( (p != nullptr) ) {
     ::free(p);
     p = nullptr;
   }
