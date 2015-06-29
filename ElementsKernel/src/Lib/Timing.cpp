@@ -18,9 +18,13 @@
 #include <iostream>
 #include <ctime>
 #include <climits>
+#include <cstdint>       // for std::int64_t
 #include <sys/time.h>
 #include <sys/times.h>
 #include <unistd.h>
+
+
+using std::int64_t;
 
 static const int64_t UNIX_BASE_TIME = 0;
 
@@ -177,8 +181,8 @@ ProcessTime getProcessTime(long pid) {
     return ProcessTime(info.KernelTime, info.UserTime,
         currentTime(Native) - info.CreateTime);
   }
-  return ProcessTime(); // return 0s in case of problems
+  return ProcessTime();  // return 0s in case of problems
 }
 
-} // namespace System
-} // namespace Elements
+}  // namespace System
+}  // namespace Elements

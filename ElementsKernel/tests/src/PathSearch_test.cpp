@@ -4,8 +4,8 @@
  * Created on: Dec 4, 2013
  *     Author: Pierre Dubath
  */
-#include <string>
-#include <vector>
+#include <string>                         // for std::string
+#include <vector>                         // for std::vector
 #include <cstdlib>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
@@ -17,7 +17,11 @@ namespace fs = boost::filesystem;
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/System.h"  // for getEnv
 
-using namespace std;
+//using namespace std;
+
+using std::string;
+using std::vector;
+
 using Elements::System::getEnv;
 using Elements::System::setEnv;
 
@@ -58,7 +62,7 @@ struct Path_Fixture {
   }
 };
 
-BOOST_AUTO_TEST_SUITE (Path_test)
+BOOST_AUTO_TEST_SUITE(Path_test)
 
 //-----------------------------------------------------------------------------
 
@@ -228,7 +232,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_Env_Variable_Undefine, Path_Fixt
   BOOST_CHECK(actualFullPathVector.empty());
 }
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()
 
 //-----------------------------------------------------------------------------
 //

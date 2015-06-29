@@ -11,17 +11,6 @@
 #include <boost/test/unit_test.hpp>
 #include <typeinfo>
 
-using namespace std;
-
-//-----------------------------------------------------------------------------
-
-struct StorageFix {
-
-
-  ~StorageFix() {
-  }
-
-};
 
 //-----------------------------------------------------------------------------
 //
@@ -29,12 +18,14 @@ struct StorageFix {
 //
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (Storage_test)
+BOOST_AUTO_TEST_SUITE(Storage_test)
 
 
 BOOST_AUTO_TEST_CASE(StorageFactorValue_test) {
 
-  using namespace Elements::Units;
+  using Elements::Units::StorageType;
+  using Elements::Units::StorageFactor;
+
 
   BOOST_CHECK_EQUAL(StorageFactor[StorageType::Byte],                          1);
   BOOST_CHECK_EQUAL(StorageFactor[StorageType::KiloByte],                   1024);
@@ -53,7 +44,8 @@ BOOST_AUTO_TEST_CASE(StorageFactorValue_test) {
 
 BOOST_AUTO_TEST_CASE(StorageShortName_test) {
 
-  using namespace Elements::Units;
+  using Elements::Units::StorageType;
+  using Elements::Units::StorageShortName;
 
   BOOST_CHECK_EQUAL(StorageShortName[StorageType::Byte],             "B");
   BOOST_CHECK_EQUAL(StorageShortName[StorageType::KiloByte],        "KB");
@@ -71,5 +63,5 @@ BOOST_AUTO_TEST_CASE(StorageShortName_test) {
 
 //-----------------------------------------------------------------------------
 // End of the Boost tests
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()
 

@@ -4,25 +4,32 @@
  * @author Nikolaos Apostolakos
  */
 
-#include <vector>
-#include <string>
+#include <vector>                       // for std::vector
+#include <string>                       // for std::string
 #include <ostream>
-#include <sstream>
-#include <tuple>
+#include <sstream>                      // for std::stringstream
+#include <tuple>                        // for std::tuple
 #include <ctime>
 #include <fstream>
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>         // for boost::filesystem
 
 namespace algo = boost::algorithm;
+namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Logging.h"
 
-using namespace Elements;
+//using namespace Elements;
+using Elements::Logging;
+
+using std::string;
+using std::stringstream;
+using std::vector;
+using std::tuple;
 
 // A map to translate strings to logging levels
-//std::map<std::string, Logging::Level> levelMap {
+//std::map<string, Logging::Level> levelMap {
 //  {"DEBUG", Logging::Level::DEBUG},
 //  {"INFO", Logging::Level::INFO},
 //  {"WARN", Logging::Level::WARN},
@@ -33,8 +40,10 @@ using namespace Elements;
 // A class which takes over the given stream and keeps track of the log messages
 // sent to it. It recovers the given stream in its previous state during destruction.
 class LogMessageTracker {
-public:
-  LogMessageTracker(std::ostream& stream) : m_messages {}, m_stream(stream), m_old {stream.rdbuf(m_messages.rdbuf())} { }
+ public:
+  LogMessageTracker(std::ostream& stream) :
+      m_messages { }, m_stream(stream), m_old { stream.rdbuf(m_messages.rdbuf()) } {
+  }
   ~LogMessageTracker() {
     m_stream.rdbuf(m_old);
   }
@@ -42,26 +51,28 @@ public:
     m_messages.str("");
     m_messages.clear();
   }
-  std::vector<std::tuple<std::string,std::string,std::string,std::string>> getMessages() {
-    std::vector<std::tuple<std::string,std::string,std::string,std::string>> messages;
-    for (std::string line; std::getline(m_messages, line);) {
-      std::string timestamp = line.substr(0, line.find(' '));
-      line = line.substr(line.find(' ')+1);
-      std::string message = line.substr(line.find(':') + 1);
+  vector<tuple<string, string, string, string>> getMessages() {
+    vector<tuple<string, string, string, string>> messages;
+    for (string line; std::getline(m_messages, line);) {
+      string timestamp = line.substr(0, line.find(' '));
+      line = line.substr(line.find(' ') + 1);
+      string message = line.substr(line.find(':') + 1);
       algo::trim_left(message);
       line = line.substr(0, line.find(':'));
       algo::trim(line);
-      std::string logLevelString = line.substr(line.rfind(' '));
+      string logLevelString = line.substr(line.rfind(' '));
       algo::trim(logLevelString);
-      //Logging::Level logLevel = levelMap[logLevelString];
-      std::string name = line.substr(0, line.rfind(' '));
+      // Logging::Level logLevel = levelMap[logLevelString];
+      string name = line.substr(0, line.rfind(' '));
       algo::trim(name);
-      messages.push_back(std::make_tuple(timestamp, logLevelString, name, message));
+      messages.push_back(
+          std::make_tuple(timestamp, logLevelString, name, message));
     }
     return messages;
   }
-private:
-  std::stringstream m_messages;
+
+ private:
+  stringstream m_messages;
   std::ostream& m_stream;
   std::streambuf* m_old;
 };
@@ -73,28 +84,29 @@ struct ElementsLogging_Fixture {
   }
   // This tracker will record all messages written in the stderr. The Elements
   // logging system guarantees that the messages will appear there.
-  LogMessageTracker m_tracker {std::cerr};
+  LogMessageTracker m_tracker { std::cerr };
   Logging m_logger = Logging::getLogger("TestLogger");
 };
 
 class SetRandomSeed {
-public:
+ public:
   SetRandomSeed() {
     std::srand(std::time(NULL));
   }
 };
 
-BOOST_GLOBAL_FIXTURE( SetRandomSeed )
+BOOST_GLOBAL_FIXTURE(SetRandomSeed)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (ElementsLogging_test)
+BOOST_AUTO_TEST_SUITE(ElementsLogging_test)
 
 //-----------------------------------------------------------------------------
 // Test that the names are set correctly
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(loggerNames_test, ElementsLogging_Fixture) {
+
 
   //Given
   Logging logger2 = Logging::getLogger("TestLogger2");
@@ -106,10 +118,10 @@ BOOST_FIXTURE_TEST_CASE(loggerNames_test, ElementsLogging_Fixture) {
   // Then
   auto messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 2);
-  std::string name1;
+  string name1;
   std::tie(std::ignore, std::ignore, name1, std::ignore) = messages[0];
   BOOST_CHECK_EQUAL(name1, "TestLogger");
-  std::string name2;
+  string name2;
   std::tie(std::ignore, std::ignore, name2, std::ignore) = messages[1];
   BOOST_CHECK_EQUAL(name2, "TestLogger2");
 
@@ -144,8 +156,8 @@ BOOST_FIXTURE_TEST_CASE(messageTextAndLevel_test, ElementsLogging_Fixture) {
   // Then
   auto messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 15);
-  std::string logLevel;
-  std::string message;
+  string logLevel;
+  string message;
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[0];
   BOOST_CHECK_EQUAL(logLevel, "DEBUG");
   BOOST_CHECK_EQUAL(message, "Debug message");
@@ -282,7 +294,7 @@ BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
 BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
 
   // Given
-  std::stringstream logFileName {};
+  stringstream logFileName { };
   logFileName << "/tmp/" << std::time(NULL) << std::rand() << ".log";
   Logging::setLogFile(logFileName.str());
 
@@ -291,10 +303,10 @@ BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
   m_logger.info("Second message");
 
   // Then
-  BOOST_CHECK(boost::filesystem::exists(logFileName.str()));
-  std::ifstream logFile {logFileName.str()};
-  std::vector<std::string> lines {};
-  std::string line;
+  BOOST_CHECK(fs::exists(logFileName.str()));
+  std::ifstream logFile { logFileName.str() };
+  vector<string> lines { };
+  string line;
   while (std::getline(logFile, line)) {
     lines.push_back(line);
   }
@@ -311,9 +323,9 @@ BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
 BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
 
   // Given
-  std::stringstream logFileName1 {};
+  stringstream logFileName1 { };
   logFileName1 << "/tmp/" << std::time(NULL) << std::rand() << ".log";
-  std::stringstream logFileName2 {};
+  stringstream logFileName2 { };
   logFileName2 << "/tmp/" << std::time(NULL) << std::rand() << ".log";
 
   // When
@@ -325,19 +337,19 @@ BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
   m_logger.info("Third message");
 
   // Then
-  BOOST_CHECK(boost::filesystem::exists(logFileName1.str()));
-  std::ifstream logFile1 {logFileName1.str()};
-  std::vector<std::string> lines {};
-  std::string line;
+  BOOST_CHECK(fs::exists(logFileName1.str()));
+  std::ifstream logFile1 { logFileName1.str() };
+  vector<string> lines { };
+  string line;
   while (std::getline(logFile1, line)) {
     lines.push_back(line);
   }
   logFile1.close();
   BOOST_CHECK_EQUAL(lines.size(), 1);
   BOOST_CHECK(algo::ends_with(lines[0], "First message"));
-  BOOST_CHECK(boost::filesystem::exists(logFileName2.str()));
-  std::ifstream logFile2 {logFileName2.str()};
-  lines = std::vector<std::string>{};
+  BOOST_CHECK(fs::exists(logFileName2.str()));
+  std::ifstream logFile2 { logFileName2.str() };
+  lines = vector<string> { };
   while (std::getline(logFile2, line)) {
     lines.push_back(line);
   }
@@ -347,4 +359,4 @@ BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
   BOOST_CHECK(algo::ends_with(lines[1], "Third message"));
 }
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()
