@@ -17,7 +17,6 @@ namespace fs = boost::filesystem;
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/System.h"  // for getEnv
 
-//using namespace std;
 
 using std::string;
 using std::vector;
