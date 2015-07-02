@@ -98,6 +98,8 @@ elements_install_scripts()
 
 
 elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test LABELS CustomLabel)
+elements_add_test(ScriptThatChecksFile COMMAND ScriptThatChecksFile_test)
+
 elements_add_test(ScriptThatFails COMMAND ScriptThatFails_test FAILS)
 elements_add_test(ScriptThatGivesOutput COMMAND ScriptThatGivesOutput_test PASSREGEX ".*good")
 elements_add_test(ScriptThatGivesError COMMAND ScriptThatGivesError_test FAILREGEX ".*bad" FAILS)
