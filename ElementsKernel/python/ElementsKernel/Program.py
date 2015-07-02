@@ -35,7 +35,7 @@ class Program:
         else:
             rel_path = name
         conf_file = None
-        for conf_path in os.environ.get('ELEMENTS_CONF_PATH').split(':'):
+        for conf_path in os.environ.get('ELEMENTS_CONF_PATH').split(os.pathsep):
             if os.path.isfile(conf_path + os.sep + rel_path):
                 conf_file = conf_path + os.sep + rel_path
                 break
