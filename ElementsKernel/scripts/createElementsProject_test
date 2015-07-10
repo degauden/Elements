@@ -1,0 +1,22 @@
+#!/bin/sh
+
+dir="Project_test"
+if [ -d ${dir} ]; then
+ rm -rf ${dir}
+fi 
+
+CreateElementsProject Project_test 0.1
+
+if [ $? -ne 0 ]; then
+   exit 1
+fi
+
+if [ ! -d ${dir} ]; then
+  exit 1
+fi
+
+if [ -d ${dir} ]; then
+   rm -rf Project_test
+fi
+
+exit 0
