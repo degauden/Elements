@@ -1,7 +1,6 @@
 
 import argparse
 import os
-import sys
 import re
 import shutil
 
@@ -56,12 +55,12 @@ def isDependencyProjectValid(str_list):
                  
     return valid
         
-def copyAuxFile(aux_dir, destination, file):
+def copyAuxFile(destination, file_name):
     """
     Copy all necessary auxiliary data to the <destination> directory
     """
-    logger.info('# Copying AUX file : %s' % file)
-    shutil.copy( os.path.join(os.path.sep, aux_dir, file ), os.path.join(os.path.sep, destination, file))
+    logger.info('# Copying AUX file : %s' % file_name)
+    shutil.copy( os.path.join(os.path.sep, os.getenv("ELEMENTS_AUX_PATH"), file_name ), os.path.join(os.path.sep, destination, file_name))
     
 def eraseDirectory(from_directory):
     """
@@ -94,7 +93,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     f.close()
     os.rename(cmake_list_file, cmake_list_file.replace('.in','')) 
          
-def createProject(aux_path, project_dir, proj_name, proj_version, dep_projects):
+def createProject(project_dir, proj_name, proj_version, dep_projects):
     """
     Create the project structure
     """
@@ -103,8 +102,8 @@ def createProject(aux_path, project_dir, proj_name, proj_version, dep_projects):
     # Create project
     os.makedirs(project_dir)
        
-    copyAuxFile(aux_path, project_dir, AUX_CMAKE_LIST_IN)
-    copyAuxFile(aux_path, project_dir, AUX_CMAKE_FILE_IN)
+    copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
+    copyAuxFile(project_dir, AUX_CMAKE_FILE_IN)
 
     substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects)
 
@@ -163,12 +162,12 @@ def mainMethod(args):
                 logger.info('# Replacing the existing project: <%s>' % project_dir)
                 eraseDirectory(project_dir) 
             else:
-                script_stopped = True
+                script_goes_on = True
                 logger.info('# Script stopped by user!')
-        
+                
         if script_goes_on:       
             logger.info('# Creating project: <%s>' % project_dir )             
-            createProject(aux_path, project_dir, proj_name, proj_version, args.dep_project_version)
+            createProject(project_dir, proj_name, proj_version, args.dep_project_version)
             logger.info('# <%s> project successfully created.' % project_dir )             
         
     except Exception as e:
