@@ -1,0 +1,26 @@
+# !!!! UNCOMMENT LINES(with "###" characters) BELOW AND REPLACE ANY NECESSARY DEPENDENCIES (see "!!!" characters)
+
+elements_subdir(%(MODULE_NAME)s)
+
+### !!! HOWTO : Dependency Modules !!!
+### elements_depends_on_subdirs("!!! DEPENDENCY_MODULE_NAME_HERE !!!")
+
+#===== Libraries ===============================================================
+
+### !!! HOWTO : Library Example !!!
+### elements_add_library(%(MODULE_NAME)s src/lib/*.cpp
+###                  LINK_LIBRARIES  Boost 
+###                  INCLUDE_DIRS Boost 
+###                  PUBLIC_HEADERS %(MODULE_NAME)s )
+
+#===== Executables ===============================================================
+
+### !!! HOWTO : Executable Example !!!
+### elements_add_executable(EXECUTABLE_EXAMPLE_NAME src/program/EXECUTABLE_EXAMPLE_NAME.cpp
+###                        LINK_LIBRARIES "!!! LIBRARY_NAME_HERE !!!" )
+
+#===== Boost tests =============================================================
+
+### !!! HOWTO : Test unit !!!
+### elements_add_unit_test( %(MODULE_NAME)s_tests/src/%(MODULE_NAME)s_test.cpp
+###                       LINK_LIBRARIES %(MODULE_NAME)s TYPE Boost)

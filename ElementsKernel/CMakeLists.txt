@@ -82,5 +82,10 @@ elements_add_unit_test(MathConstants tests/src/MathConstants_test.cpp
 
 #---Python and Scripts ------------------------------------------------------------
 
+elements_add_python_program(CreateElementsProject ElementsKernel.ElementsProject)
+elements_add_python_program(CreateElementsModule ElementsKernel.ElementsModule)
+
 elements_install_python_modules()
 
+elements_add_test(ElementsProject COMMAND createElementsProject_test)
+elements_add_test(ElementsModule COMMAND createElementsModule_test)
