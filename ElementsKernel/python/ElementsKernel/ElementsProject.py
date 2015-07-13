@@ -108,12 +108,14 @@ def defineSpecificProgramOptions():
             
             e.g. CreateElementsProject MyProject 1.0 -d Alexandria 2.0 -d PhosphorosCore 3.0 
             
-            This script creates an <Elements> project. It means all the 
-            necessary structure (directory structure, makefiles etc...)
-            will be automatically created for you. The Project is created by
-            default to the current directory but you can use the option [--path]
-            if you want your project somewhere else.
-            
+            This script creates an <Elements> project in your current directory
+            by default. It means all the necessary structure (directory structure,
+            makefiles etc...) will be automatically created for you. The Project
+            is created by default to the current directory but you can use the 
+            option [--path] if you want to install your project somewhere else.
+            If your project depends pon some others use the [-d] option. If you
+            need to install your project not at the current directory use the 
+            [--path] option.           
             """
     parser = argparse.ArgumentParser(usage)
     parser.add_argument('project_name', metavar='project-name', type=str, help='Project name')

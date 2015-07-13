@@ -97,13 +97,16 @@ def defineSpecificProgramOptions():
             PROG [-h] module_name module_version [-pv project_name project_version] 
                  [--path] project path [-py] 
             
-            e.g. CreateElementsModule MyModule 1.0 -pv MyProject 1.0 
+            e.g. CreateElementsModule MyModule 1.0
             
-            This script creates an <Elements> module. It means all the 
-            necessary structure (directory structure, makefiles etc...)
-            will be automatically created for you inside an existing project.
-            By default, the python structure is not created, so use the [-py]
-            option.
+            This script creates an <Elements> module at your current directory.
+            It means all the necessary structure (directory structure, makefiles
+            etc...) will be automatically created for you. If you need to put 
+            your module inside a project, use the [-pv] option. It will put your
+            module inside the project in your current directory. The [--path] 
+            option specifies the path of your project or where you want the 
+            module to be installed.             
+            If you need the python structure inside a module use the [-py] option.
             
            """
     parser = argparse.ArgumentParser(usage)
