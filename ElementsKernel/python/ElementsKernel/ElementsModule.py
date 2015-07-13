@@ -11,8 +11,6 @@
 
 import argparse
 import os
-import re
-import shutil
 import ElementsKernel.ElementsProject as ep
 import ElementsKernel.Logging as log
 
@@ -62,7 +60,7 @@ def createModuleDirectories(mod_path, module_name):
     os.makedirs(os.path.join(os.path.sep, mod_path, 'doc')) 
       
    
-def createModule(aux_path, project_dir, module_name, module_version, add_python):
+def createModule(project_dir, module_name, module_version, add_python):
     """
     Create a module, copy auxiliary files and substitute variables in the
     CMakefile.txt file
@@ -84,9 +82,8 @@ def createModule(aux_path, project_dir, module_name, module_version, add_python)
     if not script_stopped:
         createModuleDirectories(mod_path, module_name)
         if add_python:        
-            createPythonStuff(mod_path, module_name)
-            
-        ep.copyAuxFile(aux_path, mod_path, AUX_CMAKELIST_MOD_IN)
+            createPythonStuff(mod_path, module_name)            
+        ep.copyAuxFile(os.getenv("ELEMENTS_AUX_PATH"), mod_path, AUX_CMAKELIST_MOD_IN)
         substituteModuleVariables(mod_path, module_name)
     
     return script_stopped
@@ -145,13 +142,11 @@ def mainMethod(args):
         script_goes_on = ep.isNameAndVersionValid(module_name, module_version)
         if project_name and project_version and script_goes_on:
              script_goes_on = ep.isNameAndVersionValid(project_name, project_version)
-      
-        aux_path      = os.getenv("ELEMENTS_AUX_PATH")
-                    
+                          
         project_dir = os.path.join(os.path.sep, destination_path, project_name, project_version)
 
         if os.path.exists(project_dir) and script_goes_on:
-            if not createModule(aux_path, project_dir, module_name, module_version, add_python):            
+            if not createModule(project_dir, module_name, module_version, add_python):            
                  logger.info('# <%s> module successfully created in <%s>.' % (module_name, project_dir))
             else:
                  logger.info("Script stopped by user!")
