@@ -60,7 +60,7 @@ def copyAuxFile(aux_dir, destination, file):
     """
     Copy all necessary auxiliary data to the <destination> directory
     """
-    logger.info('# Copying AUX files')
+    logger.info('# Copying AUX file : %s' % file)
     shutil.copy( os.path.join(os.path.sep, aux_dir, file ), os.path.join(os.path.sep, destination, file))
     
 def eraseDirectory(from_directory):
@@ -110,19 +110,19 @@ def createProject(aux_path, project_dir, proj_name, proj_version, dep_projects):
 
 def defineSpecificProgramOptions():
     usage = """
-            PROG [-h] project_name project_version [-d dependency_project dependency_version]
+            PROG project_name project_version 
+                 [-d dependency_project dependency_version]
                  [-p] project path
+                 [-h]
             
             e.g. CreateElementsProject MyProject 1.0 -d Alexandria 2.0 -d PhosphorosCore 3.0 
             
             This script creates an <Elements> project in your current directory
             by default. It means all the necessary structure (directory structure,
-            makefiles etc...) will be automatically created for you. The Project
-            is created by default to the current directory but you can use the 
-            option [--path] if you want to install your project somewhere else.
-            If your project depends pon some others use the [-d] option. If you
-            need to install your project not at the current directory use the 
-            [--path] option.           
+            makefiles etc...) will be automatically created for you. 
+            Use the <-p> option if you want to install your project somewhere else.
+            Use the [-d] option if your project has some dependencies to other
+            project(s). 
             """
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('project_name', metavar='project-name', type=str, help='Project name')
