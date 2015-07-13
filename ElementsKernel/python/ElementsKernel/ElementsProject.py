@@ -124,7 +124,7 @@ def defineSpecificProgramOptions():
             need to install your project not at the current directory use the 
             [--path] option.           
             """
-    parser = argparse.ArgumentParser(usage)
+    parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('project_name', metavar='project-name', type=str, help='Project name')
     parser.add_argument('project_version', metavar='project-version', type=str, help='Project version number')
     parser.add_argument('-d','--dep-project-version', nargs=2, action='append', type=str , help='Dependency project name and its version number e.g "project_name 0.1"')

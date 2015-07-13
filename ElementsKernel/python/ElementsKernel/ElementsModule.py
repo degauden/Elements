@@ -109,7 +109,7 @@ def defineSpecificProgramOptions():
             If you need the python structure inside a module use the [-py] option.
             
            """
-    parser = argparse.ArgumentParser(usage)
+    parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('module_name', metavar='module-name', type=str, help='Module name')
     parser.add_argument('module_version', metavar='module-version', type=str, help='Module version number')
     parser.add_argument('-p','--project-version', nargs=2, type=str , help='Project name and its version number e.g "project_name 0.1"')
