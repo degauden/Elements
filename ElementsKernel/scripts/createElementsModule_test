@@ -1,0 +1,23 @@
+#!/bin/sh
+
+dir="Module_test"
+
+if [ -d ${dir} ]; then
+ rm -rf ${dir}
+fi 
+
+CreateElementsModule Module_test 0.1
+
+if [ $? -ne 0 ]; then
+   exit 1
+fi
+
+if [ ! -d ${dir} ]; then
+  exit 1
+fi
+
+if [ -d ${dir} ]; then
+ rm -rf ${dir}
+fi 
+
+exit 0
