@@ -147,12 +147,11 @@ def mainMethod(args):
         script_goes_on = isNameAndVersionValid(proj_name, proj_version)
                        
         # Set the project directory
-        aux_path    = os.getenv("ELEMENTS_AUX_PATH")
         project_dir = os.path.join(os.path.sep, destination_path, proj_name, proj_version)
         
         # Make sure dependencies name and version are valid 
         if not args.dep_project_version is None:
-             script_goes_on = isDependencyProjectValid(args.dep_project_version)
+            script_goes_on = isDependencyProjectValid(args.dep_project_version)
 
         if script_goes_on and os.path.exists(project_dir):
             # Ask user
@@ -162,7 +161,7 @@ def mainMethod(args):
                 logger.info('# Replacing the existing project: <%s>' % project_dir)
                 eraseDirectory(project_dir) 
             else:
-                script_goes_on = True
+                script_goes_on = False
                 logger.info('# Script stopped by user!')
                 
         if script_goes_on:       
