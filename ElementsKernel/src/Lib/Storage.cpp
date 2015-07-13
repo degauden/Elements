@@ -7,12 +7,16 @@
 
 #include "ElementsKernel/Storage.h"
 
-#include <map>
-#include <cstdint>
-#include <cmath>
-#include <string>
+#include <map>      // for std::map
+#include <cstdint>  // for std::int64_t
+#include <cmath>    // for std::pow, std::round, std::log10
+#include <string>   // for std::string
 
-using namespace std;
+using std::pow;
+using std::map;
+using std::string;
+using std::int64_t;
+using std::round;
 
 namespace Elements {
 namespace Units {
@@ -43,24 +47,33 @@ map<StorageType, int64_t> StorageFactor        { { StorageType::Byte,           
                                                  { StorageType::MetricPetaByte, pow(10,15)} };
 
 double roundToDigits(const double& value, const size_t& max_digits) {
+
+  using std::int64_t;
+  using std::round;
+
   int64_t factor = pow(10, max_digits);
-  return round(value * double(factor))/double(factor);
+  return round(value * static_cast<double>(factor))/static_cast<double>(factor);
 }
 
 
 double storageConvert(const int64_t& size, StorageType source_unit, StorageType target_unit) {
-  double value= double(size);
+
+  using std::log10;
+  using std::size_t;
+
+  double value = static_cast<double>(size);
 
   if (source_unit != target_unit) {
     int64_t size_in_bytes = size * StorageFactor[StorageType::Byte];
     int64_t target_factor = StorageFactor[target_unit];
-    value = roundToDigits(double(size_in_bytes)/double(target_factor), size_t(log10(double(target_factor))));
+    value = roundToDigits(static_cast<double>(size_in_bytes)/static_cast<double>(target_factor),
+                          size_t(log10(static_cast<double>(target_factor))));
   }
 
   return value;
 
 }
 
-} // namespace Units
-} // namespace Elements
+}  // namespace Units
+}  // namespace Elements
 
