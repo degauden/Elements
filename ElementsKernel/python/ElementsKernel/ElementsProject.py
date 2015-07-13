@@ -13,17 +13,17 @@ AUX_CMAKE_LIST_IN = "CMakeList.txt.in"
 AUX_CMAKE_FILE_IN = "Makefile"
 
 def setPath(path_defined_by_user):
-     """
-     Set the directory path
-     """     
-     # Set the path if any
-     destination_path = ''
-     if not path_defined_by_user is None:
-         destination_path = path_defined_by_user
-     else:
-         destination_path = os.getcwd()
+    """
+    Set the directory path
+    """     
+    # Set the path if any
+    destination_path = ''
+    if not path_defined_by_user is None:
+        destination_path = path_defined_by_user
+    else:
+        destination_path = os.getcwd()
     
-     return destination_path     
+    return destination_path     
 
 def isNameAndVersionValid(name, version):
     """
@@ -37,23 +37,30 @@ def isNameAndVersionValid(name, version):
 
     version_regex = '^\d+?\.\d+?$'
     if re.match(version_regex, version) is None:
-        logger.error("Version number not valid. It must follow this regex: < %s >" % version_regex)
+        logger.error("Version number not valid. It must follow this regex: < %s >" % version_regex)    
         valid = False
         
     return valid
+
   
 def isDependencyProjectValid(str_list):
     """
     Check if the dependency project name and version list is valid
     """
+    valid = True
     for i in range(len(str_list)):
-        isNameAndVersionValid(str_list[i][0], str_list[i][1])        
+        if not isNameAndVersionValid(str_list[i][0], str_list[i][1]):
+            valid = False
+            break
+            
+                 
+    return valid
         
 def copyAuxFile(aux_dir, destination, file):
     """
     Copy all necessary auxiliary data to the <destination> directory
     """
-    logger.info('# Copying AUX files')
+    logger.info('# Copying AUX file : %s' % file)
     shutil.copy( os.path.join(os.path.sep, aux_dir, file ), os.path.join(os.path.sep, destination, file))
     
 def eraseDirectory(from_directory):
@@ -76,7 +83,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     data = f.read()
     # Format all dependant projects
     if not dep_projects is None:
-         str_dep_projects = ' '.join(' '.join(s) for s in dep_projects)
+        str_dep_projects = ' '.join(' '.join(s) for s in dep_projects)
     else:
         str_dep_projects = ' '
     new_data = data % { "PROJECT_NAME" : proj_name, "PROJECT_VERSION" : proj_version, "DEPENDANCE_LIST": str_dep_projects }
@@ -103,21 +110,21 @@ def createProject(aux_path, project_dir, proj_name, proj_version, dep_projects):
 
 def defineSpecificProgramOptions():
     usage = """
-            PROG [-h] project_name project_version [-d dependency_project dependency_version]
+            PROG project_name project_version 
+                 [-d dependency_project dependency_version]
                  [-p] project path
+                 [-h]
             
             e.g. CreateElementsProject MyProject 1.0 -d Alexandria 2.0 -d PhosphorosCore 3.0 
             
             This script creates an <Elements> project in your current directory
             by default. It means all the necessary structure (directory structure,
-            makefiles etc...) will be automatically created for you. The Project
-            is created by default to the current directory but you can use the 
-            option [--path] if you want to install your project somewhere else.
-            If your project depends pon some others use the [-d] option. If you
-            need to install your project not at the current directory use the 
-            [--path] option.           
+            makefiles etc...) will be automatically created for you. 
+            Use the <-p> option if you want to install your project somewhere else.
+            Use the [-d] option if your project has some dependencies to other
+            project(s). 
             """
-    parser = argparse.ArgumentParser(usage)
+    parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('project_name', metavar='project-name', type=str, help='Project name')
     parser.add_argument('project_version', metavar='project-version', type=str, help='Project version number')
     parser.add_argument('-d','--dep-project-version', nargs=2, action='append', type=str , help='Dependency project name and its version number e.g "project_name 0.1"')
@@ -132,14 +139,13 @@ def mainMethod(args):
     logger.info('#')
     
     try:
-        script_stopped   = False       
+        script_goes_on   = True
         proj_name        = args.project_name
         proj_version     = args.project_version       
         destination_path = setPath(args.path)
  
         # Check project name and version   
-        if not isNameAndVersionValid(proj_name, proj_version):
-             script_stopped = True
+        script_goes_on = isNameAndVersionValid(proj_name, proj_version)
                        
         # Set the project directory
         aux_path    = os.getenv("ELEMENTS_AUX_PATH")
@@ -147,9 +153,9 @@ def mainMethod(args):
         
         # Make sure dependencies name and version are valid 
         if not args.dep_project_version is None:
-             isDependencyProjectValid(args.dep_project_version)
+             script_goes_on = isDependencyProjectValid(args.dep_project_version)
 
-        if os.path.exists(project_dir):
+        if script_goes_on and os.path.exists(project_dir):
             # Ask user
             logger.warning('<%s> project ALREADY exists!!!' % project_dir)
             response_key = raw_input('Do you want to replace the existing project and associated module(s) (Yes/No, default: No)?')
@@ -160,7 +166,7 @@ def mainMethod(args):
                 script_stopped = True
                 logger.info('# Script stopped by user!')
         
-        if not script_stopped:       
+        if script_goes_on:       
             logger.info('# Creating project: <%s>' % project_dir )             
             createProject(aux_path, project_dir, proj_name, proj_version, args.dep_project_version)
             logger.info('# <%s> project successfully created.' % project_dir )             

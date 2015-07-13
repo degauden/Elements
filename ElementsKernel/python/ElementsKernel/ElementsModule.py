@@ -94,26 +94,29 @@ def createModule(aux_path, project_dir, module_name, module_version, add_python)
                 
 def defineSpecificProgramOptions():
     usage = """ 
-            PROG [-h] module_name module_version [-pv project_name project_version] 
-                 [--path] project path [-py] 
+            PROG [-h] module_name module_version 
+                 [-p project_name project_version] 
+                 [--path project path] 
+                 [-py] 
             
             e.g. CreateElementsModule MyModule 1.0
             
-            This script creates an <Elements> module at your current directory.
+            This script creates an <Elements> module at your current directory
+            inside a project or not (default).
             It means all the necessary structure (directory structure, makefiles
             etc...) will be automatically created for you. If you need to put 
-            your module inside a project, use the [-pv] option. It will put your
+            your module inside a project, use the [-p] option. It will put your
             module inside the project in your current directory. The [--path] 
             option specifies the path of your project or where you want the 
             module to be installed.             
             If you need the python structure inside a module use the [-py] option.
             
            """
-    parser = argparse.ArgumentParser(usage)
+    parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('module_name', metavar='module-name', type=str, help='Module name')
     parser.add_argument('module_version', metavar='module-version', type=str, help='Module version number')
-    parser.add_argument('-pv','--project-version', nargs=2, type=str , help='Project name and its version number e.g "project_name 0.1"')
-    parser.add_argument('-py','--python-stuff', action='store_true', help='Add python directories')
+    parser.add_argument('-p','--project-version', nargs=2, type=str , help='Project name and its version number e.g "project_name 0.1"')
+    parser.add_argument('-py','--python-stuff', action='store_true', help='Add python directory structure')
     parser.add_argument('--path', type=str , help='Installation path(default : current directory)')
     return parser
 
@@ -125,7 +128,7 @@ def mainMethod(args):
     logger.info('#')
     
     try:
-        script_stopped = False
+        script_goes_on = True
         
         module_name      = args.module_name
         module_version   = args.module_version
@@ -139,21 +142,23 @@ def mainMethod(args):
         destination_path = ep.setPath(args.path)
         add_python       = args.python_stuff
         
-        script_stopped = ep.isNameAndVersionValid(module_name, module_version)
-        if project_name and project_version:
-             script_stopped = ep.isNameAndVersionValid(project_name, project_version)
-       
+        script_goes_on = ep.isNameAndVersionValid(module_name, module_version)
+        if project_name and project_version and script_goes_on:
+             script_goes_on = ep.isNameAndVersionValid(project_name, project_version)
+      
         aux_path      = os.getenv("ELEMENTS_AUX_PATH")
                     
         project_dir = os.path.join(os.path.sep, destination_path, project_name, project_version)
-        if os.path.exists(project_dir):
+
+        if os.path.exists(project_dir) and script_goes_on:
             if not createModule(aux_path, project_dir, module_name, module_version, add_python):            
                  logger.info('# <%s> module successfully created in <%s>.' % (module_name, project_dir))
             else:
                  logger.info("Script stopped by user!")
      
         else:
-             logger.error('<%s> project does not exist!!! Script aborted' % project_dir)
+            if script_goes_on:               
+                logger.error('<%s> project directory does not exist!!! Script aborted' % project_dir)
                    
     except Exception as e:
         logger.exception(e)
