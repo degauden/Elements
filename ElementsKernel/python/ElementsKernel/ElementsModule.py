@@ -94,12 +94,15 @@ def createModule(aux_path, project_dir, module_name, module_version, add_python)
                 
 def defineSpecificProgramOptions():
     usage = """ 
-            PROG [-h] module_name module_version [-pv project_name project_version] 
-                 [--path] project path [-py] 
+            PROG [-h] module_name module_version 
+                 [-p project_name project_version] 
+                 [--path project path] 
+                 [-py] 
             
             e.g. CreateElementsModule MyModule 1.0
             
-            This script creates an <Elements> module at your current directory.
+            This script creates an <Elements> module at your current directory
+            inside a project or not (default).
             It means all the necessary structure (directory structure, makefiles
             etc...) will be automatically created for you. If you need to put 
             your module inside a project, use the [-p] option. It will put your
@@ -113,7 +116,7 @@ def defineSpecificProgramOptions():
     parser.add_argument('module_name', metavar='module-name', type=str, help='Module name')
     parser.add_argument('module_version', metavar='module-version', type=str, help='Module version number')
     parser.add_argument('-p','--project-version', nargs=2, type=str , help='Project name and its version number e.g "project_name 0.1"')
-    parser.add_argument('-py','--python-stuff', action='store_true', help='Add python directories')
+    parser.add_argument('-py','--python-stuff', action='store_true', help='Add python directory structure')
     parser.add_argument('--path', type=str , help='Installation path(default : current directory)')
     return parser
 
