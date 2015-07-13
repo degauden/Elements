@@ -133,8 +133,8 @@ def mainMethod(args):
         project_name     = ''
         project_version  = ''
         if not args.project_version is None:
-             project_name     = args.project_version[0]
-             project_version  = args.project_version[1]
+            project_name     = args.project_version[0]
+            project_version  = args.project_version[1]
              
         destination_path = ep.setPath(args.path)
         add_python       = args.python_stuff
