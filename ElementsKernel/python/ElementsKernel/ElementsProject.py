@@ -13,17 +13,17 @@ AUX_CMAKE_LIST_IN = "CMakeList.txt.in"
 AUX_CMAKE_FILE_IN = "Makefile"
 
 def setPath(path_defined_by_user):
-     """
-     Set the directory path
-     """     
-     # Set the path if any
-     destination_path = ''
-     if not path_defined_by_user is None:
-         destination_path = path_defined_by_user
-     else:
-         destination_path = os.getcwd()
+    """
+    Set the directory path
+    """     
+    # Set the path if any
+    destination_path = ''
+    if not path_defined_by_user is None:
+        destination_path = path_defined_by_user
+    else:
+        destination_path = os.getcwd()
     
-     return destination_path     
+    return destination_path     
 
 def isNameAndVersionValid(name, version):
     """
@@ -37,17 +37,24 @@ def isNameAndVersionValid(name, version):
 
     version_regex = '^\d+?\.\d+?$'
     if re.match(version_regex, version) is None:
-        logger.error("Version number not valid. It must follow this regex: < %s >" % version_regex)
+        logger.error("Version number not valid. It must follow this regex: < %s >" % version_regex)    
         valid = False
         
     return valid
+
   
 def isDependencyProjectValid(str_list):
     """
     Check if the dependency project name and version list is valid
     """
+    valid = True
     for i in range(len(str_list)):
-        isNameAndVersionValid(str_list[i][0], str_list[i][1])        
+        if not isNameAndVersionValid(str_list[i][0], str_list[i][1]):
+            valid = False
+            break
+            
+                 
+    return valid
         
 def copyAuxFile(aux_dir, destination, file):
     """
@@ -76,7 +83,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     data = f.read()
     # Format all dependant projects
     if not dep_projects is None:
-         str_dep_projects = ' '.join(' '.join(s) for s in dep_projects)
+        str_dep_projects = ' '.join(' '.join(s) for s in dep_projects)
     else:
         str_dep_projects = ' '
     new_data = data % { "PROJECT_NAME" : proj_name, "PROJECT_VERSION" : proj_version, "DEPENDANCE_LIST": str_dep_projects }
@@ -132,14 +139,13 @@ def mainMethod(args):
     logger.info('#')
     
     try:
-        script_stopped   = False       
+        script_goes_on   = True
         proj_name        = args.project_name
         proj_version     = args.project_version       
         destination_path = setPath(args.path)
  
         # Check project name and version   
-        if not isNameAndVersionValid(proj_name, proj_version):
-             script_stopped = True
+        script_goes_on = isNameAndVersionValid(proj_name, proj_version)
                        
         # Set the project directory
         aux_path    = os.getenv("ELEMENTS_AUX_PATH")
@@ -147,9 +153,9 @@ def mainMethod(args):
         
         # Make sure dependencies name and version are valid 
         if not args.dep_project_version is None:
-             isDependencyProjectValid(args.dep_project_version)
+             script_goes_on = isDependencyProjectValid(args.dep_project_version)
 
-        if os.path.exists(project_dir):
+        if script_goes_on and os.path.exists(project_dir):
             # Ask user
             logger.warning('<%s> project ALREADY exists!!!' % project_dir)
             response_key = raw_input('Do you want to replace the existing project and associated module(s) (Yes/No, default: No)?')
@@ -160,7 +166,7 @@ def mainMethod(args):
                 script_stopped = True
                 logger.info('# Script stopped by user!')
         
-        if not script_stopped:       
+        if script_goes_on:       
             logger.info('# Creating project: <%s>' % project_dir )             
             createProject(aux_path, project_dir, proj_name, proj_version, args.dep_project_version)
             logger.info('# <%s> project successfully created.' % project_dir )             
