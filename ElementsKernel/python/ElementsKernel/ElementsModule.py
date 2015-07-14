@@ -101,8 +101,8 @@ PROG [-h] module_name
 e.g. CreateElementsModule MyModule 1.0
 
 This script creates an <Elements> module at your current directory
-(default) and inside a project or not.
-It means all the necessary structure (directory structure, makefiles
+(default). But it could be part of a project, use the <-p> option for 
+that. All necessary structure (directory structure, makefiles
 etc...) will be automatically created for you. If you need to put 
 your module inside a project, use the [-p] option. It will put your
 module inside the project in your current directory. The [--path] 
