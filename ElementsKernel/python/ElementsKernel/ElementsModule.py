@@ -65,7 +65,8 @@ def createModule(project_dir, module_name, add_python):
     Create a module, copy auxiliary files and substitute variables in the
     CMakefile.txt file
     """
-    script_stopped = False
+    script_goes_on = True
+    
     # Create module directory
     mod_path = os.path.join(os.path.sep, project_dir, module_name)
     logger.info('# Creating the module: <%s> ' % mod_path)
@@ -77,16 +78,17 @@ def createModule(project_dir, module_name, add_python):
             logger.info('# Replacing the existing module: <%s>' % module_name)
             ep.eraseDirectory(mod_path) 
         else:
-            script_stopped = True
+            logger.info("Script stopped by user!")
+            script_goes_on = False
 
-    if not script_stopped:
+    if script_goes_on:
         createModuleDirectories(mod_path, module_name)
         if add_python:        
             createPythonStuff(mod_path, module_name)            
         ep.copyAuxFile(mod_path, AUX_CMAKELIST_MOD_IN)
         substituteModuleVariables(mod_path, module_name)
     
-    return script_stopped
+    return script_goes_on
     
                 
 def defineSpecificProgramOptions():
@@ -124,12 +126,11 @@ def mainMethod(args):
     logger.info('#')
     
     try:
-        script_goes_on = True
-        
-        module_name      = args.module_name
-        
+        script_goes_on   = True        
+        module_name      = args.module_name       
         project_name     = ''
         project_version  = ''
+        
         if not args.project_version is None:
             project_name     = args.project_version[0]
             project_version  = args.project_version[1]
@@ -150,13 +151,11 @@ def mainMethod(args):
         project_dir = os.path.join(os.path.sep, destination_path, project_name, project_version)
 
         if os.path.exists(project_dir) and script_goes_on:
-            if not createModule(project_dir, module_name, add_python):            
-                 logger.info('# <%s> module successfully created in <%s>.' % (module_name, project_dir))
-            else:
-                 logger.info("Script stopped by user!")
-     
+            script_goes_on = createModule(project_dir, module_name, add_python)            
+            if script_goes_on:
+                logger.info('# <%s> module successfully created in <%s>.' % (module_name, project_dir))    
         else:
-            if script_goes_on:               
+            if not script_goes_on:               
                 logger.error('<%s> project directory does not exist!!! Script aborted' % project_dir)
                    
     except Exception as e:
