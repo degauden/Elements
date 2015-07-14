@@ -7,7 +7,7 @@
 #          Nicolas.Morisset@unige.ch
 # @date: 01/07/15
 #
-# This script will create a new <Elements> module  inside an existing project
+# This script will create a new <Elements> module
 
 import argparse
 import os
@@ -16,7 +16,7 @@ import ElementsKernel.Logging as log
 
 logger = log.getLogger('CreateElementsModule')
        
-AUX_CMAKELIST_MOD_IN = "CMakeList.txt.mod.in"
+AUX_CMAKELIST_MOD_IN = "CMakeLists.txt.mod.in"
 
 def substituteModuleVariables(module_dir, module_name):
     """
@@ -83,7 +83,7 @@ def createModule(project_dir, module_name, module_version, add_python):
         createModuleDirectories(mod_path, module_name)
         if add_python:        
             createPythonStuff(mod_path, module_name)            
-        ep.copyAuxFile(os.getenv("ELEMENTS_AUX_PATH"), mod_path, AUX_CMAKELIST_MOD_IN)
+        ep.copyAuxFile(mod_path, AUX_CMAKELIST_MOD_IN)
         substituteModuleVariables(mod_path, module_name)
     
     return script_stopped
@@ -91,23 +91,23 @@ def createModule(project_dir, module_name, module_version, add_python):
                 
 def defineSpecificProgramOptions():
     usage = """ 
-            PROG [-h] module_name module_version 
-                 [-p project_name project_version] 
-                 [--path project path] 
-                 [-py] 
-            
-            e.g. CreateElementsModule MyModule 1.0
-            
-            This script creates an <Elements> module at your current directory
-            inside a project or not (default).
-            It means all the necessary structure (directory structure, makefiles
-            etc...) will be automatically created for you. If you need to put 
-            your module inside a project, use the [-p] option. It will put your
-            module inside the project in your current directory. The [--path] 
-            option specifies the path of your project or where you want the 
-            module to be installed.             
-            If you need the python structure inside a module use the [-py] option.
-            
+PROG [-h] module_name module_version 
+     [-p project_name project_version] 
+     [--path project path] 
+     [-py] 
+
+e.g. CreateElementsModule MyModule 1.0
+
+This script creates an <Elements> module at your current directory
+inside a project or not (default).
+It means all the necessary structure (directory structure, makefiles
+etc...) will be automatically created for you. If you need to put 
+your module inside a project, use the [-p] option. It will put your
+module inside the project in your current directory. The [--path] 
+option specifies the path of your project or where you want the 
+module to be installed.             
+If you need the python structure inside a module use the [-py] 
+option.
            """
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('module_name', metavar='module-name', type=str, help='Module name')
