@@ -60,7 +60,7 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
     BOOST_CHECK(fs::exists(test_file_path));
   }
 
-  // the items must have been destroy after the
+  // the items must have been destroyed after the
   // closing of the block
   BOOST_CHECK(!fs::exists(test_path));
   BOOST_CHECK(!fs::exists(test_file_path));
