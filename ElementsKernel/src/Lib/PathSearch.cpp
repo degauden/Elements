@@ -89,7 +89,8 @@ vector<string> pathSearch(string searched_name, string directory,
  * and call pathSearch(...) for each of them
  */
 vector<fs::path> pathSearchInEnvVariable(std::string file_name,
-    std::string path_like_env_variable) {
+                                            std::string path_like_env_variable,
+                                            SearchType search_type) {
 
   // Placeholder for the to-be-returned search result
   vector<fs::path> search_results { };
@@ -110,8 +111,9 @@ vector<fs::path> pathSearchInEnvVariable(std::string file_name,
     // Check if directory exists
     if (fs::exists(path_element) && fs::is_directory(path_element)) {
       // loop recursively inside directory
-      auto single_path_results = pathSearch(file_name, fs::path { path_element },
-                                            SearchType::Recursive);
+      auto single_path_results = pathSearch(file_name,
+                                            fs::path { path_element },
+                                            search_type);
       for (fs::path aPath : single_path_results) {
         search_results.push_back(aPath);
       }
