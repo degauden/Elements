@@ -18,9 +18,9 @@
 namespace algo = boost::algorithm;
 namespace fs = boost::filesystem;
 
+#include "ElementsKernel/Temporary.h"   // For TempDir
 #include "ElementsKernel/Logging.h"
 
-//using namespace Elements;
 using Elements::Logging;
 
 using std::string;
@@ -77,15 +77,19 @@ class LogMessageTracker {
   std::streambuf* m_old;
 };
 
+
 struct ElementsLogging_Fixture {
+  Logging m_logger = Logging::getLogger("TestLogger");
+  Elements::TempDir m_tmpdir;
+  // This tracker will record all messages written in the stderr. The Elements
+  // logging system guarantees that the messages will appear there.
+  LogMessageTracker m_tracker { std::cerr };
   ElementsLogging_Fixture() {
     Logging::setLevel("INFO");
     Logging::setLogFile("");
   }
-  // This tracker will record all messages written in the stderr. The Elements
-  // logging system guarantees that the messages will appear there.
-  LogMessageTracker m_tracker { std::cerr };
-  Logging m_logger = Logging::getLogger("TestLogger");
+  ~ElementsLogging_Fixture() {
+  }
 };
 
 class SetRandomSeed {
@@ -108,7 +112,7 @@ BOOST_AUTO_TEST_SUITE(ElementsLogging_test)
 BOOST_FIXTURE_TEST_CASE(loggerNames_test, ElementsLogging_Fixture) {
 
 
-  //Given
+  // Given
   Logging logger2 = Logging::getLogger("TestLogger2");
 
   // When
@@ -295,7 +299,8 @@ BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
 
   // Given
   stringstream logFileName { };
-  logFileName << "/tmp/" << std::time(NULL) << std::rand() << ".log";
+  logFileName << m_tmpdir.path().string() + "/"
+              << std::time(NULL) << std::rand() << ".log";
   Logging::setLogFile(logFileName.str());
 
   // When
@@ -324,9 +329,11 @@ BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
 
   // Given
   stringstream logFileName1 { };
-  logFileName1 << "/tmp/" << std::time(NULL) << std::rand() << ".log";
+  logFileName1 << m_tmpdir.path().string() + "/"
+               << std::time(NULL) << std::rand() << ".log";
   stringstream logFileName2 { };
-  logFileName2 << "/tmp/" << std::time(NULL) << std::rand() << ".log";
+  logFileName2 << m_tmpdir.path().string() + "/"
+               << std::time(NULL) << std::rand() << ".log";
 
   // When
 
