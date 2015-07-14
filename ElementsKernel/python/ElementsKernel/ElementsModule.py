@@ -60,7 +60,7 @@ def createModuleDirectories(mod_path, module_name):
     os.makedirs(os.path.join(os.path.sep, mod_path, 'doc')) 
       
    
-def createModule(project_dir, module_name, module_version, add_python):
+def createModule(project_dir, module_name, add_python):
     """
     Create a module, copy auxiliary files and substitute variables in the
     CMakefile.txt file
@@ -91,7 +91,7 @@ def createModule(project_dir, module_name, module_version, add_python):
                 
 def defineSpecificProgramOptions():
     usage = """ 
-PROG [-h] module_name module_version 
+PROG [-h] module_name 
      [-p project_name project_version] 
      [--path project path] 
      [-py] 
@@ -99,7 +99,7 @@ PROG [-h] module_name module_version
 e.g. CreateElementsModule MyModule 1.0
 
 This script creates an <Elements> module at your current directory
-inside a project or not (default).
+(default) and inside a project or not.
 It means all the necessary structure (directory structure, makefiles
 etc...) will be automatically created for you. If you need to put 
 your module inside a project, use the [-p] option. It will put your
@@ -111,7 +111,6 @@ option.
            """
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('module_name', metavar='module-name', type=str, help='Module name')
-    parser.add_argument('module_version', metavar='module-version', type=str, help='Module version number')
     parser.add_argument('-p','--project-version', nargs=2, type=str , help='Project name and its version number e.g "project_name 0.1"')
     parser.add_argument('-py','--python-stuff', action='store_true', help='Add python directory structure')
     parser.add_argument('--path', type=str , help='Installation path(default : current directory)')
@@ -128,7 +127,6 @@ def mainMethod(args):
         script_goes_on = True
         
         module_name      = args.module_name
-        module_version   = args.module_version
         
         project_name     = ''
         project_version  = ''
@@ -139,14 +137,20 @@ def mainMethod(args):
         destination_path = ep.setPath(args.path)
         add_python       = args.python_stuff
         
-        script_goes_on = ep.isNameAndVersionValid(module_name, module_version)
+        # Module as no version number, '1.0' is just for using the routine
+        script_goes_on = ep.isNameAndVersionValid(module_name, '1.0')
+        
+        # Check aux files exist
+        if script_goes_on:
+             script_goes_on = ep.isAuxFileExist(AUX_CMAKELIST_MOD_IN)
+
         if project_name and project_version and script_goes_on:
              script_goes_on = ep.isNameAndVersionValid(project_name, project_version)
                           
         project_dir = os.path.join(os.path.sep, destination_path, project_name, project_version)
 
         if os.path.exists(project_dir) and script_goes_on:
-            if not createModule(project_dir, module_name, module_version, add_python):            
+            if not createModule(project_dir, module_name, add_python):            
                  logger.info('# <%s> module successfully created in <%s>.' % (module_name, project_dir))
             else:
                  logger.info("Script stopped by user!")
