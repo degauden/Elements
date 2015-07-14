@@ -248,7 +248,8 @@ def mainMethod(args):
         script_goes_on = isNameAndVersionValid(proj_name, proj_version)
 
         # Check for duplicate dependencies
-        script_goes_on = duplicate_elements(dependant_projects)
+        if script_goes_on and not args.dep_project_version is None:
+            script_goes_on = duplicate_elements(dependant_projects)
         
         # Check aux files exist
         if script_goes_on:
