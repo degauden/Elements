@@ -3,19 +3,20 @@
  * @date Dec 4, 2013
  * @author Pierre Dubath
  */
-#ifndef SEARCHPATH_H_
-#define SEARCHPATH_H_
+#ifndef ELEMENTSKERNEL_SEARCHPATH_H_
+#define ELEMENTSKERNEL_SEARCHPATH_H_
 
+#include <string>
 #include <boost/filesystem.hpp>
 
-#include "ElementsKernel/Export.h" // ELEMENTS_API
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 
 namespace Elements {
 
 enum class SearchType {
   Local, Recursive
-} ;
+};
 
 /**
  * @brief search
@@ -47,7 +48,9 @@ ELEMENTS_API std::vector<std::string> pathSearch(std::string searched_name,
  *
  * and call pathSearch(...) for each of them
  */
-ELEMENTS_API std::vector<boost::filesystem::path> pathSearchInEnvVariable(std::string file_name, std::string path_like_env_variable);
+ELEMENTS_API std::vector<boost::filesystem::path> pathSearchInEnvVariable(std::string file_name,
+                                                                          std::string path_like_env_variable,
+                                                                          SearchType search_type=SearchType::Recursive);
 
 //  /**
 //   * @brief
@@ -72,6 +75,6 @@ ELEMENTS_API std::vector<boost::filesystem::path> pathSearchInEnvVariable(std::s
 //  static std::vector<boost::filesystem::path> tokenizePathLikeVariable(
 //      std::string path_like_env_variable);
 
-} // Elements namespace
+}  // Elements namespace
 
-#endif /* SEARCHPATH_H_ */
+#endif  // ELEMENTSKERNEL_SEARCHPATH_H_
