@@ -42,12 +42,14 @@ def isNameAndVersionValid(name, version):
     valid = True
     name_regex='^[A-Za-z0-9][A-Za-z0-9_-]*$' 
     if re.match(name_regex, name) is None:      
-        logger.error("<%s> name not valid. It must follow this regex : < %s >" % (name, name_regex))
+        logger.error("# < %s %s > name not valid. It must follow this regex : < %s >" 
+                     % (name, version, name_regex))
         valid = False
 
     version_regex = '^\d+\.\d+(\.\d+)?$'
     if re.match(version_regex, version) is None:
-        logger.error("Version number not valid. It must follow this regex: < %s >" % version_regex)    
+        logger.error("# < %s %s > ,Version number not valid. It must follow this regex: < %s >" 
+                     % (name, version, version_regex))    
         valid = False
         
     return valid

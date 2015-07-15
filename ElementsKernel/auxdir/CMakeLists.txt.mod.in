@@ -13,14 +13,20 @@ elements_subdir(%(MODULE_NAME)s)
 ###                  INCLUDE_DIRS Boost 
 ###                  PUBLIC_HEADERS %(MODULE_NAME)s )
 
-#===== Executables ===============================================================
+#===== Executables =============================================================
 
 ### !!! HOWTO : Executable Example !!!
 ### elements_add_executable(EXECUTABLE_EXAMPLE_NAME src/program/EXECUTABLE_EXAMPLE_NAME.cpp
 ###                        LINK_LIBRARIES "!!! LIBRARY_NAME_HERE !!!" )
+
+### elements_add_python_program(PYTHON_EXECUTABLE_NAME PYTHON_MODULE)
 
 #===== Boost tests =============================================================
 
 ### !!! HOWTO : Test unit !!!
 ### elements_add_unit_test( %(MODULE_NAME)s_tests/src/%(MODULE_NAME)s_test.cpp
 ###                       LINK_LIBRARIES %(MODULE_NAME)s TYPE Boost)
+###
+
+#===== Install directives ======================================================
+

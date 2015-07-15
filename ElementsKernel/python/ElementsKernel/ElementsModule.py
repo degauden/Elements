@@ -16,7 +16,30 @@ import ElementsKernel.Logging as log
 
 logger = log.getLogger('CreateElementsModule')
        
-AUX_CMAKELIST_MOD_IN = "CMakeLists.txt.mod.in"
+AUX_CMAKELIST_MOD_IN = 'CMakeLists.txt.mod.in'
+cmake_lists_file     = 'CMakeLists.txt'
+
+def isElementsProjectExist(dir_project):
+    """
+    Checks if an Elements CMakeLists.txt file exists
+    """
+    file_exists = True
+    cmake_lists          = 'elements_project'
+    cmake_file = os.path.join(os.path.sep, dir_project, cmake_lists_file)
+    if not os.path.isfile(cmake_file):
+        file_exists = False
+        logger.error('# %s cmake project file is missing! Are you in a project directory?', cmake_file)    
+    else:
+        # Check the make file is an Elements cmake file
+        # it should contain the string : "elements_project"
+        f = open(cmake_file, 'r')
+        data = f.read()
+        if not 'elements_project' in data:
+            file_exists = False
+            logger.error('# %s is not an Elements cmake file! Can not find the <elements_project> directive', cmake_file)    
+        f.close()
+
+    return file_exists
 
 def substituteModuleVariables(module_dir, module_name):
     """
@@ -24,7 +47,7 @@ def substituteModuleVariables(module_dir, module_name):
     CMakeList.txt.
     """
     logger.info('# Substitute variables in <%s> file' % AUX_CMAKELIST_MOD_IN) 
-    cmake_list_file = os.path.join(os.path.sep, module_dir, AUX_CMAKELIST_MOD_IN )
+    cmake_list_file = os.path.join(os.path.sep, module_dir, AUX_CMAKELIST_MOD_IN)
     # Substitute    
     f = open(cmake_list_file, 'r')
     data = f.read()
@@ -83,9 +106,13 @@ def createModule(project_dir, module_name, add_python):
 
     if script_goes_on:
         createModuleDirectories(mod_path, module_name)
-        if add_python:        
-            createPythonStuff(mod_path, module_name)            
         ep.copyAuxFile(mod_path, AUX_CMAKELIST_MOD_IN)
+        if add_python:        
+            createPythonStuff(mod_path, module_name) 
+            # Add python directives
+            with open(os.path.join(os.path.sep, mod_path, AUX_CMAKELIST_MOD_IN), "a") as text_file:
+                text_file.write("### elements_install_python_modules()\n### elements_install_scripts()")   
+            
         substituteModuleVariables(mod_path, module_name)
     
     return script_goes_on
@@ -101,21 +128,18 @@ PROG [-h] module_name
 e.g. CreateElementsModule MyModule 1.0
 
 This script creates an <Elements> module at your current directory
-(default). But it could be part of a project, use the <-p> option for 
-that. All necessary structure (directory structure, makefiles
-etc...) will be automatically created for you. If you need to put 
-your module inside a project, use the [-p] option. It will put your
-module inside the project in your current directory. The [--path] 
-option specifies the path of your project or where you want the 
-module to be installed.             
-If you need the python structure inside a module use the [-py] 
-option.
+(default) but it must be inside a project directory. All necessary structure
+(directory structure, makefiles etc...) will be automatically created 
+for you. 
+[-py] Use this option if you need the python structure
+[--path pathname] Use this option if your project directory is not the current 
+         directory. Give an absolute path.
+
            """
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('module_name', metavar='module-name', type=str, help='Module name')
-    parser.add_argument('-p','--project-version', nargs=2, type=str , help='Project name and its version number e.g "project_name 0.1"')
     parser.add_argument('-py','--python-stuff', action='store_true', help='Add python directory structure')
-    parser.add_argument('--path', type=str , help='Installation path(default : current directory)')
+    parser.add_argument('--path', type=str , help='Installation absolute path (different than current directory)')
     return parser
 
 
@@ -128,35 +152,35 @@ def mainMethod(args):
     try:
         script_goes_on   = True        
         module_name      = args.module_name       
-        project_name     = ''
-        project_version  = ''
-        
-        if not args.project_version is None:
-            project_name     = args.project_version[0]
-            project_version  = args.project_version[1]
-             
-        destination_path = ep.setPath(args.path)
         add_python       = args.python_stuff
         
+        # Default is the current directory
+        project_dir = os.getcwd()
+        if not args.path is None:            
+             project_dir = ep.setPath(args.path)
+             
+        logger.info('# Current directory : %s', project_dir)
+        
+        # We absolutely need a Elements cmake file 
+        script_goes_on = isElementsProjectExist(project_dir)
+        
         # Module as no version number, '1.0' is just for using the routine
-        script_goes_on = ep.isNameAndVersionValid(module_name, '1.0')
+        if script_goes_on:
+            script_goes_on = ep.isNameAndVersionValid(module_name, '1.0')
         
         # Check aux files exist
         if script_goes_on:
              script_goes_on = ep.isAuxFileExist(AUX_CMAKELIST_MOD_IN)
 
-        if project_name and project_version and script_goes_on:
-             script_goes_on = ep.isNameAndVersionValid(project_name, project_version)
-                          
-        project_dir = os.path.join(os.path.sep, destination_path, project_name, project_version)
-
-        if os.path.exists(project_dir) and script_goes_on:
-            script_goes_on = createModule(project_dir, module_name, add_python)            
-            if script_goes_on:
-                logger.info('# <%s> module successfully created in <%s>.' % (module_name, project_dir))    
-        else:
-            if not script_goes_on:               
-                logger.error('<%s> project directory does not exist!!! Script aborted' % project_dir)
+        if script_goes_on:
+            if os.path.exists(project_dir):
+                if createModule(project_dir, module_name, add_python):            
+                    logger.info('# <%s> module successfully created in <%s>.' % (module_name, project_dir))    
+            else:
+               if not script_goes_on:               
+                logger.error('# <%s> project directory does not exist!' % project_dir)
+        else: 
+            logger.error('# Script aborted')
                    
     except Exception as e:
         logger.exception(e)
