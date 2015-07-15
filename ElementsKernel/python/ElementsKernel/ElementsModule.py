@@ -36,7 +36,7 @@ def isElementsProjectExist(dir_project):
         data = f.read()
         if not 'elements_project' in data:
             file_exists = False
-            logger.error('# %s is not an Elements cmake file! Can not find the <elements_project> directive', cmake_file)    
+            logger.error('# %s is not an Elements project cmake file! Can not find the <elements_project> directive', cmake_file)    
         f.close()
 
     return file_exists
@@ -120,12 +120,12 @@ def createModule(project_dir, module_name, add_python):
                 
 def defineSpecificProgramOptions():
     usage = """ 
-PROG [-h] module_name 
-     [-p project_name project_version] 
-     [--path project path] 
-     [-py] 
+PROG  module_name 
+    [-py] 
+    [--path project path] 
+    [-h]
 
-e.g. CreateElementsModule MyModule 1.0
+e.g. CreateElementsModule MyModuleName
 
 This script creates an <Elements> module at your current directory
 (default) but it must be inside a project directory. All necessary structure
@@ -134,7 +134,7 @@ for you.
 [-py] Use this option if you need the python structure
 [--path pathname] Use this option if your project directory is not the current 
          directory. Give an absolute path.
-
+[-h] help
            """
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('module_name', metavar='module-name', type=str, help='Module name')
