@@ -6,7 +6,6 @@
 #include "ElementsKernel/FuncPtrCast.h"
 
 #include <cerrno>
-#include <string.h>
 #include <sys/times.h>
 #include <sys/param.h>
 #include <unistd.h>
