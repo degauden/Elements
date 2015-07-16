@@ -74,7 +74,7 @@ const po::variables_map ProgramManager::getProgramOptions(
   po::variables_map variables_map { };
 
   // default value for default_log_level option
-  std::string default_log_level = "INFO";
+  string default_log_level = "INFO";
 
   // Get defaults
   fs::path default_config_file = getDefaultConfigFile(getProgramName());
@@ -91,7 +91,7 @@ const po::variables_map ProgramManager::getProgramOptions(
   // Define the options which can be given both at command line and conf file
   po::options_description cmd_and_file_generic_options {};
   cmd_and_file_generic_options.add_options()
-      ("log-level", po::value<std::string>()->default_value(default_log_level),
+      ("log-level", po::value<string>()->default_value(default_log_level),
          "Log level: FATAL, ERROR, WARN, INFO (default), DEBUG")
       ("log-file",
          po::value<fs::path>(),"Name of a log file");
@@ -156,7 +156,7 @@ const po::variables_map ProgramManager::getProgramOptions(
   
   // Parse from the configuration file if it exists
   if (!config_file.empty() && fs::exists(config_file)) {
-    std::ifstream ifs {config_file.string()};
+    ifstream ifs {config_file.string()};
     if (ifs) {
       po::store(po::parse_config_file(ifs, all_cmd_and_file_options), variables_map);
     }
@@ -239,7 +239,7 @@ void ProgramManager::logAllOptions(string program_name) {
     } else {
       log_message << "Option " << iter->first << " of type "
           << iter->second.value().type().name() << " not supported in logging !"
-          << std::endl;
+          << endl;
     }
     // write the log message
     logger.info(log_message.str());
@@ -260,7 +260,7 @@ void ProgramManager::setup(int argc, char* argv[]) {
   m_variables_map = getProgramOptions(argc, argv);
 
   // get the program options related to the logging
-  std::string logging_level;
+  string logging_level;
   if (m_variables_map.count("log-level")) {
     logging_level = m_variables_map["log-level"].as<string>();
   } else {

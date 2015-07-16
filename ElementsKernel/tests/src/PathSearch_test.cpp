@@ -15,7 +15,8 @@ namespace fs = boost::filesystem;
 
 #include "ElementsKernel/PathSearch.h"
 #include "ElementsKernel/Exception.h"
-#include "ElementsKernel/System.h"  // for getEnv
+#include "ElementsKernel/System.h"        // for getEnv
+#include "ElementsKernel/Temporary.h"     // For the TempDir class
 
 
 using std::string;
@@ -60,6 +61,11 @@ struct Path_Fixture {
     }
   }
 };
+
+void createTemporaryStructure(const fs::path& top_path) {
+  fs::create_directories(top_path / "tests" / "data" / "PathSearch");
+}
+
 
 BOOST_AUTO_TEST_SUITE(Path_test)
 
@@ -230,6 +236,32 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_Env_Variable_Undefine, Path_Fixt
 
   BOOST_CHECK(actualFullPathVector.empty());
 }
+
+BOOST_AUTO_TEST_CASE(PathConstructor_test) {
+
+  fs::path test_path {"toto/titi"};
+
+  BOOST_CHECK(test_path.is_relative());
+  BOOST_CHECK(test_path.filename() == "titi");
+  BOOST_CHECK(test_path.parent_path() == "toto");
+
+  string test_str {"toto/tutu"};
+  fs::path test_path2 { test_str };
+
+  BOOST_CHECK(test_path2.is_relative());
+  BOOST_CHECK(test_path2.string() == test_path2);
+
+}
+
+BOOST_AUTO_TEST_CASE(Recursion_test) {
+
+  using Elements::TempDir;
+
+  TempDir top_dir {"PathSearch_Recursion_test-%%%%%%%"};
+  fs::path top_dir_path = top_dir.path();
+  createTemporaryStructure(top_dir_path);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
