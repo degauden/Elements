@@ -5,21 +5,21 @@ elements_subdir(%(MODULE_NAME)s)
 ### !!! HOWTO : Dependency Modules !!!
 ### elements_depends_on_subdirs("!!! DEPENDENCY_MODULE_NAME_HERE !!!")
 
-#===== Libraries ===============================================================
+###===== Libraries ===============================================================
+#LIB#
+#LIB#### !!! HOWTO : Library Example !!!
+#LIB#### elements_add_library(%(MODULE_NAME)s src/lib/*.cpp
+#LIB####                  LINK_LIBRARIES  Boost 
+#LIB####                  INCLUDE_DIRS Eigen 
+#LIB####                  PUBLIC_HEADERS %(MODULE_NAME)s )
 
-### !!! HOWTO : Library Example !!!
-### elements_add_library(%(MODULE_NAME)s src/lib/*.cpp
-###                  LINK_LIBRARIES  Boost 
-###                  INCLUDE_DIRS Boost 
-###                  PUBLIC_HEADERS %(MODULE_NAME)s )
-
-#===== Executables =============================================================
-
-### !!! HOWTO : Executable Example !!!
-### elements_add_executable(EXECUTABLE_EXAMPLE_NAME src/program/EXECUTABLE_EXAMPLE_NAME.cpp
-###                        LINK_LIBRARIES "!!! LIBRARY_NAME_HERE !!!" )
-
-### elements_add_python_program(PYTHON_EXECUTABLE_NAME PYTHON_MODULE)
+###===== Executables =============================================================
+#EXE#
+#EXE#### !!! HOWTO : Executable Example !!!
+#EXE#### elements_add_executable(EXECUTABLE_EXAMPLE_NAME src/program/EXECUTABLE_EXAMPLE_NAME.cpp
+#EXE####                        LINK_LIBRARIES "!!! LIBRARY_NAME_HERE !!!" )
+#EXE#
+#PY#### elements_add_python_program(PYTHON_EXECUTABLE_NAME PYTHON_MODULE)
 
 #===== Boost tests =============================================================
 
@@ -30,3 +30,11 @@ elements_subdir(%(MODULE_NAME)s)
 
 #===== Install directives ======================================================
 
+#PY## Instruction for Python module installation
+#PY#### elements_install_python_modules()
+
+#PY## Instruction for Python script installation
+#PY####elements_install_scripts()
+
+#EXE## Install the configuration files
+#EXE#### elements_install_conf_files()

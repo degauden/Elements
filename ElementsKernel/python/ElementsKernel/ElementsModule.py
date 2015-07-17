@@ -4,7 +4,7 @@
 # @file: scripts/CreateElementsModule.py
 # @author: Nicolas Morisset  
 #          Astronomy Department of the University of Geneva 
-#          Nicolas.Morisset@unige.ch
+#
 # @date: 01/07/15
 #
 # This script will create a new <Elements> module
@@ -15,20 +15,25 @@ import ElementsKernel.ElementsProject as ep
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('CreateElementsModule')
-       
+
+# Define constants       
 AUX_CMAKELIST_MOD_IN = 'CMakeLists.txt.mod.in'
-cmake_lists_file     = 'CMakeLists.txt'
+CMAKE_LISTS_FILE     = 'CMakeLists.txt'
+LIB_KEY              = '#LIB#'
+EXE_KEY              = '#EXE#'
+PY_KEY               = '#PY#'
 
 def isElementsProjectExist(dir_project):
     """
-    Checks if an Elements CMakeLists.txt file exists
+    Checks if a CMakeLists.txt file exists and is really an Elements
+    cmake file
     """
     file_exists = True
     cmake_lists          = 'elements_project'
-    cmake_file = os.path.join(os.path.sep, dir_project, cmake_lists_file)
+    cmake_file = os.path.join(os.path.sep, dir_project, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         file_exists = False
-        logger.error('# %s cmake project file is missing! Are you in a project directory?', cmake_file)    
+        logger.error('# %s cmake project file is missing! Are you inside a project directory?', cmake_file)    
     else:
         # Check the make file is an Elements cmake file
         # it should contain the string : "elements_project"
@@ -41,25 +46,69 @@ def isElementsProjectExist(dir_project):
 
     return file_exists
 
-def substituteModuleVariables(module_dir, module_name):
+def substituteModuleVariables(module_dir, module_name, remove_lib, remove_exe, add_python):
     """
     Substitute variables in CMakeList.txt.mod.in file and rename it to 
     CMakeList.txt.
     """
     logger.info('# Substitute variables in <%s> file' % AUX_CMAKELIST_MOD_IN) 
     cmake_list_file = os.path.join(os.path.sep, module_dir, AUX_CMAKELIST_MOD_IN)
-    # Substitute    
-    f = open(cmake_list_file, 'r')
-    data = f.read()
-    f.close()
-    # Substitute
-    new_data = data % dict({ "MODULE_NAME" : module_name })
-    # Save new data
-    f = open(cmake_list_file, 'w')
-    f.write(new_data)
-    f.close()
-    os.rename(cmake_list_file, cmake_list_file.replace('.mod.in','')) 
+    cmake_list_file_final = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
+    
+    # Make it a bit more logical
+    add_lib = not remove_lib
+    add_exe = not remove_exe    
 
+    # Remove all useless lines in CMakeLists.txt file following
+    # the options chosen
+    f_initial= open(cmake_list_file, 'r') 
+    f_final = open(cmake_list_file_final, 'w')
+    
+    for line in f_initial.readlines():
+        line = line.replace('%(MODULE_NAME)s',module_name)
+        # we got all structure
+        if add_lib and add_exe and add_python:
+            # We keep all structure with the library stuff
+            if line:
+                line = line.replace(LIB_KEY, '')
+                line = line.replace(EXE_KEY, '')
+                line = line.replace(PY_KEY, '')
+            f_final.write(line)  
+        elif add_lib and add_exe and not add_python:
+            if not PY_KEY in line:
+                line = line.replace(EXE_KEY, '')
+                line = line.replace(LIB_KEY, '')
+                f_final.write(line) 
+        elif add_lib and not add_exe and not add_python:
+            if not PY_KEY in line:
+                if not EXE_KEY in line:
+                    line = line.replace(LIB_KEY, '')
+                    f_final.write(line)   
+        elif add_lib and not add_exe and add_python:
+            if not EXE_KEY in line:
+                line = line.replace(LIB_KEY, '')
+                line = line.replace(PY_KEY, '')
+                f_final.write(line)
+        elif not add_lib and add_exe and add_python:
+            if not LIB_KEY in line:
+                line = line.replace(EXE_KEY, '')
+                line = line.replace(PY_KEY, '')
+                f_final.write(line)                
+        elif not add_lib and add_exe and not add_python:
+            if not LIB_KEY in line:
+                if not PY_KEY in line:
+                    line = line.replace(EXE_KEY, '')
+                    f_final.write(line)                
+        elif not add_lib and add_exe and add_python:
+            if not LIB_KEY in line:
+                line = line.replace(EXE_KEY,'')
+                line = line.replace(PY_KEY,'')
+                f_final.write(line)                
+            
+    f_final.close()
+    f_initial.close()
+    os.remove(cmake_list_file)
+    
 def createPythonStuff(mod_path, module_name):
     """
     Create the directory structure for python
@@ -69,21 +118,31 @@ def createPythonStuff(mod_path, module_name):
     os.makedirs(os.path.join(os.path.sep, mod_path, 'scripts')) 
     os.makedirs(os.path.join(os.path.sep, mod_path, 'tests', 'python')) 
 
-def createModuleDirectories(mod_path, module_name):
+def createModuleDirectories(mod_path, module_name, remove_lib, remove_exe, add_python):
     """
     Create the directory structure for the module
     """
     # Create module directories
     logger.info('# Creating the module directories')
     os.makedirs(mod_path) 
-    os.makedirs(os.path.join(os.path.sep, mod_path, module_name)) 
-    os.makedirs(os.path.join(os.path.sep, mod_path, 'src','lib')) 
-    os.makedirs(os.path.join(os.path.sep, mod_path, 'src','program')) 
+    
+    os.makedirs(os.path.join(os.path.sep, mod_path, 'doc'))
+     
+    if not remove_lib: 
+        os.makedirs(os.path.join(os.path.sep, mod_path, 'src','lib'))
+    
+    os.makedirs(os.path.join(os.path.sep, mod_path, module_name))
     os.makedirs(os.path.join(os.path.sep, mod_path,'tests', 'src')) 
-    os.makedirs(os.path.join(os.path.sep, mod_path, 'doc')) 
-      
+    
+    if not remove_exe: 
+        os.makedirs(os.path.join(os.path.sep, mod_path, 'src','program'))
+        os.makedirs(os.path.join(os.path.sep, mod_path, 'conf')) 
+                   
+    if add_python:
+        createPythonStuff(mod_path, module_name)
+          
    
-def createModule(project_dir, module_name, add_python):
+def createModule(project_dir, module_name, add_python, remove_lib ,remove_exe):
     """
     Create a module, copy auxiliary files and substitute variables in the
     CMakefile.txt file
@@ -105,28 +164,15 @@ def createModule(project_dir, module_name, add_python):
             script_goes_on = False
 
     if script_goes_on:
-        createModuleDirectories(mod_path, module_name)
+        createModuleDirectories(mod_path, module_name, remove_lib ,remove_exe, add_python)
         ep.copyAuxFile(mod_path, AUX_CMAKELIST_MOD_IN)
-        if add_python:        
-            createPythonStuff(mod_path, module_name) 
-            # Add python directives
-            with open(os.path.join(os.path.sep, mod_path, AUX_CMAKELIST_MOD_IN), "a") as text_file:
-                text_file.write("### elements_install_python_modules()\n### elements_install_scripts()")   
-            
-        substituteModuleVariables(mod_path, module_name)
+        substituteModuleVariables(mod_path, module_name, remove_lib ,remove_exe, add_python)
     
     return script_goes_on
     
                 
 def defineSpecificProgramOptions():
-    usage = """ 
-PROG  module_name 
-    [-py] 
-    [--path project path] 
-    [-h]
-
-e.g. CreateElementsModule MyModuleName
-
+    description = """ 
 This script creates an <Elements> module at your current directory
 (default) but it must be inside a project directory. All necessary structure
 (directory structure, makefiles etc...) will be automatically created 
@@ -136,10 +182,14 @@ for you.
          directory. Give an absolute path.
 [-h] help
            """
-    parser = argparse.ArgumentParser(usage=usage)
+    parser = argparse.ArgumentParser(description=description)
     parser.add_argument('module_name', metavar='module-name', type=str, help='Module name')
     parser.add_argument('-py','--python-stuff', action='store_true', help='Add python directory structure')
     parser.add_argument('--path', type=str , help='Installation absolute path (different than current directory)')
+    parser.add_argument('-re', '--remove-exe', action='store_true', help='Structure for executable removed')
+    parser.add_argument('-rl', '--remove-lib', action='store_true', help='Structure for library removed')
+    parser.add_argument('-ex', '--example', action='store_true',  help='Add example files ')
+    
     return parser
 
 
@@ -150,9 +200,17 @@ def mainMethod(args):
     logger.info('#')
     
     try:
-        script_goes_on   = True        
-        module_name      = args.module_name       
-        add_python       = args.python_stuff
+        script_goes_on = True        
+        module_name    = args.module_name       
+        add_python     = args.python_stuff
+        add_example    = args.example
+        remove_lib     = args.remove_lib
+        remove_exe     = args.remove_exe
+        
+        # TMP TMP
+        if add_example:
+            logger.warning('# Sorry NO EXAMPLES files available yet!')
+        # TMP TMP
         
         # Default is the current directory
         project_dir = os.getcwd()
@@ -174,7 +232,7 @@ def mainMethod(args):
 
         if script_goes_on:
             if os.path.exists(project_dir):
-                if createModule(project_dir, module_name, add_python):            
+                if createModule(project_dir, module_name, add_python, remove_lib ,remove_exe):            
                     logger.info('# <%s> module successfully created in <%s>.' % (module_name, project_dir))    
             else:
                if not script_goes_on:               

@@ -4,7 +4,7 @@
 # @file: scripts/CreateElementsModule.py
 # @author: Nicolas Morisset  
 #          Astronomy Department of the University of Geneva 
-#          Nicolas.Morisset@unige.ch
+#          
 # @date: 01/07/15
 #
 # This script will create a new <Elements> project
@@ -118,7 +118,7 @@ def getAuxPathFile(file_name):
             full_filename = os.path.sep.join([elt, file_name])
             if os.path.exists(full_filename) and 'auxdir' in full_filename:
                 found = True
-                logger.info("# Auxiliary directory for this file : <%s>" % full_filename)
+                logger.debug("# Auxiliary directory for this file : <%s>" % full_filename)
                 break 
         
     if not found:
@@ -208,15 +208,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
         
         
 def defineSpecificProgramOptions():
-    usage = """
-PROG project_name project_version 
-     [-d dependency_project dependency_version]
-     [-p] project path
-     [-h]
-
-e.g. CreateElementsProject MyProject 1.0 -d Alexandria 2.0 -d 
-     PhosphorosCore 3.0 
-
+    description = """
 This script creates an <Elements> project in your current directory
 by default. It means all the necessary structure (directory 
 structure, makefiles etc...) will be automatically created for you. 
@@ -225,9 +217,9 @@ else.
 Use the [-d] option if your project has some dependencies to other
 project(s). 
             """
-    parser = argparse.ArgumentParser(usage=usage)
+    parser = argparse.ArgumentParser(description=description)
     parser.add_argument('project_name', metavar='project-name', type=str, help='Project name')
-    parser.add_argument('project_version', metavar='project-version', type=str, help='Project version number')
+    parser.add_argument('project_version', metavar='project-version', type=str, default='1.0', help='Project version number')
     parser.add_argument('-d','--dep-project-version', nargs=2, action='append', type=str , help='Dependency project name and its version number e.g "project_name 0.1"')
     parser.add_argument('-p','--path', type=str , help='Installation path(default : current directory)')
     return parser
