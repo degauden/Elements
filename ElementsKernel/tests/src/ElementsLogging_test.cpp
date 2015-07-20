@@ -4,22 +4,24 @@
  * @author Nikolaos Apostolakos
  */
 
-#include <vector>                       // for std::vector
-#include <string>                       // for std::string
+#include <vector>                           // for std::vector
+#include <string>                           // for std::string
 #include <ostream>
-#include <sstream>                      // for std::stringstream
-#include <tuple>                        // for std::tuple
+#include <sstream>                          // for std::stringstream
+#include <tuple>                            // for std::tuple
 #include <ctime>
 #include <fstream>
+#include <iomanip>                          // for setprecision
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>         // for boost::filesystem
+#include <boost/filesystem.hpp>             // for boost::filesystem
 
 namespace algo = boost::algorithm;
 namespace fs = boost::filesystem;
 
-#include "ElementsKernel/Temporary.h"   // For TempDir
+#include "ElementsKernel/Temporary.h"      // For TempDir
 #include "ElementsKernel/Logging.h"
+#include "ElementsKernel/MathConstants.h"  // For pi
 
 using Elements::Logging;
 
@@ -156,10 +158,12 @@ BOOST_FIXTURE_TEST_CASE(messageTextAndLevel_test, ElementsLogging_Fixture) {
   m_logger.warn() << "Warn message with " << 15 << " value";
   m_logger.error() << "Error message with " << 15 << " value";
   m_logger.fatal() << "Fatal message with " << 15 << " value";
+  m_logger.info() << "This is the logged Pi: " << 5  << " " << std::setprecision(12) << Elements::Units::pi;
+  std::cout << "Pi:" << std::setprecision(9) << Elements::Units::pi << std::endl;;
 
   // Then
   auto messages = m_tracker.getMessages();
-  BOOST_CHECK_EQUAL(messages.size(), 15);
+  BOOST_CHECK_EQUAL(messages.size(), 16);
   string logLevel;
   string message;
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[0];
@@ -207,6 +211,10 @@ BOOST_FIXTURE_TEST_CASE(messageTextAndLevel_test, ElementsLogging_Fixture) {
   std::tie(std::ignore, logLevel, std::ignore, message) = messages[14];
   BOOST_CHECK_EQUAL(logLevel, "FATAL");
   BOOST_CHECK_EQUAL(message, "Fatal message with 15 value");
+  std::tie(std::ignore, logLevel, std::ignore, message) = messages[15];
+  BOOST_CHECK_EQUAL(logLevel, "INFO");
+  BOOST_CHECK_EQUAL(message, "This is the logged Pi: 5 3.14159265359");
+
 
 }
 
