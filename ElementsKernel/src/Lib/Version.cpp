@@ -11,7 +11,6 @@
 
 #include "ElementsKernel/Version.h"
 
-//using namespace std;
 
 using std::string;
 

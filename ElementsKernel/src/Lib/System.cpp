@@ -23,9 +23,9 @@
 #include <string>                       // for string
 
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
-#include <errno.h>                      // for errno
+#include <cerrno>                      // for errno
 #include <execinfo.h>                   // for backtrace
-#include <string.h>                     // for strlen
+#include <cstring>                     // for strlen
 #include <unistd.h>                     // for environ
 #include <cxxabi.h>
 #include <sys/utsname.h>
@@ -67,7 +67,7 @@ static unsigned long loadWithoutEnvironment(const string& name,
   // Add the suffix at the end of the library name only if necessary
   /// @todo cure the logic
   if ((dllName.length() != 0)
-      && ::strncasecmp(
+      && strncasecmp(
           static_cast<const char *>(dllName.data() + dllName.length() - len),
           SHLIB_SUFFIX, len) != 0) {
     dllName += SHLIB_SUFFIX;
@@ -138,7 +138,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
   }
   if ( 0 == *pFunction ) {
     errno = 0xAFFEDEAD;
-    std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
+    cout << "Elements::System::getProcedureByName>" << getLastErrorString() << endl;
     return 0;
   }
   return 1;
@@ -171,7 +171,7 @@ const string getErrorString(unsigned long error) {
   if (error == 0xAFFEDEAD) {
     cerrString = (char*) ::dlerror();
     if (0 == cerrString) {
-      cerrString = ::strerror(error);
+      cerrString = strerror(error);
     }
     if (0 == cerrString) {
       cerrString =
@@ -181,19 +181,19 @@ const string getErrorString(unsigned long error) {
     }
     errno = 0;
   } else {
-    cerrString = ::strerror(error);
+    cerrString = strerror(error);
     errString = string(cerrString);
   }
   return errString;
 }
 
-const string typeinfoName(const std::type_info& tinfo) {
+const string typeinfoName(const type_info& tinfo) {
   return typeinfoName(tinfo.name());
 }
 
 const string typeinfoName(const char* class_name) {
   string result;
-  if (::strlen(class_name) == 1) {
+  if (strlen(class_name) == 1) {
     // See http://www.realitydiluted.com/mirrors/reality.sgi.com/dehnert_engr/cxx/abi.pdf
     // for details
     switch (class_name[0]) {
