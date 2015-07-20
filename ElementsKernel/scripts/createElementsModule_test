@@ -1,23 +1,31 @@
 #!/bin/sh
 
-dir="Module_test"
+here=${PWD}
+tmploc=$(mktemp -dq)
 
-if [ -d ${dir} ]; then
- rm -rf ${dir}
-fi 
+cd ${tmploc}
 
-CreateElementsModule Module_test 0.1
+CreateElementsModule Module_test
 
 if [ $? -ne 0 ]; then
-   exit 1
-fi
-
-if [ ! -d ${dir} ]; then
+  cd ${here}
+  rm -rf ${tmploc}
   exit 1
 fi
 
-if [ -d ${dir} ]; then
- rm -rf ${dir}
+if [ ! -d $Module_test ]; then
+  cd ${here}
+  rm -rf ${tmploc}
+  exit 1
+fi
+
+cd ${here}
+
+if [ -d ${tmploc} ]; then
+ rm -rf ${tmploc}
 fi 
+
+unset tmploc
+unset here
 
 exit 0
