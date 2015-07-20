@@ -12,8 +12,7 @@ namespace po = boost::program_options;
 
 #include "ElementsKernel/Program.h"
 
-using namespace std;
-
+using std::pair;
 
 namespace Elements {
 
@@ -25,6 +24,8 @@ namespace Elements {
   pair<po::options_description,po::positional_options_description> Program::defineProgramArguments() {
     po::options_description desc("");
     po::positional_options_description pos_desc;
+
+    using std::make_pair;
 
     return make_pair(desc, pos_desc);
   }
