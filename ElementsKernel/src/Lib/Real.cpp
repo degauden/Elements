@@ -12,8 +12,6 @@
 #include "ElementsKernel/Real.h"
 
 
-// using namespace std;
-
 namespace Elements {
 
 // Usable AlmostEqual function

@@ -22,7 +22,9 @@
 
 
 namespace fs = boost::filesystem;
-using namespace std;
+
+using std::vector;
+using std::string;
 
 namespace Elements {
 
