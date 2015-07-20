@@ -1,22 +1,33 @@
 #!/bin/sh
 
-dir="Project_test"
-if [ -d ${dir} ]; then
- rm -rf ${dir}
-fi 
+
+here=${PWD}
+tmploc=$(mktemp -dq)
+
+cd ${tmploc}
 
 CreateElementsProject Project_test 0.1
 
 if [ $? -ne 0 ]; then
-   exit 1
-fi
-
-if [ ! -d ${dir} ]; then
+  cd ${here}
+  rm -rf ${tmploc}
   exit 1
 fi
 
-if [ -d ${dir} ]; then
-   rm -rf Project_test
+if [ ! -d Project_test ]; then
+  cd ${here}
+  rm -rf ${tmp_loc}
+  exit 1
 fi
+
+cd ${here}
+
+
+if [ -d ${tmploc} ]; then
+   rm -rf ${tmploc}
+fi
+
+unset here
+unset tmploc
 
 exit 0
