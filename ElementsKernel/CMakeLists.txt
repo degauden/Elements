@@ -88,5 +88,5 @@ elements_add_python_program(CreateElementsModule ElementsKernel.ElementsModule)
 elements_install_aux_files()
 elements_install_python_modules()
 
-elements_add_test(ElementsProject COMMAND createElementsProject_test)
-elements_add_test(ElementsModule COMMAND createElementsModule_test)
+elements_add_test(CreateProject COMMAND createElementsProject_test)
+elements_add_test(CreateModule COMMAND createElementsModule_test)
