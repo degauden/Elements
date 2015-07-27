@@ -132,73 +132,8 @@ function(_internal_find_installed_project projects_var project_uses_var config_f
   set(${projects_var} ${projects} PARENT_SCOPE)
 endfunction()
 
-
 ## Helper for recursion and ordering of found projects.
 function(_internal_find_projects projects_var config_file)
-    debug_message(STATUS "processing ${config_file}")
-    set(collected_config ${collected_config} ${config_file})
-    debug_print_var(collected_config)
-    # Extract information from configuration file
-    file(READ ${config_file} config_file_data)
-    filter_comments(config_file_data)
-    # Warning: this regular expression implies that 'elements_project' is not on the
-    # first line of the file (but it is needed to ensure that it is not commented out)
-    string(REGEX MATCH "[ \t]*(elements_project)[ \t]*\\(([^)]+)\\)" match_use ${config_file_data})
-    set(match_use ${CMAKE_MATCH_2})
-    debug_message(STATUS "find_used_projects: match_use -> ${match_use}")
-    if(match_use STREQUAL "")
-        message(FATAL_ERROR "${config_file} does not contain elements_project")
-    endif()
-    # (replace space-type chars with spaces)
-    string(REGEX REPLACE "[ \t\r\n]+" " " args "${match_use}")
-    separate_arguments(args)
-    CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "USE;DATA;DESCRIPTION" ${args})
-
-    # get the project name and add it to the list of used projects
-    list(GET PROJECT_UNPARSED_ARGUMENTS 0 proj_name)
-    string(TOUPPER ${proj_name} proj_name)
-    debug_print_var(proj_name)
-    set(projects ${proj_name} ${${projects_var}})
-
-    # define cache variables for this project
-    if(NOT ${proj_name}_CONFIG_FILE)
-        get_filename_component(${proj_name}_CONFIG_FILE ${config_file} ABSOLUTE CACHE)
-    endif()
-    get_filename_component(${proj_name}_ROOT_DIR ${${proj_name}_CONFIG_FILE} PATH CACHE)
-
-    # then we look for the used projects
-    debug_print_var(PROJECT_USE)
-    while(PROJECT_USE)
-        # PROJECT_USE format is "<proj1> <vers1> <proj2> <vers2>..."
-        # we extract two entries per iteration
-        list(GET PROJECT_USE 0 name)
-           list(GET PROJECT_USE 1 version)
-           list(REMOVE_AT PROJECT_USE 0 1)
-           string(TOUPPER ${name} name_upper)
-           # look for the configuration file of the project
-           find_file(${name_upper}_CONFIG_FILE NAMES CMakeLists.txt
-                     PATH_SUFFIXES ${name}/${version}
-                                   ${name_upper}/${name_upper}_${version}
-                                   ${name}_${version}
-                                   ${name})
-        # recursion
-        if(${name_upper}_CONFIG_FILE)
-            # protect against infinit recursion
-            list(FIND collected_config ${${name_upper}_CONFIG_FILE} conf_pos)
-            if(NOT conf_pos EQUAL -1)
-              message(FATAL_ERROR "Infinite recursion detected at project ${name}")
-            endif()
-            _internal_find_projects(projects ${${name_upper}_CONFIG_FILE} ${name_upper})
-        endif()
-    endwhile()
-
-    # propagate the full list of projects to the caller
-    set(${projects_var} ${projects} PARENT_SCOPE)
-endfunction()
-
-
-## Helper for recursion and ordering of found projects.
-function(_internal_find_projects2 projects_var config_file)
 
     debug_message(STATUS "processing ${config_file}")
 
@@ -206,7 +141,7 @@ function(_internal_find_projects2 projects_var config_file)
 
     get_project_from_file(${config_file} project_name version_name project_dep_list)
 
-    set(projects2 ${${projects_var}} ${project_name})
+    set(projects ${${projects_var}} ${project_name})
 
     string(TOUPPER ${project_name} upper_proj_name)
 
@@ -237,30 +172,54 @@ function(_internal_find_projects2 projects_var config_file)
         # project_dep_list format is "<proj1> <vers1> <proj2> <vers2>..."
         # we extract two entries per iteration
         list(GET project_dep_list 0 name)
-           list(GET project_dep_list 1 version)
-           list(REMOVE_AT project_dep_list 0 1)
-           string(TOUPPER ${name} name_upper)
-           # look for the configuration file of the project
-           set(suffixes)
-           get_installed_project_suffixes(${name} ${version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
-           find_file(${name_upper}_CONFIG_FILE NAMES ${name}Config.cmake
-                     PATH_SUFFIXES ${suffixes}
-                     PATHS ENV CMAKE_PROJECT_PATH
-                     NO_DEFAULT_PATH)
+        list(GET project_dep_list 1 version)
+        list(REMOVE_AT project_dep_list 0 1)
+        string(TOUPPER ${name} name_upper)
+        # look for the configuration file of the project
+        string(REPLACE ":" ";" path_list $ENV{CMAKE_PROJECT_PATH})
+        foreach(pth ${path_list})
+          set(suffixes)
+          get_installed_project_suffixes(${name} ${version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
+          find_file(${name_upper}_CONFIG_FILE NAMES ${name}Config.cmake
+                    PATH_SUFFIXES ${suffixes}
+                    PATHS ${pth}
+                    NO_DEFAULT_PATH)
+                  
+          if(NOT ${name_upper}_CONFIG_FILE)
+            # lookup a project without a version subdir
+            set(suffixes)
+            get_installed_versionless_project_suffixes(${name} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
+            find_file(${name_upper}_CONFIG_FILE NAMES ${name}Config.cmake
+                      PATH_SUFFIXES ${suffixes}
+                      PATHS ${pth}
+                      NO_DEFAULT_PATH)
+            # check the internal version
+            set(match_found FALSE)
+            if(EXISTS ${${name_upper}_CONFIG_FILE})
+              check_project_version_from_file(${${name_upper}_CONFIG_FILE} ${name} ${version} match_found)
+            endif()
+            
+ 
+            if(NOT ${match_found})
+              unset(${name_upper}_CONFIG_FILE CACHE)
+            endif()
+
+
+          endif()
+          if(${name_upper}_CONFIG_FILE)
+            # file found, lets get out of the foreach
+            break()
+          endif()
+        endforeach()
 
         # recursion
         if(${name_upper}_CONFIG_FILE)
-            # protect against infinite recursion
-#            list(FIND collected_config2 ${${name_upper}_CONFIG_FILE} conf_pos)
-#            if(NOT conf_pos EQUAL -1)
-              # message(FATAL_ERROR "Infinite recursion detected at project ${name}")
-#            endif()
             list(FIND collected_config2 ${${name_upper}_CONFIG_FILE} conf_pos)
 
             if(conf_pos EQUAL -1)
               check_project_version_from_file(${${name_upper}_CONFIG_FILE} ${name} ${version} match_found)
               if(${match_found})
-                _internal_find_projects2(projects2 ${${name_upper}_CONFIG_FILE})
+                _internal_find_projects(projects ${${name_upper}_CONFIG_FILE})
               else()
                 unset(${name_upper}_CONFIG_FILE)
               endif()
@@ -269,7 +228,7 @@ function(_internal_find_projects2 projects_var config_file)
     endwhile()
 
     # propagate the full list of projects to the caller
-    set(${projects_var} ${projects2} PARENT_SCOPE)
+    set(${projects_var} ${projects} PARENT_SCOPE)
     set(collected_config2 ${collected_config2} PARENT_SCOPE)
 
 
@@ -277,70 +236,21 @@ endfunction()
 
 
 ## Look for used projects
-function(find_projects projects_var config_file)
+function(find_projects projects_var collected_var config_file)
   set(projects)
-  set(collected_config)
+  set(collected_config2)
   _internal_find_projects(projects ${config_file})
   if(projects)
     list(REMOVE_DUPLICATES projects)
     list(REVERSE projects)
   endif()
-  debug_print_var(projects)
   set(${projects_var} ${projects} PARENT_SCOPE)
-endfunction()
-
-
-function(find_projects2 projects_var collected_var config_file)
-  set(projects2)
-  set(collected_config2)
-  _internal_find_projects2(projects2 ${config_file})
-  if(projects2)
-    list(REMOVE_DUPLICATES projects2)
-    list(REVERSE projects2)
-  endif()
-  set(${projects_var} ${projects2} PARENT_SCOPE)
   set(${collected_var} ${collected_config2} PARENT_SCOPE)
 endfunction()
 
 
 ## Extend search paths with projects and tools
 macro(set_paths_from_projects)
-    # we need to reverse the list of arguments because we will prepend to the
-    # search paths in a loop
-    set(_entries ${ARGN})
-    if(_entries)
-        list(REVERSE _entries)
-    endif()
-
-    # prepare the helper variable
-    set(_path)
-    # and the variable for the extension of the toolchain (e.g. override externals)
-    set(_extra_toolchains)
-    foreach(_entry ${_entries})
-        string(TOUPPER "${_entry}" _entry)
-        set(_root ${${_entry}_ROOT_DIR})
-        # we add the tool/project directory ...
-        set(_path ${_root} ${_path}) # FIXME: is it needed?
-        # ... and some optional extra entries
-        foreach(_root ${_root}/cmake ${_root}/InstallArea/${BINARY_TAG}/cmake)
-            if(EXISTS ${_root})
-                set(_path ${_root} ${_path})
-            endif()
-        endforeach()
-        if(EXISTS ${_root}/InstallArea/${BINARY_TAG}/cmake/extra-toolchain.cmake)
-          list(APPEND _extra_toolchains ${_root}/InstallArea/${BINARY_TAG}/cmake/extra-toolchain.cmake)
-        endif()
-    endforeach()
-
-    # set the real search paths variables
-    set(CMAKE_MODULE_PATH ${_path} ${CMAKE_MODULE_PATH})
-    # include all the toolchain extensions (they should be prepending entries to CMAKE_MODULE_PATH)
-    foreach(_extra_toolchain ${_extra_toolchains})
-      include(${_extra_toolchain})
-    endforeach()
-endmacro()
-
-macro(set_paths_from_projects2)
 
     # we need to reverse the list of arguments because we will prepend to the
     # search paths in a loop
