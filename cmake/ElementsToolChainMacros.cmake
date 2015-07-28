@@ -177,9 +177,9 @@ function(_internal_find_projects projects_var config_file)
         string(TOUPPER ${name} name_upper)
         # look for the configuration file of the project
         string(REPLACE ":" ";" path_list $ENV{CMAKE_PROJECT_PATH})
+        set(suffixes)
+        get_installed_project_suffixes(${name} ${version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
         foreach(pth ${path_list})
-          set(suffixes)
-          get_installed_project_suffixes(${name} ${version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
           find_file(${name_upper}_CONFIG_FILE NAMES ${name}Config.cmake
                     PATH_SUFFIXES ${suffixes}
                     PATHS ${pth}
