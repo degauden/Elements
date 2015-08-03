@@ -134,17 +134,55 @@ function(get_full_binary_list binary_tag binary_base full_list)
 
 endfunction()
 
+#function(get_project_bases project version full_list)
+#
+#  set(the_list ${project})
+#  if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
+#    string(TOUPPER ${project} project_upcase)
+#    list(APPEND the_list ${project_upcase}/${project_upcase}_${version})
+#  endif()
+#
+#  list(APPEND the_list ${project}/${version})
+#  list(APPEND the_list ${project}_${version})
+#
+#  if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
+#    list(APPEND the_list ${project_upcase})
+#  endif()
+#
+#  list(REMOVE_DUPLICATES the_list)
+#
+#  set(${full_list} ${the_list} PARENT_SCOPE)
+#
+#endfunction()
+
+
 function(get_project_bases project version full_list)
 
-  set(the_list ${project})
+  set(the_list)
+  
+  list(APPEND the_list ${project}/${version})
+  list(APPEND the_list ${project}_${version})
+  
   if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
     string(TOUPPER ${project} project_upcase)
     list(APPEND the_list ${project_upcase}/${project_upcase}_${version})
   endif()
 
-  list(APPEND the_list ${project}/${version})
+  list(REMOVE_DUPLICATES the_list)
 
+  set(${full_list} ${the_list} PARENT_SCOPE)
+
+endfunction()
+
+
+function(get_versionless_project_bases project full_list)
+
+  set(the_list)
+  
+  list(APPEND the_list ${project})
+  
   if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
+    string(TOUPPER ${project} project_upcase)
     list(APPEND the_list ${project_upcase})
   endif()
 
@@ -219,6 +257,30 @@ function(get_installed_project_suffixes project version binary_tag binary_base s
 
 endfunction()
 
+
+
+function(get_installed_versionless_project_suffixes project binary_tag binary_base suffixes)
+
+  get_full_binary_list(${binary_tag} ${binary_base} full_binary_list)
+
+  get_versionless_project_bases(${project} full_bases_list)
+
+  set(install_base "InstallArea")
+
+  set(the_list)
+
+  foreach(_s1 ${full_bases_list})
+    foreach(_s3 ${full_binary_list})
+      list(APPEND the_list ${_s1}/${install_base}/${_s3})
+    endforeach()
+  endforeach()
+
+  list(REMOVE_DUPLICATES the_list)
+
+  set(${suffixes} ${the_list} PARENT_SCOPE)
+
+
+endfunction()
 
 
 function(find_local_project project version path_list proj_loc)
@@ -369,6 +431,7 @@ function(check_project_version_from_file config_file project version match_found
   if( (project STREQUAL file_project_name) AND (version STREQUAL file_version_name) )
     set(has_found TRUE)
   endif()
+
 
   set(${match_found} ${has_found} PARENT_SCOPE)
 

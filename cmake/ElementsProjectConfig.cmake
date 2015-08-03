@@ -980,10 +980,25 @@ macro(_elements_use_other_projects)
       list(APPEND dependency_dependee_list ${other_dependee} ${other_dependee_version})
 
       set(suffixes)
-      get_project_suffixes(${other_project} ${other_project_version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
-      find_package(${other_project} ${other_project_cmake_version}
-                   HINTS ${projects_search_path}
-                   PATH_SUFFIXES ${suffixes})
+      get_installed_project_suffixes(${other_project} ${other_project_version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
+      string(REPLACE ":" ";" path_list ${projects_search_path})
+      foreach(pth ${path_list})
+        find_package(${other_project} ${other_project_cmake_version} QUIET
+                     HINTS ${pth}
+                     PATH_SUFFIXES ${suffixes})
+        if(${other_project}_FOUND)
+          break()
+        else()
+          set(suffixes)
+          get_installed_versionless_project_suffixes(${other_project} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
+          find_package(${other_project} ${other_project_cmake_version} QUIET
+                       HINTS ${pth}
+                       PATH_SUFFIXES ${suffixes})
+          if(${other_project}_FOUND)
+            break()
+          endif()
+        endif()
+      endforeach()
       if(${other_project}_FOUND)
         message(STATUS "  found ${other_project} ${${other_project}_VERSION} ${${other_project}_DIR}")
         if(NOT SGS_SYSTEM STREQUAL ${other_project}_astrotools_system)
