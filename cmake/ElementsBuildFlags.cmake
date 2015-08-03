@@ -33,7 +33,7 @@ message(STATUS "The relative location for the build is set to ${BUILD_SUBDIR}")
 
 
 # Special defaults
-if ( (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[7-9]")
+if ( (SGS_COMP STREQUAL gcc AND ( SGS_COMPVERS MATCHES "4[7-9]" OR SGS_COMPVERS MATCHES "5[0-1]"))
     OR (SGS_COMP STREQUAL clang AND SGS_COMPVERS MATCHES "3[0-9]") )
   # C++11 is enable by default on gcc47 and gcc48
   set(ELEMENTS_CPP11_DEFAULT ON)

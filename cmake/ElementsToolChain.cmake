@@ -13,10 +13,10 @@ include(ElementsToolChainMacros)
 
 
 init()
-find_projects2(projects2 collected2 ${CMAKE_SOURCE_DIR}/CMakeLists.txt)
+find_projects(projects collected2 ${CMAKE_SOURCE_DIR}/CMakeLists.txt)
 
 
-set_paths_from_projects2(${projects2})
+set_paths_from_projects(${projects})
 
 debug_print_var(CMAKE_MODULE_PATH)
 
