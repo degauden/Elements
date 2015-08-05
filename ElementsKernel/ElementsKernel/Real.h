@@ -58,8 +58,8 @@
 
 namespace Elements {
 
-static const size_t FLT_DEFAULT_MAX_ULPS { 4 };
-static const size_t DBL_DEFAULT_MAX_ULPS { 10 };
+constexpr size_t FLT_DEFAULT_MAX_ULPS { 4 };
+constexpr size_t DBL_DEFAULT_MAX_ULPS { 10 };
 
 
 template<size_t size>

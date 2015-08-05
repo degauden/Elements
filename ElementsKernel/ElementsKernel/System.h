@@ -94,7 +94,7 @@ ELEMENTS_API std::vector<std::string> getEnv();
 ///See man 3 setenv.
 ELEMENTS_API int setEnv(const std::string &name, const std::string &value,
     int overwrite = 1);
-/// Simple wrap around ::unsetenv for strings
+/// Simple wrap around unsetenv for strings
 ELEMENTS_API int unSetEnv(const std::string& name);
 /// Check if an environment variable is set or not.
 ELEMENTS_API bool isEnvSet(const char* var);
