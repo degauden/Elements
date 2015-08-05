@@ -981,8 +981,7 @@ macro(_elements_use_other_projects)
 
       set(suffixes)
       get_installed_project_suffixes(${other_project} ${other_project_version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
-      string(REPLACE ":" ";" path_list ${projects_search_path})
-      foreach(pth ${path_list})
+      foreach(pth ${projects_search_path})
         find_package(${other_project} ${other_project_cmake_version} QUIET
                      HINTS ${pth}
                      PATH_SUFFIXES ${suffixes})
