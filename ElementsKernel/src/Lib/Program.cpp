@@ -30,6 +30,7 @@ namespace Elements {
     return make_pair(desc, pos_desc);
   }
 
+  Program::~Program() {}
 
 } // namespace Elements
 
