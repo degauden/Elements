@@ -176,7 +176,7 @@ function(_internal_find_projects projects_var config_file)
         list(REMOVE_AT project_dep_list 0 1)
         string(TOUPPER ${name} name_upper)
         # look for the configuration file of the project
-        string(REPLACE ":" ";" path_list $ENV{CMAKE_PROJECT_PATH})
+        FILE(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" path_list)
         set(suffixes)
         get_installed_project_suffixes(${name} ${version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
         foreach(pth ${path_list})
