@@ -320,5 +320,7 @@ string ProgramManager::getVersion() const {
   return version;
 }
 
+ProgramManager::~ProgramManager() {}
+
 
 } // namespace Elements

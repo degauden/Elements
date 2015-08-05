@@ -51,8 +51,7 @@ public:
   /**
    * @brief Destructor
    */
-  virtual ~ProgramManager() {
-  }
+  virtual ~ProgramManager() ;
 
   /**
    * @brief

@@ -39,7 +39,7 @@ public:
   /**
    * @brief Destructor
    */
-  virtual ~Program() {};
+  virtual ~Program();
 
   /**
    * @brief

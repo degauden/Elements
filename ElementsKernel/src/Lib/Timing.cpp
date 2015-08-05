@@ -26,7 +26,7 @@
 
 using std::int64_t;
 
-static const int64_t UNIX_BASE_TIME = 0;
+constexpr int64_t UNIX_BASE_TIME = 0;
 
 namespace Elements {
 namespace System {
