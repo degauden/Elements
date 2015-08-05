@@ -103,11 +103,6 @@ def substituteModuleVariables(module_dir, module_name, remove_lib, remove_exe, a
                 if not PY_KEY in line:
                     line = line.replace(EXE_KEY, '')
                     f_final.write(line)
-        elif not add_lib and add_exe and add_python:
-            if not LIB_KEY in line:
-                line = line.replace(EXE_KEY, '')
-                line = line.replace(PY_KEY, '')
-                f_final.write(line)
 
     f_final.close()
     f_initial.close()
