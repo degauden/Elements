@@ -35,7 +35,7 @@
 
 using namespace std;
 
-static const char* SHLIB_SUFFIX = ".so";
+constexpr char* SHLIB_SUFFIX = ".so";
 
 static vector<string> s_argvStrings;
 static vector<const char*> s_argvChars;

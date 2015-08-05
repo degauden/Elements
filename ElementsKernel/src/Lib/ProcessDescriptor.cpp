@@ -287,7 +287,7 @@ ELEMENTS_UNUSED static inline long processID(long pid) {
 #include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/System.h"
 
-ELEMENTS_UNUSED static const long TICK_TO_100NSEC = 100000;
+ELEMENTS_UNUSED constexpr long TICK_TO_100NSEC = 100000;
 
 namespace Elements {
 namespace System {
