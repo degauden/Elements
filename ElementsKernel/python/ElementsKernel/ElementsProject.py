@@ -8,7 +8,6 @@
 # This script will create a new Elements project
 
 import argparse
-import numpy as np
 import os
 import re
 import shutil
