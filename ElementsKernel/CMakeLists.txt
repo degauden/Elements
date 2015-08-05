@@ -70,6 +70,13 @@ elements_add_unit_test(MathConstants tests/src/MathConstants_test.cpp
                        INCLUDE_DIRS ElementsKernel
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
+#-----------------------
+# SystemOfUnits_test
+elements_add_unit_test(SystemOfUnits tests/src/SystemOfUnits_test.cpp
+                       EXECUTABLE SystemOfUnits_test
+                       INCLUDE_DIRS ElementsKernel
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
 
 #if(ELEMENTS_HIDE_WARNINGS)
 #  if(UNIX)
