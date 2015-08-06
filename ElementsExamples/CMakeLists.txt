@@ -34,7 +34,12 @@ elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgram
 
 
 #===== Python programs =========================================================
+
 elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramExample)
+
+#===== Test that the python program does run ========================================
+elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
+
 
 #===== Boost tests =============================================================
 # Example with automatically generated TestMain.cpp. This is always the case if the TYPE of
