@@ -17,7 +17,7 @@ elements_add_library(ElementsExamples src/Lib/*.cpp
 elements_add_executable(ElementsProgramExample src/Program/ProgramExample.cpp
                         LINK_LIBRARIES Boost ElementsExamples
                         INCLUDE_DIRS Boost ElementsExamples)
-
+                        
 elements_add_executable(ElementsSimpleProgramExample src/Program/SimpleProgramExample.cpp
                         LINK_LIBRARIES Boost ElementsExamples
                         INCLUDE_DIRS Boost ElementsExamples)
@@ -25,6 +25,12 @@ elements_add_executable(ElementsSimpleProgramExample src/Program/SimpleProgramEx
 elements_add_executable(ElementsProgramExampleWithArguments src/Program/ProgramExampleWithArguments.cpp
                         LINK_LIBRARIES Boost ElementsExamples
                         INCLUDE_DIRS Boost ElementsExamples)
+
+#===== Test that the executables do run ========================================
+
+elements_add_test(ElementsProgramExampleRun COMMAND ElementsProgramExample)
+elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramExample)
+elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
 
 
 #===== Python programs =========================================================
