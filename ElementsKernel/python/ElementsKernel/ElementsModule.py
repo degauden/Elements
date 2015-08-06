@@ -28,7 +28,6 @@ def isElementsProjectExist(dir_project):
     cmake file
     """
     file_exists = True
-    cmake_lists = 'elements_project'
     cmake_file = os.path.join(os.path.sep, dir_project, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         file_exists = False
