@@ -11,7 +11,8 @@ import argparse
 import os
 import re
 import shutil
-import ELEMENTS_VERSION
+import ELEMENTS_VERSION  # @UnresolvedImport
+
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('CreateElementsProject')
@@ -171,7 +172,7 @@ def eraseDirectory(from_directory):
 
 def substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects):
     """
-    Substitute variables in CMakeList.txt.in file and rename the file to 
+    Substitute variables in CMakeList.txt.in file and rename the file to
     CMakeList.txt.
     """
     logger.info('# substitute variables in <%s> file' % AUX_CMAKE_LIST_IN)
@@ -218,9 +219,9 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
 def defineSpecificProgramOptions():
     description = """
 This script creates an <Elements> project in your current directory
-by default. It means all the necessary structure (directory 
-structure, makefiles etc...) will be automatically created for you. 
-Use the <-p> option if you want to install your project somewhere 
+by default. It means all the necessary structure (directory
+structure, makefiles etc...) will be automatically created for you.
+Use the <-p> option if you want to install your project somewhere
 else.
 Use the [-d] option if your project has some dependencies to other
 project(s). 

@@ -9,6 +9,7 @@
 // TODO question to Hubert: what is this???
 #include "ElementsKernel/NoGlibDebug.h"
 
+#include <cstdlib>                         // for the exit function
 #include <fstream>
 #include <iostream>
 

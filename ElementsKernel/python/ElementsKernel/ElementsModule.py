@@ -28,7 +28,6 @@ def isElementsProjectExist(dir_project):
     cmake file
     """
     file_exists = True
-    cmake_lists = 'elements_project'
     cmake_file = os.path.join(os.path.sep, dir_project, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         file_exists = False
@@ -50,7 +49,7 @@ def isElementsProjectExist(dir_project):
 
 def substituteModuleVariables(module_dir, module_name, remove_lib, remove_exe, add_python):
     """
-    Substitute variables in CMakeList.txt.mod.in file and rename it to 
+    Substitute variables in CMakeList.txt.mod.in file and rename it to
     CMakeList.txt.
     """
     logger.info('# Substitute variables in <%s> file' % AUX_CMAKELIST_MOD_IN)
@@ -176,13 +175,13 @@ def createModule(project_dir, module_name, add_python, remove_lib, remove_exe):
 
 
 def defineSpecificProgramOptions():
-    description = """ 
+    description = """
 This script creates an <Elements> module at your current directory
 (default) but it must be inside a project directory. All necessary structure
 (directory structure, makefiles etc...) will be automatically created 
-for you. 
+for you.
 [-py] Use this option if you need the python structure
-[--path pathname] Use this option if your project directory is not the current 
+[--path pathname] Use this option if your project directory is not the current
          directory. Give an absolute path.
 [-h] help
            """
