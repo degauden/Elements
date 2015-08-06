@@ -11,7 +11,8 @@ import argparse
 import os
 import re
 import shutil
-import ELEMENTS_VERSION
+import ELEMENTS_VERSION  # @UnresolvedImport
+
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('CreateElementsProject')
