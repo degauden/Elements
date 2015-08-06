@@ -35,7 +35,11 @@
 
 using namespace std;
 
-constexpr char* SHLIB_SUFFIX = ".so";
+#if defined(__APPLE__)
+  static const string SHLIB_SUFFIX { ".dylib" };
+#else
+  static const string SHLIB_SUFFIX { ".so" };
+#endif
 
 static vector<string> s_argvStrings;
 static vector<const char*> s_argvChars;
@@ -61,20 +65,18 @@ static unsigned long doLoad(const string& name, ImageHandle* handle) {
 static unsigned long loadWithoutEnvironment(const string& name,
     ImageHandle* handle) {
 
-  string dllName = name;
-  unsigned long len = static_cast<unsigned long>(strlen(SHLIB_SUFFIX));
+  string dll_name = name;
+  size_t dll_len = dll_name.size();
+  size_t suf_len = SHLIB_SUFFIX.size();
 
   // Add the suffix at the end of the library name only if necessary
-  /// @todo cure the logic
-  if ((dllName.length() != 0)
-      && strncasecmp(
-          static_cast<const char *>(dllName.data() + dllName.length() - len),
-          SHLIB_SUFFIX, len) != 0) {
-    dllName += SHLIB_SUFFIX;
+  if (dll_len >= suf_len &&
+      dll_name.compare(dll_len - suf_len, suf_len, SHLIB_SUFFIX) != 0) {
+    dll_name += SHLIB_SUFFIX;
   }
 
   // Load the library
-  return doLoad(dllName, handle);
+  return doLoad(dll_name, handle);
 }
 
 // --------------------------------------------------------------------------------------
