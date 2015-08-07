@@ -14,6 +14,12 @@
 #include "ElementsKernel/MathConstants.h"     // For pi
 #include "ElementsKernel/Real.h"              // For isEqual
 
+// Temporary include. To be removed
+
+#include <iostream>
+#include <iomanip>
+
+
 //-----------------------------------------------------------------------------
 //
 // Begin of the Boost tests
@@ -76,6 +82,81 @@ BOOST_AUTO_TEST_CASE(RoundToDigits_test) {
   BOOST_CHECK(isEqual(roundToDigits(-pi, 4),       -3.1416));
 
 }
+
+BOOST_AUTO_TEST_CASE(StorageConvertLower_test) {
+
+  using Elements::Units::StorageType;
+  using Elements::isEqual;
+  using Elements::Units::storageConvert;
+
+  std::int64_t size_in_byte { 1000 };
+
+  BOOST_CHECK(isEqual(storageConvert(static_cast<double>(size_in_byte),
+                                     StorageType::Byte, StorageType::KiloByte),
+                      0.977));
+  BOOST_CHECK(isEqual(storageConvert<9>(static_cast<double>(size_in_byte),
+                                        StorageType::Byte, StorageType::KiloByte),
+                      0.9765625));
+
+  BOOST_CHECK(isEqual(storageConvert(static_cast<double>(size_in_byte),
+                                     StorageType::Byte, StorageType::MegaByte),
+                      0.000954));
+  BOOST_CHECK(isEqual(storageConvert<9>(static_cast<double>(size_in_byte),
+                                        StorageType::Byte, StorageType::MegaByte),
+                      0.000953674));
+
+}
+
+
+BOOST_AUTO_TEST_CASE(StorageConvertUpper_test) {
+
+  using Elements::Units::StorageType;
+  using Elements::isEqual;
+  using Elements::Units::storageConvert;
+
+  std::int64_t size { 1 };
+
+
+  BOOST_CHECK(isEqual(storageConvert(static_cast<double>(size),
+                                     StorageType::KiloByte, StorageType::Byte),
+                      1024.0));
+  BOOST_CHECK(isEqual(storageConvert<9>(static_cast<double>(size), StorageType::KiloByte, StorageType::Byte), 1024.0));
+
+  BOOST_CHECK_EQUAL(storageConvert(size, StorageType::KiloByte, StorageType::Byte), 1024);
+  BOOST_CHECK_EQUAL(storageConvert<9>(size, StorageType::KiloByte, StorageType::Byte), 1024);
+
+  BOOST_CHECK(isEqual(storageConvert(static_cast<double>(size), StorageType::MegaByte, StorageType::Byte), 1048576.0));
+  BOOST_CHECK(isEqual(storageConvert<9>(static_cast<double>(size), StorageType::MegaByte, StorageType::Byte), 1048576.0));
+
+  BOOST_CHECK_EQUAL(storageConvert(size, StorageType::MegaByte, StorageType::Byte), 1048576);
+  BOOST_CHECK_EQUAL(storageConvert<9>(size, StorageType::MegaByte, StorageType::Byte), 1048576);
+
+
+}
+
+BOOST_AUTO_TEST_CASE(StorageConvertMetric_test) {
+
+  using Elements::Units::StorageType;
+  using Elements::isEqual;
+  using Elements::Units::storageConvert;
+
+  std::int64_t size { 1 };
+
+
+  BOOST_CHECK(isEqual(storageConvert(static_cast<double>(size), StorageType::MetricKiloByte, StorageType::Byte), 1000.0));
+  BOOST_CHECK(isEqual(storageConvert<9>(static_cast<double>(size), StorageType::MetricKiloByte, StorageType::Byte), 1000.0));
+
+  BOOST_CHECK_EQUAL(storageConvert(size, StorageType::MetricKiloByte, StorageType::Byte), 1000);
+  BOOST_CHECK_EQUAL(storageConvert<9>(size, StorageType::MetricKiloByte, StorageType::Byte), 1000);
+
+  BOOST_CHECK(isEqual(storageConvert(static_cast<double>(size), StorageType::MetricMegaByte, StorageType::Byte), 1000000.0));
+  BOOST_CHECK(isEqual(storageConvert<9>(static_cast<double>(size), StorageType::MetricMegaByte, StorageType::Byte), 1000000.0));
+
+  BOOST_CHECK_EQUAL(storageConvert(size, StorageType::MetricMegaByte, StorageType::Byte), 1000000);
+  BOOST_CHECK_EQUAL(storageConvert<9>(size, StorageType::MetricMegaByte, StorageType::Byte), 1000000);
+
+}
+
 
 
 //-----------------------------------------------------------------------------
