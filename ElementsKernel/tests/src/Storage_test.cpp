@@ -131,6 +131,8 @@ BOOST_AUTO_TEST_CASE(StorageConvertUpper_test) {
   BOOST_CHECK_EQUAL(storageConvert(size, StorageType::MegaByte, StorageType::Byte), 1048576);
   BOOST_CHECK_EQUAL(storageConvert<9>(size, StorageType::MegaByte, StorageType::Byte), 1048576);
 
+  BOOST_CHECK_EQUAL(storageConvert(size, StorageType::MegaByte, StorageType::KiloByte), 1024);
+  BOOST_CHECK_EQUAL(storageConvert<9>(size, StorageType::MegaByte, StorageType::KiloByte), 1024);
 
 }
 
@@ -154,6 +156,9 @@ BOOST_AUTO_TEST_CASE(StorageConvertMetric_test) {
 
   BOOST_CHECK_EQUAL(storageConvert(size, StorageType::MetricMegaByte, StorageType::Byte), 1000000);
   BOOST_CHECK_EQUAL(storageConvert<9>(size, StorageType::MetricMegaByte, StorageType::Byte), 1000000);
+
+  BOOST_CHECK_EQUAL(storageConvert(size, StorageType::MetricMegaByte, StorageType::MetricKiloByte), 1000);
+  BOOST_CHECK_EQUAL(storageConvert<9>(size, StorageType::MetricMegaByte, StorageType::MetricKiloByte), 1000);
 
 }
 
