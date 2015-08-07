@@ -22,7 +22,7 @@ bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps
 
     // int a_int = *(int*)&a;
     // cppcheck-suppress invalidPointerCast
-    int32_t a_int = *reinterpret_cast<const int *>(&a);
+    int32_t a_int = *reinterpret_cast<const int32_t *>(&a);
     // Make a_int lexicographically ordered as a twos-complement int
     if (a_int < 0)
         a_int = 0x80000000 - a_int;
@@ -32,7 +32,7 @@ bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps
     if (b_int < 0)
         b_int = 0x80000000 - b_int;
     int32_t int_diff = abs(a_int - b_int);
-    if (int_diff <= max_ulps)
+    if (int_diff <= max_ulps && -max_ulps <= int_diff)
         return true;
     return false;
 }
@@ -62,17 +62,9 @@ bool almostEqual2sComplement(const double& a, const double& b, const int& max_ul
     return false;
 }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wfloat-equal"
 
-bool realBitwiseEqual(float x, float y) {
-  return (x == y);
-}
+template bool realBitWiseEqual<float>(const float& x, const float& y);
+template bool realBitWiseEqual<double>(const double& x, const double& y);
 
-bool realBitwiseEqual(double x, double y) {
-  return (x == y);
-}
-
-#pragma GCC diagnostic pop
 
 }  // namespace Elements
