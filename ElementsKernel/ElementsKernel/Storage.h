@@ -13,6 +13,7 @@
 #include <cmath>    // for std::pow, std::round
 
 #include "ElementsKernel/Export.h"
+#include "ElementsKernel/Real.h"   // for numberCast
 
 namespace Elements {
 namespace Units {
@@ -54,7 +55,7 @@ enum class StorageType {
       int64_t target_factor = StorageFactor[target_unit];
       value = roundToDigits(static_cast<double>(size_in_bytes)/static_cast<double>(target_factor),
                             max_digits);
-      converted_value = static_cast<T>(value);
+      converted_value = Elements::numberCast<T>(value);
     }
 
     return converted_value;
@@ -74,7 +75,7 @@ enum class StorageType {
       int64_t target_factor = StorageFactor[target_unit];
       value = roundToDigits(static_cast<double>(size_in_bytes)/static_cast<double>(target_factor),
                             static_cast<size_t>(log10(static_cast<double>(target_factor))));
-      converted_value = static_cast<T>(value);
+      converted_value = Elements::numberCast<T>(value);
     }
 
     return converted_value;
