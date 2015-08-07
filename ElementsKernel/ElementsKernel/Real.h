@@ -302,40 +302,6 @@ bool almostEqual2sComplement(const FloatType& a, const FloatType& b, const std::
 }
 
 
-/**
- * @brief
- *   This function compare 2 floats with a relative tolerance
- * @details
- *   The comparison is performed by casting the floating point numbers into integers and then compare
- *   their representation with a tolerance for their last bits.
- * @param a
- *   first float number
- * @param b
- *   second float number
- * @param max_ulps
- *   The relative tolerance is expressed as ULPS (units in the last place). They are unit in the last
- *   place of the mantissa. And the recommended default value is 4 for single precision numbers.
- * @return
- *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
- */
-ELEMENTS_API bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=FLT_DEFAULT_MAX_ULPS);
-/**
- * @brief
- *   This function compare 2 doubles with a relative tolerance
- * @details
- *   The comparison is performed by casting the floating point numbers into integers and then compare
- *   their representation with a tolerance for their last bits.
- * @param a
- *   first double number
- * @param
- *   b second double number
- * @param max_ulps
- *   The relative tolerance is expressed as ULPS (units in the last place). They are unit in the last
- *   place of the mantissa. And the recommended default value is 10 for double precision numbers.
- * @return
- *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
- */
-ELEMENTS_API bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=DBL_DEFAULT_MAX_ULPS);
 
 
 template <typename RawType>
@@ -504,9 +470,54 @@ inline bool isGreaterOrEqual(const double& l, const double& r)
   return (isGreaterOrEqual<double,max_ulps>(l,r)) ;
 }
 
-bool realBitwiseEqual(float x, float y) ;
+/**
+ * @brief
+ *   This function compare 2 floats with a relative tolerance
+ * @details
+ *   The comparison is performed by casting the floating point numbers into integers and then compare
+ *   their representation with a tolerance for their last bits.
+ * @param a
+ *   first float number
+ * @param b
+ *   second float number
+ * @param max_ulps
+ *   The relative tolerance is expressed as ULPS (units in the last place). They are unit in the last
+ *   place of the mantissa. And the recommended default value is 4 for single precision numbers.
+ * @return
+ *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
+ */
+ELEMENTS_API bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps=FLT_DEFAULT_MAX_ULPS);
+/**
+ * @brief
+ *   This function compare 2 doubles with a relative tolerance
+ * @details
+ *   The comparison is performed by casting the floating point numbers into integers and then compare
+ *   their representation with a tolerance for their last bits.
+ * @param a
+ *   first double number
+ * @param
+ *   b second double number
+ * @param max_ulps
+ *   The relative tolerance is expressed as ULPS (units in the last place). They are unit in the last
+ *   place of the mantissa. And the recommended default value is 10 for double precision numbers.
+ * @return
+ *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
+ */
+ELEMENTS_API bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps=DBL_DEFAULT_MAX_ULPS);
 
-bool realBitwiseEqual(double x, double y) ;
+
+
+
+
+template<typename RawType>
+ELEMENTS_API bool realBitWiseEqual(const RawType& x, const RawType& y) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
+  return (x == y);
+#pragma GCC diagnostic pop
+}
+
+
 
 
 } // Elements namespace
