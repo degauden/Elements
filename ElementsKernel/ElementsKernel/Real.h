@@ -53,6 +53,8 @@
 
 #include <cstddef>
 #include <limits>
+#include <type_traits>             // for is_floating_point
+#include <cmath>                   // for round
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
@@ -508,7 +510,17 @@ ELEMENTS_API bool almostEqual2sComplement(const double& a, const double& b, cons
 
 
 
-
+/**
+ * @brief
+ *   This function compares 2 floating point numbers bitwise. These are the strict
+ *   equivalent of the "==". They are only here for the example.
+ * @param x
+ *   right hand number to compare
+ * @param y
+ *   left hand number to compare
+ * @return
+ *   true if the 2 numbers are bitwise equal
+ */
 template<typename RawType>
 ELEMENTS_API bool realBitWiseEqual(const RawType& x, const RawType& y) {
 #pragma GCC diagnostic push
@@ -517,6 +529,31 @@ ELEMENTS_API bool realBitWiseEqual(const RawType& x, const RawType& y) {
 #pragma GCC diagnostic pop
 }
 
+/**
+ * @brief
+ *   this function is a number cast. It behaves exactly as a static_cast except
+ *   when casting from a floating point number to an integral one. This one is
+ *   doing the correct rounding.
+ * @param s
+ *   number to cast
+ * @return
+ *   casted number
+ */
+template<typename TargetType, typename SourceType>
+ELEMENTS_API TargetType numberCast(const SourceType& s) {
+
+  using std::is_floating_point;
+  using std::is_integral;
+  using std::round;
+
+  TargetType t = static_cast<TargetType>(s);
+
+  if(is_floating_point<SourceType>::value && is_integral<TargetType>::value) {
+    t = static_cast<TargetType>(round(s));
+  }
+
+  return t;
+}
 
 
 

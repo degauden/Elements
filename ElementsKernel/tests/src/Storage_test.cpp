@@ -14,11 +14,6 @@
 #include "ElementsKernel/MathConstants.h"     // For pi
 #include "ElementsKernel/Real.h"              // For isEqual
 
-// Temporary include. To be removed
-
-#include <iostream>
-#include <iomanip>
-
 
 //-----------------------------------------------------------------------------
 //
@@ -104,6 +99,31 @@ BOOST_AUTO_TEST_CASE(StorageConvertLower_test) {
   BOOST_CHECK(isEqual(storageConvert<9>(static_cast<double>(size_in_byte),
                                         StorageType::Byte, StorageType::MegaByte),
                       0.000953674));
+
+}
+
+
+BOOST_AUTO_TEST_CASE(StorageConverterRounding_test) {
+
+  using Elements::Units::StorageType;
+  using Elements::isEqual;
+  using Elements::Units::storageConvert;
+
+  std::int64_t size_in_byte { 1000 };
+
+  BOOST_CHECK_EQUAL(storageConvert(size_in_byte,
+                             StorageType::Byte, StorageType::KiloByte),
+                   1);
+  BOOST_CHECK_EQUAL(storageConvert<9>(size_in_byte,
+                                StorageType::Byte, StorageType::KiloByte),
+                    1);
+
+  BOOST_CHECK_EQUAL(storageConvert(size_in_byte,
+                             StorageType::Byte, StorageType::MegaByte),
+                    0);
+  BOOST_CHECK_EQUAL(storageConvert<9>(size_in_byte,
+                                StorageType::Byte, StorageType::MegaByte),
+                    0);
 
 }
 
