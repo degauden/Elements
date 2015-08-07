@@ -16,6 +16,7 @@ using std::pow;
 using std::map;
 using std::string;
 using std::int64_t;
+using std::size_t;
 
 namespace Elements {
 namespace Units {
@@ -45,33 +46,18 @@ map<StorageType, int64_t> StorageFactor        { { StorageType::Byte,           
                                                  { StorageType::MetricTeraByte, pow(10,12)},
                                                  { StorageType::MetricPetaByte, pow(10,15)} };
 
-double roundToDigits(const double& value, const size_t& max_digits) {
-
-  using std::int64_t;
-  using std::round;
-
-  int64_t factor = pow(10, max_digits);
-  return round(value * static_cast<double>(factor))/static_cast<double>(factor);
-}
 
 
-double storageConvert(const int64_t& size, StorageType source_unit, StorageType target_unit) {
 
-  using std::log10;
-  using std::size_t;
+// explicit instantiation: without the template<>. Otherwise this is a template specialization
+template double roundToDigits<double>(const double& value, const size_t& max_digits);
+template float roundToDigits<float>(const float& value, const size_t& max_digits);
 
-  double value = static_cast<double>(size);
 
-  if (source_unit != target_unit) {
-    int64_t size_in_bytes = size * StorageFactor[StorageType::Byte];
-    int64_t target_factor = StorageFactor[target_unit];
-    value = roundToDigits(static_cast<double>(size_in_bytes)/static_cast<double>(target_factor),
-                          size_t(log10(static_cast<double>(target_factor))));
-  }
+template double storageConvert<double>(const double& size, StorageType source_unit, StorageType target_unit);
+template float storageConvert<float>(const float& size, StorageType source_unit, StorageType target_unit);
+template int64_t storageConvert<int64_t>(const int64_t& size, StorageType source_unit, StorageType target_unit);
 
-  return value;
-
-}
 
 }  // namespace Units
 }  // namespace Elements
