@@ -26,6 +26,10 @@ elements_add_unit_test(Real tests/src/Real_test.cpp
                        EXECUTABLE Real_test
                        INCLUDE_DIRS ElementsKernel
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
+elements_add_unit_test(Number tests/src/Number_test.cpp
+                       EXECUTABLE Number_test
+                       INCLUDE_DIRS ElementsKernel
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(Version tests/src/Version_test.cpp
                        EXECUTABLE Version_test
                        INCLUDE_DIRS ElementsKernel

@@ -529,32 +529,6 @@ ELEMENTS_API bool realBitWiseEqual(const RawType& x, const RawType& y) {
 #pragma GCC diagnostic pop
 }
 
-/**
- * @brief
- *   this function is a number cast. It behaves exactly as a static_cast except
- *   when casting from a floating point number to an integral one. This one is
- *   doing the correct rounding.
- * @param s
- *   number to cast
- * @return
- *   casted number
- */
-template<typename TargetType, typename SourceType>
-ELEMENTS_API TargetType numberCast(const SourceType& s) {
-
-  using std::is_floating_point;
-  using std::is_integral;
-  using std::round;
-
-  TargetType t = static_cast<TargetType>(s);
-
-  if(is_floating_point<SourceType>::value && is_integral<TargetType>::value) {
-    t = static_cast<TargetType>(round(s));
-  }
-
-  return t;
-}
-
 
 
 } // Elements namespace
