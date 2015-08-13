@@ -19,11 +19,11 @@ if(NOT LOG4CPP_FOUND)
 
 
 FIND_PATH(LOG4CPP_INCLUDE_DIR log4cpp/Category.hh
-          PATHS "$ENV{LOG4CPP}/include" /usr/local/include /usr/include
+          PATHS "$ENV{LOG4CPP_INSTALL_DIR}/include" "$ENV{LOG4CPP}/include" /usr/local/include /usr/include
           )
 
 FIND_LIBRARY(LOG4CPP_LIBRARIES log4cpp
-            PATHS "$ENV{LOG4CPP}/lib" /usr/local/lib /usr/lib
+            PATHS "$ENV{LOG4CPP_INSTALL_DIR}/lib" "$ENV{LOG4CPP}/lib" /usr/local/lib /usr/lib
             )
 
 set(LOG4CPP_INCLUDE_DIRS ${LOG4CPP_INCLUDE_DIR})
