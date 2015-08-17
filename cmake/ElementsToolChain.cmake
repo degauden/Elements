@@ -13,7 +13,7 @@ include(ElementsToolChainMacros)
 
 
 init()
-find_projects(projects collected2 ${CMAKE_SOURCE_DIR}/CMakeLists.txt)
+find_projects(projects collected ${CMAKE_SOURCE_DIR}/CMakeLists.txt)
 
 
 set_paths_from_projects(${projects})

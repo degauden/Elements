@@ -180,17 +180,16 @@ function(_internal_find_projects projects_var config_file)
         set(suffixes)
         get_installed_project_suffixes(${name} ${version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
         foreach(pth ${path_list})
-          find_file(${name_upper}_CONFIG_FILE NAMES ${name}Config.cmake
-                    PATH_SUFFIXES ${suffixes}
+          find_file(${name_upper}_CONFIG_FILE ${name}Config.cmake
                     PATHS ${pth}
+                    PATH_SUFFIXES ${suffixes}
                     NO_DEFAULT_PATH)
-                  
           if(NOT ${name_upper}_CONFIG_FILE)
             # lookup a project without a version subdir
-            set(suffixes)
-            get_installed_versionless_project_suffixes(${name} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
+            set(suffixes2)
+            get_installed_versionless_project_suffixes(${name} ${BINARY_TAG} ${SGS_SYSTEM} suffixes2)
             find_file(${name_upper}_CONFIG_FILE NAMES ${name}Config.cmake
-                      PATH_SUFFIXES ${suffixes}
+                      PATH_SUFFIXES ${suffixes2}
                       PATHS ${pth}
                       NO_DEFAULT_PATH)
             # check the internal version
@@ -238,14 +237,14 @@ endfunction()
 ## Look for used projects
 function(find_projects projects_var collected_var config_file)
   set(projects)
-  set(collected_config2)
+  set(collected_config)
   _internal_find_projects(projects ${config_file})
   if(projects)
     list(REMOVE_DUPLICATES projects)
     list(REVERSE projects)
   endif()
   set(${projects_var} ${projects} PARENT_SCOPE)
-  set(${collected_var} ${collected_config2} PARENT_SCOPE)
+  set(${collected_var} ${collected_config} PARENT_SCOPE)
 endfunction()
 
 
