@@ -5,7 +5,7 @@
 
 #include <cstdlib>    // for free, malloc
 #include <iomanip>
-#include <iostream>   // for std::cout
+#include <iostream>   // for cout
 #include <memory>     // for unique_ptr
 
 using namespace std;
