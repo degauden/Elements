@@ -13,7 +13,7 @@
 #include <cmath>    // for std::pow, std::round
 
 #include "ElementsKernel/Export.h"
-#include "ElementsKernel/Real.h"   // for numberCast
+#include "ElementsKernel/Number.h"   // for numberCast
 
 namespace Elements {
 namespace Units {
