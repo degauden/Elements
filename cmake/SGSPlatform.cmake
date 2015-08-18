@@ -61,7 +61,7 @@ function(sgs_find_host_os)
           set(os ubuntu)
           string(REGEX REPLACE ".*Ubuntu ([0-9]+)[.]([0-9]+).*" "\\1.\\2" osvers "${issue}")
           break()
-        elseif(issue MATCHES "Scientific Linux|SLC|Fedora|CentOS Linux") # RedHat-like distributions
+        elseif(issue MATCHES "Scientific Linux|SLC|Fedora|CentOS Linux|CentOS") # RedHat-like distributions
           string(TOLOWER "${CMAKE_MATCH_0}" os)
           if(os STREQUAL fedora)
             set(os fc) # we use an abbreviation for Fedora
@@ -69,7 +69,7 @@ function(sgs_find_host_os)
           if(os STREQUAL "scientific linux")
             set(os sl) # we use an abbreviation for Scientific Linux
           endif()
-          if(os STREQUAL "centos linux")
+          if((os STREQUAL "centos linux") OR (os STREQUAL "centos"))
             set(os co) # we use an abbreviation for Scientific Linux
           endif()
           string(REGEX REPLACE ".*release ([0-9]+)[. ].*" "\\1" osvers "${issue}")
