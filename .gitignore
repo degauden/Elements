@@ -43,3 +43,5 @@ ElementsConfigVersion.cmake
 /gmon.out
 /perf.data
 /build
+.ptp-sync
+.ptp-sync-folder
