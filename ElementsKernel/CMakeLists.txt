@@ -82,6 +82,14 @@ elements_add_unit_test(SystemOfUnits tests/src/SystemOfUnits_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 
+#-----------------------
+# SystemOfUnits_test
+elements_add_unit_test(BackTrace tests/src/BackTrace_test.cpp
+                       EXECUTABLE BackTrace_test
+                       INCLUDE_DIRS ElementsKernel
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
 #if(ELEMENTS_HIDE_WARNINGS)
 #  if(UNIX)
     # This hides warnings from a broken header file in CppUnit, but may
