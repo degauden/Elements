@@ -1994,6 +1994,52 @@ function(elements_add_python_module module)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
+# elements_add_swig_binding(<name>
+#                           source1 source2 ...
+#                           LINK_LIBRARIES library1 library2 ...
+#                           INCLUDE_DIRS dir1 package2 ...
+#                           [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
+#
+# Create a SWIG binary python module from the specified sources (glob patterns are allowed), linking
+# it with the libraries specified and adding the include directories to the search path. The sources
+# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package 
+# (module).
+#---------------------------------------------------------------------------------------------------
+function(elements_add_swig_binding library)
+
+  find_package(SWIG REQUIRED)
+  
+  # this function uses an extra option: 'PUBLIC_HEADERS'
+#  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+#  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS} LIBRARIES ${ARG_LIBRARIES} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+#
+#  elements_get_package_name(package)
+#  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
+#    message(WARNING "Library ${library} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
+#  endif()
+#
+#  add_library(${library} ${srcs})
+#  set_target_properties(${library} PROPERTIES COMPILE_DEFINITIONS ELEMENTS_LINKER_LIBRARY)
+#  target_link_libraries(${library} ${ARG_LINK_LIBRARIES})
+#  _elements_detach_debinfo(${library})
+#
+  # Declare that the used headers are needed by the libraries linked against this one
+#  set_target_properties(${library} PROPERTIES
+#    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
+#    REQUIRED_INCLUDE_DIRS "${ARG_INCLUDE_DIRS}"
+#    REQUIRED_LIBRARIES "${ARG_LINK_LIBRARIES}")
+#  set_property(GLOBAL APPEND PROPERTY LINKER_LIBRARIES ${library})
+#
+  #----Installation details-------------------------------------------------------
+#  install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION lib OPTIONAL)
+#  elements_export(LIBRARY ${library})
+#  elements_install_headers(${ARG_PUBLIC_HEADERS})
+#  install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
+#  set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
+#  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
+endfunction()
+
+#---------------------------------------------------------------------------------------------------
 # elements_add_executable(<name>
 #                      source1 source2 ...
 #                      LINK_LIBRARIES library1 library2 ...
