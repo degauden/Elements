@@ -18,17 +18,18 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('CreateElementsProject')
 
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
-AUX_CMAKE_FILE_IN = "Makefile"
+AUX_CMAKE_FILE = "Makefile"
 
 
-def setPath(path_defined_by_user):
+def setPath():
     """
-    Set the directory path
+    Set the installation path
     """
-    # Set the path if any
-    destination_path = ''
-    if not path_defined_by_user is None:
-        destination_path = path_defined_by_user
+    # Check if User_area environment variable exists 
+    user_area = os.environ.get('User_area')
+    if not user_area is None:
+        logger.info('# User_area environment variable defined to : <%s>' % user_area)
+        destination_path = user_area         
     else:
         destination_path = os.getcwd()
 
@@ -186,12 +187,20 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     str_dep_projects = ''
     if not dep_projects is None:
         str_dep_projects = ' '.join(' '.join(s) for s in dep_projects)
+        new_data = data % {"PROJECT_NAME": proj_name,
+                           "PROJECT_VERSION": proj_version,
+                           "DEPENDANCE_LIST": str_dep_projects}
     else:
-        str_dep_projects = ''.join(['Elements ', getElementsVersion()])
+        # Add an comment example with the USE keyword
+        
+        new_data = data % {"PROJECT_NAME": proj_name,
+                           "PROJECT_VERSION": proj_version,
+                           "DEPENDANCE_LIST": str_dep_projects}
+        # Remove <USE> keyword
+        str_to_look_for = proj_name + ' ' + proj_version + ' USE '
+        str_to_be_replaced = proj_name + ' ' + proj_version
+        new_data = new_data.replace(str_to_look_for, str_to_be_replaced)
 
-    new_data = data % {"PROJECT_NAME": proj_name,
-                       "PROJECT_VERSION": proj_version,
-                       "DEPENDANCE_LIST": str_dep_projects}
     f.close()
     # Save new data
     f = open(cmake_list_file, 'w')
@@ -210,7 +219,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
     os.makedirs(project_dir)
 
     copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
-    copyAuxFile(project_dir, AUX_CMAKE_FILE_IN)
+    copyAuxFile(project_dir, AUX_CMAKE_FILE)
 
     substituteProjectVariables(
         project_dir, proj_name, proj_version, dep_projects)
@@ -219,10 +228,9 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
 def defineSpecificProgramOptions():
     description = """
 This script creates an <Elements> project in your current directory
-by default. It means all the necessary structure (directory
+by default or at the location defined by the <$User_area> environment varaible.
+It means all the necessary structure (directory
 structure, makefiles etc...) will be automatically created for you.
-Use the <-p> option if you want to install your project somewhere
-else.
 Use the [-d] option if your project has some dependencies to other
 project(s). 
             """
@@ -231,10 +239,8 @@ project(s).
         'project_name', metavar='project-name', type=str, help='Project name')
     parser.add_argument('project_version', metavar='project-version',
                         type=str, default='1.0', help='Project version number')
-    parser.add_argument('-d', '--dep-project-version', nargs=2, action='append', type=str,
+    parser.add_argument('-d', '--dependency', nargs=2, action='append', type=str,
                         help='Dependency project name and its version number e.g "project_name 0.1"')
-    parser.add_argument(
-        '-p', '--path', type=str, help='Installation path(default : current directory)')
     return parser
 
 
@@ -249,29 +255,30 @@ def mainMethod(args):
         script_goes_on = True
         proj_name = args.project_name
         proj_version = args.project_version
-        dependant_projects = args.dep_project_version
-        destination_path = setPath(args.path)
-
+        dependant_projects = args.dependency
+        destination_path = setPath()
+        logger.info('# Installation directory : %s' % destination_path)
+        
         # Check project name and version
         script_goes_on = isNameAndVersionValid(proj_name, proj_version)
 
         # Check for duplicate dependencies
-        if script_goes_on and not args.dep_project_version is None:
+        if script_goes_on and not args.dependency is None:
             script_goes_on = duplicate_elements(dependant_projects)
 
         # Check aux files exist
         if script_goes_on:
             script_goes_on = isAuxFileExist(AUX_CMAKE_LIST_IN)
         if script_goes_on:
-            script_goes_on = isAuxFileExist(AUX_CMAKE_FILE_IN)
+            script_goes_on = isAuxFileExist(AUX_CMAKE_FILE)
 
         # Set the project directory
         project_dir = os.path.join(
             os.path.sep, destination_path, proj_name, proj_version)
 
         # Make sure dependencies name and version are valid
-        if script_goes_on and not args.dep_project_version is None:
-            script_goes_on = isDependencyProjectValid(args.dep_project_version)
+        if script_goes_on and not args.dependency is None:
+            script_goes_on = isDependencyProjectValid(args.dependency)
 
         if script_goes_on and os.path.exists(project_dir):
             logger.warning('<%s> project ALREADY exists!!!' % project_dir)
