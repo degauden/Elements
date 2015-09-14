@@ -95,6 +95,8 @@ elements_add_unit_test(SystemOfUnits tests/src/SystemOfUnits_test.cpp
 
 elements_add_python_program(CreateElementsProject ElementsKernel.ElementsProject)
 elements_add_python_program(CreateElementsModule ElementsKernel.ElementsModule)
+elements_add_python_program(AddElementsModule ElementsKernel.ElementsAddModule)
+elements_add_python_program(AddCppClass ElementsKernel.ElementsAddCppClass)
 
 elements_install_aux_files()
 elements_install_python_modules()

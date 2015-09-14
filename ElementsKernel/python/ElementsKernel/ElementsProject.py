@@ -278,7 +278,7 @@ def mainMethod(args):
 
         # Make sure dependencies name and version are valid
         if script_goes_on and not args.dependency is None:
-            script_goes_on = isDependencyProjectValid(args.dependency)
+            script_goes_on = isDependencyProjectValid(dependant_projects)
 
         if script_goes_on and os.path.exists(project_dir):
             logger.warning('<%s> project ALREADY exists!!!' % project_dir)
