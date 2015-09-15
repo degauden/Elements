@@ -6,17 +6,43 @@
 # @date: 01/07/15
 #
 # This script will create a new Elements module
+##
 
 import argparse
 import os
 import ElementsKernel.ElementsProject as ep
-import ElementsKernel.ElementsModule as em
+##import ElementsKernel.ElementsModule as em
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddElementsModule')
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
+
+def isElementsProjectExist(dir_project):
+    """
+    Checks if a CMakeLists.txt file exists and is really an Elements
+    cmake file
+    """
+    file_exists = True
+    cmake_file = os.path.join(os.path.sep, dir_project, CMAKE_LISTS_FILE)
+    if not os.path.isfile(cmake_file):
+        file_exists = False
+        logger.error(
+            '# %s cmake project file is missing! Are you inside a project directory?', cmake_file)
+    else:
+        # Check the make file is an Elements cmake file
+        # it should contain the string : "elements_project"
+        f = open(cmake_file, 'r')
+        data = f.read()
+        if not 'elements_project' in data:
+            file_exists = False
+            logger.error(
+                '# %s is not an Elements project cmake file! Can not find the <elements_project> directive', cmake_file)
+        f.close()
+
+    return file_exists
+
 
 def createModuleDirectories(mod_path, module_name):
     """
@@ -111,7 +137,7 @@ def mainMethod(args):
         logger.info('# Current directory : %s', project_dir)
 
         # We absolutely need a Elements cmake file
-        script_goes_on = em.isElementsProjectExist(project_dir)
+        script_goes_on = isElementsProjectExist(project_dir)
 
         # Module as no version number, '1.0' is just for using the routine
         if script_goes_on:
