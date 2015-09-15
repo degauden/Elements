@@ -6,6 +6,7 @@
 # @date: 01/07/15
 #
 # This script will create a new Elements C++ Class
+##
 
 import argparse
 import os
@@ -13,8 +14,8 @@ import re
 import shutil
 import time
 import ElementsKernel.ElementsProject as ep
-import ElementsKernel.Logging as log
 import ElementsKernel.parseCmakeLists as pcl
+import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddCppClass')
 
@@ -212,12 +213,9 @@ def buildCmakeListsFile(module_dir, module_name, subdir, class_name,
             
             # Add unit test
             source_name = 'tests' + os.sep + subdir + class_name + '_test.cpp'
-            unittest_object = pcl.ElementsAddUnitTest(class_name, source_name, module_name, 
-                                                  library_dep_list)
+            unittest_object = pcl.ElementsAddUnitTest(class_name, [source_name], [module_name], [], 'Boost')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
-            
-    #print 'zzzzz cmake_object zzzzz \n',str(cmake_object) 
-       
+                   
     # Write new data
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
@@ -229,9 +227,10 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
     """
     logger.info('# Creating the directories ')
     
+    script_goes_on = True 
+    
     createDirectories(module_dir, module_name, subdir)  
-              
-        
+                     
     class_h_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
     copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
     class_cpp_path = os.path.join(os.path.sep, module_dir,'src/lib', subdir)
@@ -242,7 +241,7 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
     substituteStringsInDotH(class_h_path, class_name, module_name)  
     substituteStringsDotInCpp(class_cpp_path, class_name, 
                               module_name)  
-
+    return script_goes_on
     
 def defineSpecificProgramOptions():
     description = """

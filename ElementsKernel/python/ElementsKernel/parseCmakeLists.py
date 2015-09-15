@@ -52,27 +52,27 @@ class FindPackage:
 class ElementsAddLibrary:
     
     def __init__(self, name, source_list, link_libraries, include_dirs, public_headers):
-        self.name = name
-        self.source_list = source_list
-        self.link_libraries = link_libraries
-        self.include_dirs = include_dirs
-        self.public_headers = public_headers
+        self.name           = name
+        self.source_list    = source_list
+        self.link_libraries_list = link_libraries
+        self.include_dirs_list   = include_dirs
+        self.public_headers_list = public_headers
     
     def __str__(self):
         result = 'elements_add_library(' + self.name
         for source in self.source_list:
             result += ' ' + source
-        if self.link_libraries:
+        if self.link_libraries_list:
             result += '\n                     LINK_LIBRARIES'
-            for name in self.link_libraries:
+            for name in self.link_libraries_list:
                 result += ' ' + name
-        if self.include_dirs:
+        if self.include_dirs_list:
             result += '\n                     INCLUDE_DIRS'
-            for name in self.include_dirs:
+            for name in self.include_dirs_list:
                 result += ' ' + name
-        if self.public_headers:
+        if self.public_headers_list:
             result += '\n                     PUBLIC_HEADERS'
-            for name in self.public_headers:
+            for name in self.public_headers_list:
                 result += ' ' + name
         return result + ')\n'
     
@@ -80,20 +80,29 @@ class ElementsAddLibrary:
     
 class ElementsAddUnitTest:
     
-    def __init__(self, class_name, source, module_name, type_list):
+    def __init__(self, class_name, source, link_libraries, include_dir, type):
         self.class_name  = class_name
-        self.source      = source
-        self.module_name = module_name
-        self.type_list   = type_list
+        self.source_list = source
+        self.link_libraries_list = link_libraries
+        self.include_dir_list = include_dir
+        self.type             = type
 
     def __str__(self):
-        result = 'elements_add_unit_test(' + self.class_name + '_test ' + self.source + \
-                '\n                     LINK_LIBRARIES ' + self.module_name + \
-                ' TYPE '
-        if self.type_list:
-            for type_name in self.type_list:
-                result +=  type_name + ' '
-        result = result.strip() + ')'
+        result = 'elements_add_unit_test(' + self.class_name + '_test '
+        if self.source_list:
+            for source in self.source_list:
+                result +=  source + ' '
+        if self.link_libraries_list:
+            result += '\n                     LINK_LIBRARIES'
+            for name in self.link_libraries_list:
+                result += ' ' + name
+        if self.include_dir_list:
+            result += '\n                     INCLUDE_DIRS'
+            for include in self.include_dir_list:
+                result += ' ' + include 
+        if self.type:
+            result +=  '\n                     TYPE ' + self.type
+        result = result.strip() + ')\n'
         return result
     
 ##########################################
@@ -101,12 +110,12 @@ class ElementsAddUnitTest:
 class CMakeLists:
     
     def __init__(self, text=''):
-        self.text = text
-        self.elements_subdir_list = []
+        self.text                             = text
+        self.elements_subdir_list             = []
         self.elements_depends_on_subdirs_list = []
-        self.find_package_list = []
-        self.elements_add_library_list = []
-        self.elements_add_unit_test_list = []
+        self.find_package_list                = []
+        self.elements_add_library_list        = []
+        self.elements_add_unit_test_list      = []
         
         elements_subdir_list = re.findall(r"elements_subdir\(.*?\)", text, re.MULTILINE|re.DOTALL)
         for elements_subdir in elements_subdir_list:
@@ -159,16 +168,33 @@ class CMakeLists:
         elements_add_unit_test_list = re.findall(r"elements_add_unit_test\(.*?\)", text, re.MULTILINE|re.DOTALL)
         for elements_add_unit_test in elements_add_unit_test_list:
             content = elements_add_unit_test.replace('\n', ' ').replace('elements_add_unit_test(', '')[:-1].strip().split()
-            class_name = content[0]
-            module_name = content[1]
-            source = content[2]
-            type_list = []
+            name = content[0]
+            source_list = []
+            link_libraries = []
+            include_dirs = []
+            type = ''
             location = 'SOURCE'
-            for word in content[3:]:
-                type_list.append(word)
-                
-            self.elements_add_unit_test_list.append(ElementsAddUnitTest(class_name, module_name, source, type_list))
- 
+            for word in content[1:]:
+                if word == 'LINK_LIBRARIES':
+                    location = 'LINK_LIBRARIES'
+                    continue
+                if word == 'INCLUDE_DIRS':
+                    location = 'INCLUDE_DIRS'
+                    continue
+                if word == 'TYPE':
+                    location = 'TYPE'
+                    continue
+                if location == 'SOURCE':
+                    source_list.append(word)
+                if location == 'LINK_LIBRARIES':
+                    link_libraries.append(word)
+                if location == 'INCLUDE_DIRS':
+                    include_dirs.append(word)
+                if location == 'TYPE':
+                    type = word
+            self.elements_add_unit_test_list.append(ElementsAddUnitTest(name, source_list, link_libraries, include_dirs, type))
+    
+    # Look for the location for adding the text after this position
     def _addAfter(self, text, tag, to_add):
         if tag in text:
             for match in re.finditer(tag+r"\(.*?\)", text, re.MULTILINE|re.DOTALL):
