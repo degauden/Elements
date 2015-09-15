@@ -183,31 +183,35 @@ def buildCmakeListsFile(module_dir, module_name, subdir, class_name,
         cmake_object = pcl.CMakeLists(data)
         module_name = cmake_object.elements_subdir_list[0].name
         
-        # Add lib dependencies
+        # Update find_package macro
         if library_dep_list:
             for lib in library_dep_list:
-                package_object = pcl.FindPackage(lib,[])
+                package_object = pcl.FindPackage(lib, [])
                 cmake_object.find_package_list.append(package_object)
                 
         # Update elements_subdir macro
         if module_dep_list:
             for mod_dep in module_dep_list:
-                dep_object = pcl.ElemenentsDependsOnSubdirs([mod_dep])
+                dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
                 
-        # Update elements_add_library_list macro
+        # Update elements_add_library macro
         if module_name:
             source = 'src' + os.sep + 'lib' + os.sep + subdir + '*.cpp'
             existing = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
+            link_libs = library_dep_list + module_dep_list
             if existing:
                 if not source in existing[0].source_list:
                     existing[0].source_list.append(source)
+                for lib in link_libs:
+                    if not lib in existing[0].link_libraries_list:
+                        existing[0].link_libraries_list.append(lib)
             else:
                 source_list    = [source]
                 include_dirs_list   = []
                 public_headers_list = [module_name]
                 lib_object = pcl.ElementsAddLibrary(module_name, source_list, 
-                                                    library_dep_list, include_dirs_list,
+                                                    link_libs, include_dirs_list,
                                                     public_headers_list)
                 cmake_object.elements_add_library_list.append(lib_object)
             

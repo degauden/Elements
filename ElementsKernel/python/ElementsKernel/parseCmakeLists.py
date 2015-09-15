@@ -1,4 +1,13 @@
-#!/usr/bin/env python
+##
+# @file: ElementsKernel/ElementsAddCppClass.py
+# @author: Nikolaos Apostolakos
+#          Nicolas Morisset
+#          Astronomy Department of the University of Geneva
+#
+# @date: 01/07/15
+#
+# This script will create a new Elements C++ Class
+##
 
 import re
 import sys
@@ -19,7 +28,7 @@ class ElementsSubdir:
     
 ##########################################
     
-class ElemenentsDependsOnSubdirs:
+class ElementsDependsOnSubdirs:
     
     def __init__(self, subdir_list):
         self.subdir_list = subdir_list
@@ -28,7 +37,7 @@ class ElemenentsDependsOnSubdirs:
         result = 'elements_depends_on_subdirs('
         for subdir in self.subdir_list:
             result += subdir + ' '
-        result = result.strip() + ')'
+        result = result.strip() + ')\n'
         return result
 
 ##########################################
@@ -37,13 +46,13 @@ class FindPackage:
     
     def __init__(self, package, required_components):
         self.package = package
-        self.required_components = required_components
+        self.required_components_list = required_components
     
     def __str__(self):
         result = 'find_package(' + self.package
-        if self.required_components:
+        if self.required_components_list:
             result += ' REQUIRED COMPONENTS'
-        for component in self.required_components:
+        for component in self.required_components_list:
             result += ' ' + component
         return result + ')\n'
 
@@ -125,7 +134,7 @@ class CMakeLists:
         elements_depends_on_subdirs_list = re.findall(r"elements_depends_on_subdirs\(.*?\)", text, re.MULTILINE|re.DOTALL)
         for elements_depends_on_subdirs in elements_depends_on_subdirs_list:
             names = elements_depends_on_subdirs.replace('\n', ' ').replace('\s+', ' ').replace('elements_depends_on_subdirs(', '')[:-1].strip()
-            self.elements_depends_on_subdirs_list.append(ElemenentsDependsOnSubdirs(names.split()))
+            self.elements_depends_on_subdirs_list.append(ElementsDependsOnSubdirs(names.split()))
         
         find_package_list = re.findall(r"find_package\(.*?\)", text, re.MULTILINE|re.DOTALL)
         for find_package in find_package_list:
@@ -199,7 +208,7 @@ class CMakeLists:
         if tag in text:
             for match in re.finditer(tag+r"\(.*?\)", text, re.MULTILINE|re.DOTALL):
                 pass
-            text = text[:match.end()+1] + '\n' + to_add + text[match.end():]
+            text = text[:match.end()] + '\n' + to_add + text[match.end()+1:]
         else:
             text += '\n' + to_add
         return text
@@ -208,24 +217,28 @@ class CMakeLists:
         result = self.text
 
         for elements_subdir in self.elements_subdir_list:
-            if not re.search(r"elements_subdir\(\s*"+elements_subdir.name+r".*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(r"elements_subdir\(\s*"+elements_subdir.name+r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_subdir', str(elements_subdir))
+                
+        for find_package in self.find_package_list:
+            if not re.search(r"find_package\(\s*"+ find_package.package+r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+                result = self._addAfter(result, 'find_package', str(find_package))
 
         for elements_depends_on_subdirs in self.elements_depends_on_subdirs_list:
-            if not re.search(r"elements_depends_on_subdirs\(\s*"+elements_depends_on_subdirs.subdir_list[0]+   r".*?\)"   , result, re.MULTILINE|re.DOTALL):
+            if not re.search(r"elements_depends_on_subdirs\(\s*"+elements_depends_on_subdirs.subdir_list[0]+   r"(?=[\s\)]).*?\)"   , result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_depends_on_subdirs', str(elements_depends_on_subdirs))
 
         for library in self.elements_add_library_list:
-            if not re.search(r"elements_add_library\(\s*" + library.name + r".*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(r"elements_add_library\(\s*" + library.name + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_add_library', str(library))
             else:
-                result = re.sub(r"elements_add_library\(\s*"+library.name+   r".*?\)", str(library), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(r"elements_add_library\(\s*"+library.name+   r"(?=[\s\)]).*?\)", str(library), result, flags=re.MULTILINE|re.DOTALL)
 
         for unit_test in self.elements_add_unit_test_list:
-            if not re.search(r"elements_add_unit_test\(\s*" + unit_test.class_name + r".*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(r"elements_add_unit_test\(\s*" + unit_test.class_name + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_add_unit_test', str(unit_test))
             else:
-                result = re.sub(r"elements_add_unit_test\(\s*"+unit_test.class_name+   r".*?\)", str(unit_test), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(r"elements_add_unit_test\(\s*"+unit_test.class_name+   r"(?=[\s\)]).*?\)", str(unit_test), result, flags=re.MULTILINE|re.DOTALL)
         
         return result
 
