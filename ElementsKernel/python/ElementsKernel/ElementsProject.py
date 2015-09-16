@@ -45,7 +45,7 @@ def isDependencyProjectValid(str_list):
     """
     valid = True
     for i in range(len(str_list)):
-        if not isNameAndVersionValid(str_list[i][0], str_list[i][1]):
+        if not epcr.isNameAndVersionValid(str_list[i][0], str_list[i][1]):
             valid = False
             break
 
