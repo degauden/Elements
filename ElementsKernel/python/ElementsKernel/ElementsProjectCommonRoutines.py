@@ -67,7 +67,7 @@ def getAuxPathFile(file_name):
                 logger.debug(
                     "# Auxiliary directory for this file : <%s>" % full_filename)
                 break
-
+            
     if not found:
         full_filename = ''
         logger.error(
