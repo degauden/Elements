@@ -125,7 +125,6 @@ def substituteStringsInDotH(path, class_name, module_name):
     """
     logger.info('# Substitute variables in <%s> file' % H_TEMPLATE_FILE)
     full_file_name = os.path.join(os.path.sep, path, H_TEMPLATE_FILE)
-    print full_file_name
     # Substitute strings in h_template_file
     f = open(full_file_name, 'r')
     data = f.read()
@@ -166,8 +165,9 @@ def substituteStringsDotInCpp(path, class_name, module_name):
     f = open(full_file_name, 'r')
     data = f.read()
     author_str = getAuthor()
-    date_str         = time.strftime("%x")
-    new_data = data % {"FILE": full_file_name,
+    date_str   = time.strftime("%x")
+    full_file_name_str = full_file_name.replace(CPP_TEMPLATE_FILE, class_name+'.cpp')
+    new_data = data % {"FILE": full_file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
                        "MODULENAME": module_name,
