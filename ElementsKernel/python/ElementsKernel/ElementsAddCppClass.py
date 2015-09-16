@@ -134,7 +134,7 @@ def substituteStringsInDotH(path, class_name, module_name):
 
     f.close()
     # Save new data
-    h_file_name = full_file_name.replace('_template','')
+    h_file_name = full_file_name.replace(H_TEMPLATE_FILE, class_name + '.h')
     f = open(h_file_name, 'w')
     f.write(new_data)
     f.close()
@@ -160,13 +160,11 @@ def substituteStringsDotInCpp(path, class_name, module_name):
 
     f.close()
     # Save new data
-    cpp_file_name = full_file_name.replace('_template','')
+    cpp_file_name = full_file_name.replace(CPP_TEMPLATE_FILE, class_name +'.cpp')
     f = open(cpp_file_name, 'w')
     f.write(new_data)
     f.close()
     os.remove(full_file_name)
-
-    
 
 
 def buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
@@ -199,7 +197,11 @@ def buildCmakeListsFile(module_dir, module_name, subdir, class_name,
         if module_name:
             source = 'src' + os.sep + 'lib' + os.sep + subdir + '*.cpp'
             existing = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
-            link_libs = library_dep_list + module_dep_list
+            link_libs = []
+            if library_dep_list:
+                 link_libs = link_libs + library_dep_list
+            if module_dep_list:
+                 link_libs = link_libs + module_dep_list
             if existing:
                 if not source in existing[0].source_list:
                     existing[0].source_list.append(source)
@@ -266,7 +268,7 @@ def defineSpecificProgramOptions():
 def mainMethod(args):
 
     logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the CreateElementsModule \
+    logger.info('#  Logging from the mainMethod() of the ElementsAddCppClass \
     script ')
     logger.info('#')
 
