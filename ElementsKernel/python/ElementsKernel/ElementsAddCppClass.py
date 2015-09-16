@@ -125,7 +125,7 @@ def substituteStringsInDotH(path, class_name, module_name):
     """
     logger.info('# Substitute variables in <%s> file' % H_TEMPLATE_FILE)
     full_file_name = os.path.join(os.path.sep, path, H_TEMPLATE_FILE)
-
+    print full_file_name
     # Substitute strings in h_template_file
     f = open(full_file_name, 'r')
     data = f.read()
@@ -133,11 +133,13 @@ def substituteStringsInDotH(path, class_name, module_name):
     # We put by default Elements dependency if no one is given
     date_str = time.strftime("%x")
     author_str = getAuthor()
+    # Make some substitutions
+    full_file_name_str = full_file_name.replace(H_TEMPLATE_FILE, class_name+'.h')
     define_words_str = '_' + full_file_name
+    define_words_str = define_words_str.replace(H_TEMPLATE_FILE, class_name+'.h')
     define_words_str = define_words_str.replace('.','_')
-    define_words_str = define_words_str.replace(H_TEMPLATE_FILE,class_name+'.h')
     define_words_str = (define_words_str.replace(os.path.sep,'_')).upper()
-    new_data = data % {"FILE": full_file_name,
+    new_data = data % {"FILE": full_file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
                        "DEFINE_WORDS": define_words_str,
