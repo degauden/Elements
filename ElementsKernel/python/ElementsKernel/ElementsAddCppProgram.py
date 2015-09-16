@@ -62,6 +62,8 @@ def createCppProgram(module_dir, module_name, subdir, class_name, module_dep_lis
     substituteStringsDotInCpp(class_cpp_path, class_name, 
                               module_name)  
     return script_goes_on
+
+################################################################################
     
 def defineSpecificProgramOptions():
     description = """
@@ -78,6 +80,8 @@ def defineSpecificProgramOptions():
                         help='Dependency library name')
 
     return parser
+
+################################################################################
 
 def mainMethod(args):
 
