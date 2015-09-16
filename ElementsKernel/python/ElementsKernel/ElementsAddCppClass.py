@@ -87,6 +87,7 @@ def createDirectories(module_dir, module_name, subdir):
     """
     Create directories needed for a module
     """
+    logger.info('# Creating the directories ')
     # Create Directories
     module_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
     if not os.path.exists(module_path):
@@ -122,7 +123,7 @@ def substituteStringsInDotH(path, class_name, module_name):
     """
     Substitute variables in template file and rename the file
     """
-    logger.info('# substitute variables in <%s> file' % H_TEMPLATE_FILE)
+    logger.info('# Substitute variables in <%s> file' % H_TEMPLATE_FILE)
     full_file_name = os.path.join(os.path.sep, path, H_TEMPLATE_FILE)
 
     # Substitute strings in h_template_file
@@ -155,7 +156,7 @@ def substituteStringsInDotH(path, class_name, module_name):
 def substituteStringsDotInCpp(path, class_name, module_name):
     """
     """
-    logger.info('# substitute variables in <%s> file' % CPP_TEMPLATE_FILE)
+    logger.info('# Substitute variables in <%s> file' % CPP_TEMPLATE_FILE)
     full_file_name = os.path.join(os.path.sep, path, CPP_TEMPLATE_FILE)
     
     # Substitute strings in template_file
@@ -183,6 +184,7 @@ def buildCmakeListsFile(module_dir, module_name, subdir, class_name,
                         module_dep_list, library_dep_list):
     """
     """
+    logger.info('# Creating or updating the CMakeLists.txt file ')
     cmake_filename = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
     
     # Cmake file already exist
@@ -245,7 +247,6 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
                     library_dep_list):
     """
     """
-    logger.info('# Creating the directories ')
     
     script_goes_on = True 
     
@@ -257,7 +258,8 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
     copyAuxFile(class_cpp_path,CPP_TEMPLATE_FILE)
         
     buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
-                        module_dep_list, library_dep_list)  
+                        module_dep_list, library_dep_list) 
+     
     substituteStringsInDotH(class_h_path, class_name, module_name)  
     substituteStringsDotInCpp(class_cpp_path, class_name, 
                               module_name)  
