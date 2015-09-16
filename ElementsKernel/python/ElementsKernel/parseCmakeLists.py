@@ -116,7 +116,7 @@ class ElementsAddUnitTest:
         result = result.strip() + ')\n'
         return result
     
-##########################################
+################################################################################
 
 class CMakeLists:
     
