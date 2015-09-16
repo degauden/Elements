@@ -25,6 +25,8 @@ CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 H_TEMPLATE_FILE     = 'ClassName_template.h'
 CPP_TEMPLATE_FILE   = 'className_template.cpp'
 
+################################################################################
+
 def getAuthor():
     """
     """
@@ -35,6 +37,7 @@ def getAuthor():
 
     return author_str
 
+################################################################################
     
 def getClassName(str_subdir_class):
     """
@@ -46,6 +49,8 @@ def getClassName(str_subdir_class):
     logger.info('# Class name: %s' % className)
     logger.info('# Sub directory: %s' % subdir)
     return subdir, className
+
+################################################################################
     
 def isElementsModuleExist(module_dir):
     """
@@ -76,6 +81,8 @@ def isElementsModuleExist(module_dir):
     
     return found_keyword, module_name
 
+################################################################################
+
 def createDirectories(module_dir, module_name, subdir):
     """
     Create directories needed for a module
@@ -90,6 +97,8 @@ def createDirectories(module_dir, module_name, subdir):
     test_path = os.path.join(os.path.sep, module_dir, 'tests/src', subdir)
     if not os.path.exists(test_path):
         os.makedirs(test_path)
+
+################################################################################
 
 def copyAuxFile(destination, file_name):
     """
@@ -107,6 +116,7 @@ def copyAuxFile(destination, file_name):
 
     return scripts_goes_on
 
+################################################################################
        
 def substituteStringsInDotH(path, class_name, module_name):
     """
@@ -140,6 +150,7 @@ def substituteStringsInDotH(path, class_name, module_name):
     f.close()
     os.remove(full_file_name)
 
+################################################################################
 
 def substituteStringsDotInCpp(path, class_name, module_name):
     """
@@ -166,6 +177,7 @@ def substituteStringsDotInCpp(path, class_name, module_name):
     f.close()
     os.remove(full_file_name)
 
+################################################################################
 
 def buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
                         module_dep_list, library_dep_list):
@@ -226,6 +238,8 @@ def buildCmakeListsFile(module_dir, module_name, subdir, class_name,
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
     f.close()
+
+################################################################################
       
 def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
                     library_dep_list):
@@ -248,6 +262,8 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
     substituteStringsDotInCpp(class_cpp_path, class_name, 
                               module_name)  
     return script_goes_on
+
+################################################################################
     
 def defineSpecificProgramOptions():
     description = """
@@ -264,6 +280,8 @@ def defineSpecificProgramOptions():
                         help='Dependency library name')
 
     return parser
+
+################################################################################
 
 def mainMethod(args):
 
