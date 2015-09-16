@@ -240,7 +240,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
 def defineSpecificProgramOptions():
     description = """
 This script creates an <Elements> project in your current directory
-by default or at the location defined by the <$User_area> environment varaible.
+by default or at the location defined by the <$User_area> environment variable.
 It means all the necessary structure (directory
 structure, makefiles etc...) will be automatically created for you.
 Use the [-d] option if your project has some dependencies to other
@@ -251,7 +251,7 @@ project(s).
         'project_name', metavar='project-name', type=str, help='Project name')
     parser.add_argument('project_version', metavar='project-version',
                         type=str, default='1.0', help='Project version number')
-    parser.add_argument('-d', '--dependency', nargs=2, action='append', type=str,
+    parser.add_argument('-d', '--dependency', metavar=('project_name','version'), nargs=2, action='append', type=str,
                         help='Dependency project name and its version number e.g "project_name 0.1"')
     return parser
 

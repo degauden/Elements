@@ -26,17 +26,6 @@ CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 H_TEMPLATE_FILE     = 'ClassName_template.h'
 CPP_TEMPLATE_FILE   = 'className_template.cpp'
 
-################################################################################
-
-def getAuthor():
-    """
-    """
-    try:
-        author_str = os.environ['USER']
-    except KeyError:
-        author_str = ''
-
-    return author_str
 
 ################################################################################
     
