@@ -13,7 +13,7 @@ import os
 import re
 import shutil
 import time
-import ElementsKernel.ElementsProject as ep
+import ElementsKernel.ElementsProjectCommonRoutines as epcr
 import ElementsKernel.parseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
@@ -25,17 +25,6 @@ CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 H_TEMPLATE_FILE     = 'ClassName_template.h'
 CPP_TEMPLATE_FILE   = 'className_template.cpp'
 
-################################################################################
-
-def getAuthor():
-    """
-    """
-    try:
-        author_str = os.environ['USER']
-    except KeyError:
-        author_str = ''
-
-    return author_str
 
 ################################################################################
     
@@ -107,7 +96,7 @@ def copyAuxFile(destination, file_name):
     """
     scripts_goes_on = True
 
-    aux_path_filename = ep.getAuxPathFile(file_name)
+    aux_path_filename = epcr.getAuxPathFile(file_name)
     if aux_path_filename:
         logger.info('# Copying AUX file : %s' % file_name)
         shutil.copy(aux_path_filename, os.path.join(os.path.sep, destination,
@@ -131,7 +120,7 @@ def substituteStringsInDotH(path, class_name, module_name):
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
     date_str = time.strftime("%x")
-    author_str = getAuthor()
+    author_str = epcr.getAuthor()
     # Make some substitutions
     full_file_name_str = full_file_name.replace(H_TEMPLATE_FILE, class_name+'.h')
     define_words_str = '_' + full_file_name
@@ -164,7 +153,7 @@ def substituteStringsDotInCpp(path, class_name, module_name):
     # Substitute strings in template_file
     f = open(full_file_name, 'r')
     data = f.read()
-    author_str = getAuthor()
+    author_str = epcr.getAuthor()
     date_str   = time.strftime("%x")
     full_file_name_str = full_file_name.replace(CPP_TEMPLATE_FILE, class_name+'.cpp')
     new_data = data % {"FILE": full_file_name_str,
@@ -313,11 +302,11 @@ def mainMethod(args):
         
         # Check aux files exist
         if script_goes_on:
-            script_goes_on = ep.isAuxFileExist(H_TEMPLATE_FILE)
+            script_goes_on = epcr.isAuxFileExist(H_TEMPLATE_FILE)
         if script_goes_on:
-            script_goes_on = ep.isAuxFileExist(CPP_TEMPLATE_FILE)
+            script_goes_on = epcr.isAuxFileExist(CPP_TEMPLATE_FILE)
         if script_goes_on:
-            script_goes_on = ep.isAuxFileExist(CMAKE_LISTS_FILE_IN)
+            script_goes_on = epcr.isAuxFileExist(CMAKE_LISTS_FILE_IN)
         
         # Create CPP class    
         if script_goes_on:

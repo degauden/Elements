@@ -13,6 +13,7 @@ import os
 import re
 import shutil
 import ELEMENTS_VERSION  # @UnresolvedImport
+import ElementsKernel.ElementsProjectCommonRoutines as epcr
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('CreateElementsProject')
@@ -35,27 +36,6 @@ def setPath():
         destination_path = os.getcwd()
 
     return destination_path
-
-################################################################################
-
-def isNameAndVersionValid(name, version):
-    """
-    Check that the <name> and <version> respect a regex
-    """
-    valid = True
-    name_regex = '^[A-Za-z0-9][A-Za-z0-9_-]*$'
-    if re.match(name_regex, name) is None:
-        logger.error("# < %s %s > name not valid. It must follow this regex : < %s >"
-                     % (name, version, name_regex))
-        valid = False
-
-    version_regex = '^\d+\.\d+(\.\d+)?$'
-    if re.match(version_regex, version) is None:
-        logger.error("# < %s %s > ,Version number not valid. It must follow this regex: < %s >"
-                     % (name, version, version_regex))
-        valid = False
-
-    return valid
 
 ################################################################################
 
@@ -112,55 +92,13 @@ def getElementsVersion():
 
 ################################################################################
 
-def getAuxPathFile(file_name):
-    """
-    Look for in path in the <ELEMENTS_AUX_PATH> environment variable where is
-    located the <auxdir/file_name> file. It returns the filename with the path or
-    an empty string if not found.
-    """
-    found = False
-    full_filename = ''
-    aux_dir = os.environ.get('ELEMENTS_AUX_PATH')
-    if not aux_dir is None:
-        for elt in aux_dir.split(os.pathsep):
-            # look for the first valid path
-            full_filename = os.path.sep.join([elt, file_name])
-            if os.path.exists(full_filename) and 'auxdir' in full_filename:
-                found = True
-                logger.debug(
-                    "# Auxiliary directory for this file : <%s>" % full_filename)
-                break
-
-    if not found:
-        full_filename = ''
-        logger.error(
-            "# Auxiliary directory NOT FOUND for this file : <%s>" % file_name)
-        logger.error("# Auxiliary directory : <%s>" % aux_dir)
-
-    return full_filename
-
-################################################################################
-
-def isAuxFileExist(aux_file):
-    """
-    Make sure auxialiary is found
-    """
-    found = False
-    aux_path_file = getAuxPathFile(aux_file)
-    if aux_path_file:
-        found = True
-
-    return found
-
-################################################################################
-
 def copyAuxFile(destination, file_name):
     """
     Copy all necessary auxiliary data to the <destination> directory
     """
     scripts_goes_on = True
 
-    aux_path_file = getAuxPathFile(file_name)
+    aux_path_file = epcr.getAuxPathFile(file_name)
     if aux_path_file:
         logger.info('# Copying AUX file : %s' % file_name)
         shutil.copy(
@@ -169,15 +107,6 @@ def copyAuxFile(destination, file_name):
         scripts_goes_on = False
 
     return scripts_goes_on
-
-################################################################################
-
-def eraseDirectory(from_directory):
-    """
-    Erase a directory and its contents from disk
-    """
-    shutil.rmtree(from_directory)
-    logger.info('# <%s> Project erased!' % from_directory)
 
 ################################################################################
 
@@ -273,7 +202,7 @@ def mainMethod(args):
         logger.info('# Installation directory : %s' % destination_path)
         
         # Check project name and version
-        script_goes_on = isNameAndVersionValid(proj_name, proj_version)
+        script_goes_on = epcr.isNameAndVersionValid(proj_name, proj_version)
 
         # Check for duplicate dependencies
         if script_goes_on and not args.dependency is None:
@@ -281,9 +210,9 @@ def mainMethod(args):
 
         # Check aux files exist
         if script_goes_on:
-            script_goes_on = isAuxFileExist(AUX_CMAKE_LIST_IN)
+            script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_LIST_IN)
         if script_goes_on:
-            script_goes_on = isAuxFileExist(AUX_CMAKE_FILE)
+            script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE)
 
         # Set the project directory
         project_dir = os.path.join(
@@ -300,7 +229,7 @@ def mainMethod(args):
             if response_key == "YES" or response_key == "yes" or response_key == "y":
                 logger.info(
                     '# Replacing the existing project: <%s>' % project_dir)
-                eraseDirectory(project_dir)
+                epcr.eraseDirectory(project_dir)
             else:
                 script_goes_on = False
                 logger.info('# Script stopped by user!')
@@ -309,7 +238,7 @@ def mainMethod(args):
             createProject(
                 project_dir, proj_name, proj_version, dependant_projects)
             logger.info('# <%s> project successfully created.' % project_dir)
-
+            logger.info('# Script over.')
     except Exception as e:
         logger.exception(e)
         logger.error('# Script aborted...')
