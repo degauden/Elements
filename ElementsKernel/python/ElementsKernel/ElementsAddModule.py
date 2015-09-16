@@ -10,8 +10,7 @@
 
 import argparse
 import os
-import ElementsKernel.ElementsProject as ep
-##import ElementsKernel.ElementsModule as em
+import ElementsKernel.ElementsProjectCommonRoutines as epcr
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddElementsModule')
@@ -21,13 +20,13 @@ CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 ################################################################################
 
-def isElementsProjectExist(dir_project):
+def isElementsProjectExist(project_directory):
     """
     Checks if a CMakeLists.txt file exists and is really an Elements
     cmake file
     """
     file_exists = True
-    cmake_file = os.path.join(os.path.sep, dir_project, CMAKE_LISTS_FILE)
+    cmake_file = os.path.join(os.path.sep, project_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         file_exists = False
         logger.error(
@@ -65,7 +64,7 @@ def createCmakeListFile(module_dir, module_name, dependency_list):
     """
     Create the CMakeList.txt file and add dependencies to it
     """
-    logger.info('# Create the %s File' % CMAKE_LISTS_FILE)
+    logger.info('# Create the <%s> File' % CMAKE_LISTS_FILE)
     cmake_list_file_final = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
 
     f_final = open(cmake_list_file_final, 'w')
@@ -96,7 +95,7 @@ def createModule(project_dir, module_name, dependency_list):
             'Do you want to replace the existing module (Yes/No, default: No)?')
         if response_key == "YES" or response_key == "yes" or response_key == "y":
             logger.info('# Replacing the existing module: <%s>' % module_name)
-            ep.eraseDirectory(mod_path)
+            epcr.eraseDirectory(mod_path)
         else:
             logger.info("Script stopped by user!")
             script_goes_on = False
@@ -150,13 +149,14 @@ def mainMethod(args):
 
         # Module as no version number, '1.0' is just for using the routine
         if script_goes_on:
-            script_goes_on = ep.isNameAndVersionValid(module_name, '1.0')
+            script_goes_on = epcr.isNameAndVersionValid(module_name, '1.0')
                 
         if script_goes_on:
             if os.path.exists(project_dir):
                 if createModule(project_dir, module_name, dependency_list):
                     logger.info('# <%s> module successfully created in <%s>.' % 
                                 (module_name, project_dir))
+                    logger.info('# Script over.')
             else:
                 if not script_goes_on:
                     logger.error(
