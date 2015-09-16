@@ -13,8 +13,7 @@ import os
 import re
 import shutil
 import time
-import ElementsKernel.ElementsProject as ep
-import ElementsKernel.ElementsAddCppClass as eacc
+import ElementsKernel.ElementsProjectCommonRoutines as epcr
 import ElementsKernel.parseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
