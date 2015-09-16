@@ -19,6 +19,8 @@ logger = log.getLogger('AddElementsModule')
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
+################################################################################
+
 def isElementsProjectExist(dir_project):
     """
     Checks if a CMakeLists.txt file exists and is really an Elements
@@ -43,6 +45,7 @@ def isElementsProjectExist(dir_project):
 
     return file_exists
 
+################################################################################
 
 def createModuleDirectories(mod_path, module_name):
     """
@@ -55,6 +58,8 @@ def createModuleDirectories(mod_path, module_name):
     os.makedirs(os.path.join(os.path.sep, mod_path, 'doc'))
     os.makedirs(os.path.join(os.path.sep, mod_path, 'conf'))
     os.makedirs(os.path.join(os.path.sep, mod_path, 'tests', 'src'))
+
+################################################################################
 
 def createCmakeListFile(module_dir, module_name, dependency_list):
     """
@@ -72,6 +77,7 @@ def createCmakeListFile(module_dir, module_name, dependency_list):
             f_final.write(line) 
     f_final.close()
 
+################################################################################
 
 def createModule(project_dir, module_name, dependency_list):
     """
@@ -101,6 +107,7 @@ def createModule(project_dir, module_name, dependency_list):
 
     return script_goes_on
 
+################################################################################
 
 def defineSpecificProgramOptions():
     description = """
@@ -118,6 +125,8 @@ for you. Use the [-md] option for module dependency and [-h] for help.
                         help='Dependency module name e.g "dep_module_name"')
 
     return parser
+
+################################################################################
 
 def mainMethod(args):
 

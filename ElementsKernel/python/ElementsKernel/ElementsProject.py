@@ -13,7 +13,6 @@ import os
 import re
 import shutil
 import ELEMENTS_VERSION  # @UnresolvedImport
-
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('CreateElementsProject')
@@ -21,6 +20,7 @@ logger = log.getLogger('CreateElementsProject')
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
 AUX_CMAKE_FILE = "Makefile"
 
+################################################################################
 
 def setPath():
     """
@@ -36,6 +36,7 @@ def setPath():
 
     return destination_path
 
+################################################################################
 
 def isNameAndVersionValid(name, version):
     """
@@ -56,6 +57,7 @@ def isNameAndVersionValid(name, version):
 
     return valid
 
+################################################################################
 
 def isDependencyProjectValid(str_list):
     """
@@ -69,6 +71,7 @@ def isDependencyProjectValid(str_list):
 
     return valid
 
+################################################################################
 
 def duplicate_elements(duplicate_list):
     """
@@ -86,6 +89,7 @@ def duplicate_elements(duplicate_list):
 
     return not_found_duplicate
 
+################################################################################
 
 def getElementsVersion():
     """
@@ -106,6 +110,7 @@ def getElementsVersion():
 
     return str(elt_version)
 
+################################################################################
 
 def getAuxPathFile(file_name):
     """
@@ -134,6 +139,7 @@ def getAuxPathFile(file_name):
 
     return full_filename
 
+################################################################################
 
 def isAuxFileExist(aux_file):
     """
@@ -146,6 +152,7 @@ def isAuxFileExist(aux_file):
 
     return found
 
+################################################################################
 
 def copyAuxFile(destination, file_name):
     """
@@ -163,6 +170,7 @@ def copyAuxFile(destination, file_name):
 
     return scripts_goes_on
 
+################################################################################
 
 def eraseDirectory(from_directory):
     """
@@ -171,6 +179,7 @@ def eraseDirectory(from_directory):
     shutil.rmtree(from_directory)
     logger.info('# <%s> Project erased!' % from_directory)
 
+################################################################################
 
 def substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects):
     """
@@ -209,6 +218,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     f.close()
     os.rename(cmake_list_file, cmake_list_file.replace('.in', ''))
 
+################################################################################
 
 def createProject(project_dir, proj_name, proj_version, dep_projects):
     """
@@ -225,6 +235,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
     substituteProjectVariables(
         project_dir, proj_name, proj_version, dep_projects)
 
+################################################################################
 
 def defineSpecificProgramOptions():
     description = """
@@ -244,6 +255,7 @@ project(s).
                         help='Dependency project name and its version number e.g "project_name 0.1"')
     return parser
 
+################################################################################
 
 def mainMethod(args):
 

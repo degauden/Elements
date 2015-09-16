@@ -17,6 +17,8 @@ import sys
 # Each class is designed for a cmake tag and builds a list for each tag.  
 # The "CMakeLists" class uses all the others.
 
+################################################################################
+
 class ElementsSubdir:
     
     def __init__(self, name):
@@ -26,7 +28,7 @@ class ElementsSubdir:
         return 'elements_subdir(' + self.name + ')\n'
     
     
-##########################################
+################################################################################
     
 class ElementsDependsOnSubdirs:
     
@@ -40,7 +42,7 @@ class ElementsDependsOnSubdirs:
         result = result.strip() + ')\n'
         return result
 
-##########################################
+################################################################################
 
 class FindPackage:
     
@@ -56,7 +58,7 @@ class FindPackage:
             result += ' ' + component
         return result + ')\n'
 
-##########################################
+################################################################################
 
 class ElementsAddLibrary:
     
@@ -85,7 +87,7 @@ class ElementsAddLibrary:
                 result += ' ' + name
         return result + ')\n'
     
-##########################################
+################################################################################
     
 class ElementsAddUnitTest:
     
