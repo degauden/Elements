@@ -135,6 +135,7 @@ def substituteStringsInDotH(path, class_name, module_name):
     author_str = getAuthor()
     define_words_str = '_' + full_file_name
     define_words_str = define_words_str.replace('.','_')
+    define_words_str = define_words_str.replace(H_TEMPLATE_FILE,class_name+'.h')
     define_words_str = (define_words_str.replace(os.path.sep,'_')).upper()
     new_data = data % {"FILE": full_file_name,
                        "DATE": date_str,
