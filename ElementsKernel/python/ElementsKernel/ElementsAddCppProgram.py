@@ -26,6 +26,8 @@ CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 H_TEMPLATE_FILE     = 'ClassName_template.h'
 CPP_TEMPLATE_FILE   = 'className_template.cpp'
 
+################################################################################
+
 def getAuthor():
     """
     """
@@ -36,6 +38,7 @@ def getAuthor():
 
     return author_str
 
+################################################################################
     
       
 def createCppProgram(module_dir, module_name, subdir, class_name, module_dep_list,
