@@ -61,7 +61,7 @@ def getAuxPathFile(file_name):
     if not aux_dir is None:
         for elt in aux_dir.split(os.pathsep):
             # look for the first valid path
-            full_filename = os.path.sep.join([elt, file_name])
+            full_filename = os.path.sep.join([elt, 'templates', file_name])
             if os.path.exists(full_filename) and 'auxdir' in full_filename:
                 found = True
                 logger.debug(
