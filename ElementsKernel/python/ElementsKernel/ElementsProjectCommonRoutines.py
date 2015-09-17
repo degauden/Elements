@@ -17,6 +17,22 @@ import ElementsKernel.Logging as log
 
 logger = log.getLogger('ElementsProjectCommonRoutines')
 
+CMAKE_LISTS_FILE    = 'CMakeLists.txt'
+
+################################################################################
+
+def makeDirectory(directory_path):
+    """
+    Create a directory on disk if any
+    """
+    if not os.path.exists(directory_path):
+        try:
+            os.makedirs(directory_path)
+            logger.info("# <%s> directory created." % directory_path)
+        except OSError as e:
+            raise e
+                
+
 ################################################################################
 
 def isNameAndVersionValid(name, version):
@@ -45,7 +61,7 @@ def eraseDirectory(directory):
     Erase a directory and its contents from disk
     """
     shutil.rmtree(directory)
-    logger.info('# <%s> Project erased!' % directory)
+    logger.info('# <%s> directory erased!' % directory)
     
 ################################################################################
 
@@ -67,7 +83,7 @@ def getAuxPathFile(file_name):
                 logger.debug(
                     "# Auxiliary directory for this file : <%s>" % full_filename)
                 break
-            
+
     if not found:
         full_filename = ''
         logger.error(
@@ -93,6 +109,7 @@ def isAuxFileExist(aux_file):
 
 def getAuthor():
     """
+    Get the contents of the use environment variables
     """
     try:
         author_str = os.environ['USER']
@@ -100,3 +117,35 @@ def getAuthor():
         author_str = ''
 
     return author_str
+
+################################################################################
+    
+def isElementsModuleExist(module_directory):
+    """
+    """
+    found_keyword = True
+    module_name = ''
+    cmake_file = os.path.join(os.path.sep, module_directory, CMAKE_LISTS_FILE)
+    if not os.path.isfile(cmake_file):
+        found_keyword = False
+        logger.error('# %s cmake module file is missing! Are you inside a ' \
+        'module directory?' % cmake_file)
+    else:
+        # Check the make file is an Elements cmake file
+        # it should contain the string : "elements_project"
+        f = open(cmake_file, 'r')
+        for line in f.readlines():
+            if 'elements_subdir' in line:
+                posStart = line.find('(')        
+                posEnd = line.find(')')        
+                module_name = line[posStart+1:posEnd]
+        f.close()
+                
+        if not module_name:
+            logger.error('# Can not find the module name in the <%s> file!' % cmake_file)
+            logger.error('# Maybe you are not in the expected directory...')
+            found_keyword = False
+        else:
+            logger.info('# Module name found : %s' % module_name)
+    
+    return found_keyword, module_name

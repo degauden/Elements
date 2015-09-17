@@ -23,7 +23,7 @@ logger = log.getLogger('AddCppClass')
 CMAKE_LISTS_FILE    = 'CMakeLists.txt'
 CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 H_TEMPLATE_FILE     = 'ClassName_template.h'
-CPP_TEMPLATE_FILE   = 'className_template.cpp'
+CPP_TEMPLATE_FILE   = 'ClassName_template.cpp'
 
 
 ################################################################################
@@ -36,39 +36,10 @@ def getClassName(str_subdir_class):
     className = name_list[-1]
     subdir = str_subdir_class.replace(className,'')
     logger.info('# Class name: %s' % className)
-    logger.info('# Sub directory: %s' % subdir)
+    if subdir:
+        logger.info('# Sub directory: %s' % subdir)
     return subdir, className
 
-################################################################################
-    
-def isElementsModuleExist(module_dir):
-    """
-    """
-    found_keyword = True
-    module_name = ''
-    cmake_file = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
-    if not os.path.isfile(cmake_file):
-        found_keyword = False
-        logger.error('# %s cmake module file is missing! Are you inside a ' \
-        'module directory?' % cmake_file)
-    else:
-        # Check the make file is an Elements cmake file
-        # it should contain the string : "elements_project"
-        f = open(cmake_file, 'r')
-        for line in f.readlines():
-            if 'elements_subdir' in line:
-                posStart = line.find('(')        
-                posEnd = line.find(')')        
-                module_name = line[posStart+1:posEnd]
-        f.close()
-                
-        if not module_name:
-            logger.error('# Can not find the module name in %s!' % cmake_file)
-            found_keyword = False
-        else:
-            logger.info('# Module name found : %s' % module_name)
-    
-    return found_keyword, module_name
 
 ################################################################################
 
@@ -234,6 +205,24 @@ def buildCmakeListsFile(module_dir, module_name, subdir, class_name,
     f.close()
 
 ################################################################################
+
+def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
+    """
+    Check if the class file does not already exist
+    """
+    script_goes_on = True
+    module_path    = os.path.join(os.path.sep, module_dir, module_name, subdir)
+    file_name      = class_name + '.h'
+    file_name_path = os.path.join(os.path.sep, module_path, file_name)
+    if os.path.exists(file_name_path):
+        script_goes_on = False
+        logger.error('# The <%s> class already exists! ' % class_name)
+        logger.error('# as the header file already exists: <%s>! ' % file_name_path)
+
+    return script_goes_on
+    
+
+################################################################################
       
 def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
                     library_dep_list):
@@ -242,19 +231,23 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
     
     script_goes_on = True 
     
-    createDirectories(module_dir, module_name, subdir)  
-                     
-    class_h_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
-    copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
-    class_cpp_path = os.path.join(os.path.sep, module_dir,'src/lib', subdir)
-    copyAuxFile(class_cpp_path,CPP_TEMPLATE_FILE)
-        
-    buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
-                        module_dep_list, library_dep_list) 
-     
-    substituteStringsInDotH(class_h_path, class_name, module_name)  
-    substituteStringsDotInCpp(class_cpp_path, class_name, 
-                              module_name)  
+    # Check the class does not exist already
+    script_goes_on = isClassFileAlreadyExist(class_name, module_dir, module_name, 
+                                          subdir)
+    if script_goes_on:
+        createDirectories(module_dir, module_name, subdir)  
+                         
+        class_h_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
+        copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
+        class_cpp_path = os.path.join(os.path.sep, module_dir,'src/lib', subdir)
+        copyAuxFile(class_cpp_path,CPP_TEMPLATE_FILE)
+            
+        buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
+                            module_dep_list, library_dep_list) 
+         
+        substituteStringsInDotH(class_h_path, class_name, module_name)  
+        substituteStringsDotInCpp(class_cpp_path, class_name, 
+                                  module_name)  
     return script_goes_on
 
 ################################################################################
@@ -266,12 +259,12 @@ def defineSpecificProgramOptions():
     parser.add_argument('class_name', metavar='class-name', 
                         type=str, 
                         help='Module name')
-    parser.add_argument('-md', '--module-dependency', action='append', 
-                        type=str,
-                        help='Dependency module name')
-    parser.add_argument('-ld', '--library-dependency', action='append', 
-                        type=str,
-                        help='Dependency library name')
+    parser.add_argument('-md', '--module-dependency', metavar='module_name', 
+                        action='append',type=str,
+                        help='Dependency module name e.g. "-md ElementsKernel"')
+    parser.add_argument('-ld', '--library-dependency', metavar='library_name',
+                        action='append',type=str,
+                        help='Dependency library name e.g. "-ld ElementsKernel"')
 
     return parser
 
@@ -298,7 +291,7 @@ def mainMethod(args):
         logger.info('# Current directory : %s', module_dir)
 
         # We absolutely need a Elements cmake file
-        script_goes_on, module_name = isElementsModuleExist(module_dir)
+        script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
         
         # Check aux files exist
         if script_goes_on:
@@ -310,13 +303,14 @@ def mainMethod(args):
         
         # Create CPP class    
         if script_goes_on:
-            if createCppClass(module_dir, module_name, sub_dir, class_name, 
-                              module_list, library_list):
+            script_goes_on = createCppClass(module_dir, module_name, sub_dir,
+                                        class_name, module_list, library_list)
+            if script_goes_on:
                 logger.info('# <%s> class successfully created in <%s>.' % 
                             (class_name, module_dir))
+                logger.info('# Script over.')
             else:
-                if not script_goes_on:
-                    logger.error('# <%s> Script aborted!')
+                logger.error('# Script aborted!')
         else:
             logger.error('# Script aborted!')
 
