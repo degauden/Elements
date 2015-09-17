@@ -21,7 +21,6 @@ logger = log.getLogger('AddCppClass')
 
 # Define constants
 CMAKE_LISTS_FILE       = 'CMakeLists.txt'
-CMAKE_LISTS_FILE_IN    = 'CMakeLists.txt.mod.in'
 H_TEMPLATE_FILE        = 'ClassName_template.h'
 CPP_TEMPLATE_FILE      = 'ClassName_template.cpp'
 UNITTEST_TEMPLATE_FILE = 'UnitTestFile_template.cpp'
@@ -61,23 +60,6 @@ def createDirectories(module_dir, module_name, subdir):
     test_path = os.path.join(os.path.sep, module_dir, 'tests', 'src', subdir)
     if not os.path.exists(test_path):
         os.makedirs(test_path)
-
-################################################################################
-
-def copyAuxFile(destination, file_name):
-    """
-    Copy all necessary auxiliary data to the <destination> directory
-    """
-    scripts_goes_on = True
-
-    aux_path_filename = epcr.getAuxPathFile(file_name)
-    if aux_path_filename:
-        shutil.copy(aux_path_filename, os.path.join(os.path.sep, destination,
-                                                        file_name))
-    else:
-        scripts_goes_on = False
-
-    return scripts_goes_on
 
 ################################################################################
        
@@ -183,7 +165,7 @@ def buildCmakeListsFile(module_dir, module_name, subdir, class_name,
                         module_dep_list, library_dep_list):
     """
     """
-    logger.info('# Creating or updating the CMakeLists.txt file ')
+    logger.info('# Creating or updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
     
     # Cmake file already exist
@@ -247,9 +229,9 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
     Check if the class file does not already exist
     """
     script_goes_on = True
-    module_path    = os.path.join(os.path.sep, module_dir, module_name, subdir)
+    module_path    = os.path.join(module_dir, module_name, subdir)
     file_name      = class_name + '.h'
-    file_name_path = os.path.join(os.path.sep, module_path, file_name)
+    file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
         script_goes_on = False
         logger.error('# The <%s> class already exists! ' % class_name)
@@ -271,14 +253,14 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
     script_goes_on = isClassFileAlreadyExist(class_name, module_dir, module_name, 
                                           subdir)
     if script_goes_on:
-        createDirectories(module_dir, module_name, subdir)  
-                         
+        
+        createDirectories(module_dir, module_name, subdir)                           
         class_h_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
-        copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
+        epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
         class_cpp_path = os.path.join(os.path.sep, module_dir,'src','lib', subdir)
-        copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE)
+        epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE)
         unittest_path = os.path.join(os.path.sep, module_dir,'tests','src', subdir)
-        copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE)
+        epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE)
             
         buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
                             module_dep_list, library_dep_list) 
@@ -337,8 +319,6 @@ def mainMethod(args):
             script_goes_on = epcr.isAuxFileExist(H_TEMPLATE_FILE)
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(CPP_TEMPLATE_FILE)
-        if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(CMAKE_LISTS_FILE_IN)
         
         # Create CPP class    
         if script_goes_on:

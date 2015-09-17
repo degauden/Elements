@@ -53,10 +53,10 @@ def createModuleDirectories(mod_path, module_name):
     # Create module directories
     logger.info('# Creating the module directories')
     os.makedirs(mod_path)
-    os.makedirs(os.path.join(os.path.sep, mod_path, module_name))
-    os.makedirs(os.path.join(os.path.sep, mod_path, 'doc'))
-    os.makedirs(os.path.join(os.path.sep, mod_path, 'conf'))
-    os.makedirs(os.path.join(os.path.sep, mod_path, 'tests', 'src'))
+    os.makedirs(os.path.join(mod_path, module_name))
+    os.makedirs(os.path.join(mod_path, 'doc'))
+    os.makedirs(os.path.join(mod_path, 'conf', module_name))
+    os.makedirs(os.path.join(mod_path, 'tests', 'src'))
 
 ################################################################################
 
