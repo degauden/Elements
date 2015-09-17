@@ -25,11 +25,19 @@ CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 H_TEMPLATE_FILE     = 'ClassName_template.h'
 CPP_TEMPLATE_FILE   = 'className_template.cpp'
 
+def createDirectories(module_dir, program_name):
+    """
+    Create directories needed for a program
+    """
+    logger.info('# Creating the directories ')
+    # Create Directories
+    module_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
+      
 
 ################################################################################
     
       
-def createCppProgram(module_dir, module_name, subdir, class_name, module_dep_list,
+def createCppProgram(module_dir, module_name, program_name, module_dep_list,
                     library_dep_list):
     """
     """
@@ -37,18 +45,8 @@ def createCppProgram(module_dir, module_name, subdir, class_name, module_dep_lis
     
     script_goes_on = True 
     
-    createDirectories(module_dir, module_name, subdir)  
+    createDirectories(module_dir, program_name)  
                      
-    class_h_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
-    copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
-    class_cpp_path = os.path.join(os.path.sep, module_dir,'src/lib', subdir)
-    copyAuxFile(class_cpp_path,CPP_TEMPLATE_FILE)
-        
-    buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
-                        module_dep_list, library_dep_list)  
-    substituteStringsInDotH(class_h_path, class_name, module_name)  
-    substituteStringsDotInCpp(class_cpp_path, class_name, 
-                              module_name)  
     return script_goes_on
 
 ################################################################################
@@ -60,12 +58,12 @@ def defineSpecificProgramOptions():
     parser.add_argument('program_name', metavar='program-name', 
                         type=str, 
                         help='Program name')
-    parser.add_argument('-md', '--module-dependency', action='append', 
-                        type=str,
-                        help='Dependency module name')
-    parser.add_argument('-ld', '--library-dependency', action='append', 
-                        type=str,
-                        help='Dependency library name')
+    parser.add_argument('-md', '--module-dependency', metavar='module_name',
+                        action='append', type=str,
+                        help='Dependency module name e.g."-md ElementsKernel"')
+    parser.add_argument('-ld', '--library-dependency', metavar='library_name', 
+                        action='append', type=str,
+                        help='Dependency library name e.g."-ld ElementsKernel"')
 
     return parser
 
@@ -91,19 +89,19 @@ def mainMethod(args):
         logger.info('# Current directory : %s', current_dir)
 
         # We absolutely need a Elements cmake file
-        script_goes_on, module_name = eacc.isElementsModuleExist(module_dir)
+        script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
         
         # Check aux files exist
-        if script_goes_on:
-            script_goes_on = ep.isAuxFileExist(H_TEMPLATE_FILE)
-        if script_goes_on:
-            script_goes_on = ep.isAuxFileExist(CPP_TEMPLATE_FILE)
-        if script_goes_on:
-            script_goes_on = ep.isAuxFileExist(CMAKE_LISTS_FILE_IN)
+        #if script_goes_on:
+        #    script_goes_on = ep.isAuxFileExist(H_TEMPLATE_FILE)
+        #if script_goes_on:
+        #    script_goes_on = ep.isAuxFileExist(CPP_TEMPLATE_FILE)
+        #if script_goes_on:
+        #    script_goes_on = ep.isAuxFileExist(CMAKE_LISTS_FILE_IN)
         
         # Create CPP class    
         if script_goes_on:
-            if createCppProgram(module_dir, module_name, sub_dir, class_name, 
+            if createCppProgram(current_dir, module_name, sub_dir, class_name, 
                               module_list, library_list):
                 logger.info('# <%s> program successfully created in <%s>.' % 
                             (class_name, module_dir))

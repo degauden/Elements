@@ -176,12 +176,15 @@ Use the [-d] option if your project has some dependencies to other
 project(s). 
             """
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument(
-        'project_name', metavar='project-name', type=str, help='Project name')
+    parser.add_argument('project_name', metavar='project-name', type=str, 
+                        help='Project name')
     parser.add_argument('project_version', metavar='project-version',
                         type=str, default='1.0', help='Project version number')
-    parser.add_argument('-d', '--dependency', metavar=('project_name','version'), nargs=2, action='append', type=str,
-                        help='Dependency project name and its version number e.g "project_name 0.1"')
+    parser.add_argument('-d', '--dependency', metavar=('project_name','version'),
+                        nargs=2, action='append', type=str,
+                        help='Dependency project name and its version number"\
+                         e.g "-d Elements x.x.x"')
+
     return parser
 
 ################################################################################

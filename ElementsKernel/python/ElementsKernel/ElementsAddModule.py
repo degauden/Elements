@@ -119,9 +119,9 @@ for you. Use the [-md] option for module dependency and [-h] for help.
     parser.add_argument('module_name', metavar='module-name', 
                         type=str, 
                         help='Module name')
-    parser.add_argument('-md', '--module-dependency', nargs=1, action='append', 
-                        type=str,
-                        help='Dependency module name e.g "dep_module_name"')
+    parser.add_argument('-md', '--module-dependency', metavar='module_name', 
+                        nargs=1, action='append',type=str,
+                        help='Dependency module name e.g "-md ElementsKernel"')
 
     return parser
 
