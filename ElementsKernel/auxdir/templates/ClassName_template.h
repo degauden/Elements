@@ -7,7 +7,7 @@
 #ifndef %(DEFINE_WORDS)s
 #define %(DEFINE_WORDS)s
 
-#include "%(MODULENAME)s/%(CLASSNAME)s.h"
+#include "%(MODULENAME)s%(OSSEP)s%(SUBDIR)s%(OSSEP)s%(CLASSNAME)s.h"
 
 namespace %(CLASSNAME)s {
 

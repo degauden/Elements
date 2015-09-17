@@ -4,7 +4,7 @@
  * @author %(AUTHOR)s
  */
 
-#include "%(MODULENAME)s/%(CLASSNAME)s.h"
+#include "%(MODULENAME)s%(OSSEP)s%(SUBDIR)s%(OSSEP)s%(CLASSNAME)s.h"
 
 namespace %(MODULENAME)s {
 
