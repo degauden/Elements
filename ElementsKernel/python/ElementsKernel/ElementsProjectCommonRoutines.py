@@ -92,6 +92,23 @@ def getAuxPathFile(file_name):
 
 ################################################################################
 
+def copyAuxFile(destination, aux_file_name):
+    """
+    Copy all necessary auxiliary data to the <destination> directory
+    """
+    scripts_goes_on = True
+
+    aux_path_file = getAuxPathFile(aux_file_name)
+    if aux_path_file:
+        shutil.copy( aux_path_file, os.path.join(os.path.sep, destination, 
+                                                 aux_file_name))
+    else:
+        scripts_goes_on = False
+
+    return scripts_goes_on
+
+################################################################################
+
 def isAuxFileExist(aux_file):
     """
     Make sure auxiliary file exists

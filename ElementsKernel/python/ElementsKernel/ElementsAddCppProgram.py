@@ -20,19 +20,64 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('AddCppProgram')
 
 # Define constants
-CMAKE_LISTS_FILE    = 'CMakeLists.txt'
-CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
-H_TEMPLATE_FILE     = 'ClassName_template.h'
-CPP_TEMPLATE_FILE   = 'className_template.cpp'
+CMAKE_LISTS_FILE      = 'CMakeLists.txt'
+PROGRAM_TEMPLATE_FILE = 'program_template.cpp'
 
-def createDirectories(module_dir, program_name):
+def createDirectories(module_dir):
     """
     Create directories needed for a program
     """
     logger.info('# Creating the directories ')
     # Create Directories
-    module_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
+    program_path = os.path.join(module_dir, 'src', 'program')
+    epcr.makeDirectory(program_path)
       
+################################################################################
+
+def isProgramFileAlreadyExist(module_dir, program_name):
+    """
+    Check if the program file does not already exist
+    """
+    script_goes_on = True
+    program_file_path = os.path.join(module_dir, 'src', 'program', program_name)
+    program_file_path += '.cpp'
+    if os.path.exists(program_file_path):
+        script_goes_on = False
+        logger.error('# The <%s> program already exists! ' % program_name)
+        logger.error('# The file already exists: <%s>! ' % program_file_path)
+
+    return script_goes_on
+
+################################################################################
+       
+def substituteStringsInProgramFile(file_path, program_name, module_name):
+    """
+    Substitute variables in template file and rename the file
+    """
+    logger.info('# Substitute variables in <%s> file' % PROGRAM_TEMPLATE_FILE)
+    template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
+    # Substitute strings in h_template_file
+    f = open(template_file, 'r')
+    data = f.read()
+    # Format all dependent projects
+    # We put by default Elements dependency if no one is given
+    date_str = time.strftime("%x")
+    author_str = epcr.getAuthor()
+    # Make some substitutions
+    file_name_str = os.path.join(module_name, program_name + '.cpp')
+    new_data = data % {"FILE": file_name_str,
+                       "DATE": date_str,
+                       "AUTHOR": author_str,
+                       "PROGRAMNAME": program_name}
+
+    f.close()
+    # Save new data
+    file_name = template_file.replace(PROGRAM_TEMPLATE_FILE, program_name)
+    file_name += '.cpp'
+    f = open(file_name, 'w')
+    f.write(new_data)
+    f.close()
+    os.remove(template_file)
 
 ################################################################################
     
@@ -44,8 +89,12 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
     logger.info('# Creating the directories ')
     
     script_goes_on = True 
-    
-    createDirectories(module_dir, program_name)  
+    script_goes_on = isProgramFileAlreadyExist(module_dir, program_name)
+    if script_goes_on:
+        createDirectories(module_dir)
+        program_path = os.path.join(os.path.sep, module_dir,'src','program')
+        epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE)    
+        substituteStringsInProgramFile(program_path, program_name, module_name) 
                      
     return script_goes_on
 
@@ -80,8 +129,9 @@ def mainMethod(args):
         # True: no error occured
         script_goes_on       = True 
         
-        module_list          = args.module_dependency
-        library_list         = args.library_dependency
+        program_name = args.program_name
+        module_list  = args.module_dependency
+        library_list = args.library_dependency
 
         # Default is the current directory
         current_dir = os.getcwd()
@@ -91,23 +141,27 @@ def mainMethod(args):
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
         
-        # Check aux files exist
-        #if script_goes_on:
-        #    script_goes_on = ep.isAuxFileExist(H_TEMPLATE_FILE)
-        #if script_goes_on:
-        #    script_goes_on = ep.isAuxFileExist(CPP_TEMPLATE_FILE)
-        #if script_goes_on:
-        #    script_goes_on = ep.isAuxFileExist(CMAKE_LISTS_FILE_IN)
-        
-        # Create CPP class    
         if script_goes_on:
-            if createCppProgram(current_dir, module_name, sub_dir, class_name, 
-                              module_list, library_list):
+            script_goes_on = isProgramFileAlreadyExist(current_dir, program_name)   
+                 
+         # Check aux files exist
+        if script_goes_on:
+            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE)
+       
+        # Check aux files exist
+        if script_goes_on:
+            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE)
+            
+        if script_goes_on:
+            # Create CPP program    
+            script_goes_on = createCppProgram(current_dir, module_name, program_name,
+                                        module_list, library_list)
+            if script_goes_on:
                 logger.info('# <%s> program successfully created in <%s>.' % 
-                            (class_name, module_dir))
+                            (program_name, current_dir + os.sep + 'src'+ os.sep + 'program'))
+                logger.info('# Script over.')
             else:
-                if not script_goes_on:
-                    logger.error('# <%s> Script aborted!')
+                logger.error('# Script aborted!')
         else:
             logger.error('# Script aborted!')
 

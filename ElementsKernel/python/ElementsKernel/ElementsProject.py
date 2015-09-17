@@ -92,24 +92,6 @@ def getElementsVersion():
 
 ################################################################################
 
-def copyAuxFile(destination, file_name):
-    """
-    Copy all necessary auxiliary data to the <destination> directory
-    """
-    scripts_goes_on = True
-
-    aux_path_file = epcr.getAuxPathFile(file_name)
-    if aux_path_file:
-        logger.info('# Copying AUX file : %s' % file_name)
-        shutil.copy(
-            aux_path_file, os.path.join(os.path.sep, destination, file_name))
-    else:
-        scripts_goes_on = False
-
-    return scripts_goes_on
-
-################################################################################
-
 def substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects):
     """
     Substitute variables in CMakeList.txt.in file and rename the file to
@@ -158,11 +140,10 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
     # Create project
     os.makedirs(project_dir)
 
-    copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
-    copyAuxFile(project_dir, AUX_CMAKE_FILE)
+    epcr.copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
+    epcr.copyAuxFile(project_dir, AUX_CMAKE_FILE)
 
-    substituteProjectVariables(
-        project_dir, proj_name, proj_version, dep_projects)
+    substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects)
 
 ################################################################################
 
