@@ -20,10 +20,11 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('AddCppClass')
 
 # Define constants
-CMAKE_LISTS_FILE    = 'CMakeLists.txt'
-CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
-H_TEMPLATE_FILE     = 'ClassName_template.h'
-CPP_TEMPLATE_FILE   = 'ClassName_template.cpp'
+CMAKE_LISTS_FILE       = 'CMakeLists.txt'
+CMAKE_LISTS_FILE_IN    = 'CMakeLists.txt.mod.in'
+H_TEMPLATE_FILE        = 'ClassName_template.h'
+CPP_TEMPLATE_FILE      = 'ClassName_template.cpp'
+UNITTEST_TEMPLATE_FILE = 'UnitTestFile_template.cpp'
 
 
 ################################################################################
@@ -35,6 +36,8 @@ def getClassName(str_subdir_class):
     name_list = str_subdir_class.split(os.path.sep)
     className = name_list[-1]
     subdir = str_subdir_class.replace(className,'')
+    # Remove end slash
+    subdir = subdir[:-1]
     logger.info('# Class name: %s' % className)
     if subdir:
         logger.info('# Sub directory: %s' % subdir)
@@ -47,15 +50,15 @@ def createDirectories(module_dir, module_name, subdir):
     """
     Create directories needed for a module
     """
-    logger.info('# Creating the directories ')
+    logger.info('# Creating directories ')
     # Create Directories
     module_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
     if not os.path.exists(module_path):
         os.makedirs(module_path)
-    src_lib_path = os.path.join(os.path.sep, module_dir, 'src/lib', subdir)
+    src_lib_path = os.path.join(os.path.sep, module_dir, 'src', 'lib', subdir)
     if not os.path.exists(src_lib_path):
         os.makedirs(src_lib_path)
-    test_path = os.path.join(os.path.sep, module_dir, 'tests/src', subdir)
+    test_path = os.path.join(os.path.sep, module_dir, 'tests', 'src', subdir)
     if not os.path.exists(test_path):
         os.makedirs(test_path)
 
@@ -69,7 +72,6 @@ def copyAuxFile(destination, file_name):
 
     aux_path_filename = epcr.getAuxPathFile(file_name)
     if aux_path_filename:
-        logger.info('# Copying AUX file : %s' % file_name)
         shutil.copy(aux_path_filename, os.path.join(os.path.sep, destination,
                                                         file_name))
     else:
@@ -79,67 +81,101 @@ def copyAuxFile(destination, file_name):
 
 ################################################################################
        
-def substituteStringsInDotH(path, class_name, module_name):
+def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     """
     Substitute variables in template file and rename the file
     """
     logger.info('# Substitute variables in <%s> file' % H_TEMPLATE_FILE)
-    full_file_name = os.path.join(os.path.sep, path, H_TEMPLATE_FILE)
+    template_file = os.path.join(file_path, H_TEMPLATE_FILE)
     # Substitute strings in h_template_file
-    f = open(full_file_name, 'r')
+    f = open(template_file, 'r')
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
     date_str = time.strftime("%x")
     author_str = epcr.getAuthor()
     # Make some substitutions
-    full_file_name_str = full_file_name.replace(H_TEMPLATE_FILE, class_name+'.h')
-    define_words_str = '_' + full_file_name
-    define_words_str = define_words_str.replace(H_TEMPLATE_FILE, class_name+'.h')
+    file_name_str = os.path.join(module_name, subdir, class_name + '.h')
+    define_words_str = '_' + file_name_str
+    define_words_str = define_words_str.replace(H_TEMPLATE_FILE, class_name +'.h')
     define_words_str = define_words_str.replace('.','_')
     define_words_str = (define_words_str.replace(os.path.sep,'_')).upper()
-    new_data = data % {"FILE": full_file_name_str,
+    new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
+                       "OSSEP": os.sep,
                        "DEFINE_WORDS": define_words_str,
+                       "SUBDIR": subdir,
                        "CLASSNAME": class_name,
                        "MODULENAME": module_name}
 
     f.close()
     # Save new data
-    h_file_name = full_file_name.replace(H_TEMPLATE_FILE, class_name + '.h')
-    f = open(h_file_name, 'w')
+    file_name = template_file.replace(H_TEMPLATE_FILE, class_name + '.h')
+    f = open(file_name, 'w')
     f.write(new_data)
     f.close()
-    os.remove(full_file_name)
+    os.remove(template_file)
 
 ################################################################################
 
-def substituteStringsDotInCpp(path, class_name, module_name):
+def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     """
     """
     logger.info('# Substitute variables in <%s> file' % CPP_TEMPLATE_FILE)
-    full_file_name = os.path.join(os.path.sep, path, CPP_TEMPLATE_FILE)
+    template_file = os.path.join(file_path, CPP_TEMPLATE_FILE)
     
     # Substitute strings in template_file
-    f = open(full_file_name, 'r')
+    f = open(template_file, 'r')
     data = f.read()
     author_str = epcr.getAuthor()
     date_str   = time.strftime("%x")
-    full_file_name_str = full_file_name.replace(CPP_TEMPLATE_FILE, class_name+'.cpp')
-    new_data = data % {"FILE": full_file_name_str,
+    file_name_str = os.path.join('src', 'lib', subdir, class_name + '.cpp')
+    new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
+                       "OSSEP": os.sep,
                        "MODULENAME": module_name,
+                       "SUBDIR": subdir,
                        "CLASSNAME": class_name}
 
     f.close()
     # Save new data
-    cpp_file_name = full_file_name.replace(CPP_TEMPLATE_FILE, class_name +'.cpp')
-    f = open(cpp_file_name, 'w')
+    file_name = template_file.replace(CPP_TEMPLATE_FILE, class_name + '.cpp')
+    f = open(file_name, 'w')
     f.write(new_data)
     f.close()
-    os.remove(full_file_name)
+    os.remove(template_file)
+
+################################################################################
+
+def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
+    """
+    """
+    logger.info('# Substitute variables in <%s> file' % UNITTEST_TEMPLATE_FILE)
+    template_file = os.path.join(file_path, UNITTEST_TEMPLATE_FILE)
+    
+    # Substitute strings in template_file
+    f = open(template_file, 'r')
+    data = f.read()
+    author_str = epcr.getAuthor()
+    date_str   = time.strftime("%x")
+    file_name_str = os.path.join('tests','src',class_name + '_test.cpp')
+    new_data = data % {"FILE": file_name_str,
+                       "DATE": date_str,
+                       "AUTHOR": author_str,
+                       "OSSEP": os.sep,
+                       "MODULENAME": module_name,
+                       "SUBDIR": subdir,
+                       "CLASSNAME": class_name}
+
+    f.close()
+    # Save new data
+    file_name = template_file.replace(UNITTEST_TEMPLATE_FILE, class_name + '_test.cpp')
+    f = open(file_name, 'w')
+    f.write(new_data)
+    f.close()
+    os.remove(template_file)
 
 ################################################################################
 
@@ -217,7 +253,7 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
     if os.path.exists(file_name_path):
         script_goes_on = False
         logger.error('# The <%s> class already exists! ' % class_name)
-        logger.error('# as the header file already exists: <%s>! ' % file_name_path)
+        logger.error('# The header file already exists: <%s>! ' % file_name_path)
 
     return script_goes_on
     
@@ -239,15 +275,18 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
                          
         class_h_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
         copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
-        class_cpp_path = os.path.join(os.path.sep, module_dir,'src/lib', subdir)
-        copyAuxFile(class_cpp_path,CPP_TEMPLATE_FILE)
+        class_cpp_path = os.path.join(os.path.sep, module_dir,'src','lib', subdir)
+        copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE)
+        unittest_path = os.path.join(os.path.sep, module_dir,'tests','src', subdir)
+        copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE)
             
         buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
                             module_dep_list, library_dep_list) 
          
-        substituteStringsInDotH(class_h_path, class_name, module_name)  
-        substituteStringsDotInCpp(class_cpp_path, class_name, 
-                                  module_name)  
+        substituteStringsInDotH(class_h_path, class_name, module_name, subdir)  
+        substituteStringsInDotCpp(class_cpp_path, class_name, module_name, subdir)  
+        substituteStringsInUnitTestFile(unittest_path, class_name, module_name, subdir)
+          
     return script_goes_on
 
 ################################################################################
@@ -283,7 +322,7 @@ def mainMethod(args):
         
         module_list          = args.module_dependency
         library_list         = args.library_dependency
-        (sub_dir,class_name) = getClassName(args.class_name)
+        (subdir,class_name) = getClassName(args.class_name)
 
         # Default is the current directory
         module_dir = os.getcwd()
@@ -303,11 +342,11 @@ def mainMethod(args):
         
         # Create CPP class    
         if script_goes_on:
-            script_goes_on = createCppClass(module_dir, module_name, sub_dir,
+            script_goes_on = createCppClass(module_dir, module_name, subdir,
                                         class_name, module_list, library_list)
             if script_goes_on:
                 logger.info('# <%s> class successfully created in <%s>.' % 
-                            (class_name, module_dir))
+                            (class_name, module_dir + os.sep + subdir))
                 logger.info('# Script over.')
             else:
                 logger.error('# Script aborted!')

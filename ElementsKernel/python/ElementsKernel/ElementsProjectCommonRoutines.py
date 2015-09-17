@@ -80,8 +80,6 @@ def getAuxPathFile(file_name):
             full_filename = os.path.sep.join([elt, 'templates', file_name])
             if os.path.exists(full_filename) and 'auxdir' in full_filename:
                 found = True
-                logger.debug(
-                    "# Auxiliary directory for this file : <%s>" % full_filename)
                 break
 
     if not found:
@@ -145,7 +143,5 @@ def isElementsModuleExist(module_directory):
             logger.error('# Can not find the module name in the <%s> file!' % cmake_file)
             logger.error('# Maybe you are not in the expected directory...')
             found_keyword = False
-        else:
-            logger.info('# Module name found : %s' % module_name)
     
     return found_keyword, module_name
