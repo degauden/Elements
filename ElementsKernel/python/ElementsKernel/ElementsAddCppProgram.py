@@ -45,14 +45,11 @@ def addConfFile(module_dir, module_name, program_name):
     # check file does not exist
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
-        text = []
-        text.append('###############################################################################\n')
-        text.append('#\n')
-        text.append('# Configuration file for the ' + program_name + ' executable \n')
-        text.append('#\n')
-        text.append('################################################################################\n') 
-        for txt in text:
-            f.write(txt)
+        f.write('###############################################################################\n')
+        f.write('#\n')
+        f.write('# Configuration file for the <' + program_name + '> executable \n')
+        f.write('#\n')
+        f.write('###############################################################################\n')
         f.close()
     else:
         logger.warning('# The <%s> conf file has been kept as it already exists!'
