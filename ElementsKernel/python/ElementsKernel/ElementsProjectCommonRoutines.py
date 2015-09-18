@@ -28,7 +28,6 @@ def makeDirectory(directory_path):
     if not os.path.exists(directory_path):
         try:
             os.makedirs(directory_path)
-            logger.info("# <%s> directory created." % directory_path)
         except OSError as e:
             raise e
                 
