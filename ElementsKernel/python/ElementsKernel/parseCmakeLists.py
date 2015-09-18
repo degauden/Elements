@@ -6,7 +6,7 @@
 #
 # @date: 01/07/15
 #
-# This script will create a new Elements C++ Class
+# This module updates the CMakeLists.txt file
 ##
 
 import re
@@ -47,7 +47,7 @@ class ElementsDependsOnSubdirs:
 class FindPackage:
     
     def __init__(self, package, required_components):
-        self.package = package
+        self.package                  = package
         self.required_components_list = required_components
     
     def __str__(self):
@@ -63,8 +63,8 @@ class FindPackage:
 class ElementsAddLibrary:
     
     def __init__(self, name, source_list, link_libraries, include_dirs, public_headers):
-        self.name           = name
-        self.source_list    = source_list
+        self.name                = name
+        self.source_list         = source_list
         self.link_libraries_list = link_libraries
         self.include_dirs_list   = include_dirs
         self.public_headers_list = public_headers
@@ -88,15 +88,34 @@ class ElementsAddLibrary:
         return result + ')\n'
     
 ################################################################################
+
+class ElementsAddExecutable:
+    
+    def __init__(self, name, source, link_libraries):
+        self.name                = name
+        self.source              = source
+        self.link_libraries_list = link_libraries
+    
+    def __str__(self):
+        result = 'elements_add_executable(' + self.name
+        result += ' ' + self.source
+        if self.link_libraries_list:
+            result += '\n                     LINK_LIBRARIES'
+            for name in self.link_libraries_list:
+                result += ' ' + name
+        result = result.strip() + ')\n'
+        return result
+    
+################################################################################
     
 class ElementsAddUnitTest:
     
     def __init__(self, class_name, source, link_libraries, include_dir, type):
-        self.class_name  = class_name
-        self.source_list = source
+        self.class_name          = class_name
+        self.source_list         = source
         self.link_libraries_list = link_libraries
-        self.include_dir_list = include_dir
-        self.type             = type
+        self.include_dir_list    = include_dir
+        self.type                = type
 
     def __str__(self):
         result = 'elements_add_unit_test(' + self.class_name + '_test '
@@ -122,12 +141,18 @@ class CMakeLists:
     
     def __init__(self, text=''):
         self.text                             = text
+        self.elements_install_conf_files      = ''
         self.elements_subdir_list             = []
         self.elements_depends_on_subdirs_list = []
         self.find_package_list                = []
         self.elements_add_library_list        = []
+        self.elements_add_executable_list     = []
         self.elements_add_unit_test_list      = []
         
+        elements_install_conf_files = re.findall(r"elements_install_conf_files\(.*?\)", text)
+        if not elements_install_conf_files:
+            self.elements_install_conf_files = 'elements_install_conf_files()'
+
         elements_subdir_list = re.findall(r"elements_subdir\(.*?\)", text, re.MULTILINE|re.DOTALL)
         for elements_subdir in elements_subdir_list:
             name = elements_subdir.replace('\n', ' ').replace('elements_subdir(', '')[:-1].strip()
@@ -175,6 +200,23 @@ class CMakeLists:
                 if location == 'PUBLIC_HEADERS':
                     public_headers.append(word)
             self.elements_add_library_list.append(ElementsAddLibrary(name, source_list, link_libraries, include_dirs, public_headers))
+
+        elements_add_executable_list = re.findall(r"elements_add_executable\(.*?\)", text, re.MULTILINE|re.DOTALL)
+        for elements_add_executable in elements_add_executable_list:
+            content = elements_add_executable.replace('\n', ' ').replace('elements_add_executable(', '')[:-1].strip().split()
+            name = content[0]
+            source = ''
+            link_libraries = []
+            location = 'SOURCE'
+            for word in content[1:]:
+                if word == 'LINK_LIBRARIES':
+                    location = 'LINK_LIBRARIES'
+                    continue
+                if location == 'SOURCE':
+                    source = word
+                if location == 'LINK_LIBRARIES':
+                    link_libraries.append(word)
+            self.elements_add_executable_list.append(ElementsAddExecutable(name, source, link_libraries))
             
         elements_add_unit_test_list = re.findall(r"elements_add_unit_test\(.*?\)", text, re.MULTILINE|re.DOTALL)
         for elements_add_unit_test in elements_add_unit_test_list:
@@ -204,6 +246,7 @@ class CMakeLists:
                 if location == 'TYPE':
                     type = word
             self.elements_add_unit_test_list.append(ElementsAddUnitTest(name, source_list, link_libraries, include_dirs, type))
+ 
     
     # Look for the location for adding the text after this position
     def _addAfter(self, text, tag, to_add):
@@ -217,15 +260,17 @@ class CMakeLists:
        
     def __str__(self):
         result = self.text
+        if self.elements_install_conf_files:
+            result = self._addAfter(result, 'elements_depends_on_subdirs', str(self.elements_install_conf_files))
+
+        for find_package in self.find_package_list:
+            if not re.search(r"find_package\(\s*"+ find_package.package+r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+                result = self._addAfter(result, 'find_package', str(find_package))
 
         for elements_subdir in self.elements_subdir_list:
             if not re.search(r"elements_subdir\(\s*"+elements_subdir.name+r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_subdir', str(elements_subdir))
                 
-        for find_package in self.find_package_list:
-            if not re.search(r"find_package\(\s*"+ find_package.package+r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
-                result = self._addAfter(result, 'find_package', str(find_package))
-
         for elements_depends_on_subdirs in self.elements_depends_on_subdirs_list:
             if not re.search(r"elements_depends_on_subdirs\(\s*"+elements_depends_on_subdirs.subdir_list[0]+   r"(?=[\s\)]).*?\)"   , result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_depends_on_subdirs', str(elements_depends_on_subdirs))
@@ -234,13 +279,19 @@ class CMakeLists:
             if not re.search(r"elements_add_library\(\s*" + library.name + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_add_library', str(library))
             else:
-                result = re.sub(r"elements_add_library\(\s*"+library.name+   r"(?=[\s\)]).*?\)", str(library), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(r"elements_add_library\(\s*"+ library.name +   r"(?=[\s\)]).*?\)", str(library), result, flags=re.MULTILINE|re.DOTALL)
+
+        for exe in self.elements_add_executable_list:
+            if not re.search(r"elements_add_executable\(\s*" + exe.name + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+                result = self._addAfter(result, 'elements_add_executable', str(exe))
+            else:
+                result = re.sub(r"elements_add_executable\(\s*"+ exe.name +   r"(?=[\s\)]).*?\)", str(exe), result, flags=re.MULTILINE|re.DOTALL)
 
         for unit_test in self.elements_add_unit_test_list:
             if not re.search(r"elements_add_unit_test\(\s*" + unit_test.class_name + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_add_unit_test', str(unit_test))
             else:
-                result = re.sub(r"elements_add_unit_test\(\s*"+unit_test.class_name+   r"(?=[\s\)]).*?\)", str(unit_test), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(r"elements_add_unit_test\(\s*"+ unit_test.class_name +   r"(?=[\s\)]).*?\)", str(unit_test), result, flags=re.MULTILINE|re.DOTALL)
         
         return result
 

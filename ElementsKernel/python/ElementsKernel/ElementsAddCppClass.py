@@ -49,7 +49,6 @@ def createDirectories(module_dir, module_name, subdir):
     """
     Create directories needed for a module
     """
-    logger.info('# Creating directories ')
     # Create Directories
     module_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
     if not os.path.exists(module_path):
@@ -67,7 +66,6 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     """
     Substitute variables in template file and rename the file
     """
-    logger.info('# Substitute variables in <%s> file' % H_TEMPLATE_FILE)
     template_file = os.path.join(file_path, H_TEMPLATE_FILE)
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
@@ -104,7 +102,6 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
 def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     """
     """
-    logger.info('# Substitute variables in <%s> file' % CPP_TEMPLATE_FILE)
     template_file = os.path.join(file_path, CPP_TEMPLATE_FILE)
     
     # Substitute strings in template_file
@@ -134,7 +131,6 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
 def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     """
     """
-    logger.info('# Substitute variables in <%s> file' % UNITTEST_TEMPLATE_FILE)
     template_file = os.path.join(file_path, UNITTEST_TEMPLATE_FILE)
     
     # Substitute strings in template_file
@@ -161,11 +157,11 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
 
 ################################################################################
 
-def buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
-                        module_dep_list, library_dep_list):
+def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
+                         module_dep_list, library_dep_list):
     """
     """
-    logger.info('# Creating or updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
     
     # Cmake file already exist
@@ -182,7 +178,7 @@ def buildCmakeListsFile(module_dir, module_name, subdir, class_name,
                 package_object = pcl.FindPackage(lib, [])
                 cmake_object.find_package_list.append(package_object)
                 
-        # Update elements_subdir macro
+        # Update ElementsDependsOnSubdirs macro
         if module_dep_list:
             for mod_dep in module_dep_list:
                 dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
@@ -204,7 +200,7 @@ def buildCmakeListsFile(module_dir, module_name, subdir, class_name,
                     if not lib in existing[0].link_libraries_list:
                         existing[0].link_libraries_list.append(lib)
             else:
-                source_list    = [source]
+                source_list         = [source]
                 include_dirs_list   = []
                 public_headers_list = [module_name]
                 lib_object = pcl.ElementsAddLibrary(module_name, source_list, 
@@ -262,7 +258,7 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
         unittest_path = os.path.join(os.path.sep, module_dir,'tests','src', subdir)
         epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE)
             
-        buildCmakeListsFile(module_dir, module_name, subdir, class_name, 
+        UpdateCmakeListsFile(module_dir, module_name, subdir, class_name, 
                             module_dep_list, library_dep_list) 
          
         substituteStringsInDotH(class_h_path, class_name, module_name, subdir)  
