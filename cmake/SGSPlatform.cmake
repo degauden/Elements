@@ -290,7 +290,7 @@ sgs_detect_host_platform()
 sgs_get_target_platform()
 
 ## Debug messages.
-#foreach(p SGS_HOST_ SGS_)
+# foreach(p SGS_HOST_ SGS_)
 #  foreach(v ARCH OS OSVERS COMP COMPVERS)
 #    message(STATUS "toolchain: ${p}${v} -> ${${p}${v}}")
 #  endforeach()
@@ -301,5 +301,16 @@ sgs_get_target_platform()
 #message(STATUS "toolchain: CMAKE_HOST_SYSTEM_NAME      -> ${CMAKE_HOST_SYSTEM_NAME}")
 #message(STATUS "toolchain: CMAKE_HOST_SYSTEM_VERSION   -> ${CMAKE_HOST_SYSTEM_VERSION}")
 
+if(${SGS_COMP} STREQUAL icc)
+    find_program(CMAKE_C_COMPILER
+                 NAMES icc
+                 DOC "C compiler")
+    find_program(CMAKE_CXX_COMPILER
+                 NAMES icpc
+                 DOC "C++ compiler")
+    find_program(CMAKE_Fortran_COMPILER
+                 NAMES ifort
+                 DOC "Fortran compiler")
 
+endif()
 

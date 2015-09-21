@@ -15,6 +15,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>             // for boost::filesystem
+#include <boost/version.hpp>
 
 namespace algo = boost::algorithm;
 namespace fs = boost::filesystem;
@@ -101,7 +102,12 @@ class SetRandomSeed {
   }
 };
 
+#if BOOST_VERSION >= 105900
+BOOST_GLOBAL_FIXTURE(SetRandomSeed);
+#else
 BOOST_GLOBAL_FIXTURE(SetRandomSeed)
+#endif
+
 
 //-----------------------------------------------------------------------------
 
