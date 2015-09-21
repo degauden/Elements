@@ -5,7 +5,7 @@ tmploc=$(mktemp -dq)
 
 cd ${tmploc}
 
-CreateElementsModule Module_test
+AddElementsModule Module_test
 
 if [ $? -ne 0 ]; then
   cd ${here}
