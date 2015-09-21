@@ -509,16 +509,15 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
 
     lib = info.dli_fname;
     addr = info.dli_saddr;
-    const char* dmg(0);
+    unique_ptr<char> dmg;
 
     if (symbol != 0) {
       int stat;
-      dmg = abi::__cxa_demangle(symbol, 0, 0, &stat);
-      fnc = (stat == 0) ? dmg : symbol;
+      dmg = std::unique_ptr<char>(abi::__cxa_demangle(symbol, 0, 0, &stat));
+      fnc = (stat == 0) ? dmg.get() : symbol;
     } else {
       fnc = "local";
     }
-    ::free((void*) dmg);
     return true;
   } else {
     return false;
