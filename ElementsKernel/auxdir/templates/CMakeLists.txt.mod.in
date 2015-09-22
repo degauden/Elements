@@ -48,7 +48,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 # elements_add_unit_test(BoostClassExample tests/src/Boost/ClassExample_test.cpp
 #                       EXECUTABLE BoostClassExample_test
 #                       INCLUDE_DIRS ElementsExamples
-#                      LINK_LIBRARIES ElementsExamples TYPE Boost)
+#                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 #===============================================================================
 
 
@@ -68,4 +68,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #                   LABELS CustomLabel)
 #===============================================================================
 
+
+#===============================================================================
+# Add the elements_install_conf_files macro 
+# Examples:
+#          elements_install_conf_files()
+#===============================================================================
 
