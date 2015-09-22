@@ -99,7 +99,7 @@ def copyAuxFile(destination, aux_file_name):
 
     aux_path_file = getAuxPathFile(aux_file_name)
     if aux_path_file:
-        shutil.copy( aux_path_file, os.path.join(os.path.sep, destination, 
+        shutil.copy(aux_path_file, os.path.join(os.path.sep, destination, 
                                                  aux_file_name))
     else:
         scripts_goes_on = False

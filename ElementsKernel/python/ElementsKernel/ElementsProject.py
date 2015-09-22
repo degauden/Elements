@@ -105,9 +105,14 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
-    str_dep_projects = ''
+    # Set the default
+    str_dep_projects = 'Elements ' + getElementsVersion()
     if not dep_projects is None:
-        str_dep_projects = ' '.join(' '.join(s) for s in dep_projects)
+        for dep in dep_projects:
+            if not dep[0] in str_dep_projects:
+               str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
+            else:
+                logger.warning('<%s> dependency already exists. It is skipped!' % dep[0])
         new_data = data % {"PROJECT_NAME": proj_name,
                            "PROJECT_VERSION": proj_version,
                            "DEPENDANCE_LIST": str_dep_projects}
@@ -117,10 +122,10 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
         new_data = data % {"PROJECT_NAME": proj_name,
                            "PROJECT_VERSION": proj_version,
                            "DEPENDANCE_LIST": str_dep_projects}
-        # Remove <USE> keyword
-        str_to_look_for = proj_name + ' ' + proj_version + ' USE '
-        str_to_be_replaced = proj_name + ' ' + proj_version
-        new_data = new_data.replace(str_to_look_for, str_to_be_replaced)
+##        # Remove <USE> keyword
+##        str_to_look_for = proj_name + ' ' + proj_version + ' USE '
+##        str_to_be_replaced = proj_name + ' ' + proj_version
+##        new_data = new_data.replace(str_to_look_for, str_to_be_replaced)
 
     f.close()
     # Save new data
