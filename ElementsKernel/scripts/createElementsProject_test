@@ -5,6 +5,7 @@ here=${PWD}
 tmploc=$(mktemp -dq)
 
 cd ${tmploc}
+export User_area=${tmploc}
 
 CreateElementsProject Project_test 0.1
 
