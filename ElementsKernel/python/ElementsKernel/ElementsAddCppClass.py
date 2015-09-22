@@ -178,21 +178,29 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
                 package_object = pcl.FindPackage(lib, [])
                 cmake_object.find_package_list.append(package_object)
                 
+        # Put ElementsKernel as a default
+        default_dependency = 'ElementsKernel'
+        if module_dep_list:
+            if not default_dependency in module_dep_list:
+                module_dep_list.insert(0, default_dependency)
+        else:
+            module_dep_list = [default_dependency]
+
         # Update ElementsDependsOnSubdirs macro
         if module_dep_list:
             for mod_dep in module_dep_list:
                 dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
-                
+
         # Update elements_add_library macro
         if module_name:
             source = 'src' + os.sep + 'lib' + os.sep + subdir + '*.cpp'
             existing = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
             link_libs = []
-            if library_dep_list:
-                 link_libs = link_libs + library_dep_list
             if module_dep_list:
                  link_libs = link_libs + module_dep_list
+            if library_dep_list:
+                 link_libs = link_libs + library_dep_list
             if existing:
                 if not source in existing[0].source_list:
                     existing[0].source_list.append(source)
@@ -210,7 +218,7 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
             
             # Add unit test
             source_name = 'tests' + os.sep + subdir + class_name + '_test.cpp'
-            unittest_object = pcl.ElementsAddUnitTest(class_name, [source_name], [module_name], [], 'Boost')
+            unittest_object = pcl.ElementsAddUnitTest(class_name+'_test', [source_name], [module_name], [], 'Boost')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
                    
     # Write new data
@@ -277,7 +285,7 @@ def defineSpecificProgramOptions():
                         type=str, 
                         help='Module name')
     parser.add_argument('-md', '--module-dependency', metavar='module_name', 
-                        action='append',type=str,
+                        action='append', type=str,
                         help='Dependency module name e.g. "-md ElementsKernel"')
     parser.add_argument('-ld', '--library-dependency', metavar='library_name',
                         action='append',type=str,

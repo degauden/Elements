@@ -11,12 +11,14 @@
 import argparse
 import os
 import ElementsKernel.ElementsProjectCommonRoutines as epcr
+import ElementsKernel.parseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddElementsModule')
 
 # Define constants
-CMAKE_LISTS_FILE = 'CMakeLists.txt'
+CMAKE_LISTS_FILE    = 'CMakeLists.txt'
+CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 
 ################################################################################
 
@@ -60,21 +62,50 @@ def createModuleDirectories(mod_path, module_name):
 
 ################################################################################
 
-def createCmakeListFile(module_dir, module_name, dependency_list):
+def createCmakeListFile(module_dir, module_name, module_dep_list):
     """
     Create the CMakeList.txt file and add dependencies to it
     """
     logger.info('# Create the <%s> File' % CMAKE_LISTS_FILE)
     cmake_list_file_final = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
+    
+    # Copy aux file to destination
+    epcr.copyAuxFile(module_dir, CMAKE_LISTS_FILE_IN)
+    # Rename it
+    file_template = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
+    os.rename(os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE_IN),
+              file_template)
+    
+    # Read the template file
+    fo = open(file_template, 'r')
+    template_data = fo.read()
+    fo.close()
+    
+    cmake_object = pcl.CMakeLists(template_data)
 
-    f_final = open(cmake_list_file_final, 'w')
-    line = 'elements_subdir(' + module_name + ') \n'
-    f_final.write(line)
-    if not dependency_list is None:
-        for dep_module in dependency_list:
-            line ='elements_depends_on_subdirs(' + dep_module[0] + ')\n'
-            f_final.write(line) 
-    f_final.close()
+    # Add elements_subdir macro
+    subdir_obj = pcl.ElementsSubdir(module_name)
+    cmake_object.elements_subdir_list.append(subdir_obj)
+    
+    # Put ElementsKernel as a default
+    #default_dependency = ['ElementsKernel']
+    default_dependency = 'ElementsKernel'
+    if module_dep_list:
+        if not default_dependency in module_dep_list:
+            module_dep_list.insert(0, default_dependency)
+    else:
+        module_dep_list = [default_dependency]
+
+    # Update ElementsDependsOnSubdirs macro
+    if module_dep_list:
+        for mod_dep in module_dep_list:
+            dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
+            cmake_object.elements_depends_on_subdirs_list.append(dep_object)
+                        
+    # Write new data
+    f = open(cmake_list_file_final, 'w')
+    f.write(str(cmake_object))
+    f.close()
 
 ################################################################################
 
@@ -120,7 +151,7 @@ for you. Use the [-md] option for module dependency and [-h] for help.
                         type=str, 
                         help='Module name')
     parser.add_argument('-md', '--module-dependency', metavar='module_name', 
-                        nargs=1, action='append',type=str,
+                        action='append', type=str,
                         help='Dependency module name e.g "-md ElementsKernel"')
 
     return parser

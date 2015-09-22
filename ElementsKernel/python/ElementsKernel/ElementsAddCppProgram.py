@@ -132,27 +132,29 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
             for mod_dep in module_dep_list:
                 dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
-                
+        
+        # Add elements_install_conf_files if any        
+        cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
+               
         # Update elements_add_executable macro
-        if program_name:
-            source = 'src' + os.sep + 'lib' + os.sep + '*.cpp'
-            existing = [x for x in cmake_object.elements_add_executable_list if x.name==program_name]
-            existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
-            link_libs = []
-            if existing_add_lib:
-                link_libs += [module_name]
-            if library_dep_list:
-                 link_libs = link_libs + library_dep_list
-            if module_dep_list:
-                 link_libs = link_libs + module_dep_list
-            if existing:
-                for lib in link_libs:
-                    if not lib in existing[0].link_libraries_list:
-                        existing[0].link_libraries_list.append(lib)
-            else:
-                exe_object = pcl.ElementsAddExecutable(program_name, source,
-                                                       link_libs)
-                cmake_object.elements_add_executable_list.append(exe_object)
+        source = 'src' + os.sep + 'lib' + os.sep + '*.cpp'
+        existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name==program_name]
+        existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
+        link_libs = []
+        if module_dep_list:
+             link_libs = link_libs + module_dep_list
+        if existing_add_lib:
+            link_libs += [module_name]
+        if library_dep_list:
+             link_libs = link_libs + library_dep_list
+        if existing_exe:
+            for lib in link_libs:
+                if not lib in existing_exe[0].link_libraries_list:
+                    existing_exe[0].link_libraries_list.append(lib)
+        else:
+            exe_object = pcl.ElementsAddExecutable(program_name, source,
+                                                   link_libs)
+            cmake_object.elements_add_executable_list.append(exe_object)
                                
     # Write new data
     f = open(cmake_filename, 'w')
