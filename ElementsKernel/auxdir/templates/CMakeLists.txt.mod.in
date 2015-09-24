@@ -62,10 +62,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #  elements_install_conf_files()
 #  elements_install_python_modules()
 #  elements_install_scripts()
-#
-# Unit test example:
-# elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test 
-#                   LABELS CustomLabel)
 #===============================================================================
 
 
