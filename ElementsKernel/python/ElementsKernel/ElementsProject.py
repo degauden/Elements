@@ -98,7 +98,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     CMakeList.txt.
     """
     logger.info('# substitute variables in <%s> file' % AUX_CMAKE_LIST_IN)
-    cmake_list_file = os.path.join(os.path.sep, project_dir, AUX_CMAKE_LIST_IN)
+    cmake_list_file = os.path.join(project_dir, AUX_CMAKE_LIST_IN)
 
     # Substitute
     f = open(cmake_list_file, 'r')
@@ -204,8 +204,7 @@ def mainMethod(args):
             script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE)
 
         # Set the project directory
-        project_dir = os.path.join(
-            os.path.sep, destination_path, proj_name, proj_version)
+        project_dir = os.path.join(destination_path, proj_name, proj_version)
 
         # Make sure dependencies name and version are valid
         if script_goes_on and not args.dependency is None:

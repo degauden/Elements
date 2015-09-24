@@ -60,22 +60,6 @@ def addConfFile(module_dir, module_name, program_name):
 
          
 ################################################################################
-
-def isProgramFileAlreadyExist(module_dir, program_name):
-    """
-    Check if the program file does not already exist
-    """
-    script_goes_on = True
-    program_file_path = os.path.join(module_dir, 'src', 'program', program_name)
-    program_file_path += '.cpp'
-    if os.path.exists(program_file_path):
-        script_goes_on = False
-        logger.error('# The <%s> program already exists! ' % program_name)
-        logger.error('# The file already exists: <%s>! ' % program_file_path)
-
-    return script_goes_on
-
-################################################################################
        
 def substituteStringsInProgramFile(file_path, program_name, module_name):
     """
@@ -87,7 +71,7 @@ def substituteStringsInProgramFile(file_path, program_name, module_name):
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
-    date_str = time.strftime("%x")
+    date_str   = time.strftime("%x")
     author_str = epcr.getAuthor()
     # Make some substitutions
     file_name_str = os.path.join('src', 'program', program_name + '.cpp')
@@ -112,7 +96,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
     """
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
-    cmake_filename = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
+    cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
         f = open(cmake_filename, 'r')
@@ -170,15 +154,13 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
     Creates all necessary files for a program
     """    
     script_goes_on = True 
-    script_goes_on = isProgramFileAlreadyExist(module_dir, program_name)
-    if script_goes_on:
-        createDirectories(module_dir, module_name)
-        program_path = os.path.join(os.path.sep, module_dir,'src','program')
-        epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE)    
-        substituteStringsInProgramFile(program_path, program_name, module_name)
-        addConfFile(module_dir, module_name, program_name) 
-        updateCmakeListsFile(module_dir, module_name, program_name,
-                             module_dep_list, library_dep_list)             
+    createDirectories(module_dir, module_name)
+    program_path = os.path.join(module_dir,'src','program')
+    epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE)    
+    substituteStringsInProgramFile(program_path, program_name, module_name)
+    addConfFile(module_dir, module_name, program_name) 
+    updateCmakeListsFile(module_dir, module_name, program_name,
+                         module_dep_list, library_dep_list)             
     return script_goes_on
 
 ################################################################################
@@ -223,8 +205,11 @@ def mainMethod(args):
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
         
+        program_file_path = os.path.join(current_dir, 'src', 'program', 
+                                         program_name +'.cpp')
         if script_goes_on:
-            script_goes_on = isProgramFileAlreadyExist(current_dir, program_name)   
+            script_goes_on = epcr.isProgramFileAlreadyExist(program_file_path, 
+                                                            program_name)
                  
          # Check aux files exist
         if script_goes_on:
