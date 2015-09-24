@@ -28,7 +28,7 @@ def isElementsProjectExist(project_directory):
     cmake file
     """
     file_exists = True
-    cmake_file = os.path.join(os.path.sep, project_directory, CMAKE_LISTS_FILE)
+    cmake_file = os.path.join(project_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         file_exists = False
         logger.error(
@@ -67,13 +67,13 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
     Create the CMakeList.txt file and add dependencies to it
     """
     logger.info('# Create the <%s> File' % CMAKE_LISTS_FILE)
-    cmake_list_file_final = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
+    cmake_list_file_final = os.path.join(module_dir, CMAKE_LISTS_FILE)
     
     # Copy aux file to destination
     epcr.copyAuxFile(module_dir, CMAKE_LISTS_FILE_IN)
     # Rename it
-    file_template = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
-    os.rename(os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE_IN),
+    file_template = os.path.join(module_dir, CMAKE_LISTS_FILE)
+    os.rename(os.path.join(module_dir, CMAKE_LISTS_FILE_IN),
               file_template)
     
     # Read the template file
@@ -117,7 +117,7 @@ def createModule(project_dir, module_name, dependency_list):
     script_goes_on = True
 
     # Create module directory
-    mod_path = os.path.join(os.path.sep, project_dir, module_name)
+    mod_path = os.path.join(project_dir, module_name)
     logger.info('# Creating the module: <%s> ' % mod_path)
     if os.path.exists(mod_path):
         # Ask user

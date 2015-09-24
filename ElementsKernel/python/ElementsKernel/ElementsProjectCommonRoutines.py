@@ -9,7 +9,6 @@
 # projects, modules, classes etc..
 ##
 
-import argparse
 import os
 import re
 import shutil
@@ -99,8 +98,7 @@ def copyAuxFile(destination, aux_file_name):
 
     aux_path_file = getAuxPathFile(aux_file_name)
     if aux_path_file:
-        shutil.copy(aux_path_file, os.path.join(os.path.sep, destination, 
-                                                 aux_file_name))
+        shutil.copy(aux_path_file, os.path.join(destination,aux_file_name))
     else:
         scripts_goes_on = False
 
@@ -139,7 +137,7 @@ def isElementsModuleExist(module_directory):
     """
     found_keyword = True
     module_name = ''
-    cmake_file = os.path.join(os.path.sep, module_directory, CMAKE_LISTS_FILE)
+    cmake_file = os.path.join(module_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         found_keyword = False
         logger.error('# %s cmake module file is missing! Are you inside a ' \
@@ -161,3 +159,19 @@ def isElementsModuleExist(module_directory):
             found_keyword = False
     
     return found_keyword, module_name
+
+################################################################################
+
+def isFileAlreadyExist(path_filename, name):
+    """
+    Check if the program file does not already exist
+    """
+    script_goes_on = True
+    if os.path.exists(path_filename):
+        script_goes_on = False
+        logger.error('# The <%s> name already exists! ' % name)
+        logger.error('# as the file has been found: <%s>! ' % path_filename)
+
+    return script_goes_on
+
+################################################################################

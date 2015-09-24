@@ -50,13 +50,13 @@ def createDirectories(module_dir, module_name, subdir):
     Create directories needed for a module
     """
     # Create Directories
-    module_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
+    module_path = os.path.join(module_dir, module_name, subdir)
     if not os.path.exists(module_path):
         os.makedirs(module_path)
-    src_lib_path = os.path.join(os.path.sep, module_dir, 'src', 'lib', subdir)
+    src_lib_path = os.path.join(module_dir, 'src', 'lib', subdir)
     if not os.path.exists(src_lib_path):
         os.makedirs(src_lib_path)
-    test_path = os.path.join(os.path.sep, module_dir, 'tests', 'src', subdir)
+    test_path = os.path.join(module_dir, 'tests', 'src', subdir)
     if not os.path.exists(test_path):
         os.makedirs(test_path)
 
@@ -162,7 +162,7 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
     """
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
-    cmake_filename = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
+    cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
     
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
@@ -259,11 +259,11 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
     if script_goes_on:
         
         createDirectories(module_dir, module_name, subdir)                           
-        class_h_path = os.path.join(os.path.sep, module_dir, module_name, subdir)
+        class_h_path = os.path.join(module_dir, module_name, subdir)
         epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
-        class_cpp_path = os.path.join(os.path.sep, module_dir,'src','lib', subdir)
+        class_cpp_path = os.path.join(module_dir,'src','lib', subdir)
         epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE)
-        unittest_path = os.path.join(os.path.sep, module_dir,'tests','src', subdir)
+        unittest_path = os.path.join(module_dir,'tests','src', subdir)
         epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE)
             
         UpdateCmakeListsFile(module_dir, module_name, subdir, class_name, 
