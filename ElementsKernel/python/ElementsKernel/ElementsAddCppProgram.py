@@ -208,7 +208,7 @@ def mainMethod(args):
         program_file_path = os.path.join(current_dir, 'src', 'program', 
                                          program_name +'.cpp')
         if script_goes_on:
-            script_goes_on = epcr.isProgramFileAlreadyExist(program_file_path, 
+            script_goes_on = epcr.isFileAlreadyExist(program_file_path, 
                                                             program_name)
                  
          # Check aux files exist
