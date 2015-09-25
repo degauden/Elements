@@ -283,7 +283,7 @@ def defineSpecificProgramOptions():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('class_name', metavar='class-name', 
                         type=str, 
-                        help='Module name')
+                        help='Class name')
     parser.add_argument('-md', '--module-dependency', metavar='module_name', 
                         action='append', type=str,
                         help='Dependency module name e.g. "-md ElementsKernel"')
