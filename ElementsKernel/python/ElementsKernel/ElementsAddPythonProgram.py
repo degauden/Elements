@@ -136,7 +136,7 @@ def createPythonProgram(current_dir, module_name, program_name):
 def defineSpecificProgramOptions():
     description = """
     This script creates an <Elements> python program at your current directory
-    (default).
+    (default), this directory must be an <Elements> module.
            """
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('program_name', metavar='program-name', 
