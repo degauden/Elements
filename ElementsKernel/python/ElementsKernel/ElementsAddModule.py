@@ -24,15 +24,15 @@ CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 
 def isElementsProjectExist(project_directory):
     """
-    Checks if a CMakeLists.txt file exists and is really an Elements
+    Checks if a <CMakeLists.txt> file exists and is really an Elements
     cmake file
     """
     file_exists = True
     cmake_file = os.path.join(project_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         file_exists = False
-        logger.error(
-            '# %s cmake project file is missing! Are you inside a project directory?', cmake_file)
+        logger.error('# <%s> cmake project file is missing! Are you inside a '\
+                     'project directory?', cmake_file)
     else:
         # Check the make file is an Elements cmake file
         # it should contain the string : "elements_project"
@@ -40,8 +40,8 @@ def isElementsProjectExist(project_directory):
         data = f.read()
         if not 'elements_project' in data:
             file_exists = False
-            logger.error(
-                '# %s is not an Elements project cmake file! Can not find the <elements_project> directive', cmake_file)
+            logger.error('# <%s> is not an Elements project cmake file! Can '\
+                         'not find the <elements_project> directive', cmake_file)
         f.close()
 
     return file_exists
@@ -64,7 +64,7 @@ def createModuleDirectories(mod_path, module_name):
 
 def createCmakeListFile(module_dir, module_name, module_dep_list):
     """
-    Create the CMakeList.txt file and add dependencies to it
+    Create the <CMakeList.txt> file and add dependencies to it
     """
     logger.info('# Create the <%s> File' % CMAKE_LISTS_FILE)
     cmake_list_file_final = os.path.join(module_dir, CMAKE_LISTS_FILE)
@@ -87,8 +87,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
     subdir_obj = pcl.ElementsSubdir(module_name)
     cmake_object.elements_subdir_list.append(subdir_obj)
     
-    # Put ElementsKernel as a default
-    #default_dependency = ['ElementsKernel']
+    # Set <ElementsKernel> as a default
     default_dependency = 'ElementsKernel'
     if module_dep_list:
         if not default_dependency in module_dep_list:
@@ -144,7 +143,7 @@ def defineSpecificProgramOptions():
 This script creates an <Elements> module at your current directory
 (default) but it must be inside a project directory. All necessary structure
 (directory structure, makefiles etc...) will be automatically created 
-for you. Use the [-md] option for module dependency and [-h] for help.
+for you. Use the [-md] option for the module dependency.
            """
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('module_name', metavar='module-name', 
@@ -183,16 +182,11 @@ def mainMethod(args):
             script_goes_on = epcr.isNameAndVersionValid(module_name, '1.0')
                 
         if script_goes_on:
-            if os.path.exists(project_dir):
-                if createModule(project_dir, module_name, dependency_list):
-                    logger.info('# <%s> module successfully created in <%s>.' % 
-                                (module_name, project_dir))
-                    logger.info('# Script over.')
-            else:
-                if not script_goes_on:
-                    logger.error(
-                        '# <%s> project directory does not exist!' % project_dir)
-        else:
+            if createModule(project_dir, module_name, dependency_list):
+                logger.info('# <%s> module successfully created in <%s>.' % 
+                            (module_name, project_dir))
+                logger.info('# Script over.')
+        if not script_goes_on:
             logger.error('# Script aborted')
 
     except Exception as e:
