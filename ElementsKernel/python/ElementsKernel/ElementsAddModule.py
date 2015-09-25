@@ -5,7 +5,7 @@
 #
 # @date: 01/07/15
 #
-# This script will create a new Elements module
+# This script creates a new Elements module
 ##
 
 import argparse
@@ -160,8 +160,7 @@ for you. Use the [-md] option for the module dependency.
 def mainMethod(args):
 
     logger.info('#')
-    logger.info(
-        '#  Logging from the mainMethod() of the ElementsAddModule script ')
+    logger.info('#  Logging from the mainMethod() of the ElementsAddModule script ')
     logger.info('#')
 
     try:
@@ -186,6 +185,7 @@ def mainMethod(args):
                 logger.info('# <%s> module successfully created in <%s>.' % 
                             (module_name, project_dir))
                 logger.info('# Script over.')
+                
         if not script_goes_on:
             logger.error('# Script aborted')
 

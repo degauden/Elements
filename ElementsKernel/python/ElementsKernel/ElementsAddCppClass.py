@@ -5,7 +5,7 @@
 #
 # @date: 01/07/15
 #
-# This script will create a new Elements C++ Class
+# This script creates a new Elements C++ Class
 ##
 
 import argparse
@@ -47,7 +47,7 @@ def getClassName(str_subdir_class):
 
 def createDirectories(module_dir, module_name, subdir):
     """
-    Create directories needed for a module
+    Create directories needed for a module and a class
     """
     # Create Directories
     module_path = os.path.join(module_dir, module_name, subdir)
@@ -64,7 +64,7 @@ def createDirectories(module_dir, module_name, subdir):
        
 def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     """
-    Substitute variables in template file and rename the file
+    Substitute variables in the Header template file and rename it
     """
     template_file = os.path.join(file_path, H_TEMPLATE_FILE)
     # Substitute strings in h_template_file
@@ -101,6 +101,7 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
 
 def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     """
+    Substitute variables in the CPP template file and rename it
     """
     template_file = os.path.join(file_path, CPP_TEMPLATE_FILE)
     
@@ -130,7 +131,8 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
 
 def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     """
-    """
+     Substitute variables in the Unit Test template file and rename it
+   """
     template_file = os.path.join(file_path, UNITTEST_TEMPLATE_FILE)
     
     # Substitute strings in template_file
@@ -160,6 +162,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
 def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
                          elements_dep_list, library_dep_list):
     """
+    Update the <CMakeLists.txt> file for a class
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
@@ -219,7 +222,8 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
             # Add unit test
             source_name = 'tests' + os.sep + 'src' + os.sep + subdir + \
             class_name + '_test.cpp'
-            unittest_object = pcl.ElementsAddUnitTest(class_name+'_test', [source_name], [module_name], [], 'Boost')
+            unittest_object = pcl.ElementsAddUnitTest(class_name+'_test', 
+                                    [source_name], [module_name], [], 'Boost')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
                    
     # Write new data
@@ -250,6 +254,7 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
 def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
                     library_dep_list):
     """
+    Create all necessary files for a cpp class
     """    
     script_goes_on = True 
     
@@ -283,7 +288,7 @@ def defineSpecificProgramOptions():
     description = """
 This script creates an <Elements> class at your current directory
 (default). All necessary structure (directory structure, makefiles etc...) 
-will be automatically created for you if any but we have to be inside an 
+will be automatically created for you if any but you have to be inside an 
 <Elements> module. Use the [-ed] option for the Elements dependency and
 the [-extd] option for external dependency.
     """
@@ -296,7 +301,7 @@ the [-extd] option for external dependency.
                         help='Dependency module name e.g. "-ed ElementsKernel"')
     parser.add_argument('-extd', '--external-dependency', metavar='library_name',
                         action='append',type=str,
-                        help='Dependency library name e.g. "-extd ElementsKernel"')
+                        help='External dependency library name e.g. "-extd ElementsKernel"')
 
     return parser
 
@@ -334,16 +339,15 @@ def mainMethod(args):
         # Create CPP class    
         if script_goes_on:
             script_goes_on = createCppClass(module_dir, module_name, subdir,
-                                        class_name, elements_dep_list, library_dep_list)
+                                class_name, elements_dep_list, library_dep_list)
             if script_goes_on:
                 logger.info('# <%s> class successfully created in <%s>.' % 
                             (class_name, module_dir + os.sep + subdir))
                 logger.info('# Script over.')
-            else:
-                logger.error('# Script aborted!')
-        else:
+                
+        if not script_goes_on:
             logger.error('# Script aborted!')
-
+       
     except Exception as e:
         logger.exception(e)
         logger.info('# Script stopped...')

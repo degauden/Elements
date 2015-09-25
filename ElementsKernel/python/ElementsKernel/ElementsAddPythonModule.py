@@ -5,7 +5,7 @@
 #
 # @date: 01/07/15
 #
-# This script will create a new Elements python module
+# This script creates a new Elements python module
 ##
 
 import os
@@ -48,7 +48,7 @@ def createFiles(module_dir, module_name, python_module_name):
     if not os.path.exists(python_module_file):
         f = open(python_module_file, 'w')
         f.write('/**\n')
-        f.write(' * @file '+os.path.join('python', module_name, python_module_name + '.py')+'\n')
+        f.write(' * @file '+ os.path.join('python', module_name, python_module_name + '.py')+'\n')
         f.write(' * @date '+ time.strftime("%x") +'\n')
         f.write(' * @author '+epcr.getAuthor() +'\n')
         f.write(' */\n')
@@ -98,7 +98,7 @@ def createPythonModule(current_dir, module_name, python_module_name):
 def defineSpecificProgramOptions():
     description = """
 This script creates an <Elements> python module at your current directory
-(default)
+(default), this directory must be an <Elements> module.
            """
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('module_name', metavar='module-name', 
@@ -146,10 +146,9 @@ def mainMethod(args):
                                 (python_module_name, module_file_path))
                     logger.info('# Script over.')
             else:
-                if not script_goes_on:
-                    logger.error(
-                        '# <%s> project directory does not exist!' % current_dir)
-        else:
+                    logger.error('# <%s> project directory does not exist!'
+                                  % current_dir)
+        if not script_goes_on:
             logger.error('# Script aborted')
 
     except Exception as e:
