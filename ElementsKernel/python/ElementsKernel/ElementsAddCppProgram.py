@@ -5,7 +5,7 @@
 #
 # @date: 01/07/15
 #
-# This script will create a new Elements C++ Program
+# This script creates a new Elements C++ Program
 ##
 
 import argparse
@@ -227,9 +227,8 @@ def mainMethod(args):
                 logger.info('# <%s> program successfully created in <%s>.' % 
                             (program_name, current_dir + os.sep + 'src'+ os.sep + 'program'))
                 logger.info('# Script over.')
-            else:
-                logger.error('# Script aborted!')
-        else:
+                
+        if not script_goes_on:
             logger.error('# Script aborted!')
 
     except Exception as e:

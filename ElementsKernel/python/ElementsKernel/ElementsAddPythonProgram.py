@@ -5,7 +5,7 @@
 #
 # @date: 01/07/15
 #
-# This script will create a new Elements python program
+# This script creates a new Elements python program
 ##
 
 import argparse
@@ -38,7 +38,7 @@ def createDirectories(module_dir, module_name):
 
 def createFiles(module_dir, module_name, program_name):
     """
-    Create files needed for python program
+    Create files needed for a python program
     """
     # Create the executable directory
     init_file = os.path.join(module_dir, 'python', module_name, '__init__.py')
@@ -56,7 +56,7 @@ def createFiles(module_dir, module_name, program_name):
 
 def substituteStringsInPythonProgramFile(file_path, program_name, module_name):
     """
-    Substitute variables in template file and rename the file
+    Substitute variables in the python template file and rename it
     """
     template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
     # Substitute strings in h_template_file
@@ -87,7 +87,7 @@ def substituteStringsInPythonProgramFile(file_path, program_name, module_name):
 
 def updateCmakeListsFile(module_dir, program_name):
     """
-    Update the CMakeList.txt file
+    Update the <CMakeList.txt> file
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
@@ -123,9 +123,11 @@ def createPythonProgram(current_dir, module_name, program_name):
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, program_name)
     program_path = os.path.join(current_dir, 'python', module_name)
-    epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE) 
-    substituteStringsInPythonProgramFile(program_path, program_name, module_name)
-    updateCmakeListsFile(current_dir, program_name)
+    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE) 
+    if script_goes_on:
+        substituteStringsInPythonProgramFile(program_path, program_name,
+                                            module_name)
+        updateCmakeListsFile(current_dir, program_name)
     
     return script_goes_on
 
@@ -181,11 +183,11 @@ def mainMethod(args):
                                 (program_name, program_file_path))
                     logger.info('# Script over.')
             else:
-                if not script_goes_on:
-                    logger.error(
-                        '# <%s> project directory does not exist!' % current_dir)
-        else:
-            logger.error('# Script aborted')
+                logger.error('# <%s> project directory does not exist!' 
+                             % current_dir)
+        
+        if not script_goes_on:
+            logger.error('# Script aborted!')
 
     except Exception as e:
         logger.exception(e)
