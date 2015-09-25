@@ -7,9 +7,9 @@
 # @date: 01/07/15
 #
 # Purpose:
-# This module updates the CMakeLists.txt file
-# All these classes are for parsing the CMakeLists.txt file. Each class 
-# represents a cmake macro. The "CMakeLists" class uses all these classes.
+# This module parses and updates the <CMakeLists.txt> file
+# All these classes are for parsing the <CMakeLists.txt> file. Each class 
+# represents a cmake macro. The "CMakeLists" class uses all the other classes.
 #
 
 import re
