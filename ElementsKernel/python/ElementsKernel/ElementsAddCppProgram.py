@@ -21,7 +21,7 @@ logger = log.getLogger('AddCppProgram')
 
 # Define constants
 CMAKE_LISTS_FILE      = 'CMakeLists.txt'
-PROGRAM_TEMPLATE_FILE = 'program_template.cpp'
+PROGRAM_TEMPLATE_FILE = 'Program_template.cpp'
 
 def createDirectories(module_dir, module_name):
     """
@@ -156,7 +156,7 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
     script_goes_on = True 
     createDirectories(module_dir, module_name)
     program_path = os.path.join(module_dir,'src','program')
-    epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE)    
+    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE)    
     substituteStringsInProgramFile(program_path, program_name, module_name)
     addConfFile(module_dir, module_name, program_name) 
     updateCmakeListsFile(module_dir, module_name, program_name,
