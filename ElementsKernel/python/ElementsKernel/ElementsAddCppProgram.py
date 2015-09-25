@@ -121,7 +121,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
                
         # Update elements_add_executable macro
-        source = 'src' + os.sep + 'lib' + os.sep + '*.cpp'
+        source = 'src' + os.sep + 'program' + os.sep + program_name+ '.cpp'
         existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name==program_name]
         existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
         link_libs = []
