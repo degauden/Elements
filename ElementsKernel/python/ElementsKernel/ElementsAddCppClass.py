@@ -158,7 +158,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
 ################################################################################
 
 def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
-                         module_dep_list, library_dep_list):
+                         elements_dep_list, library_dep_list):
     """
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
@@ -180,15 +180,15 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
                 
         # Put ElementsKernel as a default
         default_dependency = 'ElementsKernel'
-        if module_dep_list:
-            if not default_dependency in module_dep_list:
-                module_dep_list.insert(0, default_dependency)
+        if elements_dep_list:
+            if not default_dependency in elements_dep_list:
+                elements_dep_list.insert(0, default_dependency)
         else:
-            module_dep_list = [default_dependency]
+            elements_dep_list = [default_dependency]
 
         # Update ElementsDependsOnSubdirs macro
-        if module_dep_list:
-            for mod_dep in module_dep_list:
+        if elements_dep_list:
+            for mod_dep in elements_dep_list:
                 dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
@@ -197,8 +197,8 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
             source = 'src' + os.sep + 'lib' + os.sep + subdir + '*.cpp'
             existing = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
             link_libs = []
-            if module_dep_list:
-                 link_libs = link_libs + module_dep_list
+            if elements_dep_list:
+                 link_libs = link_libs + elements_dep_list
             if library_dep_list:
                  link_libs = link_libs + library_dep_list
             if existing:
@@ -217,7 +217,8 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
                 cmake_object.elements_add_library_list.append(lib_object)
             
             # Add unit test
-            source_name = 'tests' + os.sep + subdir + class_name + '_test.cpp'
+            source_name = 'tests' + os.sep + 'src' + os.sep + subdir + \
+            class_name + '_test.cpp'
             unittest_object = pcl.ElementsAddUnitTest(class_name+'_test', [source_name], [module_name], [], 'Boost')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
                    
@@ -246,11 +247,10 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
 
 ################################################################################
       
-def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
+def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
                     library_dep_list):
     """
-    """
-    
+    """    
     script_goes_on = True 
     
     # Check the class does not exist already
@@ -260,18 +260,20 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
         
         createDirectories(module_dir, module_name, subdir)                           
         class_h_path = os.path.join(module_dir, module_name, subdir)
-        epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
+        script_goes_on = epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
         class_cpp_path = os.path.join(module_dir,'src','lib', subdir)
-        epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE)
+        if script_goes_on:
+            script_goes_on = epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE)
         unittest_path = os.path.join(module_dir,'tests','src', subdir)
-        epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE)
-            
-        UpdateCmakeListsFile(module_dir, module_name, subdir, class_name, 
-                            module_dep_list, library_dep_list) 
-         
-        substituteStringsInDotH(class_h_path, class_name, module_name, subdir)  
-        substituteStringsInDotCpp(class_cpp_path, class_name, module_name, subdir)  
-        substituteStringsInUnitTestFile(unittest_path, class_name, module_name, subdir)
+        if script_goes_on:
+            script_goes_on = epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE)
+        if script_goes_on:    
+            UpdateCmakeListsFile(module_dir, module_name, subdir, class_name, 
+                                elements_dep_list, library_dep_list) 
+             
+            substituteStringsInDotH(class_h_path, class_name, module_name, subdir)  
+            substituteStringsInDotCpp(class_cpp_path, class_name, module_name, subdir)  
+            substituteStringsInUnitTestFile(unittest_path, class_name, module_name, subdir)
           
     return script_goes_on
 
@@ -279,17 +281,22 @@ def createCppClass(module_dir, module_name, subdir, class_name, module_dep_list,
     
 def defineSpecificProgramOptions():
     description = """
-           """
+This script creates an <Elements> class at your current directory
+(default). All necessary structure (directory structure, makefiles etc...) 
+will be automatically created for you if any but we have to be inside an 
+<Elements> module. Use the [-ed] option for the Elements dependency and
+the [-extd] option for external dependency.
+    """
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('class_name', metavar='class-name', 
                         type=str, 
                         help='Class name')
-    parser.add_argument('-md', '--module-dependency', metavar='module_name', 
+    parser.add_argument('-ed', '--elements-dependency', metavar='module_name', 
                         action='append', type=str,
-                        help='Dependency module name e.g. "-md ElementsKernel"')
-    parser.add_argument('-ld', '--library-dependency', metavar='library_name',
+                        help='Dependency module name e.g. "-ed ElementsKernel"')
+    parser.add_argument('-extd', '--external-dependency', metavar='library_name',
                         action='append',type=str,
-                        help='Dependency library name e.g. "-ld ElementsKernel"')
+                        help='Dependency library name e.g. "-extd ElementsKernel"')
 
     return parser
 
@@ -306,8 +313,8 @@ def mainMethod(args):
         # True: no error occured
         script_goes_on       = True 
         
-        module_list          = args.module_dependency
-        library_list         = args.library_dependency
+        elements_dep_list   = args.elements_dependency
+        library_dep_list    = args.external_dependency
         (subdir,class_name) = getClassName(args.class_name)
 
         # Default is the current directory
@@ -327,7 +334,7 @@ def mainMethod(args):
         # Create CPP class    
         if script_goes_on:
             script_goes_on = createCppClass(module_dir, module_name, subdir,
-                                        class_name, module_list, library_list)
+                                        class_name, elements_dep_list, library_dep_list)
             if script_goes_on:
                 logger.info('# <%s> class successfully created in <%s>.' % 
                             (class_name, module_dir + os.sep + subdir))
