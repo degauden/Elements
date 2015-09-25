@@ -31,7 +31,8 @@ def setPath():
     # Check if User_area environment variable exists 
     user_area = os.environ.get('User_area')
     if not user_area is None:
-        logger.debug('# <$User_area> environment variable defined to : <%s>' % user_area)
+        logger.debug('# <$User_area> environment variable defined to : <%s>'
+                      % user_area)
         destination_path = user_area         
     else:
         destination_path = os.getcwd()
@@ -64,8 +65,8 @@ def duplicate_elements(duplicate_list):
         if not elt[0] in name_list:
             name_list.append(elt[0])
         else:
-            logger.error('# Found twice the following dependency : <%s>, script aborted' 
-                         % elt[0])
+            logger.error('# Found twice the following dependency : <%s>, '\
+                         'script aborted' % elt[0])
             not_found_duplicate = False
             break
 
@@ -114,7 +115,8 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
             if not dep[0] in str_dep_projects:
                str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
             else:
-                logger.warning('<%s> dependency already exists. It is skipped!' % dep[0])
+                logger.warning('<%s> dependency already exists. It is skipped!'
+                                % dep[0])
         new_data = data % {"PROJECT_NAME": proj_name,
                            "PROJECT_VERSION": proj_version,
                            "DEPENDANCE_LIST": str_dep_projects}
@@ -177,7 +179,8 @@ project(s).
 def mainMethod(args):
 
     logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the CreateElementsProject script')
+    logger.info('#  Logging from the mainMethod() of the CreateElementsProject'\
+                ' script')
     logger.info('#')
 
     try:
@@ -211,8 +214,9 @@ def mainMethod(args):
 
         if script_goes_on and os.path.exists(project_dir):
             logger.warning('<%s> Project ALREADY exists!!!' % project_dir)
-            response_key = raw_input(
-                'Do you want to replace the existing project and associated module(s) (Yes/No, default: No)?')
+            response_key = raw_input('Do you want to replace the existing '\
+                                     'project and associated module(s) (Yes/No,'\
+                                     ' default: No)?')
             if response_key == "YES" or response_key == "yes" or response_key == "y":
                 logger.info(
                     '# Replacing the existing project: <%s>' % project_dir)
