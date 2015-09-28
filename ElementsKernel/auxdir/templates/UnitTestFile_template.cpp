@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_SUITE (%(CLASSNAME)s_test)
 
 BOOST_AUTO_TEST_CASE( example_test ) {
 
-  BOOST_FAIL("Please implement your tests!!!!");
+  BOOST_FAIL("!!!! Please implement your tests !!!!");
 
 }
 

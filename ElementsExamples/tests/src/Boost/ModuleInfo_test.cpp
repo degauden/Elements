@@ -11,8 +11,10 @@
 
 #include "ElementsExamples/ModuleInfo.h"
 
-using namespace Elements;
 using namespace std;
+using namespace Elements;
+using namespace ElementsExamples;
+
 
 //-----------------------------------------------------------------------------
 
