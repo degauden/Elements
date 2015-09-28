@@ -10,6 +10,7 @@
 #include "ElementsExamples/ModuleInfo.h"
 
 namespace Elements {
+namespace ElementsExamples {
 
 const System::ModuleInfo& getModuleInfo() {
 
@@ -17,6 +18,8 @@ const System::ModuleInfo& getModuleInfo() {
 
 }
 
+} // namespace ElementsExamples
 } // namespace Elements
+
 
 
