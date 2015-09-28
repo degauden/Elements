@@ -5,7 +5,7 @@
 #
 # @date: 01/07/15
 #
-# This script will create a new Elements C++ Program
+# This script creates a new Elements C++ Program
 ##
 
 import argparse
@@ -21,7 +21,7 @@ logger = log.getLogger('AddCppProgram')
 
 # Define constants
 CMAKE_LISTS_FILE      = 'CMakeLists.txt'
-PROGRAM_TEMPLATE_FILE = 'program_template.cpp'
+PROGRAM_TEMPLATE_FILE = 'Program_template.cpp'
 
 def createDirectories(module_dir, module_name):
     """
@@ -60,22 +60,6 @@ def addConfFile(module_dir, module_name, program_name):
 
          
 ################################################################################
-
-def isProgramFileAlreadyExist(module_dir, program_name):
-    """
-    Check if the program file does not already exist
-    """
-    script_goes_on = True
-    program_file_path = os.path.join(module_dir, 'src', 'program', program_name)
-    program_file_path += '.cpp'
-    if os.path.exists(program_file_path):
-        script_goes_on = False
-        logger.error('# The <%s> program already exists! ' % program_name)
-        logger.error('# The file already exists: <%s>! ' % program_file_path)
-
-    return script_goes_on
-
-################################################################################
        
 def substituteStringsInProgramFile(file_path, program_name, module_name):
     """
@@ -87,7 +71,7 @@ def substituteStringsInProgramFile(file_path, program_name, module_name):
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
-    date_str = time.strftime("%x")
+    date_str   = time.strftime("%x")
     author_str = epcr.getAuthor()
     # Make some substitutions
     file_name_str = os.path.join('src', 'program', program_name + '.cpp')
@@ -112,7 +96,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
     """
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
-    cmake_filename = os.path.join(os.path.sep, module_dir, CMAKE_LISTS_FILE)
+    cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
         f = open(cmake_filename, 'r')
@@ -132,27 +116,29 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
             for mod_dep in module_dep_list:
                 dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
-                
+        
+        # Add elements_install_conf_files if any        
+        cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
+               
         # Update elements_add_executable macro
-        if program_name:
-            source = 'src' + os.sep + 'lib' + os.sep + '*.cpp'
-            existing = [x for x in cmake_object.elements_add_executable_list if x.name==program_name]
-            existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
-            link_libs = []
-            if existing_add_lib:
-                link_libs += [module_name]
-            if library_dep_list:
-                 link_libs = link_libs + library_dep_list
-            if module_dep_list:
-                 link_libs = link_libs + module_dep_list
-            if existing:
-                for lib in link_libs:
-                    if not lib in existing[0].link_libraries_list:
-                        existing[0].link_libraries_list.append(lib)
-            else:
-                exe_object = pcl.ElementsAddExecutable(program_name, source,
-                                                       link_libs)
-                cmake_object.elements_add_executable_list.append(exe_object)
+        source = 'src' + os.sep + 'program' + os.sep + program_name+ '.cpp'
+        existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name==program_name]
+        existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
+        link_libs = []
+        if module_dep_list:
+             link_libs = link_libs + module_dep_list
+        if existing_add_lib:
+            link_libs += [module_name]
+        if library_dep_list:
+             link_libs = link_libs + library_dep_list
+        if existing_exe:
+            for lib in link_libs:
+                if not lib in existing_exe[0].link_libraries_list:
+                    existing_exe[0].link_libraries_list.append(lib)
+        else:
+            exe_object = pcl.ElementsAddExecutable(program_name, source,
+                                                   link_libs)
+            cmake_object.elements_add_executable_list.append(exe_object)
                                
     # Write new data
     f = open(cmake_filename, 'w')
@@ -168,15 +154,13 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
     Creates all necessary files for a program
     """    
     script_goes_on = True 
-    script_goes_on = isProgramFileAlreadyExist(module_dir, program_name)
-    if script_goes_on:
-        createDirectories(module_dir, module_name)
-        program_path = os.path.join(os.path.sep, module_dir,'src','program')
-        epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE)    
-        substituteStringsInProgramFile(program_path, program_name, module_name)
-        addConfFile(module_dir, module_name, program_name) 
-        updateCmakeListsFile(module_dir, module_name, program_name,
-                             module_dep_list, library_dep_list)             
+    createDirectories(module_dir, module_name)
+    program_path = os.path.join(module_dir,'src','program')
+    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE)    
+    substituteStringsInProgramFile(program_path, program_name, module_name)
+    addConfFile(module_dir, module_name, program_name) 
+    updateCmakeListsFile(module_dir, module_name, program_name,
+                         module_dep_list, library_dep_list)             
     return script_goes_on
 
 ################################################################################
@@ -221,8 +205,11 @@ def mainMethod(args):
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
         
+        program_file_path = os.path.join(current_dir, 'src', 'program', 
+                                         program_name +'.cpp')
         if script_goes_on:
-            script_goes_on = isProgramFileAlreadyExist(current_dir, program_name)   
+            script_goes_on = epcr.isFileAlreadyExist(program_file_path, 
+                                                            program_name)
                  
          # Check aux files exist
         if script_goes_on:
@@ -240,9 +227,8 @@ def mainMethod(args):
                 logger.info('# <%s> program successfully created in <%s>.' % 
                             (program_name, current_dir + os.sep + 'src'+ os.sep + 'program'))
                 logger.info('# Script over.')
-            else:
-                logger.error('# Script aborted!')
-        else:
+                
+        if not script_goes_on:
             logger.error('# Script aborted!')
 
     except Exception as e:

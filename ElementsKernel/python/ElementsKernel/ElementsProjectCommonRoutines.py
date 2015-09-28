@@ -9,7 +9,6 @@
 # projects, modules, classes etc..
 ##
 
-import argparse
 import os
 import re
 import shutil
@@ -66,9 +65,9 @@ def eraseDirectory(directory):
 
 def getAuxPathFile(file_name):
     """
-    Look for in path in the <ELEMENTS_AUX_PATH> environment variable where is
-    located the <auxdir/file_name> file. It returns the filename with the path or
-    an empty string if not found.
+    Look for the <auxdir> path in the <ELEMENTS_AUX_PATH> environment variable 
+    where is located the <auxdir/file_name> file. It returns the filename with 
+    the path or an empty string if not found.
     """
     found = False
     full_filename = ''
@@ -82,10 +81,8 @@ def getAuxPathFile(file_name):
                 break
 
     if not found:
+        logger.error("# Auxiliary file NOT FOUND  : <%s>" % full_filename)
         full_filename = ''
-        logger.error(
-            "# Auxiliary directory NOT FOUND for this file : <%s>" % file_name)
-        logger.error("# Auxiliary directory : <%s>" % aux_dir)
 
     return full_filename
 
@@ -93,14 +90,13 @@ def getAuxPathFile(file_name):
 
 def copyAuxFile(destination, aux_file_name):
     """
-    Copy all necessary auxiliary data to the <destination> directory
+    Copy the <aux_file_name> file to the <destination> directory.
+    <aux_file_name> is just the name without path
     """
     scripts_goes_on = True
-
     aux_path_file = getAuxPathFile(aux_file_name)
     if aux_path_file:
-        shutil.copy( aux_path_file, os.path.join(os.path.sep, destination, 
-                                                 aux_file_name))
+        shutil.copy(aux_path_file, os.path.join(destination,aux_file_name))
     else:
         scripts_goes_on = False
 
@@ -108,12 +104,13 @@ def copyAuxFile(destination, aux_file_name):
 
 ################################################################################
 
-def isAuxFileExist(aux_file):
+def isAuxFileExist(aux_file_name):
     """
-    Make sure auxiliary file exists
+    Make sure the <aux_file> auxiliary file exists. 
+    <aux_file> is just the name without the path.
     """
     found = False
-    aux_path_file = getAuxPathFile(aux_file)
+    aux_path_file = getAuxPathFile(aux_file_name)
     if aux_path_file:
         found = True
 
@@ -123,7 +120,7 @@ def isAuxFileExist(aux_file):
 
 def getAuthor():
     """
-    Get the contents of the use environment variables
+    Get the contents of the <USER> environment variables
     """
     try:
         author_str = os.environ['USER']
@@ -136,10 +133,11 @@ def getAuthor():
     
 def isElementsModuleExist(module_directory):
     """
+    Get the module name in the <CMAKE_LISTS_FILE> file
     """
     found_keyword = True
     module_name = ''
-    cmake_file = os.path.join(os.path.sep, module_directory, CMAKE_LISTS_FILE)
+    cmake_file = os.path.join(module_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         found_keyword = False
         logger.error('# %s cmake module file is missing! Are you inside a ' \
@@ -156,8 +154,24 @@ def isElementsModuleExist(module_directory):
         f.close()
                 
         if not module_name:
-            logger.error('# Can not find the module name in the <%s> file!' % cmake_file)
-            logger.error('# Maybe you are not in the expected directory...')
+            logger.error('# Module name not found in the <%s> file!' % cmake_file)
+            logger.error('# Maybe you are not in a module directory...')
             found_keyword = False
     
     return found_keyword, module_name
+
+################################################################################
+
+def isFileAlreadyExist(path_filename, name):
+    """
+    Check if the <path_filename> file does not already exist
+    """
+    script_goes_on = True
+    if os.path.exists(path_filename):
+        script_goes_on = False
+        logger.error('# The <%s> name already exists! ' % name)
+        logger.error('# as the file has been found there : <%s>! ' % path_filename)
+
+    return script_goes_on
+
+################################################################################

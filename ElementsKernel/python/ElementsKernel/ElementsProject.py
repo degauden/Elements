@@ -19,18 +19,20 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('CreateElementsProject')
 
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
-AUX_CMAKE_FILE = "Makefile"
+AUX_CMAKE_FILE    = "Makefile"
 
 ################################################################################
 
 def setPath():
     """
-    Set the installation path
+    Set the installation path either the current directory or
+    the directory set by the <User_area> environment variable
     """
     # Check if User_area environment variable exists 
     user_area = os.environ.get('User_area')
     if not user_area is None:
-        logger.info('# User_area environment variable defined to : <%s>' % user_area)
+        logger.debug('# <$User_area> environment variable defined to : <%s>'
+                      % user_area)
         destination_path = user_area         
     else:
         destination_path = os.getcwd()
@@ -55,6 +57,7 @@ def isDependencyProjectValid(str_list):
 
 def duplicate_elements(duplicate_list):
     """
+    Look for duplicate element in a list
     """
     name_list = []
     not_found_duplicate = True
@@ -62,8 +65,8 @@ def duplicate_elements(duplicate_list):
         if not elt[0] in name_list:
             name_list.append(elt[0])
         else:
-            logger.error(
-                '# Found twice the following dependency : <%s>, script aborted' % elt[0])
+            logger.error('# Found twice the following dependency : <%s>, '\
+                         'script aborted' % elt[0])
             not_found_duplicate = False
             break
 
@@ -73,7 +76,7 @@ def duplicate_elements(duplicate_list):
 
 def getElementsVersion():
     """
-    Get the elements version
+    Get the Elements version number
     """
     patch_version = ELEMENTS_VERSION.ELEMENTS_PATCH_VERSION
     version = [str(ELEMENTS_VERSION.ELEMENTS_MAJOR_VERSION),
@@ -94,20 +97,26 @@ def getElementsVersion():
 
 def substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects):
     """
-    Substitute variables in CMakeList.txt.in file and rename the file to
-    CMakeList.txt.
+    Substitute variables in <CMakeList.txt.in> file and rename the file to
+    <CMakeLists.txt>.
     """
-    logger.info('# substitute variables in <%s> file' % AUX_CMAKE_LIST_IN)
-    cmake_list_file = os.path.join(os.path.sep, project_dir, AUX_CMAKE_LIST_IN)
+    logger.debug('# Substitute variables in <%s> file' % AUX_CMAKE_LIST_IN)
+    cmake_list_file = os.path.join(project_dir, AUX_CMAKE_LIST_IN)
 
     # Substitute
     f = open(cmake_list_file, 'r')
     data = f.read()
+
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
-    str_dep_projects = ''
+    str_dep_projects = 'Elements ' + getElementsVersion()
     if not dep_projects is None:
-        str_dep_projects = ' '.join(' '.join(s) for s in dep_projects)
+        for dep in dep_projects:
+            if not dep[0] in str_dep_projects:
+               str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
+            else:
+                logger.warning('<%s> dependency already exists. It is skipped!'
+                                % dep[0])
         new_data = data % {"PROJECT_NAME": proj_name,
                            "PROJECT_VERSION": proj_version,
                            "DEPENDANCE_LIST": str_dep_projects}
@@ -117,12 +126,9 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
         new_data = data % {"PROJECT_NAME": proj_name,
                            "PROJECT_VERSION": proj_version,
                            "DEPENDANCE_LIST": str_dep_projects}
-        # Remove <USE> keyword
-        str_to_look_for = proj_name + ' ' + proj_version + ' USE '
-        str_to_be_replaced = proj_name + ' ' + proj_version
-        new_data = new_data.replace(str_to_look_for, str_to_be_replaced)
 
     f.close()
+    
     # Save new data
     f = open(cmake_list_file, 'w')
     f.write(new_data)
@@ -173,12 +179,13 @@ project(s).
 def mainMethod(args):
 
     logger.info('#')
-    logger.info(
-        '#  Logging from the mainMethod() of the CreateElementsProject script ')
+    logger.info('#  Logging from the mainMethod() of the CreateElementsProject'\
+                ' script')
     logger.info('#')
 
     try:
         script_goes_on = True
+        
         proj_name = args.project_name
         proj_version = args.project_version
         dependant_projects = args.dependency
@@ -192,24 +199,24 @@ def mainMethod(args):
         if script_goes_on and not args.dependency is None:
             script_goes_on = duplicate_elements(dependant_projects)
 
-        # Check aux files exist
+        # Check AUX files exist
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_LIST_IN)
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE)
 
         # Set the project directory
-        project_dir = os.path.join(
-            os.path.sep, destination_path, proj_name, proj_version)
+        project_dir = os.path.join(destination_path, proj_name, proj_version)
 
         # Make sure dependencies name and version are valid
         if script_goes_on and not args.dependency is None:
             script_goes_on = isDependencyProjectValid(dependant_projects)
 
         if script_goes_on and os.path.exists(project_dir):
-            logger.warning('<%s> project ALREADY exists!!!' % project_dir)
-            response_key = raw_input(
-                'Do you want to replace the existing project and associated module(s) (Yes/No, default: No)?')
+            logger.warning('<%s> Project ALREADY exists!!!' % project_dir)
+            response_key = raw_input('Do you want to replace the existing '\
+                                     'project and associated module(s) (Yes/No,'\
+                                     ' default: No)?')
             if response_key == "YES" or response_key == "yes" or response_key == "y":
                 logger.info(
                     '# Replacing the existing project: <%s>' % project_dir)
@@ -219,10 +226,11 @@ def mainMethod(args):
                 logger.info('# Script stopped by user!')
 
         if script_goes_on:
-            createProject(
-                project_dir, proj_name, proj_version, dependant_projects)
+            createProject(project_dir, proj_name, proj_version, dependant_projects)
             logger.info('# <%s> project successfully created.' % project_dir)
             logger.info('# Script over.')
+        else:
+            logger.error('# Script aborted!')
     except Exception as e:
         logger.exception(e)
         logger.error('# Script aborted...')

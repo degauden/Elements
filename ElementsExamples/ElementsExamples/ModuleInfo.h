@@ -12,9 +12,12 @@
 #include "ElementsKernel/ModuleInfo.h"
 
 namespace Elements {
+namespace ElementsExamples {
 
 ELEMENTS_API const System::ModuleInfo& getModuleInfo();
 
+} // namespace ElementsExamples
 } // namespace Elements
+
 
 #endif // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_MODULEINFO_H_
