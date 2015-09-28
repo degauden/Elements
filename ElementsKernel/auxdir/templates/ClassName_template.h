@@ -9,7 +9,7 @@
 
 #include "%(MODULENAME)s%(OSSEP)s%(SUBDIR)s%(OSSEP)s%(CLASSNAME)s.h"
 
-namespace %(CLASSNAME)s {
+namespace %(MODULENAME)s {
 
 /**
  * @class %(CLASSNAME)s
