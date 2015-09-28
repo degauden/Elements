@@ -32,7 +32,7 @@ private:
 
 }; /* End of %(CLASSNAME)s class */
 
-} /* namespace %(CLASSNAME)s */
+} /* namespace %(MODULENAME)s */
 
 
 #endif
