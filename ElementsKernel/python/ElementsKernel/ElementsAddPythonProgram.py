@@ -33,6 +33,10 @@ def createDirectories(module_dir, module_name):
     # Create the conf directory
     conf_dir = os.path.join(module_dir, 'conf', module_name)
     epcr.makeDirectory(conf_dir)
+    
+    # Create the scripts directory
+    scripts_path = os.path.join(module_dir, 'scripts')
+    epcr.makeDirectory(scripts_path)
 
 ################################################################################
 
