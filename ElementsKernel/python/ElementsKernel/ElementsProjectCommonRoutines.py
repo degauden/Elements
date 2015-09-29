@@ -29,8 +29,32 @@ def makeDirectory(directory_path):
             os.makedirs(directory_path)
         except OSError as e:
             raise e
-                
 
+################################################################################
+                
+def deleteFile(path_filename):
+    """
+    Delete the <path_filename> file if it does exist. <path_filename> includes
+    the path and filename.
+    """
+    if os.path.exists(path_filename):
+        os.remove(path_filename)
+        
+
+################################################################################
+
+def makeACopy(cmakefile):
+    """
+    Make a copy(backup) of the <CMakeFileLists.txt> file. The copy is named
+    <CMakeFileLists.txt~>, <cmakefile> includes the path of the file.
+    """
+    copy_file = cmakefile + '~'
+    if os.path.exists(cmakefile):
+        shutil.copy(cmakefile, copy_file)
+    else:
+        logger.warning('# File not found: <%s> Can not make a copy of this file!'
+                        % cmakefile)
+        
 ################################################################################
 
 def isNameAndVersionValid(name, version):

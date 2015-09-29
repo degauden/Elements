@@ -80,10 +80,15 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     define_words_str = define_words_str.replace(H_TEMPLATE_FILE, class_name +'.h')
     define_words_str = define_words_str.replace('.','_')
     define_words_str = (define_words_str.replace(os.path.sep,'_')).upper()
+    # This avoid double slashes
+    ossep2 = os.sep
+    if not subdir:
+        ossep2 = '' 
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
                        "OSSEP": os.sep,
+                       "OSSEP2": ossep2,
                        "DEFINE_WORDS": define_words_str,
                        "SUBDIR": subdir,
                        "CLASSNAME": class_name,
@@ -110,11 +115,16 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     data = f.read()
     author_str = epcr.getAuthor()
     date_str   = time.strftime("%x")
+    # This avoid double slashes
+    ossep2 = os.sep
+    if not subdir:
+        ossep2 = '' 
     file_name_str = os.path.join('src', 'lib', subdir, class_name + '.cpp')
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
                        "OSSEP": os.sep,
+                       "OSSEP2": ossep2,
                        "MODULENAME": module_name,
                        "SUBDIR": subdir,
                        "CLASSNAME": class_name}
@@ -166,6 +176,9 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+    
+    # Backup the file
+    epcr.makeACopy(cmake_filename)
     
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
@@ -343,6 +356,8 @@ def mainMethod(args):
             if script_goes_on:
                 logger.info('# <%s> class successfully created in <%s>.' % 
                             (class_name, module_dir + os.sep + subdir))
+                # Remove backup file
+                epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE)+'~')
                 logger.info('# Script over.')
                 
         if not script_goes_on:

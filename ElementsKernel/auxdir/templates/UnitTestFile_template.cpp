@@ -8,6 +8,8 @@
 
 #include "%(MODULENAME)s%(OSSEP)s%(CLASSNAME)s.h"
 
+using namespace %(MODULENAME)s;
+
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE (%(CLASSNAME)s_test)
