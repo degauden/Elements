@@ -1,5 +1,5 @@
 #ifndef EXAMPLEMODULE_DATASOURCEINTERFACEMOCK_H
-#define	EXAMPLEMODULE_DATASOURCEINTERFACEMOCK_H
+#define	 EXAMPLEMODULE_DATASOURCEINTERFACEMOCK_H
 
 #include "ElementsKernel/EnableGMock.h"
 #include "ElementsExamples/DataSourceUser.h"

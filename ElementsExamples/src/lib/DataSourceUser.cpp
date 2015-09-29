@@ -5,6 +5,8 @@
  *      Author: fdubath
  */
 
+#include  <cstdlib> // for std::size_t
+
 #include "ElementsExamples/DataSourceUser.h"
 
 namespace Elements {
@@ -12,8 +14,8 @@ namespace ElementsExamples {
 
 double DataSourceUser::sumRecords (const DataSourceInterface& data_source) {
   double sum = 0.;
-  size_t records_number = data_source.countRecords();
-  for (size_t index = 0; index < records_number; ++index) {
+  std::size_t records_number = data_source.countRecords();
+  for (std::size_t index = 0; index < records_number; ++index) {
     sum += data_source.getRecordValue(index);
   }
 

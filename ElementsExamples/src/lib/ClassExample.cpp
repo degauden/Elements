@@ -5,6 +5,8 @@
  *     Author: Pierre Dubath
  */
 
+#include <cstdint>                           // for std::int64_t
+
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Exception.h"
