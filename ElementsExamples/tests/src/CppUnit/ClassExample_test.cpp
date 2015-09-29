@@ -15,8 +15,6 @@
 
 #include "ElementsExamples/ClassExample.h"
 
-#include "tests/src/Tolerance.h"
-
 using namespace std;
 using namespace Elements;
 using namespace ElementsExamples;
@@ -29,6 +27,7 @@ class ClassExampleSuite : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(ClassExampleSuite);
 
   CPPUNIT_TEST(fundamentalTypeMethodTest);
+  CPPUNIT_TEST(fundamentalTypeMethodSecondTest);
   CPPUNIT_TEST(gettersTest);
   CPPUNIT_TEST(exceptionInDivideNumbersTest);
 
@@ -43,6 +42,7 @@ public:
 protected:
 
   void fundamentalTypeMethodTest();
+  void fundamentalTypeMethodSecondTest();
   void gettersTest();
   void exceptionInDivideNumbersTest();
 
@@ -85,9 +85,16 @@ void ClassExampleSuite::gettersTest () {
 
 void ClassExampleSuite::fundamentalTypeMethodTest () {
 
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable), TEST_DOUBLE_TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable), DBL_DEFAULT_TEST_TOLERANCE);
 
 }
+
+void ClassExampleSuite::fundamentalTypeMethodSecondTest () {
+
+  CPPUNIT_ASSERT(isEqual(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable)));
+
+}
+
 
 void ClassExampleSuite::exceptionInDivideNumbersTest () {
 

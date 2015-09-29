@@ -8,7 +8,9 @@
 #ifndef DATASOURCEUSER_H_
 #define DATASOURCEUSER_H_
 
-#include  <cstdlib> // size_t
+#include  <cstdlib> // for std::size_t
+
+#include "ElementsKernel/Export.h"  // For ELEMENTS_API
 
 namespace Elements {
 namespace ElementsExamples {
@@ -30,7 +32,7 @@ public:
    * @return
    * A unsigned integer containing the number of records in the DataSource.
    */
-  virtual size_t countRecords () const = 0;
+  virtual std::size_t countRecords () const = 0;
 
   /**
    * @brief Fetch the value of the n-th record of the DataSource.
@@ -43,7 +45,7 @@ public:
    * @throw Elements::Exception
    * If no record exists at the specified index.
    */
-  virtual double getRecordValue (size_t index) const = 0;
+  virtual double getRecordValue (std::size_t index) const = 0;
 };
 
 /**
@@ -51,7 +53,7 @@ public:
  * @brief This class has been created to demonstrate unit testing. It manipulates
  * an object implementing DataSourceInterface.
  */
-class DataSourceUser {
+class ELEMENTS_API DataSourceUser {
 
 public:
   /**
