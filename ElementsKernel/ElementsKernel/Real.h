@@ -60,8 +60,17 @@
 
 namespace Elements {
 
+/// Single precision float default maximum unit in the last place
 constexpr std::size_t FLT_DEFAULT_MAX_ULPS { 4 };
+/// Double precision float default maximum unit in the last place
 constexpr std::size_t DBL_DEFAULT_MAX_ULPS { 10 };
+
+// For testing purposes only. Rather use the isEqual functions for real
+// life comparison
+/// Single precision float default test tolerance
+static const double FLT_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -FLT_DEFAULT_MAX_ULPS);
+/// Double precision float default test tolerance
+static const double DBL_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -DBL_DEFAULT_MAX_ULPS);
 
 
 template<std::size_t size>
@@ -518,6 +527,8 @@ ELEMENTS_API bool almostEqual2sComplement(const double& a, const double& b, cons
  *   right hand number to compare
  * @param y
  *   left hand number to compare
+ * @tparam RawType
+ *   raw type: ie float or double
  * @return
  *   true if the 2 numbers are bitwise equal
  */

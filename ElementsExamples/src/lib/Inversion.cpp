@@ -4,6 +4,9 @@
  *  Created on: Sep 22, 2015
  *      Author: Florian Dubath
  */
+
+#include <cmath>                     // for std::abs
+
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Real.h"
 #include "ElementsExamples/Inversion.h"

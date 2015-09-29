@@ -27,7 +27,7 @@ static inline const ModuleInfo& getThisModuleInfo() {
   return this_module;
 }
 
-/** @example ElementsExamples/src/Lib/ModuleInfo.cpp
+/** @example ElementsExamples/src/lib/ModuleInfo.cpp
  * This is an example of how to use the getThisModuleInfo function.
  * The call has to be compiled in the module (library)
  */

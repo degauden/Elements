@@ -23,9 +23,11 @@
 #ifndef CLASSEXAMPLE_H_
 #define CLASSEXAMPLE_H_
 
-#include <string>
-#include <vector>
-#include <memory>
+#include <string>                   // for std::string
+#include <vector>                   // for std::vector
+#include <memory>                   // for std::unique_ptr
+
+#include <cstdint>                  // for std::int64_t
 
 #include "ElementsKernel/Export.h"
 
@@ -54,7 +56,7 @@ public:
    *    Right Ascension coordinate
    *
    */
-  static ClassExample factoryMethod (const int64_t source_id, const double ra);
+  static ClassExample factoryMethod (const std::int64_t source_id, const double ra);
 
   /*
    * Getter to access the static private string
@@ -140,15 +142,15 @@ public:
    *
    *    The vector is used here as an example object.
    *
-   * @param vector_unique_ptr
-   *    Unique pointer to a vector object
+   * @param input_object
+   *    a vector of double
    */
   void passingObjectInGeneral (const std::vector<double>& input_object) const;
 
   /**
    * Getter to access private sourceId
    */
-  int64_t getSourceId () const {
+  std::int64_t getSourceId () const {
     return m_source_id;
   }
 
@@ -174,7 +176,7 @@ private:
    * can be chosen via the factory.
    *
    */
-  ClassExample (const int64_t source_id, const double ra) :
+  ClassExample (const std::int64_t source_id, const double ra) :
       m_source_id(source_id), m_ra(ra) {
   }
 
@@ -182,7 +184,7 @@ private:
   static std::string s_static_string;
 
   /// Source ID as an example of a 64 bits integer
-  int64_t m_source_id { 0 };
+  std::int64_t m_source_id { 0 };
 
   /// Source right ascension
   double m_ra { 0.0 };

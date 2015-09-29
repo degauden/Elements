@@ -16,7 +16,7 @@ namespace ElementsExamples {
 
 
 /**
- * @class Euclid::PhzModeling::TemplatedDataSourceUser
+ * @class TemplatedDataSourceUser
  * @brief This class has been created to demonstrate unit testing. It manipulate
  * an object representing a DataSource using template to achieve polymorphism.
  */
@@ -27,7 +27,7 @@ public:
      * @brief Compute the sum of the values of the records stored into the provided
      * DataSource
      *
-     * @template T
+     * @tparam T
      * A type representing a DataSource. The type must declare the methods
      * + size_t countRecords() const
      * + double getRecordValue(size_t index) const
