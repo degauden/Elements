@@ -16,7 +16,7 @@ namespace po = boost::program_options;
 using namespace std;
 
 namespace Elements {
-
+namespace ElementsExamples {
 
 /**
  * @class ElementsProgramExample
@@ -41,7 +41,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(ELEMENTS_UNUSED map<std::string, po::variable_value>& args) {
+  ExitCode mainMethod (ELEMENTS_UNUSED map<std::string, po::variable_value>& args) {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();
@@ -50,34 +50,29 @@ public:
 
     cout << "This Works too!" << endl;
 
-    if(args.count("input-files")){
-        std::vector<std::string> files = args["input-files"].as<std::vector<std::string>>();
-        for(std::string file : files){
-            std::cout << "Input file " << file << std::endl;
-        }
+    if (args.count("input-files")) {
+      std::vector<std::string> files = args["input-files"].as<std::vector<std::string>>();
+      for (std::string file : files) {
+        std::cout << "Input file " << file << std::endl;
+      }
     }
     return ExitCode::OK;
 
   }
 
-
-  pair<po::options_description,po::positional_options_description> defineProgramArguments() {
+  pair<po::options_description, po::positional_options_description> defineProgramArguments () {
     po::options_description desc("");
     desc.add_options()("input-files", po::value<std::vector<std::string>>(), "Input files");
 
-
     po::positional_options_description pos_desc;
     pos_desc.add("input-files", -1);
-
 
     return make_pair(desc, pos_desc);
   }
 
 };
 
+} // namespace ElementsExamples
+} // namespace Elements
 
-
-
-}  // namespace Elements
-
-MAIN_FOR(Elements::ProgramExampleWithArguments)
+MAIN_FOR(Elements::ElementsExamples::ProgramExampleWithArguments)
