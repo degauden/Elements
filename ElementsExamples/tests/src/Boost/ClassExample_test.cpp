@@ -5,6 +5,8 @@
  *     Author: Pierre Dubath
  */
 
+#include <cstdint>                          // for std::int64_t
+
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
 #include "ElementsKernel/Exception.h"

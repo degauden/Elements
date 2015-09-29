@@ -5,10 +5,10 @@
  *      Author: fdubath
  */
 
-
-#include <vector>
-#include <boost/test/unit_test.hpp> // Gives access to the unit test framework.
-#include "ElementsKernel/Real.h" // isEqual
+#include <cstddef>                    // for std::size_t
+#include <vector>                     // for std::vector
+#include <boost/test/unit_test.hpp>   // Gives access to the unit test framework.
+#include "ElementsKernel/Real.h"      // isEqual
 #include "ElementsKernel/Exception.h" // Exception
 
 #include "ElementsExamples/Inversion.h" // Access the objects you want to test
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(nominal_case_test) {
   std::vector<double> input{-10.,-1.,1.,10.,100.};
   std::vector<double> expected{0.1,1.,1.,0.1,0.01};
 
-  for (size_t index=0; index<input.size(); ++index){
+  for (std::size_t index=0; index<input.size(); ++index){
     double computed = tested_object.oneOverAbsX(input[index]);
     BOOST_CHECK(Elements::isEqual(computed,expected[index]));
   }

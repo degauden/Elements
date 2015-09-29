@@ -8,6 +8,8 @@
 #ifndef ELEMENTSEXAMPLES_INVERSION_H_
 #define ELEMENTSEXAMPLES_INVERSION_H_
 
+#include "ElementsKernel/Export.h"
+
 namespace Elements {
 namespace ElementsExamples {
 
@@ -15,7 +17,7 @@ namespace ElementsExamples {
  * @class Inversion
  * @brief This class has been created to demonstrate unit testing.
  */
-class Inversion {
+class ELEMENTS_API Inversion {
 
 public:
 
