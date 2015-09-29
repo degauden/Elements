@@ -102,7 +102,11 @@ elements_add_unit_test(BackTrace tests/src/BackTrace_test.cpp
 #---Python and Scripts ------------------------------------------------------------
 
 elements_add_python_program(CreateElementsProject ElementsKernel.ElementsProject)
-elements_add_python_program(CreateElementsModule ElementsKernel.ElementsModule)
+elements_add_python_program(AddElementsModule ElementsKernel.ElementsAddModule)
+elements_add_python_program(AddCppClass ElementsKernel.ElementsAddCppClass)
+elements_add_python_program(AddCppProgram ElementsKernel.ElementsAddCppProgram)
+elements_add_python_program(AddPythonProgram ElementsKernel.ElementsAddPythonProgram)
+elements_add_python_program(AddPythonModule ElementsKernel.ElementsAddPythonModule)
 
 elements_install_aux_files()
 elements_install_python_modules()
