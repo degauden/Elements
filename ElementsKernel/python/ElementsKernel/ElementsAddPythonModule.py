@@ -63,6 +63,10 @@ def updateCmakeListsFile(module_dir):
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+
+    # Backup the file
+    epcr.makeACopy(cmake_filename)
+
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
         f = open(cmake_filename, 'r')
@@ -144,6 +148,8 @@ def mainMethod(args):
                 if createPythonModule(current_dir, module_name, python_module_name):
                     logger.info('# <%s> python module successfully created in <%s>.' % 
                                 (python_module_name, module_file_path))
+                    # Remove backup file
+                    epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE)+'~')
                     logger.info('# Script over.')
             else:
                     logger.error('# <%s> project directory does not exist!'
