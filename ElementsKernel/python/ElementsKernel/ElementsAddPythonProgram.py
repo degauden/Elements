@@ -33,6 +33,10 @@ def createDirectories(module_dir, module_name):
     # Create the conf directory
     conf_dir = os.path.join(module_dir, 'conf', module_name)
     epcr.makeDirectory(conf_dir)
+    
+    # Create the scripts directory
+    scripts_path = os.path.join(module_dir, 'scripts')
+    epcr.makeDirectory(scripts_path)
 
 ################################################################################
 
@@ -91,6 +95,10 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+
+    # Backup the file
+    epcr.makeACopy(cmake_filename)
+
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
         f = open(cmake_filename, 'r')
@@ -181,6 +189,8 @@ def mainMethod(args):
                 if createPythonProgram(current_dir, module_name, program_name):
                     logger.info('# <%s> program successfully created in <%s>.' % 
                                 (program_name, program_file_path))
+                    # Remove backup file
+                    epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE)+'~')
                     logger.info('# Script over.')
             else:
                 logger.error('# <%s> project directory does not exist!' 

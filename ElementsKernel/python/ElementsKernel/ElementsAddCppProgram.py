@@ -97,6 +97,10 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+
+    # Backup the file
+    epcr.makeACopy(cmake_filename)
+
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
         f = open(cmake_filename, 'r')
@@ -226,6 +230,8 @@ def mainMethod(args):
             if script_goes_on:
                 logger.info('# <%s> program successfully created in <%s>.' % 
                             (program_name, current_dir + os.sep + 'src'+ os.sep + 'program'))
+                # Remove backup file
+                epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE)+'~')
                 logger.info('# Script over.')
                 
         if not script_goes_on:

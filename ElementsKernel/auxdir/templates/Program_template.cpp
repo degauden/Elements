@@ -4,13 +4,18 @@
  * @author %(AUTHOR)s
  */
 
+#include <map>
+#include <string>
+
 #include <boost/program_options.hpp>
 #include "ElementsKernel/ProgramHeaders.h"
 
 namespace po = boost::program_options;
 
-static Elements::Logging logger = Elements::Logging::getLogger("%(PROGRAMNAME)s");
+using std::map;
+using std::string;
 
+static Elements::Logging logger = Elements::Logging::getLogger("%(PROGRAMNAME)s");
 
 class %(PROGRAMNAME)s : public Elements::Program {
 
