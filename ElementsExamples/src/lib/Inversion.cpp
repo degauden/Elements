@@ -13,7 +13,7 @@ namespace ElementsExamples {
 
 double Inversion::oneOverAbsX (double x) {
   if (Elements::isEqual(x, 0.)) {
-    throw Elements::Exception() << "Divizion by 0!";
+    throw Elements::Exception() << "Division by 0!";
   }
 
   //return abs(1. / x );
