@@ -7,13 +7,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #         elements_subdir(ElementsExamples)
 #===============================================================================
 
-
 #===============================================================================
 # Load elements_depends_on_subdirs macro here 
 #   For creating a dependency onto an other accessible module
 #         elements_depends_on_subdirs(ElementsKernel)
 #===============================================================================
-
 
 #===============================================================================
 # Add the find_package macro (a pure CMake command) here to locate the 
@@ -21,7 +19,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 # Examples:
 #          find_package(CppUnit)
 #===============================================================================
-
 
 #===============================================================================
 # Declare library dependencies here
@@ -32,7 +29,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #                     PUBLIC_HEADERS ElementsExamples)
 #===============================================================================
 
-
 #===============================================================================
 # Declare the executables here
 # Example:
@@ -40,7 +36,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #                        LINK_LIBRARIES Boost ElementsExamples
 #                        INCLUDE_DIRS Boost ElementsExamples)
 #===============================================================================
-
 
 #===============================================================================
 # Declare you Boost tests here
@@ -51,23 +46,21 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 #===============================================================================
 
-
 #===============================================================================
 # Declare Python programs here
 # Examples :
-# For executables:
 # elements_add_python_program(PythonProgramExample 
 #                             ElementsExamples.PythonProgramExample)
-# Use the following macro for python modules, scripts, conf and aux files:
-#  elements_install_conf_files()
+#===============================================================================
+
+#===============================================================================
+# Use the following macro for python modules, scripts and aux files:
 #  elements_install_python_modules()
 #  elements_install_scripts()
 #===============================================================================
-
 
 #===============================================================================
 # Add the elements_install_conf_files macro 
 # Examples:
 #          elements_install_conf_files()
 #===============================================================================
-
