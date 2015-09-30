@@ -5,7 +5,8 @@
  *      Author: Florian Dubath
  */
 
-#include <algorithm>
+#include <numeric> // accumulate
+#include <algorithm> // sort
 #include "ElementsKernel/Exception.h"
 #include "ElementsExamples/UnitTestExample.h"
 
