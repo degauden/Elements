@@ -14,7 +14,6 @@
 
 import re
 import sys
-from findertools import restart
 
 ################################################################################
 
