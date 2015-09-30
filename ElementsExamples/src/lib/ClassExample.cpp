@@ -6,6 +6,7 @@
  */
 
 #include <cstdint>                           // for std::int64_t
+#include <cmath>                             // for std::abs
 
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/Logging.h"
