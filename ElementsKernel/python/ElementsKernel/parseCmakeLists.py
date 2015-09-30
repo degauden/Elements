@@ -14,6 +14,7 @@
 
 import re
 import sys
+from findertools import restart
 
 ################################################################################
 
@@ -23,7 +24,7 @@ class ElementsSubdir:
         self.name = name
     
     def __str__(self):
-        return 'elements_subdir(' + self.name + ')\n'
+        return 'elements_subdir(' + self.name + ')'
         
 ################################################################################
     
@@ -36,7 +37,7 @@ class ElementsDependsOnSubdirs:
         result = 'elements_depends_on_subdirs('
         for subdir in self.subdir_list:
             result += subdir + ' '
-        result = result.strip() + ')\n'
+        result = result.strip() + ')'
         return result
 
 ################################################################################
@@ -53,7 +54,7 @@ class FindPackage:
             result += ' REQUIRED COMPONENTS'
         for component in self.required_components_list:
             result += ' ' + component
-        return result + ')\n'
+        return result + ')'
 
 ################################################################################
 
@@ -83,7 +84,7 @@ class ElementsAddLibrary:
             result += '\n                     PUBLIC_HEADERS'
             for name in self.public_headers_list:
                 result += ' ' + name
-        return result + ')\n'
+        return result + ')'
     
 ################################################################################
 
@@ -101,7 +102,7 @@ class ElementsAddExecutable:
             result += '\n                     LINK_LIBRARIES'
             for name in self.link_libraries_list:
                 result += ' ' + name
-        result = result.strip() + ')\n'
+        result = result.strip() + ')'
         return result
 
 ################################################################################
@@ -115,7 +116,7 @@ class ElementsAddPythonExecutable:
     def __str__(self):
         result = 'elements_add_python_program(' + self.name
         result += ' ' + self.module_name
-        result = result.strip() + ')\n'
+        result = result.strip() + ')'
         return result
     
 ################################################################################
@@ -144,7 +145,7 @@ class ElementsAddUnitTest:
                 result += ' ' + include 
         if self.type:
             result +=  '\n                     TYPE ' + self.type
-        result = result.strip() + ')\n'
+        result = result.strip() + ')'
         return result
     
 ################################################################################
@@ -153,9 +154,9 @@ class CMakeLists:
     
     def __init__(self, text=''):
         self.text                             = text
-        self.elements_install_conf_files      = ''
-        self.elements_install_python_modules  = ''
-        self.elements_install_scripts         = ''
+        self.elements_install_conf_files      = None
+        self.elements_install_python_modules  = None
+        self.elements_install_scripts         = None
         self.elements_subdir_list             = []
         self.elements_depends_on_subdirs_list = []
         self.find_package_list                = []
@@ -171,6 +172,7 @@ class CMakeLists:
                 for_parsing += line[:line.find('#')] + '\n'
             else:
                 for_parsing += line + '\n'
+
         text = for_parsing
         
         elements_install_conf_files = re.findall(r"elements_install_conf_files\(.*?\)", text)
@@ -296,16 +298,10 @@ class CMakeLists:
                 pass
             temp = text[:match.end()+1]
             rest = text[match.end()+1:].splitlines()
-            # Skip comment lines
-            after_comment = False
-            several_com_lines = 0
             while rest and rest[0].startswith('#'):
                 temp += rest[0] + '\n'
                 rest = rest[1:]
-                after_comment = True
-            if after_comment:
-                temp += '\n'
-            temp += to_add
+            temp += to_add + '\n'
             for line in rest:
                 temp += line + '\n'
             text = temp
@@ -313,58 +309,55 @@ class CMakeLists:
             text += '\n' + to_add + '\n'
         
         return text
-
+    
        
     def __str__(self):
         result = self.text
         
-        if not re.search(r"(?<=\n)\s*elements_install_conf_files\(.*?\)", result, re.MULTILINE|re.DOTALL):
-                result = self._addAfter(result, 'elements_install_conf_files', self.elements_install_conf_files)
-
-        if not re.search(r"(?<=\n)\s*elements_install_python_modules\(.*?\)", result, re.MULTILINE|re.DOTALL):
-                result = self._addAfter(result, 'elements_install_python_modules', self.elements_install_python_modules)
-
-        if not re.search(r"(?<=\n)\s*elements_install_scripts\(.*?\)", result, re.MULTILINE|re.DOTALL):
-                result = self._addAfter(result, 'elements_install_scripts', self.elements_install_scripts)
-
         for find_package in self.find_package_list:
-            if not re.search(r"(?<=\n)\s*find_package\(\s*"+ find_package.package+r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(r"(?<=\n)\s*find_package\(\s*"+ find_package.package + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'find_package', str(find_package))
 
         for elements_subdir in self.elements_subdir_list:
-            if not re.search(r"(?<=\n)\s*elements_subdir\(\s*"+elements_subdir.name+r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(r"(?<=\n)\s*elements_subdir\(\s*" + elements_subdir.name+ r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_subdir', str(elements_subdir))
                 
         for elements_depends_on_subdirs in self.elements_depends_on_subdirs_list:
-            if not re.search(r"(?<=\n)\s*elements_depends_on_subdirs\(\s*"+elements_depends_on_subdirs.subdir_list[0]+   r"(?=[\s\)]).*?\)"   , result, re.MULTILINE|re.DOTALL):
+            if not re.search(r"(?<=\n)\s*elements_depends_on_subdirs\(\s*"+elements_depends_on_subdirs.subdir_list[0]+ r"(?=[\s\)]).*?\)"   , result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_depends_on_subdirs', str(elements_depends_on_subdirs))
 
         for library in self.elements_add_library_list:
             if not re.search(r"(?<=\n)\s*elements_add_library\(\s*" + library.name + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_add_library', str(library))
             else:
-                result = re.sub(r"(?<=\n)\s*elements_add_library\(\s*"+ library.name +   r"(?=[\s\)]).*?\)", str(library), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(r"(?<=\n)\s*elements_add_library\(\s*"+ library.name + r"(?=[\s\)]).*?\)", str(library), result, flags=re.MULTILINE|re.DOTALL)
 
         for exe in self.elements_add_executable_list:
             if not re.search(r"(?<=\n)\s*elements_add_executable\(\s*" + exe.name + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_add_executable', str(exe))
             else:
-                result = re.sub(r"(?<=\n)\s*elements_add_executable\(\s*"+ exe.name +   r"(?=[\s\)]).*?\)", str(exe), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(r"(?<=\n)\s*elements_add_executable\(\s*"+ exe.name + r"(?=[\s\)]).*?\)", str(exe), result, flags=re.MULTILINE|re.DOTALL)
 
         for unit_test in self.elements_add_unit_test_list:
             if not re.search(r"(?<=\n)\s*elements_add_unit_test\(\s*" + unit_test.class_name + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_add_unit_test', str(unit_test))
             else:
-                result = re.sub(r"(?<=\n)\s*elements_add_unit_test\(\s*"+ unit_test.class_name +   r"(?=[\s\)]).*?\)", str(unit_test), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(r"(?<=\n)\s*elements_add_unit_test\(\s*"+ unit_test.class_name + r"(?=[\s\)]).*?\)", str(unit_test), result, flags=re.MULTILINE|re.DOTALL)
 
-        #
-        # Python stuff
-        #
         for pyexe in self.elements_add_python_executable_list:
             if not re.search(r"(?<=\n)\s*elements_add_python_program\(\s*" + pyexe.name + r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
                 result = self._addAfter(result, 'elements_add_python_program', str(pyexe))
             else:
-                result = re.sub(r"(?<=\n)\s*elements_add_python_program\(\s*"+ pyexe.name +   r"(?=[\s\)]).*?\)", str(pyexe), result, flags=re.MULTILINE|re.DOTALL)
-                
+                result = re.sub(r"(?<=\n)\s*elements_add_python_program\(\s*"+ pyexe.name + r"(?=[\s\)]).*?\)", str(pyexe), result, flags=re.MULTILINE|re.DOTALL)
+ 
+        if not re.search(r"(?<=\n)\s*elements_install_python_modules\(.*?\)", result, re.MULTILINE|re.DOTALL) and self.elements_install_python_modules:
+                result = self._addAfter(result, 'elements_install_python_modules', self.elements_install_python_modules)
+
+        if not re.search(r"(?<=\n)\s*elements_install_scripts\(.*?\)", result, re.MULTILINE|re.DOTALL) and self.elements_install_scripts:
+                result = self._addAfter(result, 'elements_install_scripts', self.elements_install_scripts)
+
+        if not re.search(r"(?<=\n)\s*elements_install_conf_files\(.*?\)", result, re.MULTILINE|re.DOTALL) and self.elements_install_conf_files:
+                result = self._addAfter(result, 'elements_install_conf_files', self.elements_install_conf_files)
+               
         return result
 
