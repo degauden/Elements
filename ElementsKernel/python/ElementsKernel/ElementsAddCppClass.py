@@ -80,17 +80,10 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     define_words_str = define_words_str.replace(H_TEMPLATE_FILE, class_name +'.h')
     define_words_str = define_words_str.replace('.','_')
     define_words_str = (define_words_str.replace(os.path.sep,'_')).upper()
-    # This avoid double slashes
-    ossep2 = os.sep
-    if not subdir:
-        ossep2 = '' 
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
-                       "OSSEP": os.sep,
-                       "OSSEP2": ossep2,
                        "DEFINE_WORDS": define_words_str,
-                       "SUBDIR": subdir,
                        "CLASSNAME": class_name,
                        "MODULENAME": module_name}
 
