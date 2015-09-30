@@ -1,14 +1,12 @@
 /*
- * Inversion_test.cpp
+ * UnitTestExample_test.cpp
  *
  *  Created on: Sep 22, 2015
  *      Author: fdubath
  */
 
-//#include <cstddef>                    // for std::size_t
-//#include <vector>                     // for std::vector
-#include <boost/test/unit_test.hpp>   // Gives access to the unit test framework.
 
+#include <boost/test/unit_test.hpp>   // Gives access to the unit test framework.
 #include "ElementsExamples/UnitTestExample.h" // Access the objects you want to test
 #include "ElementsKernel/Exception.h" // Exception
 
