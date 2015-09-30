@@ -1,17 +1,13 @@
 /*
- * Inversion.cpp
+ * UnitTestExample.cpp
  *
  *  Created on: Sep 22, 2015
  *      Author: Florian Dubath
  */
 
 #include <algorithm>
-#include "ElementsExamples/UnitTestExample.h"
-
-
-
 #include "ElementsKernel/Exception.h"
-#include "ElementsKernel/Real.h"
+#include "ElementsExamples/UnitTestExample.h"
 
 namespace Elements {
 namespace ElementsExamples {
