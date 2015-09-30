@@ -18,6 +18,8 @@ namespace ElementsExamples {
 class DataSourceUserTemplatedTypeMock {
 public:
 
+  virtual ~DataSourceUserTemplatedTypeMock()=default;
+
   MOCK_CONST_METHOD0(countRecords, size_t ());
 
   MOCK_CONST_METHOD1(getRecordValue, double (size_t));
