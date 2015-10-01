@@ -21,7 +21,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #===============================================================================
 
 #===============================================================================
-# Declare library dependencies here
+# Declare the library dependencies here
 # Example:
 #         elements_add_library(ElementsExamples src/Lib/*.cpp
 #                     LINK_LIBRARIES Boost ElementsKernel
@@ -38,7 +38,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #===============================================================================
 
 #===============================================================================
-# Declare you Boost tests here
+# Declare the Boost tests here
 # Example:
 # elements_add_unit_test(BoostClassExample tests/src/Boost/ClassExample_test.cpp
 #                       EXECUTABLE BoostClassExample_test
@@ -47,7 +47,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #===============================================================================
 
 #===============================================================================
-# Declare Python programs here
+# Declare the Python programs here
 # Examples :
 # elements_add_python_program(PythonProgramExample 
 #                             ElementsExamples.PythonProgramExample)
