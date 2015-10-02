@@ -2078,7 +2078,8 @@ function(elements_add_swig_binding binding)
                              LINK_LIBRARIES ${MODULE_ARG_LINK_LIBRARIES}
                              INCLUDE_DIRS ${MODULE_ARG_INCLUDE_DIRS})
 
-   install(FILES ${PY_MODULE_DIR}/${binding}.py DESTINATION python)
+  install(FILES ${PY_MODULE_DIR}/${binding}.py DESTINATION python)
+  elements_install_headers(${ARG_PUBLIC_HEADERS})
 
 endfunction()
 
@@ -2346,6 +2347,7 @@ function(elements_install_headers)
               PATTERN "*.icpp"
               PATTERN "*.hpp"
               PATTERN "*.hxx"
+              PATTERN "*.i"
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE)
       if(NOT IS_ABSOLUTE ${hdr_dir})
