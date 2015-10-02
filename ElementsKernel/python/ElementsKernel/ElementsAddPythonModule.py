@@ -29,6 +29,9 @@ def createDirectories(module_dir, module_name):
     # Create the executable directory
     python_module_path = os.path.join(module_dir, 'python', module_name)
     epcr.makeDirectory(python_module_path)
+    # Create the python directory in tests
+    tests_python_path = os.path.join(module_dir, 'tests', 'python')
+    epcr.makeDirectory(tests_python_path)
 
 ################################################################################
 
