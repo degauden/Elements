@@ -112,7 +112,7 @@ endif()
 #---------------------------------------------------------------------------------------------------
 include(CMakeParseArguments)
 
-find_package(PythonInterp)
+find_package(PythonInterp QUIET)
 
 #-------------------------------------------------------------------------------
 # elements_project(project version
@@ -357,14 +357,14 @@ macro(elements_project project version)
 
   if(PYTHONINTERP_FOUND)
     if(USE_PYTHON_NOSE)
-      find_package(Nose)
+      find_package(Nose QUIET)
       if(NOSE_FOUND)
         message(STATUS "Using the Nose python test framework")
         set(PYFRMK_TEST ${NOSE_EXECUTABLE})
         set(PYFRMK_NAME "PythonNose")
       else()
         message(WARNING "The Nose python test framework cannot be found")
-        find_package(PyTest)
+        find_package(PyTest QUIET)
         if(PYTEST_FOUND)
           message(WARNING "Using Py.Test instead")
           set(PYFRMK_TEST ${PYTEST_EXECUTABLE})
@@ -372,14 +372,14 @@ macro(elements_project project version)
         endif()
       endif()
     else()
-      find_package(PyTest)
+      find_package(PyTest QUIET)
       if(PYTEST_FOUND)
         message(STATUS "Using the Py.Test python test framework")
         set(PYFRMK_TEST ${PYTEST_EXECUTABLE})
         set(PYFRMK_NAME "PyTest")
       else()
         message(WARNING "The Py.Test python test framework cannot be found")
-        find_package(Nose)
+        find_package(Nose QUIET)
         if(NOSE_FOUND)
           message(WARNING "Using Nose instead")
           set(PYFRMK_TEST ${NOSE_EXECUTABLE})
@@ -793,10 +793,10 @@ macro(elements_project project version)
 
   include(CPack)
 
-  find_package(Tar)
+  find_package(Tar QUIET)
   if(TAR_FOUND)
 
-    find_package(RPMBuild)
+    find_package(RPMBuild QUIET)
 
     if (RPMBUILD_FOUND)
       option(USE_DEFAULT_RPMBUILD_DIR "Use default RPM build directory (the value of the %_topdir variable)" OFF)
@@ -868,7 +868,7 @@ macro(elements_project project version)
   endif()
 
   # Add Doxygen generation
-  find_package(Doxygen)
+  find_package(Doxygen QUIET)
   if(DOXYGEN_FOUND)
     find_file(doxygen_file_template
               NAMES Doxyfile.in
@@ -1985,8 +1985,9 @@ function(elements_add_python_module module)
 
   include_directories(${PYTHON_INCLUDE_DIRS})
   add_library(${module} MODULE ${srcs})
-  set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "")
+  set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "_")
   target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
+  _elements_detach_debinfo(${module})
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${module} LIBRARY DESTINATION python/lib-dynload OPTIONAL)
@@ -1995,7 +1996,7 @@ endfunction()
 
 #---------------------------------------------------------------------------------------------------
 # elements_add_swig_binding(<name>
-#                           source1 source2 ...
+#                           [interface] source1 source2 ...
 #                           LINK_LIBRARIES library1 library2 ...
 #                           INCLUDE_DIRS dir1 package2 ...
 #                           [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
@@ -2005,38 +2006,80 @@ endfunction()
 # can be either *.i or *.cpp files. Their location is relative to the base of the Elements package 
 # (module).
 #---------------------------------------------------------------------------------------------------
-function(elements_add_swig_binding library)
+function(elements_add_swig_binding binding)
 
-  find_package(SWIG REQUIRED)
+  find_package(SWIG QUIET REQUIRED)
+  find_package(PythonLibs QUIET REQUIRED)
   
   # this function uses an extra option: 'PUBLIC_HEADERS'
-#  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
-#  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS} LIBRARIES ${ARG_LIBRARIES} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-#
-#  elements_get_package_name(package)
-#  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
-#    message(WARNING "Library ${library} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
-#  endif()
-#
-#  add_library(${library} ${srcs})
-#  set_target_properties(${library} PROPERTIES COMPILE_DEFINITIONS ELEMENTS_LINKER_LIBRARY)
-#  target_link_libraries(${library} ${ARG_LINK_LIBRARIES})
-#  _elements_detach_debinfo(${library})
-#
-  # Declare that the used headers are needed by the libraries linked against this one
-#  set_target_properties(${library} PROPERTIES
-#    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
-#    REQUIRED_INCLUDE_DIRS "${ARG_INCLUDE_DIRS}"
-#    REQUIRED_LIBRARIES "${ARG_LINK_LIBRARIES}")
-#  set_property(GLOBAL APPEND PROPERTY LINKER_LIBRARIES ${library})
-#
-  #----Installation details-------------------------------------------------------
-#  install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION lib OPTIONAL)
-#  elements_export(LIBRARY ${library})
-#  elements_install_headers(${ARG_PUBLIC_HEADERS})
-#  install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
-#  set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
-#  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
+  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+  
+  set(MODULE_ARG_LINK_LIBRARIES ${ARG_LINK_LIBRARIES})
+  set(MODULE_ARG_INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+  
+  
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS} 
+                            LIBRARIES ${ARG_LIBRARIES} 
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES} 
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+ 
+  get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+  list(REMOVE_DUPLICATES dirs)
+  set(SWIG_MOD_INCLUDE_DIRS)
+  foreach(dir ${dirs})
+    set(SWIG_MOD_INCLUDE_DIRS ${SWIG_MOD_INCLUDE_DIRS} -I${dir})
+  endforeach()
+   
+  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
+    elements_get_package_name(package)
+    message(WARNING "Binding ${binding} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
+  endif()
+    
+  # find the sources
+  elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
+  
+  set(cpp_srcs)
+  set(i_srcs)
+  foreach(s ${srcs})
+    if(s MATCHES "(.*).i")
+      list(APPEND i_srcs ${s})
+    else()
+      list(APPEND cpp_srcs ${s})
+    endif()
+  endforeach()
+ 
+  set(PY_MODULE_DIR ${CMAKE_BINARY_DIR}/python)
+  set(PY_MODULE ${binding})
+  set(PY_MODULE_SWIG_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PY_MODULE}PYTHON_wrap.cxx)
+ 
+ 
+  #SWIG command
+  add_custom_command(
+	OUTPUT
+		${PY_MODULE_DIR}/${PY_MODULE}.py
+		${PY_MODULE_SWIG_SRC}
+	COMMAND
+		${SWIG_EXECUTABLE}
+		-python
+		-module ${binding}
+		-Wextra
+		-outdir ${PY_MODULE_DIR}
+		-c++
+		${SWIG_MOD_INCLUDE_DIRS}
+		-o ${PY_MODULE_SWIG_SRC}
+		${i_srcs}
+	DEPENDS 
+		${i_srcs}
+	COMMENT "Generating SWIG binding"
+  )
+ 
+  elements_add_python_module(${binding}
+                             ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
+                             LINK_LIBRARIES ${MODULE_ARG_LINK_LIBRARIES}
+                             INCLUDE_DIRS ${MODULE_ARG_INCLUDE_DIRS})
+
+   install(FILES ${PY_MODULE_DIR}/${binding}.py DESTINATION python)
+
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -2113,7 +2156,7 @@ function(elements_add_unit_test name)
 
     if(NOT ${${name}_UNIT_TEST_TYPE} STREQUAL "None")
       if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
-        find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+        find_package(Boost COMPONENTS unit_test_framework QUIET REQUIRED)
       else()
         find_package(${${name}_UNIT_TEST_TYPE} QUIET REQUIRED)
       endif()
