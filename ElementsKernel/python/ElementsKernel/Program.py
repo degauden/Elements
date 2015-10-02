@@ -5,7 +5,7 @@ import re
 import ElementsKernel.Logging as log
 
 
-class Program:
+class Program (object):
 
     def __init__(self, app_module, parent_project_version=None, parent_project_name=None):
         self._app_module = importlib.import_module(app_module)
