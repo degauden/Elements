@@ -17,7 +17,7 @@
 
 #include "ElementsKernel/Exception.h"   // for Exception
 #include "ElementsKernel/System.h"
-#include "ElementsKernel/Logging.h"
+#include "ElementsKernel/Logging.h"     // for the logger
 
 
 
