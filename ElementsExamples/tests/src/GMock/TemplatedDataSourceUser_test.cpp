@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(sumRecords_test) {
   TemplatedDataSourceUser user{};
   double result = user.sumRecords<DataSourceUserTemplatedTypeMock>(data_source_mock);
 
-  BOOST_CHECK(Elements::isEqual(result,15.));
+  BOOST_CHECK_MESSAGE(Elements::isEqual(result,15.), "Expected value :"<<15<<" Actual value :"<<result);
 }
 
 // Ends the test suite

@@ -81,7 +81,7 @@ elements_add_unit_test(AllTests tests/src/Boost/*_test.cpp
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
                        
-elements_add_unit_test(Inversion_test tests/src/Boost/Inversion_test.cpp
+elements_add_unit_test(UnitTestExample_test tests/src/Boost/UnitTestExample_test.cpp
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
                        
 
