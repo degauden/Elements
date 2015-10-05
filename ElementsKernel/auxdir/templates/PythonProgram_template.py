@@ -49,4 +49,7 @@ def mainMethod(args):
     # !!! Write you main code here !!! 
     #
     
-    logger.info('Exiting %(PROGRAMNAME)s mainMethod()')
+    logger.info('#')
+    logger.info('# Exiting %(PROGRAMNAME)s mainMethod()')
+    logger.info('#')
+   
