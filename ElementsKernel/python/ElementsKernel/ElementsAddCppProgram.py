@@ -128,7 +128,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         source = 'src' + os.sep + 'program' + os.sep + program_name+ '.cpp'
         existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name==program_name]
         existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
-        link_libs = []
+        link_libs = ['ElementsKernel']
         if module_dep_list:
              link_libs = link_libs + module_dep_list
         if existing_add_lib:
