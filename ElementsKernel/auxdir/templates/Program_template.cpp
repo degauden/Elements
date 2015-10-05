@@ -20,13 +20,27 @@ public:
 
   po::options_description defineSpecificProgramOptions() override {
     po::options_description options {};
+    //
     // !!! Implement the program options here !!!
+    //
     return options;
   }
 
   Elements::ExitCode mainMethod(std::map<std::string, po::variable_value>& args) override {
 
-    // !!! Implement here you program !!!
+    Elements::Logging logger = Elements::Logging::getLogger("%(PROGRAMNAME)s");
+
+    logger.info("#");
+    logger.info("# Entering mainMethod()");
+    logger.info("#");
+
+    //
+    // !!! Implement you program here !!!
+    //
+
+    logger.info("#");
+    logger.info("# Exiting mainMethod()");
+    logger.info("#");
 
     return Elements::ExitCode::OK;
   }
