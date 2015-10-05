@@ -1,16 +1,15 @@
-##
-# @file: ElementsKernel/ElementsProject.py
-# @author: Nicolas Morisset
-#          Astronomy Department of the University of Geneva
-#
-# @date: 01/07/15
-#
-# This script will create a new Elements project
-##
+"""
+@file: ElementsKernel/ElementsProject.py
+@author: Nicolas Morisset
+         Astronomy Department of the University of Geneva
+
+@date: 01/07/15
+
+This script will create a new Elements project
+"""
 
 import argparse
 import os
-import re
 import shutil
 import ELEMENTS_VERSION  # @UnresolvedImport
 import ElementsKernel.ElementsProjectCommonRoutines as epcr
@@ -19,7 +18,7 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('CreateElementsProject')
 
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
-AUX_CMAKE_FILE    = "Makefile"
+AUX_CMAKE_FILE = "Makefile"
 
 ################################################################################
 

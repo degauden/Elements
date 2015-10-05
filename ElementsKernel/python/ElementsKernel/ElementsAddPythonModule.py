@@ -1,12 +1,12 @@
-##
-# @file: ElementsKernel/ElementsAddPythonModule.py
-# @author: Nicolas Morisset
-#          Astronomy Department of the University of Geneva
-#
-# @date: 01/07/15
-#
-# This script creates a new Elements python module
-##
+"""
+@file: ElementsKernel/ElementsAddPythonModule.py
+@author: Nicolas Morisset
+         Astronomy Department of the University of Geneva
+
+@date: 01/07/15
+
+This script creates a new Elements python module
+"""
 
 import os
 import argparse
@@ -18,7 +18,7 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('AddPythonModule')
 
 # Define constants
-CMAKE_LISTS_FILE      = 'CMakeLists.txt'
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 ################################################################################
 
@@ -44,9 +44,9 @@ def createFiles(module_dir, module_name, python_module_name):
     if not os.path.exists(init_file):
         f = open(init_file, 'w')
         f.close()
-        
+
     python_module_file = os.path.join(module_dir, 'python', module_name, 
-                                      python_module_name+'.py')
+                                    python_module_name+'.py')
     # Create the module file 
     if not os.path.exists(python_module_file):
         f = open(python_module_file, 'w')
@@ -57,7 +57,6 @@ def createFiles(module_dir, module_name, python_module_name):
         f.write('##\n')
         f.close()
 
-       
 ################################################################################
 
 def updateCmakeListsFile(module_dir):
@@ -76,8 +75,8 @@ def updateCmakeListsFile(module_dir):
         data = f.read()
         f.close()
         cmake_object = pcl.CMakeLists(data)
-        
-        # Add elements_install_conf_files if any        
+
+        # Add elements_install_conf_files if any
         cmake_object.elements_install_python_modules = 'elements_install_python_modules()'
                                        
     # Write new data
