@@ -46,6 +46,8 @@ public:
    * If no record exists at the specified index.
    */
   virtual double getRecordValue (std::size_t index) const = 0;
+
+  virtual ~DataSourceInterface() {}
 };
 
 /**
