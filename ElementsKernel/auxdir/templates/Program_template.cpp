@@ -12,9 +12,6 @@
 
 namespace po = boost::program_options;
 
-using std::map;
-using std::string;
-
 static Elements::Logging logger = Elements::Logging::getLogger("%(PROGRAMNAME)s");
 
 class %(PROGRAMNAME)s : public Elements::Program {
@@ -27,7 +24,7 @@ public:
     return options;
   }
 
-  Elements::ExitCode mainMethod(map<string, po::variable_value>& args) override {
+  Elements::ExitCode mainMethod(std::map<std::string, po::variable_value>& args) override {
 
     // !!! Implement here you program !!!
 

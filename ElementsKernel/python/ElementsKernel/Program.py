@@ -85,9 +85,26 @@ class Program (object):
         options = sys.argv[1:]
         options.extend(self._parseConfigFile(arg_parser, cmd_options))
         all_options = arg_parser.parse_args(options)
-        return all_options
+        
+        # We create a map of the variable names to the option names to be used
+        # for further references
+        variable_to_option_name = {}
+        # Iterate through the names of the variables keeping the option values
+        for var in [v for v in dir(all_options) if not v.startswith('_')]:
+            # We get the related action from the argparser
+            action = next((a for a in arg_parser._actions if a.dest==var and a.option_strings), None)
+            if action:
+                # We chose as name the longest option name and we strip any leading '-'
+                variable_to_option_name[var] = max(action.option_strings, key=len).lstrip('-')
+            else:
+                # This happens if we didn't find an action for this variable or
+                # if it didn't have option_strings. In this case we just use the
+                # variable name
+                variable_to_option_name[var] = var
+                
+        return all_options, variable_to_option_name
 
-    def _logAllOptions(self, args):
+    def _logAllOptions(self, args, names):
         self._logger.info(
             "##########################################################")
         self._logger.info(
@@ -105,7 +122,7 @@ class Program (object):
         # for (name,value) in [opt for opt in vars(args).iteritems() if
         # opt[1]]:
         for (name, value) in [opt for opt in vars(args).iteritems()]:
-            self._logger.info(name.replace('_', '-') + ' = ' + str(value))
+            self._logger.info(names[name] + ' = ' + str(value))
         self._logger.info("#")
 
     def getVersion(self):
@@ -117,8 +134,8 @@ class Program (object):
         return version
 
     def runProgram(self):
-        args = self._parseParameters()
-        self._logAllOptions(args)
+        args, names = self._parseParameters()
+        self._logAllOptions(args, names)
         exit_code = 1
         try:
             exit_code = self._app_module.mainMethod(args)
