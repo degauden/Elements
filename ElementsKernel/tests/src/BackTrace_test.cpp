@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(Raw_test) {
   void* addresses[depth];
   std::string lib, fnc;
 
-  int a = Elements::System::backTrace(addresses, depth);
+  //int a = Elements::System::backTrace(addresses, depth);
 
   // TODO this is failing on LODEEN
   //BOOST_CHECK_EQUAL(a,17);
