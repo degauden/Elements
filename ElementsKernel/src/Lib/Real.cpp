@@ -21,7 +21,6 @@ bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps
     using std::int32_t;
 
     // int a_int = *(int*)&a;
-    // cppcheck-suppress invalidPointerCast
     int32_t a_int = *reinterpret_cast<const int32_t *>(&a);
     // Make a_int lexicographically ordered as a twos-complement int
     if (a_int < 0)
