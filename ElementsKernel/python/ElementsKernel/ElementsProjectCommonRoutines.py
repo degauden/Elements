@@ -193,7 +193,7 @@ def isFileAlreadyExist(path_filename, name):
     if os.path.exists(path_filename):
         script_goes_on = False
         logger.error('# The <%s> name already exists! ' % name)
-        logger.error('# as the file has been found there : <%s>! ' % path_filename)
+        logger.error('# File found here : <%s>! ' % path_filename)
 
     return script_goes_on
 

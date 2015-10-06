@@ -8,7 +8,7 @@
 
  Purpose:
  This module parses and updates the <CMakeLists.txt> file
- All these classes are for parsing the <CMakeLists.txt> file. Each class
+ All these classes are for parsing the macros in this file. Each class
  represents a cmake macro. The "CMakeLists" class uses all the other classes.
 """
 import re
@@ -186,6 +186,7 @@ class CMakeLists(object):
         self.elements_add_unit_test_list = []
         self.elements_add_python_executable_list = []
         
+        # here we parse the CMakeLists.txt file
         # Remove all comment lines
         for_parsing = ''
         for line in text.splitlines():
@@ -215,7 +216,7 @@ class CMakeLists(object):
         
         elements_depends_on_subdirs_list = re.findall(r"elements_depends_on_subdirs\(.*?\)", text, re.MULTILINE|re.DOTALL)
         for elements_depends_on_subdirs in elements_depends_on_subdirs_list:
-            names = elements_depends_on_subdirs.replace('\n', ' ').replace('\s+', ' ').replace('elements_depends_on_subdirs(', '')[:-1].strip()
+            names = elements_depends_on_subdirs.replace('elements_depends_on_subdirs(', '')[:-1].strip()
             self.elements_depends_on_subdirs_list.append(ElementsDependsOnSubdirs(names.split()))
         
         find_package_list = re.findall(r"find_package\(.*?\)", text, re.MULTILINE|re.DOTALL)
@@ -334,65 +335,68 @@ class CMakeLists(object):
 
 
     def __str__(self):
+        # Here we built the CMkaeLists.txt file
         result = self.text
-        
+        closing_parenthesis = r"(?=[\s\)]).*?\)"
+        leading_spaces = r"(?<=\n)\s*"
+        open_parenthesis = r"\(\s*"
         for find_package in self.find_package_list:
-            if not re.search(r"(?<=\n)\s*find_package\(\s*"+ find_package.package + \
-                            r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(leading_spaces + "find_package" + open_parenthesis+ find_package.package + \
+                            closing_parenthesis, result, re.MULTILINE|re.DOTALL):
                 result = CMakeLists._addAfter(result, 'find_package', str(find_package))
 
         for elements_subdir in self.elements_subdir_list:
-            if not re.search(r"(?<=\n)\s*elements_subdir\(\s*" + elements_subdir.name+ \
-                            r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(leading_spaces + "elements_subdir" + open_parenthesis  + elements_subdir.name+ \
+                            closing_parenthesis, result, re.MULTILINE|re.DOTALL):
                 result = CMakeLists._addAfter(result, 'elements_subdir', str(elements_subdir))
                 
         for elements_depends_on_subdirs in self.elements_depends_on_subdirs_list:
-            if not re.search(r"(?<=\n)\s*elements_depends_on_subdirs\(\s*"+ \
-                            elements_depends_on_subdirs.subdir_list[0]+ r"(?=[\s\)]).*?\)",\
+            if not re.search(leading_spaces + "elements_depends_on_subdirs" + open_parenthesis+ \
+                            elements_depends_on_subdirs.subdir_list[0]+ closing_parenthesis,\
                             result, re.MULTILINE|re.DOTALL):
                 result = CMakeLists._addAfter(result, 'elements_depends_on_subdirs', str(elements_depends_on_subdirs))
 
         for library in self.elements_add_library_list:
-            if not re.search(r"(?<=\n)\s*elements_add_library\(\s*" + library.name + \
-                             r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(leading_spaces + "elements_add_library" + open_parenthesis + library.name + \
+                             closing_parenthesis, result, re.MULTILINE|re.DOTALL):
                 result = CMakeLists._addAfter(result, 'elements_add_library', str(library))
             else:
-                result = re.sub(r"(?<=\n)\s*elements_add_library\(\s*"+ library.name +\
-                                r"(?=[\s\)]).*?\)", str(library), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(leading_spaces + "elements_add_library" + open_parenthesis+ library.name +\
+                                closing_parenthesis, str(library), result, flags=re.MULTILINE|re.DOTALL)
 
         for exe in self.elements_add_executable_list:
-            if not re.search(r"(?<=\n)\s*elements_add_executable\(\s*" + exe.name + r"(?=[\s\)]).*?\)",\
+            if not re.search(leading_spaces + "elements_add_executable" + open_parenthesis + exe.name + closing_parenthesis,\
                             result, re.MULTILINE|re.DOTALL):
                 result = CMakeLists._addAfter(result, 'elements_add_executable', str(exe))
             else:
-                result = re.sub(r"(?<=\n)\s*elements_add_executable\(\s*"+ exe.name +\
-                                r"(?=[\s\)]).*?\)", str(exe), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(leading_spaces + "elements_add_executable" + open_parenthesis+ exe.name +\
+                                closing_parenthesis, str(exe), result, flags=re.MULTILINE|re.DOTALL)
 
         for unit_test in self.elements_add_unit_test_list:
-            if not re.search(r"(?<=\n)\s*elements_add_unit_test\(\s*" + unit_test.class_name +\
-                            r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(leading_spaces + "elements_add_unit_test" + open_parenthesis + unit_test.class_name +\
+                            closing_parenthesis, result, re.MULTILINE|re.DOTALL):
                 result = CMakeLists._addAfter(result, 'elements_add_unit_test', str(unit_test))
             else:
-                result = re.sub(r"(?<=\n)\s*elements_add_unit_test\(\s*"+ unit_test.class_name +\
-                                r"(?=[\s\)]).*?\)", str(unit_test), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(leading_spaces + "elements_add_unit_test" + open_parenthesis+ unit_test.class_name +\
+                                closing_parenthesis, str(unit_test), result, flags=re.MULTILINE|re.DOTALL)
 
         for pyexe in self.elements_add_python_executable_list:
-            if not re.search(r"(?<=\n)\s*elements_add_python_program\(\s*" + pyexe.name +\
-                            r"(?=[\s\)]).*?\)", result, re.MULTILINE|re.DOTALL):
+            if not re.search(leading_spaces + "elements_add_python_program" + open_parenthesis + pyexe.name +\
+                            closing_parenthesis, result, re.MULTILINE|re.DOTALL):
                 result = CMakeLists._addAfter(result, 'elements_add_python_program', str(pyexe))
             else:
-                result = re.sub(r"(?<=\n)\s*elements_add_python_program\(\s*"+ pyexe.name +\
-                                r"(?=[\s\)]).*?\)", str(pyexe), result, flags=re.MULTILINE|re.DOTALL)
+                result = re.sub(leading_spaces + "elements_add_python_program" + open_parenthesis+ pyexe.name +\
+                                closing_parenthesis, str(pyexe), result, flags=re.MULTILINE|re.DOTALL)
  
-        if not re.search(r"(?<=\n)\s*elements_install_python_modules\(.*?\)", result, \
+        if not re.search(leading_spaces + "elements_install_python_modules\(.*?\)", result, \
                         re.MULTILINE|re.DOTALL) and self.elements_install_python_modules:
                 result = CMakeLists._addAfter(result, 'elements_install_python_modules', self.elements_install_python_modules)
 
-        if not re.search(r"(?<=\n)\s*elements_install_scripts\(.*?\)", result, re.MULTILINE|re.DOTALL) and \
+        if not re.search(leading_spaces + "elements_install_scripts\(.*?\)", result, re.MULTILINE|re.DOTALL) and \
         self.elements_install_scripts:
                 result = CMakeLists._addAfter(result, 'elements_install_scripts', self.elements_install_scripts)
 
-        if not re.search(r"(?<=\n)\s*elements_install_conf_files\(.*?\)", result, re.MULTILINE|re.DOTALL) and \
+        if not re.search(leading_spaces + "elements_install_conf_files\(.*?\)", result, re.MULTILINE|re.DOTALL) and \
         self.elements_install_conf_files:
                 result = CMakeLists._addAfter(result, 'elements_install_conf_files', self.elements_install_conf_files)
 

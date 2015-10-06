@@ -50,11 +50,11 @@ def createFiles(module_dir, module_name, python_module_name):
     # Create the module file 
     if not os.path.exists(python_module_file):
         f = open(python_module_file, 'w')
-        f.write('##\n')
-        f.write('# @file '+ os.path.join('python', module_name, python_module_name + '.py')+'\n')
-        f.write('# @date '+ time.strftime("%x") +'\n')
-        f.write('# @author '+epcr.getAuthor() +'\n')
-        f.write('##\n')
+        f.write('"""\n')
+        f.write('@file '+ os.path.join('python', module_name, python_module_name + '.py')+'\n')
+        f.write('@date '+ time.strftime("%x") +'\n')
+        f.write('@author '+epcr.getAuthor() +'\n')
+        f.write('"""\n')
         f.close()
 
 ################################################################################
