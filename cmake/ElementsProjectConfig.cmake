@@ -1987,7 +1987,7 @@ function(elements_add_python_module module)
   add_library(${module} MODULE ${srcs})
   set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "_")
   target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
-  _elements_detach_debinfo(${module})
+#  _elements_detach_debinfo(${module})
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${module} LIBRARY DESTINATION python/lib-dynload OPTIONAL)
