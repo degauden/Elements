@@ -131,8 +131,8 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
 
 def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     """
-     Substitute variables in the Unit Test template file and rename it
-   """
+    Substitute variables in the Unit Test template file and rename it
+    """
     template_file = os.path.join(file_path, UNITTEST_TEMPLATE_FILE)
 
     # Substitute strings in template_file
