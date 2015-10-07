@@ -20,6 +20,7 @@ logger = log.getLogger('AddPythonModule')
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 PYTEST_TEMPLATE_FILE = 'PythonTest_template.py'
+PYTEST_TEMPLATE_FILE_IN = 'PythonTest_template.py.in'
 
 ################################################################################
 
@@ -92,6 +93,7 @@ def substituteStringsInPyTestFile(pytest_path, module_name, python_module_name):
     Substitute variables in the python test template file and rename it
     """
     template_file = os.path.join(pytest_path, PYTEST_TEMPLATE_FILE)
+    os.rename(os.path.join(pytest_path, PYTEST_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in template_file
     f = open(template_file, 'r')
@@ -124,7 +126,7 @@ def createPythonModule(current_dir, module_name, python_module_name):
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, python_module_name)
     pytest_path = os.path.join(current_dir, 'tests', 'python')
-    script_goes_on = epcr.copyAuxFile(pytest_path, PYTEST_TEMPLATE_FILE)
+    script_goes_on = epcr.copyAuxFile(pytest_path, PYTEST_TEMPLATE_FILE_IN)
     if script_goes_on:
         substituteStringsInPyTestFile(pytest_path, module_name, python_module_name)
         updateCmakeListsFile(current_dir)
@@ -177,6 +179,10 @@ def mainMethod(args):
         if script_goes_on:
             script_goes_on = epcr.isFileAlreadyExist(module_file_path, python_module_name) 
                   
+        # Check aux file exist
+        if script_goes_on:
+            script_goes_on = epcr.isAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
+
         if script_goes_on:
             if os.path.exists(current_dir):
                 if createPythonModule(current_dir, module_name, python_module_name):
