@@ -18,11 +18,14 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('AddCppClass')
 
 # Define constants
-CMAKE_LISTS_FILE       = 'CMakeLists.txt'
-H_TEMPLATE_FILE        = 'ClassName_template.h'
-CPP_TEMPLATE_FILE      = 'ClassName_template.cpp'
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
+H_TEMPLATE_FILE = 'ClassName_template.h'
+CPP_TEMPLATE_FILE = 'ClassName_template.cpp'
 UNITTEST_TEMPLATE_FILE = 'UnitTestFile_template.cpp'
 
+H_TEMPLATE_FILE_IN = 'ClassName_template.h.in'
+CPP_TEMPLATE_FILE_IN = 'ClassName_template.cpp.in'
+UNITTEST_TEMPLATE_FILE_IN = 'UnitTestFile_template.cpp.in'
 
 ################################################################################
     
@@ -64,6 +67,8 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     Substitute variables in the Header template file and rename it
     """
     template_file = os.path.join(file_path, H_TEMPLATE_FILE)
+    os.rename(os.path.join(file_path, H_TEMPLATE_FILE_IN), template_file)
+    
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -99,6 +104,7 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     Substitute variables in the CPP template file and rename it
     """
     template_file = os.path.join(file_path, CPP_TEMPLATE_FILE)
+    os.rename(os.path.join(file_path, CPP_TEMPLATE_FILE_IN), template_file)
     
     # Substitute strings in template_file
     f = open(template_file, 'r')
@@ -134,6 +140,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     Substitute variables in the Unit Test template file and rename it
     """
     template_file = os.path.join(file_path, UNITTEST_TEMPLATE_FILE)
+    os.rename(os.path.join(file_path, UNITTEST_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in template_file
     f = open(template_file, 'r')
@@ -267,13 +274,13 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
 
         createDirectories(module_dir, module_name, subdir)                           
         class_h_path = os.path.join(module_dir, module_name, subdir)
-        script_goes_on = epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
+        script_goes_on = epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE_IN)    
         class_cpp_path = os.path.join(module_dir,'src','lib', subdir)
         if script_goes_on:
-            script_goes_on = epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE)
+            script_goes_on = epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE_IN)
         unittest_path = os.path.join(module_dir,'tests','src', subdir)
         if script_goes_on:
-            script_goes_on = epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE)
+            script_goes_on = epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE_IN)
         if script_goes_on:    
             updateCmakeListsFile(module_dir, module_name, subdir, class_name,
                                  elements_dep_list, library_dep_list) 
@@ -334,9 +341,9 @@ def mainMethod(args):
 
         # Check aux files exist
         if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(H_TEMPLATE_FILE)
+            script_goes_on = epcr.isAuxFileExist(H_TEMPLATE_FILE_IN)
         if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(CPP_TEMPLATE_FILE)
+            script_goes_on = epcr.isAuxFileExist(CPP_TEMPLATE_FILE_IN)
 
         # Create CPP class    
         if script_goes_on and createCppClass(module_dir, module_name, subdir,

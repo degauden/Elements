@@ -18,7 +18,7 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('CreateElementsProject')
 
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
-AUX_CMAKE_FILE = "Makefile"
+AUX_CMAKE_FILE_IN = "Makefile.in"
 
 ################################################################################
 
@@ -132,6 +132,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     f = open(cmake_list_file, 'w')
     f.write(new_data)
     f.close()
+    # Remove '.in'
     os.rename(cmake_list_file, cmake_list_file.replace('.in', ''))
 
 ################################################################################
@@ -146,7 +147,10 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
     os.makedirs(project_dir)
 
     epcr.copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
-    epcr.copyAuxFile(project_dir, AUX_CMAKE_FILE)
+    epcr.copyAuxFile(project_dir, AUX_CMAKE_FILE_IN)
+    # Remove '.in'
+    cmakefile = os.path.join(project_dir, AUX_CMAKE_FILE_IN)
+    os.rename(cmakefile, cmakefile.replace('.in', ''))
 
     substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects)
 
@@ -202,7 +206,7 @@ def mainMethod(args):
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_LIST_IN)
         if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE)
+            script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE_IN)
 
         # Set the project directory
         project_dir = os.path.join(destination_path, proj_name, proj_version)
