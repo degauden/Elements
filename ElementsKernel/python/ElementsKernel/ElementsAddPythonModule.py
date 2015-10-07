@@ -19,6 +19,7 @@ logger = log.getLogger('AddPythonModule')
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
+PYTEST_TEMPLATE_FILE = 'PythonTest_template.py'
 
 ################################################################################
 
@@ -86,6 +87,34 @@ def updateCmakeListsFile(module_dir):
 
 ################################################################################
 
+def substituteStringsInPyTestFile(pytest_path, module_name, python_module_name):
+    """
+    Substitute variables in the python test template file and rename it
+    """
+    template_file = os.path.join(pytest_path, PYTEST_TEMPLATE_FILE)
+
+    # Substitute strings in template_file
+    f = open(template_file, 'r')
+    data = f.read()
+    author_str = epcr.getAuthor()
+    date_str   = time.strftime("%x")
+    file_name_str = os.path.join('tests','python', python_module_name+'_test.py')
+    new_data = data % {"FILE": file_name_str,
+                       "DATE": date_str,
+                       "AUTHOR": author_str,
+                       "MODULENAME": module_name,
+                       "PYTHONMODULE": python_module_name}
+
+    f.close()
+    # Save new data
+    file_name = template_file.replace(PYTEST_TEMPLATE_FILE, python_module_name+'_test.py')
+    f = open(file_name, 'w')
+    f.write(new_data)
+    f.close()
+    os.remove(template_file)
+
+################################################################################
+
 def createPythonModule(current_dir, module_name, python_module_name):
     """
     Create the python module
@@ -94,8 +123,11 @@ def createPythonModule(current_dir, module_name, python_module_name):
     script_goes_on  = True
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, python_module_name)
-    module_path = os.path.join(current_dir, 'python', python_module_name)
-    updateCmakeListsFile(current_dir)
+    pytest_path = os.path.join(current_dir, 'tests', 'python')
+    script_goes_on = epcr.copyAuxFile(pytest_path, PYTEST_TEMPLATE_FILE)
+    if script_goes_on:
+        substituteStringsInPyTestFile(pytest_path, module_name, python_module_name)
+        updateCmakeListsFile(current_dir)
     
     return script_goes_on
 
