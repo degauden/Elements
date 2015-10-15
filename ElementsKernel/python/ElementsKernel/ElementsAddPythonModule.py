@@ -45,6 +45,8 @@ def createFiles(module_dir, module_name, python_module_name):
     init_file = os.path.join(module_dir, 'python', module_name, '__init__.py')
     if not os.path.exists(init_file):
         f = open(init_file, 'w')
+        f.write("from pkgutil import extend_path\n")
+        f.write("__path__ = extend_path(__path__, __name__)\n")
         f.close()
 
     python_module_file = os.path.join(module_dir, 'python', module_name, 
