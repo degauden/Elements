@@ -1,12 +1,12 @@
-##
-# @file: ElementsKernel/ElementsAddModule.py
-# @author: Nicolas Morisset
-#          Astronomy Department of the University of Geneva
-#
-# @date: 01/07/15
-#
-# This script creates a new Elements module
-##
+"""
+@file: ElementsKernel/ElementsAddModule.py
+@author: Nicolas Morisset
+         Astronomy Department of the University of Geneva
+
+@date: 01/07/15
+
+This script creates a new Elements module
+"""
 
 import argparse
 import os
@@ -17,7 +17,7 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('AddElementsModule')
 
 # Define constants
-CMAKE_LISTS_FILE    = 'CMakeLists.txt'
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
 CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 
 ################################################################################
@@ -68,25 +68,25 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
     """
     logger.info('# Create the <%s> File' % CMAKE_LISTS_FILE)
     cmake_list_file_final = os.path.join(module_dir, CMAKE_LISTS_FILE)
-    
+
     # Copy aux file to destination
     epcr.copyAuxFile(module_dir, CMAKE_LISTS_FILE_IN)
     # Rename it
     file_template = os.path.join(module_dir, CMAKE_LISTS_FILE)
     os.rename(os.path.join(module_dir, CMAKE_LISTS_FILE_IN),
               file_template)
-    
+
     # Read the template file
     fo = open(file_template, 'r')
     template_data = fo.read()
     fo.close()
-    
+
     cmake_object = pcl.CMakeLists(template_data)
 
     # Add elements_subdir macro
     subdir_obj = pcl.ElementsSubdir(module_name)
     cmake_object.elements_subdir_list.append(subdir_obj)
-    
+
     # Set <ElementsKernel> as a default
     default_dependency = 'ElementsKernel'
     if module_dep_list:
@@ -100,7 +100,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
         for mod_dep in module_dep_list:
             dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
             cmake_object.elements_depends_on_subdirs_list.append(dep_object)
-                        
+
     # Write new data
     f = open(cmake_list_file_final, 'w')
     f.write(str(cmake_object))
@@ -164,8 +164,8 @@ def mainMethod(args):
     logger.info('#')
 
     try:
-        script_goes_on  = True
-        module_name     = args.module_name
+        script_goes_on = True
+        module_name = args.module_name
         dependency_list = args.module_dependency
 
         # Default is the current directory
@@ -179,15 +179,13 @@ def mainMethod(args):
         # Module as no version number, '1.0' is just for using the routine
         if script_goes_on:
             script_goes_on = epcr.isNameAndVersionValid(module_name, '1.0')
-                
-        if script_goes_on:
-            if createModule(project_dir, module_name, dependency_list):
-                logger.info('# <%s> module successfully created in <%s>.' % 
-                            (module_name, project_dir))
-                logger.info('# Script over.')
-                
-        if not script_goes_on:
-            logger.error('# Script aborted')
+
+        if script_goes_on and createModule(project_dir, module_name, dependency_list):
+            logger.info('# <%s> module successfully created in <%s>.' % 
+                        (module_name, project_dir))
+            logger.info('# Script over.')
+        else:
+            logger.warning('# Script aborted')
 
     except Exception as e:
         logger.exception(e)
