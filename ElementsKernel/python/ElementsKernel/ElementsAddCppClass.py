@@ -1,17 +1,15 @@
-##
-# @file: ElementsKernel/ElementsAddCppClass.py
-# @author: Nicolas Morisset
-#          Astronomy Department of the University of Geneva
-#
-# @date: 01/07/15
-#
-# This script creates a new Elements C++ Class
-##
+"""
+@file: ElementsKernel/ElementsAddCppClass.py
+@author: Nicolas Morisset
+         Astronomy Department of the University of Geneva
+
+@date: 01/07/15
+
+This script creates a new Elements C++ Class
+"""
 
 import argparse
 import os
-import re
-import shutil
 import time
 import ElementsKernel.ElementsProjectCommonRoutines as epcr
 import ElementsKernel.parseCmakeLists as pcl
@@ -20,11 +18,14 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('AddCppClass')
 
 # Define constants
-CMAKE_LISTS_FILE       = 'CMakeLists.txt'
-H_TEMPLATE_FILE        = 'ClassName_template.h'
-CPP_TEMPLATE_FILE      = 'ClassName_template.cpp'
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
+H_TEMPLATE_FILE = 'ClassName_template.h'
+CPP_TEMPLATE_FILE = 'ClassName_template.cpp'
 UNITTEST_TEMPLATE_FILE = 'UnitTestFile_template.cpp'
 
+H_TEMPLATE_FILE_IN = 'ClassName_template.h.in'
+CPP_TEMPLATE_FILE_IN = 'ClassName_template.cpp.in'
+UNITTEST_TEMPLATE_FILE_IN = 'UnitTestFile_template.cpp.in'
 
 ################################################################################
     
@@ -41,7 +42,6 @@ def getClassName(str_subdir_class):
     if subdir:
         logger.info('# Sub directory: %s' % subdir)
     return subdir, className
-
 
 ################################################################################
 
@@ -67,6 +67,8 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     Substitute variables in the Header template file and rename it
     """
     template_file = os.path.join(file_path, H_TEMPLATE_FILE)
+    os.rename(os.path.join(file_path, H_TEMPLATE_FILE_IN), template_file)
+    
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -102,6 +104,7 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     Substitute variables in the CPP template file and rename it
     """
     template_file = os.path.join(file_path, CPP_TEMPLATE_FILE)
+    os.rename(os.path.join(file_path, CPP_TEMPLATE_FILE_IN), template_file)
     
     # Substitute strings in template_file
     f = open(template_file, 'r')
@@ -111,7 +114,7 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     # This avoid double slashes
     ossep2 = os.sep
     if not subdir:
-        ossep2 = '' 
+        ossep2 = ''
     file_name_str = os.path.join('src', 'lib', subdir, class_name + '.cpp')
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
@@ -134,10 +137,11 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
 
 def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     """
-     Substitute variables in the Unit Test template file and rename it
-   """
+    Substitute variables in the Unit Test template file and rename it
+    """
     template_file = os.path.join(file_path, UNITTEST_TEMPLATE_FILE)
-    
+    os.rename(os.path.join(file_path, UNITTEST_TEMPLATE_FILE_IN), template_file)
+
     # Substitute strings in template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -162,17 +166,17 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
 
 ################################################################################
 
-def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
+def updateCmakeListsFile(module_dir, module_name, subdir, class_name,
                          elements_dep_list, library_dep_list):
     """
     Update the <CMakeLists.txt> file for a class
     """
     logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
-    
+
     # Backup the file
     epcr.makeACopy(cmake_filename)
-    
+
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
         f = open(cmake_filename, 'r')
@@ -207,9 +211,9 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
             existing = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
             link_libs = []
             if elements_dep_list:
-                 link_libs = link_libs + elements_dep_list
+                link_libs = link_libs + elements_dep_list
             if library_dep_list:
-                 link_libs = link_libs + library_dep_list
+                link_libs = link_libs + library_dep_list
             if existing:
                 if not source in existing[0].source_list:
                     existing[0].source_list.append(source)
@@ -224,14 +228,14 @@ def UpdateCmakeListsFile(module_dir, module_name, subdir, class_name,
                                                     link_libs, include_dirs_list,
                                                     public_headers_list)
                 cmake_object.elements_add_library_list.append(lib_object)
-            
+
             # Add unit test
             source_name = 'tests' + os.sep + 'src' + os.sep + subdir + \
             class_name + '_test.cpp'
-            unittest_object = pcl.ElementsAddUnitTest(class_name+'_test', 
+            unittest_object = pcl.ElementsAddUnitTest(class_name+'_test',
                                     [source_name], [module_name], [], 'Boost')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
-                   
+
     # Write new data
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
@@ -253,39 +257,38 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
         logger.error('# The header file already exists: <%s>! ' % file_name_path)
 
     return script_goes_on
-    
 
 ################################################################################
-      
+
 def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
                     library_dep_list):
     """
     Create all necessary files for a cpp class
-    """    
+    """
     script_goes_on = True 
-    
+
     # Check the class does not exist already
     script_goes_on = isClassFileAlreadyExist(class_name, module_dir, module_name, 
                                           subdir)
     if script_goes_on:
-        
+
         createDirectories(module_dir, module_name, subdir)                           
         class_h_path = os.path.join(module_dir, module_name, subdir)
-        script_goes_on = epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE)    
+        script_goes_on = epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE_IN)    
         class_cpp_path = os.path.join(module_dir,'src','lib', subdir)
         if script_goes_on:
-            script_goes_on = epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE)
+            script_goes_on = epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE_IN)
         unittest_path = os.path.join(module_dir,'tests','src', subdir)
         if script_goes_on:
-            script_goes_on = epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE)
+            script_goes_on = epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE_IN)
         if script_goes_on:    
-            UpdateCmakeListsFile(module_dir, module_name, subdir, class_name, 
-                                elements_dep_list, library_dep_list) 
-             
+            updateCmakeListsFile(module_dir, module_name, subdir, class_name,
+                                 elements_dep_list, library_dep_list) 
+
             substituteStringsInDotH(class_h_path, class_name, module_name, subdir)  
             substituteStringsInDotCpp(class_cpp_path, class_name, module_name, subdir)  
             substituteStringsInUnitTestFile(unittest_path, class_name, module_name, subdir)
-          
+
     return script_goes_on
 
 ################################################################################
@@ -323,7 +326,7 @@ def mainMethod(args):
     try:
         # True: no error occured
         script_goes_on       = True 
-        
+
         elements_dep_list   = args.elements_dependency
         library_dep_list    = args.external_dependency
         (subdir,class_name) = getClassName(args.class_name)
@@ -335,27 +338,24 @@ def mainMethod(args):
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
-        
+
         # Check aux files exist
         if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(H_TEMPLATE_FILE)
+            script_goes_on = epcr.isAuxFileExist(H_TEMPLATE_FILE_IN)
         if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(CPP_TEMPLATE_FILE)
-        
+            script_goes_on = epcr.isAuxFileExist(CPP_TEMPLATE_FILE_IN)
+
         # Create CPP class    
-        if script_goes_on:
-            script_goes_on = createCppClass(module_dir, module_name, subdir,
-                                class_name, elements_dep_list, library_dep_list)
-            if script_goes_on:
-                logger.info('# <%s> class successfully created in <%s>.' % 
-                            (class_name, module_dir + os.sep + subdir))
-                # Remove backup file
-                epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE)+'~')
-                logger.info('# Script over.')
-                
-        if not script_goes_on:
+        if script_goes_on and createCppClass(module_dir, module_name, subdir,
+                            class_name, elements_dep_list, library_dep_list):
+            logger.info('# <%s> class successfully created in <%s>.' % 
+                        (class_name, module_dir + os.sep + subdir))
+            # Remove backup file
+            epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE)+'~')
+            logger.info('# Script over.')
+        else:
             logger.error('# Script aborted!')
-       
+
     except Exception as e:
         logger.exception(e)
         logger.info('# Script stopped...')

@@ -1,12 +1,12 @@
-##
-# @file: ElementsKernel/ElementsAddCppProgram.py
-# @author: Nicolas Morisset
-#          Astronomy Department of the University of Geneva
-#
-# @date: 01/07/15
-#
-# This script creates a new Elements C++ Program
-##
+"""
+@file: ElementsKernel/ElementsAddCppProgram.py
+@author: Nicolas Morisset
+         Astronomy Department of the University of Geneva
+
+@date: 01/07/15
+
+This script creates a new Elements C++ Program
+"""
 
 import argparse
 import os
@@ -20,8 +20,9 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('AddCppProgram')
 
 # Define constants
-CMAKE_LISTS_FILE      = 'CMakeLists.txt'
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
 PROGRAM_TEMPLATE_FILE = 'Program_template.cpp'
+PROGRAM_TEMPLATE_FILE_IN = 'Program_template.cpp.in'
 
 def createDirectories(module_dir, module_name):
     """
@@ -66,6 +67,8 @@ def substituteStringsInProgramFile(file_path, program_name, module_name):
     Substitute variables in template file and rename the file
     """
     template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
+    os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
+    
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -160,7 +163,7 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
     script_goes_on = True 
     createDirectories(module_dir, module_name)
     program_path = os.path.join(module_dir,'src','program')
-    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE)    
+    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)    
     substituteStringsInProgramFile(program_path, program_name, module_name)
     addConfFile(module_dir, module_name, program_name) 
     updateCmakeListsFile(module_dir, module_name, program_name,
@@ -214,27 +217,21 @@ def mainMethod(args):
         if script_goes_on:
             script_goes_on = epcr.isFileAlreadyExist(program_file_path, 
                                                             program_name)
-                 
-         # Check aux files exist
+        # Check program name is valid        
         if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE)
-       
-        # Check aux files exist
+            script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
+
+         # Check aux file exist
         if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE)
-            
-        if script_goes_on:
-            # Create CPP program    
-            script_goes_on = createCppProgram(current_dir, module_name, program_name,
-                                        module_list, library_list)
-            if script_goes_on:
-                logger.info('# <%s> program successfully created in <%s>.' % 
-                            (program_name, current_dir + os.sep + 'src'+ os.sep + 'program'))
-                # Remove backup file
-                epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE)+'~')
-                logger.info('# Script over.')
-                
-        if not script_goes_on:
+            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+                   
+        if script_goes_on and createCppProgram(current_dir, module_name, program_name, module_list, library_list):
+            logger.info('# <%s> program successfully created in <%s>.' % 
+                        (program_name, current_dir + os.sep + 'src'+ os.sep + 'program'))
+            # Remove backup file
+            epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE)+'~')
+            logger.info('# Script over.')
+        else:
             logger.error('# Script aborted!')
 
     except Exception as e:

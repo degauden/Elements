@@ -1,13 +1,13 @@
-##
-# @file: ElementsKernel/ElementsProjectCommonRoutines.py
-# @author: Nicolas Morisset
-#          Astronomy Department of the University of Geneva
-#
-# @date: 01/07/15
-#
-# This module offers some common routines used by scripts for creating C++ 
-# projects, modules, classes etc..
-##
+"""
+@file: ElementsKernel/ElementsProjectCommonRoutines.py
+@author: Nicolas Morisset
+         Astronomy Department of the University of Geneva
+
+@date: 01/07/15
+
+This module offers some common routines used by scripts for creating C++
+projects, modules, classes etc..
+"""
 
 import os
 import re
@@ -16,7 +16,7 @@ import ElementsKernel.Logging as log
 
 logger = log.getLogger('ElementsProjectCommonRoutines')
 
-CMAKE_LISTS_FILE    = 'CMakeLists.txt'
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 ################################################################################
 
@@ -39,7 +39,6 @@ def deleteFile(path_filename):
     """
     if os.path.exists(path_filename):
         os.remove(path_filename)
-        
 
 ################################################################################
 
@@ -54,7 +53,7 @@ def makeACopy(cmakefile):
     else:
         logger.warning('# File not found: <%s> Can not make a copy of this file!'
                         % cmakefile)
-        
+
 ################################################################################
 
 def isNameAndVersionValid(name, version):
@@ -62,13 +61,13 @@ def isNameAndVersionValid(name, version):
     Check that the <name> and <version> respect a regex
     """
     valid = True
-    name_regex = '^[A-Za-z0-9][A-Za-z0-9_-]*$'
+    name_regex = "^[A-Za-z0-9][A-Za-z0-9_-]*$"
     if re.match(name_regex, name) is None:
         logger.error("# < %s %s > name not valid. It must follow this regex : < %s >"
                      % (name, version, name_regex))
         valid = False
 
-    version_regex = '^\d+\.\d+(\.\d+)?$'
+    version_regex = "^\\d+\\.\\d+(\\.\\d+)?$"
     if re.match(version_regex, version) is None:
         logger.error("# < %s %s > ,Version number not valid. It must follow this regex: < %s >"
                      % (name, version, version_regex))
@@ -84,7 +83,7 @@ def eraseDirectory(directory):
     """
     shutil.rmtree(directory)
     logger.info('# <%s> directory erased!' % directory)
-    
+
 ################################################################################
 
 def getAuxPathFile(file_name):
@@ -172,16 +171,16 @@ def isElementsModuleExist(module_directory):
         f = open(cmake_file, 'r')
         for line in f.readlines():
             if 'elements_subdir' in line:
-                posStart = line.find('(')        
-                posEnd = line.find(')')        
-                module_name = line[posStart+1:posEnd]
+                pos_start = line.find('(')        
+                pos_end = line.find(')')        
+                module_name = line[pos_start+1:pos_end]
         f.close()
                 
         if not module_name:
             logger.error('# Module name not found in the <%s> file!' % cmake_file)
             logger.error('# Maybe you are not in a module directory...')
             found_keyword = False
-    
+
     return found_keyword, module_name
 
 ################################################################################
@@ -194,7 +193,7 @@ def isFileAlreadyExist(path_filename, name):
     if os.path.exists(path_filename):
         script_goes_on = False
         logger.error('# The <%s> name already exists! ' % name)
-        logger.error('# as the file has been found there : <%s>! ' % path_filename)
+        logger.error('# File found here : <%s>! ' % path_filename)
 
     return script_goes_on
 

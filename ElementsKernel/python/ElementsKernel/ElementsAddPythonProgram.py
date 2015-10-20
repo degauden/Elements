@@ -1,12 +1,12 @@
-##
-# @file: ElementsKernel/ElementsAddPythonProgram.py
-# @author: Nicolas Morisset
-#          Astronomy Department of the University of Geneva
-#
-# @date: 01/07/15
-#
-# This script creates a new Elements python program
-##
+"""
+@file: ElementsKernel/ElementsAddPythonProgram.py
+@author: Nicolas Morisset
+         Astronomy Department of the University of Geneva
+
+@date: 01/07/15
+
+This script creates a new Elements python program
+"""
 
 import argparse
 import os
@@ -18,8 +18,9 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('AddPythonProgram')
 
 # Define constants
-CMAKE_LISTS_FILE      = 'CMakeLists.txt'
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
 PROGRAM_TEMPLATE_FILE = 'PythonProgram_template.py'
+PROGRAM_TEMPLATE_FILE_IN = 'PythonProgram_template.py.in'
 
 ################################################################################
 
@@ -33,7 +34,7 @@ def createDirectories(module_dir, module_name):
     # Create the conf directory
     conf_dir = os.path.join(module_dir, 'conf', module_name)
     epcr.makeDirectory(conf_dir)
-    
+
     # Create the scripts directory
     scripts_path = os.path.join(module_dir, 'scripts')
     epcr.makeDirectory(scripts_path)
@@ -58,17 +59,19 @@ def createFiles(module_dir, module_name, program_name):
 
 ################################################################################
 
-def substituteStringsInPythonProgramFile(file_path, program_name, module_name):
+def subStringsInPythonProgramFile(file_path, program_name, module_name):
     """
     Substitute variables in the python template file and rename it
     """
     template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
+    os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
+    
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
-    date_str   = time.strftime("%x")
+    date_str = time.strftime("%x")
     author_str = epcr.getAuthor()
     # Make some substitutions
     file_name_str = os.path.join('python', module_name, program_name + '.py')
@@ -78,7 +81,7 @@ def substituteStringsInPythonProgramFile(file_path, program_name, module_name):
                        "PROGRAMNAME": program_name}
 
     f.close()
-    
+
     # Save new data
     file_name = template_file.replace(PROGRAM_TEMPLATE_FILE, program_name)
     file_name += '.py'
@@ -86,7 +89,7 @@ def substituteStringsInPythonProgramFile(file_path, program_name, module_name):
     f.write(new_data)
     f.close()
     os.remove(template_file)
-        
+
 ################################################################################
 
 def updateCmakeListsFile(module_dir, program_name):
@@ -114,7 +117,7 @@ def updateCmakeListsFile(module_dir, program_name):
         
         program_object = pcl.ElementsAddPythonExecutable(program_name, module_name)
         cmake_object.elements_add_python_executable_list.append(program_object)              
-                               
+
     # Write new data
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
@@ -131,12 +134,12 @@ def createPythonProgram(current_dir, module_name, program_name):
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, program_name)
     program_path = os.path.join(current_dir, 'python', module_name)
-    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE) 
+    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN) 
     if script_goes_on:
-        substituteStringsInPythonProgramFile(program_path, program_name,
+        subStringsInPythonProgramFile(program_path, program_name,
                                             module_name)
         updateCmakeListsFile(current_dir, program_name)
-    
+
     return script_goes_on
 
 ################################################################################
@@ -163,8 +166,8 @@ def mainMethod(args):
     logger.info('#')
 
     try:
-        script_goes_on  = True
-        program_name    = args.program_name
+        script_goes_on = True
+        program_name = args.program_name
 
         # Default is the current directory
         current_dir = os.getcwd()
@@ -178,12 +181,16 @@ def mainMethod(args):
         if script_goes_on:
             script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
         
+        # Check aux file exist
+        if script_goes_on:
+            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+
         program_file_path = os.path.join(current_dir, 'python', module_name, program_name+'.py')
         
         # Make sure the program does not already exist
         if script_goes_on:
             script_goes_on = epcr.isFileAlreadyExist(program_file_path, program_name) 
-                  
+
         if script_goes_on:
             if os.path.exists(current_dir):
                 if createPythonProgram(current_dir, module_name, program_name):
@@ -195,7 +202,7 @@ def mainMethod(args):
             else:
                 logger.error('# <%s> project directory does not exist!' 
                              % current_dir)
-        
+
         if not script_goes_on:
             logger.error('# Script aborted!')
 
