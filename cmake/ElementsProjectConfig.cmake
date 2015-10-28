@@ -577,7 +577,8 @@ macro(elements_project project version)
       PREPEND PATH ${CMAKE_BINARY_DIR}/scripts
       PREPEND LD_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-      PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python)
+      PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python
+      PREPEND ELEMENTS_AUX_PATH ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
 
   # - produce environment XML description
   #   release version
@@ -2504,7 +2505,7 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(elements_install_aux_files)
   # early check at configure time for the existence of the directory
-  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME})
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME} OR IS_DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux)
       message(WARNING "The aux directory name in the ${CMAKE_CURRENT_SOURCE_DIR} location is dangerous. Please rename it to ${AUX_DIR_NAME}")
       install(DIRECTORY aux/
@@ -2515,6 +2516,13 @@ function(elements_install_aux_files)
     endif()
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME})
       install(DIRECTORY ${AUX_DIR_NAME}/
+              DESTINATION ${AUX_DIR_NAME}
+              PATTERN "CVS" EXCLUDE
+              PATTERN ".svn" EXCLUDE
+              PATTERN "*~" EXCLUDE)
+    endif()
+    if(IS_DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
+      install(DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME}/
               DESTINATION ${AUX_DIR_NAME}
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE
