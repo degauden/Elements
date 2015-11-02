@@ -209,7 +209,7 @@ class CMakeLists(object):
         if elements_install_scripts:
             self.elements_install_scripts = 'elements_install_scripts()'
 
-        elements_subdir_list = re.findall(r"\nelements_subdir\(.*?\)", text, re.MULTILINE|re.DOTALL)
+        elements_subdir_list = re.findall(r"elements_subdir\(.*?\)", text, re.MULTILINE|re.DOTALL)
         for elements_subdir in elements_subdir_list:
             name = elements_subdir.replace('\n', ' ').replace('elements_subdir(', '')[:-1].strip()
             self.elements_subdir_list.append(ElementsSubdir(name))
@@ -338,7 +338,7 @@ class CMakeLists(object):
         # Here we built the CMkaeLists.txt file
         result = self.text
         closing_parenthesis = r"(?=[\s\)]).*?\)"
-        leading_spaces = r"(?<=\n)\s*"
+        leading_spaces = r"((^\s*)|((?<=\n)\s*))"
         open_parenthesis = r"\(\s*"
         for find_package in self.find_package_list:
             if not re.search(leading_spaces + "find_package" + open_parenthesis+ find_package.package + \
