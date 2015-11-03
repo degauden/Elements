@@ -188,6 +188,7 @@ def isElementsModuleExist(module_directory):
 def isFileAlreadyExist(path_filename, name):
     """
     Check if the <path_filename> file does not already exist
+    <path_filename> : path + filename
     """
     script_goes_on = True
     if os.path.exists(path_filename):
@@ -198,3 +199,15 @@ def isFileAlreadyExist(path_filename, name):
     return script_goes_on
 
 ################################################################################
+
+################################################################################
+
+def createPythonInitFile(init_path_filename):
+    """
+    Create on disk the __init__.py python file
+    """
+    if not os.path.exists(init_path_filename):
+        f = open(init_path_filename, 'w')
+        f.write("from pkgutil import extend_path\n")
+        f.write("__path__ = extend_path(__path__, __name__)\n")
+        f.close()
