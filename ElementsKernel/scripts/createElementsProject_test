@@ -1,34 +1,44 @@
-#!/bin/sh
+#!/bin/sh 
 
 
-here=${PWD}
-tmploc=$(mktemp -dq)
+home_dir=${PWD}
+tmploc=$(mktemp -dq -t temp.XXXXXX)
 
+# Clean and exit
+clean_and_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+# Move to tmp directory
 cd ${tmploc}
 export User_area=${tmploc}
 
-CreateElementsProject Project_test 0.1
+CreateElementsProject Project_test 1.0
 
+# if error stop and clean up
 if [ $? -ne 0 ]; then
-  cd ${here}
-  rm -rf ${tmploc}
-  exit 1
+   clean_and_exit 1
 fi
 
+# make sure project is created
 if [ ! -d Project_test ]; then
-  cd ${here}
-  rm -rf ${tmp_loc}
-  exit 1
+   clean_and_exit 1
 fi
 
-cd ${here}
-
-
-if [ -d ${tmploc} ]; then
-   rm -rf ${tmploc}
+# make sure project is created
+if [ ! -e $User_area/Project_test/1.0/CMakeLists.txt ] ||
+   [ ! -e $User_area/Project_test/1.0/Makefile ]; then
+   clean_and_exit 1
 fi
 
-unset here
-unset tmploc
+# Make sure Project_test is there
+if [ ! `grep "Project_test 1.0" $User_area/Project_test/1.0/CMakeLists.txt`  ];then
+   clean_and_exit 1
+fi
+echo 'WWWWWWWWWWWWWWWWWWWWWWW'
+
+clean_and_exit 0
 
 exit 0
