@@ -37,8 +37,5 @@ fi
 if [ ! `grep "Project_test 1.0" $User_area/Project_test/1.0/CMakeLists.txt`  ];then
    clean_and_exit 1
 fi
-echo 'WWWWWWWWWWWWWWWWWWWWWWW'
 
 clean_and_exit 0
-
-exit 0
