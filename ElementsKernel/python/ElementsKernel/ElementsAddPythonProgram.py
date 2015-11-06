@@ -47,11 +47,10 @@ def createFiles(module_dir, module_name, program_name):
     """
     # Create the executable directory
     init_file = os.path.join(module_dir, 'python', module_name, '__init__.py')
+    epcr.createPythonInitFile(os.path.join(module_dir, 'python', module_name, 
+                                            '__init__.py'))
+    
     conf_file = os.path.join(module_dir, 'conf', module_name, program_name +'.conf')
-    if not os.path.exists(init_file):
-        # Create an empty file
-        f = open(init_file, 'w')
-        f.close()
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
         f.write('# Write your program options here. e.g. : option = string')

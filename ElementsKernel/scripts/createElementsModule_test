@@ -1,31 +1,78 @@
-#!/bin/sh
+#!/bin/sh 
 
-here=${PWD}
-tmploc=$(mktemp -dq)
+home_dir=${PWD}
 
+project_name="ProjectTest"
+version="1.0"
+module_name="ModuleTest"
+
+# Create a unique directory
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+# Clean and exit
+clean_and_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+# Set to the User_area
 cd ${tmploc}
+export User_area=${tmploc}
 
-AddElementsModule Module_test
+# We need first to create a project
+CreateElementsProject $project_name $version
 
+# Error? stop and clean up
 if [ $? -ne 0 ]; then
-  cd ${here}
-  rm -rf ${tmploc}
-  exit 1
+   clean_and_exit 1
 fi
 
-if [ ! -d $Module_test ]; then
-  cd ${here}
-  rm -rf ${tmploc}
-  exit 1
+# Move to the project
+cd $User_area/$project_name/$version/
+
+# Create a module
+AddElementsModule $module_name -md Alexandria
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
 fi
 
-cd ${here}
+# Make sure the module is created
+if [ ! -d $module_name ]; then
+   clean_and_exit 1
+fi
 
-if [ -d ${tmploc} ]; then
- rm -rf ${tmploc}
-fi 
+module_path="$User_area/$project_name/$version/$module_name"
 
-unset tmploc
-unset here
+# Make sure <CMakeLists.txt> file has been created
+if [ ! -e $module_path/CMakeLists.txt ]; then
+   clean_and_exit 1
+fi
 
-exit 0
+# Make sure the <module_test> is there
+result=$( grep "elements_subdir" $module_path/CMakeLists.txt | grep "$module_name" )
+if [ $? -ne 0  ];then
+   clean_and_exit 1
+fi
+
+# Make sure the <ElementsKernel> is there
+result=$( grep "elements_depends_on_subdirs" $module_path/CMakeLists.txt |
+          grep -v "#" | grep "ElementsKernel" )
+if [ $? -ne 0  ];then
+   clean_and_exit 1
+fi
+
+# Make sure the <Alexandria> is there
+result=$( grep "elements_depends_on_subdirs" $module_path/CMakeLists.txt | 
+          grep -v "#" | grep "Alexandria" )
+if [ $? -ne 0  ];then
+   clean_and_exit 1
+fi
+# Make sure directories are created
+if [ ! -d $module_path/conf ] || [ ! -d $module_path/doc ] || [ ! -d $module_path/tests/src ]; then
+   clean_and_exit 1
+fi
+
+clean_and_exit 0
