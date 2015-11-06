@@ -1,0 +1,74 @@
+#!/bin/sh 
+
+home_dir=${PWD}
+
+project_name="ProjectTest"
+version="1.0"
+module_name="ModuleTest"
+python_prog_name="PythonProgramTest"
+
+# Create a unique directory
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+# Clean and exit
+clean_and_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+# Set to the User_area
+cd ${tmploc}
+export User_area=${tmploc}
+
+# We need first to create a project
+CreateElementsProject $project_name $version
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+# Move to the project
+cd $User_area/$project_name/$version/
+
+# Create a module
+AddElementsModule $module_name
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+module_path="$User_area/$project_name/$version/$module_name"
+cd $module_path
+
+# Create python mondule
+AddPythonProgram $python_prog_name
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+# Make sure python files have been been created
+if [ ! -e $module_path/python/$module_name/${python_prog_name}.py ]; then
+   clean_and_exit 1
+fi
+if [ ! -e $module_path/python/$module_name/__init__.py ]; then
+   clean_and_exit 1
+fi
+
+# Make sure the <elements_install_scripts> macro is there
+result=$( grep "elements_install_scripts" CMakeLists.txt | grep -v "#")
+if [ $? -ne 0  ];then
+   clean_and_exit 1
+fi 
+
+# Make sure the <elements_install_python_modules> macro is there
+result=$( grep "elements_install_python_modules" CMakeLists.txt | grep -v "#")
+if [ $? -ne 0  ];then
+   clean_and_exit 1
+fi 
+
+clean_and_exit 0
