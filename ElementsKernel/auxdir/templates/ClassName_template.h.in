@@ -36,7 +36,6 @@ class %(CLASSNAME)s {
 
 public:
 
-
   /**
    * @brief Destructor
    */
