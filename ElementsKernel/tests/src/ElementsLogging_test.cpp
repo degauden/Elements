@@ -44,7 +44,7 @@ using std::tuple;
 // sent to it. It recovers the given stream in its previous state during destruction.
 class LogMessageTracker {
  public:
-  LogMessageTracker(std::ostream& stream) :
+  explicit LogMessageTracker(std::ostream& stream) :
       m_messages { }, m_stream(stream), m_old { stream.rdbuf(m_messages.rdbuf()) } {
   }
   ~LogMessageTracker() {
