@@ -15,7 +15,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>             // for boost::filesystem
-#include <boost/version.hpp>
+#include <boost/version.hpp>                // for the BOOST_VERSION define
 
 namespace algo = boost::algorithm;
 namespace fs = boost::filesystem;
