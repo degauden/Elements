@@ -53,7 +53,6 @@ set(CMAKE_VERBOSE_MAKEFILES OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Ensure that the include directories added are always taken first.
 set(CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
-#set(CMAKE_SKIP_BUILD_RPATH TRUE)
 
 if (ELEMENTS_BUILD_PREFIX_CMD)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${ELEMENTS_BUILD_PREFIX_CMD}")
@@ -166,6 +165,7 @@ macro(elements_project project version)
   set(ELEMENTS_DATA_SUFFIXES DBASE;PARAM;EXTRAPACKAGES CACHE STRING
       "List of (suffix) directories where to look for data packages.")
 
+  # Install Area business
   if(USE_LOCAL_INSTALLAREA)
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
       set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/InstallArea/${BINARY_TAG} CACHE PATH
@@ -176,6 +176,13 @@ macro(elements_project project version)
       set(CMAKE_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
           "Install path prefix, prepended onto install directories." FORCE )
     endif()
+  endif()
+
+  if(APPLE)
+      set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
+          "Install RPath." FORCE )  
+      set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
+          "Install Name Dir." FORCE )  
   endif()
 
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
@@ -577,7 +584,8 @@ macro(elements_project project version)
       PREPEND PATH ${CMAKE_BINARY_DIR}/scripts
       PREPEND LD_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-      PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python)
+      PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python
+      PREPEND ELEMENTS_AUX_PATH ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
 
   # - produce environment XML description
   #   release version
@@ -2504,7 +2512,7 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(elements_install_aux_files)
   # early check at configure time for the existence of the directory
-  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME})
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME} OR IS_DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux)
       message(WARNING "The aux directory name in the ${CMAKE_CURRENT_SOURCE_DIR} location is dangerous. Please rename it to ${AUX_DIR_NAME}")
       install(DIRECTORY aux/
@@ -2515,6 +2523,13 @@ function(elements_install_aux_files)
     endif()
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME})
       install(DIRECTORY ${AUX_DIR_NAME}/
+              DESTINATION ${AUX_DIR_NAME}
+              PATTERN "CVS" EXCLUDE
+              PATTERN ".svn" EXCLUDE
+              PATTERN "*~" EXCLUDE)
+    endif()
+    if(IS_DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
+      install(DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME}/
               DESTINATION ${AUX_DIR_NAME}
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE

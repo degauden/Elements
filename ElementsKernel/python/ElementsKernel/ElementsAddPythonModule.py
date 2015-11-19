@@ -19,6 +19,10 @@ logger = log.getLogger('AddPythonModule')
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
+PYTEST_TEMPLATE_FILE = 'PythonTest_template.py'
+PYTEST_TEMPLATE_FILE_IN = 'PythonTest_template.py.in'
+PYMODULE_TEMPLATE_FILE = 'PythonModule_template.py' 
+PYMODULE_TEMPLATE_FILE_IN = 'PythonModule_template.py.in' 
 
 ################################################################################
 
@@ -32,30 +36,6 @@ def createDirectories(module_dir, module_name):
     # Create the python directory in tests
     tests_python_path = os.path.join(module_dir, 'tests', 'python')
     epcr.makeDirectory(tests_python_path)
-
-################################################################################
-
-def createFiles(module_dir, module_name, python_module_name):
-    """
-    Create files needed for a python module
-    """
-    # Create the init file 
-    init_file = os.path.join(module_dir, 'python', module_name, '__init__.py')
-    if not os.path.exists(init_file):
-        f = open(init_file, 'w')
-        f.close()
-
-    python_module_file = os.path.join(module_dir, 'python', module_name, 
-                                    python_module_name+'.py')
-    # Create the module file 
-    if not os.path.exists(python_module_file):
-        f = open(python_module_file, 'w')
-        f.write('##\n')
-        f.write('# @file '+ os.path.join('python', module_name, python_module_name + '.py')+'\n')
-        f.write('# @date '+ time.strftime("%x") +'\n')
-        f.write('# @author '+epcr.getAuthor() +'\n')
-        f.write('##\n')
-        f.close()
 
 ################################################################################
 
@@ -83,6 +63,60 @@ def updateCmakeListsFile(module_dir):
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
     f.close()
+################################################################################
+
+def substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_name):
+    """
+    Substitute variables in the python test template file and rename it
+    """
+    template_file = os.path.join(pymodule_path, PYMODULE_TEMPLATE_FILE)
+    os.rename(os.path.join(pymodule_path, PYMODULE_TEMPLATE_FILE_IN), template_file)
+
+    # Substitute strings in template_file
+    f = open(template_file, 'r')
+    data = f.read()
+    author_str = epcr.getAuthor()
+    date_str   = time.strftime("%x")
+    file_name_str = os.path.join('tests','python', python_module_name+'_test.py')
+    new_data = data % {"FILE": file_name_str,
+                       "DATE": date_str,
+                       "AUTHOR": author_str}
+    f.close()
+    # Save new data
+    file_name = template_file.replace(PYMODULE_TEMPLATE_FILE, python_module_name+'.py')
+    f = open(file_name, 'w')
+    f.write(new_data)
+    f.close()
+    os.remove(template_file)
+
+################################################################################
+
+def substituteStringsInPyTestFile(pytest_path, module_name, python_module_name):
+    """
+    Substitute variables in the python test template file and rename it
+    """
+    template_file = os.path.join(pytest_path, PYTEST_TEMPLATE_FILE)
+    os.rename(os.path.join(pytest_path, PYTEST_TEMPLATE_FILE_IN), template_file)
+
+    # Substitute strings in template_file
+    f = open(template_file, 'r')
+    data = f.read()
+    author_str = epcr.getAuthor()
+    date_str   = time.strftime("%x")
+    file_name_str = os.path.join('tests','python', python_module_name+'_test.py')
+    new_data = data % {"FILE": file_name_str,
+                       "DATE": date_str,
+                       "AUTHOR": author_str,
+                       "MODULENAME": module_name,
+                       "PYTHONMODULE": python_module_name}
+
+    f.close()
+    # Save new data
+    file_name = template_file.replace(PYTEST_TEMPLATE_FILE, python_module_name+'_test.py')
+    f = open(file_name, 'w')
+    f.write(new_data)
+    f.close()
+    os.remove(template_file)
 
 ################################################################################
 
@@ -93,9 +127,16 @@ def createPythonModule(current_dir, module_name, python_module_name):
     logger.info('#')
     script_goes_on  = True
     createDirectories(current_dir, module_name)
-    createFiles(current_dir, module_name, python_module_name)
-    module_path = os.path.join(current_dir, 'python', python_module_name)
-    updateCmakeListsFile(current_dir)
+    epcr.createPythonInitFile(os.path.join(current_dir, 'python', module_name, '__init__.py'))
+    pytest_path = os.path.join(current_dir, 'tests', 'python')
+    script_goes_on = epcr.copyAuxFile(pytest_path, PYTEST_TEMPLATE_FILE_IN)    
+    pymodule_path = os.path.join(current_dir, 'python', module_name)
+    script_goes_on = epcr.copyAuxFile(pymodule_path, PYMODULE_TEMPLATE_FILE_IN)
+
+    if script_goes_on:
+        substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_name)
+        substituteStringsInPyTestFile(pytest_path, module_name, python_module_name)
+        updateCmakeListsFile(current_dir)
     
     return script_goes_on
 
@@ -145,6 +186,10 @@ def mainMethod(args):
         if script_goes_on:
             script_goes_on = epcr.isFileAlreadyExist(module_file_path, python_module_name) 
                   
+        # Check aux file exist
+        if script_goes_on:
+            script_goes_on = epcr.isAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
+
         if script_goes_on:
             if os.path.exists(current_dir):
                 if createPythonModule(current_dir, module_name, python_module_name):

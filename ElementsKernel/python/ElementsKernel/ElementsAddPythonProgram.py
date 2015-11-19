@@ -20,6 +20,7 @@ logger = log.getLogger('AddPythonProgram')
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 PROGRAM_TEMPLATE_FILE = 'PythonProgram_template.py'
+PROGRAM_TEMPLATE_FILE_IN = 'PythonProgram_template.py.in'
 
 ################################################################################
 
@@ -46,11 +47,10 @@ def createFiles(module_dir, module_name, program_name):
     """
     # Create the executable directory
     init_file = os.path.join(module_dir, 'python', module_name, '__init__.py')
+    epcr.createPythonInitFile(os.path.join(module_dir, 'python', module_name, 
+                                            '__init__.py'))
+    
     conf_file = os.path.join(module_dir, 'conf', module_name, program_name +'.conf')
-    if not os.path.exists(init_file):
-        # Create an empty file
-        f = open(init_file, 'w')
-        f.close()
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
         f.write('# Write your program options here. e.g. : option = string')
@@ -63,6 +63,8 @@ def subStringsInPythonProgramFile(file_path, program_name, module_name):
     Substitute variables in the python template file and rename it
     """
     template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
+    os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
+    
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -131,7 +133,7 @@ def createPythonProgram(current_dir, module_name, program_name):
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, program_name)
     program_path = os.path.join(current_dir, 'python', module_name)
-    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE) 
+    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN) 
     if script_goes_on:
         subStringsInPythonProgramFile(program_path, program_name,
                                             module_name)
@@ -178,6 +180,10 @@ def mainMethod(args):
         if script_goes_on:
             script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
         
+        # Check aux file exist
+        if script_goes_on:
+            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+
         program_file_path = os.path.join(current_dir, 'python', module_name, program_name+'.py')
         
         # Make sure the program does not already exist
