@@ -101,18 +101,18 @@ elements_add_unit_test(BackTrace tests/src/BackTrace_test.cpp
 
 #---Python and Scripts ------------------------------------------------------------
 
-elements_add_python_program(CreateElementsProject ElementsKernel.ElementsProject)
-elements_add_python_program(AddElementsModule ElementsKernel.ElementsAddModule)
-elements_add_python_program(AddCppClass ElementsKernel.ElementsAddCppClass)
-elements_add_python_program(AddCppProgram ElementsKernel.ElementsAddCppProgram)
-elements_add_python_program(AddPythonProgram ElementsKernel.ElementsAddPythonProgram)
-elements_add_python_program(AddPythonModule ElementsKernel.ElementsAddPythonModule)
+elements_add_python_program(CreateElementsProject ElementsKernel.Project)
+elements_add_python_program(AddElementsModule ElementsKernel.AddModule)
+elements_add_python_program(AddCppClass ElementsKernel.AddCppClass)
+elements_add_python_program(AddCppProgram ElementsKernel.AddCppProgram)
+elements_add_python_program(AddPythonProgram ElementsKernel.AddPythonProgram)
+elements_add_python_program(AddPythonModule ElementsKernel.AddPythonModule)
 
 elements_install_aux_files()
 elements_install_python_modules()
 
-elements_add_test(CreateProject COMMAND createElementsProject_test)
-elements_add_test(CreateModule COMMAND createElementsModule_test)
+elements_add_test(CreateElementsProject COMMAND createElementsProject_test)
+elements_add_test(AddElementsModule COMMAND addElementsModule_test)
 elements_add_test(AddCcpClass COMMAND addCppClass_test)
 elements_add_test(AddCcpProgram COMMAND addCppProgram_test)
 elements_add_test(AddPythonModule COMMAND addPythonModule_test)

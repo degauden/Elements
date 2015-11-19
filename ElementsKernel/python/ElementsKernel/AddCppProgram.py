@@ -1,5 +1,5 @@
 """
-@file: ElementsKernel/ElementsAddCppProgram.py
+@file: ElementsKernel/AddCppProgram.py
 @author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
@@ -13,7 +13,7 @@ import os
 import re
 import shutil
 import time
-import ElementsKernel.ElementsProjectCommonRoutines as epcr
+import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.parseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
@@ -193,7 +193,7 @@ def defineSpecificProgramOptions():
 def mainMethod(args):
 
     logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the ElementsAddCppProgram script')
+    logger.info('#  Logging from the mainMethod() of the AddCppProgram script')
     logger.info('#')
 
     try:

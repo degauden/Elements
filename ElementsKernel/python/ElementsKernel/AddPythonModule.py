@@ -1,5 +1,5 @@
 """
-@file: ElementsKernel/ElementsAddPythonModule.py
+@file: ElementsKernel/AddPythonModule.py
 @author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
@@ -11,7 +11,7 @@ This script creates a new Elements python module
 import os
 import argparse
 import time
-import ElementsKernel.ElementsProjectCommonRoutines as epcr
+import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.parseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
@@ -160,7 +160,7 @@ def mainMethod(args):
 
     logger.info('#')
     logger.info(
-        '#  Logging from the mainMethod() of the ElementsAddPythonModule script ')
+        '#  Logging from the mainMethod() of the AddPythonModule script ')
     logger.info('#')
 
     try:

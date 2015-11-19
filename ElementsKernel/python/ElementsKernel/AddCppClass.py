@@ -1,5 +1,5 @@
 """
-@file: ElementsKernel/ElementsAddCppClass.py
+@file: ElementsKernel/AddCppClass.py
 @author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
@@ -11,7 +11,7 @@ This script creates a new Elements C++ Class
 import argparse
 import os
 import time
-import ElementsKernel.ElementsProjectCommonRoutines as epcr
+import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.parseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
@@ -319,7 +319,7 @@ the [-extd] option for external dependency.
 def mainMethod(args):
 
     logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the ElementsAddCppClass \
+    logger.info('#  Logging from the mainMethod() of the AddCppClass \
     script ')
     logger.info('#')
 

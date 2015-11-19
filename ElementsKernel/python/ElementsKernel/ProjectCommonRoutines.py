@@ -1,5 +1,5 @@
 """
-@file: ElementsKernel/ElementsProjectCommonRoutines.py
+@file: ElementsKernel/ProjectCommonRoutines.py
 @author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
@@ -14,7 +14,7 @@ import re
 import shutil
 import ElementsKernel.Logging as log
 
-logger = log.getLogger('ElementsProjectCommonRoutines')
+logger = log.getLogger('ProjectCommonRoutines')
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
