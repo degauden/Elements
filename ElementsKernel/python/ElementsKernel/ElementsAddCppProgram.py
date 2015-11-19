@@ -20,8 +20,9 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('AddCppProgram')
 
 # Define constants
-CMAKE_LISTS_FILE      = 'CMakeLists.txt'
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
 PROGRAM_TEMPLATE_FILE = 'Program_template.cpp'
+PROGRAM_TEMPLATE_FILE_IN = 'Program_template.cpp.in'
 
 def createDirectories(module_dir, module_name):
     """
@@ -66,6 +67,8 @@ def substituteStringsInProgramFile(file_path, program_name, module_name):
     Substitute variables in template file and rename the file
     """
     template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
+    os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
+    
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -160,7 +163,7 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
     script_goes_on = True 
     createDirectories(module_dir, module_name)
     program_path = os.path.join(module_dir,'src','program')
-    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE)    
+    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)    
     substituteStringsInProgramFile(program_path, program_name, module_name)
     addConfFile(module_dir, module_name, program_name) 
     updateCmakeListsFile(module_dir, module_name, program_name,
@@ -218,14 +221,10 @@ def mainMethod(args):
         if script_goes_on:
             script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
 
-         # Check aux files exist
+         # Check aux file exist
         if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE)
-       
-        # Check aux files exist
-        if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE)
-            
+            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+                   
         if script_goes_on and createCppProgram(current_dir, module_name, program_name, module_list, library_list):
             logger.info('# <%s> program successfully created in <%s>.' % 
                         (program_name, current_dir + os.sep + 'src'+ os.sep + 'program'))

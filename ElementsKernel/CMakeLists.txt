@@ -113,3 +113,7 @@ elements_install_python_modules()
 
 elements_add_test(CreateProject COMMAND createElementsProject_test)
 elements_add_test(CreateModule COMMAND createElementsModule_test)
+elements_add_test(AddCcpClass COMMAND addCppClass_test)
+elements_add_test(AddCcpProgram COMMAND addCppProgram_test)
+elements_add_test(AddPythonModule COMMAND addPythonModule_test)
+elements_add_test(AddPythonProgram COMMAND addPythonProgram_test)
