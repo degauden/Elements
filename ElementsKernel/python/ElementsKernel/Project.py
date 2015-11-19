@@ -1,5 +1,5 @@
 """
-@file: ElementsKernel/ElementsProject.py
+@file: ElementsKernel/Project.py
 @author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
@@ -12,7 +12,7 @@ import argparse
 import os
 import shutil
 import ELEMENTS_VERSION  # @UnresolvedImport
-import ElementsKernel.ElementsProjectCommonRoutines as epcr
+import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('CreateElementsProject')

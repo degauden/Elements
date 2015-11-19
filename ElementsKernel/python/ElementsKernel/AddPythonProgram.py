@@ -1,5 +1,5 @@
 """
-@file: ElementsKernel/ElementsAddPythonProgram.py
+@file: ElementsKernel/AddPythonProgram.py
 @author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
@@ -11,7 +11,7 @@ This script creates a new Elements python program
 import argparse
 import os
 import time
-import ElementsKernel.ElementsProjectCommonRoutines as epcr
+import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.parseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
@@ -161,7 +161,7 @@ def mainMethod(args):
 
     logger.info('#')
     logger.info(
-        '#  Logging from the mainMethod() of the ElementsAddPythonProgram script ')
+        '#  Logging from the mainMethod() of the AddPythonProgram script ')
     logger.info('#')
 
     try:

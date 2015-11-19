@@ -1,5 +1,5 @@
 """
-@file: ElementsKernel/ElementsAddModule.py
+@file: ElementsKernel/AddModule.py
 @author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
@@ -10,7 +10,7 @@ This script creates a new Elements module
 
 import argparse
 import os
-import ElementsKernel.ElementsProjectCommonRoutines as epcr
+import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.parseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
@@ -160,7 +160,7 @@ for you. Use the [-md] option for the module dependency.
 def mainMethod(args):
 
     logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the ElementsAddModule script ')
+    logger.info('#  Logging from the mainMethod() of the AddModule script ')
     logger.info('#')
 
     try:
