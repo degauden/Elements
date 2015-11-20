@@ -2,7 +2,6 @@
 *.pyc
 
 build.*.log
-Makefile
 NMake
 install.*.history
 setup.*
