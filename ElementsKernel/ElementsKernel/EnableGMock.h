@@ -9,9 +9,9 @@
 
 #include <gmock/gmock.h>
 #include <boost/test/unit_test.hpp>
-#include <boost/version.hpp>
+#include <boost/version.hpp>            // for the BOOST_VERSION define
 
-#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Export.h"      // ELEMENTS_API
 
 class BoostTestAdapter: public testing::EmptyTestEventListener {
 

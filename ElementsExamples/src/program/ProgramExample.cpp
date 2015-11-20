@@ -123,12 +123,12 @@ public:
     logger.info() << "Some result: " << method_result;
 
     double first = 1.0;
-    double second = 0.0;
     double division_result{};
     try {
        logger.info("#");
        logger.info("#   Calling a method throwing an exception ");
        logger.info("#");
+       double second = 0.0;
        division_result = example_class_object.divideNumbers(first, second);
        //
      } catch (const Elements::Exception & e) {
