@@ -109,7 +109,7 @@ class ProcessDescriptor {
     void* m_handle;
     bool m_needRelease;
   public:
-    ProcessHandle(long pid);
+    explicit ProcessHandle(long pid);
     virtual ~ProcessHandle();
     long item() {
       return m_needRelease ? true : false ;
