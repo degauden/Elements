@@ -6,21 +6,21 @@ class ClassExample(object):
     @brief This is an example of the most basic Python class
     """                
     logger = log.getLogger('ClassExample')   
-    def __init__(self, list):
+    def __init__(self, my_list):
         """
         @brief Constructor
         """                
         self._m_i = 5
-        self._m_list = list
+        self._m_list = my_list
         
     def sumListValues(self):
         """
         @brief Method summing the elements of the list
         """                
-        sum = 0
+        my_sum = 0
         for element in self._m_list:
-            sum += element
-        return sum
+            my_sum += element
+        return my_sum
         
             
     @staticmethod
@@ -39,5 +39,3 @@ class ClassExample(object):
             The product of the two numbers
         """               
         return first * second 
-
-     

@@ -11,7 +11,7 @@ This script creates a new Elements module
 import argparse
 import os
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.parseCmakeLists as pcl
+import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddElementsModule')
@@ -146,10 +146,10 @@ This script creates an <Elements> module at your current directory
 for you. Use the [-md] option for the module dependency.
            """
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('module_name', metavar='module-name', 
-                        type=str, 
+    parser.add_argument('module_name', metavar='module-name',
+                        type=str,
                         help='Module name')
-    parser.add_argument('-md', '--module-dependency', metavar='module_name', 
+    parser.add_argument('-md', '--module-dependency', metavar='module_name',
                         action='append', type=str,
                         help='Dependency module name e.g "-md ElementsKernel"')
 

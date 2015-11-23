@@ -10,7 +10,6 @@ This script will create a new Elements project
 
 import argparse
 import os
-import shutil
 import ELEMENTS_VERSION  # @UnresolvedImport
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.Logging as log
@@ -112,7 +111,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     if not dep_projects is None:
         for dep in dep_projects:
             if not dep[0] in str_dep_projects:
-               str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
+                str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
             else:
                 logger.warning('<%s> dependency already exists. It is skipped!'
                                 % dep[0])
@@ -166,11 +165,11 @@ Use the [-d] option if your project has some dependencies to other
 project(s). 
             """
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('project_name', metavar='project-name', type=str, 
+    parser.add_argument('project_name', metavar='project-name', type=str,
                         help='Project name')
     parser.add_argument('project_version', metavar='project-version',
                         type=str, default='1.0', help='Project version number')
-    parser.add_argument('-d', '--dependency', metavar=('project_name','version'),
+    parser.add_argument('-d', '--dependency', metavar=('project_name', 'version'),
                         nargs=2, action='append', type=str,
                         help='Dependency project name and its version number"\
                          e.g "-d Elements x.x.x"')
