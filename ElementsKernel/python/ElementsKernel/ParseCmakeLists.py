@@ -19,7 +19,7 @@ class ElementsSubdir(object):
     """
     Decode the <elements_subdir> macro
     """
-       
+
     def __init__(self, name):
         self.name = name
 
@@ -94,7 +94,7 @@ class ElementsAddLibrary(object):
             for name in self.public_headers_list:
                 result += ' ' + name
         return result + ')'
-    
+
 ################################################################################
 
 class ElementsAddExecutable(object):
@@ -160,7 +160,7 @@ class ElementsAddUnitTest(object):
         if self.include_dir_list:
             result += '\n                     INCLUDE_DIRS'
             for include in self.include_dir_list:
-                result += ' ' + include 
+                result += ' ' + include
         if self.key_type:
             result += '\n                     TYPE ' + self.key_type
         result = result.strip() + ')'
@@ -185,7 +185,7 @@ class CMakeLists(object):
         self.elements_add_executable_list = []
         self.elements_add_unit_test_list = []
         self.elements_add_python_executable_list = []
-        
+
         # here we parse the CMakeLists.txt file
         # Remove all comment lines
         for_parsing = ''
@@ -196,7 +196,7 @@ class CMakeLists(object):
                 for_parsing += line + '\n'
 
         text = for_parsing
-        
+
         elements_install_conf_files = re.findall(r"elements_install_conf_files\(.*?\)", text)
         if elements_install_conf_files:
             self.elements_install_conf_files = 'elements_install_conf_files()'
@@ -213,12 +213,12 @@ class CMakeLists(object):
         for elements_subdir in elements_subdir_list:
             name = elements_subdir.replace('\n', ' ').replace('elements_subdir(', '')[:-1].strip()
             self.elements_subdir_list.append(ElementsSubdir(name))
-        
+
         elements_depends_on_subdirs_list = re.findall(r"elements_depends_on_subdirs\(.*?\)", text, re.MULTILINE | re.DOTALL)
         for elements_depends_on_subdirs in elements_depends_on_subdirs_list:
             names = elements_depends_on_subdirs.replace('elements_depends_on_subdirs(', '')[:-1].strip()
             self.elements_depends_on_subdirs_list.append(ElementsDependsOnSubdirs(names.split()))
-        
+
         find_package_list = re.findall(r"find_package\(.*?\)", text, re.MULTILINE | re.DOTALL)
         for find_package in find_package_list:
             name = find_package.replace('\n', ' ').replace('find_package(', '')[:-1].strip()
@@ -227,7 +227,7 @@ class CMakeLists(object):
                 components = name.split('REQUIRED COMPONENTS')[1].split()
                 name = name.split('REQUIRED COMPONENTS')[0].strip()
             self.find_package_list.append(FindPackage(name, components))
-        
+
         elements_add_library_list = re.findall(r"elements_add_library\(.*?\)", text, re.MULTILINE | re.DOTALL)
         for elements_add_library in elements_add_library_list:
             content = elements_add_library.replace('\n', ' ').replace('elements_add_library(', '')[:-1].strip().split()
@@ -311,7 +311,7 @@ class CMakeLists(object):
             name = content[0]
             module_name = content[1]
             self.elements_add_python_executable_list.append(ElementsAddPythonExecutable(name, module_name))
-   
+
 
     # Look for the right location for adding the text just after this position
     @staticmethod
@@ -349,7 +349,7 @@ class CMakeLists(object):
             if not re.search(leading_spaces + "elements_subdir" + open_parenthesis + elements_subdir.name + \
                             closing_parenthesis, result, re.MULTILINE | re.DOTALL):
                 result = CMakeLists._addAfter(result, 'elements_subdir', str(elements_subdir))
-                
+
         for elements_depends_on_subdirs in self.elements_depends_on_subdirs_list:
             if not re.search(leading_spaces + "elements_depends_on_subdirs" + open_parenthesis + \
                             elements_depends_on_subdirs.subdir_list[0] + closing_parenthesis, \
@@ -387,7 +387,7 @@ class CMakeLists(object):
             else:
                 result = re.sub(leading_spaces + "elements_add_python_program" + open_parenthesis + pyexe.name + \
                                 closing_parenthesis, str(pyexe), result, flags=re.MULTILINE | re.DOTALL)
- 
+
         if not re.search(leading_spaces + "elements_install_python_modules\(.*?\)", result,
                          re.MULTILINE | re.DOTALL) and self.elements_install_python_modules:
             result = CMakeLists._addAfter(result, 'elements_install_python_modules', self.elements_install_python_modules)
