@@ -26,12 +26,12 @@ def setPath():
     Set the installation path either the current directory or
     the directory set by the <User_area> environment variable
     """
-    # Check if User_area environment variable exists 
+    # Check if User_area environment variable exists
     user_area = os.environ.get('User_area')
     if not user_area is None:
         logger.debug('# <$User_area> environment variable defined to : <%s>'
                       % user_area)
-        destination_path = user_area         
+        destination_path = user_area
     else:
         destination_path = os.getcwd()
 
@@ -120,13 +120,13 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
                            "DEPENDANCE_LIST": str_dep_projects}
     else:
         # Add an comment example with the USE keyword
-        
+
         new_data = data % {"PROJECT_NAME": proj_name,
                            "PROJECT_VERSION": proj_version,
                            "DEPENDANCE_LIST": str_dep_projects}
 
     f.close()
-    
+
     # Save new data
     f = open(cmake_list_file, 'w')
     f.write(new_data)
@@ -187,13 +187,13 @@ def mainMethod(args):
 
     try:
         script_goes_on = True
-        
+
         proj_name = args.project_name
         proj_version = args.project_version
         dependant_projects = args.dependency
         destination_path = setPath()
         logger.info('# Installation directory : %s' % destination_path)
-        
+
         # Check project name and version
         script_goes_on = epcr.isNameAndVersionValid(proj_name, proj_version)
 

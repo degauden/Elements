@@ -21,8 +21,8 @@ logger = log.getLogger('AddPythonModule')
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 PYTEST_TEMPLATE_FILE = 'PythonTest_template.py'
 PYTEST_TEMPLATE_FILE_IN = 'PythonTest_template.py.in'
-PYMODULE_TEMPLATE_FILE = 'PythonModule_template.py' 
-PYMODULE_TEMPLATE_FILE_IN = 'PythonModule_template.py.in' 
+PYMODULE_TEMPLATE_FILE = 'PythonModule_template.py'
+PYMODULE_TEMPLATE_FILE_IN = 'PythonModule_template.py.in'
 
 ################################################################################
 
@@ -58,7 +58,7 @@ def updateCmakeListsFile(module_dir):
 
         # Add elements_install_conf_files if any
         cmake_object.elements_install_python_modules = 'elements_install_python_modules()'
-                                       
+
     # Write new data
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
@@ -128,7 +128,7 @@ def createPythonModule(current_dir, module_name, python_module_name):
     createDirectories(current_dir, module_name)
     epcr.createPythonInitFile(os.path.join(current_dir, 'python', module_name, '__init__.py'))
     pytest_path = os.path.join(current_dir, 'tests', 'python')
-    epcr.copyAuxFile(pytest_path, PYTEST_TEMPLATE_FILE_IN)    
+    epcr.copyAuxFile(pytest_path, PYTEST_TEMPLATE_FILE_IN)
     pymodule_path = os.path.join(current_dir, 'python', module_name)
     script_goes_on = epcr.copyAuxFile(pymodule_path, PYMODULE_TEMPLATE_FILE_IN)
 
@@ -136,7 +136,7 @@ def createPythonModule(current_dir, module_name, python_module_name):
         substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_name)
         substituteStringsInPyTestFile(pytest_path, module_name, python_module_name)
         updateCmakeListsFile(current_dir)
-    
+
     return script_goes_on
 
 ################################################################################
@@ -177,14 +177,14 @@ def mainMethod(args):
         # Module as no version number, '1.0' is just for using the routine
         if script_goes_on:
             script_goes_on = epcr.isNameAndVersionValid(python_module_name, '1.0')
-        
+
         module_file_path = os.path.join(current_dir, 'python', module_name,
                                          python_module_name + '.py')
-        
+
         # Make sure the program does not already exist
         if script_goes_on:
-            script_goes_on = epcr.isFileAlreadyExist(module_file_path, python_module_name) 
-                  
+            script_goes_on = epcr.isFileAlreadyExist(module_file_path, python_module_name)
+
         # Check aux file exist
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
@@ -192,7 +192,7 @@ def mainMethod(args):
         if script_goes_on:
             if os.path.exists(current_dir):
                 if createPythonModule(current_dir, module_name, python_module_name):
-                    logger.info('# <%s> python module successfully created in <%s>.' % 
+                    logger.info('# <%s> python module successfully created in <%s>.' %
                                 (python_module_name, module_file_path))
                     # Remove backup file
                     epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')

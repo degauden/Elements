@@ -181,7 +181,7 @@ def mainMethod(args):
             script_goes_on = epcr.isNameAndVersionValid(module_name, '1.0')
 
         if script_goes_on and createModule(project_dir, module_name, dependency_list):
-            logger.info('# <%s> module successfully created in <%s>.' % 
+            logger.info('# <%s> module successfully created in <%s>.' %
                         (module_name, project_dir))
             logger.info('# Script over.')
         else:

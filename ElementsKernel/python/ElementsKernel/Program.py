@@ -85,14 +85,14 @@ class Program (object):
         options = sys.argv[1:]
         options.extend(self._parseConfigFile(arg_parser, cmd_options))
         all_options = arg_parser.parse_args(options)
-        
+
         # We create a map of the variable names to the option names to be used
         # for further references
         variable_to_option_name = {}
         # Iterate through the names of the variables keeping the option values
         for var in [v for v in dir(all_options) if not v.startswith('_')]:
             # We get the related action from the argparser
-            action = next((a for a in arg_parser._actions if a.dest==var and a.option_strings), None)
+            action = next((a for a in arg_parser._actions if a.dest == var and a.option_strings), None)
             if action:
                 # We chose as name the longest option name and we strip any leading '-'
                 variable_to_option_name[var] = max(action.option_strings, key=len).lstrip('-')
@@ -101,7 +101,7 @@ class Program (object):
                 # if it didn't have option_strings. In this case we just use the
                 # variable name
                 variable_to_option_name[var] = var
-                
+
         return all_options, variable_to_option_name
 
     def _logAllOptions(self, args, names):
