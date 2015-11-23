@@ -31,7 +31,7 @@ def makeDirectory(directory_path):
             raise e
 
 ################################################################################
-                
+
 def deleteFile(path_filename):
     """
     Delete the <path_filename> file if it does exist. <path_filename> includes
@@ -119,7 +119,7 @@ def copyAuxFile(destination, aux_file_name):
     scripts_goes_on = True
     aux_path_file = getAuxPathFile(aux_file_name)
     if aux_path_file:
-        shutil.copy(aux_path_file, os.path.join(destination,aux_file_name))
+        shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
     else:
         scripts_goes_on = False
 
@@ -153,7 +153,7 @@ def getAuthor():
     return author_str
 
 ################################################################################
-    
+
 def isElementsModuleExist(module_directory):
     """
     Get the module name in the <CMAKE_LISTS_FILE> file
@@ -171,11 +171,11 @@ def isElementsModuleExist(module_directory):
         f = open(cmake_file, 'r')
         for line in f.readlines():
             if 'elements_subdir' in line:
-                pos_start = line.find('(')        
-                pos_end = line.find(')')        
-                module_name = line[pos_start+1:pos_end]
+                pos_start = line.find('(')
+                pos_end = line.find(')')
+                module_name = line[pos_start + 1:pos_end]
         f.close()
-                
+
         if not module_name:
             logger.error('# Module name not found in the <%s> file!' % cmake_file)
             logger.error('# Maybe you are not in a module directory...')

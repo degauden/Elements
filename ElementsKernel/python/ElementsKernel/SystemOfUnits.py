@@ -1,4 +1,4 @@
-##
+# #
 # @file: ElementsKernel/SystemOfUnits.py
 # @author: Wim Lavrijsen (LBNL, WLavrijsen@lbl.gov)
 # @author: Hubert Degaudenzi (ISDC -- Hubert.Degaudenzi@unige.ch)
@@ -123,9 +123,9 @@ ms = millisecond
 #
 # Electric charge [Q]
 #
-eplus = 1.                                   # positron charge
-e_SI = 1.60217733e-19                       # positron charge in coulomb
-coulomb = eplus / e_SI                         # coulomb = 6.24150 e+18 * eplus
+eplus = 1.  # positron charge
+e_SI = 1.60217733e-19  # positron charge in coulomb
+coulomb = eplus / e_SI  # coulomb = 6.24150 e+18 * eplus
 
 #
 # Energy [E]
@@ -137,7 +137,7 @@ gigaelectronvolt = 1.e+3 * megaelectronvolt
 teraelectronvolt = 1.e+6 * megaelectronvolt
 petaelectronvolt = 1.e+9 * megaelectronvolt
 
-joule = electronvolt / e_SI                    # joule = 6.24150 e+12 * MeV
+joule = electronvolt / e_SI  # joule = 6.24150 e+12 * MeV
 
 # symbols
 MeV = megaelectronvolt
@@ -162,25 +162,25 @@ mg = milligram
 #
 # Power [E][T^-1]
 #
-watt = joule / second                          # watt = 6.24150 e+3 * MeV/ns
+watt = joule / second  # watt = 6.24150 e+3 * MeV/ns
 
 #
 # Force [E][L^-1]
 #
-newton = joule / meter                         # newton = 6.24150 e+9 * MeV/mm
+newton = joule / meter  # newton = 6.24150 e+9 * MeV/mm
 
 #
 # Pressure [E][L^-3]
 #
-hep_pascal = newton / m2                       # pascal = 6.24150 e+3 * MeV/mm3
-pascal = hep_pascal                      # a trick to avoid warnings
-bar = 100000 * pascal                   # bar    = 6.24150 e+8 * MeV/mm3
-atmosphere = 101325 * pascal                   # atm    = 6.32420 e+8 * MeV/mm3
+hep_pascal = newton / m2  # pascal = 6.24150 e+3 * MeV/mm3
+pascal = hep_pascal  # a trick to avoid warnings
+bar = 100000 * pascal  # bar    = 6.24150 e+8 * MeV/mm3
+atmosphere = 101325 * pascal  # atm    = 6.32420 e+8 * MeV/mm3
 
 #
 # Electric current [Q][T^-1]
 #
-ampere = coulomb / second                 # ampere = 6.24150 e+9 * eplus/ns
+ampere = coulomb / second  # ampere = 6.24150 e+9 * eplus/ns
 milliampere = 1.e-3 * ampere
 microampere = 1.e-6 * ampere
 nanoampere = 1.e-9 * ampere
@@ -211,12 +211,12 @@ picofarad = 1.e-12 * farad
 #
 # Magnetic Flux [T][E][Q^-1]
 #
-weber = volt * second                          # weber = 1000*megavolt*ns
+weber = volt * second  # weber = 1000*megavolt*ns
 
 #
 # Magnetic Field [T][E][Q^-1][L^-2]
 #
-tesla = volt * second / meter2               # tesla =0.001*megavolt*ns/mm2
+tesla = volt * second / meter2  # tesla =0.001*megavolt*ns/mm2
 
 gauss = 1.e-4 * tesla
 kilogauss = 1.e-1 * tesla

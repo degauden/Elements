@@ -48,7 +48,7 @@ def createFiles(module_dir, module_name, program_name):
     # Create the executable directory
     epcr.createPythonInitFile(os.path.join(module_dir, 'python', module_name,
                                             '__init__.py'))
-    
+
     conf_file = os.path.join(module_dir, 'conf', module_name, program_name + '.conf')
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
@@ -63,7 +63,7 @@ def subStringsInPythonProgramFile(file_path, program_name, module_name):
     """
     template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
     os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
-    
+
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -108,13 +108,13 @@ def updateCmakeListsFile(module_dir, program_name):
         cmake_object = pcl.CMakeLists(data)
         module_name = cmake_object.elements_subdir_list[0].name + '.' + program_name
 
-        # Add elements_install_conf_files if any        
+        # Add elements_install_conf_files if any
         cmake_object.elements_install_python_modules = 'elements_install_python_modules()'
         cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
         cmake_object.elements_install_scripts = 'elements_install_scripts()'
-        
+
         program_object = pcl.ElementsAddPythonExecutable(program_name, module_name)
-        cmake_object.elements_add_python_executable_list.append(program_object)              
+        cmake_object.elements_add_python_executable_list.append(program_object)
 
     # Write new data
     f = open(cmake_filename, 'w')
@@ -131,7 +131,7 @@ def createPythonProgram(current_dir, module_name, program_name):
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, program_name)
     program_path = os.path.join(current_dir, 'python', module_name)
-    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN) 
+    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
     if script_goes_on:
         subStringsInPythonProgramFile(program_path, program_name,
                                             module_name)
@@ -177,27 +177,27 @@ def mainMethod(args):
         # Module as no version number, '1.0' is just for using the routine
         if script_goes_on:
             script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
-        
+
         # Check aux file exist
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
         program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
-        
+
         # Make sure the program does not already exist
         if script_goes_on:
-            script_goes_on = epcr.isFileAlreadyExist(program_file_path, program_name) 
+            script_goes_on = epcr.isFileAlreadyExist(program_file_path, program_name)
 
         if script_goes_on:
             if os.path.exists(current_dir):
                 if createPythonProgram(current_dir, module_name, program_name):
-                    logger.info('# <%s> program successfully created in <%s>.' % 
+                    logger.info('# <%s> program successfully created in <%s>.' %
                                 (program_name, program_file_path))
                     # Remove backup file
                     epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
                     logger.info('# Script over.')
             else:
-                logger.error('# <%s> project directory does not exist!' 
+                logger.error('# <%s> project directory does not exist!'
                              % current_dir)
 
         if not script_goes_on:
