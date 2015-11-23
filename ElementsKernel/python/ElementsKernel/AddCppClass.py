@@ -12,7 +12,7 @@ import argparse
 import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.parseCmakeLists as pcl
+import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddCppClass')
@@ -35,7 +35,7 @@ def getClassName(str_subdir_class):
     """
     name_list = str_subdir_class.split(os.path.sep)
     className = name_list[-1]
-    subdir = str_subdir_class.replace(className,'')
+    subdir = str_subdir_class.replace(className, '')
     # Remove end slash
     subdir = subdir[:-1]
     logger.info('# Class name: %s' % className)
@@ -79,9 +79,9 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     # Make some substitutions
     file_name_str = os.path.join(module_name, subdir, class_name + '.h')
     define_words_str = '_' + file_name_str
-    define_words_str = define_words_str.replace(H_TEMPLATE_FILE, class_name +'.h')
-    define_words_str = define_words_str.replace('.','_')
-    define_words_str = (define_words_str.replace(os.path.sep,'_')).upper()
+    define_words_str = define_words_str.replace(H_TEMPLATE_FILE, class_name + '.h')
+    define_words_str = define_words_str.replace('.', '_')
+    define_words_str = (define_words_str.replace(os.path.sep, '_')).upper()
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
@@ -110,7 +110,7 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     f = open(template_file, 'r')
     data = f.read()
     author_str = epcr.getAuthor()
-    date_str   = time.strftime("%x")
+    date_str = time.strftime("%x")
     # This avoid double slashes
     ossep2 = os.sep
     if not subdir:
@@ -146,8 +146,8 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     f = open(template_file, 'r')
     data = f.read()
     author_str = epcr.getAuthor()
-    date_str   = time.strftime("%x")
-    file_name_str = os.path.join('tests','src',class_name + '_test.cpp')
+    date_str = time.strftime("%x")
+    file_name_str = os.path.join('tests', 'src', class_name + '_test.cpp')
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
@@ -208,7 +208,7 @@ def updateCmakeListsFile(module_dir, module_name, subdir, class_name,
         # Update elements_add_library macro
         if module_name:
             source = 'src' + os.sep + 'lib' + os.sep + subdir + '*.cpp'
-            existing = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
+            existing = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
             link_libs = []
             if elements_dep_list:
                 link_libs = link_libs + elements_dep_list
@@ -221,10 +221,10 @@ def updateCmakeListsFile(module_dir, module_name, subdir, class_name,
                     if not lib in existing[0].link_libraries_list:
                         existing[0].link_libraries_list.append(lib)
             else:
-                source_list         = [source]
-                include_dirs_list   = []
+                source_list = [source]
+                include_dirs_list = []
                 public_headers_list = [module_name]
-                lib_object = pcl.ElementsAddLibrary(module_name, source_list, 
+                lib_object = pcl.ElementsAddLibrary(module_name, source_list,
                                                     link_libs, include_dirs_list,
                                                     public_headers_list)
                 cmake_object.elements_add_library_list.append(lib_object)
@@ -232,7 +232,7 @@ def updateCmakeListsFile(module_dir, module_name, subdir, class_name,
             # Add unit test
             source_name = 'tests' + os.sep + 'src' + os.sep + subdir + \
             class_name + '_test.cpp'
-            unittest_object = pcl.ElementsAddUnitTest(class_name+'_test',
+            unittest_object = pcl.ElementsAddUnitTest(class_name + '_test',
                                     [source_name], [module_name], [], 'Boost')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
 
@@ -248,8 +248,8 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
     Check if the class file does not already exist
     """
     script_goes_on = True
-    module_path    = os.path.join(module_dir, module_name, subdir)
-    file_name      = class_name + '.h'
+    module_path = os.path.join(module_dir, module_name, subdir)
+    file_name = class_name + '.h'
     file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
         script_goes_on = False
@@ -265,20 +265,19 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
     """
     Create all necessary files for a cpp class
     """
-    script_goes_on = True 
 
     # Check the class does not exist already
-    script_goes_on = isClassFileAlreadyExist(class_name, module_dir, module_name, 
+    script_goes_on = isClassFileAlreadyExist(class_name, module_dir, module_name,
                                           subdir)
     if script_goes_on:
 
         createDirectories(module_dir, module_name, subdir)                           
         class_h_path = os.path.join(module_dir, module_name, subdir)
         script_goes_on = epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE_IN)    
-        class_cpp_path = os.path.join(module_dir,'src','lib', subdir)
+        class_cpp_path = os.path.join(module_dir, 'src', 'lib', subdir)
         if script_goes_on:
             script_goes_on = epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE_IN)
-        unittest_path = os.path.join(module_dir,'tests','src', subdir)
+        unittest_path = os.path.join(module_dir, 'tests', 'src', subdir)
         if script_goes_on:
             script_goes_on = epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE_IN)
         if script_goes_on:    
@@ -302,14 +301,14 @@ will be automatically created for you if any but you have to be inside an
 the [-extd] option for external dependency.
     """
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('class_name', metavar='class-name', 
-                        type=str, 
+    parser.add_argument('class_name', metavar='class-name',
+                        type=str,
                         help='Class name')
-    parser.add_argument('-ed', '--elements-dependency', metavar='module_name', 
+    parser.add_argument('-ed', '--elements-dependency', metavar='module_name',
                         action='append', type=str,
                         help='Dependency module name e.g. "-ed ElementsKernel"')
     parser.add_argument('-extd', '--external-dependency', metavar='library_name',
-                        action='append',type=str,
+                        action='append', type=str,
                         help='External dependency library name e.g. "-extd ElementsKernel"')
 
     return parser
@@ -325,11 +324,11 @@ def mainMethod(args):
 
     try:
         # True: no error occured
-        script_goes_on       = True 
+        script_goes_on = True 
 
-        elements_dep_list   = args.elements_dependency
-        library_dep_list    = args.external_dependency
-        (subdir,class_name) = getClassName(args.class_name)
+        elements_dep_list = args.elements_dependency
+        library_dep_list = args.external_dependency
+        (subdir, class_name) = getClassName(args.class_name)
 
         # Default is the current directory
         module_dir = os.getcwd()
@@ -351,7 +350,7 @@ def mainMethod(args):
             logger.info('# <%s> class successfully created in <%s>.' % 
                         (class_name, module_dir + os.sep + subdir))
             # Remove backup file
-            epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE)+'~')
+            epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
             logger.info('# Script over.')
         else:
             logger.error('# Script aborted!')
