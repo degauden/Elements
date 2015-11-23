@@ -12,7 +12,7 @@ import argparse
 import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.parseCmakeLists as pcl
+import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddPythonProgram')
@@ -46,11 +46,10 @@ def createFiles(module_dir, module_name, program_name):
     Create files needed for a python program
     """
     # Create the executable directory
-    init_file = os.path.join(module_dir, 'python', module_name, '__init__.py')
-    epcr.createPythonInitFile(os.path.join(module_dir, 'python', module_name, 
+    epcr.createPythonInitFile(os.path.join(module_dir, 'python', module_name,
                                             '__init__.py'))
     
-    conf_file = os.path.join(module_dir, 'conf', module_name, program_name +'.conf')
+    conf_file = os.path.join(module_dir, 'conf', module_name, program_name + '.conf')
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
         f.write('# Write your program options here. e.g. : option = string')
@@ -129,7 +128,6 @@ def createPythonProgram(current_dir, module_name, program_name):
     Create the python program
     """
     logger.info('#')
-    script_goes_on  = True
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, program_name)
     program_path = os.path.join(current_dir, 'python', module_name)
@@ -149,8 +147,8 @@ def defineSpecificProgramOptions():
     (default), this directory must be an <Elements> module.
            """
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('program_name', metavar='program-name', 
-                        type=str, 
+    parser.add_argument('program_name', metavar='program-name',
+                        type=str,
                         help='Program name')
 
     return parser
@@ -184,7 +182,7 @@ def mainMethod(args):
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
-        program_file_path = os.path.join(current_dir, 'python', module_name, program_name+'.py')
+        program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
         
         # Make sure the program does not already exist
         if script_goes_on:
@@ -196,7 +194,7 @@ def mainMethod(args):
                     logger.info('# <%s> program successfully created in <%s>.' % 
                                 (program_name, program_file_path))
                     # Remove backup file
-                    epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE)+'~')
+                    epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
                     logger.info('# Script over.')
             else:
                 logger.error('# <%s> project directory does not exist!' 
