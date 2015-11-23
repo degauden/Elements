@@ -32,7 +32,7 @@ def createDirectories(module_dir, module_name):
     # Create the conf directory
     conf_dir = os.path.join(module_dir, 'conf', module_name)
     epcr.makeDirectory(conf_dir)
-    
+
 
 ################################################################################
 
@@ -54,19 +54,19 @@ def addConfFile(module_dir, module_name, program_name):
         logger.warning('# The <%s> conf file has been kept as it already exists!'
                         % conf_file)
         logger.warning('# The <%s> conf file already exists! ' % conf_file)
-        
-        
 
-         
+
+
+
 ################################################################################
-       
+
 def substituteStringsInProgramFile(file_path, program_name, module_name):
     """
     Substitute variables in template file and rename the file
     """
     template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
     os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
-    
+
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -109,22 +109,22 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         f.close()
         cmake_object = pcl.CMakeLists(data)
         module_name = cmake_object.elements_subdir_list[0].name
-        
+
         # Update find_package macro
         if library_dep_list:
             for lib in library_dep_list:
                 package_object = pcl.FindPackage(lib, [])
                 cmake_object.find_package_list.append(package_object)
-                
+
         # Update ElementsDependsOnSubdirs macro
         if module_dep_list:
             for mod_dep in module_dep_list:
                 dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
-        
-        # Add elements_install_conf_files if any        
+
+        # Add elements_install_conf_files if any
         cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
-               
+
         # Update elements_add_executable macro
         source = 'src' + os.sep + 'program' + os.sep + program_name + '.cpp'
         existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name == program_name]
@@ -144,31 +144,31 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
             exe_object = pcl.ElementsAddExecutable(program_name, source,
                                                    link_libs)
             cmake_object.elements_add_executable_list.append(exe_object)
-                               
+
     # Write new data
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
     f.close()
 
 ################################################################################
-    
-      
+
+
 def createCppProgram(module_dir, module_name, program_name, module_dep_list,
                     library_dep_list):
     """
     Creates all necessary files for a program
-    """    
+    """
     createDirectories(module_dir, module_name)
     program_path = os.path.join(module_dir, 'src', 'program')
-    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)    
+    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
     substituteStringsInProgramFile(program_path, program_name, module_name)
-    addConfFile(module_dir, module_name, program_name) 
+    addConfFile(module_dir, module_name, program_name)
     updateCmakeListsFile(module_dir, module_name, program_name,
-                         module_dep_list, library_dep_list)             
+                         module_dep_list, library_dep_list)
     return script_goes_on
 
 ################################################################################
-    
+
 def defineSpecificProgramOptions():
     description = """
            """
@@ -195,8 +195,8 @@ def mainMethod(args):
 
     try:
         # True: no error occured
-        script_goes_on = True 
-        
+        script_goes_on = True
+
         program_name = args.program_name
         module_list = args.module_dependency
         library_list = args.library_dependency
@@ -208,22 +208,22 @@ def mainMethod(args):
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
-        
+
         program_file_path = os.path.join(current_dir, 'src', 'program',
                                          program_name + '.cpp')
         if script_goes_on:
             script_goes_on = epcr.isFileAlreadyExist(program_file_path,
                                                             program_name)
-        # Check program name is valid        
+        # Check program name is valid
         if script_goes_on:
             script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
 
         # Check aux file exist
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
-                   
+
         if script_goes_on and createCppProgram(current_dir, module_name, program_name, module_list, library_list):
-            logger.info('# <%s> program successfully created in <%s>.' % 
+            logger.info('# <%s> program successfully created in <%s>.' %
                         (program_name, current_dir + os.sep + 'src' + os.sep + 'program'))
             # Remove backup file
             epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')

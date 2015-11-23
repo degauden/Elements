@@ -28,7 +28,7 @@ CPP_TEMPLATE_FILE_IN = 'ClassName_template.cpp.in'
 UNITTEST_TEMPLATE_FILE_IN = 'UnitTestFile_template.cpp.in'
 
 ################################################################################
-    
+
 def getClassName(str_subdir_class):
     """
     Get the class name and sub directory if any
@@ -61,14 +61,14 @@ def createDirectories(module_dir, module_name, subdir):
         os.makedirs(test_path)
 
 ################################################################################
-       
+
 def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     """
     Substitute variables in the Header template file and rename it
     """
     template_file = os.path.join(file_path, H_TEMPLATE_FILE)
     os.rename(os.path.join(file_path, H_TEMPLATE_FILE_IN), template_file)
-    
+
     # Substitute strings in h_template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -105,7 +105,7 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     """
     template_file = os.path.join(file_path, CPP_TEMPLATE_FILE)
     os.rename(os.path.join(file_path, CPP_TEMPLATE_FILE_IN), template_file)
-    
+
     # Substitute strings in template_file
     f = open(template_file, 'r')
     data = f.read()
@@ -184,13 +184,13 @@ def updateCmakeListsFile(module_dir, module_name, subdir, class_name,
         f.close()
         cmake_object = pcl.CMakeLists(data)
         module_name = cmake_object.elements_subdir_list[0].name
-        
+
         # Update find_package macro
         if library_dep_list:
             for lib in library_dep_list:
                 package_object = pcl.FindPackage(lib, [])
                 cmake_object.find_package_list.append(package_object)
-                
+
         # Put ElementsKernel as a default
         default_dependency = 'ElementsKernel'
         if elements_dep_list:
@@ -271,27 +271,27 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
                                           subdir)
     if script_goes_on:
 
-        createDirectories(module_dir, module_name, subdir)                           
+        createDirectories(module_dir, module_name, subdir)
         class_h_path = os.path.join(module_dir, module_name, subdir)
-        script_goes_on = epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE_IN)    
+        script_goes_on = epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE_IN)
         class_cpp_path = os.path.join(module_dir, 'src', 'lib', subdir)
         if script_goes_on:
             script_goes_on = epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE_IN)
         unittest_path = os.path.join(module_dir, 'tests', 'src', subdir)
         if script_goes_on:
             script_goes_on = epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE_IN)
-        if script_goes_on:    
+        if script_goes_on:
             updateCmakeListsFile(module_dir, module_name, subdir, class_name,
-                                 elements_dep_list, library_dep_list) 
+                                 elements_dep_list, library_dep_list)
 
-            substituteStringsInDotH(class_h_path, class_name, module_name, subdir)  
-            substituteStringsInDotCpp(class_cpp_path, class_name, module_name, subdir)  
+            substituteStringsInDotH(class_h_path, class_name, module_name, subdir)
+            substituteStringsInDotCpp(class_cpp_path, class_name, module_name, subdir)
             substituteStringsInUnitTestFile(unittest_path, class_name, module_name, subdir)
 
     return script_goes_on
 
 ################################################################################
-    
+
 def defineSpecificProgramOptions():
     description = """
 This script creates an <Elements> class at your current directory
@@ -324,7 +324,7 @@ def mainMethod(args):
 
     try:
         # True: no error occured
-        script_goes_on = True 
+        script_goes_on = True
 
         elements_dep_list = args.elements_dependency
         library_dep_list = args.external_dependency
@@ -344,10 +344,10 @@ def mainMethod(args):
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(CPP_TEMPLATE_FILE_IN)
 
-        # Create CPP class    
+        # Create CPP class
         if script_goes_on and createCppClass(module_dir, module_name, subdir,
                             class_name, elements_dep_list, library_dep_list):
-            logger.info('# <%s> class successfully created in <%s>.' % 
+            logger.info('# <%s> class successfully created in <%s>.' %
                         (class_name, module_dir + os.sep + subdir))
             # Remove backup file
             epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
