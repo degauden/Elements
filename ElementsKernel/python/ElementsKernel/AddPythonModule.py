@@ -12,7 +12,7 @@ import os
 import argparse
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.parseCmakeLists as pcl
+import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddPythonModule')
@@ -76,14 +76,14 @@ def substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_na
     f = open(template_file, 'r')
     data = f.read()
     author_str = epcr.getAuthor()
-    date_str   = time.strftime("%x")
-    file_name_str = os.path.join('tests','python', python_module_name+'_test.py')
+    date_str = time.strftime("%x")
+    file_name_str = os.path.join('tests', 'python', python_module_name + '_test.py')
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str}
     f.close()
     # Save new data
-    file_name = template_file.replace(PYMODULE_TEMPLATE_FILE, python_module_name+'.py')
+    file_name = template_file.replace(PYMODULE_TEMPLATE_FILE, python_module_name + '.py')
     f = open(file_name, 'w')
     f.write(new_data)
     f.close()
@@ -102,8 +102,8 @@ def substituteStringsInPyTestFile(pytest_path, module_name, python_module_name):
     f = open(template_file, 'r')
     data = f.read()
     author_str = epcr.getAuthor()
-    date_str   = time.strftime("%x")
-    file_name_str = os.path.join('tests','python', python_module_name+'_test.py')
+    date_str = time.strftime("%x")
+    file_name_str = os.path.join('tests', 'python', python_module_name + '_test.py')
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
@@ -112,7 +112,7 @@ def substituteStringsInPyTestFile(pytest_path, module_name, python_module_name):
 
     f.close()
     # Save new data
-    file_name = template_file.replace(PYTEST_TEMPLATE_FILE, python_module_name+'_test.py')
+    file_name = template_file.replace(PYTEST_TEMPLATE_FILE, python_module_name + '_test.py')
     f = open(file_name, 'w')
     f.write(new_data)
     f.close()
@@ -125,11 +125,10 @@ def createPythonModule(current_dir, module_name, python_module_name):
     Create the python module
     """
     logger.info('#')
-    script_goes_on  = True
     createDirectories(current_dir, module_name)
     epcr.createPythonInitFile(os.path.join(current_dir, 'python', module_name, '__init__.py'))
     pytest_path = os.path.join(current_dir, 'tests', 'python')
-    script_goes_on = epcr.copyAuxFile(pytest_path, PYTEST_TEMPLATE_FILE_IN)    
+    epcr.copyAuxFile(pytest_path, PYTEST_TEMPLATE_FILE_IN)    
     pymodule_path = os.path.join(current_dir, 'python', module_name)
     script_goes_on = epcr.copyAuxFile(pymodule_path, PYMODULE_TEMPLATE_FILE_IN)
 
@@ -148,8 +147,8 @@ This script creates an <Elements> python module at your current directory
 (default), this directory must be an <Elements> module.
            """
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('module_name', metavar='module-name', 
-                        type=str, 
+    parser.add_argument('module_name', metavar='module-name',
+                        type=str,
                         help='Module name')
 
     return parser
@@ -164,7 +163,7 @@ def mainMethod(args):
     logger.info('#')
 
     try:
-        script_goes_on     = True
+        script_goes_on = True
         python_module_name = args.module_name
 
         # Default is the current directory
@@ -180,7 +179,7 @@ def mainMethod(args):
             script_goes_on = epcr.isNameAndVersionValid(python_module_name, '1.0')
         
         module_file_path = os.path.join(current_dir, 'python', module_name,
-                                         python_module_name+'.py')
+                                         python_module_name + '.py')
         
         # Make sure the program does not already exist
         if script_goes_on:
@@ -196,7 +195,7 @@ def mainMethod(args):
                     logger.info('# <%s> python module successfully created in <%s>.' % 
                                 (python_module_name, module_file_path))
                     # Remove backup file
-                    epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE)+'~')
+                    epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
                     logger.info('# Script over.')
             else:
                     logger.error('# <%s> project directory does not exist!'

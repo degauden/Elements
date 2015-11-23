@@ -10,11 +10,9 @@ This script creates a new Elements C++ Program
 
 import argparse
 import os
-import re
-import shutil
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.parseCmakeLists as pcl
+import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddCppProgram')
@@ -74,7 +72,7 @@ def substituteStringsInProgramFile(file_path, program_name, module_name):
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
-    date_str   = time.strftime("%x")
+    date_str = time.strftime("%x")
     author_str = epcr.getAuthor()
     # Make some substitutions
     file_name_str = os.path.join('src', 'program', program_name + '.cpp')
@@ -128,16 +126,16 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
                
         # Update elements_add_executable macro
-        source = 'src' + os.sep + 'program' + os.sep + program_name+ '.cpp'
-        existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name==program_name]
-        existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name==module_name]
+        source = 'src' + os.sep + 'program' + os.sep + program_name + '.cpp'
+        existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name == program_name]
+        existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
         link_libs = ['ElementsKernel']
         if module_dep_list:
-             link_libs = link_libs + module_dep_list
+            link_libs = link_libs + module_dep_list
         if existing_add_lib:
             link_libs += [module_name]
         if library_dep_list:
-             link_libs = link_libs + library_dep_list
+            link_libs = link_libs + library_dep_list
         if existing_exe:
             for lib in link_libs:
                 if not lib in existing_exe[0].link_libraries_list:
@@ -160,9 +158,8 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
     """
     Creates all necessary files for a program
     """    
-    script_goes_on = True 
     createDirectories(module_dir, module_name)
-    program_path = os.path.join(module_dir,'src','program')
+    program_path = os.path.join(module_dir, 'src', 'program')
     script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)    
     substituteStringsInProgramFile(program_path, program_name, module_name)
     addConfFile(module_dir, module_name, program_name) 
@@ -176,13 +173,13 @@ def defineSpecificProgramOptions():
     description = """
            """
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('program_name', metavar='program-name', 
-                        type=str, 
+    parser.add_argument('program_name', metavar='program-name',
+                        type=str,
                         help='Program name')
     parser.add_argument('-md', '--module-dependency', metavar='module_name',
                         action='append', type=str,
                         help='Dependency module name e.g."-md ElementsKernel"')
-    parser.add_argument('-ld', '--library-dependency', metavar='library_name', 
+    parser.add_argument('-ld', '--library-dependency', metavar='library_name',
                         action='append', type=str,
                         help='Dependency library name e.g."-ld ElementsKernel"')
 
@@ -198,10 +195,10 @@ def mainMethod(args):
 
     try:
         # True: no error occured
-        script_goes_on       = True 
+        script_goes_on = True 
         
         program_name = args.program_name
-        module_list  = args.module_dependency
+        module_list = args.module_dependency
         library_list = args.library_dependency
 
         # Default is the current directory
@@ -212,24 +209,24 @@ def mainMethod(args):
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
         
-        program_file_path = os.path.join(current_dir, 'src', 'program', 
-                                         program_name +'.cpp')
+        program_file_path = os.path.join(current_dir, 'src', 'program',
+                                         program_name + '.cpp')
         if script_goes_on:
-            script_goes_on = epcr.isFileAlreadyExist(program_file_path, 
+            script_goes_on = epcr.isFileAlreadyExist(program_file_path,
                                                             program_name)
         # Check program name is valid        
         if script_goes_on:
             script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
 
-         # Check aux file exist
+        # Check aux file exist
         if script_goes_on:
             script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
                    
         if script_goes_on and createCppProgram(current_dir, module_name, program_name, module_list, library_list):
             logger.info('# <%s> program successfully created in <%s>.' % 
-                        (program_name, current_dir + os.sep + 'src'+ os.sep + 'program'))
+                        (program_name, current_dir + os.sep + 'src' + os.sep + 'program'))
             # Remove backup file
-            epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE)+'~')
+            epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
             logger.info('# Script over.')
         else:
             logger.error('# Script aborted!')

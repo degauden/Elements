@@ -1,6 +1,5 @@
-import os                                 # for the path tools
-import argparse                           # for program options from configuration
-import ElementsKernel.Logging as log      # for Elements logging support
+import argparse  # for program options from configuration
+import ElementsKernel.Logging as log  # for Elements logging support
 from ElementsExamples.PythonModuleExample import ClassExample  # for ClassExample
 
 def defineSpecificProgramOptions():
@@ -43,13 +42,13 @@ def mainMethod(args):
     string_from_configuration = args.string_option
     logger.info('Example string : ' + string_from_configuration)
     second_element = args.int_list_option[1]
-    logger.info('Second elements from the list : ' + str(second_element) )
+    logger.info('Second elements from the list : ' + str(second_element))
     
     #
     #  Calling a static method
     #
     result = ClassExample.product(3, 4)
-    logger.info('Static method result : ' + str(result) )
+    logger.info('Static method result : ' + str(result))
     
     #
     #  Calling the constructor and a method member
