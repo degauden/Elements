@@ -51,12 +51,16 @@
 #ifndef REAL_H_
 #define REAL_H_
 
-#include <cstddef>
-#include <limits>
+//#include <cstddef>
+#include <limits>                  // for numeric_limits
 #include <type_traits>             // for is_floating_point
 #include <cmath>                   // for round
 
 #include "ElementsKernel/Export.h" // ELEMENTS_API
+
+
+using std::numeric_limits;
+
 
 namespace Elements {
 
@@ -68,9 +72,9 @@ constexpr std::size_t DBL_DEFAULT_MAX_ULPS { 10 };
 // For testing purposes only. Rather use the isEqual functions for real
 // life comparison
 /// Single precision float default test tolerance
-static const double FLT_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -FLT_DEFAULT_MAX_ULPS);
+static const double FLT_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<float>::digits10);
 /// Double precision float default test tolerance
-static const double DBL_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -DBL_DEFAULT_MAX_ULPS);
+static const double DBL_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<double>::digits10);
 
 
 template<std::size_t size>

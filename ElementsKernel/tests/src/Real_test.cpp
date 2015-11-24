@@ -72,6 +72,7 @@ BOOST_AUTO_TEST_CASE(DoubleCompare_test) {
 BOOST_AUTO_TEST_CASE(FloatCompare2_test) {
 
   using Elements::isEqual;
+  using Elements::FLT_DEFAULT_TEST_TOLERANCE;
 
   float f = 1.0F / 2.0F;
 
@@ -88,11 +89,14 @@ BOOST_AUTO_TEST_CASE(FloatCompare2_test) {
   BOOST_CHECK(isEqual(f, 0.5000001F));
   BOOST_CHECK(isEqual(f, 0.5F));
 
+  BOOST_CHECK_CLOSE(f, 0.5F, FLT_DEFAULT_TEST_TOLERANCE);
+
 }  // Eof FloatCompare2_test
 
 BOOST_AUTO_TEST_CASE(DoubleCompare2_test) {
 
   using Elements::isEqual;
+  using Elements::DBL_DEFAULT_TEST_TOLERANCE;
 
   double f = 1.0 / 2.0;
 
@@ -118,6 +122,9 @@ BOOST_AUTO_TEST_CASE(DoubleCompare2_test) {
 
   BOOST_CHECK(isEqual(f, 0.500000000000001));
   BOOST_CHECK(isEqual(f, 0.5));
+
+  BOOST_CHECK_CLOSE(f, 0.5, DBL_DEFAULT_TEST_TOLERANCE);
+
 
 }  // Eof DoubleCompare2_test
 
