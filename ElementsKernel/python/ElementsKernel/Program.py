@@ -121,7 +121,7 @@ class Program (object):
         self._logger.info("#")
         # for (name,value) in [opt for opt in vars(args).iteritems() if
         # opt[1]]:
-        for (name, value) in [opt for opt in vars(args).iteritems()]:
+        for name, value in [opt for opt in vars(args).iteritems()]:
             self._logger.info(names[name] + ' = ' + str(value))
         self._logger.info("#")
 
