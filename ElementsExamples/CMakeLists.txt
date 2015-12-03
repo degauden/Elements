@@ -116,6 +116,20 @@ elements_add_unit_test(TemplatedDataSourceUser_test_suite tests/src/GMock/Templa
                          LABELS GMock)
 endif(GMOCK_FOUND)
 
+#====== Build Tests =================================================================
+
+find_package(GSL)
+
+if(GSL_FOUND)
+
+elements_add_executable(GslExample src/program/GslExample.cpp
+                        LINK_LIBRARIES GSL ElementsExamples
+                        INCLUDE_DIRS GSL ElementsExamples)
+elements_add_test(GSLWorks COMMAND GslExample LABELS GSL Build)
+
+endif(GSL_FOUND)
+
+
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
 elements_install_conf_files()
