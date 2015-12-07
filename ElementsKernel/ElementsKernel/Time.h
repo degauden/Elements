@@ -305,6 +305,6 @@ private:
 
 } // Elements namespace
 
-#include "ElementsKernel/Time.icpp"
+#include "ElementsKernel/_impl/Time.icpp"
 
 #endif // ELEMENTSKERNEL_TIME_H

@@ -26,6 +26,10 @@ elements_add_unit_test(Real tests/src/Real_test.cpp
                        EXECUTABLE Real_test
                        INCLUDE_DIRS ElementsKernel
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
+elements_add_unit_test(Number tests/src/Number_test.cpp
+                       EXECUTABLE Number_test
+                       INCLUDE_DIRS ElementsKernel
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(Version tests/src/Version_test.cpp
                        EXECUTABLE Version_test
                        INCLUDE_DIRS ElementsKernel
@@ -56,9 +60,32 @@ elements_add_unit_test(ThisModule tests/src/ThisModule_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #-----------------------
-# ThisModule_test
+# Storage_test
 elements_add_unit_test(Storage tests/src/Storage_test.cpp
                        EXECUTABLE Storage_test
+                       INCLUDE_DIRS ElementsKernel
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
+#-----------------------
+# MathConstants_test
+elements_add_unit_test(MathConstants tests/src/MathConstants_test.cpp
+                       EXECUTABLE MathConstants_test
+                       INCLUDE_DIRS ElementsKernel
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+#-----------------------
+# SystemOfUnits_test
+elements_add_unit_test(SystemOfUnits tests/src/SystemOfUnits_test.cpp
+                       EXECUTABLE SystemOfUnits_test
+                       INCLUDE_DIRS ElementsKernel
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
+#-----------------------
+# SystemOfUnits_test
+elements_add_unit_test(BackTrace tests/src/BackTrace_test.cpp
+                       EXECUTABLE BackTrace_test
                        INCLUDE_DIRS ElementsKernel
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
@@ -74,5 +101,19 @@ elements_add_unit_test(Storage tests/src/Storage_test.cpp
 
 #---Python and Scripts ------------------------------------------------------------
 
+elements_add_python_program(CreateElementsProject ElementsKernel.Project)
+elements_add_python_program(AddElementsModule ElementsKernel.AddModule)
+elements_add_python_program(AddCppClass ElementsKernel.AddCppClass)
+elements_add_python_program(AddCppProgram ElementsKernel.AddCppProgram)
+elements_add_python_program(AddPythonProgram ElementsKernel.AddPythonProgram)
+elements_add_python_program(AddPythonModule ElementsKernel.AddPythonModule)
+
+elements_install_aux_files()
 elements_install_python_modules()
 
+elements_add_test(CreateElementsProject COMMAND createElementsProject_test)
+elements_add_test(AddElementsModule COMMAND addElementsModule_test)
+elements_add_test(AddCppClass COMMAND addCppClass_test)
+elements_add_test(AddCppProgram COMMAND addCppProgram_test)
+elements_add_test(AddPythonModule COMMAND addPythonModule_test)
+elements_add_test(AddPythonProgram COMMAND addPythonProgram_test)

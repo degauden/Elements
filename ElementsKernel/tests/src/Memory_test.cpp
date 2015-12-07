@@ -3,18 +3,23 @@
 
 #include "ElementsKernel/Unused.h"
 
-#include <cstdlib>
+#include <cstdlib>    // for free, malloc
 #include <iomanip>
-#include <iostream>
+#include <iostream>   // for cout
+#include <memory>     // for unique_ptr
 
 using namespace std;
-using namespace Elements::System;
 
 int main(ELEMENTS_UNUSED int argc, ELEMENTS_UNUSED char** argv) {
+
+  using Elements::System::MemoryUnit;
+  using Elements::System::InfoType;
+
   size_t kB = size_t(1024);
   size_t nBytes = kB * kB * size_t(500);
-  void* p = ::malloc(nBytes);
-  if (!p) {
+
+  unique_ptr<char> p {new char[nBytes]};
+  if (p == nullptr) {
     cout << "Failed to allocate " << nBytes << " bytes of memory." << endl;
     return 1;
   }
@@ -91,10 +96,5 @@ int main(ELEMENTS_UNUSED int argc, ELEMENTS_UNUSED char** argv) {
       << setw(4) << right << virtualMemoryLimit(MemoryUnit::GByte, InfoType::Quota, -1) << " GB "
       << endl;
 
-  if( (p != nullptr) ) {
-    ::free(p);
-    p = nullptr;
-  }
 
-  return 0;
 }

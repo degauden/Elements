@@ -5,7 +5,7 @@ import re
 import ElementsKernel.Logging as log
 
 
-class Program:
+class Program (object):
 
     def __init__(self, app_module, parent_project_version=None, parent_project_name=None):
         self._app_module = importlib.import_module(app_module)
@@ -35,7 +35,7 @@ class Program:
         else:
             rel_path = name
         conf_file = None
-        for conf_path in os.environ.get('ELEMENTS_CONF_PATH').split(':'):
+        for conf_path in os.environ.get('ELEMENTS_CONF_PATH').split(os.pathsep):
             if os.path.isfile(conf_path + os.sep + rel_path):
                 conf_file = conf_path + os.sep + rel_path
                 break
@@ -85,9 +85,26 @@ class Program:
         options = sys.argv[1:]
         options.extend(self._parseConfigFile(arg_parser, cmd_options))
         all_options = arg_parser.parse_args(options)
-        return all_options
 
-    def _logAllOptions(self, args):
+        # We create a map of the variable names to the option names to be used
+        # for further references
+        variable_to_option_name = {}
+        # Iterate through the names of the variables keeping the option values
+        for var in [v for v in dir(all_options) if not v.startswith('_')]:
+            # We get the related action from the argparser
+            action = next((a for a in arg_parser._actions if a.dest == var and a.option_strings), None)
+            if action:
+                # We chose as name the longest option name and we strip any leading '-'
+                variable_to_option_name[var] = max(action.option_strings, key=len).lstrip('-')
+            else:
+                # This happens if we didn't find an action for this variable or
+                # if it didn't have option_strings. In this case we just use the
+                # variable name
+                variable_to_option_name[var] = var
+
+        return all_options, variable_to_option_name
+
+    def _logAllOptions(self, args, names):
         self._logger.info(
             "##########################################################")
         self._logger.info(
@@ -104,8 +121,8 @@ class Program:
         self._logger.info("#")
         # for (name,value) in [opt for opt in vars(args).iteritems() if
         # opt[1]]:
-        for (name, value) in [opt for opt in vars(args).iteritems()]:
-            self._logger.info(name.replace('_', '-') + ' = ' + str(value))
+        for name, value in [opt for opt in vars(args).iteritems()]:
+            self._logger.info(names[name] + ' = ' + str(value))
         self._logger.info("#")
 
     def getVersion(self):
@@ -117,8 +134,8 @@ class Program:
         return version
 
     def runProgram(self):
-        args = self._parseParameters()
-        self._logAllOptions(args)
+        args, names = self._parseParameters()
+        self._logAllOptions(args, names)
         exit_code = 1
         try:
             exit_code = self._app_module.mainMethod(args)

@@ -1,5 +1,5 @@
 /**
- * @file ElementsExamples/src/Lib/ModuleInfo.cpp
+ * @file ElementsExamples/src/lib/ModuleInfo.cpp
  *
  * @date Feb 12, 2015
  * @author hubert
@@ -10,6 +10,7 @@
 #include "ElementsExamples/ModuleInfo.h"
 
 namespace Elements {
+namespace ElementsExamples {
 
 const System::ModuleInfo& getModuleInfo() {
 
@@ -17,6 +18,8 @@ const System::ModuleInfo& getModuleInfo() {
 
 }
 
+} // namespace ElementsExamples
 } // namespace Elements
+
 
 

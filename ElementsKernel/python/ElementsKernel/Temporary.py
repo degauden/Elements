@@ -61,7 +61,7 @@ class TempDir(object):
             rmtree(self._name)
 
 
-class TempFile:
+class TempFile(object):
 
     """ class to create a temporary file """
 

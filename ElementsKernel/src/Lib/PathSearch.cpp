@@ -7,7 +7,6 @@
 
 #include "ElementsKernel/PathSearch.h"  // for SearchType, etc
 
-#include <cstdlib>                      // for getenv
 #include <ostream>                      // for operator<<, basic_ostream, etc
 #include <string>                       // for string, char_traits
 #include <vector>                       // for vector
@@ -17,13 +16,19 @@
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/Exception.h"   // for Exception
+#include "ElementsKernel/System.h"
+#include "ElementsKernel/Logging.h"     // for the logger
 
 
 
 namespace fs = boost::filesystem;
-using namespace std;
+
+using std::vector;
+using std::string;
 
 namespace Elements {
+
+static Logging logger = Logging::getLogger("PathSearch");
 
 //-----------------------------------------------------------------------------
 // Function search
@@ -86,21 +91,18 @@ vector<string> pathSearch(string searched_name, string directory,
  * and call pathSearch(...) for each of them
  */
 vector<fs::path> pathSearchInEnvVariable(std::string file_name,
-    std::string path_like_env_variable) {
+                                            std::string path_like_env_variable,
+                                            SearchType search_type) {
 
   // Placeholder for the to-be-returned search result
   vector<fs::path> search_results { };
-  vector<fs::path> single_path_results { };
 
   // get the multiple path from the environment variable
-  char * multiple_path_ptr = ::getenv(path_like_env_variable.c_str());
-  if (multiple_path_ptr == nullptr) {
-    stringstream errorBuffer;
-    errorBuffer << "Environment variable: " << path_like_env_variable.c_str()
-        << " is not defined ! ";
-    throw Elements::Exception(errorBuffer.str());
+  string multiple_path {};
+  if (!System::getEnv(path_like_env_variable.c_str(), multiple_path)) {
+    logger.warn() << "Environment variable \"" << path_like_env_variable
+                  << "\" is not defined !";
   }
-  string multiple_path = multiple_path_ptr;
 
   // Tokenize the path elements
   vector<string> path_elements;
@@ -111,8 +113,9 @@ vector<fs::path> pathSearchInEnvVariable(std::string file_name,
     // Check if directory exists
     if (fs::exists(path_element) && fs::is_directory(path_element)) {
       // loop recursively inside directory
-      single_path_results = pathSearch(file_name, fs::path { path_element },
-          SearchType::Recursive);
+      auto single_path_results = pathSearch(file_name,
+                                            fs::path { path_element },
+                                            search_type);
       for (fs::path aPath : single_path_results) {
         search_results.push_back(aPath);
       }

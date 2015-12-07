@@ -70,12 +70,9 @@ if (EIGEN3_INCLUDE_DIR)
 
 else (EIGEN3_INCLUDE_DIR)
 
-  find_path(EIGEN3_INCLUDE_DIR NAMES signature_of_eigen3_matrix_library
-      PATHS
-      ${CMAKE_INSTALL_PREFIX}/include
-      ${KDE4_INCLUDE_DIR}
-      PATH_SUFFIXES eigen3 eigen
-    )
+  find_path(EIGEN3_INCLUDE_DIR signature_of_eigen3_matrix_library
+            HINTS ENV EIGEN3_INSTALL_DIR 
+            PATH_SUFFIXES include eigen3 include/eigen3 eigen include/eigen)
 
   if(EIGEN3_INCLUDE_DIR)
     _eigen3_check_version()
