@@ -6,7 +6,6 @@
 #include "ElementsKernel/FuncPtrCast.h"
 
 #include <cerrno>
-#include <string.h>
 #include <sys/times.h>
 #include <sys/param.h>
 #include <unistd.h>
@@ -118,13 +117,10 @@ ImageHandle exeHandle()    {
   static Dl_info infoBuf, *info = &infoBuf;
   if ( 0 == info ) {
     void* handle = ::dlopen(0, RTLD_LAZY);
-    //printf("Exe handle:%X\n", handle);
     if ( 0 != handle ) {
       void* func = ::dlsym(handle, "main");
-      //printf("Exe:Func handle:%X\n", func);
       if ( 0 != func ) {
       	if ( 0 != ::dladdr(func, &infoBuf) ) {
-	        //cout << "All OK" << endl;
       	  info = &infoBuf;
       	}
       }

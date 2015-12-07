@@ -20,11 +20,12 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <string>                       // for string
 
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
-#include <errno.h>                      // for errno
+#include <cerrno>                      // for errno
 #include <execinfo.h>                   // for backtrace
-#include <string.h>                     // for strlen
+#include <cstring>                     // for strlen
 #include <unistd.h>                     // for environ
 #include <cxxabi.h>
 #include <sys/utsname.h>
@@ -34,7 +35,11 @@
 
 using namespace std;
 
-static const char* SHLIB_SUFFIX = ".so";
+#if defined(__APPLE__)
+  static const string SHLIB_SUFFIX { ".dylib" };
+#else
+  static const string SHLIB_SUFFIX { ".so" };
+#endif
 
 static vector<string> s_argvStrings;
 static vector<const char*> s_argvChars;
@@ -60,20 +65,18 @@ static unsigned long doLoad(const string& name, ImageHandle* handle) {
 static unsigned long loadWithoutEnvironment(const string& name,
     ImageHandle* handle) {
 
-  string dllName = name;
-  unsigned long len = static_cast<unsigned long>(strlen(SHLIB_SUFFIX));
+  string dll_name = name;
+  size_t dll_len = dll_name.size();
+  size_t suf_len = SHLIB_SUFFIX.size();
 
   // Add the suffix at the end of the library name only if necessary
-  /// @todo cure the logic
-  if ((dllName.length() != 0)
-      && ::strncasecmp(
-          static_cast<const char *>(dllName.data() + dllName.length() - len),
-          SHLIB_SUFFIX, len) != 0) {
-    dllName += SHLIB_SUFFIX;
+  if (dll_len >= suf_len &&
+      dll_name.compare(dll_len - suf_len, suf_len, SHLIB_SUFFIX) != 0) {
+    dll_name += SHLIB_SUFFIX;
   }
 
   // Load the library
-  return doLoad(dllName, handle);
+  return doLoad(dll_name, handle);
 }
 
 // --------------------------------------------------------------------------------------
@@ -137,7 +140,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
   }
   if ( 0 == *pFunction ) {
     errno = 0xAFFEDEAD;
-    std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
+    cout << "Elements::System::getProcedureByName>" << getLastErrorString() << endl;
     return 0;
   }
   return 1;
@@ -170,7 +173,7 @@ const string getErrorString(unsigned long error) {
   if (error == 0xAFFEDEAD) {
     cerrString = (char*) ::dlerror();
     if (0 == cerrString) {
-      cerrString = ::strerror(error);
+      cerrString = strerror(error);
     }
     if (0 == cerrString) {
       cerrString =
@@ -180,19 +183,19 @@ const string getErrorString(unsigned long error) {
     }
     errno = 0;
   } else {
-    cerrString = ::strerror(error);
+    cerrString = strerror(error);
     errString = string(cerrString);
   }
   return errString;
 }
 
-const string typeinfoName(const std::type_info& tinfo) {
+const string typeinfoName(const type_info& tinfo) {
   return typeinfoName(tinfo.name());
 }
 
 const string typeinfoName(const char* class_name) {
   string result;
-  if (::strlen(class_name) == 1) {
+  if (strlen(class_name) == 1) {
     // See http://www.realitydiluted.com/mirrors/reality.sgi.com/dehnert_engr/cxx/abi.pdf
     // for details
     switch (class_name[0]) {
@@ -327,16 +330,15 @@ const string& machineType() {
 }
 
 /// User login name
-const string& accountName() {
-  static string account = "";
-  if (account == "") {
-    const char* acct = ::getlogin();
-    if (0 == acct)
-      acct = ::getenv("LOGNAME");
-    if (0 == acct)
-      acct = ::getenv("USER");
-    account = (acct) ? acct : "Unknown";
-  }
+string accountName() {
+  string account = ::getlogin();
+    if (0 == account.size())
+      account = getEnv("LOGNAME");
+    if (0 == account.size())
+      account = getEnv("USER");
+    if (0 == account.size())
+      account = "Unknown";
+
   return account;
 }
 
@@ -394,6 +396,11 @@ string getEnv(const char* var) {
     return "UNKNOWN";
   }
 }
+
+string getEnv(const string& var) {
+  return getEnv(var.c_str());
+}
+
 
 /// get a particular env var, storing the value in the passed string (if set)
 bool getEnv(const char* var, string &value) {
@@ -502,16 +509,15 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
 
     lib = info.dli_fname;
     addr = info.dli_saddr;
-    const char* dmg(0);
+    unique_ptr<char> dmg;
 
     if (symbol != 0) {
       int stat;
-      dmg = abi::__cxa_demangle(symbol, 0, 0, &stat);
-      fnc = (stat == 0) ? dmg : symbol;
+      dmg = std::unique_ptr<char>(abi::__cxa_demangle(symbol, 0, 0, &stat));
+      fnc = (stat == 0) ? dmg.get() : symbol;
     } else {
       fnc = "local";
     }
-    ::free((void*) dmg);
     return true;
   } else {
     return false;
@@ -528,11 +534,16 @@ int setEnv(const string &name, const string &value, int overwrite) {
   // UNIX version
   return value.empty() ?
   // remove if set to nothing (and return success)
-      ::unsetenv(name.c_str()), 0 :
+      unSetEnv(name), 0 :
       // set the value
       ::setenv(name.c_str(), value.c_str(), overwrite);
 
 }
+
+int unSetEnv(const string& name) {
+  return ::unsetenv(name.c_str());
+}
+
 
 } // namespace System
 } // namespace Elements

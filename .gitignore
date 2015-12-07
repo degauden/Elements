@@ -2,7 +2,6 @@
 *.pyc
 
 build.*.log
-Makefile
 NMake
 install.*.history
 setup.*
@@ -42,3 +41,6 @@ ElementsConfig.cmake
 ElementsConfigVersion.cmake
 /gmon.out
 /perf.data
+/build
+.ptp-sync
+.ptp-sync-folder

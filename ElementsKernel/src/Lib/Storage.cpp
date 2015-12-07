@@ -7,27 +7,31 @@
 
 #include "ElementsKernel/Storage.h"
 
-#include <map>
-#include <cstdint>
-#include <cmath>
-#include <string>
+#include <map>      // for std::map
+#include <cstdint>  // for std::int64_t
+#include <cmath>    // for std::pow, std::round, std::log10
+#include <string>   // for std::string
 
-using namespace std;
+using std::pow;
+using std::map;
+using std::string;
+using std::int64_t;
+using std::size_t;
 
 namespace Elements {
 namespace Units {
 
-map<StorageType, string> StorageShortName      { { StorageType::Byte,             "B"},
-                                                 { StorageType::KiloByte,        "KB"},
-                                                 { StorageType::MegaByte,        "MB"},
-                                                 { StorageType::GigaByte,        "GB"},
-                                                 { StorageType::TeraByte,        "TB"},
-                                                 { StorageType::PetaByte,        "PB"},
-                                                 { StorageType::MetricKiloByte, "KiB"},
-                                                 { StorageType::MetricMegaByte, "MiB"},
-                                                 { StorageType::MetricGigaByte, "GiB"},
-                                                 { StorageType::MetricTeraByte, "TiB"},
-                                                 { StorageType::MetricPetaByte, "PiB"} };
+map<StorageType, string> StorageShortName      { { StorageType::Byte,              "B"},
+                                                 { StorageType::KiloByte,        "KiB"},
+                                                 { StorageType::MegaByte,        "MiB"},
+                                                 { StorageType::GigaByte,        "GiB"},
+                                                 { StorageType::TeraByte,        "TiB"},
+                                                 { StorageType::PetaByte,        "PiB"},
+                                                 { StorageType::MetricKiloByte,   "KB"},
+                                                 { StorageType::MetricMegaByte,   "MB"},
+                                                 { StorageType::MetricGigaByte,   "GB"},
+                                                 { StorageType::MetricTeraByte,   "TB"},
+                                                 { StorageType::MetricPetaByte,   "PB"} };
 
 
 map<StorageType, int64_t> StorageFactor        { { StorageType::Byte,                    1},
@@ -42,25 +46,19 @@ map<StorageType, int64_t> StorageFactor        { { StorageType::Byte,           
                                                  { StorageType::MetricTeraByte, pow(10,12)},
                                                  { StorageType::MetricPetaByte, pow(10,15)} };
 
-double roundToDigits(const double& value, const size_t& max_digits) {
-  int64_t factor = pow(10, max_digits);
-  return round(value * double(factor))/double(factor);
-}
 
 
-double storageConvert(const int64_t& size, StorageType source_unit, StorageType target_unit) {
-  double value= double(size);
 
-  if (source_unit != target_unit) {
-    int64_t size_in_bytes = size * StorageFactor[StorageType::Byte];
-    int64_t target_factor = StorageFactor[target_unit];
-    value = roundToDigits(double(size_in_bytes)/double(target_factor), size_t(log10(double(target_factor))));
-  }
+// explicit instantiation: without the template<>. Otherwise this is a template specialization
+template double roundToDigits<double>(const double& value, const size_t& max_digits);
+template float roundToDigits<float>(const float& value, const size_t& max_digits);
 
-  return value;
 
-}
+template double storageConvert<double>(const double& size, StorageType source_unit, StorageType target_unit);
+template float storageConvert<float>(const float& size, StorageType source_unit, StorageType target_unit);
+template int64_t storageConvert<int64_t>(const int64_t& size, StorageType source_unit, StorageType target_unit);
 
-} // namespace Units
-} // namespace Elements
+
+}  // namespace Units
+}  // namespace Elements
 

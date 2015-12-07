@@ -8,14 +8,15 @@
 #include <cerrno>
 #include <cstring>
 #include <sstream>
-
-// local
-using namespace std;
+#include <string>     // for std::string
+#include <algorithm>  // for std::max
 
 // architecture dependent includes
 
 #include <sys/time.h>
 
+
+using std::string;
 
 namespace Elements {
 
@@ -40,7 +41,7 @@ Time::Time(int year, int month, int day, int hour, int min, int sec,
   val.tm_mday = day;
   val.tm_mon = month;
   val.tm_year = year > 1900 ? year - 1900 : year;
-  val.tm_isdst = -1; /// \todo choose a better value
+  val.tm_isdst = -1;  /// \todo choose a better value
 
   m_nsecs = build(local, val, nsecs).m_nsecs;
 }
@@ -48,6 +49,9 @@ Time::Time(int year, int month, int day, int hour, int min, int sec,
 
 /** Return the current system time.  */
 Time Time::current(void) {
+
+  using std::ostringstream;
+
   timeval tv;
   if (::gettimeofday(&tv, 0) != 0) {
     char buf[256];
@@ -58,12 +62,7 @@ Time Time::current(void) {
     } else {
       msg << "Unknown error retrieving current time";
     }
-    //throw ElementsException(msg.str(), tag.str(), StatusCode::FAILURE);
-    //
-    // 	Change by Pierre Dubath (August 5th, 2013) in order to get rid of the class
-    //	ElementsException created by Marco Clemencic and to replace it by EuclidException that will be renamed
-    // 	ElementsException once the old ElementsException is deleted
-    //
+
     string message = msg.str() + tag.str();
     throw Exception(message);
   }
@@ -82,7 +81,7 @@ Time Time::build(bool local, const tm &base, TimeSpan diff /* = 0 */) {
  cannot be stored into @c tm.  */
 tm Time::split(bool local, int *nsecpart /* = 0 */) const {
   if (nsecpart)
-    *nsecpart = (int) (m_nsecs % SEC_NSECS);
+    *nsecpart = static_cast<int>(m_nsecs % SEC_NSECS);
 
   time_t val = (time_t) (m_nsecs / SEC_NSECS);
 
@@ -145,7 +144,7 @@ int Time::second(bool local) const {
  time zone and daylight savings never affects the value at
  the subsecond granularity. */
 int Time::nsecond(void) const {
-  return (int) (m_nsecs % SEC_NSECS);
+  return static_cast<int> (m_nsecs % SEC_NSECS);
 }
 
 /** Get the day of week, numbered [0,6] and starting from Sunday.  */
@@ -208,7 +207,7 @@ string Time::format(bool local, string spec) const {
       if (pos != 0 && spec[pos - 1] != '%') {
         spec.replace(pos, 2, ms);
       }
-      pos = spec.find("%f", pos + 1); // search for the next occurrence
+      pos = spec.find("%f", pos + 1);  // search for the next occurrence
     }
   }
   const int MIN_BUF_SIZE = 128;
@@ -237,6 +236,10 @@ string Time::format(bool local, string spec) const {
  less or equal to @a maxwidth.  */
 string Time::nanoformat(size_t minwidth /* = 1 */,
     size_t maxwidth /* = 9 */) const {
+
+  using std::ostringstream;
+  using std::max;
+
   TimeAssert((minwidth >= 1) && (minwidth <= maxwidth) && (maxwidth <= 9),
       "nanoformat options do not satisfy: 1 <= minwidth <= maxwidth <= 9");
 
@@ -250,10 +253,11 @@ string Time::nanoformat(size_t minwidth /* = 1 */,
   string out = buf.str();
   // Find the last non-0 char before maxwidth, but after minwidth
   // (Note: -1 and +1 are to account for difference between position and size.
-  //        moreover, npos + 1 == 0, so it is correct to say that 'not found' means size of 0)
+  //        moreover, npos + 1 == 0, so it is correct to say that 'not found'
+  // means size of 0)
   size_t len = out.find_last_not_of('0', maxwidth - 1) + 1;
   // Truncate the output string to at least minwidth chars
-  out.resize(std::max(len, minwidth));
+  out.resize(max(len, minwidth));
   return out;
 }
 
@@ -291,6 +295,6 @@ Time Time::fromDosDate(unsigned dosDate) {
   return Time(::mktime(&localtm), 0);
 }
 
-} // namespace Elements
+}  // namespace Elements
 
 //=============================================================================

@@ -10,6 +10,7 @@
 
 #include <string>
 #include <utility>
+#include <map>
 
 #include <boost/program_options.hpp>
 
@@ -38,7 +39,7 @@ public:
   /**
    * @brief Destructor
    */
-  virtual ~Program() {};
+  virtual ~Program();
 
   /**
    * @brief
@@ -79,6 +80,11 @@ public:
 
 };
 
+/** These are examples of how to create a executable program using
+ * the Program class.
+ * @example ElementsExamples/src/program/SimpleProgramExample.cpp
+ * @include ElementsExamples/src/program/ProgramExample.cpp
+ */
 }
 
 #endif /* ELEMENTSPROGRAM_H_ */

@@ -186,7 +186,7 @@ class Test(unittest.TestCase):
             stri = f.readline()
         f.close()
 
-        self.assertEqual(stri, 'export sysVar=newValue:lala\n')
+        self.assertEqual(stri, 'export sysVar=newValue:lala' + os.linesep)
 
         os.remove('setupFile.txt')
 
@@ -520,7 +520,8 @@ class Test(unittest.TestCase):
             control = Control.Environment()
             control.loadXML('env.xml')
             self.assertTrue(os.path.samefile(str(control['mydirs']), tmp()))
-            self.assertTrue(os.path.samefile(str(control['myparent']), os.path.dirname(tmp())))
+            self.assertTrue(
+                os.path.samefile(str(control['myparent']), os.path.dirname(tmp())))
         finally:
             os.chdir(olddir)
 

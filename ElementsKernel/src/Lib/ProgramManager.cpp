@@ -9,6 +9,7 @@
 // TODO question to Hubert: what is this???
 #include "ElementsKernel/NoGlibDebug.h"
 
+#include <cstdlib>                         // for the exit function
 #include <fstream>
 #include <iostream>
 
@@ -74,50 +75,64 @@ const po::variables_map ProgramManager::getProgramOptions(
   po::variables_map variables_map { };
 
   // default value for default_log_level option
-  int default_log_level = 400;
-
-  // Initialization
-  fs::path config_file;
+  string default_log_level = "INFO";
 
   // Get defaults
   fs::path default_config_file = getDefaultConfigFile(getProgramName());
-
-  // Define the Generic options
-  po::options_description generic_options("Generic options");
-  generic_options.add_options()
-  //
-  ("version", "Print version string")
-  //
-  ("help", "Produce help message")
-  //
-  ("config-file",
-      po::value<fs::path>(&config_file)->default_value(
-          default_config_file), "Name of a configuration file")
-  //
-  ("log-level", po::value<int>()->default_value(default_log_level),
-      "Log level: NONE=0, FATAL=100, ERROR=200, WARN=300, INFO=400 (default), DEBUG=500")
-  //
-  ("log-file",
-      po::value<fs::path>(),"Name of a log file");
-
-  // Get the definition of the specific options from the derived class
-  po::options_description specific_options =  m_program_ptr->defineSpecificProgramOptions();
-  pair<po::options_description,po::positional_options_description> program_arguments = m_program_ptr->defineProgramArguments();
-
-  // Put all options together
-  po::options_description all_options;
-  all_options.add(generic_options).add(specific_options).add(program_arguments.first);
-
-  // Parse the command line and store the options in the variable map
-//  po::store(po::parse_command_line(argc, argv, all_options),
-//      variables_map);
-  po::store(po::command_line_parser(argc,argv).options(all_options).positional(program_arguments.second).run(),
-            variables_map);
-  po::notify(variables_map);
+  
+  // Define the options which can be given only at the command line
+  po::options_description cmd_only_generic_options {};
+  cmd_only_generic_options.add_options()
+      ("version", "Print version string")
+      ("help", "Produce help message")
+      ("config-file",
+          po::value<fs::path>()->default_value(default_config_file),
+          "Name of a configuration file");
+  
+  // Define the options which can be given both at command line and conf file
+  po::options_description cmd_and_file_generic_options {};
+  cmd_and_file_generic_options.add_options()
+      ("log-level", po::value<string>()->default_value(default_log_level),
+         "Log level: FATAL, ERROR, WARN, INFO (default), DEBUG")
+      ("log-file",
+         po::value<fs::path>(),"Name of a log file");
+  
+  // Group all the generic options, for help output. Note that we add the options
+  // one by one to avoid having empty lines between the groups
+  po::options_description all_generic_options {"Generic options"};
+  for (auto o : cmd_only_generic_options.options()) {
+    all_generic_options.add(o);
+  }
+  for (auto o : cmd_and_file_generic_options.options()) {
+    all_generic_options.add(o);
+  }
+  
+  // Get the definition of the specific options and arguments(positional options)
+  // from the derived class
+  auto specific_options = m_program_ptr->defineSpecificProgramOptions();
+  auto program_arguments = m_program_ptr->defineProgramArguments();
+  po::options_description all_specific_options {};
+  all_specific_options.add(specific_options)
+                      .add(program_arguments.first);
+  
+  // Put together all the options to parse from the cmd line and the file
+  po::options_description all_cmd_and_file_options {};
+  all_cmd_and_file_options.add(cmd_and_file_generic_options)
+                          .add(all_specific_options);
+  
+  // Put together all the options to use for the help message
+  po::options_description help_options {};
+  help_options.add(all_generic_options).add(all_specific_options);
+  
+  // Perform a first parsing of the command line, to handle the cmd only options
+  auto cmd_parsed_options = po::command_line_parser(argc, argv)
+                                    .options(cmd_only_generic_options)
+                                    .allow_unregistered().run();
+  po::store(cmd_parsed_options, variables_map);
 
   // Deal with the "help" option
   if (variables_map.count("help")) {
-    cout << all_options << endl;
+    cout << help_options << endl;
     exit(0);
   }
 
@@ -126,18 +141,33 @@ const po::variables_map ProgramManager::getProgramOptions(
     cout << getVersion() << endl;
     exit(0);
   }
-
-  // Open the configuration file
-  ifstream ifs(config_file.c_str());
-  if (ifs) {
-    /*
-     * Parse the configuration file and put option values into the variable map only
-     * if they were not already specified on the command line
-     */
-    po::store(parse_config_file(ifs, specific_options), variables_map);
-    po::notify(variables_map);
+  
+  // Get the configuration file. It is guaranteed to exist, because it has default value
+  auto config_file = variables_map.at("config-file").as<fs::path>();
+  
+  // Parse from the command line the rest of the options. Here we also handle
+  // the positional arguments.
+  auto leftover_cmd_options = po::collect_unrecognized(cmd_parsed_options.options,
+                                                       po::include_positional);
+  po::store(po::command_line_parser(leftover_cmd_options)
+                      .options(all_cmd_and_file_options)
+                      .positional(program_arguments.second)
+                      .run(),
+            variables_map);
+  
+  // Parse from the configuration file if it exists
+  if (!config_file.empty() && fs::exists(config_file)) {
+    ifstream ifs {config_file.string()};
+    if (ifs) {
+      po::store(po::parse_config_file(ifs, all_cmd_and_file_options), variables_map);
+    }
   }
-  // return the variable_map load with all options
+  
+  // After parsing both the command line and the conf file notify the variables
+  // map, so we can get any messages for missing parameters
+  po::notify(variables_map);
+
+  // return the variable_map loaded with all options
   return variables_map;
 }
 
@@ -210,7 +240,7 @@ void ProgramManager::logAllOptions(string program_name) {
     } else {
       log_message << "Option " << iter->first << " of type "
           << iter->second.value().type().name() << " not supported in logging !"
-          << "\n";
+          << endl;
     }
     // write the log message
     logger.info(log_message.str());
@@ -231,9 +261,9 @@ void ProgramManager::setup(int argc, char* argv[]) {
   m_variables_map = getProgramOptions(argc, argv);
 
   // get the program options related to the logging
-  Logging::Level logging_level;
+  string logging_level;
   if (m_variables_map.count("log-level")) {
-    logging_level = (Logging::Level) m_variables_map["log-level"].as<int>();
+    logging_level = m_variables_map["log-level"].as<string>();
   } else {
      throw Exception("Required option log-level is not provided!", ExitCode::CONFIG);
   }
@@ -290,6 +320,8 @@ string ProgramManager::getVersion() const {
 
   return version;
 }
+
+ProgramManager::~ProgramManager() {}
 
 
 } // namespace Elements

@@ -11,8 +11,9 @@ Vendor:         @CPACK_PACKAGE_VENDOR@
 
 BuildRoot: %{_tmppath}/%{name}-root
 
-BuildRequires: gcc > 4.7, cmake >= 2.6
+BuildRequires: gcc > 4.7, cmake >= 2.6@RPM_DEVEL_DEP_LIST@
 
+Requires: python@RPM_DEP_LIST@
 Requires(post):    /sbin/ldconfig
 Requires(postun):  /sbin/ldconfig
 
@@ -22,13 +23,13 @@ Requires(postun):  /sbin/ldconfig
 %define _proj_vers_dir %{_proj_name_dir}/%{version}
 %define _proj_ia_dir %{_proj_vers_dir}/InstallArea
 %define _prefix %{_proj_ia_dir}/%{bin_tag}
-%define build_dir_name @BUILD_PREFIX_NAME@.%{bin_tag}
+%define build_dir_name @BUILD_SUBDIR@
 %define libdir %{_prefix}/lib
 %define pydir %{_prefix}/python
 %define scriptsdir %{_prefix}/scripts
 %define cmakedir %{_prefix}/cmake
-%define confdir %{_prefix}/conf
-%define auxdir %{_prefix}/aux
+%define confdir %{_prefix}/@CONF_DIR_NAME@
+%define auxdir %{_prefix}/@AUX_DIR_NAME@
 
 %define debug_package %{nil}
 
@@ -38,13 +39,14 @@ Requires(postun):  /sbin/ldconfig
 %package devel
 Group:  Development/Libraries
 Summary: The development part of the %{name} package
-Requires: %{name} = %{version}-%{release}, cmake >= 2.6
+Requires: cmake >= 2.6, %{name} = %{version}-%{release}@RPM_DEVEL_DEP_LIST@
 
 %description devel
 The development part of the %{name} package.
 
 %package debuginfo
 Summary: Debug information for package %{name}
+Requires: %{name} = %{version}-%{release}@RPM_DEBUGINFO_DEP_LIST@
 
 %description debuginfo
 Debug information for package %{name}
@@ -61,9 +63,21 @@ else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
+toolchain_name=ElementsToolChain.cmake
+if [[ -f "${PWD}/cmake/${toolchain_name}" ]]; then
+  toolchain_file=${PWD}/cmake/${toolchain_name}
+else
+  if [[ -f "/usr/share/EuclidEnv/cmake/${toolchain_name}" ]]; then
+    toolchain_file=/usr/share/EuclidEnv/cmake/${toolchain_name}
+  fi
+fi
 %__mkdir -p %{build_dir_name}
 cd %{build_dir_name}
-%cmake @CPACK_EXTRA_CMAKEFLAGS@ ../
+if [[ -z "${toolchain_file}" ]]; then
+  %cmake @CPACK_EXTRA_CMAKEFLAGS@ ../
+else
+  %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} ../
+fi
 %__make VERBOSE=1 %{?_smp_mflags} all
 
 %install

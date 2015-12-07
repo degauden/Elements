@@ -5,14 +5,15 @@
  *     Author: Pierre Dubath
  */
 
-#include <iostream>
-#include <string>
+#include <string>                     // for std::string
 #include <boost/test/unit_test.hpp>
 
 #include "ElementsExamples/ModuleInfo.h"
 
-using namespace Elements;
 using namespace std;
+using namespace Elements;
+using namespace ElementsExamples;
+
 
 //-----------------------------------------------------------------------------
 

@@ -14,8 +14,9 @@
 #include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Temporary.h"
 
-using namespace std;
 namespace fs = boost::filesystem;
+
+using std::string;
 
 namespace Elements {
 
@@ -81,4 +82,4 @@ TempFile::~TempFile() {
 
 }
 
-} // namespace Elements
+}  // namespace Elements
