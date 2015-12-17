@@ -33,8 +33,8 @@ message(STATUS "The relative location for the build is set to ${BUILD_SUBDIR}")
 
 
 # Special defaults
-if ( (SGS_COMP STREQUAL gcc AND ( SGS_COMPVERS MATCHES "4[7-9]" OR SGS_COMPVERS MATCHES "5[0-1]"))
-    OR (SGS_COMP STREQUAL clang AND SGS_COMPVERS MATCHES "3[0-9]") 
+if ( (SGS_COMP STREQUAL gcc AND ( SGS_COMPVERS MATCHES "4[7-9]|5[0-9]|max" ))
+    OR (SGS_COMP STREQUAL clang AND SGS_COMPVERS MATCHES "3[0-9]")
     OR (SGS_COMP STREQUAL llvm))
 
   # C++11 is enable by default on gcc47 and gcc48
@@ -229,7 +229,7 @@ if(APPLE)
 endif()
 
 #--- Special build flags -------------------------------------------------------
-if ((ELEMENTS_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[0-9]"))
+if ((ELEMENTS_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND (SGS_COMPVERS MATCHES "4[0-9]|5[0-9]|max")))
   set(CMAKE_CXX_VISIBILITY_PRESET hidden)
   set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
   add_definitions(-DELEMENTS_HIDE_SYMBOLS)
@@ -277,12 +277,12 @@ if ( APPLE AND ( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm")))
   endif()
 endif()
 
-if ( ELEMENTS_PARALLEL AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[2-9]") )
+if ( ELEMENTS_PARALLEL AND (SGS_COMP STREQUAL gcc AND (SGS_COMPVERS MATCHES "4[2-9]|5[0-9]|max")) )
   add_definitions(-D_GLIBCXX_PARALLEL)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 endif()
 
-if ( ELEMENTS_FORTIFY AND (SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[1-9]") )
+if ( ELEMENTS_FORTIFY AND (SGS_COMP STREQUAL gcc AND (SGS_COMPVERS MATCHES "4[1-9]|5[0-9]|max")) )
   if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND SGS_COMPVERS VERSION_GREATER "47" AND OPT_DEBUG)
     add_definitions(-D_FORTIFY_SOURCE=2)
   endif()
@@ -312,7 +312,7 @@ endif()
 if(ELEMENTS_HIDE_WARNINGS)
   if( (SGS_COMP MATCHES clang) OR (SGS_COMP MATCHES llvm) )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated -Wno-overloaded-virtual -Wno-char-subscripts -Wno-unused-parameter")
-  elseif(SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[3-9]|max")
+  elseif(SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[3-9]|5[0-9]|max")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated -Wno-empty-body")
   endif()
 endif()
@@ -325,7 +325,7 @@ endif()
 #--- Special flags -------------------------------------------------------------
 add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 
-if((SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "47|48|49|max") OR ELEMENTS_CPP11)
+if((SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "47|48|49|5[0-9]|max") OR ELEMENTS_CPP11)
   set(GCCXML_CXX_FLAGS "${GCCXML_CXX_FLAGS} -D__STRICT_ANSI__")
 endif()
 
