@@ -25,6 +25,9 @@ BOOST_AUTO_TEST_CASE(ThisModuleName_test) {
 
 }
 
+#if not defined(ELEMENTS_HIDE_SYMBOLS)
+// This is needed because the "main" function of the boost test wrapper does
+// not expose itself.
 BOOST_AUTO_TEST_CASE(ThisExeName_test) {
 
   // Get the present module. Here this must be the test executable
@@ -32,6 +35,7 @@ BOOST_AUTO_TEST_CASE(ThisExeName_test) {
   BOOST_CHECK_EQUAL(getThisExecutableInfo().name(), "ThisModule_test");
 
 }
+#endif
 
 BOOST_AUTO_TEST_CASE(ThisModuleConversion_test) {
 
