@@ -9,6 +9,7 @@
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/format.hpp>                 // for format
 
+#include <gsl/gsl_version.h>
 #include <gsl/gsl_sf_bessel.h>              // for gsl_sf_bessel_J0
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
@@ -29,6 +30,8 @@ public:
   Elements::ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
     Elements::Logging logger = Elements::Logging::getLogger("GslExample");
+
+    logger.info() << "GSL version: " << gsl_version;
 
 
     double x = 5.0;
