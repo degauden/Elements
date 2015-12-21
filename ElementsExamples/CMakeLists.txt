@@ -130,6 +130,18 @@ elements_add_test(GSLWorks COMMAND GslExample LABELS GSL Build)
 endif(GSL_FOUND)
 
 
+find_package(HealpixCpp)
+
+if(HEALPIXCPP_FOUND)
+
+elements_add_executable(HealpixExample src/program/HealpixExample.cpp
+                        LINK_LIBRARIES HealpixCpp ElementsExamples
+                        INCLUDE_DIRS HealpixCpp ElementsExamples)
+elements_add_test(HealpixCppWorks COMMAND HealpixExample LABELS Healpix Build)
+
+endif(HEALPIXCPP_FOUND)
+
+
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
 elements_install_conf_files()
