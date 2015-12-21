@@ -13,7 +13,7 @@
 #include "ElementsKernel/Exception.h"
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 using namespace std;
 
