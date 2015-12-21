@@ -12,7 +12,7 @@
 #include "ElementsKernel/ModuleInfo.h"
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 ELEMENTS_API const System::ModuleInfo& getModuleInfo();
 

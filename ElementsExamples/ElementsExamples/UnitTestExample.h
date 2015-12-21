@@ -12,7 +12,7 @@
 #include "ElementsKernel/Export.h"
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 /**
  * @class UnitTestExample
