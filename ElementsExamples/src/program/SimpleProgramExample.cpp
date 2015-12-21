@@ -15,7 +15,7 @@ namespace po = boost::program_options;
 using namespace std;
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 
 /**
@@ -63,4 +63,4 @@ public:
 } // namespace Elements
 
 
-MAIN_FOR(Elements::ElementsExamples::SimpleProgramExample)
+MAIN_FOR(Elements::Examples::SimpleProgramExample)

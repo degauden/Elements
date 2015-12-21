@@ -12,7 +12,7 @@
 
 
 using namespace Elements;
-using namespace ElementsExamples;
+using namespace Examples;
 
 
 BOOST_AUTO_TEST_SUITE (TemplatedDataSourceUser_test_suite)

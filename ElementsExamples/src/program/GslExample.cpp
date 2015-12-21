@@ -12,9 +12,10 @@
 #include <gsl/gsl_sf_bessel.h>              // for gsl_sf_bessel_J0
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
+#include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 namespace po = boost::program_options;
 
@@ -25,7 +26,7 @@ class GslExample: public Elements::Program {
 public:
 
 
-  Elements::ExitCode mainMethod(map<string, po::variable_value>& /*args*/) override {
+  Elements::ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
     Elements::Logging logger = Elements::Logging::getLogger("GslExample");
 
@@ -50,5 +51,5 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::ElementsExamples::GslExample)
+MAIN_FOR(Elements::Examples::GslExample)
 
