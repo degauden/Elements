@@ -154,6 +154,18 @@ elements_add_test(XercesCWorks COMMAND XercesExample LABELS Xerces Build)
 endif(XERCESC_FOUND)
 
 
+find_package(WCSLIB)
+
+if(WCSLIB_FOUND)
+
+elements_add_executable(WcsExample src/program/WcsExample.cpp
+                        LINK_LIBRARIES WCSLIB ElementsExamples
+                        INCLUDE_DIRS WCSLIB ElementsExamples)
+elements_add_test(WCSLIBWorks COMMAND GslExample LABELS Wcs Build)
+
+endif(WCSLIB_FOUND)
+
+
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
 elements_install_conf_files()
