@@ -7,7 +7,7 @@
 using namespace testing;
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 /**
  * @class Euclid::ExampleModule::DataSourceUserTemplatedTypeMock
  *

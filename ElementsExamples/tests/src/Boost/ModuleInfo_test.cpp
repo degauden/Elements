@@ -12,7 +12,7 @@
 
 using namespace std;
 using namespace Elements;
-using namespace ElementsExamples;
+using namespace Examples;
 
 
 //-----------------------------------------------------------------------------

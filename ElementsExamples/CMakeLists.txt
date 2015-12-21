@@ -99,7 +99,7 @@ elements_add_unit_test(OtherClassExampleWithMain tests/src/CppUnit/ClassExample_
                        EXECUTABLE OtherClassExampleWithMain_test
                        INCLUDE_DIRS CppUnit ElementsExamples
                        LINK_LIBRARIES CppUnit ElementsExamples
-                       LABELS CustomLabel)
+                       LABELS CustomLabel CppUnit)
 endif()
 
 #===== Tests using GMock =======================================================
