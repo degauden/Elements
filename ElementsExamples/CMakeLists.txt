@@ -142,6 +142,18 @@ elements_add_test(HealpixCppWorks COMMAND HealpixExample LABELS Healpix Build)
 endif(HEALPIXCPP_FOUND)
 
 
+find_package(XercesC)
+
+if(XERCESC_FOUND)
+
+elements_add_executable(XercesExample src/program/XercesExample.cpp
+                        LINK_LIBRARIES XercesC ElementsExamples
+                        INCLUDE_DIRS XercesC ElementsExamples)
+elements_add_test(XercesCWorks COMMAND XercesExample LABELS Xerces Build)
+
+endif(XERCESC_FOUND)
+
+
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
 elements_install_conf_files()
