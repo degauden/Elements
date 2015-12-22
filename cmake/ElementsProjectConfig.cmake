@@ -23,7 +23,9 @@ endif()
 if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
   cmake_policy(SET CMP0063 NEW)
 else()
-  cmake_policy(SET CMP0063 OLD)
+  if(CMAKE_VERSION VERSION_GREATER 2.8.11)
+    cmake_policy(SET CMP0063 OLD)
+  endif()
 endif()
 
 if (NOT HAS_ELEMENTS_TOOLCHAIN)
