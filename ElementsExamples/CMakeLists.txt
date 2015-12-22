@@ -166,6 +166,19 @@ elements_add_test(WCSLIBWorks COMMAND GslExample LABELS Wcs Build)
 endif(WCSLIB_FOUND)
 
 
+find_package(FFTW)
+
+if(FFTW_FOUND)
+
+elements_add_executable(FftwExample src/program/FftwExample.cpp
+                        LINK_LIBRARIES FFTW ElementsExamples
+                        INCLUDE_DIRS FFTW ElementsExamples)
+elements_add_test(FFTWWorks COMMAND FftwExample LABELS Fftw Build)
+
+endif(FFTW_FOUND)
+
+
+
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
 elements_install_conf_files()
