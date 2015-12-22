@@ -11,7 +11,7 @@
 
 
 namespace Elements{
-namespace ElementsExamples {
+namespace Examples {
 
 
 

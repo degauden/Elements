@@ -30,8 +30,9 @@ def main():
 #include <cppunit/ui/text/TestRunner.h>
 
 #include "ElementsKernel/Unused.h"
+#include "ElementsKernel/Export.h"
 
-int main(ELEMENTS_UNUSED int argc, ELEMENTS_UNUSED char **argv)
+ELEMENTS_API int main(ELEMENTS_UNUSED int argc, ELEMENTS_UNUSED char **argv)
 {
   CppUnit::TextUi::TestRunner runner;
   CppUnit::TestFactoryRegistry &registry = CppUnit::TestFactoryRegistry::getRegistry();

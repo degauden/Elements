@@ -13,7 +13,7 @@
 #include "ElementsKernel/Export.h"  // For ELEMENTS_API
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 /**
  * @class DataSourceInterface

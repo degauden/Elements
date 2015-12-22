@@ -11,7 +11,7 @@
 #include "ElementsExamples/UnitTestExample.h"
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 double UnitTestExample::average (const std::vector<int>& v) {
 

@@ -10,7 +10,7 @@
 #include "ElementsExamples/ModuleInfo.h"
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 const System::ModuleInfo& getModuleInfo() {
 
