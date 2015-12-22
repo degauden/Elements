@@ -36,10 +36,9 @@ public:
 
     fftw_complex in[N], out[N], in2[N]; /* double [2] */
     fftw_plan p, q;
-    size_t i;
 
     /* prepare a cosine wave */
-    for (i = 0; i < N; i++) {
+    for (size_t i = 0; i < N; i++) {
       in[i][0] = cos(3 * 2*Elements::Units::pi*i/N);
       in[i][1] = 0;
     }
@@ -47,8 +46,9 @@ public:
     /* forward Fourier transform, save the result in 'out' */
     p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
     fftw_execute(p);
-    for (i = 0; i < N; i++)
+    for (size_t i = 0; i<N; i++) {
       logger.info() << boost::format("freq: %3d %+9.5f %+9.5f I") % i % out[i][0] % out[i][1];
+    }
     fftw_destroy_plan(p);
 
     /* backward Fourier transform, save the result in 'in2' */
@@ -56,12 +56,13 @@ public:
     q = fftw_plan_dft_1d(N, out, in2, FFTW_BACKWARD, FFTW_ESTIMATE);
     fftw_execute(q);
     /* normalize */
-    for (i = 0; i < N; i++) {
+    for (size_t i = 0; i<N; i++) {
       in2[i][0] *= 1./N;
       in2[i][1] *= 1./N;
     }
-    for (i = 0; i < N; i++)
+    for (size_t i = 0; i<N; i++) {
       logger.info() << boost::format("recover: %3d %+9.5f %+9.5f I vs. %+9.5f %+9.5f I") % i % in[i][0] % in[i][1] % in2[i][0] % in2[i][1];
+    }
     fftw_destroy_plan(q);
 
     fftw_cleanup();

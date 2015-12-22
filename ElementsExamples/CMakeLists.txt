@@ -121,62 +121,55 @@ endif(GMOCK_FOUND)
 find_package(GSL)
 
 if(GSL_FOUND)
-
 elements_add_executable(GslExample src/program/GslExample.cpp
                         LINK_LIBRARIES GSL ElementsExamples
                         INCLUDE_DIRS GSL ElementsExamples)
 elements_add_test(GSLWorks COMMAND GslExample LABELS GSL Build)
-
 endif(GSL_FOUND)
 
 
 find_package(HealpixCpp)
-
 if(HEALPIXCPP_FOUND)
-
 elements_add_executable(HealpixExample src/program/HealpixExample.cpp
                         LINK_LIBRARIES HealpixCpp ElementsExamples
                         INCLUDE_DIRS HealpixCpp ElementsExamples)
 elements_add_test(HealpixCppWorks COMMAND HealpixExample LABELS Healpix Build)
-
 endif(HEALPIXCPP_FOUND)
 
 
 find_package(XercesC)
-
 if(XERCESC_FOUND)
-
 elements_add_executable(XercesExample src/program/XercesExample.cpp
                         LINK_LIBRARIES XercesC ElementsExamples
                         INCLUDE_DIRS XercesC ElementsExamples)
 elements_add_test(XercesCWorks COMMAND XercesExample LABELS Xerces Build)
-
 endif(XERCESC_FOUND)
 
 
 find_package(WCSLIB)
-
 if(WCSLIB_FOUND)
-
 elements_add_executable(WcsExample src/program/WcsExample.cpp
                         LINK_LIBRARIES WCSLIB ElementsExamples
                         INCLUDE_DIRS WCSLIB ElementsExamples)
 elements_add_test(WCSLIBWorks COMMAND GslExample LABELS Wcs Build)
-
 endif(WCSLIB_FOUND)
 
 
 find_package(FFTW)
-
 if(FFTW_FOUND)
-
 elements_add_executable(FftwExample src/program/FftwExample.cpp
                         LINK_LIBRARIES FFTW ElementsExamples
                         INCLUDE_DIRS FFTW ElementsExamples)
 elements_add_test(FFTWWorks COMMAND FftwExample LABELS Fftw Build)
-
 endif(FFTW_FOUND)
 
+find_package(Eigen3)
+if(EIGEN3_FOUND)
+elements_add_executable(EigenExample src/program/EigenExample.cpp
+                        LINK_LIBRARIES Eigen3 ElementsExamples
+                        INCLUDE_DIRS Eigen3 ElementsExamples)
+elements_add_test(EigenWorks COMMAND EigenExample LABELS Eigen Build)
+endif(FFTW_FOUND)
 
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
