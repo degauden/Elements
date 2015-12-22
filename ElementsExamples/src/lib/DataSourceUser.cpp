@@ -10,7 +10,7 @@
 #include "ElementsExamples/DataSourceUser.h"
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 double DataSourceUser::sumRecords (const DataSourceInterface& data_source) {
   double sum = 0.;

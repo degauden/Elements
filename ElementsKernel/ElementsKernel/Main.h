@@ -10,7 +10,10 @@
 
 #include "ElementsKernel/Exit.h"
 #include "ElementsKernel/ProgramManager.h"
+#include "ElementsKernel/Export.h"                 // ELEMENTS_API
+
 #include "ThisProject.h"
+
 
 /** @def MAIN_FOR(ELEMENTS_PROGRAM_NAME)
  * Macro which must be used to create a main in classes
@@ -23,7 +26,7 @@
  * the class Elements::Program class.
  */
 #define MAIN_FOR(ELEMENTS_PROGRAM_NAME)         \
-  int main(int argc, char* argv[])              \
+  ELEMENTS_API int main(int argc, char* argv[])              \
   {                                             \
     Elements::ProgramManager man {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
                                   THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING}; \

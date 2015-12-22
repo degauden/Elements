@@ -15,7 +15,7 @@
 
 using namespace std;
 using namespace Elements;
-using namespace ElementsExamples;
+using namespace Examples;
 
 // tolerance value to compare floating point numbers
 double tolerance = 1e-12;

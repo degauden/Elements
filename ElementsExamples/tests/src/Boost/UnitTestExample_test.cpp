@@ -11,7 +11,7 @@
 #include "ElementsKernel/Exception.h" // Exception
 
 
-using namespace Elements::ElementsExamples;
+using namespace Elements::Examples;
 
 
 // Starts a test suite and name it.

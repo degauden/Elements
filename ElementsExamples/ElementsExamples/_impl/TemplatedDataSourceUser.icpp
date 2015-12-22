@@ -8,7 +8,7 @@
 #include <cstddef>   // for std::size_t
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 template <typename T>
  double TemplatedDataSourceUser::sumRecords(const T& data_source){

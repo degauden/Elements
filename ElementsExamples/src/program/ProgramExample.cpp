@@ -10,7 +10,7 @@
 #include "ElementsExamples/ClassExample.h"
 
 namespace Elements {
-namespace ElementsExamples {
+namespace Examples {
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -173,5 +173,5 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::ElementsExamples::ProgramExample)
+MAIN_FOR(Elements::Examples::ProgramExample)
 

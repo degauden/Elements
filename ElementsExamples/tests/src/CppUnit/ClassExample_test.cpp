@@ -17,7 +17,7 @@
 
 using namespace std;
 using namespace Elements;
-using namespace ElementsExamples;
+using namespace Examples;
 
 /*
  * Fixture to compare the test result against reference values

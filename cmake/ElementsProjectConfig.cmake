@@ -18,6 +18,14 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
   endif()
 endif()
 
+# this policy is related to the symbol visibility
+# please run "cmake --help-policy CMP0063" for more details
+if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
+  cmake_policy(SET CMP0063 NEW)
+else()
+  cmake_policy(SET CMP0063 OLD)
+endif()
+
 if (NOT HAS_ELEMENTS_TOOLCHAIN)
   # this is the call to the preload_local_module_path is the toolchain has not been called
   # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
@@ -40,7 +48,6 @@ if (NOT HAS_ELEMENTS_TOOLCHAIN)
   list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 
 endif()
-
 
 include(ElementsUtils)
 
@@ -180,9 +187,9 @@ macro(elements_project project version)
 
   if(APPLE)
       set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
-          "Install RPath." FORCE )  
+          "Install RPath." FORCE )
       set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
-          "Install Name Dir." FORCE )  
+          "Install Name Dir." FORCE )
   endif()
 
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
@@ -2011,41 +2018,41 @@ endfunction()
 #
 # Create a SWIG binary python module from the specified sources (glob patterns are allowed), linking
 # it with the libraries specified and adding the include directories to the search path. The sources
-# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package 
+# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package
 # (module).
 #---------------------------------------------------------------------------------------------------
 function(elements_add_swig_binding binding)
 
   find_package(SWIG QUIET REQUIRED)
   find_package(PythonLibs QUIET REQUIRED)
-  
+
   # this function uses an extra option: 'PUBLIC_HEADERS'
   CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
-  
+
   set(MODULE_ARG_LINK_LIBRARIES ${ARG_LINK_LIBRARIES})
   set(MODULE_ARG_INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-  
-  
-  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS} 
-                            LIBRARIES ${ARG_LIBRARIES} 
-                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES} 
+
+
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
+                            LIBRARIES ${ARG_LIBRARIES}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
                             INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
- 
+
   get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
   list(REMOVE_DUPLICATES dirs)
   set(SWIG_MOD_INCLUDE_DIRS)
   foreach(dir ${dirs})
     set(SWIG_MOD_INCLUDE_DIRS ${SWIG_MOD_INCLUDE_DIRS} -I${dir})
   endforeach()
-   
+
   if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
     elements_get_package_name(package)
     message(WARNING "Binding ${binding} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
   endif()
-    
+
   # find the sources
   elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
-  
+
   set(cpp_srcs)
   set(i_srcs)
   foreach(s ${srcs})
@@ -2055,12 +2062,12 @@ function(elements_add_swig_binding binding)
       list(APPEND cpp_srcs ${s})
     endif()
   endforeach()
- 
+
   set(PY_MODULE_DIR ${CMAKE_BINARY_DIR}/python)
   set(PY_MODULE ${binding})
   set(PY_MODULE_SWIG_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PY_MODULE}PYTHON_wrap.cxx)
- 
- 
+
+
   #SWIG command
   add_custom_command(
 	OUTPUT
@@ -2076,11 +2083,11 @@ function(elements_add_swig_binding binding)
 		${SWIG_MOD_INCLUDE_DIRS}
 		-o ${PY_MODULE_SWIG_SRC}
 		${i_srcs}
-	DEPENDS 
+	DEPENDS
 		${i_srcs}
 	COMMENT "Generating SWIG binding"
   )
- 
+
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
                              LINK_LIBRARIES ${MODULE_ARG_LINK_LIBRARIES}
