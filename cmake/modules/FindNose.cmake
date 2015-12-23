@@ -6,7 +6,7 @@ if (NOT NOSE_FOUND)
 # handle the QUIETLY and REQUIRED arguments and set NOSE_FOUND to TRUE if
 # all listed variables are TRUE
     INCLUDE(FindPackageHandleStandardArgs)
-    FIND_PACKAGE_HANDLE_STANDARD_ARGS(NOSE DEFAULT_MSG NOSE_EXECUTABLE)
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS(Nose DEFAULT_MSG NOSE_EXECUTABLE)
 
     mark_as_advanced(NOSE_FOUND NOSE_EXECUTABLE)
 
