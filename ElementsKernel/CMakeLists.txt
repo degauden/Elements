@@ -1,7 +1,7 @@
 elements_subdir(ElementsKernel)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread program_options system regex)
-find_package(Log4CPP)
+find_package(Log4CPP REQUIRED)
 
 #---Libraries---------------------------------------------------------------
 elements_add_library(ElementsKernel src/Lib/*.cpp
