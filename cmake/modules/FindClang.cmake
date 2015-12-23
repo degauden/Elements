@@ -16,7 +16,7 @@ find_program(CLANG_CXX_COMPILER
 # handle the QUIETLY and REQUIRED arguments and set CLANG_FOUND to TRUE if
 # all listed variables are TRUE
 INCLUDE(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(CLANG  DEFAULT_MSG
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(Clang  DEFAULT_MSG
                                   CLANG_C_COMPILER CLANG_CXX_COMPILER)
 #
 
