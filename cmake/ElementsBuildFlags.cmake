@@ -91,6 +91,9 @@ option(USE_PYTHON_NOSE
        "Use nose as python test runner"
        OFF)
 
+option(ELEMENTS_USE_RPATH
+       "Use full RPATH for both build and installation"
+       ON)
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
