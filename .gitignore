@@ -44,3 +44,4 @@ ElementsConfigVersion.cmake
 /build
 .ptp-sync
 .ptp-sync-folder
+.cache

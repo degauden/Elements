@@ -118,7 +118,7 @@ endif(GMOCK_FOUND)
 
 #====== Build Tests =================================================================
 
-find_package(GSL)
+find_package(GSL QUIET)
 
 if(GSL_FOUND)
 elements_add_executable(GslExample src/program/GslExample.cpp
@@ -128,7 +128,7 @@ elements_add_test(GSLWorks COMMAND GslExample LABELS GSL Build)
 endif()
 
 
-find_package(HealpixCpp)
+find_package(HealpixCpp QUIET)
 if(HEALPIXCPP_FOUND)
 elements_add_executable(HealpixExample src/program/HealpixExample.cpp
                         LINK_LIBRARIES HealpixCpp ElementsExamples
@@ -137,7 +137,7 @@ elements_add_test(HealpixCppWorks COMMAND HealpixExample LABELS Healpix Build)
 endif()
 
 
-find_package(XercesC)
+find_package(XercesC QUIET)
 if(XERCESC_FOUND)
 elements_add_executable(XercesExample src/program/XercesExample.cpp
                         LINK_LIBRARIES XercesC ElementsExamples
@@ -146,7 +146,7 @@ elements_add_test(XercesCWorks COMMAND XercesExample LABELS Xerces Build)
 endif()
 
 
-find_package(WCSLIB)
+find_package(WCSLIB QUIET)
 if(WCSLIB_FOUND)
 elements_add_executable(WcsExample src/program/WcsExample.cpp
                         LINK_LIBRARIES WCSLIB ElementsExamples
@@ -155,7 +155,7 @@ elements_add_test(WCSLIBWorks COMMAND GslExample LABELS Wcs Build)
 endif()
 
 
-find_package(FFTW)
+find_package(FFTW QUIET)
 if(FFTW_FOUND)
 elements_add_executable(FftwExample src/program/FftwExample.cpp
                         LINK_LIBRARIES FFTW ElementsExamples
@@ -163,7 +163,7 @@ elements_add_executable(FftwExample src/program/FftwExample.cpp
 elements_add_test(FFTWWorks COMMAND FftwExample LABELS Fftw Build)
 endif()
 
-find_package(Eigen3)
+find_package(Eigen3 QUIET)
 if(EIGEN3_FOUND)
 elements_add_executable(EigenExample src/program/EigenExample.cpp
                         LINK_LIBRARIES Eigen3 ElementsExamples
