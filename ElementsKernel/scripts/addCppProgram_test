@@ -1,0 +1,123 @@
+#!/bin/sh 
+
+home_dir=${PWD}
+
+project_name="ProjectTest"
+version="1.0"
+module_name="ModuleTest"
+cpp_program_name="CppProgramTest"
+module_dep_name="Alexandria"
+library_dep_name="Boost"
+
+# Create unique directory 
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+# Clean and exit
+clean_and_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+# Set to the User_area
+export User_area=${tmploc}
+
+cd ${tmploc}
+
+# We need to create first a project
+CreateElementsProject $project_name $version
+
+# if error stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+# Move to the project
+cd $User_area/$project_name/$version/
+
+# We need to create a module
+AddElementsModule $module_name
+
+# if error stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+# Move to the module directory
+cd $User_area/$project_name/$version/$module_name
+
+# if error stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+# Create a CPP program
+AddCppProgram $cpp_program_name -md $module_dep_name -ld $library_dep_name
+
+# if error stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+module_path="$User_area/$project_name/$version/$module_name"
+
+# make sure the class files are created
+if [ ! -e "$module_path/src/program/$cpp_program_name.cpp" ]; then
+   clean_and_exit 1
+fi
+
+# Make sure the elements_depends_on_subdirs Macro is there and ElementsKernel
+result=$( grep "elements_depends_on_subdirs" $module_path/CMakeLists.txt | 
+          grep ElementsKernel )
+if [ $? -ne 0 ]  ;then
+   clean_and_exit 1
+fi
+
+# Make sure the elements_depends_on_subdirs Macro is there and module dependency
+result=$( grep "elements_depends_on_subdirs" $module_path/CMakeLists.txt |
+           grep -v "#" | grep $module_dep_name )
+if [ $? -ne 0 ]  ;then
+   clean_and_exit 1
+fi
+
+# Make sure the find_package Macro is there and module dependency
+result=$( grep "find_package" $module_path/CMakeLists.txt |  grep -v "#" | 
+          grep $library_dep_name )
+if [ $? -ne 0 ]  ;then
+   clean_and_exit 1
+fi
+
+# Make sure the elements_add_executable Macro is there
+result=$( grep "elements_add_executable" $module_path/CMakeLists.txt | grep $cpp_program_name )
+if [ $? -ne 0 ]  ;then
+   clean_and_exit 1
+fi
+
+# Make sure the LINK_LIBRARIES Macro is there and ElementsKernel
+result=$( grep "LINK_LIBRARIES" $module_path/CMakeLists.txt | grep -v "#" |
+          grep "ElementsKernel" )
+if [ $? -ne 0 ]  ;then
+   clean_and_exit 1
+fi
+
+# Make sure the LINK_LIBRARIES Macro is there and module dependency
+result=$( grep "LINK_LIBRARIES" $module_path/CMakeLists.txt | grep -v "#" |
+          grep $module_dep_name )
+if [ $? -ne 0 ]  ;then
+   clean_and_exit 1
+fi
+
+# Make sure the LINK_LIBRARIES Macro is there and library dependency
+result=$( grep "LINK_LIBRARIES" $module_path/CMakeLists.txt | grep -v "#" |
+          grep $library_dep_name )
+if [ $? -ne 0 ]  ;then
+   clean_and_exit 1
+fi
+
+# Make sure the elements_install_conf_files Macro is there
+result=$( grep "elements_install_conf_files" $module_path/CMakeLists.txt )
+if [ $? -ne 0 ]  ;then
+   clean_and_exit 1
+fi
+
+clean_and_exit 0

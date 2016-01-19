@@ -32,7 +32,26 @@ namespace Elements {
  *
  * @return
  */
-ELEMENTS_API std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId);
+ELEMENTS_API std::string getVersionFromSvnKeywords(const std::string& svnUrl, const std::string& svnId);
+
+/**
+ * @brief
+ *    Function converting the version numbers into a string
+ * @details
+ *    This function return either 2 numbers separated with a "." if the patch number is zero.
+ *    Or 3 numbers separated with a "." if the patch is not zero.
+ * @param major
+ *    Major version number
+ * @param minor
+ *    Minor version number
+ * @param patch
+ *    Patch version number
+ * @return
+ *    The formatted string with the version numbers
+ */
+ELEMENTS_API std::string getVersionString(const unsigned short major,
+                                          const unsigned short minor,
+                                          const unsigned short patch=0);
 
 } // Elements namespace
 

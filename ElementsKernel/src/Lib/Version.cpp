@@ -11,11 +11,15 @@
 
 #include "ElementsKernel/Version.h"
 
-using namespace std;
+
+using std::string;
+
 
 namespace Elements {
 
-std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId) {
+string getVersionFromSvnKeywords(const string& svnUrl, const string& svnId) {
+
+    using std::vector;
 
      // output to-be-returned version
     string version {};
@@ -44,5 +48,24 @@ std::string getVersionFromSvnKeywords(std::string svnUrl, std::string svnId) {
     }
     return version;
   }
+
+string getVersionString(const unsigned short major, const unsigned short minor, const unsigned short patch) {
+
+
+  using std::to_string;
+
+  string version {""};
+
+  version += to_string(major);
+  version += ".";
+  version += to_string(minor);
+
+  if (0 != patch) {
+    version += ".";
+    version += to_string(patch);
+  }
+
+  return version;
+}
 
 } // Elements namespace

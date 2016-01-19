@@ -1,27 +1,56 @@
+/**
+ * @file ElementsKernel/ModuleInfo.h
+ * @brief OS specific details to access at run-time the module
+ * configuration of the process.
+ * @date Dec 1, 2014
+ * @author hubert
+ */
+
 #ifndef ELEMENTSKERNEL_MODULEINFO_H
 #define ELEMENTSKERNEL_MODULEINFO_H
 
-// Framework include files
-#include "ElementsKernel/Export.h" // ELEMENTS_API
 // STL include files
 #include <string>
 #include <vector>
+#include <memory>
+#include <dlfcn.h>
 
-/** ModuleInfo: OS specific details to access at run-time the module
- configuration of the process.
+// Framework include files
+#include "ElementsKernel/Export.h" // ELEMENTS_API
 
- M.Frank
- */
 namespace Elements {
 namespace System {
+
+/// constant that represent the common prefix of the libraries
+static std::string LIB_PREFIX = std::string("lib");
+#ifndef __APPLE__
+/// constant that represents the standard extension of the libraries
+static std::string LIB_EXTENSION = std::string("so");
+#else
+static std::string LIB_EXTENSION = std::string("dylib");
+#endif
+/// constant that represents the standard suffix of the libraries:
+/// usually "."+LIB_EXTENSION
+static std::string LIB_SUFFIX = "." + LIB_EXTENSION;
+
+class ELEMENTS_API ModuleInfo {
+public:
+  ModuleInfo();
+  ModuleInfo(void *);
+  const std::string name() const;
+  operator const Dl_info&() const;
+  bool isEmpty() const;
+private:
+  std::unique_ptr<Dl_info> m_dlinfo;
+};
 
 enum class ModuleType {
   UNKNOWN, SHAREDLIB, EXECUTABLE
 };
 /// Definition of an image handle
-typedef void* ImageHandle;
+using ImageHandle = void*;
 /// Definition of the process handle
-typedef void* ProcessHandle;
+using ProcessHandle = void*;
 /// Get the name of the (executable/DLL) file without file-type
 ELEMENTS_API const std::string& moduleName();
 /// Get the full name of the (executable/DLL) file

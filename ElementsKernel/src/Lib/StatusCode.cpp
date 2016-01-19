@@ -1,4 +1,3 @@
-#define ELEMENTSKERNEL_STATUSCODE_CPP 1
 
 #include "ElementsKernel/StatusCode.h"
 
@@ -9,8 +8,6 @@
 #include "ElementsKernel/Likely.h"      // for UNLIKELY
 #include "ElementsKernel/System.h"      // for backTrace, getStackLevel
 
-
-using namespace std;
 
 namespace Elements {
 
@@ -26,6 +23,7 @@ void StatusCode::disableChecking() {
 
 
 StatusCode::~StatusCode() {
+
   if(UNLIKELY(s_checking)) {
 
 	    //
@@ -34,18 +32,18 @@ StatusCode::~StatusCode() {
 	    // 	ElementsException once the old ElementsException is deleted
 	    //
 	    //if (!m_checked && !ElementsException::s_proc && !uncaught_exception() ) {
-	        if (!m_checked && !uncaught_exception() ) {
+	        if (!m_checked && !std::uncaught_exception() ) {
 
       const size_t depth = 21;
       void* addresses[depth];
 
-      string lib, fnc;
+      std::string lib, fnc;
 
       /// @todo : (MCl) use backTrace(string&, const int, const int) instead
       if (Elements::System::backTrace(addresses, depth)) {
         void* addr = nullptr;
         if (Elements::System::getStackLevel(addresses[2], addr, fnc, lib)) {
-        	cout << "Unchecked in " << fnc << " " << lib << endl;
+        	std::cout << "Unchecked in " << fnc << " " << lib << std::endl;
         }
       }
 

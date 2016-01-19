@@ -11,11 +11,15 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cstdint>                     // for std::int64_t
+
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
-using namespace std;
+//using namespace std;
+
+using std::int64_t;
 
 //-----------------------------------------------------------------------------
 //
@@ -23,25 +27,13 @@ using namespace std;
 //
 //-----------------------------------------------------------------------------
 
-struct ElementsTiming_Fixture {
-
-  ElementsTiming_Fixture()
-  {
-    // setup
-  }
-  ~ElementsTiming_Fixture()
-  {
-    // teardown
-  }
-};
-
-BOOST_AUTO_TEST_SUITE (ElementsTiming_test)
+BOOST_AUTO_TEST_SUITE(ElementsTiming_test)
 
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(adjustTime_test)
 {
-  int64_t t = 12345678901234560LL; // units of 100 nanoseconds
+  int64_t t = 12345678901234560LL;  // units of 100 nanoseconds
   // 1234567890123456000 nanoseconds
   //    1234567890123456 microseconds
   //       1234567890123 milliseconds
@@ -53,22 +45,22 @@ BOOST_AUTO_TEST_CASE(adjustTime_test)
   //                  39 years (of 365 days)
   //   12345678901234560 native
   BOOST_CHECK(
-      Elements::System::adjustTime<Elements::System::nanoSec>(t) == (int64_t)1234567890123456000LL);
+      Elements::System::adjustTime<Elements::System::nanoSec>(t) == static_cast<int64_t>(1234567890123456000LL));
   BOOST_CHECK(
-      Elements::System::adjustTime<Elements::System::microSec>(t) == (int64_t)1234567890123456LL);
+      Elements::System::adjustTime<Elements::System::microSec>(t) == static_cast<int64_t>(1234567890123456LL));
   BOOST_CHECK(
-      Elements::System::adjustTime<Elements::System::milliSec>(t) == (int64_t)1234567890123LL);
-  BOOST_CHECK(Elements::System::adjustTime<Elements::System::Sec>(t) == (int64_t)1234567890LL);
-  BOOST_CHECK(Elements::System::adjustTime<Elements::System::Min>(t) == (int64_t)20576131LL);
+      Elements::System::adjustTime<Elements::System::milliSec>(t) == static_cast<int64_t>(1234567890123LL));
+  BOOST_CHECK(Elements::System::adjustTime<Elements::System::Sec>(t) == static_cast<int64_t>(1234567890LL));
+  BOOST_CHECK(Elements::System::adjustTime<Elements::System::Min>(t) == static_cast<int64_t>(20576131LL));
   BOOST_CHECK(
-      Elements::System::adjustTime<Elements::System::Hour>(t) == (int64_t)342935LL);
-  BOOST_CHECK(Elements::System::adjustTime<Elements::System::Day>(t) == (int64_t)14288LL);
+      Elements::System::adjustTime<Elements::System::Hour>(t) == static_cast<int64_t>(342935LL));
+  BOOST_CHECK(Elements::System::adjustTime<Elements::System::Day>(t) == static_cast<int64_t>(14288LL));
   BOOST_CHECK(
-      Elements::System::adjustTime<Elements::System::Month>(t) == (int64_t)476LL);
+      Elements::System::adjustTime<Elements::System::Month>(t) == static_cast<int64_t>(476LL));
   BOOST_CHECK(
-      Elements::System::adjustTime<Elements::System::Year>(t) == (int64_t)39LL);
+      Elements::System::adjustTime<Elements::System::Year>(t) == static_cast<int64_t>(39LL));
   BOOST_CHECK(
-      Elements::System::adjustTime<Elements::System::Native>(t) == (int64_t)12345678901234560LL);
+      Elements::System::adjustTime<Elements::System::Native>(t) == static_cast<int64_t>(12345678901234560LL));
 
 
 }
@@ -83,13 +75,13 @@ BOOST_AUTO_TEST_CASE(processTime_test)
   BOOST_CHECK(t1.kernelTime<Elements::System::Sec>() == t1.kernelTime<Elements::System::milliSec>() / 1000);
 
   // measure the elapsed time
-  BOOST_CHECK((t1 - t0).elapsedTime<Elements::System::Sec>() == (int64_t)1LL);
+  BOOST_CHECK((t1 - t0).elapsedTime<Elements::System::Sec>() == static_cast<int64_t>(1LL));
 
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()
 
 //-----------------------------------------------------------------------------
 //

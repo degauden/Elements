@@ -16,7 +16,7 @@ ProcessDescriptor* getProcess();
 /** Basic Process Information
  NtQueryInformationProcess using ProcessBasicInfo
  */
-typedef struct _PEB *PPEB;
+using PPEB = struct _PEB *;
 struct PROCESS_BASIC_INFORMATION {
   long ExitStatus;
   PPEB PebBaseAddress;
@@ -109,7 +109,7 @@ class ProcessDescriptor {
     void* m_handle;
     bool m_needRelease;
   public:
-    ProcessHandle(long pid);
+    explicit ProcessHandle(long pid);
     virtual ~ProcessHandle();
     long item() {
       return m_needRelease ? true : false ;

@@ -9,7 +9,8 @@
 
 #include <boost/filesystem.hpp>
 #include <log4cpp/Category.hh>
-
+#include <string>
+#include <map>
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
 namespace Elements {
@@ -75,23 +76,9 @@ private:
   // functions. It is defined in the private section at the end.
   class LogMessageStream;
 
-public:
 
-  /**
-   * The different available levels of logging
-   */
-  typedef enum {
-    /// Very severe error events that will lead the application to abort
-    FATAL = 100,
-    /// Error events that might still allow the application to continue running
-    ERROR = 200,
-    /// Designates potentially harmful situations
-    WARN = 300,
-    /// Informational messages that highlight the progress of the application
-    INFO = 400,
-    /// Fine-grained informational events
-    DEBUG = 500
-  } Level;
+
+public:
 
   /**
    * Returns an instance of Elements::Logging which can be used for logging
@@ -111,7 +98,7 @@ public:
    *
    * @param level The new message level
    */
-  ELEMENTS_API static void setLevel(Level level);
+  ELEMENTS_API static void setLevel(std::string level);
 
   /**
    * @brief

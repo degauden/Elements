@@ -8,21 +8,22 @@
 #ifndef ELEMENTSKERNEL_DEPRECATED_H_
 #define ELEMENTSKERNEL_DEPRECATED_H_
 
-#if __GNUC__ >= 4
-#  ifndef ELEMENTS_DEPRECATED
-/**
+#include "ElementsKernel/Attribute.h"
+
+#ifndef ELEMENTS_DEPRECATED
+/** @def ELEMENTS_DEPRECATED
  * This macro create a warning message for a deprecated function or class
  */
-#    define ELEMENTS_DEPRECATED __attribute__ ((__deprecated__))
-#  endif
-#  ifndef ELEMENTS_DEPRECATED_MSG
-/**
+#  define ELEMENTS_DEPRECATED __attribute__ ((__deprecated__))
+#endif
+
+#ifndef ELEMENTS_DEPRECATED_MSG
+/** @def ELEMENTS_DEPRECATED_MSG(msg)
  * This macro create a warning message for a deprecated function or class
- * This version takes a msg as argument. This message will be displayed together
+ * This version takes a \a msg as argument. This message will be displayed together
  * with the deprecation warning.
  */
-#    define ELEMENTS_DEPRECATED_MSG(msg)  __attribute__ ((__deprecated__(msg)))
-#  endif
+#  define ELEMENTS_DEPRECATED_MSG(msg)  __attribute__ ((__deprecated__(msg)))
 #endif
 
 

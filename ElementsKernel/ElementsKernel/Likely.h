@@ -8,11 +8,21 @@
 #ifndef ELEMENTSKERNEL_LIKELY_H_
 #define ELEMENTSKERNEL_LIKELY_H_
 
+/** @def LIKELY(x)
+ * Macro for compiler branch optimisation. To be used when is \a x
+ * condition is more likely to happen that the other one
+ */
+/** @def UNLIKELY(x)
+ * Macro for compiler branch optimisation. To be used when is \a x
+ * condition is less likely to happen that the other one
+ */
+
+
 // -------------- LIKELY/UNLIKELY macros (begin)
 // Use compiler hinting to improve branch prediction for linux
 #ifdef __GNUC__
-#  define LIKELY(x)       __builtin_expect((x),1)
-#  define UNLIKELY(x)     __builtin_expect((x),0)
+#  define LIKELY(x)       __builtin_expect(!!(x),1)
+#  define UNLIKELY(x)     __builtin_expect(!!(x),0)
 #else
 #  define LIKELY(x)       x
 #  define UNLIKELY(x)     x

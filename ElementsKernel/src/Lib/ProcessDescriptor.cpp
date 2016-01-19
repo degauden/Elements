@@ -1,38 +1,5 @@
 #define ELEMENTSKERNEL_PROCSTAT_CPP
 
-static const long TICK_TO_100NSEC = 100000;
-
-namespace Elements {
-namespace System {
-enum ProcessInfoCommand {
-  ProcessBasicInformation,
-  ProcessQuotaLimits,
-  ProcessIoCounters,
-  ProcessVmCounters,
-  ProcessTimes,
-  ProcessBasePriority,
-  ProcessRaisePriority,
-  ProcessDebugPort,
-  ProcessExceptionPort,
-  ProcessAccessToken,
-  ProcessLdtInformation,
-  ProcessLdtSize,
-  ProcessDefaultHardErrorMode,
-  ProcessIoPortHandlers,          // Note: this is kernel mode only
-  ProcessPooledUsageAndLimits,
-  ProcessWorkingSetWatch,
-  ProcessUserModeIOPL,
-  ProcessEnableAlignmentFaultFixup,
-  ProcessPriorityClass,
-  ProcessWx86Information,
-  ProcessHandleCount,
-  ProcessAffinityMask,
-  ProcessPriorityBoost,
-  MaxProcessInfoClass,  //
-  ProcessEllapsedTime
-};
-}
-}
 #define WINVER 0
 #include <cerrno>
 #include <string>
@@ -264,7 +231,7 @@ struct linux_proc {
 #ifdef __APPLE__
 // static long  pg_size = 0;
 #else
-static long pg_size = sysconf(_SC_PAGESIZE); // getpagesize();
+static long pg_size = ::sysconf(_SC_PAGESIZE); // getpagesize();
 #endif
 void readProcStat(long pid, linux_proc& pinfo) {
 
@@ -292,7 +259,7 @@ void readProcStat(long pid, linux_proc& pinfo) {
     buf[cnt] = '\0';
     sscanf(buf,
         //1  2  3  4  5  6  7  8  9  10  1   2   3   4   5   6   7   8   9   20  1   2   3   4   5   6   7   8   9   30  1   2   3   4   5
-        "%d %s %c %d %d %d %d %d %lu %lu %lu %lu %lu %lu %lu %ld %ld %ld %ld %ld %ld %llu %lu %ld %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
+        "%d %399s %c %d %d %d %d %d %lu %lu %lu %lu %lu %lu %lu %ld %ld %ld %ld %ld %ld %llu %lu %ld %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
         &pinfo.pid, pinfo.comm, &pinfo.state, &pinfo.ppid, &pinfo.pgrp,
         &pinfo.session, &pinfo.tty, &pinfo.tpgid, &pinfo.flags, &pinfo.minflt,
         &pinfo.cminflt, &pinfo.majflt, &pinfo.cmajflt, &pinfo.utime,
@@ -305,10 +272,12 @@ void readProcStat(long pid, linux_proc& pinfo) {
   close(fd);
 }
 
+#include "ElementsKernel/Unused.h"
+
 //static long s_myPid  = ::getpid();
 // In order to properly support e.g. fork() calls, we cannot keep a copy of the pid!
 #define s_myPid (::getpid())
-static inline long processID(long pid) {
+ELEMENTS_UNUSED static inline long processID(long pid) {
   long thePid = (pid > 0) ? pid : s_myPid;
   return thePid;
 }
@@ -318,12 +287,17 @@ static inline long processID(long pid) {
 #include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/System.h"
 
-Elements::System::ProcessDescriptor* Elements::System::getProcess() {
+ELEMENTS_UNUSED constexpr long TICK_TO_100NSEC = 100000;
+
+namespace Elements {
+namespace System {
+
+ProcessDescriptor* getProcess() {
   static ProcessDescriptor p;
   return &p;
 }
 
-Elements::System::ProcessDescriptor::ProcessHandle::ProcessHandle(long pid) {
+ProcessDescriptor::ProcessHandle::ProcessHandle(long pid) {
   if (pid > 0) {
     if (pid != s_myPid) {
       // Note: the return type of getpid is pid_t, which is int on 64bit machines too
@@ -336,19 +310,19 @@ Elements::System::ProcessDescriptor::ProcessHandle::ProcessHandle(long pid) {
       m_needRelease = false;
     }
 
-Elements::System::ProcessDescriptor::ProcessHandle::~ProcessHandle() {
+ProcessDescriptor::ProcessHandle::~ProcessHandle() {
   if (m_needRelease) {
     m_handle = nullptr;
   }
 }
 
-Elements::System::ProcessDescriptor::ProcessDescriptor() {
+ProcessDescriptor::ProcessDescriptor() {
 }
 
-Elements::System::ProcessDescriptor::~ProcessDescriptor() {
+ProcessDescriptor::~ProcessDescriptor() {
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long ProcessDescriptor::query(long pid, InfoType fetch,
     IO_COUNTERS* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -372,7 +346,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long ProcessDescriptor::query(long pid, InfoType fetch,
     POOLED_USAGE_AND_LIMITS* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -411,7 +385,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long ProcessDescriptor::query(long pid, InfoType fetch,
     long* info) {
   long status = 1, *vb;
   ProcessHandle h(pid);
@@ -434,7 +408,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long ProcessDescriptor::query(long pid, InfoType fetch,
     VM_COUNTERS* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -474,7 +448,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long ProcessDescriptor::query(long pid, InfoType fetch,
     QUOTA_LIMITS* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -518,7 +492,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long ProcessDescriptor::query(long pid, InfoType fetch,
     PROCESS_BASIC_INFORMATION* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -545,7 +519,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
   return status;
 }
 
-long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
+long ProcessDescriptor::query(long pid, InfoType fetch,
     KERNEL_USER_TIMES* info) {
   long status = 1;
   ProcessHandle h(pid);
@@ -610,3 +584,7 @@ long Elements::System::ProcessDescriptor::query(long pid, InfoType fetch,
     *info = *tb;
   return status;
 }
+
+} // namespace System
+} // namespace Elements
+
