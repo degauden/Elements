@@ -1,0 +1,14 @@
+#!/bin/sh
+
+pwd
+
+touch output.out
+
+if [ -f output.out ]; then
+  # performs clean up before exiting
+  rm -f output.out 
+  exit 0
+else
+  exit 1
+fi
+

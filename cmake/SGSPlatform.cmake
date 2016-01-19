@@ -16,10 +16,7 @@
 #                      should be set to x86_64-slc6-gcc46.
 ################################################################################
 
-if(SGSPlatform_included)
-  return()
-endif(SGSPlatform_included)
-set(SGSPlatform_included true)
+include_guard()
 
 ################################################################################
 # Functions to get system informations for the SGS configuration.
@@ -51,7 +48,7 @@ endfunction()
 function(sgs_find_host_os)
   if(NOT SGS_HOST_OS OR NOT SGS_HOST_OSVERS)
     if(APPLE)
-      set(os mac)
+      set(os osx)
       execute_process(COMMAND sw_vers "-productVersion"
                       COMMAND cut -d . -f 1-2
                       OUTPUT_VARIABLE osvers OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -64,7 +61,7 @@ function(sgs_find_host_os)
           set(os ubuntu)
           string(REGEX REPLACE ".*Ubuntu ([0-9]+)[.]([0-9]+).*" "\\1.\\2" osvers "${issue}")
           break()
-        elseif(issue MATCHES "Scientific Linux|SLC|Fedora|CentOS Linux") # RedHat-like distributions
+        elseif(issue MATCHES "Scientific Linux|SLC|Fedora|CentOS Linux|CentOS") # RedHat-like distributions
           string(TOLOWER "${CMAKE_MATCH_0}" os)
           if(os STREQUAL fedora)
             set(os fc) # we use an abbreviation for Fedora
@@ -72,7 +69,7 @@ function(sgs_find_host_os)
           if(os STREQUAL "scientific linux")
             set(os sl) # we use an abbreviation for Scientific Linux
           endif()
-          if(os STREQUAL "centos linux")
+          if((os STREQUAL "centos linux") OR (os STREQUAL "centos"))
             set(os co) # we use an abbreviation for Scientific Linux
           endif()
           string(REGEX REPLACE ".*release ([0-9]+)[. ].*" "\\1" osvers "${issue}")
@@ -96,23 +93,29 @@ endfunction()
 # Get system compiler.
 function(sgs_find_host_compiler)
   if(NOT SGS_HOST_COMP OR NOT SGS_HOST_COMPVERS)
-    find_program(SGS_HOST_C_COMPILER   NAMES gcc cc cl clang icc bcc xlc
-                 DOC "Host C compiler")
-    find_program(SGS_HOST_CXX_COMPILER NAMES c++ g++ cl clang++ icpc CC aCC bcc xlC
-                 DOC "Host C++ compiler")
+    if(APPLE)
+      find_program(SGS_HOST_C_COMPILER   NAMES clang gcc cc cl clang icc bcc xlc
+                   DOC "Host C compiler")
+      find_program(SGS_HOST_CXX_COMPILER NAMES clang++ c++ g++ cl clang++ icpc CC aCC bcc xlC
+                   DOC "Host C++ compiler")
+    else()
+      find_program(SGS_HOST_C_COMPILER   NAMES gcc cc cl clang icc bcc xlc
+                   DOC "Host C compiler")
+      find_program(SGS_HOST_CXX_COMPILER NAMES c++ g++ cl clang++ icpc CC aCC bcc xlC
+                   DOC "Host C++ compiler")
+    endif()
     mark_as_advanced(SGS_HOST_C_COMPILER SGS_HOST_CXX_COMPILER)
-    if(SGS_HOST_C_COMPILER MATCHES /cl)
-      set(compiler vc)
-      execute_process(COMMAND ${SGS_HOST_C_COMPILER} ERROR_VARIABLE versioninfo OUTPUT_VARIABLE out)
-      string(REGEX REPLACE ".*Version ([0-9]+)[.].*" "\\1" cvers "${versioninfo}")
-      math(EXPR cvers "${cvers} - 6")
-    elseif(SGS_HOST_C_COMPILER MATCHES /gcc)
-      set(compiler gcc)
-      execute_process(COMMAND ${SGS_HOST_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-      string(REGEX MATCHALL "[0-9]+" GCC_VERSION_COMPONENTS ${GCC_VERSION})
-      list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
-      list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
-      set(cvers ${GCC_MAJOR}${GCC_MINOR})
+    if(SGS_HOST_C_COMPILER MATCHES /gcc)
+      if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set(compiler clang)
+      else()
+        set(compiler gcc)
+        execute_process(COMMAND ${SGS_HOST_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+        string(REGEX MATCHALL "[0-9]+" GCC_VERSION_COMPONENTS ${GCC_VERSION})
+        list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
+        list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
+        set(cvers ${GCC_MAJOR}${GCC_MINOR})
+      endif()
     elseif(SGS_HOST_C_COMPILER MATCHES /icc)
       set(compiler icc)
       execute_process(COMMAND ${SGS_HOST_C_COMPILER} -dumpversion OUTPUT_VARIABLE ICC_VERSION)
@@ -122,16 +125,37 @@ function(sgs_find_host_compiler)
       set(cvers ${ICC_MAJOR})
     elseif(SGS_HOST_C_COMPILER MATCHES /clang)
       set(compiler clang)
-      execute_process(COMMAND ${SGS_HOST_C_COMPILER} --version OUTPUT_VARIABLE CLANG_VERSION)
-      string(REGEX MATCHALL "[0-9]+" CLANG_VERSION_COMPONENTS ${CLANG_VERSION})
-      list(GET CLANG_VERSION_COMPONENTS 0 CLANG_MAJOR)
-      list(GET CLANG_VERSION_COMPONENTS 1 CLANG_MINOR)
-      set(cvers ${CLANG_MAJOR}${CLANG_MINOR})
+    elseif(SGS_HOST_C_COMPILER MATCHES /cl)
+      set(compiler vc)
+      execute_process(COMMAND ${SGS_HOST_C_COMPILER} ERROR_VARIABLE versioninfo OUTPUT_VARIABLE out)
+      string(REGEX REPLACE ".*Version ([0-9]+)[.].*" "\\1" cvers "${versioninfo}")
+      math(EXPR cvers "${cvers} - 6")
     else()
       message(WARNING "Unknown host C compiler ${SGS_HOST_C_COMPILER}")
       set(compiler)
       set(cvers)
     endif()
+
+    if(compiler STREQUAL "clang")
+      execute_process(COMMAND ${SGS_HOST_C_COMPILER} --version OUTPUT_VARIABLE CLANG_VERSION)
+      if(APPLE)
+        string(REGEX MATCH "LLVM[ \t]+([0-9]+)[.]([0-9]+)" CLANG_VERSION_COMPONENTS ${CLANG_VERSION})
+        set(CLANG_MAJOR ${CMAKE_MATCH_1})
+        set(CLANG_MINOR ${CMAKE_MATCH_2})
+        if(NOT CLANG_MAJOR)
+          string(REGEX MATCHALL "[0-9]+" CLANG_VERSION_COMPONENTS ${CLANG_VERSION})
+          list(GET CLANG_VERSION_COMPONENTS 0 CLANG_MAJOR)
+          list(GET CLANG_VERSION_COMPONENTS 1 CLANG_MINOR)
+          set(compiler "llvm")
+        endif()
+      else()
+        string(REGEX MATCHALL "[0-9]+" CLANG_VERSION_COMPONENTS ${CLANG_VERSION})
+        list(GET CLANG_VERSION_COMPONENTS 0 CLANG_MAJOR)
+        list(GET CLANG_VERSION_COMPONENTS 1 CLANG_MINOR)
+      endif()
+      set(cvers ${CLANG_MAJOR}${CLANG_MINOR})
+    endif()
+
 
     set(SGS_HOST_COMP ${compiler} CACHE STRING "Name of the host default compiler." FORCE)
     set(SGS_HOST_COMPVERS ${cvers} CACHE STRING "Version of the host default compiler." FORCE)
@@ -163,7 +187,7 @@ function(sgs_get_target_platform)
       set(tag $ENV{CMTCONFIG})
       set(tag_source CMTCONFIG)
     else()
-      set(tag ${SGS_HOST_SYSTEM}-opt)
+      set(tag ${SGS_HOST_SYSTEM}-o2g)
       set(tag_source default)
     endif()
     message(STATUS "Target binary tag from ${tag_source}: ${tag}")
@@ -222,13 +246,15 @@ function(sgs_get_target_platform)
   set(CMAKE_BUILD_TYPE ${type} CACHE STRING
       "Choose the type of build, options are: empty, Debug, Release, Coverage, Profile, RelWithDebInfo, MinSizeRel." FORCE)
 
+  set(SGS_BUILD_TYPE_SHORT_NAMES o2g opt dbg pro cov min PARENT_SCOPE)
+
   # architecture
   set(CMAKE_SYSTEM_PROCESSOR ${SGS_ARCH} PARENT_SCOPE)
 
   # system name
   if(SGS_OS STREQUAL "winxp")
     set(CMAKE_SYSTEM_NAME Windows PARENT_SCOPE)
-  elseif(SGS_OS STREQUAL "mac")
+  elseif(SGS_OS STREQUAL "mac" OR SGS_OS STREQUAL "osx")
     set(CMAKE_SYSTEM_NAME Darwin PARENT_SCOPE)
   elseif(SGS_OS STREQUAL "slc" OR SGS_OS STREQUAL "sl" OR SGS_OS STREQUAL "ubuntu" OR SGS_OS STREQUAL "fc" OR SGS_OS STREQUAL "co" OR SGS_OS STREQUAL "linux")
     set(CMAKE_SYSTEM_NAME Linux PARENT_SCOPE)
@@ -270,7 +296,7 @@ sgs_detect_host_platform()
 sgs_get_target_platform()
 
 ## Debug messages.
-#foreach(p SGS_HOST_ SGS_)
+# foreach(p SGS_HOST_ SGS_)
 #  foreach(v ARCH OS OSVERS COMP COMPVERS)
 #    message(STATUS "toolchain: ${p}${v} -> ${${p}${v}}")
 #  endforeach()
@@ -281,5 +307,16 @@ sgs_get_target_platform()
 #message(STATUS "toolchain: CMAKE_HOST_SYSTEM_NAME      -> ${CMAKE_HOST_SYSTEM_NAME}")
 #message(STATUS "toolchain: CMAKE_HOST_SYSTEM_VERSION   -> ${CMAKE_HOST_SYSTEM_VERSION}")
 
+if(${SGS_COMP} STREQUAL icc)
+    find_program(CMAKE_C_COMPILER
+                 NAMES icc
+                 DOC "C compiler")
+    find_program(CMAKE_CXX_COMPILER
+                 NAMES icpc
+                 DOC "C++ compiler")
+    find_program(CMAKE_Fortran_COMPILER
+                 NAMES ifort
+                 DOC "Fortran compiler")
 
+endif()
 

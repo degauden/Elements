@@ -1,66 +1,106 @@
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
 /**
  * @file ClassExample.h
  *
- * Created on: Aug 8, 2013Jun 20, 2013
+ * Created on: January 9, 2015
  *     Author: Pierre Dubath
  */
 
 #ifndef CLASSEXAMPLE_H_
 #define CLASSEXAMPLE_H_
 
-#include<string>
+#include <string>                   // for std::string
+#include <vector>                   // for std::vector
+#include <memory>                   // for std::unique_ptr
+
+#include <cstdint>                  // for std::int64_t
+
 #include "ElementsKernel/Export.h"
 
+namespace Elements {
+namespace Examples {
 
 /**
  * @class ClassExample
  * @brief
- * 		A class example for the Element framework
+ *    An class example
  * @details
- * 		The naming convention and coding standard displayed in this
- * 		class can be used as a model for other classes
+ *    Our naming convention and coding standard are used in this example
  */
-class ClassExample {
+class ELEMENTS_API ClassExample {
 
 public:
 
   /**
-   * @brief Constructor
+   * @brief
+   *    Example factory method
+   * @details
+   *
+   * @param source_id
+   *    The source identifier
+   * @param ra
+   *    Right Ascension coordinate
+   *
    */
-  ELEMENTS_API ClassExample(int64_t source_id, double ra, double dec) :
-      m_source_id(source_id), m_ra(ra), m_dec(dec) {
-    m_result = 0.0;
+  static ClassExample factoryMethod (const std::int64_t source_id, const double ra);
+
+  /*
+   * Getter to access the static private string
+   */
+  static const std::string& getStaticString () {
+    return s_static_string;
   }
 
   /**
    * @brief Destructor
    */
-  ELEMENTS_API virtual ~ClassExample() {};
+  virtual ~ClassExample () {
+  }
 
   /**
    * @brief
-   *    Compute the sum of two doubles
+   *    Simple method example
    * @details
-   *    This is really a simple class. In general, the syntax
+   *    This is a simple example method, taking a double variable in input and
+   *    returning a double value. The displayed way to pass and return fundamental
+   *    type variables is recommended as the cost of copying them is small.
+   *
+   *    The const keyword send a meaningful message to the user. The
+   *    "input_variable" will not be modified and can safely be reused after
+   *    the call to "fundamentalTypesMethod".
+   *
+   *    The syntax
    *
    *    output = methodName(input)
    *
-   *    is prefered. The C++11 keyword "noexcept" is used to indicate
-   *    that this method do not throw (any exceptions). If this keyword
-   *    is not present, the exception must be documented.
+   *    is strongly recommended. With C++11, the std::tuple can be used to return
+   *    a set of values or objects.
    *
-   * @param first
-   *    The first double value
-   * @param second
-   *    The second double value
+   * @param input_variable
+   *    The input_variable double value
+   *
    * @return
-   *    The sum of the two values
+   *    The output of the method
    */
-  ELEMENTS_API double computeSum(double first, double second) const noexcept;
+  double fundamentalTypeMethod (const double input_variable) const;
 
   /**
    * @brief
-   *    Divide two doubles
+   *    Divide two double variables
    * @details
    *    This is a simple class to illustrate the case of a method which can
    *    throw an exception
@@ -70,80 +110,88 @@ public:
    * @param second
    *    The second double value
    * @return
-   *    The sum of the two values
+   *    The division of the two double values
    * @throws
    *   EuclidException, if the second number is (close to) zero
    */
-  ELEMENTS_API double divideNumbers(double first, double second) const;
+  double divideNumbers (const double first, const double second) const;
 
   /**
    * @brief
-   *    Sum and divide two doubles
+   *    Example method with a unique pointer argument
    * @details
-   *    This one does not throw. The exception which can be thrown when
-   *    attempting to divide by zero is catch and processed internally.
+   *    This illustrates the case where the ownership of the
+   *    pointed object is transfered to the method. Users will have
+   *    to move the object (syntax: move(p)) and cannot reused it
+   *    afterwards in the calling code.
    *
-   *    The result is store in the class member m_result. This makes this method
-   *    a bit less readable that the previous ones as one can not immediately see
-   *    what/where is the result
+   *    The vector is used here as an example object.
    *
-   * @param first
-   *    The first double value
-   * @param second
-   *    The second double value
-   * @throws
-   *   EuclidException, if the second number is (close to) zero
+   * @param vector_unique_ptr
+   *    Unique pointer to a vector object
    */
-  ELEMENTS_API void summingAndDividing(double first, double second);
+  void passingUniquePointer (std::unique_ptr<std::vector<double>> vector_unique_ptr) const;
 
-  /*
-   * Getter to access the static private string
+  /**
+   * @brief
+   *    Example method taking an object in input
+   * @details
+   *    General method example taking any object in input. Because a
+   *    const reference is used, the method can accept both a rvalue or
+   *    a rvalue as an argument.
+   *
+   *    The vector is used here as an example object.
+   *
+   * @param input_object
+   *    a vector of double
    */
-  ELEMENTS_API static const std::string& getStaticString() {
-    return s_static_string;
-  }
+  void passingObjectInGeneral (const std::vector<double>& input_object) const;
 
   /**
    * Getter to access private sourceId
    */
-  int64_t getSourceId() const {
+  std::int64_t getSourceId () const {
     return m_source_id;
   }
 
   /**
    * Getter to access private m_ra
+   *
    */
-  double getRa() const {
+  double getRa () const {
     return m_ra;
-  }
-
-  /// Getter
-  double getDec() const {
-    return m_dec;
-  }
-
-  /// Getter
-  double getResult() const {
-    return m_result;
   }
 
 private:
 
-  /// An example of a static string
-  ELEMENTS_API static std::string s_static_string;
+  /**
+   * @brief Constructor
+   *
+   * @details
+   *
+   * We propose a public factory and private constructor.
+   * This is not really useful here, but could be interesting in
+   * a more elaborated call especially if the factory is returning
+   * an abstract class (interface) and that different implementation
+   * can be chosen via the factory.
+   *
+   */
+  ClassExample (const std::int64_t source_id, const double ra) :
+      m_source_id(source_id), m_ra(ra) {
+  }
 
-  /// Source ID as an example of a long private member
-  int64_t m_source_id { 0 };
+  /// An example of a static string
+  static std::string s_static_string;
+
+  /// Source ID as an example of a 64 bits integer
+  std::int64_t m_source_id { 0 };
 
   /// Source right ascension
   double m_ra { 0.0 };
 
-  /// Source declination
-  double m_dec { 0.0 };
-
-  /// A double to store a result
-  double m_result { 0.0 };
-
 };
+
+} // namespace ElementsExamples
+} // namespace Elements
 
 #endif /* CLASSEXAMPLE_H_ */

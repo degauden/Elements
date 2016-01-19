@@ -11,16 +11,7 @@
 //	Changes    :
 //
 //====================================================================
-#define ELEMENTSKERNEL_MEMORY_CPP
 
-//#include <cerrno>
-//#include <cstring>
-//#include <sys/times.h>
-//#include <unistd.h>
-//#include <libgen.h>
-//#include <cstdio>
-
-//#include <climits>
 
 #include "ElementsKernel/Memory.h"      // for MemoryUnit, etc
 
@@ -29,17 +20,22 @@
 #include "ElementsKernel/SystemBase.h"  // for InfoType, InfoType::NoFetch, etc
 #include "ProcessDescriptor.h"          // for getProcess, etc
 
+
+namespace Elements {
+namespace System {
+
+
 /// Convert requested memory value from kByte to requested value
-long Elements::System::adjustMemory( MemoryUnit unit, long value )    {
+long adjustMemory( MemoryUnit unit, long value )    {
   if ( value != -1 )    {
     switch ( unit )   {
-    case Byte:   break;
-    case kByte:     value =       value/1024;    break;
-    case MByte:     value =      (value/1024)/1024;    break;
-    case GByte:     value =     ((value/1024)/1024)/1024;    break;
-    case TByte:     value =    (((value/1024)/1024)/1024)/1024;    break;
-    case PByte:     value =   ((((value/1024)/1024)/1024)/1024)/1024;    break;
-    case EByte:     value =  (((((value/1024)/1024)/1024)/1024)/1024)/1024;    break;
+    case MemoryUnit::Byte:   break;
+    case MemoryUnit::kByte:     value =       value/1024;    break;
+    case MemoryUnit::MByte:     value =      (value/1024)/1024;    break;
+    case MemoryUnit::GByte:     value =     ((value/1024)/1024)/1024;    break;
+    case MemoryUnit::TByte:     value =    (((value/1024)/1024)/1024)/1024;    break;
+    case MemoryUnit::PByte:     value =   ((((value/1024)/1024)/1024)/1024)/1024;    break;
+    case MemoryUnit::EByte:     value =  (((((value/1024)/1024)/1024)/1024)/1024)/1024;    break;
     default:        value =  -1;    break;
     }
   }
@@ -47,7 +43,7 @@ long Elements::System::adjustMemory( MemoryUnit unit, long value )    {
 }
 
 /// Basic Process Information: Base priority
-long Elements::System::basePriority(InfoType fetch, long pid)   {
+long basePriority(InfoType fetch, long pid)   {
   PROCESS_BASIC_INFORMATION info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, InfoType::ProcessBasics, &info) )
     return info.BasePriority;
@@ -55,13 +51,13 @@ long Elements::System::basePriority(InfoType fetch, long pid)   {
 }
 
 /// Basic Process Information: Process ID
-long Elements::System::procID()   {
+long procID()   {
   static long s_pid = ::getpid();
   return s_pid;
 }
 
 /// Basic Process Information: Parent's process ID
-long Elements::System::parentID(InfoType fetch, long pid)   {
+long parentID(InfoType fetch, long pid)   {
   PROCESS_BASIC_INFORMATION info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, InfoType::ProcessBasics, &info) )
     return info.InheritedFromUniqueProcessId;
@@ -69,7 +65,7 @@ long Elements::System::parentID(InfoType fetch, long pid)   {
 }
 
 /// Basic Process Information: Affinity mask
-long Elements::System::affinityMask(InfoType fetch, long pid)   {
+long affinityMask(InfoType fetch, long pid)   {
   PROCESS_BASIC_INFORMATION info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, InfoType::ProcessBasics, &info) )
     return info.AffinityMask;
@@ -77,7 +73,7 @@ long Elements::System::affinityMask(InfoType fetch, long pid)   {
 }
 
 /// Basic Process Information: Exit status (does not really make sense for the running process, but for others!)
-long Elements::System::exitStatus(InfoType fetch, long pid)   {
+long exitStatus(InfoType fetch, long pid)   {
   PROCESS_BASIC_INFORMATION info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, InfoType::ProcessBasics, &info) )
     return info.ExitStatus;
@@ -85,7 +81,7 @@ long Elements::System::exitStatus(InfoType fetch, long pid)   {
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::priorityBoost(InfoType fetch, long pid)   {
+long priorityBoost(InfoType fetch, long pid)   {
   long info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return info;
@@ -93,7 +89,7 @@ long Elements::System::priorityBoost(InfoType fetch, long pid)   {
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::nonPagedMemoryPeak(MemoryUnit unit, InfoType fetch, long pid)   {
+long nonPagedMemoryPeak(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.QuotaPeakNonPagedPoolUsage);
@@ -101,7 +97,7 @@ long Elements::System::nonPagedMemoryPeak(MemoryUnit unit, InfoType fetch, long 
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::nonPagedMemory(MemoryUnit unit, InfoType fetch, long pid)   {
+long nonPagedMemory(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.QuotaNonPagedPoolUsage);
@@ -109,7 +105,7 @@ long Elements::System::nonPagedMemory(MemoryUnit unit, InfoType fetch, long pid)
 }
 
 /// System Process Limits: Maximum amount of non-paged memory this process is allowed to use
-long Elements::System::nonPagedMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
+long nonPagedMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
   POOLED_USAGE_AND_LIMITS quota;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &quota) )
     return adjustMemory(unit, quota.NonPagedPoolLimit);
@@ -117,7 +113,7 @@ long Elements::System::nonPagedMemoryLimit(MemoryUnit unit, InfoType fetch, long
 }
 
 /// Basic Process Information: Amount of paged memory currently occupied by the process 'pid'
-long Elements::System::pagedMemory(MemoryUnit unit, InfoType fetch, long pid)   {
+long pagedMemory(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.QuotaPagedPoolUsage);
@@ -125,7 +121,7 @@ long Elements::System::pagedMemory(MemoryUnit unit, InfoType fetch, long pid)   
 }
 
 /// Basic Process Information: Maximum of paged memory occupied by the process 'pid'
-long Elements::System::pagedMemoryPeak(MemoryUnit unit, InfoType fetch, long pid)   {
+long pagedMemoryPeak(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.QuotaPeakPagedPoolUsage);
@@ -133,7 +129,7 @@ long Elements::System::pagedMemoryPeak(MemoryUnit unit, InfoType fetch, long pid
 }
 
 /// Basic Process Information: Amount of paged memory that can be occupied by the process 'pid'
-long Elements::System::pagedMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
+long pagedMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
   POOLED_USAGE_AND_LIMITS quota;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &quota) )
     return adjustMemory(unit, quota.PagedPoolLimit);
@@ -141,7 +137,7 @@ long Elements::System::pagedMemoryLimit(MemoryUnit unit, InfoType fetch, long pi
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::numPageFault(InfoType fetch, long pid)   {
+long numPageFault(InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return info.PageFaultCount;
@@ -149,7 +145,7 @@ long Elements::System::numPageFault(InfoType fetch, long pid)   {
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::pagefileUsage(MemoryUnit unit, InfoType fetch, long pid)   {
+long pagefileUsage(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.PagefileUsage);
@@ -157,7 +153,7 @@ long Elements::System::pagefileUsage(MemoryUnit unit, InfoType fetch, long pid) 
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::pagefileUsagePeak(MemoryUnit unit, InfoType fetch, long pid)   {
+long pagefileUsagePeak(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.PeakPagefileUsage);
@@ -165,7 +161,7 @@ long Elements::System::pagefileUsagePeak(MemoryUnit unit, InfoType fetch, long p
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::pagefileUsageLimit(MemoryUnit unit, InfoType fetch, long pid)   {
+long pagefileUsageLimit(MemoryUnit unit, InfoType fetch, long pid)   {
   POOLED_USAGE_AND_LIMITS quota;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &quota) )    {
     if ( long(quota.PagefileLimit) < 0 )
@@ -176,7 +172,7 @@ long Elements::System::pagefileUsageLimit(MemoryUnit unit, InfoType fetch, long 
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::mappedMemory(MemoryUnit unit, InfoType fetch, long pid)   {
+long mappedMemory(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.WorkingSetSize);
@@ -184,7 +180,7 @@ long Elements::System::mappedMemory(MemoryUnit unit, InfoType fetch, long pid)  
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::mappedMemoryPeak(MemoryUnit unit, InfoType fetch, long pid)   {
+long mappedMemoryPeak(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.PeakWorkingSetSize);
@@ -192,7 +188,7 @@ long Elements::System::mappedMemoryPeak(MemoryUnit unit, InfoType fetch, long pi
 }
 
 /// System Process Limits: Minimum amount of virtual memory this process may use
-long Elements::System::minMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
+long minMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
   QUOTA_LIMITS quota;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &quota) )
     return adjustMemory(unit, quota.MinimumWorkingSetSize);
@@ -200,7 +196,7 @@ long Elements::System::minMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)
 }
 
 /// System Process Limits: Maximum amount of virtual memory this process is allowed to use
-long Elements::System::maxMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
+long maxMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
   QUOTA_LIMITS quota;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &quota) )
     return adjustMemory(unit, quota.MaximumWorkingSetSize);
@@ -208,7 +204,7 @@ long Elements::System::maxMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::virtualMemory(MemoryUnit unit, InfoType fetch, long pid)   {
+long virtualMemory(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.VirtualSize);
@@ -216,7 +212,7 @@ long Elements::System::virtualMemory(MemoryUnit unit, InfoType fetch, long pid) 
 }
 
 /// Basic Process Information: priority boost
-long Elements::System::virtualMemoryPeak(MemoryUnit unit, InfoType fetch, long pid)   {
+long virtualMemoryPeak(MemoryUnit unit, InfoType fetch, long pid)   {
   VM_COUNTERS info;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &info) )
     return adjustMemory(unit, info.PeakVirtualSize);
@@ -224,7 +220,7 @@ long Elements::System::virtualMemoryPeak(MemoryUnit unit, InfoType fetch, long p
 }
 
 /// System Process Limits: Maximum amount of the page file this process is allowed to use
-long Elements::System::virtualMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
+long virtualMemoryLimit(MemoryUnit unit, InfoType fetch, long pid)   {
   QUOTA_LIMITS quota;
   if ( fetch != InfoType::NoFetch && getProcess()->query(pid, fetch, &quota) )    {
     if ( long(quota.PagefileLimit) == -1 )
@@ -234,3 +230,5 @@ long Elements::System::virtualMemoryLimit(MemoryUnit unit, InfoType fetch, long 
   return 0;
 }
 
+} // namespace System
+} // namespace Elements

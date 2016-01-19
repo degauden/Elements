@@ -1,13 +1,11 @@
-#define SYSTEM_MODULEINFO_CPP
 
 #include <cstring>
 #include <cstdlib>
 
 #include "ElementsKernel/ModuleInfo.h"
-#include "ElementsKernel/System.h"
+#include "ElementsKernel/FuncPtrCast.h"
 
 #include <cerrno>
-#include <string.h>
 #include <sys/times.h>
 #include <sys/param.h>
 #include <unistd.h>
@@ -17,11 +15,35 @@
 
 using namespace std;
 
-static Elements::System::ImageHandle      ModuleHandle = 0;
 static vector<string> s_linkedModules;
 
+namespace Elements {
+namespace System {
+
+ModuleInfo::ModuleInfo() : m_dlinfo{nullptr} {
+}
+
+ModuleInfo::ModuleInfo(void *funct) {
+  m_dlinfo.reset(new Dl_info);
+  ::dladdr(FuncPtrCast<void*>(funct), m_dlinfo.get());
+}
+
+const string ModuleInfo::name() const {
+  return ::basename(const_cast<char*>(m_dlinfo->dli_fname)) ;
+}
+
+bool ModuleInfo::isEmpty() const {
+  return (m_dlinfo == nullptr);
+}
+
+ModuleInfo::operator const Dl_info&() const {
+    return *m_dlinfo;
+}
+
+static ImageHandle      ModuleHandle = 0;
+
 /// Retrieve base name of module
-const string& Elements::System::moduleName()   {
+const string& moduleName()   {
   static string module("");
   if ( module == "" )   {
     if ( processHandle() && moduleHandle() )    {
@@ -33,16 +55,14 @@ const string& Elements::System::moduleName()   {
 }
 
 /// Retrieve full name of module
-const string& Elements::System::moduleNameFull()   {
+const string& moduleNameFull()   {
   static string module("");
   if ( module == "" )   {
     if ( processHandle() && moduleHandle() )    {
       char name[PATH_MAX] = {"Unknown.module"};
       name[0] = 0;
       const char *path =
-#  if defined(__linux) || defined(__APPLE__)
           ((Dl_info*)moduleHandle())->dli_fname;
-#  endif
       if (::realpath(path, name))
         module = name;
     }
@@ -51,65 +71,56 @@ const string& Elements::System::moduleNameFull()   {
 }
 
 /// Get type of the module
-Elements::System::ModuleType Elements::System::moduleType()   {
-  static ModuleType type = Elements::System::ModuleType::UNKNOWN;
-  if ( type == Elements::System::ModuleType::UNKNOWN )    {
+ModuleType moduleType()   {
+  static ModuleType type = ModuleType::UNKNOWN;
+  if ( type == ModuleType::UNKNOWN )    {
     const string& module = moduleNameFull();
     int loc = module.rfind('.')+1;
     if ( loc == 0 )
-      type = Elements::System::ModuleType::EXECUTABLE;
+      type = ModuleType::EXECUTABLE;
     else if ( module[loc] == 'e' || module[loc] == 'E' )
-      type = Elements::System::ModuleType::EXECUTABLE;
+      type = ModuleType::EXECUTABLE;
     else if ( module[loc] == 's' && module[loc+1] == 'o' )
-      type = Elements::System::ModuleType::SHAREDLIB;
+      type = ModuleType::SHAREDLIB;
     else
-      type = Elements::System::ModuleType::UNKNOWN;
+      type = ModuleType::UNKNOWN;
   }
   return type;
 }
 
 /// Retrieve processhandle
-void* Elements::System::processHandle()   {
+void* processHandle()   {
   static long pid = ::getpid();
   static void* hP = (void*)pid;
   return hP;
 }
 
-void Elements::System::setModuleHandle(Elements::System::ImageHandle handle)    {
+void setModuleHandle(ImageHandle handle)    {
   ModuleHandle = handle;
 }
 
-Elements::System::ImageHandle Elements::System::moduleHandle()    {
+ImageHandle moduleHandle()    {
   if ( 0 == ModuleHandle )    {
     if ( processHandle() )    {
       static Dl_info info;
       if ( 0 !=
-           ::dladdr(
-#if __GNUC__ < 4
-               (void*)Elements::System::moduleHandle
-#else
-               FuncPtrCast<void*>(Elements::System::moduleHandle)
-#endif
-               , &info) ) {
-	return &info;
+           ::dladdr(FuncPtrCast<void*>(moduleHandle), &info) ) {
+        return &info;
       }
     }
   }
   return ModuleHandle;
 }
 
-Elements::System::ImageHandle Elements::System::exeHandle()    {
+ImageHandle exeHandle()    {
   // This does NOT work!
   static Dl_info infoBuf, *info = &infoBuf;
   if ( 0 == info ) {
     void* handle = ::dlopen(0, RTLD_LAZY);
-    //printf("Exe handle:%X\n", handle);
     if ( 0 != handle ) {
       void* func = ::dlsym(handle, "main");
-      //printf("Exe:Func handle:%X\n", func);
       if ( 0 != func ) {
       	if ( 0 != ::dladdr(func, &infoBuf) ) {
-	        //cout << "All OK" << endl;
       	  info = &infoBuf;
       	}
       }
@@ -118,7 +129,7 @@ Elements::System::ImageHandle Elements::System::exeHandle()    {
   return info;
 }
 
-const string& Elements::System::exeName()    {
+const string& exeName()    {
   static string module("");
   if ( module.length() == 0 )    {
     char name[PATH_MAX] = {"Unknown.module"};
@@ -132,14 +143,14 @@ const string& Elements::System::exeName()    {
   return module;
 }
 
-const vector<string> Elements::System::linkedModules()    {
+const vector<string> linkedModules()    {
   if ( s_linkedModules.size() == 0 )    {
     char ff[512], cmd[1024], fname[1024], buf1[64], buf2[64], buf3[64], buf4[64];
     ::sprintf(ff, "/proc/%d/maps", ::getpid());
     FILE* maps = ::fopen(ff, "r");
     while( ::fgets(cmd, sizeof(cmd), maps) ) {
       int len;
-      sscanf(cmd, "%s %s %s %s %d %s", buf1, buf2, buf3, buf4, &len, fname);
+      ::sscanf(cmd, "%63s %63s %63s %63s %d %1023s", buf1, buf2, buf3, buf4, &len, fname);
       if ( len > 0 && strncmp(buf2,"r-xp",strlen("r-xp")) == 0 ) {
         s_linkedModules.push_back(fname);
       }
@@ -148,3 +159,6 @@ const vector<string> Elements::System::linkedModules()    {
   }
   return s_linkedModules;
 }
+
+} // namespace System
+} // namespace Elements

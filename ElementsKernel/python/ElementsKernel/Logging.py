@@ -1,4 +1,4 @@
-##
+# #
 # @file ElementsKernel/Logging.py
 #
 
@@ -8,11 +8,11 @@ import logging
 # Check we are running for the first time. If we are we need to change a bit the
 # naming of the logging levels to match the ones of the C++
 if logging.getLevelName(logging.CRITICAL) == 'CRITICAL':
-    logging.addLevelName(50,'FATAL')
-    logging.addLevelName(40,'ERROR')
-    logging.addLevelName(30,'WARN')
-    logging.addLevelName(20,'INFO')
-    logging.addLevelName(10,'DEBUG')
+    logging.addLevelName(50, 'FATAL')
+    logging.addLevelName(40, 'ERROR')
+    logging.addLevelName(30, 'WARN')
+    logging.addLevelName(20, 'INFO')
+    logging.addLevelName(10, 'DEBUG')
 
 _formatter = logging.Formatter(fmt='%(asctime)s %(name)s %(levelname)5s : %(message)s', datefmt='%Y-%m-%dT%X%Z')
 
@@ -35,11 +35,11 @@ def setLevel(level):
 
 def setLogFile(filename):
     # If we already have a file appenders remove them
-    for h in [hl for hl in logging.getLogger().handlers if hl.get_name() == 'file']:
-        logging.getLogger().removeHandler(h)
-        h.close()
+    for hd in [hl for hl in logging.getLogger().handlers if hl.get_name() == 'file']:
+        logging.getLogger().removeHandler(hd)
+        hd.close()
     # Add the new file handler
-    h = logging.FileHandler(filename)
-    h.set_name('file')
-    h.setFormatter(_formatter)
-    logging.getLogger().addHandler(h)
+    hd = logging.FileHandler(filename)
+    hd.set_name('file')
+    hd.setFormatter(_formatter)
+    logging.getLogger().addHandler(hd)

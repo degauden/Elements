@@ -18,7 +18,7 @@ namespace Elements {
 // Forward declaration. We don't need the definition right now.
 enum class ExitCode;
 
-class SimpleProgram {
+class ELEMENTS_API SimpleProgram {
 
 public:
 
@@ -30,7 +30,7 @@ public:
 protected:
 
   SimpleProgram() = default;
-  virtual ~SimpleProgram() = default;
+  virtual ~SimpleProgram();
 
   virtual ExitCode main() = 0;
   virtual void defineOptions() = 0;

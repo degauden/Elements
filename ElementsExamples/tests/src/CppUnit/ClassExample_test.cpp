@@ -15,9 +15,9 @@
 
 #include "ElementsExamples/ClassExample.h"
 
-#include "tests/src/Tolerance.h"
-
 using namespace std;
+using namespace Elements;
+using namespace Examples;
 
 /*
  * Fixture to compare the test result against reference values
@@ -26,13 +26,10 @@ class ClassExampleSuite : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ClassExampleSuite);
 
-  CPPUNIT_TEST(constructorsTest);
+  CPPUNIT_TEST(fundamentalTypeMethodTest);
+  CPPUNIT_TEST(fundamentalTypeMethodSecondTest);
   CPPUNIT_TEST(gettersTest);
-  CPPUNIT_TEST(computeSumTest);
-  CPPUNIT_TEST(divideNumbersTest);
-  CPPUNIT_TEST(divideNumbersByZeroExceptionTest);
-  CPPUNIT_TEST(summingAndDividingTest);
-  CPPUNIT_TEST(summingAndDividingByZeroExceptionTest);
+  CPPUNIT_TEST(exceptionInDivideNumbersTest);
 
   CPPUNIT_TEST_SUITE_END();
 
@@ -44,126 +41,76 @@ public:
 
 protected:
 
-  void constructorsTest();
+  void fundamentalTypeMethodTest();
+  void fundamentalTypeMethodSecondTest();
   void gettersTest();
-  void computeSumTest();
-  void divideNumbersTest();
-  void divideNumbersByZeroExceptionTest();
-  void summingAndDividingTest();
-  void summingAndDividingByZeroExceptionTest();
-
-
+  void exceptionInDivideNumbersTest();
 
 private:
 
-  ClassExample* m_class_example_ptr { nullptr };
-
-  // Some numbers to feed the constructor
-  const int64_t m_source_id { 16253 };
-  const double m_ra  { 64.5768 };
-  const double m_dec { -34.2857 };
+  //Elements::ClassExample m_class_example {};
 
   // expected static string (hard coded in .cpp file!)
   std::string m_expected_static_string {"This is a static field example"};
 
-  // Numbrs to test the methods
-  const double m_first_number { 2.5647 };
-  const double m_second_number { 5.6874 };
+  // Some numbers to feed the constructor
+  const int m_source_id {123456789};
+  const double m_ra {266.40506655};
+  const double m_input_variable {1.273645899};
 
-  const double m_expected_sum { 8.2521 };
-  const double m_expected_division_result { 0.45094419242536132 };
-  const double m_expected_final_result { m_expected_division_result } ;
+// Number to test the methods
+  const double m_expected_result {1.273645899};
 
+  ClassExample m_class_example = ClassExample::factoryMethod(m_source_id, m_ra);
 
 };
 
 //-----------------------------------------------------------------------------
 
-
-void ClassExampleSuite::setUp() {
-  m_class_example_ptr = new ClassExample(m_source_id, m_ra, m_dec);
+void ClassExampleSuite::setUp () {
 }
 
-void ClassExampleSuite::tearDown() {
-  delete m_class_example_ptr;
+void ClassExampleSuite::tearDown () {
 }
 
 //-----------------------------------------------------------------------------
 
 
-void ClassExampleSuite::constructorsTest() {
 
-  CPPUNIT_ASSERT(m_class_example_ptr);
+void ClassExampleSuite::gettersTest () {
 
-}
-
-void ClassExampleSuite::gettersTest() {
-
-  CPPUNIT_ASSERT(m_source_id == m_class_example_ptr->getSourceId());
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_ra, m_class_example_ptr->getRa(), TEST_DOUBLE_TOLERANCE);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_dec, m_class_example_ptr->getDec(), TEST_DOUBLE_TOLERANCE);
-  CPPUNIT_ASSERT(Elements::isEqual(m_ra,m_class_example_ptr->getRa()));
-  CPPUNIT_ASSERT(Elements::isEqual(m_dec, m_class_example_ptr->getDec()));
-  CPPUNIT_ASSERT(m_expected_static_string == m_class_example_ptr->getStaticString());
+  CPPUNIT_ASSERT(m_source_id == m_class_example.getSourceId());
 
 }
 
+void ClassExampleSuite::fundamentalTypeMethodTest () {
 
-void ClassExampleSuite::computeSumTest() {
-
-  double actualSum = m_class_example_ptr->computeSum(m_first_number, m_second_number);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualSum, m_expected_sum, TEST_DOUBLE_TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable), DBL_DEFAULT_TEST_TOLERANCE);
 
 }
 
-void ClassExampleSuite::divideNumbersTest() {
+void ClassExampleSuite::fundamentalTypeMethodSecondTest () {
 
-  double actualDivisionResult = m_class_example_ptr->divideNumbers(m_first_number, m_second_number);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(actualDivisionResult, m_expected_division_result, TEST_DOUBLE_TOLERANCE);
+  CPPUNIT_ASSERT(isEqual(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable)));
 
 }
 
-void ClassExampleSuite::divideNumbersByZeroExceptionTest() {
+
+void ClassExampleSuite::exceptionInDivideNumbersTest () {
 
   bool exception = false;
   try {
-    m_class_example_ptr->divideNumbers(m_first_number, 0.0);
+    m_class_example.divideNumbers(1.0, 0.0);
   } catch (const Elements::Exception & e) {
     //exception = true;
     string exception_str = e.what();
-    exception =
-        (exception_str.find(
-            "exception in divideNumbers")
-            != string::npos);
+    exception = (exception_str.find("exception in ClassExample::divideNumbers") != string::npos);
   }
   CPPUNIT_ASSERT(exception);
 
 }
 
-void ClassExampleSuite::summingAndDividingTest() {
-
-  m_class_example_ptr->summingAndDividing(m_first_number, m_second_number);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_class_example_ptr->getResult(), m_expected_final_result, TEST_DOUBLE_TOLERANCE);
-
-}
-
-void ClassExampleSuite::summingAndDividingByZeroExceptionTest() {
-
-  bool exception = false;
-  try {
-    m_class_example_ptr->summingAndDividing(m_first_number, 0.0);
-  } catch (const Elements::Exception & e) {
-    //exception = true;
-    string exception_str = e.what();
-    exception =
-        (exception_str.find(
-            "exception in divideNumbers")
-            != string::npos);
-  }
-  CPPUNIT_ASSERT(exception);
-
-}
 
 //-----------------------------------------------------------------------------
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ClassExampleSuite);
+CPPUNIT_TEST_SUITE_REGISTRATION (ClassExampleSuite);

@@ -11,13 +11,14 @@
 #include <boost/filesystem/path.hpp>
 
 #include "ElementsKernel/Exit.h"
+#include "ElementsKernel/Unused.h"
 #include "ElementsKernel/SimpleProgram.h"
 
-using namespace std;
 namespace fs = boost::filesystem;
 
 namespace Elements {
 
+SimpleProgram::~SimpleProgram() {}
 
 ExitCode SimpleProgram::run(int argc , char** argv) noexcept {
 
@@ -25,9 +26,12 @@ ExitCode SimpleProgram::run(int argc , char** argv) noexcept {
 
   setup(argc, argv);
 
+  using std::cerr;
+  using std::endl;
+
   try {
     exit_code = main();
-  } catch (const exception & e) {
+  } catch (const std::exception & e) {
     cerr << "Exception has been thrown : " << e.what() << endl;
     exit_code = ExitCode::NOT_OK;
   } catch (...) {
@@ -39,7 +43,7 @@ ExitCode SimpleProgram::run(int argc , char** argv) noexcept {
 }
 
 
-void SimpleProgram::setup(int /*argc*/, char** argv) {
+void SimpleProgram::setup(ELEMENTS_UNUSED int argc, char** argv) {
 
   fs::path prog_path {argv[0]};
 

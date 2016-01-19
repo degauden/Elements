@@ -5,7 +5,6 @@
 // Include files
 //   for the architecture independent int64 definition (longlong)
 #include "ElementsKernel/Export.h" // ELEMENTS_API
-#include "ElementsKernel/StreamBuffer.h"
 #include "ElementsKernel/Exception.h"
 
 /** @class TimeException Time.h ElementsKernel/Time.h
@@ -61,7 +60,7 @@ class TimeSpan;
 class ELEMENTS_API TimeSpan {
   friend class Time;
 public:
-  typedef long long ValueType;
+  using ValueType = long long;
 
   TimeSpan(void);
   TimeSpan(Time t);
@@ -217,7 +216,7 @@ private:
 class ELEMENTS_API Time {
   friend class TimeSpan;
 public:
-  typedef long long ValueType;
+  using ValueType = long long;
 
   /** Symbolic names for months */
   enum Months {
@@ -306,6 +305,6 @@ private:
 
 } // Elements namespace
 
-#include "ElementsKernel/Time.icpp"
+#include "ElementsKernel/_impl/Time.icpp"
 
 #endif // ELEMENTSKERNEL_TIME_H

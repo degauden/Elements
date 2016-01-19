@@ -1,146 +1,73 @@
 /**
  * @file ClassExample_test.cpp
  *
- * Created on: Aug 12, 2013Jun 20, 2013
+ * Created on: January 9, 2015
  *     Author: Pierre Dubath
  */
 
-#include <iostream>
-#include <boost/test/unit_test.hpp>
-#include "ElementsKernel/Exception.h"
-#include "ElementsExamples/ClassExample.h"
-#include "ElementsKernel/Real.h" // Provides isEqual
+#include <cstdint>                          // for std::int64_t
 
-#include "tests/src/Tolerance.h"
+#include <boost/test/unit_test.hpp>
+#include <boost/test/test_tools.hpp>
+#include "ElementsKernel/Exception.h"
+// class under test
+#include "ElementsExamples/ClassExample.h"
 
 using namespace std;
+using namespace Elements;
+using namespace Examples;
 
-//-----------------------------------------------------------------------------
+// tolerance value to compare floating point numbers
+double tolerance = 1e-12;
 
 /*
  * Fixture to compare the test result against reference values
  */
 struct ClassExampleFixture {
 
-  ClassExample* m_class_example_ptr { nullptr };
+  std::string static_string { "This is a static field example" };
+  int64_t source_id { 123456789 };
+  double ra { 266.40506655 };
+  double input_variable { 1.273645899 };
+  double expected_result { 1.273645899 };
 
-  // Some numbers to feed the constructor
-  const int64_t m_source_id { 16253 };
-  const double m_ra  { 64.5768 };
-  const double m_dec { -34.2857 };
-
-  // expected static string (hard coded in .cpp file!)
-  std::string m_expected_static_string = "This is a static field example";
-
-  // Numbrs to test the methods
-  const double m_first_number { 2.5647 };
-  const double m_second_number { 5.6874 };
-
-  const double m_expected_sum { 8.2521 };
-  const double m_expected_division_result { 0.45094419242536132 };
-  const double m_expected_final_result { m_expected_division_result };
-
+  ClassExample example_class = ClassExample::factoryMethod(source_id,
+      ra);
 
   ClassExampleFixture() {
-    // call the constructor
-    m_class_example_ptr = new ClassExample(m_source_id, m_ra, m_dec);
-  }
-
-  ClassExampleFixture(const ClassExampleFixture& other)
-  : m_class_example_ptr(new ClassExample(*(other.m_class_example_ptr))){
+    //call constructor if needed
   }
 
   ~ClassExampleFixture() {
-    // delete fixture object
-    delete m_class_example_ptr;
+    // delete fixture object if needed
   }
-
-  //ClassExampleFixture(const ClassExampleFixture&) = delete;
-
 };
 
-//-----------------------------------------------------------------------------
+BOOST_AUTO_TEST_SUITE (ClassExample)
 
-BOOST_AUTO_TEST_SUITE (ClassExample_test)
-
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE( constructors_test, ClassExampleFixture ) {
-  BOOST_CHECK(m_class_example_ptr);
+BOOST_AUTO_TEST_CASE(WithoutFixture) {
+  BOOST_CHECK(true);
 }
 
-//-----------------------------------------------------------------------------
+BOOST_FIXTURE_TEST_CASE(fundamentalTypeMethod_test, ClassExampleFixture) {
+  BOOST_CHECK_CLOSE(expected_result,
+      example_class.fundamentalTypeMethod(input_variable), tolerance);
+}
 
-BOOST_FIXTURE_TEST_CASE( getters_test, ClassExampleFixture ) {
+BOOST_FIXTURE_TEST_CASE(Getter_test, ClassExampleFixture) {
+  BOOST_CHECK_EQUAL(source_id, example_class.getSourceId());
+}
+
+BOOST_FIXTURE_TEST_CASE(exception_in_divideNumbers_test, ClassExampleFixture ) {
   //
-  BOOST_CHECK(m_source_id == m_class_example_ptr->getSourceId());
-  BOOST_CHECK_CLOSE(m_ra, m_class_example_ptr->getRa(), TEST_DOUBLE_TOLERANCE);
-  BOOST_CHECK_CLOSE(m_dec, m_class_example_ptr->getDec(), TEST_DOUBLE_TOLERANCE);
-  BOOST_CHECK(Elements::isEqual(m_ra, m_class_example_ptr->getRa()));
-  BOOST_CHECK(Elements::isEqual(m_dec, m_class_example_ptr->getDec()));
-  BOOST_CHECK(m_expected_static_string == m_class_example_ptr->getStaticString());
+  BOOST_CHECK_EXCEPTION(example_class.divideNumbers(1.0, 0.0), Elements::Exception,
+      // below is a lambda function used as a predicate to check the exception error message
+      [](const Elements::Exception& e){
+            string exception_str = e.what();
+            return exception_str.find("exception in ClassExample::divideNumbers") != string::npos;
+      }
+  );
 }
-
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE( computeSum_test, ClassExampleFixture ) {
-  //
-  double actualSum = m_class_example_ptr->computeSum(m_first_number, m_second_number);
-  BOOST_CHECK_CLOSE(actualSum, m_expected_sum, TEST_DOUBLE_TOLERANCE);
-}
-
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE( divideNumbers_test, ClassExampleFixture ) {
-  //
-  double actualDivisionResult = m_class_example_ptr->divideNumbers(m_first_number, m_second_number);
-  BOOST_CHECK_CLOSE(actualDivisionResult, m_expected_division_result, TEST_DOUBLE_TOLERANCE);
-}
-
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE( divideNumbersByZeroException_test, ClassExampleFixture ) {
-  //
-  bool exception = false;
-  try {
-    m_class_example_ptr->divideNumbers(m_first_number, 0.0);
-  } catch (const Elements::Exception & e) {
-    //exception = true;
-    string exception_str = e.what();
-    exception =
-        (exception_str.find(
-            "exception in divideNumbers")
-            != string::npos);
-  }
-  BOOST_CHECK(exception);
-}
-
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE( summingAndDividing_test, ClassExampleFixture ) {
-  //
-  m_class_example_ptr->summingAndDividing(m_first_number, m_second_number);
-  BOOST_CHECK_CLOSE(m_class_example_ptr->getResult(), m_expected_final_result, TEST_DOUBLE_TOLERANCE);
-}
-
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE( summingAndDividingByZeroException_test, ClassExampleFixture ) {
-  //
-  bool exception = false;
-  try {
-    m_class_example_ptr->summingAndDividing(m_first_number, 0.0);
-  } catch (const Elements::Exception & e) {
-    //exception = true;
-    string exception_str = e.what();
-    exception =
-        (exception_str.find(
-            "exception in divideNumbers")
-            != string::npos);
-  }
-  BOOST_CHECK(exception);
-}
-
-//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END ()
+

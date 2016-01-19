@@ -13,7 +13,13 @@ find_package(ElementsProject)
 #---------------------------------------------------------------
 
 # Declare project name and version
-elements_project(Elements 3.3 DESCRIPTION "A C++ base framework for the Euclid Software.")
+set(ELEMENTS_HIDE_SYMBOLS ON
+    CACHE STRING "enable explicit symbol visibility on gcc-4"
+    FORCE)
+
+
+elements_project(Elements 3.10 DESCRIPTION "A C++ base framework for the Euclid Software.")
+
 
 # This test does not really fit in a subdirectory.
 

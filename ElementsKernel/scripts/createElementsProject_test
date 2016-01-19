@@ -1,0 +1,47 @@
+#!/bin/sh 
+
+home_dir=${PWD}
+
+project_name="ProjectTest"
+version="1.0"
+
+# Create unique directory 
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+# Clean and exit
+clean_and_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+# Set to the User_area
+export User_area=${tmploc}
+
+cd ${tmploc}
+
+CreateElementsProject $project_name $version
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+# Make sure the project has been created
+if [ ! -d $project_name ]; then
+   clean_and_exit 1
+fi
+
+# Make sure mandatory files has been created
+if [ ! -e $User_area/$project_name/$version/CMakeLists.txt ] ||
+   [ ! -e $User_area/$project_name/$version/Makefile ]; then
+   clean_and_exit 1
+fi
+
+# Make sure <Project_test> is there
+result=$( grep "$project_name $version" $User_area/$project_name/$version/CMakeLists.txt )
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+clean_and_exit 0
