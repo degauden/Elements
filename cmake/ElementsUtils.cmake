@@ -465,3 +465,10 @@ function(get_rpm_dep_list project_use package_suffix output_var)
   set(${output_var} ${output_str_list} PARENT_SCOPE)
 
 endfunction()
+
+macro(print_all_variables)
+  get_cmake_property(_variableNames VARIABLES)
+  foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")      
+  endforeach()
+endmacro()
