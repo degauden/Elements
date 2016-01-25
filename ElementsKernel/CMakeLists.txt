@@ -1,7 +1,7 @@
 elements_subdir(ElementsKernel)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread program_options system regex)
-find_package(Log4CPP)
+find_package(Log4CPP REQUIRED)
 
 #---Libraries---------------------------------------------------------------
 elements_add_library(ElementsKernel src/Lib/*.cpp
@@ -117,3 +117,4 @@ elements_add_test(AddCppClass COMMAND addCppClass_test)
 elements_add_test(AddCppProgram COMMAND addCppProgram_test)
 elements_add_test(AddPythonModule COMMAND addPythonModule_test)
 elements_add_test(AddPythonProgram COMMAND addPythonProgram_test)
+
