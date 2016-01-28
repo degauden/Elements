@@ -677,7 +677,6 @@ macro(elements_project project version)
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{_bindir}/${_do}")
     endforeach()
-    #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
 
 #------------------------------------------------------------------------------
@@ -687,7 +686,6 @@ macro(elements_project project version)
     foreach(_do ${cmake_extra_flags})
       set(CPACK_EXTRA_CMAKEFLAGS "${CPACK_EXTRA_CMAKEFLAGS} ${_do}")
     endforeach()
-    #message(STATUS "The extra CMake flags: ${CPACK_EXTRA_CMAKEFLAGS}")
   endif()
 
 
@@ -702,7 +700,6 @@ macro(elements_project project version)
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}")
     endforeach()
-    #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
 
 
