@@ -78,21 +78,21 @@ else()
     endif()
   endif()
 
-  find_program(distcc_cmd distcc)
-  mark_as_advanced(distcc_cmd)
+  find_package(DistCC)
 
-  if(distcc_cmd)
+  if(DISTCC_FOUND)
     option(CMAKE_USE_DISTCC "Use distcc to speed up compilation." OFF)
     if(CMAKE_USE_DISTCC)
-      if(CMAKE_USE_CCACHE)
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "CCACHE_PREFIX=${distcc_cmd} ${ccache_cmd}")
+      if(CMAKE_USE_CCACHE AND CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "CCACHE_PREFIX=${DISTCC_EXECUTABLE} ${CCACHE_EXECUTABLE}")
         message(STATUS "Enabling distcc builds in ccache")
       else()
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${distcc_cmd})
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${DISTCC_EXECUTABLE})
         message(STATUS "Using distcc for building")
       endif()
     endif()
   endif()
+  
 endif()
 
 # This option make sense only if we have 'objcopy'
