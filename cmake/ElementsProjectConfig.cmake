@@ -23,7 +23,7 @@ endif()
 if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
   cmake_policy(SET CMP0063 NEW)
 else()
-  if(CMAKE_VERSION VERSION_GREATER 2.8.11)
+  if(CMAKE_VERSION VERSION_GREATER 3.0.2)
     cmake_policy(SET CMP0063 OLD)
   endif()
 endif()
