@@ -23,7 +23,7 @@ endif()
 if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
   cmake_policy(SET CMP0063 NEW)
 else()
-  if(CMAKE_VERSION VERSION_GREATER 2.8.11)
+  if(CMAKE_VERSION VERSION_GREATER 3.0.2)
     cmake_policy(SET CMP0063 OLD)
   endif()
 endif()
@@ -677,7 +677,6 @@ macro(elements_project project version)
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{_bindir}/${_do}")
     endforeach()
-    #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
 
 #------------------------------------------------------------------------------
@@ -687,7 +686,6 @@ macro(elements_project project version)
     foreach(_do ${cmake_extra_flags})
       set(CPACK_EXTRA_CMAKEFLAGS "${CPACK_EXTRA_CMAKEFLAGS} ${_do}")
     endforeach()
-    #message(STATUS "The extra CMake flags: ${CPACK_EXTRA_CMAKEFLAGS}")
   endif()
 
 
@@ -702,7 +700,6 @@ macro(elements_project project version)
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}")
     endforeach()
-    #message(STATUS "The regular objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
 
 
