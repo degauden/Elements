@@ -23,8 +23,7 @@
     add_custom_target(doc
                       ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/Doxyfile
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen
-                      COMMENT "Generating API documentation with Doxygen" VERBATIM
-    )
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM)
 
   endif()
   
@@ -74,6 +73,18 @@
 
     
     endif()
+    
+    get_property(proj_python_package_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
+    
+    foreach (_py_pack IN LISTS proj_python_package_list)
+        get_filename_component(_py_pack_short ${_py_pack} NAME)
+        add_custom_target(sphinx_apidoc_${_py_pack_short}
+                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short}
+                          COMMAND  ${SPHINX_APIDOC_EXECUTABLE} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short} ${_py_pack}
+                          COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
+
+        add_dependencies(doc sphinx_apidoc_${_py_pack_short})
+    endforeach()
     
   endif()
   
