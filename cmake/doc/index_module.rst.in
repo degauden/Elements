@@ -1,0 +1,13 @@
+@_el_pack_short@
+================
+
+@SPHINX_THIS_MODULE_INDEX@
+
+Python Package
+--------------
+
+.. toctree::
+   :maxdepth: 4
+
+
+   @SPHINX_THIS_APIDOC_MODULES@
