@@ -52,7 +52,17 @@
       message(STATUS "From the template file: ${sphinx_conf_template}")
     endif()    
     
-    
+    file(GLOB rst-files ${CMAKE_CURRENT_SOURCE_DIR}/doc/*.rst)
+        
+    foreach(r_file ${rst-files})
+      get_filename_component(r_file_short ${r_file} NAME)      
+      configure_file(
+        "${r_file}"
+        "${PROJECT_BINARY_DIR}/doc/sphinx/${r_file_short}"
+        COPYONLY
+      )    
+      message(STATUS "Copy ${r_file} file to ${PROJECT_BINARY_DIR}/doc/sphinx/${r_file_short}")
+    endforeach()
     
     if(DOXYGEN_FOUND)
         
@@ -83,12 +93,6 @@
     set(SPHINX_BUILD_CMD ${env_cmd} --xml ${env_xml} ${SPHINX_BUILD_EXECUTABLE})
     
     get_property(proj_python_package_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
-    foreach (_py_pack IN LISTS proj_python_package_list)
-        get_filename_component(_py_pack_short ${_py_pack} NAME)
-        set(SPHINX_APIDOC_MODULES "${SPHINX_APIDOC_MODULES}
-   ${_py_pack_short}/modules")
-    endforeach()
-
     
     add_custom_target(doc
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
@@ -116,8 +120,8 @@
 
         
         add_custom_target(sphinx_apidoc_${_py_pack_short}
-                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short}
-                          COMMAND  ${SPHINX_APIDOC_CMD} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short} ${_py_pack}
+                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short}
+                          COMMAND  ${SPHINX_APIDOC_CMD} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short} ${_py_pack}
                           COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
 
         add_dependencies(doc sphinx_apidoc_${_py_pack_short})
@@ -132,11 +136,20 @@
     # this will create an <module>_index.rst for each of them
     foreach(_el_pack IN LISTS SPHINX_ELEMENTS_PACK_LIST)
 
-      debug_print_var(_el_pack)
-
       get_filename_component(_el_pack_short ${_el_pack} NAME)
 
-      debug_print_var(_el_pack_short)
+      file(GLOB rst-files ${_el_pack}/doc/*.rst)
+        
+      foreach(r_file ${rst-files})
+        get_filename_component(r_file_short ${r_file} NAME)      
+        configure_file(
+          "${r_file}"
+          "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${r_file_short}"
+          COPYONLY
+        )    
+        message(STATUS "Copy ${r_file} file to ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${r_file_short}")
+      endforeach()
+
 
       find_file(sphinx_${_el_pack_short}_module_index_file
                 NAMES index.rst
@@ -161,15 +174,15 @@
       if(sphinx_index_module_template)
         configure_file(
                        "${sphinx_index_module_template}"
-                       "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}_index.rst"
+                       "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/index.rst"
                        @ONLY
                        )
-        message(STATUS "Generated Sphinx module index file: ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}_index.rst")
+        message(STATUS "Generated Sphinx module index file: ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/index.rst")
         message(STATUS "From the template file: ${sphinx_index_module_template}")
       endif()
 
       set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
-   ${_el_pack_short}_index")
+   ${_el_pack_short}/index")
     
     endforeach()
     
