@@ -1,0 +1,15 @@
+if (NOT PLANTUML_FOUND)
+
+	find_program(PLANTUML_EXECUTABLE plantuml)
+	set(PLANTUML_EXECUTABLE ${PLANTUML_EXECUTABLE} CACHE STRING "")
+
+# handle the QUIETLY and REQUIRED arguments and set PLANTUML_FOUND to TRUE if
+# all listed variables are TRUE
+    INCLUDE(FindPackageHandleStandardArgs)
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS(PlantUML DEFAULT_MSG PLANTUML_EXECUTABLE)
+
+    mark_as_advanced(PLANTUML_FOUND PLANTUML_EXECUTABLE)
+
+
+endif (NOT PLANTUML_FOUND)
+
