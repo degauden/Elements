@@ -152,16 +152,35 @@ Related Pages
 
       file(GLOB rst-files ${_el_pack}/doc/*.rst)
         
+      unset(SPHINX_THIS_RELATED_PAGES)
+        
       foreach(r_file ${rst-files})
-        get_filename_component(r_file_short ${r_file} NAME)      
+        get_filename_component(r_file_short ${r_file} NAME)
+        get_filename_component(r_file_short_we ${r_file} NAME_WE)      
+              
         configure_file(
           "${r_file}"
           "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${r_file_short}"
           COPYONLY
         )    
         message(STATUS "Copy ${r_file} file to ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${r_file_short}")
+
+        if(NOT SPHINX_${_el_pack_short}_RELATED_PAGES)
+          set(SPHINX_${_el_pack_short}_RELATED_PAGES "
+Related Pages
+-------------
+
+.. toctree::
+   :maxdepth: 2
+")  
+        endif()
+        set(SPHINX_${_el_pack_short}_RELATED_PAGES "${SPHINX_${_el_pack_short}_RELATED_PAGES}
+   ${r_file_short_we}")  
+
+
       endforeach()
 
+      set(SPHINX_THIS_RELATED_PAGES ${SPHINX_${_el_pack_short}_RELATED_PAGES})
 
       find_file(sphinx_${_el_pack_short}_module_index_file
                 NAMES index.rst
@@ -182,6 +201,7 @@ Related Pages
                 NO_DEFAULT_PATH)
 
       set(SPHINX_THIS_APIDOC_MODULES ${SPHINX_${_el_pack_short}_APIDOC_MODULES})
+
 
       if(sphinx_index_module_template)
         configure_file(
