@@ -34,7 +34,7 @@ def defineSpecificProgramOptions():
     """
     @brief Allows to define the (command line and configuration file) options
     specific to this program
-    
+
     @details
         See the Elements documentation for more details.
     @return
