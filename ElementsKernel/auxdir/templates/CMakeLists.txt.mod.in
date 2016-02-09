@@ -14,7 +14,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #===============================================================================
 
 #===============================================================================
-# Add the find_package macro (a pure CMake command) here to locate the 
+# Add the find_package macro (a pure CMake command) here to locate the
 # libraries.
 # Examples:
 #          find_package(CppUnit)
