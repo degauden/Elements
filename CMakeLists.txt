@@ -25,3 +25,4 @@ elements_project(Elements 3.10 DESCRIPTION "A C++ base framework for the Euclid 
 
 add_python_test_dir(cmake/scripts/EnvConfig PREFIX cmake.EnvConfig PATTERN "Test*.py")
 
+#print_all_variables()
