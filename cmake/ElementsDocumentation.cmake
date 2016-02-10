@@ -69,7 +69,8 @@ Related Pages
 =============
 
 .. toctree::
-   :maxdepth: 1")  
+   :maxdepth: 2
+")  
       endif()
       set(SPHINX_PROJECT_RELATED_PAGES "${SPHINX_PROJECT_RELATED_PAGES}
    ${r_file_short_we}")  
