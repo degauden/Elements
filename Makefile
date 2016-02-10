@@ -120,7 +120,8 @@ all:
 # deep clean
 purge:
 	$(RM) -r $(BUILDDIR) $(CURDIR)/InstallArea/$(BINARY_TAG)
-	find $(CURDIR) -name "*.pyc" -exec $(RM) -v \{} \;
+	find $(CURDIR) -type f -name "*.pyc" -exec $(RM) -v \{} \;
+	find $(CURDIR) -depth -type d -name "__pycache__" -exec $(RM) -rv \{} \;
 
 # delegate any target to the build directory (except 'purge')
 ifneq ($(MAKECMDGOALS),purge)
