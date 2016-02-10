@@ -142,8 +142,9 @@ Related Pages
 
     endforeach()
     
-    list(REMOVE_DUPLICATES SPHINX_ELEMENTS_PACK_LIST)
-
+    if(SPHINX_ELEMENTS_PACK_LIST)
+      list(REMOVE_DUPLICATES SPHINX_ELEMENTS_PACK_LIST)
+    endif()
 
  
     #loop over all Elements module
