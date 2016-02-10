@@ -1,0 +1,32 @@
+* Mon Feb 09 2016 Hubert Degaudenzi <Hubert.Degaudenzi@unige.ch> 3.10-1
+- This release is essentially an update for the release of the EDEN 1.2 version.
+- Add CMake build support for various libraries and tools:
+  - GSL (issue #1907)
+  - HealpixCpp
+  - WCS
+  - FFTW
+  - PyXB
+  - Xsd
+- Add trivial examples to check that the build works if the following libraries
+  are found (their build is conditional):
+  - Eigen
+  - FFTW
+  - GSL
+  - HealpixCpp
+  - WCS
+  - Xerces
+- Fix a few issues for the symbol visibility and CMake 3.3
+- Add full support for the GCC 5 compiler series.
+- Cure redundant sub-namespaces.
+- Make the Log4CPP dependency mandatory.
+- Fix the CMake detection of the binary executables used at build time. The casing 
+  of the of the name of the find module file must be the same as the one used for 
+  the FIND_PACKAGE_HANDLE_STANDARD_ARGS macro.
+
+* Mon Jan 22 2016 Hubert Degaudenzi <Hubert.Degaudenzi@unige.ch> 3.9-1
+- This is a release targeted for the ISDC December 2015 Phosphoros Workshop.
+- This release is done together with the 1.14 version of the EuclidEnv standalone package
+- Here is a short summary of the noticeable changes:
+  - Implement the possibility of having generated aux directories (auxdir)
+  - Add the main creation helper scripts: CreateElementsProject, AddElementsModule, AddCppProgram, AddCppClass, AddPythonProgram, AddPythonModule (Nicolas Morisset)
+  - Fix the build for the MacPort distribution
