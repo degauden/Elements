@@ -47,9 +47,33 @@
         @ONLY
       )
       message(STATUS "Generated Sphinx configuration file: ${PROJECT_BINARY_DIR}/doc/sphinx/conf.py")
-      message(STATUS "From the Doxygen.in template file: ${sphinx_conf_template}")
+      message(STATUS "From the template file: ${sphinx_conf_template}")
 
     endif()
-  
+    
+    if(DOXYGEN_FOUND)
+        
+
+      find_file(cpp_rst_template
+                NAMES cpp_modules.rst.in
+                PATHS ${CMAKE_MODULE_PATH}
+                PATH_SUFFIXES doc
+                NO_DEFAULT_PATH)
+
+
+      if(cpp_rst_template)
+        configure_file(
+          "${cpp_rst_template}"
+          "${PROJECT_BINARY_DIR}/doc/sphinx/cpp_modules.rst"
+          @ONLY
+        )
+        message(STATUS "Generated C++ main rst file: ${PROJECT_BINARY_DIR}/doc/sphinx/cpp_modules.rst")
+        message(STATUS "From the template file: ${cpp_rst_template}")
+
+    endif()
+
+    
+    endif()
+    
   endif()
   
