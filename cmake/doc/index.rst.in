@@ -16,6 +16,8 @@ Contents
 
    @SPHINX_CPP_MODULES@
 
+@SPHINX_PROJECT_RELATED_PAGES@
+
 Indices and tables
 ==================
 
