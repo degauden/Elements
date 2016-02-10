@@ -56,12 +56,23 @@
         
     foreach(r_file ${rst-files})
       get_filename_component(r_file_short ${r_file} NAME)      
+      get_filename_component(r_file_short_we ${r_file} NAME_WE)      
       configure_file(
         "${r_file}"
         "${PROJECT_BINARY_DIR}/doc/sphinx/${r_file_short}"
         COPYONLY
       )    
       message(STATUS "Copy ${r_file} file to ${PROJECT_BINARY_DIR}/doc/sphinx/${r_file_short}")
+      if(NOT SPHINX_PROJECT_RELATED_PAGES)
+        set(SPHINX_PROJECT_RELATED_PAGES "
+Related Pages
+=============
+
+.. toctree::
+   :maxdepth: 1")  
+      endif()
+      set(SPHINX_PROJECT_RELATED_PAGES "${SPHINX_PROJECT_RELATED_PAGES}
+   ${r_file_short_we}")  
     endforeach()
     
     if(DOXYGEN_FOUND)
