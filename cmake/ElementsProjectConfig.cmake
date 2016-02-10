@@ -219,8 +219,11 @@ macro(elements_project project version)
 
 
   if(ELEMENTS_BUILD_TESTS)
-    find_program(MEMORYCHECK_COMMAND valgrind)
-    set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all" )
+    find_package(Valgrind)
+    if(VALGRIND_FOUND)
+      set(MEMORYCHECK_COMMAND ${VALGRIND_EXECUTABLE})
+      set(MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all" )
+    endif()
     enable_testing()
     include(CTest)
   endif()
