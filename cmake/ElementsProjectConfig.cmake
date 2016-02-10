@@ -67,30 +67,32 @@ if (ELEMENTS_BUILD_PREFIX_CMD)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${ELEMENTS_BUILD_PREFIX_CMD}")
   message(STATUS "Prefix build commands with '${ELEMENTS_BUILD_PREFIX_CMD}'")
 else()
-  find_program(ccache_cmd NAMES ccache ccache-swig)
-  find_program(distcc_cmd distcc)
-  mark_as_advanced(ccache_cmd distcc_cmd)
 
-  if(ccache_cmd)
+  find_package(CCache)
+
+  if(CCACHE_FOUND)
     option(CMAKE_USE_CCACHE "Use ccache to speed up compilation." OFF)
     if(CMAKE_USE_CCACHE)
-      set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${ccache_cmd})
+      set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_EXECUTABLE})
       message(STATUS "Using ccache for building")
     endif()
   endif()
 
-  if(distcc_cmd)
+  find_package(DistCC)
+
+  if(DISTCC_FOUND)
     option(CMAKE_USE_DISTCC "Use distcc to speed up compilation." OFF)
     if(CMAKE_USE_DISTCC)
-      if(CMAKE_USE_CCACHE)
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "CCACHE_PREFIX=${distcc_cmd} ${ccache_cmd}")
+      if(CMAKE_USE_CCACHE AND CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "CCACHE_PREFIX=${DISTCC_EXECUTABLE} ${CCACHE_EXECUTABLE}")
         message(STATUS "Enabling distcc builds in ccache")
       else()
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${distcc_cmd})
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${DISTCC_EXECUTABLE})
         message(STATUS "Using distcc for building")
       endif()
     endif()
   endif()
+  
 endif()
 
 # This option make sense only if we have 'objcopy'
@@ -217,8 +219,11 @@ macro(elements_project project version)
 
 
   if(ELEMENTS_BUILD_TESTS)
-    find_program(MEMORYCHECK_COMMAND valgrind)
-    set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all" )
+    find_package(Valgrind)
+    if(VALGRIND_FOUND)
+      set(MEMORYCHECK_COMMAND ${VALGRIND_EXECUTABLE})
+      set(MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all" )
+    endif()
     enable_testing()
     include(CTest)
   endif()
@@ -840,7 +845,21 @@ macro(elements_project project version)
 
       get_rpm_dep_list("${PROJECT_USE}" "" RPM_DEP_LIST)
 
+      find_file(main_project_changelog_file
+                NAMES ChangeLog
+                PATHS ${CMAKE_SOURCE_DIR}
+                PATH_SUFFIXES doc
+                NO_DEFAULT_PATH)
 
+      unset(CPACK_RPM_CHANGELOG)
+      if(main_project_changelog_file)
+        file(READ ${main_project_changelog_file} MAIN_PROJECT_CHANGELOG)
+        set(CPACK_RPM_CHANGELOG "%changelog
+${MAIN_PROJECT_CHANGELOG}
+")
+        message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
+      endif()
+    
       find_file(spec_file_template
                 NAMES Elements.spec.in
                 PATHS ${CMAKE_MODULE_PATH}
@@ -881,33 +900,7 @@ macro(elements_project project version)
 
   endif()
 
-  # Add Doxygen generation
-  find_package(Doxygen QUIET)
-  if(DOXYGEN_FOUND)
-    find_file(doxygen_file_template
-              NAMES Doxyfile.in
-              PATHS ${CMAKE_MODULE_PATH}
-              PATH_SUFFIXES doc
-              NO_DEFAULT_PATH)
-
-
-    if(doxygen_file_template)
-      configure_file(
-        "${doxygen_file_template}"
-        "${PROJECT_BINARY_DIR}/doc/Doxyfile"
-        @ONLY
-      )
-      message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/Doxyfile")
-      message(STATUS "From the Doxygen.in template file: ${doxygen_file_template}")
-
-    endif()
-
-    add_custom_target(doc
-                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc
-                      COMMENT "Generating API documentation with Doxygen" VERBATIM
-    )
-  endif()
+  include(ElementsDocumentation)
 
 endmacro()
 
@@ -2470,7 +2463,7 @@ function(elements_install_python_modules)
          AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
         set(pyfile ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
         file(RELATIVE_PATH pyfile ${CMAKE_BINARY_DIR} ${pyfile})
-        message(WARNING "The file  ${pyfile} is missing. I shall install an empty one.")
+        message(WARNING "The file ${pyfile} is missing. I shall install an empty one.")
         if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/__init__.py)
           file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/__init__.py "# Empty file generated automatically\n")
         endif()
@@ -2480,6 +2473,9 @@ function(elements_install_python_modules)
       # Add the Python module name to the list of provided ones.
       get_filename_component(modname ${dir} NAME)
       set_property(DIRECTORY APPEND PROPERTY has_python_modules ${modname})
+      if(NOT dir STREQUAL python/.svn)
+        set_property(GLOBAL APPEND PROPERTY PROJ_PYTHON_PACKAGE_LIST ${CMAKE_CURRENT_SOURCE_DIR}/${dir})
+      endif()
     endforeach()
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
