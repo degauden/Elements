@@ -151,7 +151,7 @@ if(WCSLIB_FOUND)
 elements_add_executable(WcsExample src/program/WcsExample.cpp
                         LINK_LIBRARIES WCSLIB ElementsExamples
                         INCLUDE_DIRS WCSLIB ElementsExamples)
-elements_add_test(WCSLIBWorks COMMAND GslExample LABELS Wcs Build)
+elements_add_test(WCSLIBWorks COMMAND WcsExample LABELS Wcs Build)
 endif()
 
 
