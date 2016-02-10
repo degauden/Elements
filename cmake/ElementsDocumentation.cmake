@@ -1,7 +1,8 @@
   # Add Doxygen generation
   find_package(Doxygen)
   if(DOXYGEN_FOUND)
-
+    
+    # Generation of the main Doxygen configuration: the Doxyfile
     find_file(doxygen_file_template
               NAMES Doxyfile.in
               PATHS ${CMAKE_MODULE_PATH}
@@ -20,6 +21,7 @@
 
     endif()
 
+    # add the doxygen target
     add_custom_target(doxygen
                       ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/Doxyfile
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen
@@ -31,7 +33,8 @@
   
   find_package(Sphinx)
   if(SPHINX_FOUND)
-  
+    
+    # Generation of the main sphinx configuration file.
     find_file(sphinx_conf_template
               NAMES Sphinx_conf.py.in
               PATHS ${CMAKE_MODULE_PATH}
@@ -47,7 +50,6 @@
       )
       message(STATUS "Generated Sphinx configuration file: ${PROJECT_BINARY_DIR}/doc/sphinx/conf.py")
       message(STATUS "From the template file: ${sphinx_conf_template}")
-
     endif()    
     
     
@@ -70,6 +72,7 @@
         )
         message(STATUS "Generated C++ main rst file: ${PROJECT_BINARY_DIR}/doc/sphinx/cpp_modules.rst")
         message(STATUS "From the template file: ${cpp_rst_template}")
+        set(SPHINX_CPP_MODULES "cpp_modules")
 
     endif()
 
@@ -85,6 +88,106 @@
         set(SPHINX_APIDOC_MODULES "${SPHINX_APIDOC_MODULES}
    ${_py_pack_short}/modules")
     endforeach()
+
+    
+    add_custom_target(doc
+                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
+                      COMMAND  ${SPHINX_BUILD_CMD} . ${_py_pack} html
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
+                      COMMENT "Generating Sphinx documentation" VERBATIM)
+    
+    add_dependencies(doc doxygen)
+
+
+
+    
+    # loop over all python packages found (can have many for each Elements module)
+    foreach (_py_pack IN LISTS proj_python_package_list)
+    
+        get_filename_component(_py_pack_short ${_py_pack} NAME)
+        get_filename_component(_py_pack_dir ${_py_pack} DIRECTORY)
+        get_filename_component(_py_pack_main ${_py_pack_dir} DIRECTORY)
+        get_filename_component(_el_pack_short ${_py_pack_main} NAME)
+        
+        set(SPHINX_ELEMENTS_PACK_LIST ${SPHINX_ELEMENTS_PACK_LIST} ${_py_pack_main})        
+        
+        set(SPHINX_${_el_pack_short}_APIDOC_MODULES "${SPHINX_${_el_pack_short}_APIDOC_MODULES}
+   ${_py_pack_short}/modules")
+
+        
+        add_custom_target(sphinx_apidoc_${_py_pack_short}
+                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short}
+                          COMMAND  ${SPHINX_APIDOC_CMD} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short} ${_py_pack}
+                          COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
+
+        add_dependencies(doc sphinx_apidoc_${_py_pack_short})
+
+    endforeach()
+    
+    list(REMOVE_DUPLICATES SPHINX_ELEMENTS_PACK_LIST)
+
+
+ 
+    #loop over all Elements module
+    # this will create an <module>_index.rst for each of them
+    foreach(_el_pack IN LISTS SPHINX_ELEMENTS_PACK_LIST)
+
+      debug_print_var(_el_pack)
+
+      get_filename_component(_el_pack_short ${_el_pack} NAME)
+
+      debug_print_var(_el_pack_short)
+
+      find_file(sphinx_${_el_pack_short}_module_index_file
+                NAMES index.rst
+                PATHS ${_el_pack}
+                PATH_SUFFIXES doc
+                NO_DEFAULT_PATH)
+
+      unset(SPHINX_THIS_MODULE_INDEX)
+      if(sphinx_${_el_pack_short}_module_index_file)
+        file(READ ${sphinx_${_el_pack_short}_module_index_file} SPHINX_THIS_MODULE_INDEX)
+        message(STATUS "Using ${sphinx_${_el_pack_short}_module_index_file} for the module ${_el_pack_short}")
+      endif()       
+
+      find_file(sphinx_index_module_template
+                NAMES index_module.rst.in
+                PATHS ${CMAKE_MODULE_PATH}
+                PATH_SUFFIXES doc
+                NO_DEFAULT_PATH)
+
+      set(SPHINX_THIS_APIDOC_MODULES ${SPHINX_${_el_pack_short}_APIDOC_MODULES})
+
+      if(sphinx_index_module_template)
+        configure_file(
+                       "${sphinx_index_module_template}"
+                       "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}_index.rst"
+                       @ONLY
+                       )
+        message(STATUS "Generated Sphinx module index file: ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}_index.rst")
+        message(STATUS "From the template file: ${sphinx_index_module_template}")
+      endif()
+
+      set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
+   ${_el_pack_short}_index")
+    
+    endforeach()
+    
+    
+    
+
+    # Generation of the top index.rst file for the project
+    find_file(sphinx_main_project_index_file
+              NAMES index.rst
+              PATHS ${CMAKE_SOURCE_DIR}
+              PATH_SUFFIXES doc
+              NO_DEFAULT_PATH)
+
+    if(sphinx_main_project_index_file)
+      file(READ ${sphinx_main_project_index_file} SPHINX_MAIN_PROJECT_INDEX)
+      message(STATUS "Using ${sphinx_main_project_index_file} for the main index of the project")
+    endif()
+
 
     find_file(sphinx_index_template
               NAMES index.rst.in
@@ -103,31 +206,6 @@
       message(STATUS "Generated Sphinx main index file: ${PROJECT_BINARY_DIR}/doc/sphinx/index.rst")
       message(STATUS "From the template file: ${sphinx_index_template}")
     endif()
-    
-    add_custom_target(doc
-                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
-                      COMMAND  ${SPHINX_BUILD_CMD} . ${_py_pack} html
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
-                      COMMENT "Generating Sphinx documentation" VERBATIM)
-    
-    add_dependencies(doc doxygen)
-
-
-
-    
-    
-    foreach (_py_pack IN LISTS proj_python_package_list)
-        get_filename_component(_py_pack_short ${_py_pack} NAME)
-        add_custom_target(sphinx_apidoc_${_py_pack_short}
-                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short}
-                          COMMAND  ${SPHINX_APIDOC_CMD} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short} ${_py_pack}
-                          COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
-
-        add_dependencies(doc sphinx_apidoc_${_py_pack_short})
-
-    endforeach()
-    
-
 
     
   endif()

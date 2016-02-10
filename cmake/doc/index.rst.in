@@ -3,20 +3,18 @@
 Welcome to @PROJECT_NAME@ @CMAKE_PROJECT_VERSION@ documentation!
 ================================================================
 
-
-
-
+@SPHINX_MAIN_PROJECT_INDEX@
 
 
 Contents
 ========
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 5
 
-   
-   @SPHINX_APIDOC_MODULES@
-   cpp_modules
+   @SPHINX_EL_MODULES@
+
+   @SPHINX_CPP_MODULES@
 
 Indices and tables
 ==================
@@ -25,3 +23,7 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+Extra
+=====
+
+* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.
