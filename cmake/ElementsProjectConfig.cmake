@@ -845,7 +845,21 @@ macro(elements_project project version)
 
       get_rpm_dep_list("${PROJECT_USE}" "" RPM_DEP_LIST)
 
+      find_file(main_project_changelog_file
+                NAMES ChangeLog
+                PATHS ${CMAKE_SOURCE_DIR}
+                PATH_SUFFIXES doc
+                NO_DEFAULT_PATH)
 
+      unset(CPACK_RPM_CHANGELOG)
+      if(main_project_changelog_file)
+        file(READ ${main_project_changelog_file} MAIN_PROJECT_CHANGELOG)
+        set(CPACK_RPM_CHANGELOG "%changelog
+${MAIN_PROJECT_CHANGELOG}
+")
+        message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
+      endif()
+    
       find_file(spec_file_template
                 NAMES Elements.spec.in
                 PATHS ${CMAKE_MODULE_PATH}
