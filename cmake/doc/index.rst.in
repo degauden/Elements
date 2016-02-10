@@ -1,0 +1,27 @@
+.. @PROJECT_NAME@ @CMAKE_PROJECT_VERSION@ documentation master file
+
+Welcome to @PROJECT_NAME@ @CMAKE_PROJECT_VERSION@ documentation!
+================================================================
+
+
+
+
+
+
+Contents
+========
+
+.. toctree::
+   :maxdepth: 3
+
+   
+   @SPHINX_APIDOC_MODULES@
+   cpp_modules
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
