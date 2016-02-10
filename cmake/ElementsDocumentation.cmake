@@ -11,17 +11,17 @@
     if(doxygen_file_template)
       configure_file(
         "${doxygen_file_template}"
-        "${PROJECT_BINARY_DIR}/doc/Doxyfile"
+        "${PROJECT_BINARY_DIR}/doc/doxygen/Doxyfile"
         @ONLY
       )
-      message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/Doxyfile")
+      message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/doxygen/Doxyfile")
       message(STATUS "From the Doxygen.in template file: ${doxygen_file_template}")
 
     endif()
 
     add_custom_target(doc
-                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc
+                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/Doxyfile
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen
                       COMMENT "Generating API documentation with Doxygen" VERBATIM
     )
   endif()
