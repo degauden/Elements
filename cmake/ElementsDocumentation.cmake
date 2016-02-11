@@ -123,8 +123,8 @@ Related Pages
     foreach (_py_pack IN LISTS proj_python_package_list)
     
         get_filename_component(_py_pack_short ${_py_pack} NAME)
-        get_filename_component(_py_pack_dir ${_py_pack} DIRECTORY)
-        get_filename_component(_py_pack_main ${_py_pack_dir} DIRECTORY)
+        get_filename_component(_py_pack_dir ${_py_pack} PATH)
+        get_filename_component(_py_pack_main ${_py_pack_dir} PATH)
         get_filename_component(_el_pack_short ${_py_pack_main} NAME)
         
         set(SPHINX_ELEMENTS_PACK_LIST ${SPHINX_ELEMENTS_PACK_LIST} ${_py_pack_main})        
@@ -256,19 +256,6 @@ Related Pages
       message(STATUS "Generated Sphinx main index file: ${PROJECT_BINARY_DIR}/doc/sphinx/index.rst")
       message(STATUS "From the template file: ${sphinx_index_template}")
     endif()
-
-    
-    get_property(proj_python_package_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
-    
-    foreach (_py_pack IN LISTS proj_python_package_list)
-        get_filename_component(_py_pack_short ${_py_pack} NAME)
-        add_custom_target(sphinx_apidoc_${_py_pack_short}
-                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short}
-                          COMMAND  ${SPHINX_APIDOC_EXECUTABLE} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_py_pack_short} ${_py_pack}
-                          COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
-
-        add_dependencies(doc sphinx_apidoc_${_py_pack_short})
-    endforeach()
     
   endif()
   
