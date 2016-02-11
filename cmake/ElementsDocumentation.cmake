@@ -123,8 +123,8 @@ Related Pages
     foreach (_py_pack IN LISTS proj_python_package_list)
     
         get_filename_component(_py_pack_short ${_py_pack} NAME)
-        get_filename_component(_py_pack_dir ${_py_pack} DIRECTORY)
-        get_filename_component(_py_pack_main ${_py_pack_dir} DIRECTORY)
+        get_filename_component(_py_pack_dir ${_py_pack} PATH)
+        get_filename_component(_py_pack_main ${_py_pack_dir} PATH)
         get_filename_component(_el_pack_short ${_py_pack_main} NAME)
         
         set(SPHINX_ELEMENTS_PACK_LIST ${SPHINX_ELEMENTS_PACK_LIST} ${_py_pack_main})        
