@@ -1,3 +1,21 @@
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+
 """
 @file: ElementsKernel/AddPythonModule.py
 @author: Nicolas Morisset
@@ -77,7 +95,7 @@ def substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_na
     data = f.read()
     author_str = epcr.getAuthor()
     date_str = time.strftime("%x")
-    file_name_str = os.path.join('tests', 'python', python_module_name + '_test.py')
+    file_name_str = os.path.join('python', module_name, python_module_name + '.py')
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str}
