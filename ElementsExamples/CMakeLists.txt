@@ -172,6 +172,14 @@ elements_add_test(EigenWorks COMMAND EigenExample LABELS Eigen Build)
 endif()
 
 
+find_package(SWIG QUIET)
+if(SWIG_FOUND)
+elements_add_swig_binding(SwigExample ElementsExamples/SwigExample.i
+                          LINK_LIBRARIES ElementsExamples
+                          INCLUDE_DIRS ElementsExamples
+                          PUBLIC_HEADERS ElementsExamples)
+endif()
+
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
 elements_install_conf_files()
