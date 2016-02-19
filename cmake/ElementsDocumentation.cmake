@@ -21,6 +21,25 @@
 
     endif()
 
+    # Generation of the Doxygen Layout
+    find_file(doxygen_layout_template
+              NAMES DoxygenLayout.xml.in
+              PATHS ${CMAKE_MODULE_PATH}
+              PATH_SUFFIXES doc
+              NO_DEFAULT_PATH)
+
+
+    if(doxygen_layout_template)
+      configure_file(
+        "${doxygen_layout_template}"
+        "${PROJECT_BINARY_DIR}/doc/doxygen/DoxygenLayout.xml"
+        @ONLY
+      )
+      message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/doxygen/DoxygenLayout.xml")
+      message(STATUS "From the Doxygen.in template file: ${doxygen_layout_template}")
+
+    endif()
+
     # add the doxygen target
     add_custom_target(doxygen
                       ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/Doxyfile
