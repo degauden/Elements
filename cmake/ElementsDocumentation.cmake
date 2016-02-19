@@ -21,6 +21,25 @@
 
     endif()
 
+    # Generation of the Doxygen Layout
+    find_file(doxygen_layout_template
+              NAMES DoxygenLayout.xml.in
+              PATHS ${CMAKE_MODULE_PATH}
+              PATH_SUFFIXES doc
+              NO_DEFAULT_PATH)
+
+
+    if(doxygen_layout_template)
+      configure_file(
+        "${doxygen_layout_template}"
+        "${PROJECT_BINARY_DIR}/doc/doxygen/DoxygenLayout.xml"
+        @ONLY
+      )
+      message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/doxygen/DoxygenLayout.xml")
+      message(STATUS "From the Doxygen.in template file: ${doxygen_layout_template}")
+
+    endif()
+
     # add the doxygen target
     add_custom_target(doxygen
                       ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/Doxyfile
@@ -123,8 +142,8 @@ Related Pages
     foreach (_py_pack IN LISTS proj_python_package_list)
     
         get_filename_component(_py_pack_short ${_py_pack} NAME)
-        get_filename_component(_py_pack_dir ${_py_pack} DIRECTORY)
-        get_filename_component(_py_pack_main ${_py_pack_dir} DIRECTORY)
+        get_filename_component(_py_pack_dir ${_py_pack} PATH)
+        get_filename_component(_py_pack_main ${_py_pack_dir} PATH)
         get_filename_component(_el_pack_short ${_py_pack_main} NAME)
         
         set(SPHINX_ELEMENTS_PACK_LIST ${SPHINX_ELEMENTS_PACK_LIST} ${_py_pack_main})        
@@ -256,7 +275,6 @@ Related Pages
       message(STATUS "Generated Sphinx main index file: ${PROJECT_BINARY_DIR}/doc/sphinx/index.rst")
       message(STATUS "From the template file: ${sphinx_index_template}")
     endif()
-
     
   endif()
   
