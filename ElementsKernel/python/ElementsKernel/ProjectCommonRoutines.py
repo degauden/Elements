@@ -1,9 +1,9 @@
 """
-@file: ElementsKernel/ProjectCommonRoutines.py
-@author: Nicolas Morisset
+file: ElementsKernel/ProjectCommonRoutines.py
+author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
-@date: 01/07/15
+date: 01/07/15
 
 This module offers some common routines used by scripts for creating C++
 projects, modules, classes etc..
@@ -17,6 +17,16 @@ import ElementsKernel.Logging as log
 logger = log.getLogger('ProjectCommonRoutines')
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
+
+################################################################################
+
+def removeFilesOnDisk(file_list): 
+    """
+    Remove all files on hard drive from the <file_list> list .  
+    """
+    for elt in file_list:
+        logger.info('File deleted : %s' % elt)
+        deleteFile(elt) 
 
 ################################################################################
 

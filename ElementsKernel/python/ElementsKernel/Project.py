@@ -1,11 +1,31 @@
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+
 """
-@file: ElementsKernel/Project.py
-@author: Nicolas Morisset
+File: ElementsKernel/Project.py
+Author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
-@date: 01/07/15
-
+Created on: 01/07/15
 This script will create a new Elements project
+
+Updated on: 12/02/16
+           Feature #2034, add --no-version-directory option: 
 """
 
 import argparse
@@ -173,6 +193,9 @@ project(s).
                         nargs=2, action='append', type=str,
                         help='Dependency project name and its version number"\
                          e.g "-d Elements x.x.x"')
+    parser.add_argument('-novd', '--no-version-directory', action="store_true",
+                        help='Does not create the <project-version> directory only\
+                        the <project-name> directory will be created')
 
     return parser
 
@@ -208,8 +231,11 @@ def mainMethod(args):
             script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE_IN)
 
         # Set the project directory
-        project_dir = os.path.join(destination_path, proj_name, proj_version)
-
+        if args.no_version_directory:
+            project_dir = os.path.join(destination_path, proj_name)
+        else:
+            project_dir = os.path.join(destination_path, proj_name, proj_version)
+            
         # Make sure dependencies name and version are valid
         if script_goes_on and not args.dependency is None:
             script_goes_on = isDependencyProjectValid(dependant_projects)

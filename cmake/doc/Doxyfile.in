@@ -583,7 +583,7 @@ FILE_VERSION_FILTER =
 # You can optionally specify a file name after the option, if omitted
 # DoxygenLayout.xml will be used as the name of the layout file.
 
-LAYOUT_FILE =
+LAYOUT_FILE = DoxygenLayout.xml
 
 # The CITE_BIB_FILES tag can be used to specify one or more bib files
 # containing the references data. This must be a list of .bib files. The
@@ -681,6 +681,7 @@ INPUT_ENCODING = UTF-8
 FILE_PATTERNS = *.c *.cc *.cxx *.cpp *.c++ *.icpp *.d *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh
 FILE_PATTERNS += *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox
 FILE_PATTERNS += *.f90 *.f *.for *.vhd *.vhdl
+FILE_PATTERNS += *.py
 
 
 
