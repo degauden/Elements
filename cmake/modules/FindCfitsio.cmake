@@ -44,6 +44,28 @@ if(NOT CFITSIO_FOUND)
   FIND_PACKAGE_HANDLE_STANDARD_ARGS(Cfitsio DEFAULT_MSG CFITSIO_INCLUDE_DIRS CFITSIO_LIBRARIES)
 
 
+  if(NOT CMAKE_CROSSCOMPILING)
+    INCLUDE(CheckCXXSourceRuns)
+    set(CMAKE_REQUIRED_INCLUDES ${CFITSIO_INCLUDE_DIRS})
+    set(CMAKE_REQUIRED_LIBRARIES ${CFITSIO_LIBRARIES})
+    CHECK_CXX_SOURCE_RUNS("
+#include <fitsio.h>
+
+int main(int, char**) {
+
+  int answer=fits_is_reentrant();
+  if (answer) {
+    return 0; 
+  } else {
+    return 1;
+  }
+
+ 
+}" 
+    CFITSIO_IS_REENTRANT)
+    mark_as_advanced(CFITSIO_IS_REENTRANT)
+  endif()
+
   mark_as_advanced(CFITSIO_FOUND CFITSIO_INCLUDE_DIRS CFITSIO_LIBRARIES)
 
 endif()
