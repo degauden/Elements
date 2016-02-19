@@ -510,7 +510,7 @@ macro(elements_project project version)
   # - collect environment from externals
   elements_external_project_environment()
 
-  # (so far, the build and the release envirnoments are identical)
+  # (so far, the build and the release environments are identical)
   set(project_build_environment ${project_environment})
 
   # - collect internal environment
