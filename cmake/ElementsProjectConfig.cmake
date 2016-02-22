@@ -131,8 +131,7 @@ find_package(PythonInterp QUIET)
 #
 # Main macro for a Elements-based project.
 # Each project must call this macro once in the top-level CMakeLists.txt,
-# stating the project name and the version in the LHCb format (vXrY[pZ]). or in the
-# regular format (X.Y[.Z]).
+# stating the project name and the version in the regular format (X.Y[.Z]).
 #
 # The USE list can be used to declare which Elements-based projects are required by
 # the broject being compiled.
@@ -2378,6 +2377,7 @@ endfunction()
 #                     PREFIX ""
 #                     NAME ""
 #                     PATTERN *.py
+#                     TIMEOUT ""
 #                     )
 #
 # Add the python files in the directory as test. It collects the python test files
@@ -2385,7 +2385,7 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(add_python_test_dir subdir)
 
-  CMAKE_PARSE_ARGUMENTS(PYTEST_ARG "" "PREFIX;PATTERN;NAME" "" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(PYTEST_ARG "" "PREFIX;PATTERN;NAME;TIMEOUT" "" ${ARGN})
 
   if(NOT PYTEST_ARG_PATTERN)
     set(PYTEST_ARG_PATTERN "*.py")
@@ -2423,6 +2423,9 @@ function(add_python_test_dir subdir)
     endif()
   endif()
 
+  if(PYTEST_ARG_TIMEOUT)
+    set_property(TEST ${package}.${pytest_name} PROPERTY TIMEOUT ${PYTEST_ARG_TIMEOUT})
+  endif()
 
 
 endfunction()
@@ -2448,6 +2451,9 @@ endfunction()
 # FIXME: it should be cleaner
 #-------------------------------------------------------------------------------
 function(elements_install_python_modules)
+
+  CMAKE_PARSE_ARGUMENTS(INSTALL_PY_MOD "" "TEST_TIMEOUT" "" ${ARGN})
+
   if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python)
     install(DIRECTORY python/
             DESTINATION python
@@ -2479,7 +2485,11 @@ function(elements_install_python_modules)
     endforeach()
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
-      add_python_test_dir(tests/python)
+      if(INSTALL_PY_MOD_TEST_TIMEOUT)
+        add_python_test_dir(tests/python TIMEOUT ${INSTALL_PY_MOD_TEST_TIMEOUT})
+      else()
+        add_python_test_dir(tests/python)      
+      endif()
     endif()
   else()
     message(FATAL_ERROR "No python directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
