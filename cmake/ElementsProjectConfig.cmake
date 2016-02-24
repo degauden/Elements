@@ -859,22 +859,15 @@ ${MAIN_PROJECT_CHANGELOG}
         message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
       endif()
     
-      find_file(spec_file_template
-                NAMES Elements.spec.in
-                PATHS ${CMAKE_MODULE_PATH}
-                NO_DEFAULT_PATH)
-
-
-
+    
       set(PROJECT_RPM_BUILD_ROOT "${PROJECT_RPM_TOPDIR}/BUILDROOT/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}%{?dist}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
-
-      if(spec_file_template)
-        file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SPECS)
-        configure_file("${spec_file_template}" "${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec" @ONLY IMMEDIATE)
-        message(STATUS "Generated RPM Spec file: ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
-        message(STATUS "From the SPEC template file: ${spec_file_template}")
-      endif()
-
+    
+     find_file_to_configure(Elements.spec.in
+                            FILETYPE "RPM SPEC"
+                            OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
+                            OUTPUTNAME "${project.spec}"
+                            PATHS ${CMAKE_MODULE_PATH})
+       
 
       add_custom_target(rpmbuilddir
                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILD

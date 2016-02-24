@@ -68,7 +68,47 @@ function(recurse_test nb)
   endif()
 endfunction()
 
+#----------------------------------------------------------------
+# Filename utils
+#----------------------------------------------------------------------
 
+function(split_filename_ext filename_ne filename_ext filename)
+  string(REGEX MATCH "^(.*)\\.([^.]*)$" dummy ${filename})  
+  
+  set(${filename_ne} ${CMAKE_MATCH_1} PARENT_SCOPE)
+  set(${filename_ext} ${CMAKE_MATCH_2} PARENT_SCOPE)
+endfunction()
+
+function(find_file_to_configure template_file_name)
+    
+  CMAKE_PARSE_ARGUMENTS(TEMPLATE_CONF "" "OUTPUTDIR;OUTPUTNAME;FILETYPE" "PATHS;PATH_SUFFIXES" ${ARGN})
+      
+  # needed to reset the cache variable.
+  set(template_file template_file-NOTFOUND)
+  
+  find_file(template_file
+            NAMES ${template_file_name}
+            PATHS ${TEMPLATE_CONF_PATHS}
+            PATH_SUFFIXES ${TEMPLATE_CONF_PATH_SUFFIXES}
+            NO_DEFAULT_PATH)
+
+  if(template_file)
+
+    split_filename_ext(template_filename_ne template_filename_ext ${template_file_name})
+  
+    if(NOT TEMPLATE_CONF_OUTPUTNAME)
+      split_filename_ext(template_filename_ne template_filename_ext ${template_file_name})
+      set(TEMPLATE_CONF_OUTPUTNAME ${template_filename_ne})
+    endif()
+  
+    configure_file("${template_file}"
+                   "${TEMPLATE_CONF_OUTPUTDIR}/${TEMPLATE_CONF_OUTPUTNAME}"
+                   @ONLY)
+    message(STATUS "Generated the ${TEMPLATE_CONF_FILETYPE} file: ${TEMPLATE_CONF_OUTPUTDIR}/${TEMPLATE_CONF_OUTPUTNAME}")
+    message(STATUS "From the template file: ${template_file}")
+  endif()
+
+endfunction()
 
 #-------------------------------------------------------------------------------
 # elements_expand_sources(<variable> source_pattern1 source_pattern2 ...)
@@ -472,3 +512,7 @@ macro(print_all_variables)
     message(STATUS "${_variableName}=${${_variableName}}")      
   endforeach()
 endmacro()
+
+
+
+
