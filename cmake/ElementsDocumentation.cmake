@@ -1,45 +1,23 @@
   # Add Doxygen generation
   find_package(Doxygen)
+  
   if(DOXYGEN_FOUND)
     
     # Generation of the main Doxygen configuration: the Doxyfile
-    find_file(doxygen_file_template
-              NAMES Doxyfile.in
-              PATHS ${CMAKE_MODULE_PATH}
-              PATH_SUFFIXES doc
-              NO_DEFAULT_PATH)
-
-
-    if(doxygen_file_template)
-      configure_file(
-        "${doxygen_file_template}"
-        "${PROJECT_BINARY_DIR}/doc/doxygen/Doxyfile"
-        @ONLY
-      )
-      message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/doxygen/Doxyfile")
-      message(STATUS "From the Doxygen.in template file: ${doxygen_file_template}")
-
-    endif()
+    find_file_to_configure(Doxyfile.in
+                           FILETYPE "Doxygen configuration"
+                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
+                           PATHS ${CMAKE_MODULE_PATH}
+                           PATH_SUFFIXES doc)
+    
 
     # Generation of the Doxygen Layout
-    find_file(doxygen_layout_template
-              NAMES DoxygenLayout.xml.in
-              PATHS ${CMAKE_MODULE_PATH}
-              PATH_SUFFIXES doc
-              NO_DEFAULT_PATH)
-
-
-    if(doxygen_layout_template)
-      configure_file(
-        "${doxygen_layout_template}"
-        "${PROJECT_BINARY_DIR}/doc/doxygen/DoxygenLayout.xml"
-        @ONLY
-      )
-      message(STATUS "Generated Doxygen configuration file: ${PROJECT_BINARY_DIR}/doc/doxygen/DoxygenLayout.xml")
-      message(STATUS "From the Doxygen.in template file: ${doxygen_layout_template}")
-
-    endif()
-
+    find_file_to_configure(DoxygenLayout.xml.in
+                           FILETYPE "Doxygen layout"
+                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
+                           PATHS ${CMAKE_MODULE_PATH}
+                           PATH_SUFFIXES doc)
+    
     # add the doxygen target
     add_custom_target(doxygen
                       ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/Doxyfile
@@ -54,23 +32,13 @@
   if(SPHINX_FOUND)
     
     # Generation of the main sphinx configuration file.
-    find_file(sphinx_conf_template
-              NAMES Sphinx_conf.py.in
-              PATHS ${CMAKE_MODULE_PATH}
-              PATH_SUFFIXES doc
-              NO_DEFAULT_PATH)
-
-
-    if(sphinx_conf_template)
-      configure_file(
-        "${sphinx_conf_template}"
-        "${PROJECT_BINARY_DIR}/doc/sphinx/conf.py"
-        @ONLY
-      )
-      message(STATUS "Generated Sphinx configuration file: ${PROJECT_BINARY_DIR}/doc/sphinx/conf.py")
-      message(STATUS "From the template file: ${sphinx_conf_template}")
-    endif()    
-    
+    find_file_to_configure(Sphinx_conf.py.in
+                           FILETYPE "Sphinx configuration"
+                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
+                           OUTPUTNAME "conf.py"
+                           PATHS ${CMAKE_MODULE_PATH}
+                           PATH_SUFFIXES doc)
+        
     file(GLOB rst-files ${CMAKE_CURRENT_SOURCE_DIR}/doc/*.rst)
         
     foreach(r_file ${rst-files})
@@ -99,25 +67,11 @@ Related Pages
     
     if(DOXYGEN_FOUND)
         
-
-      find_file(cpp_rst_template
-                NAMES cpp_modules.rst.in
-                PATHS ${CMAKE_MODULE_PATH}
-                PATH_SUFFIXES doc
-                NO_DEFAULT_PATH)
-
-
-      if(cpp_rst_template)
-        configure_file(
-          "${cpp_rst_template}"
-          "${PROJECT_BINARY_DIR}/doc/sphinx/cpp_modules.rst"
-          @ONLY
-        )
-        message(STATUS "Generated C++ main rst file: ${PROJECT_BINARY_DIR}/doc/sphinx/cpp_modules.rst")
-        message(STATUS "From the template file: ${cpp_rst_template}")
-        set(SPHINX_CPP_MODULES "cpp_modules")
-
-    endif()
+      find_file_to_configure(cpp_modules.rst.in
+                             FILE_TYPE "C++ main ReST"
+                             OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
+                             PATHS ${CMAKE_MODULE_PATH}
+                             PATH_SUFFIXES doc)
 
     
     endif()
@@ -218,24 +172,16 @@ Related Pages
         message(STATUS "Using ${sphinx_${_el_pack_short}_module_index_file} for the module ${_el_pack_short}")
       endif()       
 
-      find_file(sphinx_index_module_template
-                NAMES index_module.rst.in
-                PATHS ${CMAKE_MODULE_PATH}
-                PATH_SUFFIXES doc
-                NO_DEFAULT_PATH)
-
       set(SPHINX_THIS_APIDOC_MODULES ${SPHINX_${_el_pack_short}_APIDOC_MODULES})
 
 
-      if(sphinx_index_module_template)
-        configure_file(
-                       "${sphinx_index_module_template}"
-                       "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/index.rst"
-                       @ONLY
-                       )
-        message(STATUS "Generated Sphinx module index file: ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/index.rst")
-        message(STATUS "From the template file: ${sphinx_index_module_template}")
-      endif()
+      find_file_to_configure(index_module.rst.in
+                             FILETYPE "Sphinx index"
+                             OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}"
+                             OUTPUTNAME "index.rst"
+                             PATHS ${CMAKE_MODULE_PATH}
+                             PATH_SUFFIXES doc)
+
 
       set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
    ${_el_pack_short}/index")
@@ -258,23 +204,13 @@ Related Pages
     endif()
 
 
-    find_file(sphinx_index_template
-              NAMES index.rst.in
-              PATHS ${CMAKE_MODULE_PATH}
-              PATH_SUFFIXES doc
-              NO_DEFAULT_PATH)
+   find_file_to_configure(index.rst.in
+                          FILETYPE "Sphinx index"
+                          OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
+                          OUTPUTNAME "index.rst"
+                          PATHS ${CMAKE_MODULE_PATH}
+                          PATH_SUFFIXES doc)
 
-
-
-    if(sphinx_index_template)
-      configure_file(
-        "${sphinx_index_template}"
-        "${PROJECT_BINARY_DIR}/doc/sphinx/index.rst"
-        @ONLY
-      )
-      message(STATUS "Generated Sphinx main index file: ${PROJECT_BINARY_DIR}/doc/sphinx/index.rst")
-      message(STATUS "From the template file: ${sphinx_index_template}")
-    endif()
     
   endif()
   
