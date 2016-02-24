@@ -99,11 +99,11 @@ if(NOT ELEMENTS_FLAGS_SET)
 
     # Common compilation flags
   set(CMAKE_CXX_FLAGS
-      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal"
+      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
   set(CMAKE_C_FLAGS
-      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -Wno-unused-parameter"
+      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -Wno-unused-parameter -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
@@ -196,7 +196,7 @@ if(NOT ELEMENTS_FLAGS_SET)
     set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
         CACHE STRING "Flags used by the linker during the creation of modules."
         FORCE)
-    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}"
+    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -pie ${CMAKE_EXE_LINKER_FLAGS}"
         CACHE STRING "Flags used by the linker during the creation of exe's."
         FORCE)
   endif()
