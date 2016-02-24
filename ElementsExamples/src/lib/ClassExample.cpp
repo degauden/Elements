@@ -3,6 +3,7 @@
  *
  * Created on: January 9, 2015
  *     Author: Pierre Dubath
+ *   
  */
 
 #include <cstdint>                           // for std::int64_t
