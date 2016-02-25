@@ -74,9 +74,9 @@ fi
 %__mkdir -p %{build_dir_name}
 cd %{build_dir_name}
 if [[ -z "${toolchain_file}" ]]; then
-  %cmake @CPACK_EXTRA_CMAKEFLAGS@ ../
+  %cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
 else
-  %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} ../
+  %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} $RPM_BUILD_DIR/%{name}-%{version}
 fi
 %__make VERBOSE=1 %{?_smp_mflags} all
 
