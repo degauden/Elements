@@ -864,7 +864,7 @@ ${MAIN_PROJECT_CHANGELOG}
      find_file_to_configure(Elements.spec.in
                             FILETYPE "RPM SPEC"
                             OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
-                            OUTPUTNAME "${project.spec}"
+                            OUTPUTNAME "${project}.spec"
                             PATHS ${CMAKE_MODULE_PATH})
        
 
