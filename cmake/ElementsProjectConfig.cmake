@@ -860,7 +860,6 @@ ${MAIN_PROJECT_CHANGELOG}
       endif()
     
     
-      set(PROJECT_RPM_BUILD_ROOT "${PROJECT_RPM_TOPDIR}/BUILDROOT/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}%{?dist}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
     
      find_file_to_configure(Elements.spec.in
                             FILETYPE "RPM SPEC"
@@ -874,7 +873,6 @@ ${MAIN_PROJECT_CHANGELOG}
                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILDROOT
                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/RPMS
                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/SRPMS
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_BUILD_ROOT}
                         COMMENT "Generating ${PROJECT_RPM_TOPDIR} as rpmbuild directory" VERBATIM
       )
 
