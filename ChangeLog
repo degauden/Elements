@@ -1,4 +1,4 @@
-* Mon Feb 09 2016 Hubert Degaudenzi <Hubert.Degaudenzi@unige.ch> 3.10-1
+* Tue Feb 09 2016 Hubert Degaudenzi <Hubert.Degaudenzi@unige.ch> 3.10-1
 - This release is essentially an update for the release of the EDEN 1.2 version.
 - Add CMake build support for various libraries and tools:
   - GSL (issue #1907)
@@ -23,7 +23,7 @@
   of the of the name of the find module file must be the same as the one used for 
   the FIND_PACKAGE_HANDLE_STANDARD_ARGS macro.
 
-* Mon Jan 22 2016 Hubert Degaudenzi <Hubert.Degaudenzi@unige.ch> 3.9-1
+* Fri Jan 22 2016 Hubert Degaudenzi <Hubert.Degaudenzi@unige.ch> 3.9-1
 - This is a release targeted for the ISDC December 2015 Phosphoros Workshop.
 - This release is done together with the 1.14 version of the EuclidEnv standalone package
 - Here is a short summary of the noticeable changes:
