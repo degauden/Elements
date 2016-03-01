@@ -177,14 +177,29 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
 
 def defineSpecificProgramOptions():
     description = """
-This script creates an <Elements> project in your current directory
-by default or at the location defined by the <$User_area> environment variable.
-It means all the necessary structure (directory
-structure, makefiles etc...) will be automatically created for you.
-Use the [-d] option if your project has some dependencies to other
-project(s). 
+This script creates an <Elements> project in your current directory(by default)
+or at the location defined by the <$User_area> environment variable, if defined. 
+It means that all the necessary structure (directory structure, makefiles etc...) 
+will be automatically created for you.
+
+[-d]    Use this option if your project has some dependencies on other project(s). 
+[-novd] Use this option if you do not want to create a version directory
+        e.g.
+            > CreateElementsProject test_project 1.0
+              This creates the following directories : "test_project/1.0" 
+  
+            > CreateElementsProject test 1.0 -novd
+              This creates the following directory : "test_project"
+  
+            The "test_project" project is created at your current directory or 
+            at the location pointed by the $User_area environment variable
+
             """
-    parser = argparse.ArgumentParser(description=description)
+
+    from argparse import RawTextHelpFormatter
+
+    parser = argparse.ArgumentParser(description=description, 
+                                     formatter_class=RawTextHelpFormatter)
     parser.add_argument('project_name', metavar='project-name', type=str,
                         help='Project name')
     parser.add_argument('project_version', metavar='project-version',
