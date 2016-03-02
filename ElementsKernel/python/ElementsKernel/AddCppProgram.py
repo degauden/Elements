@@ -189,8 +189,16 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
 
 def defineSpecificProgramOptions():
     description = """
+This script creates an <Elements> C++ program at your current directory(default).
+All necessary structure (directory structure, makefiles etc...) 
+will be automatically created for you if any but you have to be inside an 
+<Elements> module. 
            """
-    parser = argparse.ArgumentParser(description=description)
+    from argparse import RawTextHelpFormatter
+
+    parser = argparse.ArgumentParser(description=description, 
+                                     formatter_class=RawTextHelpFormatter)
+    
     parser.add_argument('program_name', metavar='program-name',
                         type=str,
                         help='Program name')
