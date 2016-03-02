@@ -312,13 +312,16 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
 
 def defineSpecificProgramOptions():
     description = """
-This script creates an <Elements> class at your current directory
-(default). All necessary structure (directory structure, makefiles etc...) 
+This script creates an <Elements> class at your current directory(default).
+All necessary structure (directory structure, makefiles etc...) 
 will be automatically created for you if any but you have to be inside an 
-<Elements> module. Use the [-ed] option for the Elements dependency and
-the [-extd] option for external dependency.
+<Elements> module. 
     """
-    parser = argparse.ArgumentParser(description=description)
+    from argparse import RawTextHelpFormatter
+
+    parser = argparse.ArgumentParser(description=description, 
+                                     formatter_class=RawTextHelpFormatter)
+    
     parser.add_argument('class_name', metavar='class-name',
                         type=str,
                         help='Class name')

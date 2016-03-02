@@ -56,11 +56,20 @@ def getAllFiles(class_name, module_directory, module_name):
 
 def defineSpecificProgramOptions():
     description = """
+    This script allows you to remove all files on disk related to a class name.
+    Usually you use this script when you made a typo in the class name when 
+    calling the <AddcppClass>.
+    
+    WARNING: The script can not remove things related to the class in the 
+             <CMakeLists.txt> file. You MUST edit it and remove all unecessary
+             stuff related to this class. 
     """
-    parser = argparse.ArgumentParser(description=description)
+    from argparse import RawTextHelpFormatter
+
+    parser = argparse.ArgumentParser(description=description,
+                                     formatter_class=RawTextHelpFormatter)
     parser.add_argument('class_name', metavar='class-name',
-                        type=str,
-                        help='Class name')
+                        type=str, help='Class name')
 
     return parser
 

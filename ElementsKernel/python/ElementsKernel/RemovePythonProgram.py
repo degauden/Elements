@@ -52,8 +52,18 @@ def getAllFiles(program_name, module_directory, module_name):
 
 def defineSpecificProgramOptions():
     description = """
+    This script allows you to remove all files on disk related to a python 
+    program. Usually you use this script when you made a typo in the program  
+    name when calling the <AddPythonProgram> script.
+    
+    WARNING: The script can not remove things related to the python program in 
+             the <CMakeLists.txt> file. You MUST edit it and remove all 
+             unecessary stuff related to this program. 
     """
-    parser = argparse.ArgumentParser(description=description)
+    from argparse import RawTextHelpFormatter
+
+    parser = argparse.ArgumentParser(description=description, 
+                                     formatter_class=RawTextHelpFormatter)
     parser.add_argument('program_name', metavar='program-name',
                         type=str,
                         help='Program name')

@@ -160,10 +160,13 @@ def defineSpecificProgramOptions():
     description = """
 This script creates an <Elements> module at your current directory
 (default) but it must be inside a project directory. All necessary structure
-(directory structure, makefiles etc...) will be automatically created 
-for you. Use the [-md] option for the module dependency.
+(directory structure, makefiles etc...) will be automatically created for you. 
            """
-    parser = argparse.ArgumentParser(description=description)
+    from argparse import RawTextHelpFormatter
+
+    parser = argparse.ArgumentParser(description=description, 
+                                     formatter_class=RawTextHelpFormatter)
+    
     parser.add_argument('module_name', metavar='module-name',
                         type=str,
                         help='Module name')

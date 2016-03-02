@@ -54,11 +54,20 @@ def getAllFiles(pymodule_name, module_directory, module_name):
 
 def defineSpecificProgramOptions():
     description = """
+    This script allows you to remove all files on disk related to a python module.
+    Usually you use this script when you made a typo in the module name when 
+    calling the <AddPythonModule> python script.
+    
+    WARNING: The script can not remove things related to the python module in 
+             the <CMakeLists.txt> file. You MUST edit it and remove all unecessary
+             stuff related to this module. 
     """
-    parser = argparse.ArgumentParser(description=description)
+    from argparse import RawTextHelpFormatter
+
+    parser = argparse.ArgumentParser(description=description,
+                                     formatter_class=RawTextHelpFormatter)
     parser.add_argument('pymodule_name', metavar='pymodule-name',
-                        type=str,
-                        help='Python module name')
+                        type=str, help='Python module name')
 
     return parser
 
