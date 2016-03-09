@@ -17,11 +17,11 @@
 #
 
 """
-@file: ElementsKernel/AddCppProgram.py
-@author: Nicolas Morisset
+File: ElementsKernel/AddCppProgram.py
+Author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
-@date: 01/07/15
+Date: 01/07/15
 
 This script creates a new Elements C++ Program
 """
@@ -69,9 +69,9 @@ def addConfFile(module_dir, module_name, program_name):
         f.write('###############################################################################\n')
         f.close()
     else:
-        logger.warning('# The <%s> conf file has been kept as it already exists!'
+        logger.warning('The < %s > conf file has been kept as it already exists!'
                         % conf_file)
-        logger.warning('# The <%s> conf file already exists! ' % conf_file)
+        logger.warning('The < %s > conf file already exists! ' % conf_file)
 
 
 
@@ -114,7 +114,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list):
     """
     """
-    logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Backup the file
@@ -230,7 +230,8 @@ def mainMethod(args):
         # Default is the current directory
         current_dir = os.getcwd()
 
-        logger.info('# Current directory : %s', current_dir)
+        logger.info('Current directory : %s', current_dir)
+        logger.info('')
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
@@ -249,14 +250,14 @@ def mainMethod(args):
             script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
         if script_goes_on and createCppProgram(current_dir, module_name, program_name, module_list, library_list):
-            logger.info('# <%s> program successfully created in <%s>.' %
+            logger.info('< %s > program successfully created in < %s >.' %
                         (program_name, current_dir + os.sep + 'src' + os.sep + 'program'))
             # Remove backup file
             epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-            logger.info('# Script over.')
+            logger.info('Script over.')
         else:
-            logger.error('# Script aborted!')
+            logger.error('Script aborted!')
 
     except Exception as e:
         logger.exception(e)
-        logger.info('# Script stopped...')
+        logger.info('Script stopped...')

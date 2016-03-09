@@ -56,9 +56,9 @@ def getClassName(str_subdir_class):
     subdir = str_subdir_class.replace(className, '')
     # Remove end slash
     subdir = subdir[:-1]
-    logger.info('# Class name: %s' % className)
+    logger.info('Class name: %s' % className)
     if subdir:
-        logger.info('# Sub directory: %s' % subdir)
+        logger.info('Sub directory: %s' % subdir)
     return subdir, className
 
 ################################################################################
@@ -184,12 +184,12 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
 
 ################################################################################
 
-def updateCmakeListsFile(module_dir, module_name, subdir, class_name,
-                         elements_dep_list, library_dep_list):
+def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list, 
+                        library_dep_list):
     """
     Update the <CMakeLists.txt> file for a class
     """
-    logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Backup the file
@@ -271,8 +271,8 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
     file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
         script_goes_on = False
-        logger.error('# The <%s> class already exists! ' % class_name)
-        logger.error('# The header file already exists: <%s>! ' % file_name_path)
+        logger.error('The <%s> class already exists! ' % class_name)
+        logger.error('The header file already exists: <%s>! ' % file_name_path)
 
     return script_goes_on
 
@@ -299,7 +299,7 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
         if script_goes_on:
             script_goes_on = epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE_IN)
         if script_goes_on:
-            updateCmakeListsFile(module_dir, module_name, subdir, class_name,
+            updateCmakeListsFile(module_dir, subdir, class_name, 
                                  elements_dep_list, library_dep_list)
 
             substituteStringsInDotH(class_h_path, class_name, module_name, subdir)
@@ -339,8 +339,7 @@ will be automatically created for you if any but you have to be inside an
 def mainMethod(args):
 
     logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the AddCppClass \
-    script ')
+    logger.info('#  Logging from the mainMethod() of the AddCppClass script ')
     logger.info('#')
 
     try:
@@ -354,7 +353,8 @@ def mainMethod(args):
         # Default is the current directory
         module_dir = os.getcwd()
 
-        logger.info('# Current directory : %s', module_dir)
+        logger.info('Current directory : %s', module_dir)
+        logger.info('')
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
@@ -368,14 +368,14 @@ def mainMethod(args):
         # Create CPP class
         if script_goes_on and createCppClass(module_dir, module_name, subdir,
                             class_name, elements_dep_list, library_dep_list):
-            logger.info('# <%s> class successfully created in <%s>.' %
+            logger.info('<%s> class successfully created in <%s>.' %
                         (class_name, module_dir + os.sep + subdir))
             # Remove backup file
             epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
-            logger.info('# Script over.')
+            logger.info('Script over.')
         else:
-            logger.error('# Script aborted!')
+            logger.error('Script aborted!')
 
     except Exception as e:
         logger.exception(e)
-        logger.info('# Script stopped...')
+        logger.info('Script stopped...')

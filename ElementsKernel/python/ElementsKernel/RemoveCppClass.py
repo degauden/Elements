@@ -30,7 +30,10 @@ from future_builtins import *
 import argparse
 import os
 import ElementsKernel.ProjectCommonRoutines as epcr
+import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
+
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 logger = log.getLogger('RemoveCppClass')
 
@@ -54,15 +57,41 @@ def getAllFiles(class_name, module_directory, module_name):
            
 ################################################################################
 
+def updateCmakeListsFile(module_dir, class_name):
+    """
+    Update the <CMakeLists.txt> file
+    """
+    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
+    cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+
+    # Cmake file already exist
+    if os.path.isfile(cmake_filename):
+        # Backup the file
+        epcr.makeACopy(cmake_filename)
+        f = open(cmake_filename, 'r')
+        data = f.read()
+        f.close()
+        # Add the program to be removed
+        cmake_object = pcl.CMakeLists(data)
+        cmake_object.elements_remove_cpp_class = class_name
+    
+    # Write new data
+    f = open(cmake_filename, 'w')
+    f.write(str(cmake_object))
+    f.close()
+           
+
 def defineSpecificProgramOptions():
     description = """
     This script allows you to remove all files on disk related to a class name.
     Usually you use this script when you made a typo in the class name when 
     calling the <AddcppClass>.
     
-    WARNING: The script can not remove things related to the class in the 
-             <CMakeLists.txt> file. You MUST edit it and remove all unecessary
-             stuff related to this class. 
+    WARNING: The script can not remove all dependencies related to the class in  
+             the <CMakeLists.txt> file. You maybe need to edit it and remove all 
+             unecessary stuff related to this class, check at least the 
+             elements_add_library, elements_add_library, find_package and 
+             elements_depends_on_subdirs macros
     """
     from argparse import RawTextHelpFormatter
 
@@ -78,8 +107,7 @@ def defineSpecificProgramOptions():
 def mainMethod(args):
 
     logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the RemoveCppClass \
-    script ')
+    logger.info('#  Logging from the mainMethod() of the RemoveCppClass script ')
     logger.info('#')
 
     try:
@@ -92,6 +120,7 @@ def mainMethod(args):
         module_dir = os.getcwd()
 
         logger.info('Current directory : %s', module_dir)
+        logger.info('')
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
@@ -100,21 +129,29 @@ def mainMethod(args):
             # Default is the current directory
             file_to_be_deleted = getAllFiles(class_name, module_dir, module_name)
             if file_to_be_deleted:
-                epcr.removeFilesOnDisk(file_to_be_deleted)
-                cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
-                logger.info('')
-                logger.warning('# !!!!!!!!!!!!!!!')
-                logger.warning(' Please remove all things related to the class name : %s ' % (class_name))
-                logger.warning(' in the <CMakeLists.txt> file : %s ' % (cmakefile))
-                logger.warning('# !!!!!!!!!!!!!!!')
+                for file in file_to_be_deleted:
+                    logger.info('File to be deleted: %s' % file)
+                response_key = raw_input('Do you want to continue?(y/n, default: n)')
+                if response_key == 'Y' or response_key =='y':
+                    epcr.removeFilesOnDisk(file_to_be_deleted)
+                    cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
+                    updateCmakeListsFile(module_dir, class_name)
+                    logger.info('')
+                    logger.warning('# !!!!!!!!!!!!!!!!!!')
+                    logger.warning('# If your <%s> class has Element and/or external dependencies,' % (class_name))
+                    logger.warning('# you maybe need to remove them. See the <elements_add_library, elements_add_library,')
+                    logger.warning('# find_package, elements_depends_on_subdirs> macros in the <CMakeLists.txt> file,')
+                    logger.warning('# there : < %s >' % (cmakefile))
+                    logger.warning('# !!!!!!!!!!!!!!!!!!')
             else:
-                logger.info('')
                 logger.info('No file found for deletion!')
+                logger.info('')
+                
             logger.info('Script over')
         else:
-            logger.error(' No module name found at the current directory : %s' \
+            logger.error('No module name found at the current directory : %s' \
                          % (module_dir))
-            logger.error(' Script stopped...')
+            logger.error('Script stopped...')
     except Exception as e:
         logger.exception(e)
-        logger.info('# Script stopped...')
+        logger.info('Script stopped...')

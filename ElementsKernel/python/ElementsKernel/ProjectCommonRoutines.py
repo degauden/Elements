@@ -61,7 +61,7 @@ def makeACopy(cmakefile):
     if os.path.exists(cmakefile):
         shutil.copy(cmakefile, copy_file)
     else:
-        logger.warning('# File not found: <%s> Can not make a copy of this file!'
+        logger.warning('File not found: <%s> Can not make a copy of this file!'
                         % cmakefile)
 
 ################################################################################
@@ -73,13 +73,13 @@ def isNameAndVersionValid(name, version):
     valid = True
     name_regex = "^[A-Za-z0-9][A-Za-z0-9_-]*$"
     if re.match(name_regex, name) is None:
-        logger.error("# < %s %s > name not valid. It must follow this regex : < %s >"
+        logger.error("< %s %s > name not valid. It must follow this regex : < %s >"
                      % (name, version, name_regex))
         valid = False
 
     version_regex = "^\\d+\\.\\d+(\\.\\d+)?$"
     if re.match(version_regex, version) is None:
-        logger.error("# < %s %s > ,Version number not valid. It must follow this regex: < %s >"
+        logger.error("< %s %s > ,Version number not valid. It must follow this regex: < %s >"
                      % (name, version, version_regex))
         valid = False
 
@@ -92,7 +92,7 @@ def eraseDirectory(directory):
     Erase a directory and its contents from disk
     """
     shutil.rmtree(directory)
-    logger.info('# <%s> directory erased!' % directory)
+    logger.info('< %s > directory erased!' % directory)
 
 ################################################################################
 
@@ -114,7 +114,7 @@ def getAuxPathFile(file_name):
                 break
 
     if not found:
-        logger.error("# Auxiliary file NOT FOUND  : <%s>" % full_filename)
+        logger.error("Auxiliary file NOT FOUND  : <%s>" % full_filename)
         full_filename = ''
 
     return full_filename
@@ -173,7 +173,7 @@ def isElementsModuleExist(module_directory):
     cmake_file = os.path.join(module_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         found_keyword = False
-        logger.error('# %s cmake module file is missing! Are you inside a ' \
+        logger.error('< %s > cmake module file is missing! Are you inside a ' \
         'module directory?' % cmake_file)
     else:
         # Check the make file is an Elements cmake file
@@ -187,8 +187,8 @@ def isElementsModuleExist(module_directory):
         f.close()
 
         if not module_name:
-            logger.error('# Module name not found in the <%s> file!' % cmake_file)
-            logger.error('# Maybe you are not in a module directory...')
+            logger.error('Module name not found in the <%s> file!' % cmake_file)
+            logger.error('Maybe you are not in a module directory...')
             found_keyword = False
 
     return found_keyword, module_name
@@ -203,8 +203,8 @@ def isFileAlreadyExist(path_filename, name):
     script_goes_on = True
     if os.path.exists(path_filename):
         script_goes_on = False
-        logger.error('# The <%s> name already exists! ' % name)
-        logger.error('# File found here : <%s>! ' % path_filename)
+        logger.error('The < %s > name already exists! ' % name)
+        logger.error('File found here : < %s >! ' % path_filename)
 
     return script_goes_on
 
