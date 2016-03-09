@@ -11,7 +11,11 @@
  All these classes are for parsing the macros in this file. Each class
  represents a cmake macro. The "CMakeLists" class uses all the other classes.
 """
+from __future__ import division, print_function
+from future_builtins import *
+
 import re
+
 
 ################################################################################
 
@@ -170,7 +174,8 @@ class ElementsAddUnitTest(object):
 
 class CMakeLists(object):
     """
-    Parse the <CMakeLists.txt> file
+    Parse the <CMakeLists.txt> file. The contents for each macro is stored
+    into a list
     """
 
     def __init__(self, text=''):
@@ -185,6 +190,9 @@ class CMakeLists(object):
         self.elements_add_executable_list = []
         self.elements_add_unit_test_list = []
         self.elements_add_python_executable_list = []
+        self.elements_remove_python_executable = None
+        self.elements_remove_python_module = None
+        self.elements_remove_cpp_class = None
 
         # here we parse the CMakeLists.txt file
         # Remove all comment lines
@@ -335,11 +343,34 @@ class CMakeLists(object):
 
 
     def __str__(self):
-        # Here we built the CMkaeLists.txt file
+        # Here we built the CMakeLists.txt file
+        # <text> contains the original contents of the CMakeLists.txt file
         result = self.text
         closing_parenthesis = r"(?=[\s\)]).*?\)"
         leading_spaces = r"((^\s*)|((?<=\n)\s*))"
         open_parenthesis = r"\(\s*"
+        
+        # Remove python program from the list if any
+        if not self.elements_remove_python_executable is None:
+            remove_exe = self.elements_remove_python_executable
+            for elt in self.elements_add_python_executable_list:
+                str_elt = str(elt)
+                if remove_exe in str_elt:
+                    self.elements_add_python_executable_list.remove(elt)
+                    result= result.replace(str_elt+'\n','')
+                    self.elements_remove_python_executable = None
+
+        # Remove class macro from the list if any
+        if not self.elements_remove_cpp_class is None:
+            remove_class = self.elements_remove_cpp_class
+            for elt in self.elements_add_unit_test_list:
+                str_elt = str(elt)
+                if remove_class in str_elt:
+                    self.elements_add_unit_test_list.remove(elt)
+                    result= result.replace(str_elt+'\n','')
+                    self.elements_remove_cpp_class = None
+
+    
         for find_package in self.find_package_list:
             if not re.search(leading_spaces + "find_package" + open_parenthesis + find_package.package + \
                             closing_parenthesis, result, re.MULTILINE | re.DOTALL):

@@ -17,11 +17,11 @@
 #
 
 """
-@file: ElementsKernel/AddPythonModule.py
-@author: Nicolas Morisset
+File: ElementsKernel/AddPythonModule.py
+Author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
-@date: 01/07/15
+Date: 01/07/15
 
 This script creates a new Elements python module
 """
@@ -61,7 +61,7 @@ def updateCmakeListsFile(module_dir):
     """
     Update the CMakeList.txt file
     """
-    logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Backup the file
@@ -142,7 +142,6 @@ def createPythonModule(current_dir, module_name, python_module_name):
     """
     Create the python module
     """
-    logger.info('#')
     createDirectories(current_dir, module_name)
     epcr.createPythonInitFile(os.path.join(current_dir, 'python', module_name, '__init__.py'))
     pytest_path = os.path.join(current_dir, 'tests', 'python')
@@ -176,8 +175,7 @@ This script creates an <Elements> python module at your current directory
 def mainMethod(args):
 
     logger.info('#')
-    logger.info(
-        '#  Logging from the mainMethod() of the AddPythonModule script ')
+    logger.info('#  Logging from the mainMethod() of the AddPythonModule script')
     logger.info('#')
 
     try:
@@ -187,7 +185,8 @@ def mainMethod(args):
         # Default is the current directory
         current_dir = os.getcwd()
 
-        logger.info('# Current directory : %s', current_dir)
+        logger.info('Current directory : %s', current_dir)
+        logger.info('')
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
@@ -210,17 +209,17 @@ def mainMethod(args):
         if script_goes_on:
             if os.path.exists(current_dir):
                 if createPythonModule(current_dir, module_name, python_module_name):
-                    logger.info('# <%s> python module successfully created in <%s>.' %
+                    logger.info('< %s > python module successfully created in < %s >.' %
                                 (python_module_name, module_file_path))
                     # Remove backup file
                     epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-                    logger.info('# Script over.')
+                    logger.info('Script over.')
             else:
-                    logger.error('# <%s> project directory does not exist!'
+                    logger.error('< %s > project directory does not exist!'
                                   % current_dir)
         if not script_goes_on:
-            logger.error('# Script aborted')
+            logger.error('Script aborted')
 
     except Exception as e:
         logger.exception(e)
-        logger.info('# Script stopped...')
+        logger.info('Script stopped...')

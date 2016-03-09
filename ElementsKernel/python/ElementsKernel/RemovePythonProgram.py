@@ -30,6 +30,9 @@ import argparse
 import os
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.Logging as log
+import ElementsKernel.ParseCmakeLists as pcl
+
+CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 logger = log.getLogger('RemovePythonProgram')
 
@@ -47,6 +50,31 @@ def getAllFiles(program_name, module_directory, module_name):
         delete_file_list.append(file_name_cpp)
 
     return delete_file_list
+
+################################################################################
+
+def updateCmakeListsFile(module_dir, program_name):
+    """
+    Update the <CMakeLists.txt> file
+    """
+    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
+    cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+
+    # Cmake file already exist
+    if os.path.isfile(cmake_filename):
+        # Backup the file
+        epcr.makeACopy(cmake_filename)
+        f = open(cmake_filename, 'r')
+        data = f.read()
+        f.close()
+        # Add the program to be removed
+        cmake_object = pcl.CMakeLists(data)
+        cmake_object.elements_remove_python_executable = program_name
+    
+    # Write new data
+    f = open(cmake_filename, 'w')
+    f.write(str(cmake_object))
+    f.close()
            
 ################################################################################
 
@@ -54,19 +82,15 @@ def defineSpecificProgramOptions():
     description = """
     This script allows you to remove all files on disk related to a python 
     program. Usually you use this script when you made a typo in the program  
-    name when calling the <AddPythonProgram> script.
-    
-    WARNING: The script can not remove things related to the python program in 
-             the <CMakeLists.txt> file. You MUST edit it and remove all 
-             unecessary stuff related to this program. 
+    name when calling the <AddPythonProgram> script. The <CMakeLists.txt> file
+    is updated accordingly.
     """
     from argparse import RawTextHelpFormatter
 
     parser = argparse.ArgumentParser(description=description, 
                                      formatter_class=RawTextHelpFormatter)
     parser.add_argument('program_name', metavar='program-name',
-                        type=str,
-                        help='Program name')
+                        type=str, help='Program name')
 
     return parser
 
@@ -89,6 +113,7 @@ def mainMethod(args):
         module_dir = os.getcwd()
 
         logger.info('Current directory : %s', module_dir)
+        logger.info('')
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
@@ -97,19 +122,21 @@ def mainMethod(args):
             # Default is the current directory
             file_to_be_deleted = getAllFiles(program_name, module_dir, module_name)
             if file_to_be_deleted:
-                epcr.removeFilesOnDisk(file_to_be_deleted)
-                cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
-                logger.warning('# !!!!!!!!!!!!!!!')
-                logger.warning(' Please remove all things related to the program name : %s ' % (program_name))
-                logger.warning(' in the <CMakeLists.txt> file : %s ' % (cmakefile))
-                logger.warning('# !!!!!!!!!!!!!!!')
+                for file in file_to_be_deleted:
+                    logger.info('File to be deleted: %s' % file)
+                response_key = raw_input('Do you want to continue?(y/n, default: n)')
+                if response_key == 'Y' or response_key =='y':
+                    epcr.removeFilesOnDisk(file_to_be_deleted)
+                    cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
+                    updateCmakeListsFile(module_dir, program_name)
             else:
-                logger.info('')
                 logger.info('No file found for deletion!')
-                logger.info('Script over')
+                logger.info('')
+            
+            logger.info('Script over')
         else:
-            logger.error(' No module name found at the current directory : %s' % (module_dir))
-            logger.error(' Script stopped...')
+            logger.error('No module name found at the current directory : %s' % (module_dir))
+            logger.error('Script stopped...')
     except Exception as e:
         logger.exception(e)
-        logger.info('# Script stopped...')
+        logger.info('Script stopped...')
