@@ -17,10 +17,11 @@
 #
 
 """
-File: python/ElementsKernel/RemovePythonModule.py
+File: python/ElementsKernel/RemoveCppProgram.py
 
-Created on: 02/12/16
+Created on: 02/10/16
 Author: Nicolas Morisset
+
 """
 
 from __future__ import division, print_function
@@ -29,33 +30,31 @@ from future_builtins import *
 import argparse
 import os
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.Logging as log
 import ElementsKernel.ParseCmakeLists as pcl
+import ElementsKernel.Logging as log
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
-logger = log.getLogger('RemovePythonModule')
+logger = log.getLogger('RemoveCppProgram')
 
 ################################################################################
 
-def getAllFiles(pymodule_name, module_directory, module_name):
+def getAllFiles(program_name, module_directory, module_name):
     """
     """
     delete_file_list=[]
-    file_name_test = os.path.join(module_directory, 'tests', 'python',\
-                                   pymodule_name)+ '_test.py'
-    if os.path.exists(file_name_test):
-        delete_file_list.append(file_name_test)
-    file_name_py = os.path.join(module_directory, 'python', module_name,\
-                                 pymodule_name)+ '.py'
-    if os.path.exists(file_name_py):
-        delete_file_list.append(file_name_py)
+    file_name_conf = os.path.join(module_directory, 'conf', module_name, program_name) + '.conf'
+    if os.path.exists(file_name_conf):
+        delete_file_list.append(file_name_conf)
+    file_name_cpp = os.path.join(module_directory, 'src', 'program', program_name) + '.cpp'
+    if os.path.exists(file_name_cpp):
+        delete_file_list.append(file_name_cpp)
 
     return delete_file_list
 
 ################################################################################
 
-def updateCmakeListsFile(module_dir):
+def updateCmakeListsFile(module_dir, program_name):
     """
     Update the <CMakeLists.txt> file
     """
@@ -71,31 +70,30 @@ def updateCmakeListsFile(module_dir):
         f.close()
         # Add the program to be removed
         cmake_object = pcl.CMakeLists(data)
-        cmake_object.elements_remove_python_module = 'elements_install_python_modules()'
+        cmake_object.elements_remove_cpp_program = program_name
 
     # Write new data
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
     f.close()
 
-################################################################################
 
 def defineSpecificProgramOptions():
     description = """
-    This script allows you to remove all files on disk related to a python module.
-    Usually you use this script when you made a typo in the module name when
-    calling the <AddPythonModule> python script.
+    This script allows you to remove all files on disk related to a <Elements>
+    C++ program name.
 
-    WARNING: The script can not remove things related to the python module in
-             the <CMakeLists.txt> file. You MUST edit it and remove all unecessary
-             stuff related to this module.
+    WARNING: The script can not remove all dependencies related to the program in
+             the <CMakeLists.txt> file. You maybe need to edit it and remove all
+             useless macros and/or names related to this program, check at least
+             the < elements_depends_on_subdirs and find_package > macros
     """
     from argparse import RawTextHelpFormatter
 
     parser = argparse.ArgumentParser(description=description,
                                      formatter_class=RawTextHelpFormatter)
-    parser.add_argument('pymodule_name', metavar='pymodule-name',
-                        type=str, help='Python module name')
+    parser.add_argument('program_name', metavar='program-name',
+                        type=str, help='Program name')
 
     return parser
 
@@ -104,15 +102,14 @@ def defineSpecificProgramOptions():
 def mainMethod(args):
 
     logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the RemovePythonModule \
-    script ')
+    logger.info('#  Logging from the mainMethod() of the RemoveCppProgram script ')
     logger.info('#')
 
     try:
         # True: no error occured
         script_goes_on = True
 
-        pymodule_name = args.pymodule_name
+        program_name = args.program_name
 
         # Default is the current directory
         module_dir = os.getcwd()
@@ -125,7 +122,7 @@ def mainMethod(args):
 
         if script_goes_on:
             # Default is the current directory
-            file_to_be_deleted = getAllFiles(pymodule_name, module_dir, module_name)
+            file_to_be_deleted = getAllFiles(program_name, module_dir, module_name)
             if file_to_be_deleted:
                 for file in file_to_be_deleted:
                     logger.info('File to be deleted: %s' % file)
@@ -133,15 +130,23 @@ def mainMethod(args):
                 if response_key == 'Y' or response_key =='y':
                     epcr.removeFilesOnDisk(file_to_be_deleted)
                     cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
-                    updateCmakeListsFile(module_dir)
+                    updateCmakeListsFile(module_dir, program_name)
+                    logger.info('')
+                    logger.warning('# !!!!!!!!!!!!!!!!!!')
+                    logger.warning('# If your < %s > program has Element and/or '
+                    'external dependencies,' % (program_name))
+                    logger.warning('# you maybe need to remove them. Check the <find_package,')
+                    logger.warning('# elements_depends_on_subdirs> macros in the file :')
+                    logger.warning('# < %s >' % (cmakefile))
+                    logger.warning('# !!!!!!!!!!!!!!!!!!')
             else:
-                logger.info('')
                 logger.info('No file found for deletion!')
                 logger.info('')
 
             logger.info('Script over')
         else:
-            logger.error('No module name found at the current directory : %s' % (module_dir))
+            logger.error('No module name found at the current directory : %s' \
+                         % (module_dir))
             logger.error('Script stopped...')
     except Exception as e:
         logger.exception(e)

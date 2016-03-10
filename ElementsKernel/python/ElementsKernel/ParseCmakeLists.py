@@ -193,6 +193,7 @@ class CMakeLists(object):
         self.elements_remove_python_executable = None
         self.elements_remove_python_module = None
         self.elements_remove_cpp_class = None
+        self.elements_remove_cpp_program = None
 
         # here we parse the CMakeLists.txt file
         # Remove all comment lines
@@ -349,7 +350,7 @@ class CMakeLists(object):
         closing_parenthesis = r"(?=[\s\)]).*?\)"
         leading_spaces = r"((^\s*)|((?<=\n)\s*))"
         open_parenthesis = r"\(\s*"
-        
+
         # Remove python program from the list if any
         if not self.elements_remove_python_executable is None:
             remove_exe = self.elements_remove_python_executable
@@ -360,7 +361,7 @@ class CMakeLists(object):
                     result= result.replace(str_elt+'\n','')
                     self.elements_remove_python_executable = None
 
-        # Remove class macro from the list if any
+        # Remove cpp class macro from the list if any
         if not self.elements_remove_cpp_class is None:
             remove_class = self.elements_remove_cpp_class
             for elt in self.elements_add_unit_test_list:
@@ -370,7 +371,16 @@ class CMakeLists(object):
                     result= result.replace(str_elt+'\n','')
                     self.elements_remove_cpp_class = None
 
-    
+        # Remove cpp program macro from the list if any
+        if not self.elements_remove_cpp_program is None:
+            remove_prog = self.elements_remove_cpp_program
+            for elt in self.elements_add_executable_list:
+                str_elt = str(elt)
+                if remove_prog in str_elt:
+                    self.elements_add_executable_list.remove(elt)
+                    result= result.replace(str_elt+'\n','')
+                    self.elements_remove_cpp_program = None
+
         for find_package in self.find_package_list:
             if not re.search(leading_spaces + "find_package" + open_parenthesis + find_package.package + \
                             closing_parenthesis, result, re.MULTILINE | re.DOTALL):

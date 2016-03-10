@@ -184,7 +184,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
 
 ################################################################################
 
-def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list, 
+def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                         library_dep_list):
     """
     Update the <CMakeLists.txt> file for a class
@@ -299,7 +299,7 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
         if script_goes_on:
             script_goes_on = epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE_IN)
         if script_goes_on:
-            updateCmakeListsFile(module_dir, subdir, class_name, 
+            updateCmakeListsFile(module_dir, subdir, class_name,
                                  elements_dep_list, library_dep_list)
 
             substituteStringsInDotH(class_h_path, class_name, module_name, subdir)
@@ -312,16 +312,16 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
 
 def defineSpecificProgramOptions():
     description = """
-This script creates an <Elements> class at your current directory(default).
-All necessary structure (directory structure, makefiles etc...) 
-will be automatically created for you if any but you have to be inside an 
-<Elements> module. 
+This script creates an <Elements> class at your current directory (default).
+All necessary structure (directory structure, makefiles etc...)
+will be automatically created for you if any but you have to be inside an
+<Elements> module.
     """
     from argparse import RawTextHelpFormatter
 
-    parser = argparse.ArgumentParser(description=description, 
+    parser = argparse.ArgumentParser(description=description,
                                      formatter_class=RawTextHelpFormatter)
-    
+
     parser.add_argument('class_name', metavar='class-name',
                         type=str,
                         help='Class name')

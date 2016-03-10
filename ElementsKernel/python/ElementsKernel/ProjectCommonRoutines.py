@@ -20,13 +20,13 @@ CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 ################################################################################
 
-def removeFilesOnDisk(file_list): 
+def removeFilesOnDisk(file_list):
     """
-    Remove all files on hard drive from the <file_list> list .  
+    Remove all files on hard drive from the <file_list> list.
     """
     for elt in file_list:
         logger.info('File deleted : %s' % elt)
-        deleteFile(elt) 
+        deleteFile(elt)
 
 ################################################################################
 
@@ -98,8 +98,8 @@ def eraseDirectory(directory):
 
 def getAuxPathFile(file_name):
     """
-    Look for the <auxdir> path in the <ELEMENTS_AUX_PATH> environment variable 
-    where is located the <auxdir/file_name> file. It returns the filename with 
+    Look for the <auxdir> path in the <ELEMENTS_AUX_PATH> environment variable
+    where is located the <auxdir/file_name> file. It returns the filename with
     the path or an empty string if not found.
     """
     found = False
@@ -139,7 +139,7 @@ def copyAuxFile(destination, aux_file_name):
 
 def isAuxFileExist(aux_file_name):
     """
-    Make sure the <aux_file> auxiliary file exists. 
+    Make sure the <aux_file> auxiliary file exists.
     <aux_file> is just the name without the path.
     """
     found = False
