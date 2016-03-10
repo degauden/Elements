@@ -54,7 +54,7 @@ def getAllFiles(class_name, module_directory, module_name):
         delete_file_list.append(file_name_test)
 
     return delete_file_list
-           
+
 ################################################################################
 
 def updateCmakeListsFile(module_dir, class_name):
@@ -74,24 +74,23 @@ def updateCmakeListsFile(module_dir, class_name):
         # Add the program to be removed
         cmake_object = pcl.CMakeLists(data)
         cmake_object.elements_remove_cpp_class = class_name
-    
+
     # Write new data
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
     f.close()
-           
+
 
 def defineSpecificProgramOptions():
     description = """
-    This script allows you to remove all files on disk related to a class name.
-    Usually you use this script when you made a typo in the class name when 
-    calling the <AddcppClass>.
-    
-    WARNING: The script can not remove all dependencies related to the class in  
-             the <CMakeLists.txt> file. You maybe need to edit it and remove all 
-             unecessary stuff related to this class, check at least the 
-             elements_add_library, elements_add_library, find_package and 
-             elements_depends_on_subdirs macros
+    This script allows you to remove all files on disk related to a cpp class
+    name.
+
+    WARNING: The script can not remove all dependencies related to the class in
+             the <CMakeLists.txt> file. You maybe need to edit it and remove all
+             stuff related to this class. Check at least the elements_add_library,
+             elements_add_library, find_package and elements_depends_on_subdirs
+            macros
     """
     from argparse import RawTextHelpFormatter
 
@@ -138,15 +137,15 @@ def mainMethod(args):
                     updateCmakeListsFile(module_dir, class_name)
                     logger.info('')
                     logger.warning('# !!!!!!!!!!!!!!!!!!')
-                    logger.warning('# If your <%s> class has Element and/or external dependencies,' % (class_name))
-                    logger.warning('# you maybe need to remove them. See the <elements_add_library, elements_add_library,')
-                    logger.warning('# find_package, elements_depends_on_subdirs> macros in the <CMakeLists.txt> file,')
-                    logger.warning('# there : < %s >' % (cmakefile))
+                    logger.warning('# If your <%s> class has some Element and/or external dependencies,' % (class_name))
+                    logger.warning('# you maybe need to remove them. Check the <elements_add_library, elements_add_library,')
+                    logger.warning('# find_package, elements_depends_on_subdirs> macros in the file :')
+                    logger.warning('# < %s >' % (cmakefile))
                     logger.warning('# !!!!!!!!!!!!!!!!!!')
             else:
                 logger.info('No file found for deletion!')
                 logger.info('')
-                
+
             logger.info('Script over')
         else:
             logger.error('No module name found at the current directory : %s' \

@@ -25,7 +25,7 @@ Created on: 01/07/15
 This script will create a new Elements project
 
 Updated on: 12/02/16
-           Feature #2034, add --no-version-directory option: 
+           Feature #2034, add --no-version-directory option:
 """
 
 import argparse
@@ -178,27 +178,27 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
 def defineSpecificProgramOptions():
     description = """
 This script creates an <Elements> project in your current directory(by default)
-or at the location defined by the <$User_area> environment variable, if defined. 
-It means that all the necessary structure (directory structure, makefiles etc...) 
+or at the location defined by the <$User_area> environment variable, if defined.
+It means that all the necessary structure (directory structure, makefiles etc...)
 will be automatically created for you.
 
-[-d]    Use this option if your project has some dependencies on other project(s). 
+[-d]    Use this option if your project has some dependencies on other project(s).
 [-novd] Use this option if you do not want to create a version directory
         e.g.
             > CreateElementsProject test_project 1.0
-              This creates the following directories : "test_project/1.0" 
-  
+              This creates the following directories : "test_project/1.0"
+
             > CreateElementsProject test 1.0 -novd
               This creates the following directory : "test_project"
-  
-            The "test_project" project is created at your current directory or 
+
+            The "test_project" project is created at your current directory or
             at the location pointed by the $User_area environment variable
 
             """
 
     from argparse import RawTextHelpFormatter
 
-    parser = argparse.ArgumentParser(description=description, 
+    parser = argparse.ArgumentParser(description=description,
                                      formatter_class=RawTextHelpFormatter)
     parser.add_argument('project_name', metavar='project-name', type=str,
                         help='Project name')
@@ -250,7 +250,7 @@ def mainMethod(args):
             project_dir = os.path.join(destination_path, proj_name)
         else:
             project_dir = os.path.join(destination_path, proj_name, proj_version)
-            
+
         # Make sure dependencies name and version are valid
         if script_goes_on and not args.dependency is None:
             script_goes_on = isDependencyProjectValid(dependant_projects)

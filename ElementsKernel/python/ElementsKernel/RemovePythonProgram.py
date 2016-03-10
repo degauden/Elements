@@ -70,24 +70,24 @@ def updateCmakeListsFile(module_dir, program_name):
         # Add the program to be removed
         cmake_object = pcl.CMakeLists(data)
         cmake_object.elements_remove_python_executable = program_name
-    
+
     # Write new data
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
     f.close()
-           
+
 ################################################################################
 
 def defineSpecificProgramOptions():
     description = """
-    This script allows you to remove all files on disk related to a python 
-    program. Usually you use this script when you made a typo in the program  
+    This script allows you to remove all files on disk related to a python
+    program. Usually you use this script when you made a typo in the program
     name when calling the <AddPythonProgram> script. The <CMakeLists.txt> file
     is updated accordingly.
     """
     from argparse import RawTextHelpFormatter
 
-    parser = argparse.ArgumentParser(description=description, 
+    parser = argparse.ArgumentParser(description=description,
                                      formatter_class=RawTextHelpFormatter)
     parser.add_argument('program_name', metavar='program-name',
                         type=str, help='Program name')
@@ -132,7 +132,7 @@ def mainMethod(args):
             else:
                 logger.info('No file found for deletion!')
                 logger.info('')
-            
+
             logger.info('Script over')
         else:
             logger.error('No module name found at the current directory : %s' % (module_dir))
