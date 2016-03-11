@@ -117,6 +117,7 @@ elements_install_python_modules()
 
 elements_add_test(CreateElementsProject COMMAND createElementsProject_test)
 elements_add_test(AddElementsModule COMMAND addElementsModule_test)
+elements_add_test(CreateCommonStructure COMMAND createCommonStructure_test)
 elements_add_test(AddCppClass COMMAND addCppClass_test)
 elements_add_test(AddCppProgram COMMAND addCppProgram_test)
 elements_add_test(AddPythonModule COMMAND addPythonModule_test)
