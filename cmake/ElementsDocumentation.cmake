@@ -1,3 +1,12 @@
+  add_custom_target(doc
+                    COMMENT "Generating API documentation" VERBATIM)
+
+
+#===========================================================================================================
+
+  if(USE_DOXYGEN)
+
+
   # Add Doxygen generation
   find_package(Doxygen)
   
@@ -11,25 +20,47 @@
                            PATH_SUFFIXES doc)
     
 
+    if(USE_SPHINX)
+      set(DOX_LINK_TO_SPHINX "<tab type=\"user\" url=\"../../sphinx/html/index.html\" title=\"Sphinx\"/>")
+    else()
+      set(DOX_LINK_TO_SPHINX "")
+    endif()
+
     # Generation of the Doxygen Layout
     find_file_to_configure(DoxygenLayout.xml.in
                            FILETYPE "Doxygen layout"
                            OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
                            PATHS ${CMAKE_MODULE_PATH}
                            PATH_SUFFIXES doc)
+                           
     
     # add the doxygen target
     add_custom_target(doxygen
                       ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/Doxyfile
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen
                       COMMENT "Generating API documentation with Doxygen" VERBATIM)
+                      
+    add_dependencies(doc doxygen)
+
 
   endif()
   
+  endif()
   
+
+#===========================================================================================================
+
+  
+  if(USE_SPHINX)
   
   find_package(Sphinx)
   if(SPHINX_FOUND)
+  
+    if(USE_DOXYGEN)
+      set(APPEND_BREATHE_EXT "extensions.append('breathe')")
+    else()
+      set(APPEND_BREATHE_EXT "")
+    endif()
     
     # Generation of the main sphinx configuration file.
     find_file_to_configure(Sphinx_conf.py.in
@@ -73,7 +104,9 @@ Related Pages
                              PATHS ${CMAKE_MODULE_PATH}
                              PATH_SUFFIXES doc)
 
-    
+       set(SPHINX_CPP_MODULES cpp_modules)
+    else()
+       set(SPHINX_CPP_MODULES "")    
     endif()
     
     set(SPHINX_APIDOC_CMD ${env_cmd} --xml ${env_xml} ${SPHINX_APIDOC_EXECUTABLE})
@@ -81,14 +114,16 @@ Related Pages
     
     get_property(proj_python_package_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
     
-    add_custom_target(doc
+    add_custom_target(sphinx
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
                       COMMAND  ${SPHINX_BUILD_CMD} . ${_py_pack} html
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)
     
-    add_dependencies(doc doxygen)
-
+    if(USE_DOXYGEN)
+      add_dependencies(sphinx doxygen)
+    endif()
+    add_dependencies(doc sphinx)
 
 
     
@@ -111,7 +146,7 @@ Related Pages
                           COMMAND  ${SPHINX_APIDOC_CMD} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short} ${_py_pack}
                           COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
 
-        add_dependencies(doc sphinx_apidoc_${_py_pack_short})
+        add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
 
     endforeach()
     
@@ -204,6 +239,13 @@ Related Pages
     endif()
 
 
+   if(USE_DOXYGEN)
+     set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
+   else()
+     set(SPHINX_ORIGINAL_DOX "")
+   endif()
+
+
    find_file_to_configure(index.rst.in
                           FILETYPE "Sphinx index"
                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
@@ -211,6 +253,8 @@ Related Pages
                           PATHS ${CMAKE_MODULE_PATH}
                           PATH_SUFFIXES doc)
 
+    
+  endif()
     
   endif()
   
