@@ -83,10 +83,6 @@ option(ELEMENTS_LINKOPT
        "Enable Link Time Optimisation"
        OFF)
 
-option(ELEMENTS_DEPENDENCY_CHECK
-       "Enable dependency version mismatch checking"
-       ON)
-
 option(USE_PYTHON_NOSE
        "Use nose as python test runner"
        OFF)
