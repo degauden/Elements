@@ -17,6 +17,11 @@ set(ELEMENTS_HIDE_SYMBOLS ON
     CACHE STRING "enable explicit symbol visibility on gcc-4"
     FORCE)
 
+# Use only the Doxygen API documentation generation
+set(USE_SPHINX_APIDOC OFF
+    CACHE STRING "Generates the sphinx API documentation"
+    FORCE)
+
 
 elements_project(Elements 3.10 DESCRIPTION "A C++ base framework for the Euclid Software.")
 

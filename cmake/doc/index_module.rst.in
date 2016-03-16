@@ -3,15 +3,7 @@
 
 @SPHINX_THIS_MODULE_INDEX@
 
-Python Package
---------------
-
-.. toctree::
-   :maxdepth: 4
-
-
-   @SPHINX_THIS_APIDOC_MODULES@
-   
+@SPHINX_THIS_PYTHON_PACKAGE@
    
 @SPHINX_THIS_RELATED_PAGES@
    
