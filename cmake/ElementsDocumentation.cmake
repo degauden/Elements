@@ -96,7 +96,8 @@ Related Pages
       endif()  
     endforeach()
     
-    if(DOXYGEN_FOUND)
+    
+    if(DOXYGEN_FOUND AND USE_SPHINX_APIDOC)
         
       find_file_to_configure(cpp_modules.rst.in
                              FILE_TYPE "C++ main ReST"
@@ -108,6 +109,7 @@ Related Pages
     else()
        set(SPHINX_CPP_MODULES "")    
     endif()
+        
     
     set(SPHINX_APIDOC_CMD ${env_cmd} --xml ${env_xml} ${SPHINX_APIDOC_EXECUTABLE})
     set(SPHINX_BUILD_CMD ${env_cmd} --xml ${env_xml} ${SPHINX_BUILD_EXECUTABLE})
@@ -120,7 +122,7 @@ Related Pages
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)
     
-    if(USE_DOXYGEN)
+    if(USE_DOXYGEN AND USE_SPHINX_APIDOC)
       add_dependencies(sphinx doxygen)
     endif()
     add_dependencies(doc sphinx)
@@ -137,6 +139,7 @@ Related Pages
         
         set(SPHINX_ELEMENTS_PACK_LIST ${SPHINX_ELEMENTS_PACK_LIST} ${_py_pack_main})        
         
+        if(USE_SPHINX_APIDOC)
         set(SPHINX_${_el_pack_short}_APIDOC_MODULES "${SPHINX_${_el_pack_short}_APIDOC_MODULES}
    ${_py_pack_short}/modules")
 
@@ -147,6 +150,8 @@ Related Pages
                           COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
 
         add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
+
+        endif()
 
     endforeach()
     
@@ -207,8 +212,22 @@ Related Pages
         message(STATUS "Using ${sphinx_${_el_pack_short}_module_index_file} for the module ${_el_pack_short}")
       endif()       
 
+
+      if(USE_SPHINX_APIDOC)
       set(SPHINX_THIS_APIDOC_MODULES ${SPHINX_${_el_pack_short}_APIDOC_MODULES})
 
+      set(SPHINX_THIS_PYTHON_PACKAGE "
+Python Package
+--------------
+
+.. toctree::
+   :maxdepth: 4
+   
+   ${SPHINX_THIS_APIDOC_MODULES}
+"      
+   )
+
+      endif()
 
       find_file_to_configure(index_module.rst.in
                              FILETYPE "Sphinx index"
