@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh
 
 home_dir=${PWD}
 
@@ -39,18 +39,18 @@ fi
 result=$( grep "elements_install_scripts" CMakeLists.txt | grep -v "#")
 if [ $? -ne 0  ];then
    clean_and_exit 1
-fi 
+fi
 
 # Make sure the <elements_install_python_modules> macro is there
 result=$( grep "elements_install_python_modules" CMakeLists.txt | grep -v "#")
 if [ $? -ne 0  ];then
    clean_and_exit 1
-fi 
+fi
 
 # Make sure the <elements_install_python_modules> macro is there
 result=$( grep "elements_add_python_program" CMakeLists.txt | grep -v "#" | grep ${python_prog_name})
 if [ $? -ne 0  ];then
    clean_and_exit 1
-fi 
+fi
 
 clean_and_exit 0

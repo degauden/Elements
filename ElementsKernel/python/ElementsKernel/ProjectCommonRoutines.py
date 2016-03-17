@@ -98,24 +98,25 @@ def eraseDirectory(directory):
 
 def getAuxPathFile(file_name):
     """
-    Look for the <auxdir> path in the <ELEMENTS_AUX_PATH> environment variable
-    where is located the <auxdir/file_name> file. It returns the filename with
-    the path or an empty string if not found.
+    Look for the first <auxdir> path valid in the <ELEMENTS_AUX_PATH> environment
+    variable where is located the <auxdir/file_name> file. It returns the
+    filename with the path or an empty string if not found. We assume that the
+    file_name also contains any sub directory under the <ELEMENTS_AUX_PATH>
+    environment variable
     """
     found = False
-    full_filename = ''
     aux_dir = os.environ.get('ELEMENTS_AUX_PATH')
     if not aux_dir is None:
         for elt in aux_dir.split(os.pathsep):
+            full_filename = os.path.sep.join([elt, file_name])
             # look for the first valid path
-            full_filename = os.path.sep.join([elt, 'templates', file_name])
             if os.path.exists(full_filename) and 'auxdir' in full_filename:
                 found = True
                 break
 
     if not found:
-        logger.error("Auxiliary file NOT FOUND  : <%s>" % full_filename)
         full_filename = ''
+        logger.error("Auxiliary path NOT FOUND  : <%s>" % full_filename)
 
     return full_filename
 
@@ -127,7 +128,7 @@ def copyAuxFile(destination, aux_file_name):
     <aux_file_name> is just the name without path
     """
     scripts_goes_on = True
-    aux_path_file = getAuxPathFile(aux_file_name)
+    aux_path_file = getAuxPathFile(os.path.sep.join(['templates', aux_file_name]))
     if aux_path_file:
         shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
     else:
@@ -143,7 +144,7 @@ def isAuxFileExist(aux_file_name):
     <aux_file> is just the name without the path.
     """
     found = False
-    aux_path_file = getAuxPathFile(aux_file_name)
+    aux_path_file = getAuxPathFile(os.path.sep.join(['templates', aux_file_name]))
     if aux_path_file:
         found = True
 

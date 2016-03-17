@@ -1,11 +1,11 @@
-#!/bin/sh 
+#!/bin/sh
 
 home_dir=${PWD}
 
 project_name="ProjectTest"
 version="1.0"
 
-# Create unique directory 
+# Create unique directory
 tmploc=$(mktemp -dq -t temp.XXXXXX)
 
 # Clean and exit
