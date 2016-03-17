@@ -1,43 +1,57 @@
-/**
-\mainpage The basic instruction for building and running the Elements framework
+/** \mainpage The basic instruction for building and running the Elements framework
 
-How to build and use the Elements framework with CMake
-======================================================
+\tableofcontents
 
-Requirements
-------------
+\section howtobuild How to build and use the Elements framework with CMake
+
+\subsection requirements Requirements
 
 The CMake configuration of Elements is based on the version 2.8.5 or later
-of CMake.
+of [CMake](https://cmake.org).
 
-Quick Start
------------
+\subsection quickstart Quick Start
 
 To quickly get started, you can use the top Makefile,
 which will take care of the main details (except the value of
-``BINARY_TAG``):
+``BINARY_TAG``). It is located at the root of your project:
 
+```
+$ make configure
+$ make -j 8
+$ make test
+$ make install
+```
 
-    $ make -f Makefile -j 8
-    $ make -f Makefile test
+Please note that the ```make install``` instruction is not installing the 
+built objects in the system. It creates a special ```InstallArea``` directory 
+that exposes these ojects to the client projects
 
 The main targets are:
 
-    ``configure``
-        just run CMake to generate the build directory (or reconfigure)
 
-    ``all``
-        build everything (implies ``configure``)
+Target            | Action
+------------------|--------
+``configure``     |  just run C Make to generate the build directory (or reconfigure)
+``all``           |  build everything (implies `configure`). This is the default target
+``test``          |  run the tests, note that it does not imply the build and does not require installation
+``tests``         |  same as above but implies `all`
+``install``       |  populate the `InstallArea` directory, \`required for runtime\`
+``clean``         |  clean-up of the built objects
+``purge``         |  total removal of the built directory. 
+``doc``           |  generation of the documentation.
 
-    ``test``
-        run the tests, note that it does not imply the build and does
-        not require installation
+\subsection build Build
 
-    ``install``
-        populate the ``InstallArea`` directory, \`required for runtime\`
+The regular build is done as described above. This is the prefered way of building for development
+purposes. The call to CMake will be done by 
 
-Build
------
+```
+$ make configure
+```
+This will create a ```build.${BINARY_TAG}``` directory and run ```cmake ../``` in there. All 
+the other calls to make targets (except for ```purge``` and ```tests```) will be forwarded 
+to the generated Makefile of that directory.
+
 
 I suggest to use the off-source build, which means that the files
 required by the build and the build products are created in a different
@@ -71,8 +85,7 @@ or from Eclipse after you imported the project.
 
 The tests can be run via the command ``ctest`` or with ``make test``.
 
-Install
--------
+\subsection install Install
 
 The build of the project obtained with CMake cannot be used directly by
 other projects: it needs to be installed in the source directory (for
@@ -88,8 +101,8 @@ installation:
 
     $ make python.zip
 
-Run
----
+\subsection run Run
+
 
 The runtime environment for the installed binaries is described by the
 XML file ``ElementsEnvironment.xml`` located in the directory
@@ -113,8 +126,7 @@ or, to have a sub-shell with the right environment:
 
     $ $src/cmake/env.py --xml $src/InstallArea/$BINARY_TAG/ElementsEnvironment.xml bash
 
-Run from the build directory
-----------------------------
+\subsection runfromthebuilddir Run from the build directory
 
 For testing and debugging (as already mentioned) there is no need to
 install.
@@ -129,12 +141,9 @@ directory), for example like this:
     $ ./run elementsrun.py --help
     $ ./run bash
 
-Resources
----------
+\subsection resources Resources
 
   - `CMake
        documentation <http://www.cmake.org/cmake/help/documentation.html>`_
-  - ``FindTBB.cmake`` was taken from
-       `https://bitbucket.org/sergiu/tbb-cmake <https://bitbucket.org/sergiu/tbb-cmake>`_
 
 */
