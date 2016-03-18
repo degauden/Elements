@@ -1,5 +1,5 @@
 /**
- * @file FunctionExample.h
+ * @file functionExample.h
  *
  * @date Feb 16, 2016
  * @author hubert
