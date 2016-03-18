@@ -50,7 +50,7 @@ $ make configure
 ```
 This will create a ```build.${BINARY_TAG}``` directory and run ```cmake ../``` in there. All
 the other calls to make targets (except for ```purge``` and ```tests```) will be forwarded
-to the generated Makefile of that directory. The complete call to CMake during the configuration 
+to the generated Makefile of that directory. The complete call to CMake during the configuration
 looks like:
 
 ```
@@ -59,11 +59,11 @@ $ cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/ElementsToolChain.cmake -DUSE_LOCAL_INST
 $ cd ..
 ```
 The toolchain file is looked for (by the Makefile wrapper) in the local cmake sub-directory
-or in every location of the ```CMAKE_PREFIX_PATH```. 
+or in every location of the ```CMAKE_PREFIX_PATH```.
 
-The build will then be done with 
+The build will then be done with
 ```
-$ make 
+$ make
 $ make test
 ```
 The ```USE_LOCAL_INSTALLAREA``` will perform
@@ -76,8 +76,8 @@ $ make install
 ---
 
 There is another way to build Elements by using the standard CMake off-source
-build, which means that the files required by the build and the build products 
-are created in a different directory than the source one. In this example 
+build, which means that the files required by the build and the build products
+are created in a different directory than the source one. In this example
 ``$MY_WORK/Elements/source`` will contain the source checkout and
  ``$MY_WORK/Elements/build`` will contain the built items.
 
@@ -123,8 +123,8 @@ $ cmake --build .
 $ cmake --build . --target test # or ctest
 $ cmake --build . --target install
 ```
-This render the build agnostic about the used build subsystem (``gmake``, ``ninja``, etc) 
-and gives more options. For example the installation can be done in a different directory chosen 
+This render the build agnostic about the used build subsystem (``gmake``, ``ninja``, etc)
+and gives more options. For example the installation can be done in a different directory chosen
 on the fly:
 ```
 $ cmake -DCMAKE_INSTALL_PREFIX=/tmp/install_elements -P cmake_install.cmake
@@ -135,7 +135,7 @@ $ cmake -DCMAKE_INSTALL_PREFIX=/tmp/install_elements -P cmake_install.cmake
 For testing and debugging (as already mentioned) there is no need to
 install.
 
-To run an application using the build directory, you can use the script ``run`` 
+To run an application using the build directory, you can use the script ``run``
 located in the build directory, for example like this:
 ```
 $ cd $dest
