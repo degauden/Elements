@@ -13,7 +13,7 @@ if(NOT WCSLIB_FOUND)
   find_path(WCSLIB_INCLUDE_DIR wcslib/wcs.h
             HINTS ENV WCSLIB_ROOT_DIR
             PATH_SUFFIXES include)
-  
+
   find_library(WCSLIB_LIBRARY wcs
                HINTS ENV WCSLIB_ROOT_DIR
                PATH_SUFFIXES lib)

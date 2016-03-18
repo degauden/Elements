@@ -8,11 +8,11 @@
 #  FFTW_INCLUDE_DIR                - the FFTW include directory (cached)
 #  FFTW_INCLUDE_DIRS (not cached)  - the FFTW include directories
 #                                    (identical to FFTW_INCLUDE_DIR)
-#  FFTW[FL]?_LIBRARY               - the FFTW library - double, single(F), 
+#  FFTW[FL]?_LIBRARY               - the FFTW library - double, single(F),
 #                                    long-double(L) precision (cached)
-#  FFTW[FL]?_THREADS_LIBRARY       - the threaded FFTW library - double, single(F), 
+#  FFTW[FL]?_THREADS_LIBRARY       - the threaded FFTW library - double, single(F),
 #                                    long-double(L) precision (cached)
-#  FFTW[FL]?_OMP_LIBRARY           - the omped FFTW library - double, single(F), 
+#  FFTW[FL]?_OMP_LIBRARY           - the omped FFTW library - double, single(F),
 #                                    long-double(L) precision (cached)
 #  FFTW_LIBRARIES                  - list of all FFTW libraries found
 
@@ -74,7 +74,7 @@ if(NOT FFTW_FOUND)
   foreach(_lib ${_libraries})
     string(TOUPPER ${_lib} _LIB)
     find_library(${_LIB}_LIBRARY ${_lib}
-                 HINTS ENV FFTW_ROOT_DIR 
+                 HINTS ENV FFTW_ROOT_DIR
                  PATH_SUFFIXES lib)
     mark_as_advanced(${_LIB}_LIBRARY)
     list(APPEND FFTW_LIBRARIES ${${_LIB}_LIBRARY})
@@ -82,12 +82,12 @@ if(NOT FFTW_FOUND)
   endforeach()
 
 # Search for the header file.
-  find_path(FFTW_INCLUDE_DIR fftw3.h 
+  find_path(FFTW_INCLUDE_DIR fftw3.h
             HINTS ENV FFTW_ROOT_DIR
             PATH_SUFFIXES include)
   mark_as_advanced(FFTW_INCLUDE_DIR)
   set(FFTW_INCLUDE_DIRS ${FFTW_INCLUDE_DIR})
-  list(APPEND _check_list FFTW_INCLUDE_DIR) 
+  list(APPEND _check_list FFTW_INCLUDE_DIR)
 
 
 # Handle the QUIETLY and REQUIRED arguments and set FFTW_FOUND to TRUE if

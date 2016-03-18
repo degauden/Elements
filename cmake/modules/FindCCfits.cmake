@@ -24,9 +24,9 @@
 if(NOT CCFITS_FOUND)
 
   find_path(CCFITS_INCLUDE_DIR CCfits/CCfits
-            HINTS ENV CCFITS_INSTALL_DIR 
+            HINTS ENV CCFITS_INSTALL_DIR
             PATH_SUFFIXES include)
-  
+
   find_library(CCFITS_LIBRARY CCfits
                HINTS ENV CCFITS_INSTALL_DIR
                PATH_SUFFIXES lib)

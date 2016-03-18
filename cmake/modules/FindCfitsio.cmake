@@ -25,12 +25,12 @@
 if(NOT CFITSIO_FOUND)
 
   FIND_PATH(CFITSIO_INCLUDE_DIR fitsio.h
-            HINTS ENV CFITSIO_INSTALL_DIR 
+            HINTS ENV CFITSIO_INSTALL_DIR
             PATH_SUFFIXES include cfitsio include/cfitsio
           )
 
   FIND_LIBRARY(CFITSIO_LIBRARY cfitsio
-               HINTS ENV CFITSIO_INSTALL_DIR 
+               HINTS ENV CFITSIO_INSTALL_DIR
                PATH_SUFFIXES lib
             )
 
@@ -55,13 +55,13 @@ int main(int, char**) {
 
   int answer=fits_is_reentrant();
   if (answer) {
-    return 0; 
+    return 0;
   } else {
     return 1;
   }
 
- 
-}" 
+
+}"
     CFITSIO_IS_REENTRANT)
     mark_as_advanced(CFITSIO_IS_REENTRANT)
   endif()

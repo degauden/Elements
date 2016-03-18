@@ -86,7 +86,7 @@ option(ELEMENTS_LINKOPT
 option(USE_PYTHON_NOSE
        "Use nose as python test runner"
        OFF)
-       
+
 option(USE_SPHINX
        "Use sphinx documentation generation"
        ON)

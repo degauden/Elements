@@ -13,7 +13,7 @@ if(NOT XERCESC_FOUND)
   find_path(XERCESC_INCLUDE_DIR xercesc/util/XercesVersion.hpp
             HINTS ENV XERCESC_ROOT_DIR
             PATH_SUFFIXES include)
-  
+
   find_library(XERCESC_LIBRARY xerces-c
                HINTS ENV XERCESC_ROOT_DIR
                PATH_SUFFIXES lib)

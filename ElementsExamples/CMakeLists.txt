@@ -6,7 +6,7 @@ elements_subdir(ElementsExamples)
 elements_depends_on_subdirs(ElementsKernel)
 
 # Declare external library dependencies
-#    This module is using the Boost C++ library 
+#    This module is using the Boost C++ library
 #    CppUnit and GMock are optional dependencies
 find_package(Boost REQUIRED COMPONENTS filesystem thread system program_options unit_test_framework)
 find_package(CppUnit)
@@ -28,7 +28,7 @@ elements_add_library(ElementsExamples src/lib/*.cpp
 elements_add_executable(CppProgramExample src/program/ProgramExample.cpp
                         LINK_LIBRARIES Boost ElementsExamples
                         INCLUDE_DIRS Boost ElementsExamples)
-                        
+
 elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgramExample.cpp
                         LINK_LIBRARIES Boost ElementsExamples
                         INCLUDE_DIRS Boost ElementsExamples)
@@ -80,10 +80,10 @@ elements_add_unit_test(AllTests tests/src/Boost/*_test.cpp
                        EXECUTABLE BoostElementsExampleAllTests
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
-                       
+
 elements_add_unit_test(UnitTestExample_test tests/src/Boost/UnitTestExample_test.cpp
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
-                       
+
 
 #===== CppUnit tests =============================================================
 
@@ -109,7 +109,7 @@ elements_add_unit_test(DataSourceUser_test_suite tests/src/GMock/DataSourceUser_
                          LINK_LIBRARIES GMock ElementsExamples TYPE Boost
                          INCLUDE_DIRS GMock
                          LABELS GMock)
-                         
+
 elements_add_unit_test(TemplatedDataSourceUser_test_suite tests/src/GMock/TemplatedDataSourceUser_test.cpp
                          LINK_LIBRARIES GMock ElementsExamples TYPE Boost
                          INCLUDE_DIRS GMock
