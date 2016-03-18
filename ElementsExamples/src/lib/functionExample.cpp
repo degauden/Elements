@@ -1,5 +1,5 @@
 /**
- * @file FunctionExample.cpp
+ * @file functionExample.cpp
  *
  * @date Feb 16, 2016
  * @author hubert
