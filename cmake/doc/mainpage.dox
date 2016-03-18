@@ -52,6 +52,17 @@ This will create a ```build.${BINARY_TAG}``` directory and run ```cmake ../``` i
 the other calls to make targets (except for ```purge``` and ```tests```) will be forwarded
 to the generated Makefile of that directory.
 
+The build will then be done with 
+```
+make 
+make test
+make install
+```
+
+\n
+\n
+\n
+
 
 I suggest to use the off-source build, which means that the files
 required by the build and the build products are created in a different
