@@ -15,7 +15,7 @@ if(NOT HEALPIXCPP_FOUND)
   find_path(HEALPIXCPP_INCLUDE_DIR healpix/healpix_base.h
             HINTS ENV HEALPIXCPP_ROOT_DIR
             PATH_SUFFIXES include)
-  
+
   find_library(HEALPIXCPP_LIBRARY healpix_cxx
                HINTS ENV HEALPIXCPP_ROOT_DIR
                PATH_SUFFIXES lib)
