@@ -22,8 +22,8 @@ $ make test
 $ make install
 ```
 
-Please note that the ```make install``` instruction is not installing the 
-built objects in the system. It creates a special ```InstallArea``` directory 
+Please note that the ```make install``` instruction is not installing the
+built objects in the system. It creates a special ```InstallArea``` directory
 that exposes these ojects to the client projects
 
 The main targets are:
@@ -37,19 +37,19 @@ Target            | Action
 ``tests``         |  same as above but implies `all`
 ``install``       |  populate the `InstallArea` directory, \`required for runtime\`
 ``clean``         |  clean-up of the built objects
-``purge``         |  total removal of the built directory. 
+``purge``         |  total removal of the built directory
 ``doc``           |  generation of the documentation.
 
 \subsection build Build
 
 The regular build is done as described above. This is the prefered way of building for development
-purposes. The call to CMake will be done by 
+purposes. The call to CMake will be done by
 
 ```
 $ make configure
 ```
-This will create a ```build.${BINARY_TAG}``` directory and run ```cmake ../``` in there. All 
-the other calls to make targets (except for ```purge``` and ```tests```) will be forwarded 
+This will create a ```build.${BINARY_TAG}``` directory and run ```cmake ../``` in there. All
+the other calls to make targets (except for ```purge``` and ```tests```) will be forwarded
 to the generated Makefile of that directory.
 
 

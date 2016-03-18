@@ -3,7 +3,7 @@ from ElementsExamples.PythonModuleExample import ClassExample  # for ClassExampl
 
 
 class TestCase(unittest.TestCase):
-    """ 
+    """
 
     """
     def setUp(self):
@@ -13,7 +13,7 @@ class TestCase(unittest.TestCase):
         self.second = 3.4756
         self.my_list = [6, 7, 8, 9]
         self.expected_result = 6 + 7 + 8 + 9
-        self.example_object = ClassExample(self.my_list)      
+        self.example_object = ClassExample(self.my_list)
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)
@@ -24,7 +24,7 @@ class TestCase(unittest.TestCase):
 
     def testDestruction(self):
         assert abs(self.expected_result - self.example_object.sumListValues()) < self.tol
- 
+
 if __name__ == '__main__':
     unittest.main()
 

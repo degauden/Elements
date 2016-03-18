@@ -92,7 +92,7 @@ else()
       endif()
     endif()
   endif()
-  
+
 endif()
 
 # This option make sense only if we have 'objcopy'
@@ -858,15 +858,15 @@ ${MAIN_PROJECT_CHANGELOG}
 ")
         message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
       endif()
-    
-    
-    
+
+
+
      find_file_to_configure(Elements.spec.in
                             FILETYPE "RPM SPEC"
                             OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
                             OUTPUTNAME "${project}.spec"
                             PATHS ${CMAKE_MODULE_PATH})
-       
+
 
       add_custom_target(rpmbuilddir
                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILD
@@ -2475,7 +2475,7 @@ function(elements_install_python_modules)
       if(INSTALL_PY_MOD_TEST_TIMEOUT)
         add_python_test_dir(tests/python TIMEOUT ${INSTALL_PY_MOD_TEST_TIMEOUT})
       else()
-        add_python_test_dir(tests/python)      
+        add_python_test_dir(tests/python)
       endif()
     endif()
   else()

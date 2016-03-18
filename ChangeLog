@@ -19,8 +19,8 @@
 - Add full support for the GCC 5 compiler series.
 - Cure redundant sub-namespaces.
 - Make the Log4CPP dependency mandatory.
-- Fix the CMake detection of the binary executables used at build time. The casing 
-  of the of the name of the find module file must be the same as the one used for 
+- Fix the CMake detection of the binary executables used at build time. The casing
+  of the of the name of the find module file must be the same as the one used for
   the FIND_PACKAGE_HANDLE_STANDARD_ARGS macro.
 
 * Fri Jan 22 2016 Hubert Degaudenzi <Hubert.Degaudenzi@unige.ch> 3.9-1
