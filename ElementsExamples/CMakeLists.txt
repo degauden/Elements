@@ -184,7 +184,7 @@ endif()
 
 elements_install_conf_files()
 
-elements_install_python_modules()
+elements_install_python_modules(TEST_TIMEOUT 30)
 
 elements_install_scripts()
 
