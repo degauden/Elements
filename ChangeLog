@@ -1,3 +1,35 @@
+* Tue Mar 22 2016 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 4.0-1
+- This release is foreseen for the Phosphoros version 0.5 project. It
+  also include the first integration of the Sphinx/Doxygen implementation.
+- Add FindCCache, FindDistCC, FindSphinx, FindValgrind, FindPlantUML CMake modules
+- Implement the generation of both Doxygen and Sphinx documentation
+- Add the ChangeLog content to the generated SPEC file. The ChangeLog file (this file)
+  must be located at the root of the project.
+- Add a simple SWIG Python/C++ generation example.
+- Add new RemoveCppClass, RemovePythonModule, RemovePythonProgram,
+  RemoveCppProgram scripts (Nicolas Morisset).
+- Add the CFITSIO_IS_REENTRANT CMake variable. It is computed during the
+  configuration and then can be used further in the CMakeLists.txt files
+- Add a timeout feature for the pure python tests. This is done by adding the
+  TEST_TIMEOUT argument in seconds to the elements_install_python_modules CMake function.
+- Update the compilation flags to support security hardening. Please have a
+  look at this page https://fedoraproject.org/wiki/Changes/Harden_All_Packages 
+  for more information.
+- Fix the building of the RPMs file for a custom (general) build directory.
+  It doesn't require that the build directory is placed inside the source directory.
+- Make the dependency check between projects mandatory. It will break if there
+  is an inconsistency in the tree of projects.
+- Add global options to enable Doxygen (USE_DOXYGEN) and Sphinx (USE_SPHINX) for
+  the automatic documentation generation. They are both ON by default. The is also
+  an option for the generation of the Sphinx API documentation (USE_SPHINX_APIDOC)
+  which is also ON by default. Please have a look at the user manual for more informations
+  about the usage of these switches.
+- Make the getAuxPathFile(file_name) python function generic. It can be used to
+  locate resources pointed by the directory list in the ELEMENTS_AUX_PATH
+  environment variable (Nicolas Morisset).
+- Clean up of the main Elements Doxygen page.
+- And many bug fixes.
+
 * Tue Feb 09 2016 Hubert Degaudenzi <Hubert.Degaudenzi@unige.ch> 3.10-1
 - This release is essentially an update for the release of the EDEN 1.2 version.
 - Add CMake build support for various libraries and tools:

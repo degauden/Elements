@@ -23,7 +23,7 @@ set(USE_SPHINX_APIDOC OFF
     FORCE)
 
 
-elements_project(Elements 3.10 DESCRIPTION "A C++ base framework for the Euclid Software.")
+elements_project(Elements 4.0 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
 
 # This test does not really fit in a subdirectory.
