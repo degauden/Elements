@@ -8,6 +8,8 @@
 #ifndef ELEMENTSKERNEL_MAIN_H_
 #define ELEMENTSKERNEL_MAIN_H_
 
+#include <exception>                               // for set_terminate
+
 #include "ElementsKernel/Exit.h"
 #include "ElementsKernel/ProgramManager.h"
 #include "ElementsKernel/Export.h"                 // ELEMENTS_API
@@ -26,6 +28,7 @@
  * the class Elements::Program class.
  */
 #define MAIN_FOR(ELEMENTS_PROGRAM_NAME)         \
+  const auto installed{std::set_terminate(&Elements::ProgramManager::onTerminate)}; \
   ELEMENTS_API int main(int argc, char* argv[])              \
   {                                             \
     Elements::ProgramManager man {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
