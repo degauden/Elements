@@ -1,9 +1,27 @@
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+
 """
-@file: ElementsKernel/AddPythonProgram.py
-@author: Nicolas Morisset
+File: ElementsKernel/AddPythonProgram.py
+Author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
-@date: 01/07/15
+Date: 01/07/15
 
 This script creates a new Elements python program
 """
@@ -94,7 +112,7 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     Update the <CMakeList.txt> file
     """
-    logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Backup the file
@@ -127,7 +145,6 @@ def createPythonProgram(current_dir, module_name, program_name):
     """
     Create the python program
     """
-    logger.info('#')
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, program_name)
     program_path = os.path.join(current_dir, 'python', module_name)
@@ -158,8 +175,7 @@ def defineSpecificProgramOptions():
 def mainMethod(args):
 
     logger.info('#')
-    logger.info(
-        '#  Logging from the mainMethod() of the AddPythonProgram script ')
+    logger.info('#  Logging from the mainMethod() of the AddPythonProgram script')
     logger.info('#')
 
     try:
@@ -170,6 +186,7 @@ def mainMethod(args):
         current_dir = os.getcwd()
 
         logger.info('# Current directory : %s', current_dir)
+        logger.info('')
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
@@ -191,18 +208,18 @@ def mainMethod(args):
         if script_goes_on:
             if os.path.exists(current_dir):
                 if createPythonProgram(current_dir, module_name, program_name):
-                    logger.info('# <%s> program successfully created in <%s>.' %
+                    logger.info('< %s > program successfully created in < %s >.' %
                                 (program_name, program_file_path))
                     # Remove backup file
                     epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-                    logger.info('# Script over.')
+                    logger.info('Script over.')
             else:
-                logger.error('# <%s> project directory does not exist!'
+                logger.error('< %s > project directory does not exist!'
                              % current_dir)
 
         if not script_goes_on:
-            logger.error('# Script aborted!')
+            logger.error('Script aborted!')
 
     except Exception as e:
         logger.exception(e)
-        logger.info('# Script stopped...')
+        logger.info('Script stopped...')

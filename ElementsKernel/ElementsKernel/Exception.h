@@ -109,15 +109,15 @@ protected:
    */
   std::string m_error_msg {};
   const ExitCode m_exit_code {ExitCode::NOT_OK};
-  
+
 private:
-  
+
   /// The following class keeps in its member variable 'code' the same ExitCode
   /// given as the last parameter of its constructor, or ExitCode::NOT_OK if the
   /// last argument of the constructor is not an ExitCode object.
   template<typename... Args>
   struct ExitCodeHelper{};
-  
+
   // Specialization which handles the last argument
   template<typename Last>
   struct ExitCodeHelper<Last> {
@@ -135,13 +135,13 @@ private:
       return ExitCode::NOT_OK;
     }
   };
-  
+
   // Specialization which handles two or more arguments
   template<typename First, typename... Rest>
   struct ExitCodeHelper<First, Rest...> : ExitCodeHelper<Rest...> {
     ExitCodeHelper(const First&, const Rest&... rest) : ExitCodeHelper<Rest...>(rest...) {}
   };
-  
+
 };
 
 } // namespace Elements

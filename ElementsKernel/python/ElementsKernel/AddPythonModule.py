@@ -1,9 +1,27 @@
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+
 """
-@file: ElementsKernel/AddPythonModule.py
-@author: Nicolas Morisset
+File: ElementsKernel/AddPythonModule.py
+Author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
-@date: 01/07/15
+Date: 01/07/15
 
 This script creates a new Elements python module
 """
@@ -43,7 +61,7 @@ def updateCmakeListsFile(module_dir):
     """
     Update the CMakeList.txt file
     """
-    logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Backup the file
@@ -77,7 +95,7 @@ def substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_na
     data = f.read()
     author_str = epcr.getAuthor()
     date_str = time.strftime("%x")
-    file_name_str = os.path.join('tests', 'python', python_module_name + '_test.py')
+    file_name_str = os.path.join('python', module_name, python_module_name + '.py')
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str}
@@ -124,7 +142,6 @@ def createPythonModule(current_dir, module_name, python_module_name):
     """
     Create the python module
     """
-    logger.info('#')
     createDirectories(current_dir, module_name)
     epcr.createPythonInitFile(os.path.join(current_dir, 'python', module_name, '__init__.py'))
     pytest_path = os.path.join(current_dir, 'tests', 'python')
@@ -158,8 +175,7 @@ This script creates an <Elements> python module at your current directory
 def mainMethod(args):
 
     logger.info('#')
-    logger.info(
-        '#  Logging from the mainMethod() of the AddPythonModule script ')
+    logger.info('#  Logging from the mainMethod() of the AddPythonModule script')
     logger.info('#')
 
     try:
@@ -169,7 +185,8 @@ def mainMethod(args):
         # Default is the current directory
         current_dir = os.getcwd()
 
-        logger.info('# Current directory : %s', current_dir)
+        logger.info('Current directory : %s', current_dir)
+        logger.info('')
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
@@ -192,17 +209,17 @@ def mainMethod(args):
         if script_goes_on:
             if os.path.exists(current_dir):
                 if createPythonModule(current_dir, module_name, python_module_name):
-                    logger.info('# <%s> python module successfully created in <%s>.' %
+                    logger.info('< %s > python module successfully created in < %s >.' %
                                 (python_module_name, module_file_path))
                     # Remove backup file
                     epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-                    logger.info('# Script over.')
+                    logger.info('Script over.')
             else:
-                    logger.error('# <%s> project directory does not exist!'
+                    logger.error('< %s > project directory does not exist!'
                                   % current_dir)
         if not script_goes_on:
-            logger.error('# Script aborted')
+            logger.error('Script aborted')
 
     except Exception as e:
         logger.exception(e)
-        logger.info('# Script stopped...')
+        logger.info('Script stopped...')

@@ -25,6 +25,8 @@ set(CMAKE_PREFIX_PATH ${CMAKE_MODULE_PATH} CACHE STRING "The internal prefix pat
 reset_include_guards()
 reset_message_guards()
 
+
+set(CMAKE_CROSSCOMPILING FALSE)
 message(STATUS "-----------------------------------------------------------------------")
 message(STATUS "                  --- End of ElementsToolChain ---                     ")
 message(STATUS "-----------------------------------------------------------------------")

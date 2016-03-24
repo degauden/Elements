@@ -1,7 +1,7 @@
 ################################################################################
 #
 # Generic Makefile to simplify the use of CMake projects
-# ------------------------------------------------------ 
+# ------------------------------------------------------
 #
 # This simple Makefile is meant to provide a simplified entry point for the
 # configuration and build of CMake-based projects that use a default toolchain
@@ -14,7 +14,7 @@
 #
 #     all
 #         (default) build everything
-#  
+#
 #     test
 #         run the declared tests
 #
@@ -41,7 +41,7 @@
 # :Author: Marco Clemencic
 # :Author: Hubert Degaudenzi
 #
-# .. [*] Targets defined by this Makefile. 
+# .. [*] Targets defined by this Makefile.
 #
 ################################################################################
 
@@ -82,7 +82,7 @@ override CMAKEFLAGS += -DUSE_LOCAL_INSTALLAREA=ON -DBUILD_PREFIX_NAME:STRING=$(B
 ifndef BINARY_TAG
   ifdef CMAKECONFIG
     BINARY_TAG := ${CMAKECONFIG}
-  else 
+  else
     ifdef CMTCONFIG
       BINARY_TAG := ${CMTCONFIG}
     endif
@@ -120,7 +120,8 @@ all:
 # deep clean
 purge:
 	$(RM) -r $(BUILDDIR) $(CURDIR)/InstallArea/$(BINARY_TAG)
-	find $(CURDIR) -name "*.pyc" -exec $(RM) -v \{} \;
+	find $(CURDIR) -type f -name "*.pyc" -exec $(RM) -v \{} \;
+	find $(CURDIR) -depth -type d -name "__pycache__" -exec $(RM) -rv \{} \;
 
 # delegate any target to the build directory (except 'purge')
 ifneq ($(MAKECMDGOALS),purge)
@@ -139,7 +140,7 @@ endif
 
 
 # This wrapping around the test target is used to ensure the generation of
-# the XML output from ctest. 
+# the XML output from ctest.
 test: $(BUILDDIR)/$(BUILD_CONF_FILE)
 	cd $(BUILDDIR) && $(CTEST) -T Test $(ARGS)
 

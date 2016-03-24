@@ -1,3 +1,21 @@
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+
 """
 @file: ElementsKernel/AddModule.py
 @author: Nicolas Morisset
@@ -122,8 +140,8 @@ def createModule(project_dir, module_name, dependency_list):
         # Ask user
         logger.warning('<%s> module ALREADY exists!!!' % module_name)
         response_key = raw_input(
-            'Do you want to replace the existing module (Yes/No, default: No)?')
-        if response_key == "YES" or response_key == "yes" or response_key == "y":
+            'Do you want to replace the existing module (yes/y/no/n), default: no)?')
+        if response_key == "yes" or response_key == "y":
             logger.info('# Replacing the existing module: <%s>' % module_name)
             epcr.eraseDirectory(mod_path)
         else:
@@ -142,10 +160,13 @@ def defineSpecificProgramOptions():
     description = """
 This script creates an <Elements> module at your current directory
 (default) but it must be inside a project directory. All necessary structure
-(directory structure, makefiles etc...) will be automatically created 
-for you. Use the [-md] option for the module dependency.
+(directory structure, makefiles etc...) will be automatically created for you.
            """
-    parser = argparse.ArgumentParser(description=description)
+    from argparse import RawTextHelpFormatter
+
+    parser = argparse.ArgumentParser(description=description,
+                                     formatter_class=RawTextHelpFormatter)
+
     parser.add_argument('module_name', metavar='module-name',
                         type=str,
                         help='Module name')

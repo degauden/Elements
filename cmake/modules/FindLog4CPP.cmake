@@ -26,10 +26,10 @@ if(NOT LOG4CPP_FOUND)
                HINTS ENV LOG4CPP_INSTALL_DIR
                PATH_SUFFIXES lib
             )
-              
+
   set(LOG4CPP_INCLUDE_DIRS ${LOG4CPP_INCLUDE_DIR})
   set(LOG4CPP_LIBRARIES ${LOG4CPP_LIBRARY})
-  
+
 # handle the QUIETLY and REQUIRED arguments and set LOG4CPP_FOUND to TRUE if
 # all listed variables are TRUE
   INCLUDE(FindPackageHandleStandardArgs)

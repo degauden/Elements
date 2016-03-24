@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh
 
 home_dir=${PWD}
 
@@ -65,7 +65,7 @@ if [ $? -ne 0  ];then
 fi
 
 # Make sure the <Alexandria> is there
-result=$( grep "elements_depends_on_subdirs" $module_path/CMakeLists.txt | 
+result=$( grep "elements_depends_on_subdirs" $module_path/CMakeLists.txt |
           grep -v "#" | grep "Alexandria" )
 if [ $? -ne 0  ];then
    clean_and_exit 1

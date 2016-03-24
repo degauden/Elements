@@ -79,7 +79,7 @@ const po::variables_map ProgramManager::getProgramOptions(
 
   // Get defaults
   fs::path default_config_file = getDefaultConfigFile(getProgramName());
-  
+
   // Define the options which can be given only at the command line
   po::options_description cmd_only_generic_options {};
   cmd_only_generic_options.add_options()
@@ -88,7 +88,7 @@ const po::variables_map ProgramManager::getProgramOptions(
       ("config-file",
           po::value<fs::path>()->default_value(default_config_file),
           "Name of a configuration file");
-  
+
   // Define the options which can be given both at command line and conf file
   po::options_description cmd_and_file_generic_options {};
   cmd_and_file_generic_options.add_options()
@@ -96,7 +96,7 @@ const po::variables_map ProgramManager::getProgramOptions(
          "Log level: FATAL, ERROR, WARN, INFO (default), DEBUG")
       ("log-file",
          po::value<fs::path>(),"Name of a log file");
-  
+
   // Group all the generic options, for help output. Note that we add the options
   // one by one to avoid having empty lines between the groups
   po::options_description all_generic_options {"Generic options"};
@@ -106,7 +106,7 @@ const po::variables_map ProgramManager::getProgramOptions(
   for (auto o : cmd_and_file_generic_options.options()) {
     all_generic_options.add(o);
   }
-  
+
   // Get the definition of the specific options and arguments(positional options)
   // from the derived class
   auto specific_options = m_program_ptr->defineSpecificProgramOptions();
@@ -114,16 +114,16 @@ const po::variables_map ProgramManager::getProgramOptions(
   po::options_description all_specific_options {};
   all_specific_options.add(specific_options)
                       .add(program_arguments.first);
-  
+
   // Put together all the options to parse from the cmd line and the file
   po::options_description all_cmd_and_file_options {};
   all_cmd_and_file_options.add(cmd_and_file_generic_options)
                           .add(all_specific_options);
-  
+
   // Put together all the options to use for the help message
   po::options_description help_options {};
   help_options.add(all_generic_options).add(all_specific_options);
-  
+
   // Perform a first parsing of the command line, to handle the cmd only options
   auto cmd_parsed_options = po::command_line_parser(argc, argv)
                                     .options(cmd_only_generic_options)
@@ -141,10 +141,10 @@ const po::variables_map ProgramManager::getProgramOptions(
     cout << getVersion() << endl;
     exit(0);
   }
-  
+
   // Get the configuration file. It is guaranteed to exist, because it has default value
   auto config_file = variables_map.at("config-file").as<fs::path>();
-  
+
   // Parse from the command line the rest of the options. Here we also handle
   // the positional arguments.
   auto leftover_cmd_options = po::collect_unrecognized(cmd_parsed_options.options,
@@ -154,7 +154,7 @@ const po::variables_map ProgramManager::getProgramOptions(
                       .positional(program_arguments.second)
                       .run(),
             variables_map);
-  
+
   // Parse from the configuration file if it exists
   if (!config_file.empty() && fs::exists(config_file)) {
     ifstream ifs {config_file.string()};
@@ -162,7 +162,7 @@ const po::variables_map ProgramManager::getProgramOptions(
       po::store(po::parse_config_file(ifs, all_cmd_and_file_options), variables_map);
     }
   }
-  
+
   // After parsing both the command line and the conf file notify the variables
   // map, so we can get any messages for missing parameters
   po::notify(variables_map);

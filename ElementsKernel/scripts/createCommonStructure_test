@@ -1,0 +1,46 @@
+#!/bin/sh
+
+home_dir=${PWD}
+
+project_name="ProjectTest"
+version="1.0"
+module_name="ModuleTest"
+
+# Create unique directory
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+# Clean and exit
+clean_and_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+# Set to the User_area
+export User_area=${tmploc}
+
+cd ${tmploc}
+
+# We need to create first a project
+CreateElementsProject $project_name $version
+
+# if error stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+# Move to the project
+cd $User_area/$project_name/$version/
+
+# We need to create a module
+AddElementsModule $module_name
+
+# if error stop and clean up
+if [ $? -ne 0 ]; then
+   clean_and_exit 1
+fi
+
+# Variables to propagate
+export TEMPORARY_LOCATION=$User_area
+export MODULE_NAME_PATH=$User_area/$project_name/$version/$module_name
+export MODULE_NAME=$module_name

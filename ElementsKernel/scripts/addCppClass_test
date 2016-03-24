@@ -1,16 +1,16 @@
-#!/bin/sh 
+#!/bin/sh
 
 home_dir=${PWD}
 
-project_name="ProjectTest"
-version="1.0"
-module_name="ModuleTest"
+# Call common script
+. createCommonStructure_test
+
 class_name="ClassTest"
 elt_dep_name="Alexandria"
 external_dep_name="Boost"
 
-# Create unique directory 
-tmploc=$(mktemp -dq -t temp.XXXXXX)
+# Create a unique directory
+tmploc=${TEMPORARY_LOCATION}
 
 # Clean and exit
 clean_and_exit() {
@@ -19,39 +19,9 @@ clean_and_exit() {
   exit $1
 }
 
-# Set to the User_area
-export User_area=${tmploc}
+cd ${MODULE_NAME_PATH}
 
-cd ${tmploc}
-
-# We need to create first a project
-CreateElementsProject $project_name $version
-
-# if error stop and clean up
-if [ $? -ne 0 ]; then
-   clean_and_exit 1
-fi
-
-# Move to the project
-cd $User_area/$project_name/$version/
-
-# We need to create a module
-AddElementsModule $module_name
-
-# if error stop and clean up
-if [ $? -ne 0 ]; then
-   clean_and_exit 1
-fi
-
-# Move to the module directory
-cd $User_area/$project_name/$version/$module_name
-
-# if error stop and clean up
-if [ $? -ne 0 ]; then
-   clean_and_exit 1
-fi
-
-# Create a module
+# Create a class
 AddCppClass $class_name -ed $elt_dep_name -extd $external_dep_name
 
 # if error stop and clean up
@@ -59,53 +29,52 @@ if [ $? -ne 0 ]; then
    clean_and_exit 1
 fi
 
-module_path="$User_area/$project_name/$version/$module_name"
 
 # make sure the class files are created
-if [ ! -e "$module_path/$module_name/$class_name.h" ]; then
+if [ ! -e "${MODULE_NAME}/${class_name}.h" ]; then
    clean_and_exit 1
 fi
-if [ ! -e "$module_path/src/lib/$class_name.cpp" ]; then
+if [ ! -e "src/lib/${class_name}.cpp" ]; then
    clean_and_exit 1
 fi
 
 # Make sure the elements_depends_on_subdirs Macro is there and ElementsKernel
-result=$( grep "elements_depends_on_subdirs" $module_path/CMakeLists.txt | 
+result=$( grep "elements_depends_on_subdirs" ${MODULE_NAME_PATH}/CMakeLists.txt |
           grep -v "#" | grep "ElementsKernel" )
 if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
 # Make sure the elements_depends_on_subdirs Macro is there and dependency
-result=$( grep "elements_depends_on_subdirs" $module_path/CMakeLists.txt | 
+result=$( grep "elements_depends_on_subdirs" ${MODULE_NAME_PATH}/CMakeLists.txt |
           grep -v "#" | grep $elt_dep_name )
 if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
 # Make sure the find_package Macro is there
-result=$( grep "find_package" $module_path/CMakeLists.txt | 
+result=$( grep "find_package" ${MODULE_NAME_PATH}/CMakeLists.txt |
           grep -v "#" | grep $external_dep_name )
 if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
 # Make sure the elements_add_library Macro is there
-result=$( grep "elements_add_library" $module_path/CMakeLists.txt |  grep -v "#" |
+result=$( grep "elements_add_library" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
           grep $module_name )
 if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
 # Make sure the LINK_LIBRARIES is there and Element dependency
-result=$( grep "LINK_LIBRARIES" $module_path/CMakeLists.txt |  grep -v "#" |
+result=$( grep "LINK_LIBRARIES" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
           grep $elt_dep_name)
 if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
 # Make sure the LINK_LIBRARIES is there and external dependency
-result=$( grep "LINK_LIBRARIES" $module_path/CMakeLists.txt |  grep -v "#" |
+result=$( grep "LINK_LIBRARIES" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
           grep $external_dep_name)
 if [ $? -ne 0 ]  ;then
    clean_and_exit 1

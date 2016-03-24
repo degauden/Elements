@@ -1,9 +1,27 @@
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+
 """
-@file: ElementsKernel/AddCppProgram.py
-@author: Nicolas Morisset
+File: ElementsKernel/AddCppProgram.py
+Author: Nicolas Morisset
          Astronomy Department of the University of Geneva
 
-@date: 01/07/15
+Date: 01/07/15
 
 This script creates a new Elements C++ Program
 """
@@ -51,9 +69,9 @@ def addConfFile(module_dir, module_name, program_name):
         f.write('###############################################################################\n')
         f.close()
     else:
-        logger.warning('# The <%s> conf file has been kept as it already exists!'
+        logger.warning('The < %s > conf file has been kept as it already exists!'
                         % conf_file)
-        logger.warning('# The <%s> conf file already exists! ' % conf_file)
+        logger.warning('The < %s > conf file already exists! ' % conf_file)
 
 
 
@@ -96,7 +114,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list):
     """
     """
-    logger.info('# Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Backup the file
@@ -171,8 +189,15 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
 
 def defineSpecificProgramOptions():
     description = """
+This script creates an <Elements> C++ program at your current directory(default)
+All necessary structure (directory structure, makefiles etc...) will be automat-
+ically created for you if any but you have to be inside an <Elements> module.
            """
-    parser = argparse.ArgumentParser(description=description)
+    from argparse import RawTextHelpFormatter
+
+    parser = argparse.ArgumentParser(description=description,
+                                     formatter_class=RawTextHelpFormatter)
+
     parser.add_argument('program_name', metavar='program-name',
                         type=str,
                         help='Program name')
@@ -204,7 +229,8 @@ def mainMethod(args):
         # Default is the current directory
         current_dir = os.getcwd()
 
-        logger.info('# Current directory : %s', current_dir)
+        logger.info('Current directory : %s', current_dir)
+        logger.info('')
 
         # We absolutely need a Elements cmake file
         script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
@@ -223,14 +249,14 @@ def mainMethod(args):
             script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
         if script_goes_on and createCppProgram(current_dir, module_name, program_name, module_list, library_list):
-            logger.info('# <%s> program successfully created in <%s>.' %
+            logger.info('< %s > program successfully created in < %s >.' %
                         (program_name, current_dir + os.sep + 'src' + os.sep + 'program'))
             # Remove backup file
             epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-            logger.info('# Script over.')
+            logger.info('Script over.')
         else:
-            logger.error('# Script aborted!')
+            logger.error('Script aborted!')
 
     except Exception as e:
         logger.exception(e)
-        logger.info('# Script stopped...')
+        logger.info('Script stopped...')

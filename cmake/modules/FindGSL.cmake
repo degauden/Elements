@@ -14,7 +14,7 @@ if(NOT GSL_FOUND)
   find_path(GSL_INCLUDE_DIR gsl/gsl_version.h
             HINTS ENV GSL_ROOT_DIR
             PATH_SUFFIXES include)
-  
+
   find_library(GSL_LIBRARY gsl
                HINTS ENV GSL_ROOT_DIR
                PATH_SUFFIXES lib)

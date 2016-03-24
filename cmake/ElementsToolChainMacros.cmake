@@ -197,8 +197,8 @@ function(_internal_find_projects projects_var config_file)
             if(EXISTS ${${name_upper}_CONFIG_FILE})
               check_project_version_from_file(${${name_upper}_CONFIG_FILE} ${name} ${version} match_found)
             endif()
-            
- 
+
+
             if(NOT ${match_found})
               unset(${name_upper}_CONFIG_FILE CACHE)
             endif()

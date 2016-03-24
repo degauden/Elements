@@ -1,20 +1,20 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 
 #===============================================================================
-# Load elements_subdir macro here 
+# Load elements_subdir macro here
 # Examples:
 #   For declaring a project module:
 #         elements_subdir(ElementsExamples)
 #===============================================================================
 
 #===============================================================================
-# Load elements_depends_on_subdirs macro here 
+# Load elements_depends_on_subdirs macro here
 #   For creating a dependency onto an other accessible module
 #         elements_depends_on_subdirs(ElementsKernel)
 #===============================================================================
 
 #===============================================================================
-# Add the find_package macro (a pure CMake command) here to locate the 
+# Add the find_package macro (a pure CMake command) here to locate the
 # libraries.
 # Examples:
 #          find_package(CppUnit)
@@ -49,7 +49,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #===============================================================================
 # Declare the Python programs here
 # Examples :
-# elements_add_python_program(PythonProgramExample 
+# elements_add_python_program(PythonProgramExample
 #                             ElementsExamples.PythonProgramExample)
 #===============================================================================
 
@@ -60,7 +60,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #===============================================================================
 
 #===============================================================================
-# Add the elements_install_conf_files macro 
+# Add the elements_install_conf_files macro
 # Examples:
 #          elements_install_conf_files()
 #===============================================================================

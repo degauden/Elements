@@ -9,8 +9,6 @@ Source:         @CPACK_PACKAGE_NAME@-@CPACK_PACKAGE_VERSION@.tar.gz
 Vendor:         @CPACK_PACKAGE_VENDOR@
 
 
-BuildRoot: %{_tmppath}/%{name}-root
-
 BuildRequires: gcc > 4.7, cmake >= 2.6@RPM_DEVEL_DEP_LIST@
 
 Requires: python@RPM_DEP_LIST@
@@ -71,12 +69,12 @@ else
     toolchain_file=/usr/share/EuclidEnv/cmake/${toolchain_name}
   fi
 fi
-%__mkdir -p %{build_dir_name}
-cd %{build_dir_name}
+%__mkdir -p $RPM_BUILD_DIR/$BINARY_TAG
+cd $RPM_BUILD_DIR/$BINARY_TAG
 if [[ -z "${toolchain_file}" ]]; then
-  %cmake @CPACK_EXTRA_CMAKEFLAGS@ ../
+  %cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
 else
-  %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} ../
+  %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} $RPM_BUILD_DIR/%{name}-%{version}
 fi
 %__make VERBOSE=1 %{?_smp_mflags} all
 
@@ -89,13 +87,12 @@ else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
-cd %{build_dir_name}
+cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make install VERBOSE=1 DESTDIR=$RPM_BUILD_ROOT
 
 %clean
-%__rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
 
 %postun
 /sbin/ldconfig
@@ -113,3 +110,5 @@ done
 @CPACK_RPM_DEVEL_FILES@
 
 @CPACK_RPM_DEBINFO_FILES@
+
+@CPACK_RPM_CHANGELOG@
