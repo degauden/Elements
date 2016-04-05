@@ -85,10 +85,6 @@ def defineSpecificProgramOptions():
     This script allows you to remove all files on disk related to a python module.
     Usually you use this script when you made a typo in the module name when
     calling the <AddPythonModule> python script.
-
-    WARNING: The script can not remove things related to the python module in
-             the <CMakeLists.txt> file. You MUST edit it and remove all unecessary
-             stuff related to this module.
     """
     from argparse import RawTextHelpFormatter
 
