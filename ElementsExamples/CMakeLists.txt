@@ -173,7 +173,8 @@ endif()
 
 
 find_package(SWIG QUIET)
-if(SWIG_FOUND)
+find_package(PythonLibs QUIET)
+if(SWIG_FOUND AND PYTHONLIBS_FOUND)
 elements_add_swig_binding(SwigExample ElementsExamples/SwigExample.i
                           LINK_LIBRARIES ElementsExamples
                           INCLUDE_DIRS ElementsExamples
