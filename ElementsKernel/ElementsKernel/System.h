@@ -5,6 +5,7 @@
 #include <vector>
 #include <typeinfo>
 #include <string>
+#include <vector>
 
 // Framework include files
 #include "ElementsKernel/Export.h" // ELEMENTS_API
@@ -104,6 +105,8 @@ ELEMENTS_API ThreadHandle threadSelf();
 
 ELEMENTS_API int backTrace(ELEMENTS_UNUSED void** addresses, ELEMENTS_UNUSED const int depth);
 ELEMENTS_API bool backTrace(std::string& btrace, const int depth, const int offset = 0);
+ELEMENTS_API const std::vector<std::string> backTrace(const int depth, const int offset = 0);
+
 ELEMENTS_API bool getStackLevel(ELEMENTS_UNUSED void* addresses, ELEMENTS_UNUSED void*& addr,
                                 ELEMENTS_UNUSED std::string& fnc, ELEMENTS_UNUSED std::string& lib);
 

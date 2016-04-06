@@ -12,6 +12,7 @@
 #include <cstdlib>                         // for the exit function
 #include <fstream>
 #include <iostream>
+#include <typeinfo>                        // for the typid operator
 
 #include "ElementsKernel/ProgramManager.h"
 
@@ -20,6 +21,7 @@ namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
+#include "ElementsKernel/System.h"
 
 #include "ElementsKernel/PathSearch.h"
 
@@ -329,11 +331,21 @@ void ProgramManager::onTerminate() noexcept {
                      << "i.e., an exception not deriving from std::exception ";
       logger.fatal() << "# ";
     }
+
+    logger.fatal() << "This is the back trace:";
+    for(auto l: System::backTrace(21, 4)) {
+      logger.fatal() << l;
+    }
+    abort();
+
   }
 
   std::_Exit(static_cast<int>(exit_code));
 
 }
+
+
+
 
 
 } // namespace Elements
