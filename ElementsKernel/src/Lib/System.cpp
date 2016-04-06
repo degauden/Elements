@@ -21,6 +21,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>                       // for string
+#include <vector>                       // for vector
 
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
 #include <cerrno>                      // for errno
@@ -494,6 +495,42 @@ bool backTrace(string& btrace, const int depth, const int offset) {
 
   return result;
 }
+
+
+const vector<string> backTrace(const int depth, const int offset) {
+  // Always hide the first two levels of the stack trace (that's us)
+  const int totalOffset = offset + 2;
+  const int totalDepth = depth + totalOffset;
+
+  vector<string> trace {};
+
+  string fnc, lib;
+
+  void** addresses = (void**) malloc(totalDepth * sizeof(void *));
+  if (addresses != NULL) {
+
+
+    int count = backTrace(addresses, totalDepth);
+
+
+
+    for (int i = totalOffset; i < count; ++i) {
+      void *addr = 0;
+
+      if (getStackLevel(addresses[i], addr, fnc, lib)) {
+        ostringstream ost;
+        ost << "#" << setw(3) << setiosflags(ios::left) << i - totalOffset + 1;
+        ost << hex << addr << dec << " " << fnc << "  [" << lib << "]";
+        trace.push_back(ost.str());
+      }
+    }
+    ::free(addresses);
+    addresses = NULL;
+  }
+
+  return trace;
+}
+
 
 bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
     string& fnc ELEMENTS_UNUSED, string& lib ELEMENTS_UNUSED) {

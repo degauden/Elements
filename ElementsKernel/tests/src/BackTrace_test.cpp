@@ -8,11 +8,14 @@
 #include "ElementsKernel/System.h"
 
 #include <string>
+#include <vector>
 #include <boost/test/unit_test.hpp>
 
 
 // Temporary includes for dev
 #include <iostream>
+
+using namespace std;
 
 void second(){
 
@@ -30,18 +33,15 @@ BOOST_AUTO_TEST_SUITE(BackTrace_test)
 BOOST_AUTO_TEST_CASE(Raw_test) {
 
   const size_t depth = 21;
-  void* addresses[depth];
-  std::string lib, fnc;
 
-  //int a = Elements::System::backTrace(addresses, depth);
 
-  // TODO this is failing on LODEEN
-  //BOOST_CHECK_EQUAL(a,17);
+  vector<string> trace = Elements::System::backTrace(depth);
 
-  void* addr = nullptr;
-  Elements::System::getStackLevel(addresses[2], addr, fnc, lib);
+  size_t found = trace[0].find("BackTrace_test");
 
-  // BOOST_CHECK_EQUAL(lib, "BackTrace_test");
+  BOOST_CHECK_NE(found, string::npos);
+
+
 
 }
 

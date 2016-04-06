@@ -63,10 +63,22 @@ public:
    * @param argv
    *   Command line arguments
    */
-  ELEMENTS_API
   ExitCode run(int argc, char* argv[]);
 
-  ELEMENTS_API std::string getVersion() const;
+  /**
+   * @brief
+   * This function returns the version of the program computed
+   * at compile time. This is the same as the project version
+   * that contains the program
+   */
+  std::string getVersion() const;
+
+  /**
+   * @brief
+   * This is the set_terminate handler that is used in the
+   * #MAIN_FOR macro.
+   */
+  static void onTerminate() noexcept;
 
 private:
 
