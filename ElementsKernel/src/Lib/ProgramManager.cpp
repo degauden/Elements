@@ -12,6 +12,7 @@
 #include <cstdlib>                         // for the exit function
 #include <fstream>
 #include <iostream>
+#include <typeinfo>                        // for the typid operator
 
 #include "ElementsKernel/ProgramManager.h"
 
@@ -20,6 +21,7 @@ namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
+#include "ElementsKernel/System.h"
 
 #include "ElementsKernel/PathSearch.h"
 
@@ -284,31 +286,9 @@ void ProgramManager::setup(int argc, char* argv[]) {
 // This is the method call from the main which does everything
 ExitCode ProgramManager::run(int argc, char* argv[]) {
 
-  ExitCode exit_code {ExitCode::NOT_OK};
-
   setup(argc, argv);
 
-  Logging logger = Logging::getLogger("ElementsProgram");
-
-  try {
-    exit_code =  m_program_ptr->mainMethod(m_variables_map);
-  } catch (const Exception & ee) {
-    logger.fatal() << "# " ;
-    logger.fatal() << "# Elements Exception : " << ee.what();
-    logger.fatal() << "# ";
-    exit_code = ee.exitCode();
-  } catch (const exception & e) {
-    /// @todo : set the exit code according to the type of exception
-    ///         if a clear match is found.
-    logger.fatal() << "# ";
-    logger.fatal() << "# Standard Exception : " << e.what() ;
-    logger.fatal() << "# ";
-  } catch (...) {
-    logger.fatal() << "# ";
-    logger.fatal() << "# An exception of unknown type occured, "
-                   << "i.e., an exception not deriving from std::exception ";
-    logger.fatal() << "# ";
-  }
+  ExitCode exit_code =  m_program_ptr->mainMethod(m_variables_map);
 
   return exit_code ;
 
@@ -322,6 +302,50 @@ string ProgramManager::getVersion() const {
 }
 
 ProgramManager::~ProgramManager() {}
+
+void ProgramManager::onTerminate() noexcept {
+
+  ExitCode exit_code {ExitCode::NOT_OK};
+
+  if( auto exc = std::current_exception() ) {
+
+    Logging logger = Logging::getLogger("ElementsProgram");
+
+    // we have an exception
+    try {
+      rethrow_exception( exc ); // throw to recognize the type
+    } catch (const Exception & exc) {
+      logger.fatal() << "# " ;
+      logger.fatal() << "# Elements Exception : " << exc.what();
+      logger.fatal() << "# ";
+      exit_code = exc.exitCode();
+    } catch (const exception & exc) {
+      /// @todo : set the exit code according to the type of exception
+      ///         if a clear match is found.
+      logger.fatal() << "# ";
+      logger.fatal() << "# Standard Exception : " << exc.what() ;
+      logger.fatal() << "# ";
+    } catch (...) {
+      logger.fatal() << "# ";
+      logger.fatal() << "# An exception of unknown type occured, "
+                     << "i.e., an exception not deriving from std::exception ";
+      logger.fatal() << "# ";
+    }
+
+    logger.fatal() << "This is the back trace:";
+    for(auto l: System::backTrace(21, 4)) {
+      logger.fatal() << l;
+    }
+    abort();
+
+  }
+
+  std::_Exit(static_cast<int>(exit_code));
+
+}
+
+
+
 
 
 } // namespace Elements
