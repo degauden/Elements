@@ -7,34 +7,6 @@
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "ElementsKernel/Exception.h"
 
-/** @class TimeException Time.h ElementsKernel/Time.h
- *
- *  Exception thrown by Elements::Time.
- *
- *  @see ElementsException
- *  @see Elements::Time
- *
- *  @author Marco Clemencic
- *  @date   2005-12-14
- */
-//
-// 	This class is commented out by Pierre Dubath (August 5th, 2013) in order to get rid of the class
-//	ElementsException created by Marco Clemencic and to replace it by EuclidException that will be renamed
-// 	ElementsException once the old ElementsException is deleted
-//
-//class ELEMENTS_API TimeException: public ElementsException {
-//public:
-//  // Standard constructor
-//  TimeException(const std::string& Message = "unspecified exception",
-//      const std::string& Tag = "*Elements::Time*", const StatusCode & Code =
-//          StatusCode::FAILURE) :
-//      ElementsException(Message, Tag, Code) {
-//  }
-//  /// Destructor needed to match the signature of ElementsException::~ElementsException().
-//  virtual ~TimeException() noexcept {
-//  }
-//};
-
 struct tm;
 
 namespace Elements {
