@@ -1,3 +1,5 @@
+"""Main Program Class"""
+
 import importlib
 import os
 import sys
@@ -5,7 +7,7 @@ import re
 import ElementsKernel.Logging as log
 
 
-class Program (object):
+class Program(object):
 
     def __init__(self, app_module, parent_project_version=None, parent_project_name=None):
         self._app_module = importlib.import_module(app_module)
@@ -13,7 +15,8 @@ class Program (object):
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
 
-    def _setupLogging(self, arg_parser):
+    @staticmethod
+    def _setupLogging(arg_parser):
         options = arg_parser.parse_known_args()[0]
         if options.log_level:
             log.setLevel(options.log_level.upper())
@@ -92,7 +95,12 @@ class Program (object):
         # Iterate through the names of the variables keeping the option values
         for var in [v for v in dir(all_options) if not v.startswith('_')]:
             # We get the related action from the argparser
-            action = next((a for a in arg_parser._actions if a.dest == var and a.option_strings), None)
+            action = None
+            for a in arg_parser._actions:
+                if a.dest == var and a.option_strings:
+                    action = a
+                    break
+
             if action:
                 # We chose as name the longest option name and we strip any leading '-'
                 variable_to_option_name[var] = max(action.option_strings, key=len).lstrip('-')
