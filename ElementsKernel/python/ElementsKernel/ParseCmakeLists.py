@@ -429,14 +429,14 @@ class CMakeLists(object):
                 result = re.sub(leading_spaces + "elements_add_python_program" + open_parenthesis + pyexe.name + \
                                 closing_parenthesis, str(pyexe), result, flags=re.MULTILINE | re.DOTALL)
 
-        if not re.search(leading_spaces + "elements_install_python_modules\(.*?\)", result,
+        if not re.search(leading_spaces + r"elements_install_python_modules\(.*?\)", result,
                          re.MULTILINE | re.DOTALL) and self.elements_install_python_modules:
             result = CMakeLists._addAfter(result, 'elements_install_python_modules', self.elements_install_python_modules)
 
-        if not re.search(leading_spaces + "elements_install_scripts\(.*?\)", result, re.MULTILINE | re.DOTALL) and self.elements_install_scripts:
+        if not re.search(leading_spaces + r"elements_install_scripts\(.*?\)", result, re.MULTILINE | re.DOTALL) and self.elements_install_scripts:
             result = CMakeLists._addAfter(result, 'elements_install_scripts', self.elements_install_scripts)
 
-        if not re.search(leading_spaces + "elements_install_conf_files\(.*?\)", result, re.MULTILINE | re.DOTALL) and self.elements_install_conf_files:
+        if not re.search(leading_spaces + r"elements_install_conf_files\(.*?\)", result, re.MULTILINE | re.DOTALL) and self.elements_install_conf_files:
             result = CMakeLists._addAfter(result, 'elements_install_conf_files', self.elements_install_conf_files)
 
         return result

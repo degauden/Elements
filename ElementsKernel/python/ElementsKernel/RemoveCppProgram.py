@@ -41,8 +41,9 @@ logger = log.getLogger('RemoveCppProgram')
 
 def getAllFiles(program_name, module_directory, module_name):
     """
+    Get all files related to a Cpp program
     """
-    delete_file_list=[]
+    delete_file_list = []
     file_name_conf = os.path.join(module_directory, 'conf', module_name, program_name) + '.conf'
     if os.path.exists(file_name_conf):
         delete_file_list.append(file_name_conf)
@@ -79,6 +80,9 @@ def updateCmakeListsFile(module_dir, program_name):
 
 
 def defineSpecificProgramOptions():
+    """
+    Define program option(s)
+    """
     description = """
     This script allows you to remove all files on disk related to a <Elements>
     C++ program name.
@@ -100,6 +104,9 @@ def defineSpecificProgramOptions():
 ################################################################################
 
 def mainMethod(args):
+    """
+    Main
+    """
 
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the RemoveCppProgram script ')
@@ -124,10 +131,10 @@ def mainMethod(args):
             # Default is the current directory
             file_to_be_deleted = getAllFiles(program_name, module_dir, module_name)
             if file_to_be_deleted:
-                for file in file_to_be_deleted:
-                    logger.info('File to be deleted: %s' % file)
+                for elt_file in file_to_be_deleted:
+                    logger.info('File to be deleted: %s' % elt_file)
                 response_key = raw_input('Do you want to continue?(y/n, default: n)')
-                if response_key == 'Y' or response_key =='y':
+                if response_key == 'Y' or response_key == 'y':
                     epcr.removeFilesOnDisk(file_to_be_deleted)
                     cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
                     updateCmakeListsFile(module_dir, program_name)
@@ -137,7 +144,7 @@ def mainMethod(args):
                     'external dependencies,' % (program_name))
                     logger.warning('# you maybe need to remove them. Check the <find_package,')
                     logger.warning('# elements_depends_on_subdirs> macros in the file :')
-                    logger.warning('# < %s >' % (cmakefile))
+                    logger.warning('# < %s >', cmakefile)
                     logger.warning('# !!!!!!!!!!!!!!!!!!')
             else:
                 logger.info('No file found for deletion!')
