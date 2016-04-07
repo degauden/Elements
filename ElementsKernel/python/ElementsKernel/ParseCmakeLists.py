@@ -327,6 +327,7 @@ class CMakeLists(object):
     def _addAfter(text, tag, to_add):
         if tag in text:
             for match in re.finditer(tag + r"\(.*?\)", text, re.MULTILINE | re.DOTALL):
+                # This is an empty loop in order to get the last match.
                 pass
             temp = text[:match.end() + 1]
             rest = text[match.end() + 1:].splitlines()
@@ -358,7 +359,7 @@ class CMakeLists(object):
                 str_elt = str(elt)
                 if remove_exe in str_elt:
                     self.elements_add_python_executable_list.remove(elt)
-                    result= result.replace(str_elt+'\n','')
+                    result = result.replace(str_elt + '\n', '')
                     self.elements_remove_python_executable = None
 
         # Remove cpp class macro from the list if any
@@ -368,7 +369,7 @@ class CMakeLists(object):
                 str_elt = str(elt)
                 if remove_class in str_elt:
                     self.elements_add_unit_test_list.remove(elt)
-                    result= result.replace(str_elt+'\n','')
+                    result = result.replace(str_elt + '\n', '')
                     self.elements_remove_cpp_class = None
 
         # Remove cpp program macro from the list if any
@@ -378,7 +379,7 @@ class CMakeLists(object):
                 str_elt = str(elt)
                 if remove_prog in str_elt:
                     self.elements_add_executable_list.remove(elt)
-                    result= result.replace(str_elt+'\n','')
+                    result = result.replace(str_elt + '\n', '')
                     self.elements_remove_cpp_program = None
 
         for find_package in self.find_package_list:
