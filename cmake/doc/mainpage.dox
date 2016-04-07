@@ -58,11 +58,15 @@ The toolchain file is looked for (by the Makefile wrapper) in the local cmake su
 or in every location of the ```CMAKE_PREFIX_PATH```.
 
 The build will then be done with
+
 	$ make
 	$ make test
+
 The ```USE_LOCAL_INSTALLAREA``` will perform
 a local installation in the ```InstallArea``` sub-directory of the source tree.
+
 	$ make install
+
 \n
 
 ---
@@ -91,25 +95,32 @@ build directory the first time or afterwards via the CMake configuration
 tool ``ccmake``.
 
 Now you can build the project with a simple (from ``$MY_WORK/Elements/build``):
+
 	$ cd $dest
 	$ make
 	$ make test
+
 or from Eclipse after you imported the project.
 
 For the installation, the usual command:
+
 	$ make install
+
 will do the installation. And since we didn't use the ``-DUSE_LOCAL_INSTALLAREA=on``
 option at configure time, the installation directory will be ``/opt/euclid/Elements/${VERSION}/InstallArea``.
 
 
 Please note that the build can also be performed by pure CMake commands:
+
 	$ cd $dest
 	$ cmake --build .
 	$ cmake --build . --target test # or ctest
 	$ cmake --build . --target install
+
 This render the build agnostic about the used build subsystem (``gmake``, ``ninja``, etc)
 and gives more options. For example the installation can be done in a different directory chosen
 on the fly:
+
 	$ cmake -DCMAKE_INSTALL_PREFIX=/tmp/install_elements -P cmake_install.cmake
 
 \subsection runfromthebuilddir Run from the build directory
@@ -119,6 +130,7 @@ install.
 
 To run an application using the build directory, you can use the script ``run``
 located in the build directory, for example like this:
+
 	$ cd $dest
 	$ ./run somescript.py --help
 	$ ./run bash
