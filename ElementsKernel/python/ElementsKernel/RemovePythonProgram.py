@@ -131,7 +131,7 @@ def mainMethod(args):
             for elt_file in file_to_be_deleted:
                 logger.info('File to be deleted: %s', elt_file)
             response_key = raw_input('Do you want to continue?(y/n, default: n)')
-            if response_key == 'Y' or response_key =='y':
+            if response_key == 'Y' or response_key == 'y':
                 epcr.removeFilesOnDisk(file_to_be_deleted)
                 cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
                 updateCmakeListsFile(module_dir, program_name)
