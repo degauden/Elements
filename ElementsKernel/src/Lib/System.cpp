@@ -25,7 +25,7 @@
 
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
 #include <cerrno>                      // for errno
-#include <execinfo.h>                   // for backtrace
+#include <execinfo.h>                  // for backtrace
 #include <cstring>                     // for strlen
 #include <unistd.h>                     // for environ
 #include <cxxabi.h>
@@ -445,14 +445,14 @@ ThreadHandle threadSelf() {
 // -----------------------------------------------------------------------------
 // backtrace utilities
 // -----------------------------------------------------------------------------
-#ifdef __linux
+#if defined(__linux) || defined(__APPLE__)
 #include <execinfo.h>
 #endif
 
 int backTrace(void** addresses ELEMENTS_UNUSED,
     const int depth ELEMENTS_UNUSED) {
 
-#ifdef __linux
+#if defined(__linux) || defined(__APPLE__)
 
   int count = ::backtrace(addresses, depth);
   if (count > 0) {
@@ -535,7 +535,7 @@ const vector<string> backTrace(const int depth, const int offset) {
 bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
     string& fnc ELEMENTS_UNUSED, string& lib ELEMENTS_UNUSED) {
 
-#ifdef __linux
+#if defined(__linux) || defined(__APPLE__)
 
   Dl_info info;
 
