@@ -37,10 +37,10 @@ BOOST_AUTO_TEST_CASE(Raw_test) {
 
   vector<string> trace = Elements::System::backTrace(depth);
 
-  size_t found = trace[0].find("BackTrace_test");
-
-  BOOST_CHECK_NE(found, string::npos);
-
+  if(!trace.empty()) {
+    size_t found = trace[0].find("BackTrace_test");
+    BOOST_CHECK_NE(found, string::npos);
+  }
 
 
 }
