@@ -84,7 +84,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
     """
     Create the <CMakeList.txt> file and add dependencies to it
     """
-    logger.info('# Create the <%s> File' % CMAKE_LISTS_FILE)
+    logger.info('# Create the <%s> File', CMAKE_LISTS_FILE)
     cmake_list_file_final = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Copy aux file to destination
@@ -135,14 +135,14 @@ def createModule(project_dir, module_name, dependency_list):
 
     # Create module directory
     mod_path = os.path.join(project_dir, module_name)
-    logger.info('# Creating the module: <%s> ' % mod_path)
+    logger.info('# Creating the module: <%s> ', mod_path)
     if os.path.exists(mod_path):
         # Ask user
-        logger.warning('<%s> module ALREADY exists!!!' % module_name)
+        logger.warning('<%s> module ALREADY exists!!!', module_name)
         response_key = raw_input(
             'Do you want to replace the existing module (yes/y/no/n), default: no)?')
         if response_key == "yes" or response_key == "y":
-            logger.info('# Replacing the existing module: <%s>' % module_name)
+            logger.info('# Replacing the existing module: <%s>', module_name)
             epcr.eraseDirectory(mod_path)
         else:
             logger.info("Script stopped by user!")
@@ -157,6 +157,9 @@ def createModule(project_dir, module_name, dependency_list):
 ################################################################################
 
 def defineSpecificProgramOptions():
+    """
+    Define program option(s)
+    """
     description = """
 This script creates an <Elements> module at your current directory
 (default) but it must be inside a project directory. All necessary structure
@@ -179,35 +182,32 @@ This script creates an <Elements> module at your current directory
 ################################################################################
 
 def mainMethod(args):
-
+    """
+    Main
+    """
+    
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddModule script ')
     logger.info('#')
 
-    try:
-        script_goes_on = True
-        module_name = args.module_name
-        dependency_list = args.module_dependency
+    script_goes_on = True
+    module_name = args.module_name
+    dependency_list = args.module_dependency
 
-        # Default is the current directory
-        project_dir = os.getcwd()
+    # Default is the current directory
+    project_dir = os.getcwd()
 
-        logger.info('# Current directory : %s', project_dir)
+    logger.info('# Current directory : %s', project_dir)
 
-        # We absolutely need a Elements cmake file
-        script_goes_on = isElementsProjectExist(project_dir)
+    # We absolutely need a Elements cmake file
+    script_goes_on = isElementsProjectExist(project_dir)
 
-        # Module as no version number, '1.0' is just for using the routine
-        if script_goes_on:
-            script_goes_on = epcr.isNameAndVersionValid(module_name, '1.0')
+    # Module as no version number, '1.0' is just for using the routine
+    if script_goes_on:
+        script_goes_on = epcr.isNameAndVersionValid(module_name, '1.0')
 
-        if script_goes_on and createModule(project_dir, module_name, dependency_list):
-            logger.info('# <%s> module successfully created in <%s>.' %
-                        (module_name, project_dir))
-            logger.info('# Script over.')
-        else:
-            logger.warning('# Script aborted')
-
-    except Exception as e:
-        logger.exception(e)
-        logger.info('# Script stopped...')
+    if script_goes_on and createModule(project_dir, module_name, dependency_list):
+        logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
+        logger.info('# Script over.')
+    else:
+        logger.warning('# Script aborted')

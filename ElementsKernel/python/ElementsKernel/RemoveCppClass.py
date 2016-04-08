@@ -144,8 +144,8 @@ def mainMethod(args):
                 logger.info('')
                 logger.warning('# !!!!!!!!!!!!!!!!!!')
                 logger.warning('# If your <%s> class has some Element and/or external dependencies,', class_name)
-                logger.warning('# you maybe need to remove them. Check the <elements_add_library, elements_add_library,')
-                logger.warning('# find_package, elements_depends_on_subdirs> macros in the file :')
+                logger.warning('# you maybe need to remove them. Check the <elements_add_library, find_package,')
+                logger.warning('# elements_add_library, elements_depends_on_subdirs> macros in the file :')
                 logger.warning('# < %s >', cmakefile)
                 logger.warning('# !!!!!!!!!!!!!!!!!!')
         else:
@@ -154,6 +154,5 @@ def mainMethod(args):
 
         logger.info('Script over')
     else:
-        logger.error('No module name found at the current directory : %s' \
-                     % (module_dir))
+        logger.error('No module name found at the current directory : %s', module_dir)
         logger.error('Script stopped...')

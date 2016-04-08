@@ -59,7 +59,7 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     Update the <CMakeLists.txt> file
     """
-    logger.info('Updating the <%s> file',CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Cmake file already exist
@@ -139,8 +139,8 @@ def mainMethod(args):
                 updateCmakeListsFile(module_dir, program_name)
                 logger.info('')
                 logger.warning('# !!!!!!!!!!!!!!!!!!')
-                logger.warning('# If your < %s > program has Element and/or '
-                'external dependencies,', program_name)
+                logger.warning('# If your < %s > program has some Element and/or external dependencies,',\
+                                program_name)
                 logger.warning('# you maybe need to remove them. Check the <find_package,')
                 logger.warning('# elements_depends_on_subdirs> macros in the file :')
                 logger.warning('# < %s >', cmakefile)
@@ -151,6 +151,5 @@ def mainMethod(args):
 
         logger.info('Script over')
     else:
-        logger.error('No module name found at the current directory : %s' \
-                     % (module_dir))
+        logger.error('No module name found at the current directory : %s', module_dir)
         logger.error('Script stopped...')
