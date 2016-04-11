@@ -1739,15 +1739,12 @@ macro(elements_common_add_build)
   # find the sources
   elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
 
-  #message(STATUS "elements_common_add_build ${ARG_LINK_LIBRARIES}")
   # get the inherited include directories
   elements_get_required_include_dirs(ARG_INCLUDE_DIRS ${ARG_LINK_LIBRARIES})
 
-  #message(STATUS "elements_common_add_build ${ARG_INCLUDE_DIRS}")
   # add the package includes to the current list
   include_package_directories(${ARG_INCLUDE_DIRS})
 
-  #message(STATUS "elements_common_add_build ARG_LINK_LIBRARIES ${ARG_LINK_LIBRARIES}")
   # get the library dirs required to get the libraries we use
   elements_get_required_library_dirs(lib_path ${ARG_LINK_LIBRARIES})
   set_property(GLOBAL APPEND PROPERTY LIBRARY_PATH ${lib_path})
@@ -1830,6 +1827,7 @@ endmacro()
 #                   source1 source2 ...
 #                   LINK_LIBRARIES library1 library2 ...
 #                   INCLUDE_DIRS dir1 package2 ...
+#                   [LINKER_LANGUAGE C|CXX]
 #                   [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
 #
 # Extension of standard CMake 'add_library' command.
@@ -1838,15 +1836,36 @@ endmacro()
 #---------------------------------------------------------------------------------------------------
 function(elements_add_library library)
   # this function uses an extra option: 'PUBLIC_HEADERS'
-  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
-  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS} LIBRARIES ${ARG_LIBRARIES} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "LINKER_LANGUAGE" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
 
   elements_get_package_name(package)
   if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
     message(WARNING "Library ${library} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
   endif()
 
-  add_library(${library} ${srcs})
+  if(NOT ARG_UNPARSED_ARGUMENTS)
+    if(NOT ARG_PUBLIC_HEADERS)
+      message(WARNING "Library ${library} (in ${package}) does not declare PUBLIC_HEADERS and does not declare any source files.
+Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module library
+     or PUBLIC_HEADERS directory without source files for a header files-only library
+     or PUBLIC_HEADERS directory and source files for a regular linker library.\n")
+    else()
+      message(STATUS "Library ${library} (in ${package}) declares PUBLIC_HEADERS and does not declare any source files: creating a header files-only library.")
+    endif()
+  endif()
+
+
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS} LIBRARIES ${ARG_LIBRARIES} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+  # find the header files
+  elements_expand_source_dirs(h_srcs ${ARG_PUBLIC_HEADERS})
+
+  add_library(${library} ${srcs} ${h_srcs})
+  
+  if(ARG_LINKER_LANGUAGE)
+    set_target_properties(${library} PROPERTIES LINKER_LANGUAGE ${ARG_LINKER_LANGUAGE})
+  endif()
+  
   set_target_properties(${library} PROPERTIES COMPILE_DEFINITIONS ELEMENTS_LINKER_LIBRARY)
   target_link_libraries(${library} ${ARG_LINK_LIBRARIES})
   _elements_detach_debinfo(${library})
