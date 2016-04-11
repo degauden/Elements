@@ -133,6 +133,16 @@ macro(elements_expand_sources VAR)
   endforeach()
 endmacro()
 
+macro(elements_expand_source_dirs VAR)
+  set(${VAR})
+  foreach(fp ${ARGN})
+    file(GLOB files ${fp}/*)
+    if(files)
+      set(${VAR} ${${VAR}} ${files})
+    endif()
+  endforeach()
+endmacro()
+
 function(filter_comments var)
   # Convert file contents into a CMake list (where each element in the list
   # is one line of the file)
