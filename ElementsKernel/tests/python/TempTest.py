@@ -53,6 +53,12 @@ class TestCase(unittest.TestCase):
             self.assert_(os.path.exists(tf_path))
         self.assert_(not os.path.exists(tf_path))
 
+    def testPath(self):
+
+        with TempDir() as td:
+            td_path = td.path()
+            self.assert_(os.path.exists(td_path))
+
 
 if __name__ == '__main__':
     unittest.main()

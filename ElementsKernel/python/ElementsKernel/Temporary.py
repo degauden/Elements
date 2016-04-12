@@ -34,6 +34,9 @@ class TempResource(object):
         """Returns the name of the temporary directory"""
         return self._name
 
+    def path(self):
+        return self._name
+
     def __str__(self):
         """Convert to string."""
         return self.getName()
