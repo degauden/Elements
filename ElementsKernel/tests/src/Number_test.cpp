@@ -24,6 +24,8 @@ BOOST_AUTO_TEST_CASE(NumberCast_test) {
   BOOST_CHECK_EQUAL(numberCast<int>(3.6), 4);
   BOOST_CHECK_EQUAL(static_cast<int>(3.6), 3);
   BOOST_CHECK_EQUAL(numberCast<int>(3.2), 3);
+  BOOST_CHECK_NE(numberCast<int>(3.6), int(3.6));
+  BOOST_CHECK_EQUAL(numberCast<int>(3.2), int(3.2));
 
 
 }
