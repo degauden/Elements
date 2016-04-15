@@ -12,7 +12,7 @@
 #  - SGS_SYSTEM: by default it is derived from BINARY_TAG, but it can be set
 #                explicitly to a compatible supported platform if the default
 #                one is not supported.
-#                E.g.: if BINARY_TAG is x86_64-ubuntu12.04-gcc46-opt, SGS_SYSTEM
+#                E.g.: if BINARY_TAG is x86_64-ub12-gcc46-opt, SGS_SYSTEM
 #                      should be set to x86_64-slc6-gcc46.
 ################################################################################
 
@@ -59,8 +59,8 @@ function(sgs_find_host_os)
         if(EXISTS ${issue_file})
           execute_process(COMMAND cat ${issue_file} OUTPUT_VARIABLE issue OUTPUT_STRIP_TRAILING_WHITESPACE)
           if(issue MATCHES Ubuntu)
-            set(os ubuntu)
-            string(REGEX REPLACE ".*Ubuntu ([0-9]+)[.]([0-9]+).*" "\\1.\\2" osvers "${issue}")
+            set(os ub)
+            string(REGEX REPLACE ".*Ubuntu ([0-9]+)[.]([0-9]+).*" "\\1" osvers "${issue}")
             break()
           elseif(issue MATCHES "Scientific Linux|SLC|Fedora|CentOS Linux|CentOS") # RedHat-like distributions
             string(TOLOWER "${CMAKE_MATCH_0}" os)
@@ -258,7 +258,7 @@ function(sgs_get_target_platform)
     set(CMAKE_SYSTEM_NAME Windows PARENT_SCOPE)
   elseif(SGS_OS STREQUAL "mac" OR SGS_OS STREQUAL "osx")
     set(CMAKE_SYSTEM_NAME Darwin PARENT_SCOPE)
-  elseif(SGS_OS STREQUAL "slc" OR SGS_OS STREQUAL "sl" OR SGS_OS STREQUAL "ubuntu" OR SGS_OS STREQUAL "fc" OR SGS_OS STREQUAL "co" OR SGS_OS STREQUAL "linux")
+  elseif(SGS_OS STREQUAL "slc" OR SGS_OS STREQUAL "sl" OR SGS_OS STREQUAL "ub" OR SGS_OS STREQUAL "fc" OR SGS_OS STREQUAL "co" OR SGS_OS STREQUAL "linux")
     set(CMAKE_SYSTEM_NAME Linux PARENT_SCOPE)
   else()
     set(CMAKE_SYSTEM_NAME ${CMAKE_HOST_SYSTEM_NAME})
