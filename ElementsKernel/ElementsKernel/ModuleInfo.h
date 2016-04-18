@@ -38,6 +38,8 @@ public:
   ModuleInfo();
   ModuleInfo(void *);
   const std::string name() const;
+  const std::string libraryName() const;
+  const void* addresse() const;
   operator const Dl_info&() const;
   bool isEmpty() const;
 private:
