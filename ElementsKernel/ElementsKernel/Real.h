@@ -14,6 +14,19 @@
  *    |x-y| \leq \epsilon |x+y|
  *    \f]
  *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
 // Copyright 2005, Google Inc.
@@ -108,19 +121,19 @@ public:
 template <typename RawType>
 constexpr std::size_t defaultMaxUlps()
 {
-  return FLT_DEFAULT_MAX_ULPS ;
+  return FLT_DEFAULT_MAX_ULPS;
 }
 
 template <>
 constexpr std::size_t defaultMaxUlps<float>()
 {
-  return FLT_DEFAULT_MAX_ULPS ;
+  return FLT_DEFAULT_MAX_ULPS;
 }
 
 template <>
 constexpr std::size_t defaultMaxUlps<double>()
 {
-  return DBL_DEFAULT_MAX_ULPS ;
+  return DBL_DEFAULT_MAX_ULPS;
 }
 
 
@@ -313,7 +326,7 @@ private:
 template <typename FloatType>
 bool almostEqual2sComplement(const FloatType& a, const FloatType& b, const std::size_t& max_ulps=0)
 {
-  return false ;
+  return false;
 }
 
 
@@ -325,17 +338,17 @@ bool isNan(const RawType& x)
   using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
   Bits x_bits = *reinterpret_cast<const Bits *>(&x);
 
-  Bits x_exp_bits = FloatingPoint<RawType>::s_exponent_bitmask & x_bits ;
-  Bits x_frac_bits = FloatingPoint<RawType>::s_fraction_bitmask & x_bits ;
+  Bits x_exp_bits = FloatingPoint<RawType>::s_exponent_bitmask & x_bits;
+  Bits x_frac_bits = FloatingPoint<RawType>::s_fraction_bitmask & x_bits;
 
-  return (x_exp_bits == FloatingPoint<RawType>::s_exponent_bitmask) && (x_frac_bits != 0) ;
+  return (x_exp_bits == FloatingPoint<RawType>::s_exponent_bitmask) && (x_frac_bits != 0);
 
 }
 
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isEqual(const RawType& l, const RawType& r)
 {
-  bool is_equal{false} ;
+  bool is_equal{false};
 
   if ( ! (isNan<RawType>(l) || isNan<RawType>(r)) ) {
     using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
@@ -344,38 +357,38 @@ bool isEqual(const RawType& l, const RawType& r)
     is_equal = (FloatingPoint<RawType>::distanceBetweenSignAndMagnitudeNumbers(l_bits, r_bits) <= max_ulps);
   }
 
-  return is_equal ;
+  return is_equal;
 }
 
 template <std::size_t max_ulps>
 inline bool isEqual(const float& l, const float& r)
 {
-  return (isEqual<float,max_ulps>(l,r)) ;
+  return (isEqual<float,max_ulps>(l,r));
 }
 
 template <std::size_t max_ulps>
 inline bool isEqual(const double& l, const double& r)
 {
-  return (isEqual<double,max_ulps>(l,r)) ;
+  return (isEqual<double,max_ulps>(l,r));
 }
 
 
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 inline bool isNotEqual(const RawType& l, const RawType& r)
 {
-  return (! isEqual<RawType,max_ulps>(l,r) ) ;
+  return (! isEqual<RawType,max_ulps>(l,r) );
 }
 
 template <std::size_t max_ulps>
 inline bool isNotEqual(const float& l, const float& r)
 {
-  return (isNotEqual<float,max_ulps>(l,r)) ;
+  return (isNotEqual<float,max_ulps>(l,r));
 }
 
 template <std::size_t max_ulps>
 inline bool isNotEqual(const double& l, const double& r)
 {
-  return (isNotEqual<double,max_ulps>(l,r)) ;
+  return (isNotEqual<double,max_ulps>(l,r));
 }
 
 
@@ -385,25 +398,25 @@ inline bool isNotEqual(const double& l, const double& r)
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isLess(const RawType& l, const RawType& r)
 {
-  bool is_less{false} ;
+  bool is_less{false};
 
   if ( l < r && (! isEqual<RawType,max_ulps>(l,r)) ) {
-    is_less = true ;
+    is_less = true;
   }
 
-  return is_less ;
+  return is_less;
 }
 
 template<std::size_t max_ulps>
 inline bool isLess(const float& l, const float& r)
 {
-  return (isLess<float,max_ulps>(l,r)) ;
+  return (isLess<float,max_ulps>(l,r));
 }
 
 template<std::size_t max_ulps>
 inline bool isLess(const double& l, const double& r)
 {
-  return (isLess<double,max_ulps>(l,r)) ;
+  return (isLess<double,max_ulps>(l,r));
 }
 
 
@@ -411,25 +424,25 @@ inline bool isLess(const double& l, const double& r)
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isGreater(const RawType& l, const RawType& r)
 {
-  bool is_greater{false} ;
+  bool is_greater{false};
 
   if ( l > r && (! isEqual<RawType,max_ulps>(l,r)) ) {
-    is_greater = true ;
+    is_greater = true;
   }
 
-  return is_greater ;
+  return is_greater;
 }
 
 template<std::size_t max_ulps>
 inline bool isGreater(const float& l, const float& r)
 {
-  return (isGreater<float,max_ulps>(l,r)) ;
+  return (isGreater<float,max_ulps>(l,r));
 }
 
 template<std::size_t max_ulps>
 inline bool isGreater(const double& l, const double& r)
 {
-  return (isGreater<double,max_ulps>(l,r)) ;
+  return (isGreater<double,max_ulps>(l,r));
 }
 
 
@@ -437,25 +450,25 @@ inline bool isGreater(const double& l, const double& r)
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isLessOrEqual(const RawType& l, const RawType& r)
 {
-  bool is_loe{false} ;
+  bool is_loe{false};
 
   if (! isGreater<RawType,max_ulps>(l,r))  {
-    is_loe = true ;
+    is_loe = true;
   }
 
-  return is_loe ;
+  return is_loe;
 }
 
 template<std::size_t max_ulps>
 inline bool isLessOrEqual(const float& l, const float& r)
 {
-  return (isLessOrEqual<float,max_ulps>(l,r)) ;
+  return (isLessOrEqual<float,max_ulps>(l,r));
 }
 
 template<std::size_t max_ulps>
 inline bool isLessOrEqual(const double& l, const double& r)
 {
-  return (isLessOrEqual<double,max_ulps>(l,r)) ;
+  return (isLessOrEqual<double,max_ulps>(l,r));
 }
 
 
@@ -464,25 +477,25 @@ inline bool isLessOrEqual(const double& l, const double& r)
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isGreaterOrEqual(const RawType& l, const RawType& r)
 {
-  bool is_goe{false} ;
+  bool is_goe{false};
 
   if (! isLess<RawType,max_ulps>(l,r))  {
-    is_goe = true ;
+    is_goe = true;
   }
 
-  return is_goe ;
+  return is_goe;
 }
 
 template<std::size_t max_ulps>
 inline bool isGreaterOrEqual(const float& l, const float& r)
 {
-  return (isGreaterOrEqual<float,max_ulps>(l,r)) ;
+  return (isGreaterOrEqual<float,max_ulps>(l,r));
 }
 
 template<std::size_t max_ulps>
 inline bool isGreaterOrEqual(const double& l, const double& r)
 {
-  return (isGreaterOrEqual<double,max_ulps>(l,r)) ;
+  return (isGreaterOrEqual<double,max_ulps>(l,r));
 }
 
 /**
