@@ -68,7 +68,7 @@ if (ELEMENTS_BUILD_PREFIX_CMD)
   message(STATUS "Prefix build commands with '${ELEMENTS_BUILD_PREFIX_CMD}'")
 else()
 
-  find_package(CCache)
+  find_package(CCache QUIET)
 
   if(CCACHE_FOUND)
     option(CMAKE_USE_CCACHE "Use ccache to speed up compilation." OFF)
@@ -78,7 +78,7 @@ else()
     endif()
   endif()
 
-  find_package(DistCC)
+  find_package(DistCC QUIET)
 
   if(DISTCC_FOUND)
     option(CMAKE_USE_DISTCC "Use distcc to speed up compilation." OFF)
