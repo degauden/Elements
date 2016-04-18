@@ -8,7 +8,7 @@
 
 
   # Add Doxygen generation
-  find_package(Doxygen)
+  find_package(Doxygen QUIET)
 
   if(DOXYGEN_FOUND)
 
@@ -53,7 +53,7 @@
 
   if(USE_SPHINX)
 
-  find_package(Sphinx)
+  find_package(Sphinx QUIET)
   if(SPHINX_FOUND)
 
     if(USE_DOXYGEN)
