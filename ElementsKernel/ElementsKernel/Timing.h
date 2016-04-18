@@ -1,5 +1,5 @@
 /**
- *  @file GaudiKernel/Timing.h
+ *  @file ElementsKernel/Timing.h
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
  *
