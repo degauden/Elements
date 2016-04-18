@@ -28,6 +28,7 @@ DoxyWarnings.log
 .cproject
 .settings
 .pydevproject
+.coverage
 
 .build/
 build-dir/
