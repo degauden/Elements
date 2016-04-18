@@ -32,6 +32,14 @@ const string ModuleInfo::name() const {
   return ::basename(const_cast<char*>(m_dlinfo->dli_fname)) ;
 }
 
+const string ModuleInfo::libraryName() const {
+  return const_cast<char*>(m_dlinfo->dli_fname);
+}
+
+const void* ModuleInfo::addresse() const {
+  return m_dlinfo->dli_saddr;
+}
+
 bool ModuleInfo::isEmpty() const {
   return (m_dlinfo == nullptr);
 }
