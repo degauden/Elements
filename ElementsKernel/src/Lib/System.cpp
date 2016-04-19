@@ -449,12 +449,12 @@ ThreadHandle threadSelf() {
 #include <execinfo.h>
 #endif
 
-int backTrace(void** addresses ELEMENTS_UNUSED,
+int backTrace(std::shared_ptr<void*> addresses ELEMENTS_UNUSED,
     const int depth ELEMENTS_UNUSED) {
 
 #if defined(__linux) || defined(__APPLE__)
 
-  int count = ::backtrace(addresses, depth);
+  int count = ::backtrace(addresses.get(), depth);
   if (count > 0) {
     return count;
   } else {
@@ -470,26 +470,24 @@ int backTrace(void** addresses ELEMENTS_UNUSED,
 bool backTrace(string& btrace, const int depth, const int offset) {
   // Always hide the first two levels of the stack trace (that's us)
   const int totalOffset = offset + 2;
-  const int totalDepth = depth + totalOffset;
+  const int total_depth = depth + totalOffset;
   bool result = false;
 
-  string fnc, lib;
 
-  void** addresses = (void**) malloc(totalDepth * sizeof(void *));
-  if (addresses != NULL) {
-    int count = backTrace(addresses, totalDepth);
+  shared_ptr<void*> addresses {new void*[total_depth], default_delete<void*[]>()};
+
+  if (addresses != nullptr) {
+    int count = backTrace(addresses, total_depth);
     for (int i = totalOffset; i < count; ++i) {
       void *addr = 0;
-
-      if (getStackLevel(addresses[i], addr, fnc, lib)) {
+      string fnc, lib;
+      if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
         ostringstream ost;
         ost << "#" << setw(3) << setiosflags(ios::left) << i - totalOffset + 1;
         ost << hex << addr << dec << " " << fnc << "  [" << lib << "]" << endl;
         btrace += ost.str();
       }
     }
-    ::free(addresses);
-    addresses = NULL;
     result = true;
   }
 
@@ -498,34 +496,28 @@ bool backTrace(string& btrace, const int depth, const int offset) {
 
 
 const vector<string> backTrace(const int depth, const int offset) {
-  // Always hide the first two levels of the stack trace (that's us)
-  const int totalOffset = offset + 2;
-  const int totalDepth = depth + totalOffset;
 
+  // Always hide the first two levels of the stack trace (that's us)
+  const int total_offset = offset + 2;
+  const int total_depth = depth + total_offset;
   vector<string> trace {};
 
-  string fnc, lib;
+  shared_ptr<void*> addresses {new void*[total_depth], default_delete<void*[]>()};
 
-  void** addresses = (void**) malloc(totalDepth * sizeof(void *));
-  if (addresses != NULL) {
+  if (addresses != nullptr) {
 
+    int count = backTrace(addresses, total_depth);
 
-    int count = backTrace(addresses, totalDepth);
-
-
-
-    for (int i = totalOffset; i < count; ++i) {
+    for (int i = total_offset; i < count; ++i) {
       void *addr = 0;
-
-      if (getStackLevel(addresses[i], addr, fnc, lib)) {
+      string fnc, lib;
+      if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
         ostringstream ost;
-        ost << "#" << setw(3) << setiosflags(ios::left) << i - totalOffset + 1;
+        ost << "#" << setw(3) << setiosflags(ios::left) << i - total_offset + 1;
         ost << hex << addr << dec << " " << fnc << "  [" << lib << "]";
         trace.push_back(ost.str());
       }
     }
-    ::free(addresses);
-    addresses = NULL;
   }
 
   return trace;
