@@ -21,6 +21,7 @@
 #include <typeinfo>
 #include <string>
 #include <vector>
+#include <memory>
 
 // Framework include files
 #include "ElementsKernel/Export.h" // ELEMENTS_API
@@ -118,7 +119,7 @@ ELEMENTS_API bool isEnvSet(const char* var);
 ///thread handle "accessor"
 ELEMENTS_API ThreadHandle threadSelf();
 
-ELEMENTS_API int backTrace(ELEMENTS_UNUSED void** addresses, ELEMENTS_UNUSED const int depth);
+ELEMENTS_API int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses, ELEMENTS_UNUSED const int depth);
 ELEMENTS_API bool backTrace(std::string& btrace, const int depth, const int offset = 0);
 ELEMENTS_API const std::vector<std::string> backTrace(const int depth, const int offset = 0);
 
