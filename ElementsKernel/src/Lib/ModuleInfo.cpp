@@ -71,8 +71,9 @@ const string& moduleNameFull()   {
       name[0] = 0;
       const char *path =
           ((Dl_info*)moduleHandle())->dli_fname;
-      if (::realpath(path, name))
+      if (::realpath(path, name)) {
         module = name;
+      }
     }
   }
   return module;
@@ -84,14 +85,15 @@ ModuleType moduleType()   {
   if ( type == ModuleType::UNKNOWN )    {
     const string& module = moduleNameFull();
     int loc = module.rfind('.')+1;
-    if ( loc == 0 )
+    if ( loc == 0 ) {
       type = ModuleType::EXECUTABLE;
-    else if ( module[loc] == 'e' || module[loc] == 'E' )
+    } else if ( module[loc] == 'e' || module[loc] == 'E' ) {
       type = ModuleType::EXECUTABLE;
-    else if ( module[loc] == 's' && module[loc+1] == 'o' )
+    } else if ( module[loc] == 's' && module[loc+1] == 'o' ) {
       type = ModuleType::SHAREDLIB;
-    else
+    } else {
       type = ModuleType::UNKNOWN;
+    }
   }
   return type;
 }
@@ -145,8 +147,9 @@ const string& exeName()    {
     char cmd[512];
     ::sprintf(cmd, "/proc/%d/exe", ::getpid());
     module = "Unknown";
-    if (::readlink(cmd, name, sizeof(name)) >= 0)
+    if (::readlink(cmd, name, sizeof(name)) >= 0) {
       module = name;
+    }
   }
   return module;
 }

@@ -80,16 +80,18 @@ Time Time::build(bool local, const tm &base, TimeSpan diff /* = 0 */) {
  If @a nsecpart is non-null, it is set to the nanosecond part that
  cannot be stored into @c tm.  */
 tm Time::split(bool local, int *nsecpart /* = 0 */) const {
-  if (nsecpart)
+  if (nsecpart) {
     *nsecpart = static_cast<int>(m_nsecs % SEC_NSECS);
+  }
 
   time_t val = (time_t) (m_nsecs / SEC_NSECS);
 
   tm retval;
-  if (local)
+  if (local) {
     ::localtime_r(&val, &retval);
-  else
+  } else {
     ::gmtime_r(&val, &retval);
+  }
 
   return retval;
 }
@@ -170,8 +172,9 @@ Time::ValueType Time::utcoffset(int *daylight /* = 0 */) const {
 
   tm localtm = local();
   n = localtm.tm_gmtoff;
-  if (daylight)
+  if (daylight) {
     *daylight = localtm.tm_isdst;
+  }
   return n * SEC_NSECS;
 }
 
@@ -181,8 +184,9 @@ Time::ValueType Time::utcoffset(int *daylight /* = 0 */) const {
  at the time value.  */
 const char * Time::timezone(int *daylight /* = 0 */) const {
   tm localtm = local();
-  if (daylight)
+  if (daylight) {
     *daylight = localtm.tm_isdst;
+  }
   // extern "C" { extern char *tzname [2]; }
   return tzname[localtm.tm_isdst > 0 ? 1 : 0];
 }
