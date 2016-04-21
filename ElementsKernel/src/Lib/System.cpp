@@ -52,11 +52,9 @@ namespace System {
 // Private functions
 // --------------------------------------------------------------------------------------
 static unsigned long doLoad(const string& name, ImageHandle* handle) {
-# if defined(__linux) || defined(__APPLE__)
   const char* path = name.c_str();
   void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
   *handle = mh;
-# endif
   if (0 == *handle) {
     return getLastError();
   }
@@ -97,17 +95,13 @@ unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
     } else {
       // build the dll name
       string dllName = name;
-#if defined(__linux) || defined(__APPLE__)
       dllName = "lib" + dllName;
-#endif
       dllName += SHLIB_SUFFIX;
       // try to locate the dll using the standard PATH
       res = loadWithoutEnvironment(dllName, handle);
     }
     if (res != 1) {
-#if defined(__linux) || defined(__APPLE__)
       errno = 0xAFFEDEAD;
-#endif
     }
   }
   return res;
@@ -268,8 +262,9 @@ const string typeinfoName(const char* class_name) {
     int status;
     char* realname;
     realname = abi::__cxa_demangle(class_name, 0, 0, &status);
-    if (realname == 0)
+    if (realname == 0) {
       return class_name;
+    }
     result = realname;
     ::free(realname);
     /// substitute ', ' with ','
@@ -333,12 +328,15 @@ const string& machineType() {
 /// User login name
 string accountName() {
   string account = ::getlogin();
-    if (0 == account.size())
+    if (0 == account.size()) {
       account = getEnv("LOGNAME");
-    if (0 == account.size())
+    }
+    if (0 == account.size()) {
       account = getEnv("USER");
-    if (0 == account.size())
+    }
+    if (0 == account.size()) {
       account = "Unknown";
+    }
 
   return account;
 }
@@ -445,14 +443,10 @@ ThreadHandle threadSelf() {
 // -----------------------------------------------------------------------------
 // backtrace utilities
 // -----------------------------------------------------------------------------
-#if defined(__linux) || defined(__APPLE__)
 #include <execinfo.h>
-#endif
 
 int backTrace(std::shared_ptr<void*> addresses ELEMENTS_UNUSED,
     const int depth ELEMENTS_UNUSED) {
-
-#if defined(__linux) || defined(__APPLE__)
 
   int count = ::backtrace(addresses.get(), depth);
   if (count > 0) {
@@ -460,10 +454,6 @@ int backTrace(std::shared_ptr<void*> addresses ELEMENTS_UNUSED,
   } else {
     return 0;
   }
-
-#else // windows and osx parts not implemented
-  return 0;
-#endif
 
 }
 
@@ -508,7 +498,7 @@ const vector<string> backTrace(const int depth, const int offset) {
 
     int count = backTrace(addresses, total_depth);
 
-    for (int i = total_offset; i < count; ++i) {
+    for (int i=total_offset; i<count; ++i) {
       void *addr = 0;
       string fnc, lib;
       if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
@@ -527,7 +517,6 @@ const vector<string> backTrace(const int depth, const int offset) {
 bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
     string& fnc ELEMENTS_UNUSED, string& lib ELEMENTS_UNUSED) {
 
-#if defined(__linux) || defined(__APPLE__)
 
   Dl_info info;
 
@@ -551,10 +540,6 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
   } else {
     return false;
   }
-
-#else // not implemented for windows and osx
-  return false;
-#endif
 
 }
 

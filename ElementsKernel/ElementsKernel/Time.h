@@ -286,8 +286,9 @@ private:
 
   inline void TimeAssert(bool cond, const std::string &msg =
       "time assertion failed") const {
-    if (!cond)
+    if (!cond) {
       throw Exception(msg);
+    }
   }
 
 };

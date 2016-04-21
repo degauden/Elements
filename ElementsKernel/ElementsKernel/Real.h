@@ -271,9 +271,9 @@ public:
   bool AlmostEquals(const FloatingPoint& rhs) const {
     // The IEEE standard says that any comparison operation involving
     // a NAN must return false.
-    if (isNan() || rhs.isNan())
+    if (isNan() || rhs.isNan()) {
       return false;
-
+    }
     return distanceBetweenSignAndMagnitudeNumbers(m_u.m_bits, rhs.m_u.m_bits) <= m_max_ulps;
   }
 

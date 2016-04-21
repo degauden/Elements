@@ -357,8 +357,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     vb->OtherTransferCount = 0;
 #endif
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -374,15 +375,17 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     rlimit lim;
 
     getrlimit(RLIMIT_DATA, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->PeakPagedPoolUsage = lim.rlim_cur;
     vb->PagedPoolUsage = lim.rlim_cur;
     vb->PagedPoolLimit = lim.rlim_max;
 
     getrlimit(RLIMIT_STACK, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->PeakNonPagedPoolUsage = lim.rlim_cur;
     vb->NonPagedPoolUsage = lim.rlim_cur;
     vb->NonPagedPoolLimit = lim.rlim_max;
@@ -396,8 +399,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
 #else                                     // All Other
 #endif                                    // End ALL OS
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -419,8 +423,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     vb = &status;
     break;
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -438,8 +443,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     int fd = open(buf, O_RDONLY);
     ssize_t nread = read(fd, buf, bufsize);
     close(fd);
-    if (nread < bufsize && nread >= 0)
+    if (nread < bufsize && nread >= 0) {
       buf[nread] = '\0';
+    }
     sscanf(buf, "%ld %ld %ld %ld %ld %ld %ld", &size, &resident, &share,
                                                &trs, &drs, &lrs, &dt);
     linux_proc prc;
@@ -459,8 +465,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
 #else                                     // All Other
 #endif                                    // End ALL OS
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -475,36 +482,40 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     // (ie. rlim_max=RLIM_INFINITY...)
     rlimit lim;
     getrlimit(RLIMIT_DATA, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->PagedPoolLimit = lim.rlim_max;
 
     getrlimit(RLIMIT_STACK, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->NonPagedPoolLimit = lim.rlim_max;
     vb->MinimumWorkingSetSize = 0;
 
     getrlimit(RLIMIT_RSS, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->MaximumWorkingSetSize = lim.rlim_max;
 
     getrlimit(RLIMIT_AS, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->PagefileLimit = lim.rlim_max;
 
     getrlimit(RLIMIT_CPU, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->TimeLimit = lim.rlim_max;
-#elif defined(__APPLE__)
-#else                                     // All Other
 #endif                                    // End ALL OS
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -527,11 +538,11 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     // << prc.flags << endl;
     vb->UniqueProcessId = processID(pid);
     vb->InheritedFromUniqueProcessId = prc.ppid;
-#else                                     // All Other
 #endif                                    // End ALL OS
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -596,8 +607,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     status = 1;
 #endif
   }
-  if (info)
+  if (info) {
     *info = *tb;
+  }
   return status;
 }
 
