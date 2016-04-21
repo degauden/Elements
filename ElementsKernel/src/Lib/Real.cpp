@@ -29,19 +29,19 @@
 namespace Elements {
 
 // Usable AlmostEqual function
-bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps) {
+bool almostEqual2sComplement(const float& left, const float& right, const int& max_ulps) {
 
     using std::abs;
     using std::int32_t;
 
     // int a_int = *(int*)&a;
-    int32_t a_int = *reinterpret_cast<const int32_t *>(&a);
+    int32_t a_int = *reinterpret_cast<const int32_t *>(&left);
     // Make a_int lexicographically ordered as a twos-complement int
     if (a_int < 0)
         a_int = 0x80000000 - a_int;
     // Make b_int lexicographically ordered as a twos-complement int
     //    int b_int = *(int*)&b;
-    int32_t b_int = *reinterpret_cast<const int32_t *>(&b);
+    int32_t b_int = *reinterpret_cast<const int32_t *>(&right);
     if (b_int < 0) {
         b_int = 0x80000000 - b_int;
     }
@@ -53,21 +53,21 @@ bool almostEqual2sComplement(const float& a, const float& b, const int& max_ulps
 }
 
 
-bool almostEqual2sComplement(const double& a, const double& b, const int& max_ulps) {
+bool almostEqual2sComplement(const double& left, const double& right, const int& max_ulps) {
 
     using std::abs;
     using std::int64_t;
 
     // long long a_int = *(long long*)&a;
 
-    int64_t a_int = *reinterpret_cast<const int64_t *>(&a);
+    int64_t a_int = *reinterpret_cast<const int64_t *>(&left);
     // Make a_int lexicographically ordered as a twos-complement int
     if (a_int < 0) {
         a_int = 0x8000000000000000LL - a_int;
     }
     // Make b_int lexicographically ordered as a twos-complement int
     //    long long b_int = *(long long*)&b;
-    int64_t b_int = *reinterpret_cast<const int64_t *>(&b);
+    int64_t b_int = *reinterpret_cast<const int64_t *>(&right);
     if (b_int < 0) {
         b_int = 0x8000000000000000LL - b_int;
     }
@@ -79,8 +79,8 @@ bool almostEqual2sComplement(const double& a, const double& b, const int& max_ul
 }
 
 
-template bool realBitWiseEqual<float>(const float& x, const float& y);
-template bool realBitWiseEqual<double>(const double& x, const double& y);
+template bool realBitWiseEqual<float>(const float& left, const float& right);
+template bool realBitWiseEqual<double>(const double& left, const double& right);
 
 
 }  // namespace Elements

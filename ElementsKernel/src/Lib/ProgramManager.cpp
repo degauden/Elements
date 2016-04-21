@@ -349,8 +349,8 @@ void ProgramManager::onTerminate() noexcept {
     }
 
     logger.fatal() << "This is the back trace:";
-    for(auto l: System::backTrace(21, 4)) {
-      logger.fatal() << l;
+    for(auto level: System::backTrace(21, 4)) {
+      logger.fatal() << level;
     }
     abort();
 
