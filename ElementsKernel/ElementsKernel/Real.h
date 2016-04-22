@@ -504,9 +504,9 @@ inline bool isGreaterOrEqual(const double& left, const double& right)
  * @details
  *   The comparison is performed by casting the floating point numbers into integers and then compare
  *   their representation with a tolerance for their last bits.
- * @param a
+ * @param left
  *   first float number
- * @param b
+ * @param right
  *   second float number
  * @param max_ulps
  *   The relative tolerance is expressed as ULPS (units in the last place). They are unit in the last
@@ -521,10 +521,10 @@ ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
  * @details
  *   The comparison is performed by casting the floating point numbers into integers and then compare
  *   their representation with a tolerance for their last bits.
- * @param a
+ * @param left
  *   first double number
- * @param
- *   b second double number
+ * @param right
+ *   second double number
  * @param max_ulps
  *   The relative tolerance is expressed as ULPS (units in the last place). They are unit in the last
  *   place of the mantissa. And the recommended default value is 10 for double precision numbers.
@@ -540,9 +540,9 @@ ELEMENTS_API bool almostEqual2sComplement(const double& left, const double& righ
  * @brief
  *   This function compares 2 floating point numbers bitwise. These are the strict
  *   equivalent of the "==". They are only here for the example.
- * @param x
+ * @param left
  *   right hand number to compare
- * @param y
+ * @param right
  *   left hand number to compare
  * @tparam RawType
  *   raw type: ie float or double
