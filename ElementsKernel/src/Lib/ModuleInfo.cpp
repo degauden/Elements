@@ -49,7 +49,7 @@ ModuleInfo::ModuleInfo(void *funct) {
 }
 
 const string ModuleInfo::name() const {
-  return ::basename(const_cast<char*>(m_dlinfo->dli_fname)) ;
+  return ::basename(const_cast<char*>(m_dlinfo->dli_fname));
 }
 
 const string ModuleInfo::libraryName() const {
@@ -150,9 +150,9 @@ ImageHandle exeHandle()    {
     if ( 0 != handle ) {
       void* func = ::dlsym(handle, "main");
       if ( 0 != func ) {
-      	if ( 0 != ::dladdr(func, &infoBuf) ) {
-      	  info = &infoBuf;
-      	}
+        if ( 0 != ::dladdr(func, &infoBuf) ) {
+          info = &infoBuf;
+        }
       }
     }
   }
@@ -179,10 +179,10 @@ const vector<string> linkedModules()    {
     char ff[512], cmd[1024], fname[1024], buf1[64], buf2[64], buf3[64], buf4[64];
     ::sprintf(ff, "/proc/%d/maps", ::getpid());
     FILE* maps = ::fopen(ff, "r");
-    while( ::fgets(cmd, sizeof(cmd), maps) ) {
+    while (::fgets(cmd, sizeof(cmd), maps) ) {
       int len;
       ::sscanf(cmd, "%63s %63s %63s %63s %d %1023s", buf1, buf2, buf3, buf4, &len, fname);
-      if ( len > 0 && strncmp(buf2,"r-xp",strlen("r-xp")) == 0 ) {
+      if ( len > 0 && strncmp(buf2, "r-xp", strlen("r-xp")) == 0 ) {
         s_linkedModules.push_back(fname);
       }
     }

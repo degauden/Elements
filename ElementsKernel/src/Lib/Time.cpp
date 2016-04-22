@@ -240,7 +240,7 @@ string Time::format(bool local, string spec) const {
             std::max<string::size_type>(spec.size() * 2, MIN_BUF_SIZE)),
         0);
     length = ::strftime(&result[0], result.size(), spec.c_str(), &time);
-  } while (!length);
+  } while (not length);
 
   result.resize(length);
   return result;
