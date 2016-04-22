@@ -129,7 +129,7 @@ namespace Elements {
     // Electric charge [I][T]
     //
     constexpr double coulomb = ampere * second;
-    constexpr double eplus = 1. ;    // positron charge
+    constexpr double eplus = 1.;    // positron charge
     constexpr double e_SI  = 1.602176565e-19 * coulomb; // positron charge in coulomb
 
 
@@ -233,13 +233,13 @@ namespace Elements {
     //
     // Activity [T^-1]
     //
-    constexpr double becquerel = 1./second ;
+    constexpr double becquerel = 1./second;
     constexpr double curie = 3.7e+10 * becquerel;
 
     //
     // Absorbed dose [L^2][T^-2]
     //
-    constexpr double gray = joule/kilogram ;
+    constexpr double gray = joule/kilogram;
 
     //
     // Luminous intensity [I]
@@ -261,14 +261,12 @@ namespace Elements {
     //
     // Miscellaneous
     //
-    constexpr double perCent     = 0.01 ;
+    constexpr double perCent     = 0.01;
     constexpr double perThousand = 0.001;
     constexpr double perMillion  = 0.000001;
 
   }  // namespace Units
 } // namespace Elements
-
-
 
 
 #endif /* ELEMENTSKERNEL_SYSTEMOFUNITS_H_ */

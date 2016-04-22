@@ -330,8 +330,6 @@ bool almostEqual2sComplement(const FloatType& a, const FloatType& b, const std::
 }
 
 
-
-
 template <typename RawType>
 bool isNan(const RawType& x)
 {
@@ -350,7 +348,7 @@ bool isEqual(const RawType& left, const RawType& right)
 {
   bool is_equal{false};
 
-  if ( ! (isNan<RawType>(left) || isNan<RawType>(right)) ) {
+  if ( not (isNan<RawType>(left) || isNan<RawType>(right)) ) {
     using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
     Bits l_bits = *reinterpret_cast<const Bits *>(&left);
     Bits r_bits = *reinterpret_cast<const Bits *>(&right);
@@ -363,32 +361,32 @@ bool isEqual(const RawType& left, const RawType& right)
 template <std::size_t max_ulps>
 inline bool isEqual(const float& left, const float& right)
 {
-  return (isEqual<float,max_ulps>(left, right));
+  return (isEqual<float, max_ulps>(left, right));
 }
 
 template <std::size_t max_ulps>
 inline bool isEqual(const double& left, const double& right)
 {
-  return (isEqual<double,max_ulps>(left, right));
+  return (isEqual<double, max_ulps>(left, right));
 }
 
 
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 inline bool isNotEqual(const RawType& left, const RawType& right)
 {
-  return (! isEqual<RawType,max_ulps>(left, right) );
+  return (not isEqual<RawType, max_ulps>(left, right) );
 }
 
 template <std::size_t max_ulps>
 inline bool isNotEqual(const float& left, const float& right)
 {
-  return (isNotEqual<float,max_ulps>(left, right));
+  return (isNotEqual<float, max_ulps>(left, right));
 }
 
 template <std::size_t max_ulps>
 inline bool isNotEqual(const double& left, const double& right)
 {
-  return (isNotEqual<double,max_ulps>(left, right));
+  return (isNotEqual<double, max_ulps>(left, right));
 }
 
 
@@ -400,7 +398,7 @@ bool isLess(const RawType& left, const RawType& right)
 {
   bool is_less{false};
 
-  if ( left < right && (! isEqual<RawType,max_ulps>(left, right)) ) {
+  if ( left < right && (not isEqual<RawType, max_ulps>(left, right)) ) {
     is_less = true;
   }
 
@@ -410,13 +408,13 @@ bool isLess(const RawType& left, const RawType& right)
 template<std::size_t max_ulps>
 inline bool isLess(const float& left, const float& right)
 {
-  return (isLess<float,max_ulps>(left, right));
+  return (isLess<float, max_ulps>(left, right));
 }
 
 template<std::size_t max_ulps>
 inline bool isLess(const double& left, const double& right)
 {
-  return (isLess<double,max_ulps>(left, right));
+  return (isLess<double, max_ulps>(left, right));
 }
 
 
@@ -426,7 +424,7 @@ bool isGreater(const RawType& left, const RawType& right)
 {
   bool is_greater{false};
 
-  if ( left > right && (! isEqual<RawType,max_ulps>(left, right)) ) {
+  if ( left > right && (not isEqual<RawType, max_ulps>(left, right)) ) {
     is_greater = true;
   }
 
@@ -442,7 +440,7 @@ inline bool isGreater(const float& left, const float& right)
 template<std::size_t max_ulps>
 inline bool isGreater(const double& left, const double& right)
 {
-  return (isGreater<double,max_ulps>(left, right));
+  return (isGreater<double, max_ulps>(left, right));
 }
 
 
@@ -452,7 +450,7 @@ bool isLessOrEqual(const RawType& left, const RawType& right)
 {
   bool is_loe{false};
 
-  if (! isGreater<RawType,max_ulps>(left, right))  {
+  if (not isGreater<RawType, max_ulps>(left, right))  {
     is_loe = true;
   }
 
@@ -462,13 +460,13 @@ bool isLessOrEqual(const RawType& left, const RawType& right)
 template<std::size_t max_ulps>
 inline bool isLessOrEqual(const float& left, const float& right)
 {
-  return (isLessOrEqual<float,max_ulps>(left, right));
+  return (isLessOrEqual<float, max_ulps>(left, right));
 }
 
 template<std::size_t max_ulps>
 inline bool isLessOrEqual(const double& left, const double& right)
 {
-  return (isLessOrEqual<double,max_ulps>(left, right));
+  return (isLessOrEqual<double, max_ulps>(left, right));
 }
 
 
@@ -479,7 +477,7 @@ bool isGreaterOrEqual(const RawType& left, const RawType& right)
 {
   bool is_goe{false};
 
-  if (! isLess<RawType,max_ulps>(left, right))  {
+  if (not isLess<RawType, max_ulps>(left, right))  {
     is_goe = true;
   }
 
@@ -489,13 +487,13 @@ bool isGreaterOrEqual(const RawType& left, const RawType& right)
 template<std::size_t max_ulps>
 inline bool isGreaterOrEqual(const float& left, const float& right)
 {
-  return (isGreaterOrEqual<float,max_ulps>(left, right));
+  return (isGreaterOrEqual<float, max_ulps>(left, right));
 }
 
 template<std::size_t max_ulps>
 inline bool isGreaterOrEqual(const double& left, const double& right)
 {
-  return (isGreaterOrEqual<double,max_ulps>(left, right));
+  return (isGreaterOrEqual<double, max_ulps>(left, right));
 }
 
 /**
