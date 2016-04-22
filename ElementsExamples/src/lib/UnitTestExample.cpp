@@ -1,5 +1,10 @@
-/*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+/**
+ * @file UnitTestExample.cpp
+ *
+ * @date Sep 22, 2015
+ * @author Florian Dubath
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
  * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
@@ -11,13 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- */
-
-/*
- * UnitTestExample.cpp
  *
- *  Created on: Sep 22, 2015
- *      Author: Florian Dubath
  */
 
 #include <numeric> // accumulate
