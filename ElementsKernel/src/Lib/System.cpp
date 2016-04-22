@@ -536,7 +536,7 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
 
     if (symbol != 0) {
       int stat;
-      unique_ptr<char> dmg {abi::__cxa_demangle(symbol, 0, 0, &stat)};
+      unique_ptr<char,decltype(free)*> dmg(abi::__cxa_demangle(symbol, 0, 0, &stat), free);
       fnc = string((stat == 0) ? dmg.get() : symbol);
     } else {
       fnc = "local";
