@@ -18,7 +18,7 @@ int main(ELEMENTS_UNUSED int argc, ELEMENTS_UNUSED char** argv) {
   size_t kB = size_t(1024);
   size_t nBytes = kB * kB * size_t(500);
 
-  unique_ptr<char> p {new char[nBytes]};
+  unique_ptr<char[]> p {new char[nBytes]};
   if (p == nullptr) {
     cout << "Failed to allocate " << nBytes << " bytes of memory." << endl;
     return 1;
