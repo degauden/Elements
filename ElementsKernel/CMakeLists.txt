@@ -83,12 +83,18 @@ elements_add_unit_test(SystemOfUnits tests/src/SystemOfUnits_test.cpp
 
 
 #-----------------------
-# SystemOfUnits_test
+# BackTrace_test
 elements_add_unit_test(BackTrace tests/src/BackTrace_test.cpp
                        EXECUTABLE BackTrace_test
                        INCLUDE_DIRS ElementsKernel
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
+#-----------------------
+# GetEnv_test
+elements_add_unit_test(GetEnv tests/src/GetEnv_test.cpp
+                       EXECUTABLE GetEnv_test
+                       INCLUDE_DIRS ElementsKernel
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #if(ELEMENTS_HIDE_WARNINGS)
 #  if(UNIX)
