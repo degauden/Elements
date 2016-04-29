@@ -72,7 +72,7 @@ def isNameAndVersionValid(name, version):
     valid = True
     name_regex = "^[A-Za-z0-9][A-Za-z0-9_-]*$"
     if re.match(name_regex, name) is None:
-        logger.error("< %s %s > name not valid. It must follow this regex : < %s >", 
+        logger.error("< %s %s > name not valid. It must follow this regex : < %s >",
                      name, version, name_regex)
         valid = False
 
@@ -105,11 +105,12 @@ def getAuxPathFile(file_name):
     """
     found = False
     aux_dir = os.environ.get('ELEMENTS_AUX_PATH')
-    if not aux_dir is None:
+    file_name = file_name.replace("/", os.path.sep)
+    if aux_dir is not None:
         for elt in aux_dir.split(os.pathsep):
-            full_filename = os.path.sep.join([elt, file_name])
+            full_filename = os.path.join(elt, file_name)
             # look for the first valid path
-            if os.path.exists(full_filename) and 'auxdir' in full_filename:
+            if os.path.exists(full_filename):
                 found = True
                 break
 
@@ -127,7 +128,7 @@ def copyAuxFile(destination, aux_file_name):
     <aux_file_name> is just the name without path
     """
     scripts_goes_on = True
-    aux_path_file = getAuxPathFile(os.path.sep.join(['templates', aux_file_name]))
+    aux_path_file = getAuxPathFile(os.path.join('ElementsKernel', 'templates', aux_file_name))
     if aux_path_file:
         shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
     else:
@@ -143,7 +144,7 @@ def isAuxFileExist(aux_file_name):
     <aux_file> is just the name without the path.
     """
     found = False
-    aux_path_file = getAuxPathFile(os.path.sep.join(['templates', aux_file_name]))
+    aux_path_file = getAuxPathFile(os.path.join('ElementsKernel', 'templates', aux_file_name))
     if aux_path_file:
         found = True
 
