@@ -116,7 +116,7 @@ def getAuxPathFile(file_name):
 
     if not found:
         full_filename = ''
-        logger.error("Auxiliary path NOT FOUND  : <%s>", full_filename)
+        logger.error("Auxiliary path NOT FOUND  : <%s>", file_name)
 
     return full_filename
 
