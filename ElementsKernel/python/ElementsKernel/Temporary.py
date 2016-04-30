@@ -12,11 +12,13 @@ if not 'mkdtemp' in dir(tempfile):
         action='ignore', message='.*tmpnam.*', category=RuntimeWarning)
 
     def mkdtemp():
+        """Remplacement for the missing function in the tempfile module"""
         name = os.tmpnam()  # @UndefinedVariable
         os.mkdir(name, 0700)
         return name
 
     def mkstemp():
+        """Remplacement for the missing function in the tempfile module"""
         name = os.tmpnam()  # @UndefinedVariable
         return (os.open(name, os.O_CREAT | os.O_RDWR | os.O_EXCL, 0600),
                 name)
@@ -28,6 +30,10 @@ from ElementsKernel import Logging
 
 
 class TempResource(object):
+
+    """ Base class for the temporary file and temporary directory"""
+
+
     def __init__(self):
         """ Constructor """
         self._name = None
