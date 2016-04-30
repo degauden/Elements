@@ -37,7 +37,7 @@ def getFileFromPath(file_name, path_variable):
 
     full_path = ""
 
-    log = Logging.getLogger()
+    log = Logging.getLogger(None)
 
     found = False
     file_name = file_name.replace("/", os.sep)

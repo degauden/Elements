@@ -91,7 +91,7 @@ class TempDir(TempResource):
         """Internal function to remove the resource"""
         if self._name:
             if self._keep_var in os.environ:
-                log = Logging.getLogger()
+                log = Logging.getLogger(None)
                 log.info("%s set: I do not remove the temporary directory '%s'",
                              self._keep_var, self._name)
             else:
@@ -126,7 +126,7 @@ class TempFile(TempResource):
 
 
 
-class Environment:
+class Environment(object):
 
     """
     Class to changes the environment temporarily.
@@ -186,7 +186,7 @@ class Environment:
             raise KeyError(key)
         self.old_values[key] = self.env[key]
         del self.env[key]
-        log = Logging.getLogger()
+        log = Logging.getLogger(None)
         log.info("removed %s from environment" % key)
 
     def keys(self):
@@ -201,7 +201,7 @@ class Environment:
         return True if the key is present
         """
         key = self._fixKey(key)
-        return (key in self.env.keys())
+        return key in self.env.keys()
 
     def items(self):
         """
@@ -257,7 +257,7 @@ class Environment:
     def commit(self):
         """
         Forget the old values for the changes done so far (avoids that the
-        changes are rolled-back when the instance goes out of scope). 
+        changes are rolled-back when the instance goes out of scope).
         """
         self.old_values = {}
 
