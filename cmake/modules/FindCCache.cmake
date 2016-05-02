@@ -1,6 +1,6 @@
 if (NOT CCACHE_FOUND)
 
-	find_program(CCACHE_EXECUTABLE ccache ccache-swig)
+	find_program(CCACHE_EXECUTABLE NAMES ccache ccache-swig)
 	set(CCACHE_EXECUTABLE ${CCACHE_EXECUTABLE} CACHE STRING "")
 
 # handle the QUIETLY and REQUIRED arguments and set CCACHE_FOUND to TRUE if
