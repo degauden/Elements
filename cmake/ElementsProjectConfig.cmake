@@ -2245,6 +2245,7 @@ endfunction()
 #                   [ENVIRONMENT variable[+]=value ...]
 #                   [DEPENDS other_test ...]
 #                   [FAILS] [PASSREGEX regex] [FAILREGEX regex]
+#                   [LABELS label1 label2]
 #                   [TIMEOUT seconds])
 #
 # Declare a run-time test in the subdirectory.
