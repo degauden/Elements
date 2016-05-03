@@ -184,7 +184,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
 
 ################################################################################
 
-def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list, 
+def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                          library_dep_list):
     """
     Update the <CMakeLists.txt> file for a class
@@ -344,9 +344,6 @@ def mainMethod(args):
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddCppClass script ')
     logger.info('#')
-
-    # True: no error occured
-    script_goes_on = True
 
     elements_dep_list = args.elements_dependency
     library_dep_list = args.external_dependency

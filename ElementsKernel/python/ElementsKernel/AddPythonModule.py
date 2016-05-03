@@ -179,12 +179,11 @@ def mainMethod(args):
     """
     Main
     """
-    
+
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddPythonModule script')
     logger.info('#')
 
-    script_goes_on = True
     python_module_name = args.module_name
 
     # Default is the current directory
@@ -220,6 +219,6 @@ def mainMethod(args):
                 epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
                 logger.info('Script over.')
         else:
-                logger.error('< %s > project directory does not exist!', current_dir)
+            logger.error('< %s > project directory does not exist!', current_dir)
     if not script_goes_on:
         logger.error('Script aborted')

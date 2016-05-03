@@ -43,12 +43,12 @@ def getAllFiles(pymodule_name, module_directory, module_name):
     Get all files related to a python module
     """
     delete_file_list = []
-    file_name_test = os.path.join(module_directory, 'tests', 'python',\
-                                   pymodule_name)+ '_test.py'
+    file_name_test = os.path.join(module_directory, 'tests', 'python', \
+                                   pymodule_name) + '_test.py'
     if os.path.exists(file_name_test):
         delete_file_list.append(file_name_test)
-    file_name_py = os.path.join(module_directory, 'python', module_name,\
-                                 pymodule_name)+ '.py'
+    file_name_py = os.path.join(module_directory, 'python', module_name, \
+                                 pymodule_name) + '.py'
     if os.path.exists(file_name_py):
         delete_file_list.append(file_name_py)
 
@@ -110,9 +110,6 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the RemovePythonModule \
     script ')
     logger.info('#')
-
-    # True: no error occured
-    script_goes_on = True
 
     pymodule_name = args.pymodule_name
 

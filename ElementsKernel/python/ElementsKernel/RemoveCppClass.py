@@ -116,9 +116,6 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the RemoveCppClass script ')
     logger.info('#')
 
-    # True: no error occured
-    script_goes_on = True
-
     class_name = args.class_name
 
     # Default is the current directory

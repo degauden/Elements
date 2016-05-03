@@ -185,12 +185,11 @@ def mainMethod(args):
     """
     Main
     """
-    
+
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddModule script ')
     logger.info('#')
 
-    script_goes_on = True
     module_name = args.module_name
     dependency_list = args.module_dependency
 

@@ -63,10 +63,9 @@ enum class StorageType {
     T converted_value = size ;
 
     if (source_unit != target_unit) {
-      double value = static_cast<double>(size);
       T size_in_bytes = size * StorageFactor[source_unit];
       int64_t target_factor = StorageFactor[target_unit];
-      value = roundToDigits(static_cast<double>(size_in_bytes)/static_cast<double>(target_factor),
+      double value = roundToDigits(static_cast<double>(size_in_bytes)/static_cast<double>(target_factor),
                             max_digits);
       converted_value = Elements::numberCast<T>(value);
     }
@@ -83,10 +82,9 @@ enum class StorageType {
     T converted_value = size ;
 
     if (source_unit != target_unit) {
-      double value = static_cast<double>(size);
       T size_in_bytes = size * StorageFactor[source_unit];
       int64_t target_factor = StorageFactor[target_unit];
-      value = roundToDigits(static_cast<double>(size_in_bytes)/static_cast<double>(target_factor),
+      double value = roundToDigits(static_cast<double>(size_in_bytes)/static_cast<double>(target_factor),
                             static_cast<size_t>(log10(static_cast<double>(target_factor))));
       converted_value = Elements::numberCast<T>(value);
     }

@@ -70,7 +70,7 @@ def addConfFile(module_dir, module_name, program_name):
         f.close()
     else:
         logger.warning('The < %s > conf file has been kept as it already exists!', conf_file)
-        logger.warning('The < %s > conf file already exists!',conf_file)
+        logger.warning('The < %s > conf file already exists!', conf_file)
 
 ################################################################################
 
@@ -215,13 +215,10 @@ def mainMethod(args):
     """
     Main
     """
-    
+
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddCppProgram script')
     logger.info('#')
-
-    # True: no error occured
-    script_goes_on = True
 
     program_name = args.program_name
     module_list = args.module_dependency
