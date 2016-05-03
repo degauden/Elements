@@ -182,7 +182,6 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddPythonProgram script')
     logger.info('#')
 
-    script_goes_on = True
     program_name = args.program_name
 
     # Default is the current directory

@@ -143,7 +143,7 @@ private:
       return t;
     }
     // This method is used when the T is not an ExitCode object
-    template<typename T, typename std::enable_if<!std::is_same<T,ExitCode>::value>::type* = nullptr>
+    template<typename T, typename std::enable_if<not std::is_same<T,ExitCode>::value>::type* = nullptr>
     ExitCode getCode(const T&) {
       return ExitCode::NOT_OK;
     }

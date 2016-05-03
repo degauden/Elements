@@ -112,9 +112,6 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the RemoveCppProgram script ')
     logger.info('#')
 
-    # True: no error occured
-    script_goes_on = True
-
     program_name = args.program_name
 
     # Default is the current directory
@@ -139,7 +136,7 @@ def mainMethod(args):
                 updateCmakeListsFile(module_dir, program_name)
                 logger.info('')
                 logger.warning('# !!!!!!!!!!!!!!!!!!')
-                logger.warning('# If your < %s > program has some Element and/or external dependencies,',\
+                logger.warning('# If your < %s > program has some Element and/or external dependencies,', \
                                 program_name)
                 logger.warning('# you maybe need to remove them. Check the <find_package,')
                 logger.warning('# elements_depends_on_subdirs> macros in the file :')

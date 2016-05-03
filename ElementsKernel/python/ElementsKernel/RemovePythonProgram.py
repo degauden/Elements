@@ -111,9 +111,6 @@ def mainMethod(args):
     script ')
     logger.info('#')
 
-    # True: no error occured
-    script_goes_on = True
-
     program_name = args.program_name
 
     # Default is the current directory

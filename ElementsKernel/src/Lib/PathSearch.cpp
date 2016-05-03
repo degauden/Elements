@@ -115,7 +115,7 @@ vector<fs::path> pathSearchInEnvVariable(std::string file_name,
 
   // get the multiple path from the environment variable
   string multiple_path {};
-  if (!System::getEnv(path_like_env_variable.c_str(), multiple_path)) {
+  if (not System::getEnv(path_like_env_variable.c_str(), multiple_path)) {
     logger.warn() << "Environment variable \"" << path_like_env_variable
                   << "\" is not defined !";
   }
