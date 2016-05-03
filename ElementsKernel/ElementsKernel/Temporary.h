@@ -36,8 +36,8 @@ public:
   ELEMENTS_API boost::filesystem::path path() const;
   ELEMENTS_API std::string motif() const;
 private:
-  const std::string m_motif ;
-  boost::filesystem::path m_path ;
+  const std::string m_motif;
+  boost::filesystem::path m_path;
 };
 
 
@@ -50,8 +50,8 @@ public:
 
 class TempFile : public TempPath {
 public:
-  ELEMENTS_API TempFile(const std::string&  motif="") ;
-  ELEMENTS_API ~TempFile() ;
+  ELEMENTS_API TempFile(const std::string&  motif="");
+  ELEMENTS_API ~TempFile();
 };
 
 } // namespace Elements

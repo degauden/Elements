@@ -185,7 +185,7 @@ namespace Elements {
     //
     // Electric potential [E][Q^-1]
     //
-    constexpr double     volt = electronvolt/eplus ;
+    constexpr double     volt = electronvolt/eplus;
     constexpr double megavolt = 1.e+6*volt;
     constexpr double kilovolt = 1.e+3*volt;
 

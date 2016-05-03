@@ -555,7 +555,7 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
   long status = 1;
   ProcessHandle h(pid);
   KERNEL_USER_TIMES* tb = &m_KERNEL_USER_TIMES[h.item()];
-  ;
+
   if (fetch == InfoType::Times) {
 #if defined(__linux)                      // Linux
     // prc.startup is in ticks since system start :

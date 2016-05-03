@@ -45,7 +45,7 @@ enum class StorageType {
   MetricPetaByte
 };
 
-  ELEMENTS_API extern std::map<StorageType, std::string> StorageShortName ;
+  ELEMENTS_API extern std::map<StorageType, std::string> StorageShortName;
   ELEMENTS_API extern std::map<StorageType, std::int64_t> StorageFactor;
 
   template<typename T>
@@ -60,7 +60,7 @@ enum class StorageType {
 
     using std::log10;
 
-    T converted_value = size ;
+    T converted_value = size;
 
     if (source_unit != target_unit) {
       T size_in_bytes = size * StorageFactor[source_unit];
@@ -79,7 +79,7 @@ enum class StorageType {
 
     using std::log10;
 
-    T converted_value = size ;
+    T converted_value = size;
 
     if (source_unit != target_unit) {
       T size_in_bytes = size * StorageFactor[source_unit];

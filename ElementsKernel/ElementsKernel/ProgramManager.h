@@ -40,11 +40,11 @@ const std::string CONF_ENV_VAR_NAME { "ELEMENTS_CONF_PATH" };
 /**
  * @class ProgramManager
  * @brief
- * 		Class for managing all Elements programs
+ *    Class for managing all Elements programs
  * @details
- * 		This base class offers solutions for the common needs of
- * 		all Elements programs, such as those dealing with program
- * 		options and logging.
+ *    This base class offers solutions for the common needs of
+ *    all Elements programs, such as those dealing with program
+ *    options and logging.
  */
 class ELEMENTS_API ProgramManager {
 
@@ -64,7 +64,7 @@ public:
   /**
    * @brief Destructor
    */
-  virtual ~ProgramManager() ;
+  virtual ~ProgramManager();
 
   /**
    * @brief

@@ -304,7 +304,7 @@ ExitCode ProgramManager::run(int argc, char* argv[]) {
 
   ExitCode exit_code =  m_program_ptr->mainMethod(m_variables_map);
 
-  return exit_code ;
+  return exit_code;
 
 }
 
@@ -329,7 +329,7 @@ void ProgramManager::onTerminate() noexcept {
     try {
       rethrow_exception( exc ); // throw to recognize the type
     } catch (const Exception & exc) {
-      logger.fatal() << "# " ;
+      logger.fatal() << "# ";
       logger.fatal() << "# Elements Exception : " << exc.what();
       logger.fatal() << "# ";
       exit_code = exc.exitCode();
@@ -337,7 +337,7 @@ void ProgramManager::onTerminate() noexcept {
       /// @todo : set the exit code according to the type of exception
       ///         if a clear match is found.
       logger.fatal() << "# ";
-      logger.fatal() << "# Standard Exception : " << exc.what() ;
+      logger.fatal() << "# Standard Exception : " << exc.what();
       logger.fatal() << "# ";
     } catch (...) {
       logger.fatal() << "# ";

@@ -65,7 +65,7 @@ namespace Elements {
     constexpr double fine_structure_const   = elm_coupling/hbarc;
 
 
-    constexpr double k_Boltzmann = 1.3806488e-23 * joule/kelvin ;
+    constexpr double k_Boltzmann = 1.3806488e-23 * joule/kelvin;
 
     /// @brief Standard Temperature and Pressure
     constexpr double STP_Temperature = 273.15*kelvin;

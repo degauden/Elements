@@ -45,7 +45,7 @@ public:
 
     Elements::Logging logger = Elements::Logging::getLogger("HealpixExample");
 
-    Healpix_Map<double> map ;
+    Healpix_Map<double> map;
 
     logger.info() << "done with test program! ";
 

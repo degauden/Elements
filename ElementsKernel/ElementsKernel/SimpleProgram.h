@@ -50,7 +50,7 @@ protected:
   virtual ExitCode main() = 0;
   virtual void defineOptions() = 0;
 
-private :
+private:
 
   void setup(int argc, char** argv);
 

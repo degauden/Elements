@@ -18,7 +18,7 @@
  */
 
 #ifndef ELEMENTSLOGGING_H
-#define	ELEMENTSLOGGING_H
+#define ELEMENTSLOGGING_H
 
 #include <boost/filesystem.hpp>
 #include <log4cpp/Category.hh>
@@ -306,5 +306,5 @@ private:
 
 } // namespace Elements
 
-#endif	/* ELEMENTSLOGGING_H */
+#endif /* ELEMENTSLOGGING_H */
 
