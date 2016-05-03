@@ -390,9 +390,6 @@ inline bool isNotEqual(const double& left, const double& right)
 }
 
 
-
-
-
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isLess(const RawType& left, const RawType& right)
 {
@@ -416,8 +413,6 @@ inline bool isLess(const double& left, const double& right)
 {
   return (isLess<double, max_ulps>(left, right));
 }
-
-
 
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isGreater(const RawType& left, const RawType& right)
@@ -443,8 +438,6 @@ inline bool isGreater(const double& left, const double& right)
   return (isGreater<double, max_ulps>(left, right));
 }
 
-
-
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isLessOrEqual(const RawType& left, const RawType& right)
 {
@@ -468,9 +461,6 @@ inline bool isLessOrEqual(const double& left, const double& right)
 {
   return (isLessOrEqual<double, max_ulps>(left, right));
 }
-
-
-
 
 template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
 bool isGreaterOrEqual(const RawType& left, const RawType& right)
@@ -531,9 +521,6 @@ ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
  */
 ELEMENTS_API bool almostEqual2sComplement(const double& left, const double& right, const int& max_ulps=DBL_DEFAULT_MAX_ULPS);
 
-
-
-
 /**
  * @brief
  *   This function compares 2 floating point numbers bitwise. These are the strict
@@ -555,11 +542,7 @@ ELEMENTS_API bool realBitWiseEqual(const RawType& left, const RawType& right) {
 #pragma GCC diagnostic pop
 }
 
-
-
 } // Elements namespace
-
-
 
 
 #endif /* REAL_H_ */

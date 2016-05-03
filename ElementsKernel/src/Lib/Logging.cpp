@@ -36,8 +36,6 @@
 
 #include "ElementsKernel/Exception.h"   // for Exception
 
-
-
 namespace Elements {
 
 static const std::map<std::string, const int> LOG_LEVEL {{"FATAL", log4cpp::Priority::FATAL},
@@ -45,8 +43,6 @@ static const std::map<std::string, const int> LOG_LEVEL {{"FATAL", log4cpp::Prio
                                                          {"WARN", log4cpp::Priority::WARN},
                                                          {"INFO", log4cpp::Priority::INFO},
                                                          {"DEBUG", log4cpp::Priority::DEBUG}};
-
-
 
 std::unique_ptr<log4cpp::Layout> getLogLayout() {
   log4cpp::PatternLayout* layout = new log4cpp::PatternLayout {};

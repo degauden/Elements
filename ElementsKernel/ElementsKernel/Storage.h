@@ -93,12 +93,7 @@ enum class StorageType {
 
   }
 
-
-
 }
 } // end of namespace Elements
-
-
-
 
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_
