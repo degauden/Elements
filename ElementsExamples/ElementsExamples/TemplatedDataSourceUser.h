@@ -27,8 +27,6 @@
 namespace Elements{
 namespace Examples {
 
-
-
 /**
  * @class TemplatedDataSourceUser
  * @brief This class has been created to demonstrate unit testing. It manipulate
@@ -57,8 +55,6 @@ public:
 
 } // namespace ElementsExamples
 } // namespace Elements
-
-
 
 #include "ElementsExamples/_impl/TemplatedDataSourceUser.icpp"
 

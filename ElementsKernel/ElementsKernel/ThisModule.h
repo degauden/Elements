@@ -48,11 +48,7 @@ static inline const ModuleInfo& getThisModuleInfo() {
 
 ELEMENTS_API const ModuleInfo& getThisExecutableInfo();
 
-
-
 } // namespace System
 } // namespace Elements
-
-
 
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_THISMODULE_H_
