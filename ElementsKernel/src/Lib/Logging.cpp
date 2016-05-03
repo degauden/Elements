@@ -77,7 +77,7 @@ void Logging::setLevel(std::string level) {
     log4cpp::Category::setRootPriority(it->second);
   } else {
     std::stringstream error_buffer;
-    error_buffer << "Unrecognized logging level: " << level << std::endl; ;
+    error_buffer << "Unrecognized logging level: " << level << std::endl;
     throw Exception(error_buffer.str());
   }
 }

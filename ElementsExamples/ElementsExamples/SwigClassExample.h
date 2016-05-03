@@ -44,8 +44,8 @@ public:
 private:
 
 
-  double m_ra ;
-  double m_dec ;
+  double m_ra;
+  double m_dec;
 
 };
 

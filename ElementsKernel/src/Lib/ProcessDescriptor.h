@@ -129,7 +129,7 @@ class ProcessDescriptor {
     explicit ProcessHandle(long pid);
     virtual ~ProcessHandle();
     long item() const {
-      return m_needRelease ? true : false ;
+      return m_needRelease ? true : false;
     }
     void* handle() const {
       return m_handle;
