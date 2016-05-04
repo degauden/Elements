@@ -27,15 +27,12 @@
 #include <sys/times.h>
 #include <unistd.h>
 
-
 using std::int64_t;
 
 constexpr int64_t UNIX_BASE_TIME = 0;
 
 namespace Elements {
 namespace System {
-
-
 
 // convert time from internal representation to the appropriate type
 // Internal representation for Unix:    1 clock tick (usually 10 milliseconds)

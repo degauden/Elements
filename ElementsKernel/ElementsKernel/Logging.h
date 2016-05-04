@@ -89,8 +89,6 @@ private:
   // functions. It is defined in the private section at the end.
   class LogMessageStream;
 
-
-
 public:
 
   /**

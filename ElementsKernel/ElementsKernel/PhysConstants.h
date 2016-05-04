@@ -77,8 +77,4 @@ namespace Elements {
   }  // namespace Units
 } // namespace Elements
 
-
-
-
-
 #endif /* ELEMENTSKERNEL_PHYSCONSTANTS_H_ */

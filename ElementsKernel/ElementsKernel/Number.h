@@ -48,17 +48,13 @@ ELEMENTS_API TargetType numberCast(const SourceType& s) {
 
   TargetType t = static_cast<TargetType>(s);
 
-  if(is_floating_point<SourceType>::value && is_integral<TargetType>::value) {
+  if (is_floating_point<SourceType>::value && is_integral<TargetType>::value) {
     t = static_cast<TargetType>(round(s));
   }
 
   return t;
 }
 
-
-
-}
-
-
+}  // Elements Namespace
 
 #endif // ELEMENTSKERNEL_NUMBER_H_

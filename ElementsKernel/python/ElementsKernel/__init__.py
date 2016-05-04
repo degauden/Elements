@@ -1,7 +1,7 @@
 '''
 Definition of a python package using extend_path
 to create a namespace
-    
+
 Created on Apr 29, 2016
 
 @author: hubert

@@ -71,6 +71,4 @@
 
 // ---------------------------------- Symbol visibility macros (end)
 
-
-
 #endif /* ELEMENTS_EXPORT_H_ */
