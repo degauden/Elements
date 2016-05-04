@@ -1,6 +1,6 @@
-import argparse  # for program options from configuration
-import ElementsKernel.Logging as log  # for Elements logging support
-from ElementsExamples.PythonModuleExample import ClassExample  # for ClassExample
+import argparse
+import ElementsKernel.Logging as log
+from ElementsExamples.PythonModuleExample import ClassExample
 
 def defineSpecificProgramOptions():
     """

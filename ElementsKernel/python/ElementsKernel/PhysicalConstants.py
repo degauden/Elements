@@ -69,7 +69,7 @@ hbarc_squared = hbarc * hbarc
 #
 #
 # see SystemOfUnits.h
-electron_charge = -eplus  # see SystemOfUnits.h
+electron_charge = -eplus
 e_squared = eplus * eplus
 
 #

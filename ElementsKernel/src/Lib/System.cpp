@@ -134,7 +134,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
   return 1;
 #elif defined(__APPLE__)
   *pFunction = (EntryPoint)::dlsym(handle, name.c_str());
-  if(!(*pFunction)) {
+  if (not (*pFunction)) {
     // Try with an underscore :
     string sname = "_" + name;
     *pFunction = (EntryPoint)::dlsym(handle, sname.c_str());

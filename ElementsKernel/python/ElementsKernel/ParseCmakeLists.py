@@ -223,8 +223,8 @@ class CMakeLists(object):
             name = elements_subdir.replace('\n', ' ').replace('elements_subdir(', '')[:-1].strip()
             self.elements_subdir_list.append(ElementsSubdir(name))
 
-        elements_depends_on_subdirs_list = re.findall(r"elements_depends_on_subdirs\(.*?\)", text, re.MULTILINE | re.DOTALL)
-        for elements_depends_on_subdirs in elements_depends_on_subdirs_list:
+        el_dep_on_subdirs_list = re.findall(r"elements_depends_on_subdirs\(.*?\)", text, re.MULTILINE | re.DOTALL)
+        for elements_depends_on_subdirs in el_dep_on_subdirs_list:
             names = elements_depends_on_subdirs.replace('elements_depends_on_subdirs(', '')[:-1].strip()
             self.elements_depends_on_subdirs_list.append(ElementsDependsOnSubdirs(names.split()))
 
@@ -264,7 +264,10 @@ class CMakeLists(object):
                     include_dirs.append(word)
                 if location == 'PUBLIC_HEADERS':
                     public_headers.append(word)
-            self.elements_add_library_list.append(ElementsAddLibrary(name, source_list, link_libraries, include_dirs, public_headers))
+            self.elements_add_library_list.append(ElementsAddLibrary(name, source_list,
+                                                                      link_libraries,
+                                                                      include_dirs,
+                                                                      public_headers))
 
         elements_add_executable_list = re.findall(r"elements_add_executable\(.*?\)", text, re.MULTILINE | re.DOTALL)
         for elements_add_executable in elements_add_executable_list:
