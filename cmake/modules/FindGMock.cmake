@@ -1,10 +1,14 @@
 if(NOT GMOCK_FOUND)
 
 find_path(GMOCK_INCLUDE_DIR gmock/gmock.h
-          HINTS $ENV{GMOCK_INSTALL_DIR}/include )
+          HINTS ENV GMOCK_INSTALL_DIR
+          PATH_SUFFIXES include
+          )
 
 find_library(GMOCK_LIBRARY NAMES gmock gmock_main
-             HINTS $ENV{GMOCK_INSTALL_DIR} )
+             HINTS ENV GMOCK_INSTALL_DIR 
+             PATH_SUFFIXES lib
+             )
 
 set(GMOCK_LIBRARIES ${GMOCK_LIBRARY} )
 set(GMOCK_INCLUDE_DIRS ${GMOCK_INCLUDE_DIR} )

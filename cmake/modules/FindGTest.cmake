@@ -1,10 +1,14 @@
 if(NOT GTEST_FOUND)
 
 find_path(GTEST_INCLUDE_DIR gtest/gtest.h
-          HINTS $ENV{GTEST_INSTALL_DIR}/include )
+          HINTS ENV GTEST_INSTALL_DIR 
+          PATH_SUFFIXES include
+          )
 
 find_library(GTEST_LIBRARY NAMES gtest gtest_main
-             HINTS $ENV{GTEST_INSTALL_DIR} )
+             HINTS ENV GTEST_INSTALL_DIR
+             PATH_SUFFIXES lib
+             )
 
 set(GTEST_LIBRARIES ${GTEST_LIBRARY} )
 set(GTEST_INCLUDE_DIRS ${GTEST_INCLUDE_DIR} )
