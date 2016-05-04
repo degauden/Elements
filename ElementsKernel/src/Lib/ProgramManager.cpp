@@ -111,7 +111,7 @@ const po::variables_map ProgramManager::getProgramOptions(
       ("log-level", po::value<string>()->default_value(default_log_level),
          "Log level: FATAL, ERROR, WARN, INFO (default), DEBUG")
       ("log-file",
-         po::value<fs::path>(),"Name of a log file");
+         po::value<fs::path>(), "Name of a log file");
 
   // Group all the generic options, for help output. Note that we add the options
   // one by one to avoid having empty lines between the groups
@@ -321,7 +321,7 @@ void ProgramManager::onTerminate() noexcept {
 
   ExitCode exit_code {ExitCode::NOT_OK};
 
-  if( auto exc = std::current_exception() ) {
+  if ( auto exc = std::current_exception() ) {
 
     Logging logger = Logging::getLogger("ElementsProgram");
 
@@ -347,7 +347,7 @@ void ProgramManager::onTerminate() noexcept {
     }
 
     logger.fatal() << "This is the back trace:";
-    for(auto level: System::backTrace(21, 4)) {
+    for (auto level: System::backTrace(21, 4)) {
       logger.fatal() << level;
     }
     abort();
@@ -357,9 +357,5 @@ void ProgramManager::onTerminate() noexcept {
   std::_Exit(static_cast<int>(exit_code));
 
 }
-
-
-
-
 
 } // namespace Elements

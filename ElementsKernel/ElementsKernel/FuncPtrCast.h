@@ -57,6 +57,4 @@ inline DESTPTR FuncPtrCast(SRCPTR ptr) {
 } // namespace System
 } // namespace Elements
 
-
-
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_FUNCPTRCAST_H_

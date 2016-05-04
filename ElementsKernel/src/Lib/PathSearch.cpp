@@ -35,8 +35,6 @@
 #include "ElementsKernel/System.h"
 #include "ElementsKernel/Logging.h"     // for the logger
 
-
-
 namespace fs = boost::filesystem;
 
 using std::vector;

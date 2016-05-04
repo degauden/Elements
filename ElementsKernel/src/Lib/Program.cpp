@@ -35,7 +35,7 @@ namespace Elements {
     return config_desc;
   }
 
-  pair<po::options_description,po::positional_options_description> Program::defineProgramArguments() {
+  pair<po::options_description, po::positional_options_description> Program::defineProgramArguments() {
     po::options_description desc("");
     po::positional_options_description pos_desc;
 

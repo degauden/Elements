@@ -70,11 +70,7 @@ public:
 
 };
 
-
-
-
 } // namespace ElementsExamples
 } // namespace Elements
-
 
 MAIN_FOR(Elements::Examples::SimpleProgramExample)

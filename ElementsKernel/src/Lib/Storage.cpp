@@ -46,21 +46,17 @@ map<StorageType, string> StorageShortName      { { StorageType::Byte,           
                                                  { StorageType::MetricTeraByte,   "TB"},
                                                  { StorageType::MetricPetaByte,   "PB"} };
 
-
 map<StorageType, int64_t> StorageFactor        { { StorageType::Byte,                    1},
-                                                 { StorageType::KiloByte,       pow(2, 10)},
-                                                 { StorageType::MegaByte,       pow(2, 20)},
-                                                 { StorageType::GigaByte,       pow(2, 30)},
-                                                 { StorageType::TeraByte,       pow(2, 40)},
-                                                 { StorageType::PetaByte,       pow(2, 50)},
-                                                 { StorageType::MetricKiloByte, pow(10, 3)},
-                                                 { StorageType::MetricMegaByte, pow(10, 6)},
-                                                 { StorageType::MetricGigaByte, pow(10, 9)},
-                                                 { StorageType::MetricTeraByte, pow(10,12)},
-                                                 { StorageType::MetricPetaByte, pow(10,15)} };
-
-
-
+                                                 { StorageType::KiloByte,       pow(2,  10)},
+                                                 { StorageType::MegaByte,       pow(2,  20)},
+                                                 { StorageType::GigaByte,       pow(2,  30)},
+                                                 { StorageType::TeraByte,       pow(2,  40)},
+                                                 { StorageType::PetaByte,       pow(2,  50)},
+                                                 { StorageType::MetricKiloByte, pow(10,  3)},
+                                                 { StorageType::MetricMegaByte, pow(10,  6)},
+                                                 { StorageType::MetricGigaByte, pow(10,  9)},
+                                                 { StorageType::MetricTeraByte, pow(10, 12)},
+                                                 { StorageType::MetricPetaByte, pow(10, 15)} };
 
 // explicit instantiation: without the template<>. Otherwise this is a template specialization
 template double roundToDigits<double>(const double& value, const size_t& max_digits);

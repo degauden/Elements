@@ -47,7 +47,4 @@ constexpr double e              = 2.71828182845904523536;
 }  // namespace Units
 }  // namespace Elements
 
-
-
-
 #endif  // ELEMENTSKERNEL_MATHCONSTANTS_H_

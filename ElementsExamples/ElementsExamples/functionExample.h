@@ -28,12 +28,9 @@
 namespace Elements {
 namespace Examples {
 
-
 ELEMENTS_API int functionExample(int j);
 
 } // namespace Examples
 } // namespace Elements
-
-
 
 #endif // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_

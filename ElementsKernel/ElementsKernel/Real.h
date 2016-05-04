@@ -429,7 +429,7 @@ bool isGreater(const RawType& left, const RawType& right)
 template<std::size_t max_ulps>
 inline bool isGreater(const float& left, const float& right)
 {
-  return (isGreater<float,max_ulps>(left, right));
+  return (isGreater<float, max_ulps>(left, right));
 }
 
 template<std::size_t max_ulps>
