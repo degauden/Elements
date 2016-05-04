@@ -21,7 +21,7 @@ def main():
 
     project, version, outputfile = args
     if not opts.quiet:
-        print "Creating %s for %s %s" % (outputfile, project, version)
+        print("Creating %s for %s %s" % (outputfile, project, version))
 
     if version.startswith('HEAD'):
         majver, minver, patver = 999, 999, 0  # special handling
@@ -37,7 +37,7 @@ def main():
     outdir = os.path.dirname(outputfile)
     if not os.path.exists(outdir):
         if not opts.quiet:
-            print "Creating directory", outdir
+            print("Creating directory", outdir)
         os.makedirs(outdir)
 
     # Prepare data to be written
