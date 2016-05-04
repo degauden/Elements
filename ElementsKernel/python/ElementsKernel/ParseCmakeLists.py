@@ -265,9 +265,9 @@ class CMakeLists(object):
                 if location == 'PUBLIC_HEADERS':
                     public_headers.append(word)
             self.elements_add_library_list.append(ElementsAddLibrary(name, source_list,
-                                                                      link_libraries,
-                                                                      include_dirs,
-                                                                      public_headers))
+                                                                     link_libraries,
+                                                                     include_dirs,
+                                                                     public_headers))
 
         elements_add_executable_list = re.findall(r"elements_add_executable\(.*?\)", text, re.MULTILINE | re.DOTALL)
         for elements_add_executable in elements_add_executable_list:
