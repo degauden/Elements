@@ -619,4 +619,3 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
 
 } // namespace System
 } // namespace Elements
-

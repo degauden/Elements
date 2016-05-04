@@ -64,4 +64,3 @@ public:
  * This must be present in all Elements programs
  */
 MAIN_FOR(Elements::Examples::HealpixExample)
-

@@ -59,7 +59,5 @@ double UnitTestExample::average (const std::vector<int>& v) {
   return result;
 }
 
-
 } // namespace ElementsExamples
 } // namespace Elements
-

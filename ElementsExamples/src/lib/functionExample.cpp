@@ -28,8 +28,5 @@ int functionExample(int j) {
   return j*j;
 }
 
-
 } // namespace Examples
 } // namespace Elements
-
-
