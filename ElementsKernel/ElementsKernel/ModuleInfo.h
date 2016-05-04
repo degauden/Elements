@@ -49,7 +49,7 @@ static std::string LIB_SUFFIX = "." + LIB_EXTENSION;
 class ELEMENTS_API ModuleInfo {
 public:
   ModuleInfo();
-  ModuleInfo(void *);
+  explicit ModuleInfo(void *);
   const std::string name() const;
   const std::string libraryName() const;
   const void* addresse() const;

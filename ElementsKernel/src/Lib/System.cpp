@@ -30,15 +30,15 @@
 #include <vector>                       // for vector
 
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
-#include <cerrno>                      // for errno
-#include <execinfo.h>                  // for backtrace
-#include <cstring>                     // for strlen
+#include <cerrno>                       // for errno
+#include <execinfo.h>                   // for backtrace
+#include <cstring>                      // for strlen
 #include <unistd.h>                     // for environ
 #include <cxxabi.h>
 #include <sys/utsname.h>
 
 #include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
-#include "ElementsKernel/Unused.h"   // for ELEMENTS_UNUSED
+#include "ElementsKernel/Unused.h"      // for ELEMENTS_UNUSED
 
 using namespace std;
 

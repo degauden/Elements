@@ -38,7 +38,7 @@ public:
    * @param e: this is an optional exit code. By default is is set
    *           to NOT_OK.
    */
-  Exception(ExitCode e=ExitCode::NOT_OK) :
+  explicit Exception(ExitCode e=ExitCode::NOT_OK) :
     m_exit_code{e} {
   }
 
@@ -134,7 +134,7 @@ private:
   // Specialization which handles the last argument
   template<typename Last>
   struct ExitCodeHelper<Last> {
-    ExitCodeHelper(const Last& last) : code{getCode(last)} {}
+    explicit ExitCodeHelper(const Last& last) : code{getCode(last)} {}
     ExitCode code;
   private:
     // This method is used if the T is an ExitCode object

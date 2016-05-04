@@ -31,7 +31,7 @@ namespace Elements {
 
 class TempPath {
 public:
-  TempPath(const std::string& motif);
+  explicit TempPath(const std::string& motif);
   virtual ~TempPath();
   ELEMENTS_API boost::filesystem::path path() const;
   ELEMENTS_API std::string motif() const;
@@ -43,14 +43,14 @@ private:
 
 class TempDir : public TempPath {
 public:
-  ELEMENTS_API TempDir(const std::string& motif="");
+  ELEMENTS_API explicit TempDir(const std::string& motif="");
   ELEMENTS_API ~TempDir();
 };
 
 
 class TempFile : public TempPath {
 public:
-  ELEMENTS_API TempFile(const std::string&  motif="");
+  ELEMENTS_API explicit TempFile(const std::string&  motif="");
   ELEMENTS_API ~TempFile();
 };
 
