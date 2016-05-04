@@ -66,12 +66,9 @@ map<StorageType, int64_t> StorageFactor        { { StorageType::Byte,           
 template double roundToDigits<double>(const double& value, const size_t& max_digits);
 template float roundToDigits<float>(const float& value, const size_t& max_digits);
 
-
 template double storageConvert<double>(const double& size, StorageType source_unit, StorageType target_unit);
 template float storageConvert<float>(const float& size, StorageType source_unit, StorageType target_unit);
 template int64_t storageConvert<int64_t>(const int64_t& size, StorageType source_unit, StorageType target_unit);
 
-
 }  // namespace Units
 }  // namespace Elements
-

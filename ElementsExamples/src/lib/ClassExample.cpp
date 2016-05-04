@@ -66,4 +66,3 @@ ClassExample ClassExample::factoryMethod(const int64_t source_id,
 
 } // namespace ElementsExamples
 } // namespace Elements
-

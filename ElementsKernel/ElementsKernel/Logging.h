@@ -307,4 +307,3 @@ private:
 } // namespace Elements
 
 #endif /* ELEMENTSLOGGING_H */
-

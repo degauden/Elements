@@ -38,5 +38,3 @@ double DataSourceUser::sumRecords (const DataSourceInterface& data_source) {
 
 } // namespace ElementsExamples
 } // namespace Elements
-
-

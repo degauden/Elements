@@ -47,7 +47,3 @@ namespace Elements {
   Program::~Program() {}
 
 } // namespace Elements
-
-
-
-

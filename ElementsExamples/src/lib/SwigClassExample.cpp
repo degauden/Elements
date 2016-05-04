@@ -31,8 +31,5 @@ double SwigClassExample::getDec () const {
   return m_dec;
 }
 
-
-
 } // namespace Examples
 } // namespace Elements
-

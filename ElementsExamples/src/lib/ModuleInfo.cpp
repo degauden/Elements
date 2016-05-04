@@ -33,6 +33,3 @@ const System::ModuleInfo& getModuleInfo() {
 
 } // namespace ElementsExamples
 } // namespace Elements
-
-
-
