@@ -58,6 +58,7 @@ elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
 # the test is Boost.
 elements_add_unit_test(BoostClassExample tests/src/Boost/ClassExample_test.cpp
                        EXECUTABLE BoostClassExample_test
+                       INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 # Example with explict TestMain.cpp. Please mind the "unit_test_framework" in the boost components
@@ -65,18 +66,22 @@ elements_add_unit_test(BoostClassExample tests/src/Boost/ClassExample_test.cpp
 # LINK_LIBRARIES argument.
 elements_add_unit_test(BoostClassExampleWithMain tests/src/Boost/ClassExample_test.cpp tests/src/Boost/TestMain.cpp
                        EXECUTABLE BoostClassExampleWithMain_test
+                       INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES Boost ElementsExamples)
 
 elements_add_unit_test(ModuleInfo tests/src/Boost/ModuleInfo_test.cpp
                        EXECUTABLE ElementsExamplesModuleInfo_test
+                       INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 
 elements_add_unit_test(AllTests tests/src/Boost/*_test.cpp
                        EXECUTABLE BoostElementsExampleAllTests
+                       INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 elements_add_unit_test(UnitTestExample_test tests/src/Boost/UnitTestExample_test.cpp
+                       INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 
@@ -93,6 +98,7 @@ elements_add_unit_test(OtherClassExample tests/src/CppUnit/ClassExample_test.cpp
 elements_add_unit_test(OtherClassExampleWithMain tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
                        EXECUTABLE OtherClassExampleWithMain_test
                        LINK_LIBRARIES CppUnit ElementsExamples
+                       INCLUDE_DIRS CppUnit ElementsExamples
                        LABELS CustomLabel CppUnit)
 endif()
 
@@ -100,12 +106,14 @@ endif()
 if(GMOCK_FOUND)
 
 elements_add_unit_test(DataSourceUser_test_suite tests/src/GMock/DataSourceUser_test.cpp
-                         LINK_LIBRARIES GMock ElementsExamples TYPE Boost
-                         LABELS GMock)
+                       LINK_LIBRARIES GMock ElementsExamples TYPE Boost
+                       INCLUDE_DIRS GMock ElementsExamples
+                       LABELS GMock)
 
 elements_add_unit_test(TemplatedDataSourceUser_test_suite tests/src/GMock/TemplatedDataSourceUser_test.cpp
-                         LINK_LIBRARIES GMock ElementsExamples TYPE Boost
-                         LABELS GMock)
+                       LINK_LIBRARIES GMock ElementsExamples TYPE Boost
+                       INCLUDE_DIRS GMock ElementsExamples
+                       LABELS GMock)
 endif(GMOCK_FOUND)
 
 #====== Build Tests =================================================================
@@ -114,6 +122,7 @@ find_package(GSL QUIET)
 
 if(GSL_FOUND)
 elements_add_executable(GslExample src/program/GslExample.cpp
+                        INCLUDE_DIRS GSL ElementsExamples
                         LINK_LIBRARIES GSL ElementsExamples)
 elements_add_test(GSLWorks COMMAND GslExample LABELS GSL Build)
 endif()
@@ -122,6 +131,7 @@ endif()
 find_package(HealpixCpp QUIET)
 if(HEALPIXCPP_FOUND)
 elements_add_executable(HealpixExample src/program/HealpixExample.cpp
+                        INCLUDE_DIRS HealpixCpp ElementsExamples
                         LINK_LIBRARIES HealpixCpp ElementsExamples)
 elements_add_test(HealpixCppWorks COMMAND HealpixExample LABELS Healpix Build)
 endif()
@@ -139,6 +149,7 @@ endif()
 find_package(WCSLIB QUIET)
 if(WCSLIB_FOUND)
 elements_add_executable(WcsExample src/program/WcsExample.cpp
+                        INCLUDE_DIRS WCSLIB ElementsExamples
                         LINK_LIBRARIES WCSLIB ElementsExamples)
 elements_add_test(WCSLIBWorks COMMAND WcsExample LABELS Wcs Build)
 endif()
@@ -147,6 +158,7 @@ endif()
 find_package(FFTW QUIET)
 if(FFTW_FOUND)
 elements_add_executable(FftwExample src/program/FftwExample.cpp
+                        INCLUDE_DIRS FFTW ElementsExamples
                         LINK_LIBRARIES FFTW ElementsExamples)
 elements_add_test(FFTWWorks COMMAND FftwExample LABELS Fftw Build)
 endif()
@@ -154,8 +166,8 @@ endif()
 find_package(Eigen3 QUIET)
 if(EIGEN3_FOUND)
 elements_add_executable(EigenExample src/program/EigenExample.cpp
-                        LINK_LIBRARIES ElementsExamples
-                        INCLUDE_DIRS Eigen3)
+                        LINK_LIBRARIES Eigen3 ElementsExamples
+                        INCLUDE_DIRS Eigen3 ElementsExamples)
 elements_add_test(EigenWorks COMMAND EigenExample LABELS Eigen Build)
 endif()
 
@@ -165,6 +177,7 @@ find_package(PythonLibs QUIET)
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
 elements_add_swig_binding(SwigExample ElementsExamples/SwigExample.i
                           LINK_LIBRARIES ElementsExamples
+                          INCLUDE_DIRS ElementsExamples
                           PUBLIC_HEADERS ElementsExamples)
 endif()
 

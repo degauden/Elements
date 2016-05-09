@@ -80,6 +80,13 @@ elements_add_unit_test(GetEnv tests/src/GetEnv_test.cpp
                        EXECUTABLE GetEnv_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
+#-----------------------
+# GetEnv_test
+elements_add_unit_test(Sleep tests/src/Sleep_test.cpp
+                       EXECUTABLE Sleep_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
 #if(ELEMENTS_HIDE_WARNINGS)
 #  if(UNIX)
     # This hides warnings from a broken header file in CppUnit, but may
