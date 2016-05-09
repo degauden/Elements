@@ -23,14 +23,16 @@
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/format.hpp>                 // for format
 
-#include <xercesc/util/XercesVersion.hpp>
+#include <xercesc/util/XercesVersion.hpp>   // For gXercesFullVersionStr
+#include <xercesc/util/PlatformUtils.hpp>   // for Initialize and Terminate
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 
-
 namespace Elements {
 namespace Examples {
+
+using namespace XERCES_CPP_NAMESPACE;
 
 namespace po = boost::program_options;
 
@@ -44,7 +46,13 @@ public:
   Elements::ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
     Elements::Logging logger = Elements::Logging::getLogger("XercesExample");
+
+    XMLPlatformUtils::Initialize();
+
     logger.info() << "XercesC version:" << gXercesFullVersionStr;
+
+    XMLPlatformUtils::Terminate();
+
     logger.info() << "done with test program! ";
 
     return Elements::ExitCode::OK;
@@ -53,7 +61,7 @@ public:
 
 };
 
-} // namespace ElementsExamples
+} // namespace Examples
 } // namespace Elements
 
 
