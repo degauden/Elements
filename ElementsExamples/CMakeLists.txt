@@ -25,12 +25,15 @@ elements_add_library(ElementsExamples src/lib/*.cpp
 #    CppProgramExample is the executable name
 #    src/Program/ProgramExample.cpp is the source file
 elements_add_executable(CppProgramExample src/program/ProgramExample.cpp
+                        INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
 
 elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgramExample.cpp
+                        INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
 
 elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramExampleWithArguments.cpp
+                        INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
 
 #===== Test that the executables do run ========================================
@@ -127,6 +130,7 @@ endif()
 find_package(XercesC QUIET)
 if(XERCESC_FOUND)
 elements_add_executable(XercesExample src/program/XercesExample.cpp
+                        INCLUDE_DIRS XercesC ElementsExamples
                         LINK_LIBRARIES XercesC ElementsExamples)
 elements_add_test(XercesCWorks COMMAND XercesExample LABELS Xerces Build)
 endif()
