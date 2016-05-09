@@ -1,7 +1,7 @@
 /**
- * @file ThisModule_test.cpp
+ * @file Slepp_test.cpp
  *
- * @date Dec 10, 2014
+ * @date May 22, 2013
  * @author Hubert Degaudenzi
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
@@ -19,49 +19,25 @@
  *
  */
 
-#include "ElementsKernel/ThisModule.h"
-
 #include <boost/test/unit_test.hpp>
-#include <libgen.h>
-
-
-using Elements::System::getThisModuleInfo;
-using Elements::System::getThisExecutableInfo;
+#include "ElementsKernel/Sleep.h"
 
 //-----------------------------------------------------------------------------
-BOOST_AUTO_TEST_SUITE(ThisModule_test)
-//-----------------------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(ThisModuleName_test) {
-
-  // Get the present module. Here this must be the test executable
-  BOOST_CHECK_EQUAL(getThisModuleInfo().name(), "ThisModule_test");
-
-}
-
-#if not defined(ELEMENTS_HIDE_SYMBOLS)
-// This is needed because the "main" function of the boost test wrapper does
-// not expose itself.
-BOOST_AUTO_TEST_CASE(ThisExeName_test) {
-
-  // Get the present module. Here this must be the test executable
-
-  BOOST_CHECK_EQUAL(getThisExecutableInfo().name(), "ThisModule_test");
-
-}
-#endif
-
-BOOST_AUTO_TEST_CASE(ThisModuleConversion_test) {
-
-  Dl_info info = getThisModuleInfo();
-
-  BOOST_CHECK_EQUAL(::basename(const_cast<char*>(info.dli_fname)), "ThisModule_test");
-
-}
-
-
-//-----------------------------------------------------------------------------
-BOOST_AUTO_TEST_SUITE_END()
 //-----------------------------------------------------------------------------
 //
+// Begin of the Boost tests
+//
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_SUITE(Sleep_test)
+
+BOOST_AUTO_TEST_CASE(SleepCall_test) {
+
+  Elements::normalSleep(1);
+  Elements::nanoSleep(10);
+
+}
+
+//-----------------------------------------------------------------------------
 // End of the Boost tests
+BOOST_AUTO_TEST_SUITE_END()

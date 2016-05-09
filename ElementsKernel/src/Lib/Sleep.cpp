@@ -18,21 +18,25 @@
 
 #include "ElementsKernel/Sleep.h"
 
-#include <boost/thread/thread.hpp>
+#include <thread>                     // for this_thread
+#include <chrono>                     // for chrono
 
 namespace Elements {
 
-/// Simple sleep function taken from COOL.
-/// @author Marco Clemencic
+using namespace std;
+
+/** @brief Small variation on the sleep function for seconds sleep.
+ * @author Hubert Degaudenzi
+ */
 void normalSleep(int sec) {
-  boost::this_thread::sleep_for(boost::chrono::seconds(sec));
+  this_thread::sleep_for(chrono::seconds(sec));
 }
 
 /** @brief Small variation on the sleep function for nanoseconds sleep.
- * @author Marco Clemencic
+ * @author Hubert Degaudenzi
  */
 void nanoSleep(int64_t nsec) {
-  boost::this_thread::sleep_for(boost::chrono::nanoseconds(nsec));
+  this_thread::sleep_for(chrono::nanoseconds(nsec));
 }
 
 }
