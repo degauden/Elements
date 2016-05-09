@@ -47,3 +47,4 @@ ElementsConfigVersion.cmake
 .ptp-sync-folder
 .cache
 /PAQA
+/sonar-project.properties
