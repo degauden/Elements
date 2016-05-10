@@ -646,7 +646,8 @@ macro(elements_project project version)
   set(CPACK_PACKAGING_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   set(CPACK_GENERATOR RPM)
   set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
-  set(CPACK_PACKAGE_RELEASE 1)
+  
+  set(CPACK_PACKAGE_RELEASE 1 CACHE STRING "Release Number For the Packaging")
   set(CPACK_PACKAGE_VENDOR "The Euclid Consortium")
 
   set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/${BUILD_PREFIX_NAME}\\\\..*/;/${BUILD_SUBDIR}/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore")
