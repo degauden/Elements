@@ -22,6 +22,7 @@
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 
 #include "ElementsExamples/ClassExample.h"
+#include "ElementsExamples/functionExample.h"
 
 namespace Elements {
 namespace Examples {
@@ -171,6 +172,9 @@ public:
      */
     std::vector<double> object_example { std::vector<double> { 1.0, 2.3, 4.5 } };
     example_class_object.passingObjectInGeneral(object_example);
+
+    logger.info() << "Function Example: " << functionExample(3);
+
 
     logger.info("#");
     logger.info("Exiting mainMethod()");
