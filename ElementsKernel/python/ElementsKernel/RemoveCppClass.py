@@ -24,9 +24,6 @@ Author: Nicolas Morisset
 
 """
 
-from __future__ import division, print_function
-from future_builtins import filter, hex, map, oct, zip
-
 import argparse
 import os
 import ElementsKernel.ProjectCommonRoutines as epcr
