@@ -341,7 +341,7 @@ will be automatically created for you if any but you have to be inside an
 ################################################################################
 
 def mainMethod(args):
-
+    """ Main method of the AddCppClass Script"""
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddCppClass script ')
     logger.info('#')

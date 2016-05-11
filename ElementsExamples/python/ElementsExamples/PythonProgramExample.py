@@ -1,3 +1,5 @@
+""" Small example for a python based script """
+
 import argparse
 import ElementsKernel.Logging as log
 from ElementsExamples.PythonModuleExample import ClassExample

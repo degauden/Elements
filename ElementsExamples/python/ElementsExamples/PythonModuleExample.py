@@ -1,3 +1,6 @@
+""" Small example for a python module """
+
+
 import ElementsKernel.Logging as log
 
 class ClassExample(object):
