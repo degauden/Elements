@@ -1,4 +1,4 @@
-"""Main Program Class"""
+"""Main Program Class Module"""
 
 import importlib
 import os
@@ -8,7 +8,7 @@ import ElementsKernel.Logging as log
 
 
 class Program(object):
-
+    """Main Program Class"""
     def __init__(self, app_module, parent_project_version=None, parent_project_name=None):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
