@@ -24,9 +24,6 @@ Created on: 02/11/16
 Author: Nicolas Morisset
 """
 
-from __future__ import division, print_function
-from future_builtins import *
-
 import argparse
 import os
 import ElementsKernel.ProjectCommonRoutines as epcr

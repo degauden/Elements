@@ -11,8 +11,6 @@
  All these classes are for parsing the macros in this file. Each class
  represents a cmake macro. The "CMakeLists" class uses all the other classes.
 """
-from __future__ import division, print_function
-from future_builtins import *
 
 import re
 
