@@ -37,8 +37,9 @@ bool almostEqual2sComplement(const float& left, const float& right, const int& m
     // int a_int = *(int*)&a;
     int32_t a_int = *reinterpret_cast<const int32_t *>(&left);
     // Make a_int lexicographically ordered as a twos-complement int
-    if (a_int < 0)
+    if (a_int < 0) {
         a_int = 0x80000000 - a_int;
+    }
     // Make b_int lexicographically ordered as a twos-complement int
     //    int b_int = *(int*)&b;
     int32_t b_int = *reinterpret_cast<const int32_t *>(&right);

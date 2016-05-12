@@ -172,7 +172,7 @@ const po::variables_map ProgramManager::getProgramOptions(
             variables_map);
 
   // Parse from the configuration file if it exists
-  if (!config_file.empty() && fs::exists(config_file)) {
+  if (not config_file.empty() && fs::exists(config_file)) {
     ifstream ifs {config_file.string()};
     if (ifs) {
       po::store(po::parse_config_file(ifs, all_cmd_and_file_options), variables_map);
