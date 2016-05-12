@@ -121,7 +121,7 @@ class TempDir(TempResource):
             if self._keep_var in os.environ:
                 log = Logging.getLogger(None)
                 log.info("%s set: I do not remove the temporary directory '%s'",
-                             self._keep_var, self._name)
+                         self._keep_var, self._name)
             else:
                 rmtree(self._name)
                 self._name = None
@@ -165,7 +165,6 @@ class Environment(object):
         Create a temporary environment on top of the one specified
         (it can be another TemporaryEnvironment instance).
         """
-        # print "New environment"
         self.old_values = {}
         self._orig = orig
         self.env = None
@@ -215,7 +214,7 @@ class Environment(object):
         self.old_values[key] = self.env[key]
         del self.env[key]
         log = Logging.getLogger(None)
-        log.info("removed %s from environment" % key)
+        log.info("removed %s from environment", key)
 
     def keys(self):
         """
