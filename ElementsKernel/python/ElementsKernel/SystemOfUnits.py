@@ -214,14 +214,14 @@ volt = 1.e-6 * megavolt
 # Electric resistance [E][T][Q^-2]
 #
 
-# ohm = 1.60217e-16*(MeV/eplus)/(eplus/ns)
+# Reference: ohm = 1.60217e-16*(MeV/eplus)/(eplus/ns)
 ohm = volt / ampere
 
 #
 # Electric capacitance [Q^2][E^-1]
 #
 
-# farad = 6.24150e+24 * eplus/Megavolt
+# Reference: farad = 6.24150e+24 * eplus/Megavolt
 farad = coulomb / volt
 millifarad = 1.e-3 * farad
 microfarad = 1.e-6 * farad
@@ -232,14 +232,14 @@ picofarad = 1.e-12 * farad
 # Magnetic Flux [T][E][Q^-1]
 #
 
-# weber = 1000*megavolt*ns
+# Reference: weber = 1000*megavolt*ns
 weber = volt * second
 
 #
 # Magnetic Field [T][E][Q^-1][L^-2]
 #
 
-# tesla =0.001*megavolt*ns/mm2
+# Reference: tesla =0.001*megavolt*ns/mm2
 tesla = volt * second / meter2
 
 gauss = 1.e-4 * tesla
@@ -248,7 +248,7 @@ kilogauss = 1.e-1 * tesla
 #
 # Inductance [T^2][E][Q^-2]
 #
-# henry = 1.60217e-7*MeV*(ns/eplus)**2
+# Reference: henry = 1.60217e-7*MeV*(ns/eplus)**2
 henry = weber / ampere
 
 #
