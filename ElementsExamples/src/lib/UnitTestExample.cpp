@@ -19,8 +19,8 @@
  *
  */
 
-#include <numeric> // accumulate
-#include <algorithm> // sort
+#include <numeric>                              // accumulate
+#include <algorithm>                            // sort
 #include "ElementsKernel/Exception.h"
 #include "ElementsExamples/UnitTestExample.h"
 
