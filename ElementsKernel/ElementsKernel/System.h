@@ -27,12 +27,6 @@
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "ElementsKernel/Unused.h" // ELEMENTS_UNUSED
 
-#ifdef __linux
-# include <pthread.h>
-#ifndef __APPLE__
-# include <execinfo.h>
-#endif
-#endif
 
 
 namespace Elements {
@@ -46,14 +40,6 @@ using EntryPoint = unsigned long (*)(const unsigned long iid, void** ppvObject);
 /// Definition of the "generic" DLL entry point function
 using Creator = void* (*)();
 
-#ifdef __linux
-///A Thread handle
-using ThreadHandle = pthread_t;
-///thread handle "accessor"
-#else
-///A Thread handle
-using ThreadHandle = void*;
-#endif
 
 /// Load dynamic link library
 ELEMENTS_API unsigned long loadDynamicLib(const std::string& name,
@@ -115,9 +101,6 @@ ELEMENTS_API int setEnv(const std::string &name, const std::string &value,
 ELEMENTS_API int unSetEnv(const std::string& name);
 /// Check if an environment variable is set or not.
 ELEMENTS_API bool isEnvSet(const char* var);
-
-///thread handle "accessor"
-ELEMENTS_API ThreadHandle threadSelf();
 
 ELEMENTS_API int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses, ELEMENTS_UNUSED const int depth);
 ELEMENTS_API bool backTrace(std::string& btrace, const int depth, const int offset = 0);
