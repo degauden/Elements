@@ -27,8 +27,6 @@
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "ElementsKernel/Unused.h" // ELEMENTS_UNUSED
 
-
-
 namespace Elements {
 namespace System {
 /// Definition of an image handle
