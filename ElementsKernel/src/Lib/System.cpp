@@ -438,14 +438,6 @@ vector<string> getEnv() {
   return vars;
 }
 
-ThreadHandle threadSelf() {
-#ifdef __linux
-  return pthread_self();
-#else
-  return (void*)0;
-#endif
-}
-
 // -----------------------------------------------------------------------------
 // backtrace utilities
 // -----------------------------------------------------------------------------
