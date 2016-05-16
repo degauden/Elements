@@ -33,6 +33,10 @@ def getFileFromPath(file_name, path_variable):
     filename with the path or an empty string if not found. We assume that the
     file_name also contains any sub directory under the <path_variable>
     environment variable entry.
+    @param file_name: file name to look for can be "Some.txt" or "/" path
+                      component like "SomeFolder/Some.txt"
+    @param path_variable: name of the environment variable to look into
+    @return: full path to the first match entry.
     """
 
     full_path = ""
