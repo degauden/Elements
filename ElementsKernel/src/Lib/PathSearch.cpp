@@ -1,5 +1,10 @@
-/*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+/**
+ * @file PathSearch.cpp
+ *
+ * @date Dec 4, 2013
+ * @author Pierre Dubath
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
  * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
@@ -11,14 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- */
-
-
-/**
- * @file PathSearch.cpp
  *
- * Created on: Dec 4, 2013
- *     Author: Pierre Dubath
  */
 
 #include "ElementsKernel/PathSearch.h"  // for SearchType, etc

@@ -1,7 +1,7 @@
 /**
- * @file ElementsKernel/Likely.h
- * @brief defines macros for better branch guessing
- * @date Nov 4, 2013
+ * @file Path.cpp
+ *
+ * @date May 13, 2016
  * @author Hubert Degaudenzi
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
@@ -16,25 +16,18 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ *
  */
 
-#ifndef ELEMENTSKERNEL_LIKELY_H_
-#define ELEMENTSKERNEL_LIKELY_H_
 
-/** @def LIKELY(x)
- * Macro for compiler branch optimisation. To be used when is \a x
- * condition is more likely to happen that the other one
- */
-/** @def UNLIKELY(x)
- * Macro for compiler branch optimisation. To be used when is \a x
- * condition is less likely to happen that the other one
- */
-#ifdef __GNUC__
-#  define LIKELY(x)       __builtin_expect(not not(x), 1)
-#  define UNLIKELY(x)     __builtin_expect(not not(x), 0)
-#else
-#  define LIKELY(x)       x
-#  define UNLIKELY(x)     x
-#endif
+#include "ElementsKernel/Path.h"
 
-#endif /* ELEMENTSKERNEL_LIKELY_H_ */
+#include "ElementsKernel/Logging.h"
+
+namespace Elements {
+
+static Logging logger = Logging::getLogger("Path");
+
+
+} // Elements namespace
