@@ -1,7 +1,7 @@
 /**
- * @file ElementsKernel/Path.h
+ * @file ElementsKernel/_impl/Path.icpp
  *
- * @date May 13, 2016
+ * @date May 17, 2016
  * @author Hubert Degaudenzi
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
@@ -16,24 +16,30 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *
- *
  */
 
-#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
-#define ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
+#ifndef ELEMENTSKERNEL__IMPL_PATH_ICPP_
+#define ELEMENTSKERNEL__IMPL_PATH_ICPP_
 
-#include <string>                   // for string
-#include <boost/filesystem.hpp>     // for boost::filesystem
-#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include <string>                      // for string
+#include <boost/filesystem.hpp>        // for boost::filesystem
+
+#include "ElementsKernel/Logging.h"    // for getLogger
 
 namespace Elements {
 
 template <typename T>
-ELEMENTS_API boost::filesystem::path getFileFromPath(const T& file_name, const std::string& path_variable);
+boost::filesystem::path getFileFromPath(const T& file_name, const std::string& path_variable) {
 
-}  // Elements namespace
+  Logging logger = Logging::getLogger("Path");
 
-#include "ElementsKernel/_impl/Path.icpp"
+  boost::filesystem::path found_path {};
+  boost::filesystem::path file_path {file_name};
+  return found_path;
+}
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_ 
+} // Elements namespace
+
+
+
+#endif // ELEMENTSKERNEL__IMPL_PATH_ICPP_
