@@ -25,13 +25,14 @@
 #include <boost/filesystem.hpp>        // for boost::filesystem
 
 #include "ElementsKernel/Logging.h"    // for getLogger
+#include "ElementsKernel/Unused.h"
 
 namespace Elements {
 
 template <typename T>
-boost::filesystem::path getFileFromPath(const T& file_name, const std::string& path_variable) {
+boost::filesystem::path getFileFromPath(const T& file_name, ELEMENTS_UNUSED const std::string& path_variable) {
 
-  Logging logger = Logging::getLogger("Path");
+  ELEMENTS_UNUSED Logging logger = Logging::getLogger("Path");
 
   boost::filesystem::path found_path {};
   boost::filesystem::path file_path {file_name};
