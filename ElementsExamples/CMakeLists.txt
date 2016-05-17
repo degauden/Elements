@@ -171,6 +171,14 @@ elements_add_executable(EigenExample src/program/EigenExample.cpp
 elements_add_test(EigenWorks COMMAND EigenExample LABELS Eigen Build)
 endif()
 
+find_package(CCfits QUIET)
+if(CCFITS_FOUND)
+elements_add_executable(CCfitsExample src/program/CCfitsExample.cpp
+                        LINK_LIBRARIES CCfits ElementsExamples
+                        INCLUDE_DIRS CCfits ElementsExamples)
+elements_add_test(CCfitsWorks COMMAND CCfitsExample LABELS CCfits Build)
+endif()
+
 
 find_package(SWIG QUIET)
 find_package(PythonLibs QUIET)
