@@ -160,7 +160,7 @@ class Environment(object):
     Class to changes the environment temporarily.
     """
 
-    def __init__(self, orig=os.environ, keep_same=False):
+    def __init__(self, orig=os.environ, keep_same=False):  # pylint: disable=W0102
         """
         Create a temporary environment on top of the one specified
         (it can be another TemporaryEnvironment instance).
