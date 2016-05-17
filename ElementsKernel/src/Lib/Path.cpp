@@ -20,14 +20,21 @@
  *
  */
 
-
 #include "ElementsKernel/Path.h"
 
-#include "ElementsKernel/Logging.h"
+#include <string>                      // for string
+#include <boost/filesystem.hpp>        // for boost::filesystem
+
+using namespace std;
+namespace fs = boost::filesystem;
+
 
 namespace Elements {
 
-static Logging logger = Logging::getLogger("Path");
+
+// Template instanciation for the most common types
+template fs::path getFileFromPath<fs::path>(const fs::path& file_name, const string& path_variable);
+template fs::path getFileFromPath<string>(const string& file_name, const string& path_variable);
 
 
 } // Elements namespace
