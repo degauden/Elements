@@ -36,4 +36,4 @@ ELEMENTS_API boost::filesystem::path getFileFromPath(const T& file_name, const s
 
 #include "ElementsKernel/_impl/Path.icpp"
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_ 
+#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
