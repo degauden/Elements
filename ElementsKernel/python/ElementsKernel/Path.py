@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 from ElementsKernel import Logging
 import os
 
-def getFileFromPath(file_name, path_variable):
+def getPathFromEnvVariable(file_name, path_variable):
     """
     Look for the first path valid in the <path_variable> environment
     variable where is located the <file_name> file. It returns the

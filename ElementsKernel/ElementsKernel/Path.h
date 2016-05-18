@@ -24,13 +24,20 @@
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
 
 #include <string>                   // for string
+#include <vector>                   // for vector
 #include <boost/filesystem.hpp>     // for boost::filesystem
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
 
+ELEMENTS_API std::vector<boost::filesystem::path> getRawLocationsFromEnv(const std::string& path_variable, bool exist_only=false);
+ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std::string& path_variable, bool exist_only=false);
+
+template <typename T, typename U>
+ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations);
+
 template <typename T>
-ELEMENTS_API boost::filesystem::path getFileFromPath(const T& file_name, const std::string& path_variable);
+ELEMENTS_API boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable);
 
 }  // Elements namespace
 
