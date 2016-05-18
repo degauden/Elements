@@ -22,6 +22,7 @@
 #define ELEMENTSKERNEL__IMPL_PATH_ICPP_
 
 #include <string>                      // for string
+#include <algorithm>                   // for find_if
 #include <boost/filesystem.hpp>        // for boost::filesystem
 
 #include "ElementsKernel/Logging.h"    // for getLogger
@@ -29,13 +30,37 @@
 
 namespace Elements {
 
+template <typename T, typename U>
+boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations) {
+
+  namespace fs = boost::filesystem;
+
+  fs::path found_path {};
+  fs::path file_path {file_name};
+
+  auto found_pos = std::find_if(locations.cbegin(), locations.cend(),
+      [file_path](U l) {
+    return fs::exists(fs::path{l} / file_path);
+  });
+
+  if (found_pos != locations.cend()) {
+    found_path = fs::path{*found_pos} / file_path;
+  }
+
+  return found_path;
+
+}
+
+
 template <typename T>
-boost::filesystem::path getFileFromPath(const T& file_name, ELEMENTS_UNUSED const std::string& path_variable) {
+boost::filesystem::path getPathFromEnvVariable(const T& file_name, ELEMENTS_UNUSED const std::string& path_variable) {
+
+  namespace fs = boost::filesystem;
 
   ELEMENTS_UNUSED Logging logger = Logging::getLogger("Path");
 
-  boost::filesystem::path found_path {};
-  boost::filesystem::path file_path {file_name};
+  fs::path found_path {};
+  fs::path file_path {file_name};
   return found_path;
 }
 

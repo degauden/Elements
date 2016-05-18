@@ -23,18 +23,63 @@
 #include "ElementsKernel/Path.h"
 
 #include <string>                      // for string
-#include <boost/filesystem.hpp>        // for boost::filesystem
+#include <vector>                      // for vector
+#include <algorithm>                   // for transform, remove_if
 
-using namespace std;
+#include <boost/filesystem.hpp>        // for boost::filesystem
+#include <boost/algorithm/string.hpp>  // for boost::split
+
+#include "ElementsKernel/System.h"     // for getEnv
+
 namespace fs = boost::filesystem;
 
+using std::string;
+using std::vector;
 
 namespace Elements {
 
+vector<fs::path> getRawLocationsFromEnv(const string& path_variable, bool exist_only) {
 
-// Template instanciation for the most common types
-template fs::path getFileFromPath<fs::path>(const fs::path& file_name, const string& path_variable);
-template fs::path getFileFromPath<string>(const string& file_name, const string& path_variable);
+  using Elements::System::getEnv;
 
+  string env_content = getEnv(path_variable);
+
+  vector<string> str_list;
+  boost::split(str_list, env_content, boost::is_any_of(":;"));
+
+  vector<fs::path> found_list(str_list.size());
+  std::transform(str_list.cbegin(), str_list.cend(),
+      found_list.begin(),
+      [](string s){
+      return fs::path{s};
+  });
+
+  if (exist_only) {
+    auto new_end = std::remove_if(found_list.begin(),
+                                  found_list.end(),
+                                  [](fs::path p){
+                                     return fs::exists(p);
+                                  });
+    found_list.erase(new_end, found_list.end());
+  }
+
+  return found_list;
+}
+
+vector<fs::path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
+  vector<fs::path> found_list = getRawLocationsFromEnv(path_variable, exist_only);
+
+  return found_list;
+}
+
+
+// Template instantiation for the most common types
+template fs::path getPathFromLocations(const fs::path& file_name, const vector<fs::path>& locations);
+template fs::path getPathFromLocations(const fs::path& file_name, const vector<string>& locations);
+template fs::path getPathFromLocations(const string& file_name, const vector<fs::path>& locations);
+template fs::path getPathFromLocations(const string& file_name, const vector<string>& locations);
+
+template fs::path getPathFromEnvVariable<fs::path>(const fs::path& file_name, const string& path_variable);
+template fs::path getPathFromEnvVariable<string>(const string& file_name, const string& path_variable);
 
 } // Elements namespace
