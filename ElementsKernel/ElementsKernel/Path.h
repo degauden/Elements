@@ -1,6 +1,8 @@
 /**
  * @file ElementsKernel/Path.h
  *
+ * @brief provide functions to retrieve ressources
+ *   pointed by environment variables
  * @date May 13, 2016
  * @author Hubert Degaudenzi
  *
@@ -30,12 +32,72 @@
 
 namespace Elements {
 
+/**
+ * @brief
+ *    function to get the locations from an environment variable
+ * @details
+ *    This function return the raw locations pointed by the environment
+ *    variable. It doesn't add the internal locations which are not in
+ *    the variable (like /usr/lib for the LD_LIBRARY_PATH environment variable)
+ * @param path_variable
+ *    name of the environment variable
+ * @param exist_only
+ *    if true returns only existing locations. by default it is set
+ *    to false.
+ * @return
+ *    return a list of boost filesystem paths
+ */
 ELEMENTS_API std::vector<boost::filesystem::path> getRawLocationsFromEnv(const std::string& path_variable, bool exist_only=false);
+
+/**
+ * @brief
+ *    function to get the locations from an environment variable
+ * @details
+ *    This function return the locations pointed by the environment
+ *    variable. It adds the internal locations which are not in
+ *    the variable (like /usr/lib for the LD_LIBRARY_PATH environment variable)
+ * @param path_variable
+ *    name of the environment variable
+ * @param exist_only
+ *    if true returns only existing locations. by default it is set
+ *    to false.
+ * @return
+ *    return a list of boost filesystem paths
+ */
 ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std::string& path_variable, bool exist_only=false);
 
+/**
+ * @brief
+ *   retrieve path from a file name and a set of location to look into
+ * @param file_name
+ *   file name to look for. Can be of the form "Some.txt" or "Place/Some.txt"
+ * @param locations
+ *   vector of locations to look into
+ * @tparam T
+ *   type of the file name. Can be anything that can be converted to a boost
+ *   filesystem path. In principle either std::string or fs::path.
+ * @tparam U
+ *   type of the location. Can be anything that can be converted to a boost
+ *   filesystem path. In principle either std::string or fs::path.
+ * @return
+ *   first match of the file stem
+ */
 template <typename T, typename U>
 ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations);
 
+/**
+ * @brief
+ *   retrieve path from a file name and an environment variable to look into
+ * @param file_name
+ *   file name to look for. Can be of the form "Some.txt" or "Place/Some.txt"
+ * @param path_variable
+ *   name of the environment variable
+ * @tparam T
+ *   type of the file name. Can be anything that can be converted to a boost
+ *   filesystem path. In principle either std::string or fs::path.
+ * @return
+ *   first match of the file stem
+ */
 template <typename T>
 ELEMENTS_API boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable);
 
