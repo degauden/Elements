@@ -237,7 +237,7 @@ def mainMethod(args):
                                      program_name + '.cpp')
     if script_goes_on:
         script_goes_on = epcr.isFileAlreadyExist(program_file_path,
-                                                        program_name)
+                                                 program_name)
     # Check program name is valid
     if script_goes_on:
         script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
