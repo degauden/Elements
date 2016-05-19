@@ -245,7 +245,7 @@ public:
   /// Returns the minimum time.
   static Time epoch(void);
   /// Returns the maximum time.
-  static Time max(void);
+  static Time (max)(void);
   /// Returns the current time.
   static Time current(void);
   static Time build(bool local, const tm &base, TimeSpan diff = 0);

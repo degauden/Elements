@@ -277,7 +277,7 @@ string Time::nanoformat(size_t minwidth /* = 1 */,
   // means size of 0)
   size_t len = out.find_last_not_of('0', maxwidth - 1) + 1;
   // Truncate the output string to at least minwidth chars
-  out.resize(max(len, minwidth));
+  out.resize((max)(len, minwidth));
   return out;
 }
 

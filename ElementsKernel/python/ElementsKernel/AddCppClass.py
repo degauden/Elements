@@ -52,14 +52,14 @@ def getClassName(str_subdir_class):
     Get the class name and sub directory if any
     """
     name_list = str_subdir_class.split(os.path.sep)
-    className = name_list[-1]
-    subdir = str_subdir_class.replace(className, '')
+    class_name = name_list[-1]
+    subdir = str_subdir_class.replace(class_name, '')
     # Remove end slash
     subdir = subdir[:-1]
-    logger.info('Class name: %s', className)
+    logger.info('Class name: %s', class_name)
     if subdir:
         logger.info('Sub directory: %s', subdir)
-    return subdir, className
+    return subdir, class_name
 
 ################################################################################
 
@@ -280,14 +280,14 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
 ################################################################################
 
 def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
-                    library_dep_list):
+                   library_dep_list):
     """
     Create all necessary files for a cpp class
     """
 
     # Check the class does not exist already
     script_goes_on = isClassFileAlreadyExist(class_name, module_dir, module_name,
-                                          subdir)
+                                             subdir)
     if script_goes_on:
 
         createDirectories(module_dir, module_name, subdir)

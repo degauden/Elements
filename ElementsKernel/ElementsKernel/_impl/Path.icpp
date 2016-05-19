@@ -26,9 +26,6 @@
 #include <algorithm>                   // for find_if
 #include <boost/filesystem.hpp>        // for boost::filesystem
 
-#include "ElementsKernel/Logging.h"    // for getLogger
-#include "ElementsKernel/Unused.h"
-
 namespace Elements {
 
 template <typename T, typename U>
@@ -58,8 +55,6 @@ boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::st
 
   namespace fs = boost::filesystem;
   using std::vector;
-
-  ELEMENTS_UNUSED Logging logger = Logging::getLogger("Path");
 
   vector<fs::path> location_list = getLocationsFromEnv(path_variable);
 

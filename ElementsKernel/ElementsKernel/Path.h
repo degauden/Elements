@@ -33,8 +33,7 @@
 namespace Elements {
 
 /**
- * @brief
- *    function to get the locations from an environment variable
+ * @brief function to get the locations from an environment variable
  * @details
  *    This function return the raw locations pointed by the environment
  *    variable. It doesn't add the internal locations which are not in
@@ -50,8 +49,7 @@ namespace Elements {
 ELEMENTS_API std::vector<boost::filesystem::path> getRawLocationsFromEnv(const std::string& path_variable, bool exist_only=false);
 
 /**
- * @brief
- *    function to get the locations from an environment variable
+ * @brief function to get the locations from an environment variable
  * @details
  *    This function return the locations pointed by the environment
  *    variable. It adds the internal locations which are not in
@@ -67,8 +65,7 @@ ELEMENTS_API std::vector<boost::filesystem::path> getRawLocationsFromEnv(const s
 ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std::string& path_variable, bool exist_only=false);
 
 /**
- * @brief
- *   retrieve path from a file name and a set of location to look into
+ * @brief retrieve path from a file name and a set of location to look into
  * @param file_name
  *   file name to look for. Can be of the form "Some.txt" or "Place/Some.txt"
  * @param locations
@@ -86,8 +83,7 @@ template <typename T, typename U>
 ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations);
 
 /**
- * @brief
- *   retrieve path from a file name and an environment variable to look into
+ * @brief retrieve path from a file name and an environment variable to look into
  * @param file_name
  *   file name to look for. Can be of the form "Some.txt" or "Place/Some.txt"
  * @param path_variable
