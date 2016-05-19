@@ -22,6 +22,7 @@
 #define ELEMENTSKERNEL__IMPL_PATH_ICPP_
 
 #include <string>                      // for string
+#include <vector>                      // for vector
 #include <algorithm>                   // for find_if
 #include <boost/filesystem.hpp>        // for boost::filesystem
 
@@ -53,15 +54,17 @@ boost::filesystem::path getPathFromLocations(const T& file_name, const std::vect
 
 
 template <typename T>
-boost::filesystem::path getPathFromEnvVariable(const T& file_name, ELEMENTS_UNUSED const std::string& path_variable) {
+boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable) {
 
   namespace fs = boost::filesystem;
+  using std::vector;
 
   ELEMENTS_UNUSED Logging logger = Logging::getLogger("Path");
 
-  fs::path found_path {};
-  fs::path file_path {file_name};
-  return found_path;
+  vector<fs::path> location_list = getLocationsFromEnv(path_variable);
+
+  return getPathFromLocations(file_name, location_list);
+
 }
 
 } // Elements namespace
