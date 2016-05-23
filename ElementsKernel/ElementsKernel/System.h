@@ -4,7 +4,7 @@
  * @brief This file is intended to iron out all the
  *   differences between systems (currently Linux and MacOSX)
  *
- * @details All the compilation dependent parts (#if, #ifdef etc)
+ * @details All the compilation system dependent parts (\#if, \#ifdef etc)
  *   should be located in this file. This should clear the need of these
  *   entities in all other C++ files.
  *
