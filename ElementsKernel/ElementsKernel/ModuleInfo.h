@@ -29,22 +29,13 @@
 #include <dlfcn.h>
 
 // Framework include files
+#include "ElementsKernel/System.h" // LIB_PREFIX, LIB_EXTENSION
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 
 namespace Elements {
 namespace System {
 
-/// constant that represent the common prefix of the libraries
-static std::string LIB_PREFIX = std::string("lib");
-#ifndef __APPLE__
-/// constant that represents the standard extension of the libraries
-static std::string LIB_EXTENSION = std::string("so");
-#else
-static std::string LIB_EXTENSION = std::string("dylib");
-#endif
-/// constant that represents the standard suffix of the libraries:
-/// usually "."+LIB_EXTENSION
-static std::string LIB_SUFFIX = "." + LIB_EXTENSION;
+
 
 class ELEMENTS_API ModuleInfo {
 public:

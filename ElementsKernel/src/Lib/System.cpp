@@ -42,12 +42,6 @@
 
 using namespace std;
 
-#if defined(__APPLE__)
-  static const string SHLIB_SUFFIX { ".dylib" };
-#else
-  static const string SHLIB_SUFFIX { ".so" };
-#endif
-
 static vector<string> s_argvStrings;
 static vector<const char*> s_argvChars;
 

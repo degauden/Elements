@@ -1,5 +1,13 @@
 /**
  * @file ElementsKernel/System.h
+ *
+ * @brief This file is intended to iron out all the
+ *   differences between systems (currently Linux and MacOSX)
+ *
+ * @details All the compilation dependent parts (#if, #ifdef etc)
+ *   should be located in this file. This should clear the need of these
+ *   entities in all other C++ files.
+ *
  * @copyright 2012-2020 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -29,6 +37,46 @@
 
 namespace Elements {
 namespace System {
+
+
+/**
+ * @brief name of the shared dynamic library path
+ */
+#if defined(__APPLE__)
+  const std::string SHLIB_VAR_NAME { "DYLD_LIBRARY_PATH" };
+#else
+  const std::string SHLIB_VAR_NAME { "LD_LIBRARY_PATH" };
+#endif
+
+/**
+ * @brief constant that represent the common prefix of the libraries
+ */
+const std::string LIB_PREFIX = std::string("lib");
+
+/**
+ * @brief constant that represent the common extension of the libraries
+ */
+#ifdef __APPLE__
+  const std::string LIB_EXTENSION = std::string("dylib");
+#else
+  const std::string LIB_EXTENSION = std::string("so");
+#endif
+
+/**
+ * @brief  constant that represents the standard suffix of
+ *   the libraries: usually "."+LIB_EXTENSION
+ */
+const std::string LIB_SUFFIX = "." + LIB_EXTENSION;
+/**
+ * @brief alias for LIB_SUFFIX
+ */
+const std::string SHLIB_SUFFIX { LIB_SUFFIX };
+
+#if defined(__linux) || defined(__APPLE__)
+#define TEMPLATE_SPECIALIZATION
+#endif
+
+
 /// Definition of an image handle
 using ImageHandle = void*;
 /// Definition of the process handle
