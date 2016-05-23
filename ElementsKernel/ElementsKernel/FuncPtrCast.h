@@ -1,6 +1,9 @@
 /**
  * @file ElementsKernel/FuncPtrCast.h
  *
+ * @brief defines a Small helper function that allows the cast
+ *   from void * to function pointer
+ *
  * @date Dec 1, 2014
  * @author Hubert Degaudenzi
  *
@@ -25,7 +28,8 @@ namespace Elements {
 namespace System {
 
 #if __GNUC__ >= 4
-/** Small helper function that allows the cast from void * to function pointer
+/**
+ * @brief Small helper function that allows the cast from void * to function pointer
  * and vice versa without the message
  * @verbatim
  * warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
