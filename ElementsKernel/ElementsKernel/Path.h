@@ -27,10 +27,26 @@
 
 #include <string>                   // for string
 #include <vector>                   // for vector
+#include <map>                      // for map
 #include <boost/filesystem.hpp>     // for boost::filesystem
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
+
+enum class PathType {
+  executable,
+  library,
+  python,
+  configuration,
+  auxiliary
+};
+
+/**
+ * @brief map containing the name of the path variable for each type
+ */
+ELEMENTS_API extern std::map<PathType, std::string> PathVariable;
+
+ELEMENTS_API extern std::map<PathType, std::vector<std::string>> DefaultLocation;
 
 /**
  * @brief function to get the locations from an environment variable
