@@ -24,6 +24,7 @@
 
 #include <string>                      // for string
 #include <vector>                      // for vector
+#include <map>                         // for map
 #include <algorithm>                   // for transform, remove_if
 
 #include <boost/filesystem.hpp>        // for boost::filesystem
@@ -35,8 +36,27 @@ namespace fs = boost::filesystem;
 
 using std::string;
 using std::vector;
+using std::map;
 
 namespace Elements {
+
+map<PathType, string> PathVariable  {
+  { PathType::executable,                  "PATH"},
+  { PathType::library,     System::SHLIB_VAR_NAME},
+  { PathType::python,                "PYTHONPATH"},
+  { PathType::configuration, "ELEMENTS_CONF_PATH"},
+  { PathType::auxiliary,      "ELEMENTS_AUX_PATH"}
+};
+
+map<PathType, vector<string>> DefaultLocation {
+  {PathType::executable, {}},
+  {PathType::library, {"/usr/lib64", "/usr/lib"}},
+  {PathType::python, {}},
+  {PathType::configuration, {"/usr/share/conf"}},
+  {PathType::auxiliary, {"/usr/share/auxiliary"}}
+};
+
+
 
 vector<fs::path> getRawLocationsFromEnv(const string& path_variable, bool exist_only) {
 
