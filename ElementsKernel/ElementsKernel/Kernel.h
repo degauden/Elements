@@ -22,10 +22,7 @@
 #define ELEMENTSKERNEL_KERNEL_H
 
 
-#if defined(__linux) || defined(__APPLE__)
-#define TEMPLATE_SPECIALIZATION
-#endif
-
+#include "ElementsKernel/System.h"
 #include "ElementsKernel/Export.h"
 #include "ElementsKernel/Likely.h"
 #include "ElementsKernel/Deprecated.h"
