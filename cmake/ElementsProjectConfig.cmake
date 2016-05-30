@@ -639,7 +639,6 @@ macro(elements_project project version)
 
   # - produce environment XML description
   #   release version
-  debug_print_var(project_environment)
   elements_generate_env_conf(${env_release_xml} ${project_environment})
   install(CODE "find_package\(ElementsProject\)
 message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
@@ -2866,7 +2865,6 @@ macro(_env_conf_pop_instruction instr lst)
     list(GET ${lst} 0 1 2 ${instr})
     list(REMOVE_AT ${lst} 0 1 2)
   endif()
-  debug_print_var(instr)
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -2884,12 +2882,6 @@ macro(_env_line cmd var val output)
       endif()
     endif()
   endforeach()
-
-    debug_print_var(${cmd})
-    debug_print_var(${var})
-    debug_print_var(val)
-    debug_print_var(val_)
-
 
   if(${cmd} STREQUAL "SET")
     set(${output} "<env:set variable=\"${var}\">${val_}</env:set>")
