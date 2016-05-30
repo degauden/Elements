@@ -316,10 +316,22 @@ macro(elements_project project version)
     set(versheader_cmd ${PYTHON_EXECUTABLE} ${versheader_cmd})
   endif()
 
+  find_program(instheader_cmd createProjInstHeader.py HINTS ${binary_paths})
+  if(instheader_cmd)
+    set(instheader_cmd ${PYTHON_EXECUTABLE} ${instheader_cmd})
+  endif()
+
+
   find_program(versmodule_cmd createProjVersModule.py HINTS ${binary_paths})
   if(versmodule_cmd)
     set(versmodule_cmd ${PYTHON_EXECUTABLE} ${versmodule_cmd})
   endif()
+
+  find_program(instmodule_cmd createProjInstModule.py HINTS ${binary_paths})
+  if(instmodule_cmd)
+    set(instmodule_cmd ${PYTHON_EXECUTABLE} ${instmodule_cmd})
+  endif()
+
 
   find_program(thisheader_cmd createThisProjHeader.py HINTS ${binary_paths})
   if(thisheader_cmd)
@@ -358,7 +370,7 @@ macro(elements_project project version)
   find_program(pythonprogramscript_cmd createPythonProgramScript.py HINTS ${binary_paths})
   set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
 
-  mark_as_advanced(env_cmd merge_cmd versheader_cmd versmodule_cmd
+  mark_as_advanced(env_cmd merge_cmd versheader_cmd instheader_cmd versmodule_cmd instmodule_cmd
                    thisheader_cmd thismodule_cmd
                    Boost_testmain_cmd CppUnit_testmain_cmd
                    zippythondir_cmd elementsrun_cmd
@@ -431,6 +443,15 @@ macro(elements_project project version)
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
 
+  if(instheader_cmd)
+    execute_process(COMMAND
+                    ${instheader_cmd} --quiet
+                    ${project} ${CMAKE_INSTALL_PREFIX} ${CMAKE_BINARY_DIR}/include/${_proj}_INSTALL.h)
+    install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_INSTALL.h DESTINATION include)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
+  endif()
+
+
   if(thisheader_cmd)
     execute_process(COMMAND
                     ${thisheader_cmd} --quiet
@@ -448,6 +469,15 @@ macro(elements_project project version)
     install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py DESTINATION python)
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   endif()
+
+  if(instmodule_cmd)
+    execute_process(COMMAND
+                    ${instmodule_cmd} --quiet
+                    ${project} ${CMAKE_INSTALL_PREFIX} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
+    install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py DESTINATION python)
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+  endif()
+
 
   if(thismodule_cmd)
     execute_process(COMMAND
