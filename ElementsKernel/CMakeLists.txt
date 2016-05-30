@@ -53,6 +53,12 @@ elements_add_unit_test(ThisModule tests/src/ThisModule_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #-----------------------
+# ThisProject_test
+elements_add_unit_test(ThisProject tests/src/ThisProject_test.cpp
+                       EXECUTABLE ThisProject_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+#-----------------------
 # Storage_test
 elements_add_unit_test(Storage tests/src/Storage_test.cpp
                        EXECUTABLE Storage_test

@@ -29,7 +29,9 @@ def main():
     outputdata = """#ifndef _THIS_PROJECT_H_
 #define _THIS_PROJECT_H_
 /* Automatically generated file: do not modify! */
+#include <string>
 #include "%(proj)s_VERSION.h"
+#include "%(proj)s_INSTALL.h"
 #include "ElementsKernel/Version.h"
 #define THIS_PROJECT_MAJOR_VERSION %(proj)s_MAJOR_VERSION
 #define THIS_PROJECT_MINOR_VERSION %(proj)s_MINOR_VERSION
@@ -38,6 +40,10 @@ def main():
 #define THIS_PROJECT_VERSION_STRING Elements::getVersionString(THIS_PROJECT_MAJOR_VERSION,THIS_PROJECT_MINOR_VERSION,THIS_PROJECT_PATCH_VERSION)
 #define THIS_PROJECT_NAME %(Proj)s
 #define THIS_PROJECT_NAME_STRING std::string("%(Proj)s")
+#define THIS_PROJECT_INSTALL_LOCATION %(proj)s_INSTALL_LOCATION
+#define _xstr(s) str(s)
+#define _str(s) #s
+#define THIS_PROJECT_INSTALL_LOCATION_STRING std::string(_str(%(proj)s_INSTALL_LOCATION))
 #endif
 """ % { 'proj': project.upper(), 'Proj': project}
 

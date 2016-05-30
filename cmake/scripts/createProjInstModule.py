@@ -7,17 +7,17 @@ from optparse import OptionParser
 
 def main():
     parser = OptionParser(
-        usage="ERROR: Usage %prog <project> <outputfile>")
+        usage="ERROR: Usage %prog <project> <location> <outputfile>")
     parser.add_option("-q", "--quiet", action="store_true",
                       help="Do not print messages.")
     opts, args = parser.parse_args()
 
-    if len(args) != 2:
+    if len(args) != 3:
         parser.error("wrong number of arguments")
 
-    project, outputfile = args
+    project, location, outputfile = args
     if not opts.quiet:
-        print("Creating %s for %s %s" % (outputfile, project, version))
+        print("Creating %s for %s with %s install location" % (outputfile, project, location))
 
     outdir = os.path.dirname(outputfile)
     if not os.path.exists(outdir):
@@ -27,21 +27,8 @@ def main():
 
     # Prepare data to be written
     outputdata = """# Automatically generated file: do not modify!
-
-from ElementsKernel.Version import getVersionString
-from %(proj)s_VERSION import %(proj)s_MAJOR_VERSION, %(proj)s_MINOR_VERSION, %(proj)s_PATCH_VERSION
-from %(proj)s_VERSION import %(proj)s_VERSION
-from %(proj)s_INSTALL import %(proj)s_INSTALL_LOCATION
-
-
-THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION
-THIS_PROJECT_MINOR_VERSION = %(proj)s_MINOR_VERSION
-THIS_PROJECT_PATCH_VERSION = %(proj)s_PATCH_VERSION
-THIS_PROJECT_VERSION = %(proj)s_VERSION
-THIS_PROJECT_VERSION_STRING = getVersionString(THIS_PROJECT_MAJOR_VERSION,THIS_PROJECT_MINOR_VERSION,THIS_PROJECT_PATCH_VERSION)
-THIS_PROJECT_NAME = "%(Proj)s"
-THIS_PROJECT_INSTALL_LOCATION = %(proj)s_INSTALL_LOCATION
-""" % { 'proj': project.upper(), 'Proj': project}
+%(proj)s_INSTALL_LOCATION = "%(location)s"
+""" % { 'proj': project.upper(), 'location': location }
 
     # Get the current content of the destination file (if any)
     try:
