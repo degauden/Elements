@@ -41,8 +41,9 @@ def main():
         os.makedirs(outdir)
 
     # Prepare data to be written
-    outputdata = """#ifndef %(proj)s_VERSION
+    outputdata = """#ifndef %(proj)s_VERSION_H
 /* Automatically generated file: do not modify! */
+#include "ElementsKernel/Version.h"
 #ifndef CALC_ELEMENTS_VERSION
 #define CALC_ELEMENTS_VERSION(maj,min,pat) (((maj) << 32) + ((min) << 16) + (pat))
 #endif
@@ -50,6 +51,7 @@ def main():
 #define %(proj)s_MINOR_VERSION %(min)d
 #define %(proj)s_PATCH_VERSION %(pat)d
 #define %(proj)s_VERSION CALC_ELEMENTS_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)
+#define %(proj)s_VERSION_STRING Elements::getVersionString(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)
 #endif
 """ % { 'proj': project.upper(), 'min': minver, 'maj': majver, 'pat': patver }
 
