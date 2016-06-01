@@ -28,9 +28,8 @@ def main():
     # Prepare data to be written
     outputdata = """# Automatically generated file: do not modify!
 
-from ElementsKernel.Version import getVersionString
 from %(proj)s_VERSION import %(proj)s_MAJOR_VERSION, %(proj)s_MINOR_VERSION, %(proj)s_PATCH_VERSION
-from %(proj)s_VERSION import %(proj)s_VERSION
+from %(proj)s_VERSION import %(proj)s_VERSION, %(proj)s_VERSION_STRING
 from %(proj)s_INSTALL import %(proj)s_INSTALL_LOCATION
 
 
@@ -38,7 +37,7 @@ THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION
 THIS_PROJECT_MINOR_VERSION = %(proj)s_MINOR_VERSION
 THIS_PROJECT_PATCH_VERSION = %(proj)s_PATCH_VERSION
 THIS_PROJECT_VERSION = %(proj)s_VERSION
-THIS_PROJECT_VERSION_STRING = getVersionString(THIS_PROJECT_MAJOR_VERSION,THIS_PROJECT_MINOR_VERSION,THIS_PROJECT_PATCH_VERSION)
+THIS_PROJECT_VERSION_STRING = %(proj)s_VERSION_STRING
 THIS_PROJECT_NAME = "%(Proj)s"
 THIS_PROJECT_INSTALL_LOCATION = %(proj)s_INSTALL_LOCATION
 """ % { 'proj': project.upper(), 'Proj': project}

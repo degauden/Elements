@@ -42,10 +42,12 @@ def main():
 
     # Prepare data to be written
     outputdata = """# Automatically generated file: do not modify!
+from ElementsKernel.Version import getVersionString
 %(proj)s_MAJOR_VERSION = %(maj)d
 %(proj)s_MINOR_VERSION = %(min)d
 %(proj)s_PATCH_VERSION = %(pat)d
 %(proj)s_VERSION = (%(maj)d << 32) + (%(min)d << 16 ) + (%(pat)d)
+%(proj)s_VERSION_STRING = getVersionString(%(proj)s_MAJOR_VERSION, %(proj)s_MINOR_VERSION, %(proj)s_PATCH_VERSION)
 
 """ % { 'proj': project.upper(), 'min': minver, 'maj': majver, 'pat': patver }
 
