@@ -40,13 +40,7 @@ def main():
 #define THIS_PROJECT_NAME %(Proj)s
 #define THIS_PROJECT_NAME_STRING std::string("%(Proj)s")
 #define THIS_PROJECT_INSTALL_LOCATION %(proj)s_INSTALL_LOCATION
-#ifndef _xstr
-#  define _xstr(s) str(s)
-#endif
-#ifndef _str
-#  define _str(s) #s
-#endif
-#define THIS_PROJECT_INSTALL_LOCATION_STRING std::string(_str(%(proj)s_INSTALL_LOCATION))
+#define THIS_PROJECT_INSTALL_LOCATION_STRING std::string(%(proj)s_INSTALL_LOCATION_STRING)
 #endif
 """ % { 'proj': project.upper(), 'Proj': project}
 

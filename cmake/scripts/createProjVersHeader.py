@@ -42,6 +42,7 @@ def main():
 
     # Prepare data to be written
     outputdata = """#ifndef %(proj)s_VERSION_H
+#define %(proj)s_VERSION_H
 /* Automatically generated file: do not modify! */
 #include "ElementsKernel/Version.h"
 #ifndef CALC_ELEMENTS_VERSION
