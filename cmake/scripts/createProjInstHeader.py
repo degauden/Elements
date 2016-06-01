@@ -29,14 +29,8 @@ def main():
     outputdata = """#ifndef %(proj)s_INSTALL_H
 #define %(proj)s_INSTALL_H
 /* Automatically generated file: do not modify! */
-#define %(proj)s_INSTALL_LOCATION %(location)s
-#ifndef _xstr
-#  define _xstr(s) str(s)
-#endif
-#ifndef _str
-#  define _str(s) #s
-#endif
-#define %(proj)s_INSTALL_LOCATION_STRING std::string(_str(%(proj)s_INSTALL_LOCATION))
+#include <string>
+const std::string %(proj)s_INSTALL_LOCATION_STRING {"%(location)s"};
 #endif
 """ % { 'proj': project.upper(), 'location': location }
 

@@ -29,18 +29,17 @@ def main():
     outputdata = """#ifndef _THIS_PROJECT_H_
 #define _THIS_PROJECT_H_
 /* Automatically generated file: do not modify! */
+#include <cstdint>
 #include <string>
 #include "%(proj)s_VERSION.h"
 #include "%(proj)s_INSTALL.h"
-#define THIS_PROJECT_MAJOR_VERSION %(proj)s_MAJOR_VERSION
-#define THIS_PROJECT_MINOR_VERSION %(proj)s_MINOR_VERSION
-#define THIS_PROJECT_PATCH_VERSION %(proj)s_PATCH_VERSION
-#define THIS_PROJECT_VERSION CALC_ELEMENTS_VERSION(THIS_PROJECT_MAJOR_VERSION,THIS_PROJECT_MINOR_VERSION,THIS_PROJECT_PATCH_VERSION)
-#define THIS_PROJECT_VERSION_STRING %(proj)s_VERSION_STRING
-#define THIS_PROJECT_NAME %(Proj)s
-#define THIS_PROJECT_NAME_STRING std::string("%(Proj)s")
-#define THIS_PROJECT_INSTALL_LOCATION %(proj)s_INSTALL_LOCATION
-#define THIS_PROJECT_INSTALL_LOCATION_STRING std::string(%(proj)s_INSTALL_LOCATION_STRING)
+constexpr std::uint_least64_t THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION;
+constexpr std::uint_least64_t THIS_PROJECT_MINOR_VERSION = %(proj)s_MINOR_VERSION;
+constexpr std::uint_least64_t THIS_PROJECT_PATCH_VERSION = %(proj)s_PATCH_VERSION;
+constexpr std::uint_least64_t THIS_PROJECT_VERSION = %(proj)s_VERSION;
+const std::string THIS_PROJECT_VERSION_STRING {%(proj)s_VERSION_STRING};
+const std::string THIS_PROJECT_NAME_STRING {"%(Proj)s"};
+const std::string THIS_PROJECT_INSTALL_LOCATION_STRING {%(proj)s_INSTALL_LOCATION_STRING};
 #endif
 """ % { 'proj': project.upper(), 'Proj': project}
 

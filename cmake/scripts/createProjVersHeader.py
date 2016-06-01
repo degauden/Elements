@@ -44,15 +44,14 @@ def main():
     outputdata = """#ifndef %(proj)s_VERSION_H
 #define %(proj)s_VERSION_H
 /* Automatically generated file: do not modify! */
+#include <cstdint>
+#include <string>
 #include "ElementsKernel/Version.h"
-#ifndef CALC_ELEMENTS_VERSION
-#define CALC_ELEMENTS_VERSION(maj,min,pat) (((maj) << 32) + ((min) << 16) + (pat))
-#endif
-#define %(proj)s_MAJOR_VERSION %(maj)d
-#define %(proj)s_MINOR_VERSION %(min)d
-#define %(proj)s_PATCH_VERSION %(pat)d
-#define %(proj)s_VERSION CALC_ELEMENTS_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)
-#define %(proj)s_VERSION_STRING Elements::getVersionString(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)
+constexpr std::uint_least64_t %(proj)s_MAJOR_VERSION = %(maj)d;
+constexpr std::uint_least64_t %(proj)s_MINOR_VERSION = %(min)d;
+constexpr std::uint_least64_t %(proj)s_PATCH_VERSION = %(pat)d;
+constexpr std::uint_least64_t %(proj)s_VERSION = CALC_PROJECT_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION);
+const std::string %(proj)s_VERSION_STRING {Elements::getVersionString(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)};
 #endif
 """ % { 'proj': project.upper(), 'min': minver, 'maj': majver, 'pat': patver }
 

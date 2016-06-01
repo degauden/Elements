@@ -20,7 +20,15 @@
 #ifndef VERSION_H_
 #define VERSION_H_
 
+#include <cstdint>
 #include "ElementsKernel/Export.h" // ELEMENTS_API
+
+constexpr std::uint_least64_t CALC_PROJECT_VERSION(const std::uint_least64_t maj,
+                                                   const std::uint_least64_t min,
+                                                   const std::uint_least64_t pat) {
+  return (((maj) << 32) + ((min) << 16) + (pat));
+}
+
 
 namespace Elements {
 
