@@ -179,6 +179,13 @@ elements_add_executable(CCfitsExample src/program/CCfitsExample.cpp
 elements_add_test(CCfitsWorks COMMAND CCfitsExample LABELS CCfits Build)
 endif()
 
+find_package(Cfitsio QUIET)
+if(CFITSIO_FOUND)
+elements_add_executable(CfitsioExample src/program/CfitsioExample.cpp
+                        LINK_LIBRARIES Cfitsio ElementsExamples
+                        INCLUDE_DIRS Cfitsio ElementsExamples)
+elements_add_test(CfitsioWorks COMMAND CfitsioExample LABELS Cfitsio Build)
+endif()
 
 find_package(SWIG QUIET)
 find_package(PythonLibs QUIET)
