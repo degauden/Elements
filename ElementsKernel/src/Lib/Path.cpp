@@ -39,28 +39,38 @@ using std::vector;
 using std::map;
 
 namespace Elements {
+namespace Path {
 
-map<PathType, string> PathVariable  {
-  { PathType::executable,                  "PATH"},
-  { PathType::library,     System::SHLIB_VAR_NAME},
-  { PathType::python,                "PYTHONPATH"},
-  { PathType::configuration, "ELEMENTS_CONF_PATH"},
-  { PathType::auxiliary,      "ELEMENTS_AUX_PATH"}
+map<Type, string> VARIABLE  {
+  { Type::executable,                  "PATH"},
+  { Type::library,     System::SHLIB_VAR_NAME},
+  { Type::python,                "PYTHONPATH"},
+  { Type::configuration, "ELEMENTS_CONF_PATH"},
+  { Type::auxiliary,      "ELEMENTS_AUX_PATH"}
 };
 
-map<PathType, vector<string>> DefaultLocation {
-  {PathType::executable, {}},
-  {PathType::library, {"/usr/lib64", "/usr/lib"}},
-  {PathType::python, {}},
-  {PathType::configuration, {"/usr/share/conf"}},
-  {PathType::auxiliary, {"/usr/share/auxiliary"}}
+map<Type, vector<string>> SUFFIXES {
+  {Type::executable, {"scripts", "bin"}},
+  {Type::library, {"lib"}},
+  {Type::python, {"python"}},
+  {Type::configuration, {"conf"}},
+  {Type::auxiliary, {"auxdir", "aux"}}
+};
+
+
+map<Type, vector<string>> DEFAULT_LOCATIONS {
+  {Type::executable, {}},
+  {Type::library, {"/usr/lib64", "/usr/lib"}},
+  {Type::python, {}},
+  {Type::configuration, {"/usr/share/conf"}},
+  {Type::auxiliary, {"/usr/share/auxiliary"}}
 };
 
 
 
 vector<fs::path> getRawLocationsFromEnv(const string& path_variable, bool exist_only) {
 
-  using Elements::System::getEnv;
+  using System::getEnv;
 
   string env_content = getEnv(path_variable);
 
@@ -102,4 +112,5 @@ template fs::path getPathFromLocations(const string& file_name, const vector<str
 template fs::path getPathFromEnvVariable<fs::path>(const fs::path& file_name, const string& path_variable);
 template fs::path getPathFromEnvVariable<string>(const string& file_name, const string& path_variable);
 
+} // Path namespace
 } // Elements namespace

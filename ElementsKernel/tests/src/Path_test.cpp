@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(PathConstructor_test) {
 
 BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Path_Fixture) {
 
-  using Elements::getPathFromLocations;
+  using Elements::Path::getPathFromLocations;
   using std::endl;
 
   fs::path that_file = getPathFromLocations("Bla", m_item_list);
@@ -114,7 +114,7 @@ BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Path_Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(getFromStringLocations_test, Path_Fixture) {
 
-  using Elements::getPathFromLocations;
+  using Elements::Path::getPathFromLocations;
   using std::endl;
   using std::transform;
 
