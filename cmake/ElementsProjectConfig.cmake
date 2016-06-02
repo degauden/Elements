@@ -208,14 +208,14 @@ macro(elements_project project version)
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
       CACHE STRING "path to the XML file for the environment to be used in building and testing")
 
-  set(installed_env_xml ${CMAKE_INSTALL_PREFIX}/${project}BuildEnvironment.xml
+  set(installed_env_xml \${CMAKE_INSTALL_PREFIX}/${project}BuildEnvironment.xml
       CACHE STRING "path to the XML file for the environment to be used for installation")
 
 
   set(env_release_xml ${CMAKE_BINARY_DIR}/${project}Environment.xml
       CACHE STRING "path to the XML file for the environment to be used once the project is installed")
 
-  set(installed_env_release_xml ${CMAKE_INSTALL_PREFIX}/${project}Environment.xml
+  set(installed_env_release_xml \${CMAKE_INSTALL_PREFIX}/${project}Environment.xml
       CACHE STRING "path to the XML file for the environment to be used once the project is installed")
 
 
@@ -447,7 +447,9 @@ macro(elements_project project version)
     execute_process(COMMAND
                     ${instheader_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${CMAKE_BINARY_DIR}/include/${_proj}_INSTALL.h)
-    install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_INSTALL.h DESTINATION include)
+    # special installation because the install location can be changed on the fly
+    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \${CMAKE_INSTALL_PREFIX}/include\"\)
+execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} \${CMAKE_INSTALL_PREFIX}/include/${_proj}_INSTALL.h\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
 
@@ -474,7 +476,10 @@ macro(elements_project project version)
     execute_process(COMMAND
                     ${instmodule_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
-    install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py DESTINATION python)
+    # install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py DESTINATION python)
+    # special install procedure because the install loction can be changed on the fly.
+    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \${CMAKE_INSTALL_PREFIX}/python\"\)
+execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} \${CMAKE_INSTALL_PREFIX}/python/${_proj}_INSTALL.py\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   endif()
 
@@ -554,7 +559,7 @@ macro(elements_project project version)
 
   # - collect internal environment
   message(STATUS "  environment for the project")
-  
+
   foreach(other_project ${used_elements_projects})
     set(project_environment ${project_environment}
         SEARCH_PATH ${${other_project}_DIR})
@@ -565,7 +570,7 @@ macro(elements_project project version)
         INCLUDE ${other_project}Environment.xml)
   endforeach()
 
-  
+
   #   - installation dirs
   set(project_environment ${project_environment}
         PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/scripts
@@ -586,7 +591,7 @@ macro(elements_project project version)
         INCLUDE ${other_project}BuildEnvironment.xml)
   endforeach()
 
-  
+
   #     (installation dirs added to build env to be able to test pre-built bins)
   set(project_build_environment ${project_build_environment}
         PREPEND PATH ${CMAKE_INSTALL_PREFIX}/scripts
@@ -705,7 +710,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
   #--- Generate the manifest.xml file.
   elements_generate_project_manifest(${CMAKE_BINARY_DIR}/manifest.xml ${ARGV})
-  install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION ${CMAKE_INSTALL_PREFIX})
+  install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION .)
 
   #--- CPack configuration
   # Please have a look at the general CPack documentation at
@@ -723,7 +728,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   set(CPACK_PACKAGING_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   set(CPACK_GENERATOR RPM)
   set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
-  
+
   set(CPACK_PACKAGE_RELEASE 1 CACHE STRING "Release Number For the Packaging")
   set(CPACK_PACKAGE_VENDOR "The Euclid Consortium")
 
@@ -1939,11 +1944,11 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
   elements_expand_source_dirs(h_srcs ${ARG_PUBLIC_HEADERS})
 
   add_library(${library} ${srcs} ${h_srcs})
-  
+
   if(ARG_LINKER_LANGUAGE)
     set_target_properties(${library} PROPERTIES LINKER_LANGUAGE ${ARG_LINKER_LANGUAGE})
   endif()
-  
+
   set_target_properties(${library} PROPERTIES COMPILE_DEFINITIONS ELEMENTS_LINKER_LIBRARY)
   target_link_libraries(${library} ${ARG_LINK_LIBRARIES})
   _elements_detach_debinfo(${library})
@@ -2761,7 +2766,7 @@ if(PACKAGE_NAME STREQUAL PACKAGE_FIND_NAME)
   endif()
 endif()
 ")
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_PREFIX})
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION .)
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}ConfigVersion.cmake)
 endmacro()
 
@@ -2791,7 +2796,7 @@ list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake/modules)
 list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake)
 include(${CMAKE_PROJECT_NAME}PlatformConfig)
 ")
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION ${CMAKE_INSTALL_PREFIX})
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION .)
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}Config.cmake)
 endmacro()
 
@@ -2929,7 +2934,7 @@ macro(_env_line cmd var val output)
     if(${inc_path})
       set(${output} "<env:include hints=\"${inc_path}\">${inc_name}</env:include>")
     else()
-      set(${output} "<env:include>${inc_name}</env:include>")    
+      set(${output} "<env:include>${inc_name}</env:include>")
     endif()
   elseif(${cmd} STREQUAL "SEARCH_PATH")
     set(${output} "<env:search_path>${var}</env:search_path>")
