@@ -28,11 +28,11 @@ import os
 
 Type = ["executable", "library", "python", "configuration", "auxiliary"]
 
-SUFFIXES = { "executable": ["scripts", "bin"],
-             "library": ["lib"],
-             "python": ["python"],
-             "configuration": ["conf"],
-             "auxiliary": ["auxdir", "aux"] }
+SUFFIXES = {"executable": ["scripts", "bin"],
+            "library": ["lib"],
+            "python": ["python"],
+            "configuration": ["conf"],
+            "auxiliary": ["auxdir", "aux"]}
 
 def getPathFromEnvVariable(file_name, path_variable):
     """

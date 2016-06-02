@@ -66,8 +66,6 @@ map<Type, vector<string>> DEFAULT_LOCATIONS {
   {Type::auxiliary, {"/usr/share/auxiliary"}}
 };
 
-
-
 vector<fs::path> getRawLocationsFromEnv(const string& path_variable, bool exist_only) {
 
   using System::getEnv;
