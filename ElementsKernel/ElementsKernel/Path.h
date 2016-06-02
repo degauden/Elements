@@ -32,8 +32,9 @@
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
+namespace Path {
 
-enum class PathType {
+enum class Type {
   executable,
   library,
   python,
@@ -44,9 +45,18 @@ enum class PathType {
 /**
  * @brief map containing the name of the path variable for each type
  */
-ELEMENTS_API extern std::map<PathType, std::string> PathVariable;
+ELEMENTS_API extern std::map<Type, std::string> VARIABLE;
 
-ELEMENTS_API extern std::map<PathType, std::vector<std::string>> DefaultLocation;
+/**
+ * @brief map containing the default project installation
+ * suffixes for each variable
+ */
+ELEMENTS_API extern std::map<Type, std::vector<std::string>> SUFFFIXES;
+
+/**
+ * @brief map containing the default external locations for each variable
+ */
+ELEMENTS_API extern std::map<Type, std::vector<std::string>> DEFAULT_LOCATIONS;
 
 /**
  * @brief function to get the locations from an environment variable
@@ -113,6 +123,7 @@ ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, co
 template <typename T>
 ELEMENTS_API boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable);
 
+}  // Path namespace
 }  // Elements namespace
 
 #include "ElementsKernel/_impl/Path.icpp"

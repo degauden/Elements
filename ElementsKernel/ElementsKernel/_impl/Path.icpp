@@ -27,6 +27,7 @@
 #include <boost/filesystem.hpp>        // for boost::filesystem
 
 namespace Elements {
+namespace Path {
 
 template <typename T, typename U>
 boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations) {
@@ -62,6 +63,7 @@ boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::st
 
 }
 
+} // Path namespace
 } // Elements namespace
 
 

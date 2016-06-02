@@ -26,6 +26,14 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 from ElementsKernel import Logging
 import os
 
+Type = ["executable", "library", "python", "configuration", "auxiliary"]
+
+SUFFIXES = { "executable": ["scripts", "bin"],
+             "library": ["lib"],
+             "python": ["python"],
+             "configuration": ["conf"],
+             "auxiliary": ["auxdir", "aux"] }
+
 def getPathFromEnvVariable(file_name, path_variable):
     """
     Look for the first path valid in the <path_variable> environment
