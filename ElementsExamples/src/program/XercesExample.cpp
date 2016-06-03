@@ -18,7 +18,8 @@
  *
  */
 
-#include <cstdio>
+#include <map>                              // for map
+#include <string>                           // for string
 
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/format.hpp>                 // for format
@@ -32,20 +33,22 @@
 namespace Elements {
 namespace Examples {
 
-using namespace XERCES_CPP_NAMESPACE;
+using namespace XERCES_CPP_NAMESPACE;       // needed to avoid an unneeded ugly ns
+using std::map;
+using std::string;
 
 namespace po = boost::program_options;
 
 using namespace std;
 
-class XercesExample: public Elements::Program {
+class XercesExample: public Program {
 
 public:
 
 
-  Elements::ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
-    Elements::Logging logger = Elements::Logging::getLogger("XercesExample");
+    Logging logger = Logging::getLogger("XercesExample");
 
     XMLPlatformUtils::Initialize();
 
@@ -55,7 +58,7 @@ public:
 
     logger.info() << "done with test program! ";
 
-    return Elements::ExitCode::OK;
+    return ExitCode::OK;
 
   }
 

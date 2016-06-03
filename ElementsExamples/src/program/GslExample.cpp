@@ -18,8 +18,8 @@
  *
  */
 
-#include <cstdio>
-
+#include <map>                              // for map
+#include <string>                           // for string
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/format.hpp>                 // for format
 
@@ -34,16 +34,17 @@ namespace Examples {
 
 namespace po = boost::program_options;
 
-using namespace std;
+using std::map;
+using std::string;
 
-class GslExample: public Elements::Program {
+class GslExample: public Program {
 
 public:
 
 
-  Elements::ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
-    Elements::Logging logger = Elements::Logging::getLogger("GslExample");
+    Logging logger = Logging::getLogger("GslExample");
 
     logger.info() << "GSL version: " << gsl_version;
 
@@ -54,7 +55,7 @@ public:
 
     logger.info() << boost::format("J0(%g) = %.18e\n") % x % y;
 
-    return Elements::ExitCode::OK;
+    return ExitCode::OK;
 
   }
 

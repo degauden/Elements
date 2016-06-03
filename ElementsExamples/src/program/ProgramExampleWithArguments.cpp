@@ -19,15 +19,21 @@
  *
  */
 
-#include <utility> // for pair
-#include <iostream>
+#include <utility>                           // for pair, make_pair
+#include <iostream>                          // for coud, endl
+#include <map>                               // for map
+#include <string>                            // for string
+#include <vector>                            // for vector
 
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
 
 namespace po = boost::program_options;
 
-using namespace std;
+//using namespace std;
+using std::map;
+using std::string;
+using std::vector;
 
 namespace Elements {
 namespace Examples {
@@ -55,33 +61,36 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod (ELEMENTS_UNUSED map<std::string, po::variable_value>& args) {
+  ExitCode mainMethod (ELEMENTS_UNUSED map<string, po::variable_value>& args) {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();
 
     logger.info("This Works");
 
+    using std::cout;
+    using std::endl;
+
     cout << "This Works too!" << endl;
 
     if (args.count("input-files")) {
-      std::vector<std::string> files = args["input-files"].as<std::vector<std::string>>();
-      for (std::string file : files) {
-        std::cout << "Input file " << file << std::endl;
+      vector<string> files = args["input-files"].as<vector<string>>();
+      for (string file : files) {
+        cout << "Input file " << file << endl;
       }
     }
     return ExitCode::OK;
 
   }
 
-  pair<po::options_description, po::positional_options_description> defineProgramArguments () {
+  std::pair<po::options_description, po::positional_options_description> defineProgramArguments () {
     po::options_description desc("");
-    desc.add_options()("input-files", po::value<std::vector<std::string>>(), "Input files");
+    desc.add_options()("input-files", po::value<vector<string>>(), "Input files");
 
     po::positional_options_description pos_desc;
     pos_desc.add("input-files", -1);
 
-    return make_pair(desc, pos_desc);
+    return std::make_pair(desc, pos_desc);
   }
 
 };

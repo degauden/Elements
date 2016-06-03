@@ -19,14 +19,18 @@
  *
  */
 
-#include <iostream>
+#include <iostream>                           // for cout, endl
+#include <map>                                // for map
+#include <string>                             // for string
 
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
 
 namespace po = boost::program_options;
 
-using namespace std;
+//using namespace std;
+using std::map;
+using std::string;
 
 namespace Elements {
 namespace Examples {
@@ -55,14 +59,14 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(ELEMENTS_UNUSED map<std::string, po::variable_value>& args) {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();
 
     logger.info("This Works");
 
-    cout << "This Works too!" << endl;
+    std::cout << "This Works too!" << std::endl;
 
     return ExitCode::OK;
 

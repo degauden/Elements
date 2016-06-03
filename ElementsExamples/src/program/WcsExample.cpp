@@ -18,8 +18,8 @@
  *
  */
 
-#include <cstdio>
-
+#include <map>                              // for map
+#include <string>                           // for string
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/format.hpp>                 // for format
 
@@ -33,20 +33,21 @@ namespace Examples {
 
 namespace po = boost::program_options;
 
-using namespace std;
+using std::map;
+using std::string;
 
-class WcsExample: public Elements::Program {
+class WcsExample: public Program {
 
 public:
 
 
-  Elements::ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
-    Elements::Logging logger = Elements::Logging::getLogger("WcsExample");
+    Logging logger = Logging::getLogger("WcsExample");
 
     logger.info() << "done with test program! ";
 
-    return Elements::ExitCode::OK;
+    return ExitCode::OK;
 
   }
 
