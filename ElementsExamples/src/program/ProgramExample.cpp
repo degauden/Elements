@@ -18,6 +18,11 @@
  *
  */
 
+#include <map>                              // for map
+#include <string>                           // for string
+#include <vector>                           // for vector
+#include <utility>                          // for move
+#include <memory>                           // for unique_ptr
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 
@@ -30,7 +35,9 @@ namespace Examples {
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
-using namespace std;
+using std::map;
+using std::string;
+using std::vector;
 
 /**
  * @class ProgramExample
@@ -40,7 +47,7 @@ using namespace std;
  *    All C++ executable must extend the Elements::Program base class
  *
  */
-class ProgramExample: public Elements::Program {
+class ProgramExample: public Program {
 
 public:
 
@@ -86,9 +93,9 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  Elements::ExitCode mainMethod(map<string, po::variable_value>& args)
+  ExitCode mainMethod(map<string, po::variable_value>& args)
       override {
-    Elements::Logging logger = Elements::Logging::getLogger("ProgramExample");
+    Logging logger = Logging::getLogger("ProgramExample");
     logger.info("Entering mainMethod()");
     logger.info("#");
     /*
@@ -117,7 +124,7 @@ public:
      * The string-option has a default empty string value, so that it can always be
      * printed event as an empty string
      */
-    std::string string_example { args["string-option"].as<string>() };
+    string string_example { args["string-option"].as<string>() };
     logger.info() << "String option value: " << string_example;
 
     // Some initialization
@@ -146,7 +153,7 @@ public:
        double second = 0.0;
        division_result = example_class_object.divideNumbers(first, second);
        //
-     } catch (const Elements::Exception & e) {
+     } catch (const Exception & e) {
        logger.info("#");
        logger.info() << e.what();
        logger.info("#");
@@ -162,15 +169,15 @@ public:
      * method called. The vector_unique_ptr cannot be used in this method anymore after the
      * call.
      */
-    std::unique_ptr<std::vector<double>> vector_unique_ptr {
-      new std::vector<double> { 1.0, 2.3, 4.5 } };
+    std::unique_ptr<vector<double>> vector_unique_ptr {
+      new vector<double> { 1.0, 2.3, 4.5 } };
     example_class_object.passingUniquePointer(std::move(vector_unique_ptr));
 
     /*
      * Illustration on how best to pass any object. The passingObjectInGeneral() is taking
      * a reference to this object.
      */
-    std::vector<double> object_example { std::vector<double> { 1.0, 2.3, 4.5 } };
+    vector<double> object_example { vector<double> { 1.0, 2.3, 4.5 } };
     example_class_object.passingObjectInGeneral(object_example);
 
     logger.info() << "Function Example: " << functionExample(3);
@@ -178,7 +185,7 @@ public:
 
     logger.info("#");
     logger.info("Exiting mainMethod()");
-    return Elements::ExitCode::OK;
+    return ExitCode::OK;
   }
 
 };

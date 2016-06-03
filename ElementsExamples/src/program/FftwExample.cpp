@@ -20,6 +20,8 @@
 
 #include <cstdio>
 #include <cmath>                            // for cos
+#include <map>                              // for map
+#include <string>                           // for string
 
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/format.hpp>                 // for format
@@ -35,25 +37,28 @@ namespace Examples {
 
 namespace po = boost::program_options;
 
-using namespace std;
+using std::map;
+using std::string;
 
 constexpr size_t N = 32;
 
-class FftwExample: public Elements::Program {
+class FftwExample: public Program {
 
 public:
 
 
-  Elements::ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
-    Elements::Logging logger = Elements::Logging::getLogger("FftwExample");
+    Logging logger = Logging::getLogger("FftwExample");
 
     fftw_complex in[N], out[N], in2[N]; /* double [2] */
     fftw_plan p, q;
 
+    using std::cos;
+
     /* prepare a cosine wave */
     for (size_t i = 0; i < N; i++) {
-      in[i][0] = cos(3 * 2*Elements::Units::pi*i/N);
+      in[i][0] = cos(3 * 2*Units::pi*i/N);
       in[i][1] = 0;
     }
 
@@ -83,7 +88,7 @@ public:
 
     logger.info() << "This is the end of the test";
 
-    return Elements::ExitCode::OK;
+    return ExitCode::OK;
 
   }
 

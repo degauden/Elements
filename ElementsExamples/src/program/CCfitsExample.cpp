@@ -18,6 +18,7 @@
  *
  */
 
+#include <map>                              // for map
 #include <string>                           // for string
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/format.hpp>                 // for format
@@ -33,15 +34,17 @@ namespace Examples {
 
 namespace po = boost::program_options;
 
-using namespace std;
+//using namespace std;
+using std::string;
+using std::map;
 
-class CCfitsExample: public Elements::Program {
+class CCfitsExample: public Program {
 
 public:
 
-  Elements::ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
-    Elements::Logging logger = Elements::Logging::getLogger("CCfitsExample");
+    Logging logger = Logging::getLogger("CCfitsExample");
 
     string test_upper_string {"THATSTRING"};
     logger.info() << "This is the test upper string: " << test_upper_string;
@@ -52,7 +55,7 @@ public:
 
     logger.info() << "done with test program! ";
 
-    return Elements::ExitCode::OK;
+    return ExitCode::OK;
 
   }
 
