@@ -21,7 +21,6 @@
 #include <map>                              // for map
 #include <string>                           // for string
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
-#include <boost/format.hpp>                 // for format
 
 #include <fitsio.h>
 
@@ -47,9 +46,7 @@ public:
 
     int a = fits_is_reentrant();
 
-
     logger.info() << "Cfitsio is reentrant: " << a;
-
 
     logger.info() << "done with test program! ";
 

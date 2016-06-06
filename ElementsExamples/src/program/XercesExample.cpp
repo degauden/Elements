@@ -22,7 +22,6 @@
 #include <string>                           // for string
 
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
-#include <boost/format.hpp>                 // for format
 
 #include <xercesc/util/XercesVersion.hpp>   // For gXercesFullVersionStr
 #include <xercesc/util/PlatformUtils.hpp>   // for Initialize and Terminate
