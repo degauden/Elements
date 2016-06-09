@@ -24,10 +24,11 @@ template = """\
 # Automatically generated file: do not modify!
 
 from ThisProject import THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME
+from ThisProject import THIS_PROJECT_SEARCH_DIRS
 
 from ElementsKernel.Program import Program
 
-p = Program('%(MODULE_NAME)s', THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME)
+p = Program('%(MODULE_NAME)s', THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME, THIS_PROJECT_SEARCH_DIRS)
 exit(p.runProgram())
 """ % { 'MODULE_NAME' : args.module }
 

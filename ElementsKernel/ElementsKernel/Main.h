@@ -53,9 +53,10 @@
   ELEMENTS_UNUSED const auto installed={std::set_terminate(&Elements::ProgramManager::onTerminate)}; \
   ELEMENTS_API int main(int argc, char* argv[])              \
   {                                             \
-    Elements::ProgramManager man {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
-                                  THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING}; \
-    Elements::ExitCode exit_code =  man.run(argc, argv);   \
+    Elements::ProgramManager manager {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
+                                      THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
+                                      THIS_PROJECT_SEARCH_DIRS}; \
+    Elements::ExitCode exit_code =  manager.run(argc, argv);   \
     return static_cast<Elements::ExitCodeType>(exit_code);    \
   }
 

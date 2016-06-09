@@ -9,11 +9,13 @@ import ElementsKernel.Logging as log
 
 class Program(object):
     """Main Program Class"""
-    def __init__(self, app_module, parent_project_version=None, parent_project_name=None):
+    def __init__(self, app_module, parent_project_version=None, parent_project_name=None,
+                 search_dirs=None):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
+        self._search_dirs = search_dirs
 
     @staticmethod
     def _setupLogging(arg_parser):
