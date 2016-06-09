@@ -56,10 +56,12 @@ public:
    */
   ProgramManager(std::unique_ptr<Program> program_ptr,
                  std::string parent_project_version="",
-                 std::string parent_project_name="") :
+                 std::string parent_project_name="",
+                 std::set<std::string> search_dirs={}) :
       m_program_ptr(std::move(program_ptr)),
       m_parent_project_version(std::move(parent_project_version)),
-      m_parent_project_name(std::move(parent_project_name)){
+      m_parent_project_name(std::move(parent_project_name)),
+      m_search_dirs(std::move(search_dirs)){
   }
 
   /**
@@ -210,6 +212,14 @@ private:
    *     m_parent_project_version [m_parent_project_name]
    */
   std::string m_parent_project_name;
+
+  /**
+   * List of directories needed to update the runtime search
+   * environment (PATH, LD_LIBRARY_PATH, ELEMENTS_CONF_PATH,
+   * and ELEMENTS_AUX_PATH). This list contains the install
+   * locations of all the dependent projects.
+   */
+  std::set<std::string> m_search_dirs;
 
 };
 
