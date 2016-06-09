@@ -22,9 +22,10 @@
 #ifndef ELEMENTSPROGRAMMANAGER_H_
 #define ELEMENTSPROGRAMMANAGER_H_
 
-#include <map>
-#include <string>
-#include <memory>
+#include <map>                           // for map
+#include <string>                        // for string
+#include <memory>                        // for unique_ptr
+#include <set>                           // for set
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
@@ -53,7 +54,7 @@ public:
   /**
    * @brief Constructor
    */
-  ProgramManager(std::unique_ptr<Elements::Program> program_ptr,
+  ProgramManager(std::unique_ptr<Program> program_ptr,
                  std::string parent_project_version="",
                  std::string parent_project_name="") :
       m_program_ptr(std::move(program_ptr)),
@@ -193,7 +194,7 @@ private:
    *   mainMethod()
    *
    */
-  std::unique_ptr<Elements::Program> m_program_ptr;
+  std::unique_ptr<Program> m_program_ptr;
 
   /**
    * Internal version of the program. By convention, it is the same
