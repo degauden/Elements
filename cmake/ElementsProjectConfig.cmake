@@ -474,13 +474,14 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   endif()
 
   if(instmodule_cmd)
+    JOIN("${used_elements_projects}" ":" joined_used_projects)
     execute_process(COMMAND
                     ${instmodule_cmd} --quiet
-                    ${project} ${CMAKE_INSTALL_PREFIX} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
+                    ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
     # install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py DESTINATION python)
     # special install procedure because the install loction can be changed on the fly.
     install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \${CMAKE_INSTALL_PREFIX}/python\"\)
-execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} \${CMAKE_INSTALL_PREFIX}/python/${_proj}_INSTALL.py\)")
+execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/python/${_proj}_INSTALL.py\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   endif()
 

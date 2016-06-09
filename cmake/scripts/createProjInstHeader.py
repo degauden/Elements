@@ -15,8 +15,6 @@ def main():
     if len(args) > 4:
         parser.error("wrong number of arguments: %s" % ",".join(args))
 
-
-
     if len(args) == 3:
         project, location, outputfile = args
         used_projects = []
