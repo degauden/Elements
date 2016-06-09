@@ -444,12 +444,13 @@ macro(elements_project project version)
   endif()
 
   if(instheader_cmd)
+    JOIN("${used_elements_projects}" ":" joined_used_projects)
     execute_process(COMMAND
                     ${instheader_cmd} --quiet
-                    ${project} ${CMAKE_INSTALL_PREFIX} ${CMAKE_BINARY_DIR}/include/${_proj}_INSTALL.h)
+                    ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/include/${_proj}_INSTALL.h)
     # special installation because the install location can be changed on the fly
     install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \${CMAKE_INSTALL_PREFIX}/include\"\)
-execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} \${CMAKE_INSTALL_PREFIX}/include/${_proj}_INSTALL.h\)")
+execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/include/${_proj}_INSTALL.h\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
 

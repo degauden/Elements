@@ -22,14 +22,15 @@
 #ifndef ELEMENTSPROGRAM_H_
 #define ELEMENTSPROGRAM_H_
 
-#include <string>
-#include <utility>
-#include <map>
+#include <string>                       // for string
+#include <utility>                      // for pair
+#include <map>                          // for map
+#include <memory>                       // for unique_ptr
 
 #include <boost/program_options.hpp>
 
 #include "ElementsKernel/Export.h"      // ELEMENTS_API
-#include "ElementsKernel/Exit.h"        // for ExitCode, ExitCode::OK
+#include "ElementsKernel/Exit.h"        // for ExitCode
 
 namespace Elements {
 

@@ -22,9 +22,10 @@
 #define ELEMENTSKERNEL_MAIN_H_
 
 #include <exception>                               // for set_terminate
+#include <memory>                                  // for unique_ptr
 
-#include "ElementsKernel/Exit.h"
-#include "ElementsKernel/ProgramManager.h"
+#include "ElementsKernel/Exit.h"                   // for ExitCode
+#include "ElementsKernel/ProgramManager.h"         // for ProgramManager
 #include "ElementsKernel/Export.h"                 // for ELEMENTS_API
 #include "ElementsKernel/Unused.h"                 // for ELEMENTS_UNUSED
 

@@ -7,15 +7,23 @@ from optparse import OptionParser
 
 def main():
     parser = OptionParser(
-        usage="ERROR: Usage %prog <project> <location> <outputfile>")
+        usage="ERROR: Usage %prog <project> <location> <used_projects> <outputfile>")
     parser.add_option("-q", "--quiet", action="store_true",
                       help="Do not print messages.")
     opts, args = parser.parse_args()
 
-    if len(args) != 3:
-        parser.error("wrong number of arguments")
+    if len(args) > 4:
+        parser.error("wrong number of arguments: %s" % ",".join(args))
 
-    project, location, outputfile = args
+
+
+    if len(args) == 3:
+        project, location, outputfile = args
+        used_projects = []
+    else:
+        project, location, used_projects, outputfile = args
+        used_projects = used_projects.split(":")
+
     if not opts.quiet:
         print("Creating %s for %s with %s install location" % (outputfile, project, location))
 
@@ -29,10 +37,29 @@ def main():
     outputdata = """#ifndef %(proj)s_INSTALL_H
 #define %(proj)s_INSTALL_H
 /* Automatically generated file: do not modify! */
-#include <string>
+
+#include <string>       // for string
+#include <set>          // for set
+""" % { 'proj': project.upper() }
+
+    for p in used_projects:
+        outputdata += """#include "%(proj)s_INSTALL.h"
+""" % { 'proj': p.upper() }
+
+    outputdata += """
 const std::string %(proj)s_INSTALL_LOCATION_STRING {"%(location)s"};
-#endif
 """ % { 'proj': project.upper(), 'location': location }
+
+    used_locations = []
+    used_locations.append("%(proj)s_INSTALL_LOCATION_STRING" % { 'proj': project.upper()})
+    for p in reversed(used_projects):
+        used_locations.append("%(proj)s_INSTALL_LOCATION_STRING" % { 'proj': p.upper()})
+
+    outputdata += """
+const std::set<std::string> %(proj)s_SEARCH_DIRS {%(locations)s};
+#endif
+""" % { 'proj': project.upper(), 'locations': ", ".join(used_locations) }
+
 
     # Get the current content of the destination file (if any)
     try:
