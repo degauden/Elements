@@ -40,6 +40,7 @@ THIS_PROJECT_VERSION = %(proj)s_VERSION
 THIS_PROJECT_VERSION_STRING = %(proj)s_VERSION_STRING
 THIS_PROJECT_NAME = "%(Proj)s"
 THIS_PROJECT_INSTALL_LOCATION = %(proj)s_INSTALL_LOCATION
+THIS_PROJECT_SEARCH_DIRS = %(proj)s_SEARCH_DIRS
 """ % { 'proj': project.upper(), 'Proj': project}
 
     # Get the current content of the destination file (if any)
