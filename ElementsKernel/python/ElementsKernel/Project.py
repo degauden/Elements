@@ -19,7 +19,6 @@
 """
 File: ElementsKernel/Project.py
 Author: Nicolas Morisset
-         Astronomy Department of the University of Geneva
 
 Created on: 01/07/15
 This script will create a new Elements project

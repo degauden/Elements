@@ -28,10 +28,9 @@ def defineSpecificProgramOptions():
 def mainMethod(args):
     """
     @brief The "main" method.
-    @details
-        This method is the entry point to the program. In this sense, it is similar to a main
-        (and it is why it is called mainMethod()). The code below contains the calls to the
-        different classes created for the first developer's workshop
+    @details This method is the entry point to the program. In this sense, it is similar to a main
+    (and it is why it is called mainMethod()). The code below contains the calls to the
+    different classes created for the first developer's workshop
 
         See the ElementsProgram documentation for more details.
     """

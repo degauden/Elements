@@ -1,7 +1,6 @@
 """
 file: ElementsKernel/ProjectCommonRoutines.py
 author: Nicolas Morisset
-         Astronomy Department of the University of Geneva
 
 date: 01/07/15
 
