@@ -1,8 +1,6 @@
 """
  @file: ElementsKernel/ParseCmakeLists.py
- @author: Nikolaos Apostolakos
-          Nicolas Morisset
-          Astronomy Department of the University of Geneva
+ @author: Nikolaos Apostolakos, Nicolas Morisset
 
  @date: 01/07/15
 

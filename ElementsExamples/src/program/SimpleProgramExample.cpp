@@ -37,7 +37,7 @@ namespace Examples {
 
 
 /**
- * @class ElementsProgramExample
+ * @class SimpleProgramExample
  * @brief
  *    Example of an Elements program
  * @details

@@ -1,5 +1,5 @@
 /**
- * @file ProgramExample.cpp
+ * @file EigenExample.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *

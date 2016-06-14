@@ -19,7 +19,6 @@
 """
 File: ElementsKernel/AddPythonProgram.py
 Author: Nicolas Morisset
-         Astronomy Department of the University of Geneva
 
 Date: 01/07/15
 

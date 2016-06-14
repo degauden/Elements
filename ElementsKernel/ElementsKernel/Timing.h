@@ -138,8 +138,6 @@ ELEMENTS_API int64_t tickCount();
  *
  * Simplify the simultaneous handling of kernel, user and elapsed times of a
  * process.
- *
- * \see {<a href="http://savannah.cern.ch/bugs/?87341">bug #87341</a>}
  */
 class ProcessTime {
 public:
