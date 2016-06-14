@@ -101,6 +101,11 @@ option(USE_SPHINX_APIDOC
        "Use sphinx API documentation generation"
        ON)
 
+option(USE_SPHINX_BREATHE
+       "Use sphinx C++ API Breathe plugin to bind to doxygen"
+       ON)
+
+
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)

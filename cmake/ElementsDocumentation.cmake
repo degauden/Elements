@@ -64,7 +64,7 @@
       set(SPHINX_APIDOC_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-apidoc" FORCE)
     endif()
     
-    if(USE_DOXYGEN)
+    if(USE_DOXYGEN AND USE_SPHINX_BREATHE)
       set(APPEND_BREATHE_EXT "extensions.append('breathe')")
     else()
       set(APPEND_BREATHE_EXT "")
@@ -105,7 +105,7 @@ Related Pages
     endforeach()
 
 
-    if(DOXYGEN_FOUND AND USE_SPHINX_APIDOC)
+    if(DOXYGEN_FOUND AND USE_SPHINX_APIDOC AND USE_SPHINX_BREATHE)
 
       find_file_to_configure(cpp_modules.rst.in
                              FILE_TYPE "C++ main ReST"
