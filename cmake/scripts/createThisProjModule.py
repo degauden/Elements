@@ -30,7 +30,7 @@ def main():
 
 from %(proj)s_VERSION import %(proj)s_MAJOR_VERSION, %(proj)s_MINOR_VERSION, %(proj)s_PATCH_VERSION
 from %(proj)s_VERSION import %(proj)s_VERSION, %(proj)s_VERSION_STRING
-from %(proj)s_INSTALL import %(proj)s_INSTALL_LOCATION
+from %(proj)s_INSTALL import %(proj)s_INSTALL_LOCATION, %(proj)s_SEARCH_DIRS
 
 
 THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION

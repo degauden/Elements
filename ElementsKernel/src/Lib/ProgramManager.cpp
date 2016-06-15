@@ -78,8 +78,8 @@ const fs::path ProgramManager::setProgramName(char* argv) const {
 }
 
 const fs::path ProgramManager::setProgramPath(char* argv) const {
-  fs::path fullPath(argv);
-  return fullPath.parent_path();
+  fs::path full_path = fs::system_complete(argv);
+  return full_path.parent_path();
 }
 
 /*
