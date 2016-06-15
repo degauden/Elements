@@ -45,3 +45,6 @@ ElementsConfigVersion.cmake
 .ptp-sync
 .ptp-sync-folder
 .cache
+.coverage
+sonar-project.properties
+

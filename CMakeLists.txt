@@ -18,10 +18,13 @@ set(ELEMENTS_HIDE_SYMBOLS ON
     FORCE)
 
 # Use only the Doxygen API documentation generation
-set(USE_SPHINX_APIDOC OFF
+set(USE_SPHINX_APIDOC ON
     CACHE STRING "Generates the sphinx API documentation"
     FORCE)
 
+set(USE_SPHINX_BREATHE OFF
+    CACHE STRING "Use sphinx C++ API Breathe plugin to bind to doxygen"
+    FORCE)
 
 elements_project(Elements 4.0 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
