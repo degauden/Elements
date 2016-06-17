@@ -16,6 +16,7 @@ class Program(object):
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
         self._search_dirs = search_dirs
+        self._program_path = None
 
     @staticmethod
     def _setupLogging(arg_parser):
@@ -88,6 +89,7 @@ class Program(object):
         cmd_options = arg_parser.parse_known_args()[0]
         # Now redo the parsing including the configuration file
         options = sys.argv[1:]
+        self._program_path = os.path.dirname(os.path.realpath(sys.argv[0]))
         options.extend(self._parseConfigFile(arg_parser, cmd_options))
         all_options = arg_parser.parse_args(options)
 
