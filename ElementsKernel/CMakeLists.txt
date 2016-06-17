@@ -47,6 +47,13 @@ elements_add_unit_test(Temporary tests/src/Temporary_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #-----------------------
+# Environment_test
+elements_add_unit_test(Environment tests/src/Environment_test.cpp
+                       EXECUTABLE Environment_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
+#-----------------------
 # ThisModule_test
 elements_add_unit_test(ThisModule tests/src/ThisModule_test.cpp
                        EXECUTABLE ThisModule_test
