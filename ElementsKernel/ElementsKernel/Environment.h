@@ -37,6 +37,9 @@ public:
   public:
     Variable(Environment& env, const std::string& index): m_env(env), m_index(index) {}
     void operator=(const std::string&);
+    const std::string& index() const;
+    std::string value() const;
+    operator std::string() const;
   private:
     Environment& m_env;
     std::string m_index;
@@ -46,14 +49,18 @@ public:
   ~Environment();
 
   Variable operator[](const std::string&);
-  std::string operator[](const std::string) const;
-
+  const Variable operator[](const std::string& index) const;
 
 private:
 
   std::map<std::string, std::string> m_old_values;
 
 };
+
+ELEMENTS_API inline std::ostream& operator<<(std::ostream& stream, const Environment::Variable& v) {
+  stream << v.value();
+  return stream;
+}
 
 
 } // Elements namespace

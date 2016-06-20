@@ -19,6 +19,7 @@
  *
  */
 
+#include <iostream>                            // for interactive testing
 #include <boost/test/unit_test.hpp>
 
 #include "ElementsKernel/Environment.h"        // for Environment
@@ -50,6 +51,10 @@ BOOST_AUTO_TEST_SUITE(Environment_test)
 
 BOOST_FIXTURE_TEST_CASE(Base_test, Environment_fixture) {
 
+   using std::cout;
+   using std::endl;
+
+   cout << base["PATH"];
 
 }
 

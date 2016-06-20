@@ -19,14 +19,29 @@
  *
  */
 
+#include <string>                            // for string
+
 #include "ElementsKernel/Environment.h"
+
+using std::string;
 
 namespace Elements {
 
-
-void Environment::Variable::operator=(const std::string& value) {
+void Environment::Variable::operator=(const string& value) {
   m_env.m_old_values[m_index] = System::getEnv(m_index);
   System::setEnv(m_index, value);
+}
+
+const string& Environment::Variable::index() const {
+  return m_index;
+}
+
+string Environment::Variable::value() const {
+  return System::getEnv(m_index);
+}
+
+Environment::Variable::operator string() const {
+  return value();
 }
 
 
@@ -38,14 +53,13 @@ Environment::~Environment() {
 
 }
 
-Environment::Variable Environment::operator[](const std::string& index) {
+Environment::Variable Environment::operator[](const string& index) {
   return Environment::Variable(*this, index);
 }
 
-std::string Environment::operator[](const std::string index) const {
-  return System::getEnv(index);
+const Environment::Variable Environment::operator[](const string& index) const {
+  return Environment::Variable(const_cast<Environment&>(*this), index);
 }
-
 
 } // Elements namespace
 
