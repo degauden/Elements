@@ -35,7 +35,7 @@ public:
 
   class Variable {
   public:
-    Variable(Environment& env, const std::string& index): m_env{env}, m_index{index} {}
+    Variable(Environment& env, const std::string& index): m_env(env), m_index(index) {}
     void operator=(const std::string&);
   private:
     Environment& m_env;
