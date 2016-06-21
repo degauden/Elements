@@ -32,15 +32,21 @@
 
 namespace Elements {
 
+/*
+ * @brief Python dictionary-like Environment interface
+ */
 class ELEMENTS_API Environment {
 public:
-
+  /**
+   * @brief proxy class to overload the assignment
+   */
   class Variable {
   public:
     Variable(Environment& env, const std::string& index): m_env(env), m_index(index) {}
     void operator=(const std::string&);
     const std::string& index() const;
     std::string value() const;
+    /// to string converter
     operator std::string() const;
   private:
     Environment& m_env;
