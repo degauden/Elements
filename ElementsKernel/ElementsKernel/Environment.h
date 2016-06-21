@@ -28,7 +28,6 @@
 #include <vector>                                // for vector
 
 #include "ElementsKernel/Export.h"               // for ELEMENTS_API
-#include "ElementsKernel/System.h"               // for getEnv and setEnv
 
 namespace Elements {
 
@@ -44,24 +43,31 @@ public:
   public:
     Variable(Environment& env, const std::string& index): m_env(env), m_index(index) {}
     void operator=(const std::string&);
+    void set(const std::string&);
+    void unSet();
     const std::string& index() const;
     std::string value() const;
     /// to string converter
     operator std::string() const;
+    bool empty() const;
+    bool exists() const;
   private:
     Environment& m_env;
     std::string m_index;
   };
 
-  Environment();
+  Environment(bool keep_same=true);
   ~Environment();
 
   Variable operator[](const std::string&);
   const Variable operator[](const std::string& index) const;
+  void restore();
 
 private:
 
   std::map<std::string, std::string> m_old_values;
+  bool m_keep_same;
+  std::vector<std::string> m_added_variables;
 
 };
 
