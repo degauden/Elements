@@ -35,8 +35,6 @@
 namespace Elements {
 namespace System {
 
-
-
 class ELEMENTS_API ModuleInfo {
 public:
   ModuleInfo();

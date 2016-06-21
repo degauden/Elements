@@ -385,7 +385,7 @@ vector<string> getEnv() {
 ///set an environment variables. @return 0 if successful, -1 if not
 int setEnv(const string& name, const string& value, bool overwrite) {
 
-  int over =1 ;
+  int over = 1;
   if (not overwrite) {
     over = 0;
   }
