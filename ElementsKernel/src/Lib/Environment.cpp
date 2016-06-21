@@ -21,7 +21,7 @@
 
 #include <string>                            // for string
 
-#include "ElementsKernel/Environment.h"
+#include "ElementsKernel/Environment.h"      // for getEnv, setEnv
 
 using std::string;
 
@@ -60,6 +60,7 @@ Environment::Variable Environment::operator[](const string& index) {
 const Environment::Variable Environment::operator[](const string& index) const {
   return Environment::Variable(const_cast<Environment&>(*this), index);
 }
+
 
 } // Elements namespace
 

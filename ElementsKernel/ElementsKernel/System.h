@@ -117,23 +117,11 @@ ELEMENTS_API const std::string& osVersion();
 ELEMENTS_API const std::string& machineType();
 /// User login name
 ELEMENTS_API std::string accountName();
-/// Number of arguments passed to the commandline
-ELEMENTS_API long numCmdLineArgs();
-/// Number of arguments passed to the commandline (==numCmdLineArgs()); just to match argv call...
-ELEMENTS_API long argc();
-/// Command line arguments including executable name as arg[0] as vector of strings
-ELEMENTS_API const std::vector<std::string> cmdLineArgs();
-///char** command line arguments including executable name as arg[0]; You may not modify them!
-ELEMENTS_API char** argv();
-///get a particular environment variable (returning "UNKNOWN" if not set)
-ELEMENTS_API std::string getEnv(const char* var);
+///get a particular environment variable
 ELEMENTS_API std::string getEnv(const std::string& var);
 /// get a particular environment variable, storing the value in the passed string if the
 /// variable is set. Returns true if the variable is set, false otherwise.
-ELEMENTS_API bool getEnv(const char* var, std::string &value);
-inline bool getEnv(const std::string &var, std::string &value) {
-  return getEnv(var.c_str(), value);
-}
+ELEMENTS_API bool getEnv(const std::string& var, std::string &value);
 ///get all environment variables
 ELEMENTS_API std::vector<std::string> getEnv();
 ///Set an environment variables.
@@ -142,11 +130,11 @@ ELEMENTS_API std::vector<std::string> getEnv();
 ///Returns 0 on success, -1 on failure.
 ///See man 3 setenv.
 ELEMENTS_API int setEnv(const std::string &name, const std::string &value,
-    int overwrite = 1);
+                         bool overwrite = true);
 /// Simple wrap around unsetenv for strings
 ELEMENTS_API int unSetEnv(const std::string& name);
 /// Check if an environment variable is set or not.
-ELEMENTS_API bool isEnvSet(const char* var);
+ELEMENTS_API bool isEnvSet(const std::string& var);
 
 ELEMENTS_API int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses, ELEMENTS_UNUSED const int depth);
 ELEMENTS_API bool backTrace(std::string& btrace, const int depth, const int offset = 0);
