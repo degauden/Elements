@@ -40,7 +40,7 @@ string Environment::Variable::value() const {
   return System::getEnv(m_index);
 }
 
-Environment::Variable::operator string() const {
+Environment::Variable::operator std::string() const {
   return value();
 }
 
