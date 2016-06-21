@@ -36,8 +36,8 @@ void Environment::Variable::operator=(const string& value) {
 
 void Environment::Variable::set(const string& value) {
 
-  if(m_env.m_old_values.find(m_index) == m_env.m_old_values.end()) {
-    if(System::isEnvSet(m_index)) {
+  if (m_env.m_old_values.find(m_index) == m_env.m_old_values.end()) {
+    if (System::isEnvSet(m_index)) {
       if ((not m_env.m_keep_same) or (System::getEnv(m_index) != value) ) {
         m_env.m_old_values[m_index] = System::getEnv(m_index);
       }
@@ -52,7 +52,7 @@ void Environment::Variable::set(const string& value) {
 
 void Environment::Variable::unSet() {
 
-  if(not System::isEnvSet(m_index)) {
+  if (not System::isEnvSet(m_index)) {
     std::stringstream error_buffer;
     error_buffer << "The environment doesn't contain the " << m_index << " variable." << std::endl;
     throw std::out_of_range(error_buffer.str());
@@ -89,11 +89,11 @@ Environment::Environment(bool keep_same): m_old_values{}, m_keep_same{keep_same}
 
 void Environment::restore() {
 
-  for(const auto& v: m_added_variables) {
+  for (const auto& v: m_added_variables) {
     System::unSetEnv(v);
   }
 
-  for(const auto& v: m_old_values) {
+  for (const auto& v: m_old_values) {
     System::setEnv(v.first, v.second);
   }
 
