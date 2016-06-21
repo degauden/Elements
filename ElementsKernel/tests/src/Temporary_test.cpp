@@ -132,7 +132,7 @@ BOOST_FIXTURE_TEST_CASE(TempEnv_test, Temporary_Fixture) {
   // remove the environment variable
   unSetEnv("TMPDIR");
   // check that it is gone
-  BOOST_CHECK(getEnv("TMPDIR") == "UNKNOWN");
+  BOOST_CHECK(getEnv("TMPDIR") == "");
   BOOST_CHECK(fs::exists(test_tmpdir));
 }
 

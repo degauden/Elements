@@ -22,8 +22,10 @@
 #ifndef ELEMENTSKERNEL_ENVIRONMENT_H_
 #define ELEMENTSKERNEL_ENVIRONMENT_H_
 
+#include <iostream>                              // for ostream
 #include <map>                                   // for map
 #include <string>                                // for string
+#include <vector>                                // for vector
 
 #include "ElementsKernel/Export.h"               // for ELEMENTS_API
 #include "ElementsKernel/System.h"               // for getEnv and setEnv

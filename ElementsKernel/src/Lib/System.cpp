@@ -42,9 +42,6 @@
 
 using namespace std;
 
-static vector<string> s_argvStrings;
-static vector<const char*> s_argvChars;
-
 namespace Elements {
 namespace System {
 
@@ -341,79 +338,32 @@ string accountName() {
   return account;
 }
 
-/// Number of arguments passed to the commandline
-long numCmdLineArgs() {
-  return cmdLineArgs().size();
-}
-
-/// Number of arguments passed to the commandline
-long argc() {
-  return cmdLineArgs().size();
-}
-
-/// Const char** command line arguments including executable name as arg[0]
-const vector<string> cmdLineArgs() {
-  if (s_argvChars.size() == 0) {
-    char exe[1024];
-    sprintf(exe, "/proc/%d/cmdline", ::getpid());
-    FILE *cmdLine = ::fopen(exe, "r");
-    char cmd[1024];
-    if (cmdLine) {
-      long len = ::fread(cmd, sizeof(char), sizeof(cmd), cmdLine);
-      if (len > 0) {
-        cmd[len] = 0;
-        for (char* token = cmd; token - cmd < len; token += strlen(token) + 1) {
-          s_argvStrings.push_back(token);
-          s_argvChars.push_back(s_argvStrings.back().c_str());
-        }
-        s_argvStrings[0] = exeName();
-        s_argvChars[0] = s_argvStrings[0].c_str();
-      }
-      ::fclose(cmdLine);
-    }
-  }
-  return s_argvStrings;
-}
-
-/// Const char** command line arguments including executable name as arg[0]
-char** argv() {
-  ///
-  if (s_argvChars.empty()) {
-    cmdLineArgs();
-  }  /// added by I.B.
-  ///
-  // We rely here on the fact that a vector's allocation table is contiguous
-  return (char**) &s_argvChars[0];
-}
-
-/// get a particular env var, return "UNKNOWN" if not defined
-string getEnv(const char* var) {
-  char* env;
-  if ((env = ::getenv(var)) != 0) {
-    return env;
-  } else {
-    return "UNKNOWN";
-  }
-}
-
 string getEnv(const string& var) {
-  return getEnv(var.c_str());
-}
 
+  string env_str {};
+
+  getEnv(var, env_str);
+
+  return env_str;
+}
 
 /// get a particular env var, storing the value in the passed string (if set)
-bool getEnv(const char* var, string &value) {
-  char* env;
-  if ((env = ::getenv(var)) != 0) {
+bool getEnv(const string& var, string& value) {
+  bool found = false;
+  value = "";
+
+  char* env = ::getenv(var.c_str());
+  if (env != NULL) {
+    found = true;
     value = env;
-    return true;
-  } else {
-    return false;
   }
+
+  return found;
 }
 
-bool isEnvSet(const char* var) {
-  return ::getenv(var) != 0;
+
+bool isEnvSet(const string& var) {
+  return ::getenv(var.c_str()) != 0;
 }
 
 /// get all defined environment vars
@@ -430,6 +380,22 @@ vector<string> getEnv() {
     vars.push_back(environ[i]);
   }
   return vars;
+}
+
+///set an environment variables. @return 0 if successful, -1 if not
+int setEnv(const string& name, const string& value, bool overwrite) {
+
+  int over =1 ;
+  if (not overwrite) {
+    over = 0;
+  }
+
+  return ::setenv(name.c_str(), value.c_str(), over);
+}
+
+
+int unSetEnv(const string& name) {
+  return ::unsetenv(name.c_str());
 }
 
 // -----------------------------------------------------------------------------
@@ -505,7 +471,6 @@ const vector<string> backTrace(const int depth, const int offset) {
   return trace;
 }
 
-
 bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
     string& fnc ELEMENTS_UNUSED, string& lib ELEMENTS_UNUSED) {
 
@@ -533,22 +498,6 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
   }
 
 }
-
-///set an environment variables. @return 0 if successful, -1 if not
-int setEnv(const string &name, const string &value, int overwrite) {
-  // UNIX version
-  return value.empty() ?
-  // remove if set to nothing (and return success)
-      unSetEnv(name), 0 :
-      // set the value
-      ::setenv(name.c_str(), value.c_str(), overwrite);
-
-}
-
-int unSetEnv(const string& name) {
-  return ::unsetenv(name.c_str());
-}
-
 
 } // namespace System
 } // namespace Elements
