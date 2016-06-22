@@ -62,8 +62,19 @@ public:
   Variable operator[](const std::string&);
   const Variable operator[](const std::string& index) const;
   void restore();
+  void set(const std::string&, const std::string&);
+  void unSet(const std::string&);
+  std::string get(const std::string& index, const std::string& default_value="") const;
+  static bool hasKey(const std::string&);
+  void commit();
+
+  enum ShellType {sh, csh};
+
+  std::string generateScript(ShellType) const;
 
 private:
+
+  static void checkOutOfRange(const std::string&);
 
   std::map<std::string, std::string> m_old_values;
   bool m_keep_same;
