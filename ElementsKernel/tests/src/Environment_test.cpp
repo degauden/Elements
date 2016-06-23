@@ -22,6 +22,7 @@
 #include <iostream>                            // for interactive testing
 #include <string>
 #include <stdexcept>                           // for out_of_range
+#include <regex>                               // for regex, regex_match
 
 #include <boost/test/unit_test.hpp>
 
@@ -70,16 +71,16 @@ BOOST_AUTO_TEST_CASE(SetVariable_test) {
   using Elements::System::getEnv;
   using Elements::System::unSetEnv;
 
-  Environment First;
+  Environment first;
 
   const string var_name {"LKkhdfk4lad"};
 
   BOOST_CHECK(not isEnvSet(var_name));
 
-  First[var_name] = "toto";
+  first[var_name] = "toto";
 
   BOOST_CHECK(isEnvSet(var_name));
-  BOOST_CHECK(getEnv(var_name) == string(First[var_name]));
+  BOOST_CHECK(getEnv(var_name) == string(first[var_name]));
 
   unSetEnv(var_name);
 
@@ -87,10 +88,10 @@ BOOST_AUTO_TEST_CASE(SetVariable_test) {
 
   BOOST_CHECK(not isEnvSet(var_name_2));
 
-  First[var_name_2] = "";
+  first[var_name_2] = "";
 
   BOOST_CHECK(isEnvSet(var_name_2));
-  BOOST_CHECK("" == string(First[var_name_2]));
+  BOOST_CHECK("" == string(first[var_name_2]));
 
   unSetEnv(var_name_2);
 
@@ -101,22 +102,22 @@ BOOST_AUTO_TEST_CASE(UnSetVariable_test) {
   using Elements::System::isEnvSet;
   using Elements::System::getEnv;
 
-  Environment First;
+  Environment first;
 
   const string var_name {"LKkhdfk4lad"};
 
   BOOST_CHECK(not isEnvSet(var_name));
 
-  First[var_name] = "toto";
+  first[var_name] = "toto";
 
   BOOST_CHECK(isEnvSet(var_name));
-  BOOST_CHECK(getEnv(var_name) == string(First[var_name]));
+  BOOST_CHECK(getEnv(var_name) == string(first[var_name]));
 
-  First[var_name].unSet();
+  first[var_name].unSet();
 
   BOOST_CHECK(not isEnvSet(var_name));
 
-  BOOST_CHECK_THROW(First["jdldaoociej"].unSet(), std::out_of_range);
+  BOOST_CHECK_THROW(first["jdldaoociej"].unSet(), std::out_of_range);
 
 }
 
@@ -127,48 +128,133 @@ BOOST_AUTO_TEST_CASE(SubEnv_test) {
 
   const string var_name {"dikeZdhjdSHD"};
 
-  Environment First;
+  Environment first;
 
-  BOOST_CHECK(not First[var_name].exists());
+  BOOST_CHECK(not first[var_name].exists());
   BOOST_CHECK(not isEnvSet(var_name));
 
   {
 
-    BOOST_CHECK(not First[var_name].exists());
+    BOOST_CHECK(not first[var_name].exists());
     BOOST_CHECK(not isEnvSet(var_name));
 
-    Environment Second;
+    Environment second;
 
-    Second[var_name] = "toto";
-    BOOST_CHECK(Second[var_name].exists());
+    second[var_name] = "toto";
+    BOOST_CHECK(second[var_name].exists());
     BOOST_CHECK(isEnvSet(var_name));
     BOOST_CHECK(getEnv(var_name) == "toto");
 
     {
-      Environment Third;
-      Third[var_name] = "titi";
-      BOOST_CHECK(Third[var_name].exists());
+      Environment third;
+      third[var_name] = "titi";
+      BOOST_CHECK(third[var_name].exists());
       BOOST_CHECK(isEnvSet(var_name));
       BOOST_CHECK(getEnv(var_name) == "titi");
     }
 
-    BOOST_CHECK(Second[var_name].exists());
+    BOOST_CHECK(second[var_name].exists());
     BOOST_CHECK(isEnvSet(var_name));
     BOOST_CHECK(getEnv(var_name) == "toto");
 
-    Second[var_name] = "toto";
-    BOOST_CHECK(Second[var_name].exists());
+    second[var_name] = "toto";
+    BOOST_CHECK(second[var_name].exists());
     BOOST_CHECK(isEnvSet(var_name));
     BOOST_CHECK(getEnv(var_name) == "toto");
 
 
   }
 
-  BOOST_CHECK(not First[var_name].exists());
+  BOOST_CHECK(not first[var_name].exists());
   BOOST_CHECK(not isEnvSet(var_name));
 
 }
 
+BOOST_AUTO_TEST_CASE(NestedSet_test) {
+
+  using Elements::System::isEnvSet;
+  using Elements::System::setEnv;
+  using Elements::System::getEnv;
+
+  const string var_name {"ddTdh_lds"};
+
+  const string var_name_2 {"ddTdh_sad4ds"};
+  const string var_value_2 {"bla"};
+  setEnv(var_name_2, var_value_2);
+  BOOST_CHECK(isEnvSet(var_name_2));
+  BOOST_CHECK(getEnv(var_name_2) == var_value_2);
+
+  const string var_name_3 {"ddSUETdh_sad4ds"};
+  setEnv(var_name_3, "alpha");
+  BOOST_CHECK(isEnvSet(var_name_3));
+  BOOST_CHECK(getEnv(var_name_3) == "alpha");
+
+
+  {
+    BOOST_CHECK(not isEnvSet(var_name));
+
+    BOOST_CHECK(isEnvSet(var_name_2));
+    BOOST_CHECK(getEnv(var_name_2) == var_value_2);
+
+    Environment local;
+    local[var_name] = "toto";
+    BOOST_CHECK(isEnvSet(var_name));
+
+    const string var_value_3 {"blu"};
+    local[var_name_2] = var_value_3;
+
+    BOOST_CHECK(isEnvSet(var_name_2));
+    BOOST_CHECK(getEnv(var_name_2) == var_value_3);
+
+    local.unSet(var_name_3);
+    BOOST_CHECK(not isEnvSet(var_name_3));
+
+  }
+
+  BOOST_CHECK(not isEnvSet(var_name));
+
+  BOOST_CHECK(isEnvSet(var_name_2));
+  BOOST_CHECK(getEnv(var_name_2) == var_value_2);
+
+  BOOST_CHECK(isEnvSet(var_name_3));
+  BOOST_CHECK(getEnv(var_name_3) == "alpha");
+
+}
+
+BOOST_AUTO_TEST_CASE(GenScript_test) {
+
+  Environment first;
+
+  first["blad3"] = "djjsd/d:";
+
+  const string sh_script_text = first.generateScript(Environment::ShellType::sh);
+  std::regex sh_set_rule {"export\\sblad3=djjsd/d:\\n"};
+  BOOST_CHECK(std::regex_match(sh_script_text, sh_set_rule));
+
+  const string csh_script_text = first.generateScript(Environment::ShellType::csh);
+  std::regex csh_set_rule {"setenv\\sblad3\\sdjjsd/d:\\n"};
+  BOOST_CHECK(std::regex_match(csh_script_text, csh_set_rule));
+
+
+}
+
+BOOST_AUTO_TEST_CASE(Commit_test) {
+
+  using Elements::System::isEnvSet;
+
+  const string var_name {"ddTdh_lds"};
+
+  BOOST_CHECK(not isEnvSet(var_name));
+
+  {
+    Environment local;
+    local[var_name] = "toto";
+    BOOST_CHECK(isEnvSet(var_name));
+    local.commit();
+  }
+
+  BOOST_CHECK(isEnvSet(var_name));
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
