@@ -22,9 +22,9 @@
 #include <iostream>                            // for interactive testing
 #include <string>
 #include <stdexcept>                           // for out_of_range
-#include <regex>                               // for regex, regex_match
 
 #include <boost/test/unit_test.hpp>
+#include <boost/regex.hpp>                     // for regex, regex_match
 
 #include "ElementsKernel/System.h"             // for isEnvSet
 #include "ElementsKernel/Environment.h"        // for Environment
@@ -223,17 +223,20 @@ BOOST_AUTO_TEST_CASE(NestedSet_test) {
 
 BOOST_AUTO_TEST_CASE(GenScript_test) {
 
+  using boost::regex;
+  using boost::regex_match;
+
   Environment first;
 
   first["blad3"] = "djjsd/d:";
 
   const string sh_script_text = first.generateScript(Environment::ShellType::sh);
-  std::regex sh_set_rule {"export\\sblad3=djjsd/d:\\n"};
-  BOOST_CHECK(std::regex_match(sh_script_text, sh_set_rule));
+  regex sh_set_rule {"\\s*export\\s+blad3=djjsd/d:\\s*$"};
+  BOOST_CHECK(regex_match(sh_script_text, sh_set_rule));
 
   const string csh_script_text = first.generateScript(Environment::ShellType::csh);
-  std::regex csh_set_rule {"setenv\\sblad3\\sdjjsd/d:\\n"};
-  BOOST_CHECK(std::regex_match(csh_script_text, csh_set_rule));
+  regex csh_set_rule {"\\s*setenv\\s+blad3\\s+djjsd/d:\\s*$"};
+  BOOST_CHECK(regex_match(csh_script_text, csh_set_rule));
 
 
 }
