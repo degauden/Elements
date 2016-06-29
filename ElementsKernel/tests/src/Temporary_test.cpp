@@ -18,7 +18,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
-#include <string>
+#include <string>                          // for string
 #include <vector>
 #include <cstdlib>
 #include <boost/test/unit_test.hpp>
@@ -32,7 +32,9 @@ namespace fs = boost::filesystem;
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/System.h"     // for getEnv, setEnv, unSetEnv
 
+using std::string;
 using Elements::TempDir;
+using Elements::TempEnv;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -104,8 +106,6 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(TempEnv_test, Temporary_Fixture) {
 
-  using std::string;
-
   using Elements::System::getEnv;
   using Elements::System::setEnv;
   using Elements::System::unSetEnv;
@@ -132,6 +132,29 @@ BOOST_FIXTURE_TEST_CASE(TempEnv_test, Temporary_Fixture) {
   // remove the environment variable
   unSetEnv("TMPDIR");
   // check that it is gone
+  BOOST_CHECK(getEnv("TMPDIR") == "");
+  BOOST_CHECK(fs::exists(test_tmpdir));
+}
+
+BOOST_FIXTURE_TEST_CASE(TempEnv2_test, Temporary_Fixture) {
+
+  using Elements::System::getEnv;
+
+  // test if the global temporary directory exists.
+  BOOST_CHECK(fs::exists(m_top_dir.path()));
+  fs::path test_tmpdir = m_top_dir.path() / "tmpdir2";
+  fs::create_directory(test_tmpdir);
+
+  {
+    TempEnv local;
+    local["TMPDIR"] = test_tmpdir.c_str();
+    string tmp_env_val = getEnv("TMPDIR");
+    // test that the variable is actually set in the environment
+    // of the process
+    BOOST_CHECK(tmp_env_val == test_tmpdir.string());
+    BOOST_CHECK(local["TMPDIR"].value() == test_tmpdir.string());
+  }
+
   BOOST_CHECK(getEnv("TMPDIR") == "");
   BOOST_CHECK(fs::exists(test_tmpdir));
 }
