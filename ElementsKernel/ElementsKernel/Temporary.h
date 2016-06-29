@@ -24,8 +24,8 @@
 
 #include <boost/filesystem.hpp>
 
-#include "ElementsKernel/Export.h" // ELEMENTS_API
-
+#include "ElementsKernel/Export.h"                 // ELEMENTS_API
+#include "ElementsKernel/Environment.h"            // for Environment
 
 namespace Elements {
 
@@ -53,6 +53,8 @@ public:
   ELEMENTS_API explicit TempFile(const std::string&  motif="");
   ELEMENTS_API ~TempFile();
 };
+
+using TempEnv = Environment;
 
 } // namespace Elements
 

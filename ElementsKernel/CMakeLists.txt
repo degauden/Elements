@@ -50,7 +50,8 @@ elements_add_unit_test(Temporary tests/src/Temporary_test.cpp
 # Environment_test
 elements_add_unit_test(Environment tests/src/Environment_test.cpp
                        EXECUTABLE Environment_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost
+                       LABELS Environment)
 
 
 #-----------------------
@@ -95,7 +96,8 @@ elements_add_unit_test(BackTrace tests/src/BackTrace_test.cpp
 # GetEnv_test
 elements_add_unit_test(GetEnv tests/src/GetEnv_test.cpp
                        EXECUTABLE GetEnv_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost
+                       LABELS Environment)
 
 #-----------------------
 # GetEnv_test
