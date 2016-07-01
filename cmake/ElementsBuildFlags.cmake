@@ -105,7 +105,9 @@ option(USE_SPHINX_BREATHE
        "Use sphinx C++ API Breathe plugin to bind to doxygen"
        ON)
 
-
+option(ELEMENTS_USE_RPATH
+       "Use full RPATH for both build and installation"
+       ON)
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)

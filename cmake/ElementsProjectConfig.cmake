@@ -188,13 +188,6 @@ macro(elements_project project version)
     endif()
   endif()
 
-  if(APPLE)
-      set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
-          "Install RPath." FORCE )
-      set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
-          "Install Name Dir." FORCE )
-  endif()
-
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin CACHE STRING
 	   "Single build output directory for all executables" FORCE)
@@ -394,6 +387,39 @@ macro(elements_project project version)
   #--- Global actions for the project
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
   include(ElementsBuildFlags)
+
+
+  #------------------------------------------------------------------------------------------------
+  # RPATH business
+
+  if(ELEMENTS_USE_RPATH)
+
+    if (CMAKE_SYSTEM_NAME MATCHES Linux)
+      SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+
+      # add the automatically determined parts of the RPATH
+      # which point to directories outside the build tree to the install RPATH
+      SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+      # the RPATH to be used when installing, but only if it's not a system directory
+      LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "$ORIGIN/../lib" isSystemDir)
+      IF("${isSystemDir}" STREQUAL "-1")
+        SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+      ENDIF()
+    endif()
+    
+    if(APPLE)
+      set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
+          "Install RPath." FORCE )  
+      set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
+          "Install Name Dir." FORCE )  
+    endif()
+    
+
+  endif()
+
+  #------------------------------------------------------------------------------------------------
 
   # get the python test framework
 
