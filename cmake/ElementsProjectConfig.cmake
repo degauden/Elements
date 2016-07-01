@@ -188,13 +188,6 @@ macro(elements_project project version)
     endif()
   endif()
 
-  if(APPLE)
-      set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
-          "Install RPath." FORCE )
-      set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
-          "Install Name Dir." FORCE )
-  endif()
-
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin CACHE STRING
 	   "Single build output directory for all executables" FORCE)
