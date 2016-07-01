@@ -1,29 +1,29 @@
 #
-# Copyright (C) 2012-2020 Euclid Science Ground Segment
-#
-# This library is free software; you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation; either version 3.0 of the License, or (at your option)
-# any later version.
-#
-# This library is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
 """
-File: ElementsKernel/AddPythonModule.py
-Author: Nicolas Morisset
-         Astronomy Department of the University of Geneva
+@file ElementsKernel/AddPythonModule.py
+@author Nicolas Morisset
 
-Date: 01/07/15
+@date 01/07/15
 
-This script creates a new Elements python module
+@brief This script creates a new Elements python module
+
+@copyright: 2012-2020 Euclid Science Ground Segment
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 3.0 of the License, or (at your option)
+any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+
 """
 
 import os
@@ -61,7 +61,7 @@ def updateCmakeListsFile(module_dir):
     """
     Update the CMakeList.txt file
     """
-    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Backup the file
@@ -159,6 +159,9 @@ def createPythonModule(current_dir, module_name, python_module_name):
 ################################################################################
 
 def defineSpecificProgramOptions():
+    """
+    Define program option(s)
+    """
     description = """
 This script creates an <Elements> python module at your current directory
 (default), this directory must be an <Elements> module.
@@ -173,53 +176,49 @@ This script creates an <Elements> python module at your current directory
 ################################################################################
 
 def mainMethod(args):
+    """
+    Main
+    """
 
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddPythonModule script')
     logger.info('#')
 
-    try:
-        script_goes_on = True
-        python_module_name = args.module_name
+    python_module_name = args.module_name
 
-        # Default is the current directory
-        current_dir = os.getcwd()
+    # Default is the current directory
+    current_dir = os.getcwd()
 
-        logger.info('Current directory : %s', current_dir)
-        logger.info('')
+    logger.info('Current directory : %s', current_dir)
+    logger.info('')
 
-        # We absolutely need a Elements cmake file
-        script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
+    # We absolutely need a Elements cmake file
+    script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
 
-        # Module as no version number, '1.0' is just for using the routine
-        if script_goes_on:
-            script_goes_on = epcr.isNameAndVersionValid(python_module_name, '1.0')
+    # Module as no version number, '1.0' is just for using the routine
+    if script_goes_on:
+        script_goes_on = epcr.isNameAndVersionValid(python_module_name, '1.0')
 
-        module_file_path = os.path.join(current_dir, 'python', module_name,
-                                         python_module_name + '.py')
+    module_file_path = os.path.join(current_dir, 'python', module_name,
+                                    python_module_name + '.py')
 
-        # Make sure the program does not already exist
-        if script_goes_on:
-            script_goes_on = epcr.isFileAlreadyExist(module_file_path, python_module_name)
+    # Make sure the program does not already exist
+    if script_goes_on:
+        script_goes_on = epcr.isFileAlreadyExist(module_file_path, python_module_name)
 
-        # Check aux file exist
-        if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
+    # Check aux file exist
+    if script_goes_on:
+        script_goes_on = epcr.isAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
 
-        if script_goes_on:
-            if os.path.exists(current_dir):
-                if createPythonModule(current_dir, module_name, python_module_name):
-                    logger.info('< %s > python module successfully created in < %s >.' %
-                                (python_module_name, module_file_path))
-                    # Remove backup file
-                    epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-                    logger.info('Script over.')
-            else:
-                    logger.error('< %s > project directory does not exist!'
-                                  % current_dir)
-        if not script_goes_on:
-            logger.error('Script aborted')
-
-    except Exception as e:
-        logger.exception(e)
-        logger.info('Script stopped...')
+    if script_goes_on:
+        if os.path.exists(current_dir):
+            if createPythonModule(current_dir, module_name, python_module_name):
+                logger.info('< %s > python module successfully created in < %s >',
+                            python_module_name, module_file_path)
+                # Remove backup file
+                epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
+                logger.info('Script over.')
+        else:
+            logger.error('< %s > project directory does not exist!', current_dir)
+    if not script_goes_on:
+        logger.error('Script aborted')

@@ -1,3 +1,21 @@
+/**
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
+
+
 #include "ElementsKernel/Time.h"
 
 #include "ElementsKernel/time_r.h"
@@ -25,8 +43,6 @@ namespace Elements {
 // Based on seal::Time
 // 2005-12-15 : Marco Clemencic
 //-----------------------------------------------------------------------------
-
-
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -80,16 +96,18 @@ Time Time::build(bool local, const tm &base, TimeSpan diff /* = 0 */) {
  If @a nsecpart is non-null, it is set to the nanosecond part that
  cannot be stored into @c tm.  */
 tm Time::split(bool local, int *nsecpart /* = 0 */) const {
-  if (nsecpart)
+  if (nsecpart) {
     *nsecpart = static_cast<int>(m_nsecs % SEC_NSECS);
+  }
 
   time_t val = (time_t) (m_nsecs / SEC_NSECS);
 
   tm retval;
-  if (local)
+  if (local) {
     ::localtime_r(&val, &retval);
-  else
+  } else {
     ::gmtime_r(&val, &retval);
+  }
 
   return retval;
 }
@@ -170,8 +188,9 @@ Time::ValueType Time::utcoffset(int *daylight /* = 0 */) const {
 
   tm localtm = local();
   n = localtm.tm_gmtoff;
-  if (daylight)
+  if (daylight) {
     *daylight = localtm.tm_isdst;
+  }
   return n * SEC_NSECS;
 }
 
@@ -181,8 +200,9 @@ Time::ValueType Time::utcoffset(int *daylight /* = 0 */) const {
  at the time value.  */
 const char * Time::timezone(int *daylight /* = 0 */) const {
   tm localtm = local();
-  if (daylight)
+  if (daylight) {
     *daylight = localtm.tm_isdst;
+  }
   // extern "C" { extern char *tzname [2]; }
   return tzname[localtm.tm_isdst > 0 ? 1 : 0];
 }
@@ -218,7 +238,7 @@ string Time::format(bool local, string spec) const {
             std::max<string::size_type>(spec.size() * 2, MIN_BUF_SIZE)),
         0);
     length = ::strftime(&result[0], result.size(), spec.c_str(), &time);
-  } while (!length);
+  } while (not length);
 
   result.resize(length);
   return result;
@@ -257,7 +277,7 @@ string Time::nanoformat(size_t minwidth /* = 1 */,
   // means size of 0)
   size_t len = out.find_last_not_of('0', maxwidth - 1) + 1;
   // Truncate the output string to at least minwidth chars
-  out.resize(max(len, minwidth));
+  out.resize((max)(len, minwidth));
   return out;
 }
 

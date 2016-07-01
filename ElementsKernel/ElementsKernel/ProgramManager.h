@@ -3,15 +3,29 @@
  *
  * Created on: Jan 7, 2015
  *     Author: Pierre Dubath
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 
 #ifndef ELEMENTSPROGRAMMANAGER_H_
 #define ELEMENTSPROGRAMMANAGER_H_
 
-#include <map>
-#include <string>
-#include <memory>
+#include <map>                           // for map
+#include <string>                        // for string
+#include <memory>                        // for unique_ptr
+#include <set>                           // for set
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
@@ -27,11 +41,11 @@ const std::string CONF_ENV_VAR_NAME { "ELEMENTS_CONF_PATH" };
 /**
  * @class ProgramManager
  * @brief
- * 		Class for managing all Elements programs
+ *    Class for managing all Elements programs
  * @details
- * 		This base class offers solutions for the common needs of
- * 		all Elements programs, such as those dealing with program
- * 		options and logging.
+ *    This base class offers solutions for the common needs of
+ *    all Elements programs, such as those dealing with program
+ *    options and logging.
  */
 class ELEMENTS_API ProgramManager {
 
@@ -40,18 +54,20 @@ public:
   /**
    * @brief Constructor
    */
-  ProgramManager(std::unique_ptr<Elements::Program> program_ptr,
+  ProgramManager(std::unique_ptr<Program> program_ptr,
                  std::string parent_project_version="",
-                 std::string parent_project_name="") :
+                 std::string parent_project_name="",
+                 std::set<std::string> search_dirs={}) :
       m_program_ptr(std::move(program_ptr)),
       m_parent_project_version(std::move(parent_project_version)),
-      m_parent_project_name(std::move(parent_project_name)){
+      m_parent_project_name(std::move(parent_project_name)),
+      m_search_dirs(std::move(search_dirs)){
   }
 
   /**
    * @brief Destructor
    */
-  virtual ~ProgramManager() ;
+  virtual ~ProgramManager();
 
   /**
    * @brief
@@ -63,10 +79,22 @@ public:
    * @param argv
    *   Command line arguments
    */
-  ELEMENTS_API
   ExitCode run(int argc, char* argv[]);
 
-  ELEMENTS_API std::string getVersion() const;
+  /**
+   * @brief
+   * This function returns the version of the program computed
+   * at compile time. This is the same as the project version
+   * that contains the program
+   */
+  std::string getVersion() const;
+
+  /**
+   * @brief
+   * This is the set_terminate handler that is used in the
+   * #MAIN_FOR macro.
+   */
+  static void onTerminate() noexcept;
 
 private:
 
@@ -168,7 +196,7 @@ private:
    *   mainMethod()
    *
    */
-  std::unique_ptr<Elements::Program> m_program_ptr;
+  std::unique_ptr<Program> m_program_ptr;
 
   /**
    * Internal version of the program. By convention, it is the same
@@ -184,6 +212,14 @@ private:
    *     m_parent_project_version [m_parent_project_name]
    */
   std::string m_parent_project_name;
+
+  /**
+   * List of directories needed to update the runtime search
+   * environment (PATH, LD_LIBRARY_PATH, ELEMENTS_CONF_PATH,
+   * and ELEMENTS_AUX_PATH). This list contains the install
+   * locations of all the dependent projects.
+   */
+  std::set<std::string> m_search_dirs;
 
 };
 

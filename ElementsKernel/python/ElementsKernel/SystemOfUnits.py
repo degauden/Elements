@@ -33,6 +33,8 @@
 # The others physical constants are defined in the header file :
 #                       PhysicalConstants.h
 #
+""" System of Units Constants"""
+
 
 
 #
@@ -123,9 +125,13 @@ ms = millisecond
 #
 # Electric charge [Q]
 #
-eplus = 1.  # positron charge
-e_SI = 1.60217733e-19  # positron charge in coulomb
-coulomb = eplus / e_SI  # coulomb = 6.24150 e+18 * eplus
+
+# positron charge
+eplus = 1.
+# positron charge in coulomb
+e_SI = 1.60217733e-19
+# coulomb = 6.24150 e+18 * eplus
+coulomb = eplus / e_SI
 
 #
 # Energy [E]
@@ -137,7 +143,8 @@ gigaelectronvolt = 1.e+3 * megaelectronvolt
 teraelectronvolt = 1.e+6 * megaelectronvolt
 petaelectronvolt = 1.e+9 * megaelectronvolt
 
-joule = electronvolt / e_SI  # joule = 6.24150 e+12 * MeV
+# joule = 6.24150 e+12 * MeV
+joule = electronvolt / e_SI
 
 # symbols
 MeV = megaelectronvolt
@@ -162,25 +169,36 @@ mg = milligram
 #
 # Power [E][T^-1]
 #
-watt = joule / second  # watt = 6.24150 e+3 * MeV/ns
+
+# watt = 6.24150 e+3 * MeV/ns
+watt = joule / second
 
 #
 # Force [E][L^-1]
 #
-newton = joule / meter  # newton = 6.24150 e+9 * MeV/mm
+
+# newton = 6.24150 e+9 * MeV/mm
+newton = joule / meter
 
 #
 # Pressure [E][L^-3]
 #
-hep_pascal = newton / m2  # pascal = 6.24150 e+3 * MeV/mm3
-pascal = hep_pascal  # a trick to avoid warnings
-bar = 100000 * pascal  # bar    = 6.24150 e+8 * MeV/mm3
-atmosphere = 101325 * pascal  # atm    = 6.32420 e+8 * MeV/mm3
+
+# pascal = 6.24150 e+3 * MeV/mm3
+hep_pascal = newton / m2
+# a trick to avoid warnings
+pascal = hep_pascal
+# bar    = 6.24150 e+8 * MeV/mm3
+bar = 100000 * pascal
+# atm    = 6.32420 e+8 * MeV/mm3
+atmosphere = 101325 * pascal
 
 #
 # Electric current [Q][T^-1]
 #
-ampere = coulomb / second  # ampere = 6.24150 e+9 * eplus/ns
+
+# ampere = 6.24150 e+9 * eplus/ns
+ampere = coulomb / second
 milliampere = 1.e-3 * ampere
 microampere = 1.e-6 * ampere
 nanoampere = 1.e-9 * ampere
@@ -195,13 +213,15 @@ volt = 1.e-6 * megavolt
 #
 # Electric resistance [E][T][Q^-2]
 #
-# ohm = 1.60217e-16*(MeV/eplus)/(eplus/ns)
+
+# Reference: ohm = 1.60217e-16*(MeV/eplus)/(eplus/ns)
 ohm = volt / ampere
 
 #
 # Electric capacitance [Q^2][E^-1]
 #
-# farad = 6.24150e+24 * eplus/Megavolt
+
+# Reference: farad = 6.24150e+24 * eplus/Megavolt
 farad = coulomb / volt
 millifarad = 1.e-3 * farad
 microfarad = 1.e-6 * farad
@@ -211,12 +231,16 @@ picofarad = 1.e-12 * farad
 #
 # Magnetic Flux [T][E][Q^-1]
 #
-weber = volt * second  # weber = 1000*megavolt*ns
+
+# Reference: weber = 1000*megavolt*ns
+weber = volt * second
 
 #
 # Magnetic Field [T][E][Q^-1][L^-2]
 #
-tesla = volt * second / meter2  # tesla =0.001*megavolt*ns/mm2
+
+# Reference: tesla =0.001*megavolt*ns/mm2
+tesla = volt * second / meter2
 
 gauss = 1.e-4 * tesla
 kilogauss = 1.e-1 * tesla
@@ -224,7 +248,7 @@ kilogauss = 1.e-1 * tesla
 #
 # Inductance [T^2][E][Q^-2]
 #
-# henry = 1.60217e-7*MeV*(ns/eplus)**2
+# Reference: henry = 1.60217e-7*MeV*(ns/eplus)**2
 henry = weber / ampere
 
 #

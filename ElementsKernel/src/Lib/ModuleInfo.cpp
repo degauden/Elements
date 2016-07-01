@@ -1,3 +1,23 @@
+/**
+ * @file ElementsKernel/src/Lib/ModuleInfo.cpp
+ * @brief OS specific details to access at run-time the module
+ * configuration of the process.
+ * @date Dec 1, 2014
+ * @author hubert
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 
 #include <cstring>
 #include <cstdlib>
@@ -29,7 +49,15 @@ ModuleInfo::ModuleInfo(void *funct) {
 }
 
 const string ModuleInfo::name() const {
-  return ::basename(const_cast<char*>(m_dlinfo->dli_fname)) ;
+  return ::basename(const_cast<char*>(m_dlinfo->dli_fname));
+}
+
+const string ModuleInfo::libraryName() const {
+  return const_cast<char*>(m_dlinfo->dli_fname);
+}
+
+const void* ModuleInfo::addresse() const {
+  return m_dlinfo->dli_saddr;
 }
 
 bool ModuleInfo::isEmpty() const {
@@ -63,8 +91,9 @@ const string& moduleNameFull()   {
       name[0] = 0;
       const char *path =
           ((Dl_info*)moduleHandle())->dli_fname;
-      if (::realpath(path, name))
+      if (::realpath(path, name)) {
         module = name;
+      }
     }
   }
   return module;
@@ -76,14 +105,15 @@ ModuleType moduleType()   {
   if ( type == ModuleType::UNKNOWN )    {
     const string& module = moduleNameFull();
     int loc = module.rfind('.')+1;
-    if ( loc == 0 )
+    if ( loc == 0 ) {
       type = ModuleType::EXECUTABLE;
-    else if ( module[loc] == 'e' || module[loc] == 'E' )
+    } else if ( module[loc] == 'e' || module[loc] == 'E' ) {
       type = ModuleType::EXECUTABLE;
-    else if ( module[loc] == 's' && module[loc+1] == 'o' )
+    } else if ( module[loc] == 's' && module[loc+1] == 'o' ) {
       type = ModuleType::SHAREDLIB;
-    else
+    } else {
       type = ModuleType::UNKNOWN;
+    }
   }
   return type;
 }
@@ -120,9 +150,9 @@ ImageHandle exeHandle()    {
     if ( 0 != handle ) {
       void* func = ::dlsym(handle, "main");
       if ( 0 != func ) {
-      	if ( 0 != ::dladdr(func, &infoBuf) ) {
-      	  info = &infoBuf;
-      	}
+        if ( 0 != ::dladdr(func, &infoBuf) ) {
+          info = &infoBuf;
+        }
       }
     }
   }
@@ -137,8 +167,9 @@ const string& exeName()    {
     char cmd[512];
     ::sprintf(cmd, "/proc/%d/exe", ::getpid());
     module = "Unknown";
-    if (::readlink(cmd, name, sizeof(name)) >= 0)
+    if (::readlink(cmd, name, sizeof(name)) >= 0) {
       module = name;
+    }
   }
   return module;
 }
@@ -148,10 +179,10 @@ const vector<string> linkedModules()    {
     char ff[512], cmd[1024], fname[1024], buf1[64], buf2[64], buf3[64], buf4[64];
     ::sprintf(ff, "/proc/%d/maps", ::getpid());
     FILE* maps = ::fopen(ff, "r");
-    while( ::fgets(cmd, sizeof(cmd), maps) ) {
+    while (::fgets(cmd, sizeof(cmd), maps) ) {
       int len;
       ::sscanf(cmd, "%63s %63s %63s %63s %d %1023s", buf1, buf2, buf3, buf4, &len, fname);
-      if ( len > 0 && strncmp(buf2,"r-xp",strlen("r-xp")) == 0 ) {
+      if ( len > 0 && strncmp(buf2, "r-xp", strlen("r-xp")) == 0 ) {
         s_linkedModules.push_back(fname);
       }
     }

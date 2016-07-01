@@ -28,6 +28,7 @@ DoxyWarnings.log
 .cproject
 .settings
 .pydevproject
+.coverage
 
 .build/
 build-dir/
@@ -45,3 +46,5 @@ ElementsConfigVersion.cmake
 .ptp-sync
 .ptp-sync-folder
 .cache
+/PAQA
+/sonar-project.properties

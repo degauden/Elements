@@ -2,7 +2,20 @@
  * @file Exception.h
  * @brief defines the base Elements exception class
  * @date Feb 20, 2013
- * @author Pavel Binko - The Euclid Consortium
+ * @author Pavel Binko
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #ifndef ELEMENTSEXCEPTION_H_
@@ -25,7 +38,7 @@ public:
    * @param e: this is an optional exit code. By default is is set
    *           to NOT_OK.
    */
-  Exception(ExitCode e=ExitCode::NOT_OK) :
+  explicit Exception(ExitCode e=ExitCode::NOT_OK) :
     m_exit_code{e} {
   }
 
@@ -121,16 +134,16 @@ private:
   // Specialization which handles the last argument
   template<typename Last>
   struct ExitCodeHelper<Last> {
-    ExitCodeHelper(const Last& last) : code{getCode(last)} {}
+    explicit ExitCodeHelper(const Last& last) : code{getCode(last)} {}
     ExitCode code;
   private:
     // This method is used if the T is an ExitCode object
-    template<typename T, typename std::enable_if<std::is_same<T,ExitCode>::value>::type* = nullptr>
+    template<typename T, typename std::enable_if<std::is_same<T, ExitCode>::value>::type* = nullptr>
     ExitCode getCode(const T& t) {
       return t;
     }
     // This method is used when the T is not an ExitCode object
-    template<typename T, typename std::enable_if<!std::is_same<T,ExitCode>::value>::type* = nullptr>
+    template<typename T, typename std::enable_if<not std::is_same<T, ExitCode>::value>::type* = nullptr>
     ExitCode getCode(const T&) {
       return ExitCode::NOT_OK;
     }

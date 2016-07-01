@@ -1,5 +1,5 @@
 /**
- * @file Path_test.cpp
+ * @file PathSearch_test.cpp
  *
  * Created on: Dec 4, 2013
  *     Author: Pierre Dubath
@@ -34,7 +34,7 @@ using Elements::System::setEnv;
 //
 //-----------------------------------------------------------------------------
 
-struct Path_Fixture {
+struct PathSearch_Fixture {
 
 
   string m_env_variable_name = "ELEMENTS_CONF_PATH";
@@ -51,10 +51,10 @@ struct Path_Fixture {
   string m_multiple_path = "/opt/local/bin:" + m_full_path_1 + ":" + m_full_path_2
       + ":/bin";
 
-  Path_Fixture() {
+  PathSearch_Fixture() {
     // setup
   }
-  ~Path_Fixture() {
+  ~PathSearch_Fixture() {
     // teardown
     if (m_tmp_char_ptr.size() != 0) {
       setEnv(m_env_variable_name, m_tmp_char_ptr, 1);
@@ -67,11 +67,11 @@ void createTemporaryStructure(const fs::path& top_path) {
 }
 
 
-BOOST_AUTO_TEST_SUITE(Path_test)
+BOOST_AUTO_TEST_SUITE(PathSearch_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE(simple_file_search, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(simple_file_search, PathSearch_Fixture) {
 
   string file_name { "MockFile_up.conf" };
 
@@ -85,7 +85,7 @@ BOOST_FIXTURE_TEST_CASE(simple_file_search, Path_Fixture) {
 
 }
 
-BOOST_FIXTURE_TEST_CASE(simple_directory_search, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(simple_directory_search, PathSearch_Fixture) {
 
   string file_name { "ElementsKernel" };
 
@@ -98,7 +98,7 @@ BOOST_FIXTURE_TEST_CASE(simple_directory_search, Path_Fixture) {
 
 }
 
-BOOST_FIXTURE_TEST_CASE(recursive_file_search, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(recursive_file_search, PathSearch_Fixture) {
 
   string file_name { "MockFile_down.conf" };
 
@@ -113,7 +113,7 @@ BOOST_FIXTURE_TEST_CASE(recursive_file_search, Path_Fixture) {
   BOOST_CHECK(actualFullPath == expectedFullPath);
 }
 
-BOOST_FIXTURE_TEST_CASE(recursive_search_string_interface, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(recursive_search_string_interface, PathSearch_Fixture) {
 
   string file_name { "MockFile_down.conf" };
 
@@ -129,7 +129,7 @@ BOOST_FIXTURE_TEST_CASE(recursive_search_string_interface, Path_Fixture) {
   BOOST_CHECK(actualFullPath == expectedFullPath.string());
 }
 
-BOOST_FIXTURE_TEST_CASE(duplicate_file_search, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(duplicate_file_search, PathSearch_Fixture) {
 
   string file_name { "MockFile_replicate.conf" };
 
@@ -145,7 +145,7 @@ BOOST_FIXTURE_TEST_CASE(duplicate_file_search, Path_Fixture) {
 
 //----------------------------------------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_single_file, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_single_file, PathSearch_Fixture) {
 
   setEnv(m_env_variable_name, m_multiple_path, 1);
   string file { "MockFile_in_ElementsKernel_up.conf" };
@@ -161,7 +161,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_single_file, Path_Fixture) {
   BOOST_CHECK(expectedFullPath == actualFullPathVector.at(0));
 }
 
-BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_multiple_file, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_multiple_file, PathSearch_Fixture) {
 
   setEnv(m_env_variable_name, m_multiple_path, 1);
   string file { "MockFile_replicate.conf" };
@@ -189,7 +189,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_multiple_file, Path_Fixture) {
  * Check whether the first file appearing in one of the path elements
  * is taken first
  */
-BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_order, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_order, PathSearch_Fixture) {
 
   // first order
   string multiple_path = "/opt/local/bin:" + m_full_path_1 + ":" + m_full_path_2
@@ -213,7 +213,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_order, Path_Fixture) {
   BOOST_CHECK(expectedFullPath == actualFullPathVector.at(0));
 }
 
-BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_file_not_found, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_file_not_found, PathSearch_Fixture) {
 
   setEnv(m_env_variable_name, m_multiple_path, 1);
   string file { "NonExistentFile.conf" };
@@ -224,7 +224,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_file_not_found, Path_Fixture) {
   BOOST_CHECK(actualFullPathVector.size() == 0);
 }
 
-BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_Env_Variable_Undefine, Path_Fixture) {
+BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_Env_Variable_Undefine, PathSearch_Fixture) {
 
   using Elements::System::unSetEnv;
 

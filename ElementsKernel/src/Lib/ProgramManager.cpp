@@ -1,8 +1,22 @@
 /**
  * @file ProgramManager.cpp
  *
- * Created on: Jan 7, 2015
- *     Author: Pierre Dubath
+ * @date Jan 7, 2015
+ * @author Pierre Dubath
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
 // there is no version of boost with the std::__debug namespace
@@ -12,6 +26,7 @@
 #include <cstdlib>                         // for the exit function
 #include <fstream>
 #include <iostream>
+#include <typeinfo>                        // for the typid operator
 
 #include "ElementsKernel/ProgramManager.h"
 
@@ -20,6 +35,7 @@ namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
+#include "ElementsKernel/System.h"
 
 #include "ElementsKernel/PathSearch.h"
 
@@ -62,8 +78,8 @@ const fs::path ProgramManager::setProgramName(char* argv) const {
 }
 
 const fs::path ProgramManager::setProgramPath(char* argv) const {
-  fs::path fullPath(argv);
-  return fullPath.parent_path();
+  fs::path full_path = fs::system_complete(argv);
+  return full_path.parent_path();
 }
 
 /*
@@ -95,7 +111,7 @@ const po::variables_map ProgramManager::getProgramOptions(
       ("log-level", po::value<string>()->default_value(default_log_level),
          "Log level: FATAL, ERROR, WARN, INFO (default), DEBUG")
       ("log-file",
-         po::value<fs::path>(),"Name of a log file");
+         po::value<fs::path>(), "Name of a log file");
 
   // Group all the generic options, for help output. Note that we add the options
   // one by one to avoid having empty lines between the groups
@@ -156,7 +172,7 @@ const po::variables_map ProgramManager::getProgramOptions(
             variables_map);
 
   // Parse from the configuration file if it exists
-  if (!config_file.empty() && fs::exists(config_file)) {
+  if (not config_file.empty() && fs::exists(config_file)) {
     ifstream ifs {config_file.string()};
     if (ifs) {
       po::store(po::parse_config_file(ifs, all_cmd_and_file_options), variables_map);
@@ -284,33 +300,11 @@ void ProgramManager::setup(int argc, char* argv[]) {
 // This is the method call from the main which does everything
 ExitCode ProgramManager::run(int argc, char* argv[]) {
 
-  ExitCode exit_code {ExitCode::NOT_OK};
-
   setup(argc, argv);
 
-  Logging logger = Logging::getLogger("ElementsProgram");
+  ExitCode exit_code =  m_program_ptr->mainMethod(m_variables_map);
 
-  try {
-    exit_code =  m_program_ptr->mainMethod(m_variables_map);
-  } catch (const Exception & ee) {
-    logger.fatal() << "# " ;
-    logger.fatal() << "# Elements Exception : " << ee.what();
-    logger.fatal() << "# ";
-    exit_code = ee.exitCode();
-  } catch (const exception & e) {
-    /// @todo : set the exit code according to the type of exception
-    ///         if a clear match is found.
-    logger.fatal() << "# ";
-    logger.fatal() << "# Standard Exception : " << e.what() ;
-    logger.fatal() << "# ";
-  } catch (...) {
-    logger.fatal() << "# ";
-    logger.fatal() << "# An exception of unknown type occured, "
-                   << "i.e., an exception not deriving from std::exception ";
-    logger.fatal() << "# ";
-  }
-
-  return exit_code ;
+  return exit_code;
 
 }
 
@@ -323,5 +317,45 @@ string ProgramManager::getVersion() const {
 
 ProgramManager::~ProgramManager() {}
 
+void ProgramManager::onTerminate() noexcept {
+
+  ExitCode exit_code {ExitCode::NOT_OK};
+
+  if ( auto exc = std::current_exception() ) {
+
+    Logging logger = Logging::getLogger("ElementsProgram");
+
+    // we have an exception
+    try {
+      rethrow_exception( exc ); // throw to recognize the type
+    } catch (const Exception & exc) {
+      logger.fatal() << "# ";
+      logger.fatal() << "# Elements Exception : " << exc.what();
+      logger.fatal() << "# ";
+      exit_code = exc.exitCode();
+    } catch (const exception & exc) {
+      /// @todo : set the exit code according to the type of exception
+      ///         if a clear match is found.
+      logger.fatal() << "# ";
+      logger.fatal() << "# Standard Exception : " << exc.what();
+      logger.fatal() << "# ";
+    } catch (...) {
+      logger.fatal() << "# ";
+      logger.fatal() << "# An exception of unknown type occured, "
+                     << "i.e., an exception not deriving from std::exception ";
+      logger.fatal() << "# ";
+    }
+
+    logger.fatal() << "This is the back trace:";
+    for (auto level: System::backTrace(21, 4)) {
+      logger.fatal() << level;
+    }
+    abort();
+
+  }
+
+  std::_Exit(static_cast<int>(exit_code));
+
+}
 
 } // namespace Elements

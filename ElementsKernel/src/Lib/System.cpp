@@ -1,16 +1,22 @@
-// $Id: System.cpp,v 1.45 2008/10/27 21:30:32 marcocle Exp $
-//====================================================================
-//	System.cpp
-//--------------------------------------------------------------------
-//
-//	Package    : System (The LHCb System service)
-//
-//  Description: Implementation of Systems internals
-//
-//	Author     : M.Frank
-//  Created    : 13/1/99
-//	Changes    :
-//====================================================================
+/**
+ * @file System.cpp
+ * @author Hubert Degaudenzi
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
+
 
 #include "ElementsKernel/System.h"
 #include "ElementsKernel/FuncPtrCast.h"
@@ -21,28 +27,20 @@
 #include <iomanip>
 #include <iostream>
 #include <string>                       // for string
+#include <vector>                       // for vector
 
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
-#include <cerrno>                      // for errno
+#include <cerrno>                       // for errno
 #include <execinfo.h>                   // for backtrace
-#include <cstring>                     // for strlen
+#include <cstring>                      // for strlen
 #include <unistd.h>                     // for environ
 #include <cxxabi.h>
 #include <sys/utsname.h>
 
 #include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
-#include "ElementsKernel/Unused.h"   // for ELEMENTS_UNUSED
+#include "ElementsKernel/Unused.h"      // for ELEMENTS_UNUSED
 
 using namespace std;
-
-#if defined(__APPLE__)
-  static const string SHLIB_SUFFIX { ".dylib" };
-#else
-  static const string SHLIB_SUFFIX { ".so" };
-#endif
-
-static vector<string> s_argvStrings;
-static vector<const char*> s_argvChars;
 
 namespace Elements {
 namespace System {
@@ -51,11 +49,9 @@ namespace System {
 // Private functions
 // --------------------------------------------------------------------------------------
 static unsigned long doLoad(const string& name, ImageHandle* handle) {
-# if defined(__linux) || defined(__APPLE__)
   const char* path = name.c_str();
   void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
   *handle = mh;
-# endif
   if (0 == *handle) {
     return getLastError();
   }
@@ -96,17 +92,13 @@ unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
     } else {
       // build the dll name
       string dllName = name;
-#if defined(__linux) || defined(__APPLE__)
       dllName = "lib" + dllName;
-#endif
       dllName += SHLIB_SUFFIX;
       // try to locate the dll using the standard PATH
       res = loadWithoutEnvironment(dllName, handle);
     }
     if (res != 1) {
-#if defined(__linux) || defined(__APPLE__)
       errno = 0xAFFEDEAD;
-#endif
     }
   }
   return res;
@@ -133,7 +125,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
   return 1;
 #elif defined(__APPLE__)
   *pFunction = (EntryPoint)::dlsym(handle, name.c_str());
-  if(!(*pFunction)) {
+  if (not (*pFunction)) {
     // Try with an underscore :
     string sname = "_" + name;
     *pFunction = (EntryPoint)::dlsym(handle, sname.c_str());
@@ -267,8 +259,9 @@ const string typeinfoName(const char* class_name) {
     int status;
     char* realname;
     realname = abi::__cxa_demangle(class_name, 0, 0, &status);
-    if (realname == 0)
+    if (realname == 0) {
       return class_name;
+    }
     result = realname;
     ::free(realname);
     /// substitute ', ' with ','
@@ -332,89 +325,45 @@ const string& machineType() {
 /// User login name
 string accountName() {
   string account = ::getlogin();
-    if (0 == account.size())
+    if (0 == account.size()) {
       account = getEnv("LOGNAME");
-    if (0 == account.size())
+    }
+    if (0 == account.size()) {
       account = getEnv("USER");
-    if (0 == account.size())
+    }
+    if (0 == account.size()) {
       account = "Unknown";
+    }
 
   return account;
 }
 
-/// Number of arguments passed to the commandline
-long numCmdLineArgs() {
-  return cmdLineArgs().size();
-}
-
-/// Number of arguments passed to the commandline
-long argc() {
-  return cmdLineArgs().size();
-}
-
-/// Const char** command line arguments including executable name as arg[0]
-const vector<string> cmdLineArgs() {
-  if (s_argvChars.size() == 0) {
-    char exe[1024];
-    sprintf(exe, "/proc/%d/cmdline", ::getpid());
-    FILE *cmdLine = ::fopen(exe, "r");
-    char cmd[1024];
-    if (cmdLine) {
-      long len = ::fread(cmd, sizeof(char), sizeof(cmd), cmdLine);
-      if (len > 0) {
-        cmd[len] = 0;
-        for (char* token = cmd; token - cmd < len; token += strlen(token) + 1) {
-          s_argvStrings.push_back(token);
-          s_argvChars.push_back(s_argvStrings.back().c_str());
-        }
-        s_argvStrings[0] = exeName();
-        s_argvChars[0] = s_argvStrings[0].c_str();
-      }
-      ::fclose(cmdLine);
-    }
-  }
-  return s_argvStrings;
-}
-
-/// Const char** command line arguments including executable name as arg[0]
-char** argv() {
-  ///
-  if (s_argvChars.empty()) {
-    cmdLineArgs();
-  }  /// added by I.B.
-  ///
-  // We rely here on the fact that a vector's allocation table is contiguous
-  return (char**) &s_argvChars[0];
-}
-
-/// get a particular env var, return "UNKNOWN" if not defined
-string getEnv(const char* var) {
-  char* env;
-  if ((env = ::getenv(var)) != 0) {
-    return env;
-  } else {
-    return "UNKNOWN";
-  }
-}
-
 string getEnv(const string& var) {
-  return getEnv(var.c_str());
-}
 
+  string env_str {};
+
+  getEnv(var, env_str);
+
+  return env_str;
+}
 
 /// get a particular env var, storing the value in the passed string (if set)
-bool getEnv(const char* var, string &value) {
-  char* env;
-  if ((env = ::getenv(var)) != 0) {
+bool getEnv(const string& var, string& value) {
+  bool found = false;
+  value = "";
+
+  char* env = ::getenv(var.c_str());
+  if (env != NULL) {
+    found = true;
     value = env;
-    return true;
-  } else {
-    return false;
   }
+
+  return found;
 }
 
-bool isEnvSet(const char* var) {
-  return ::getenv(var) != 0;
+
+bool isEnvSet(const string& var) {
+  return ::getenv(var.c_str()) != 0;
 }
 
 /// get all defined environment vars
@@ -433,72 +382,98 @@ vector<string> getEnv() {
   return vars;
 }
 
-ThreadHandle threadSelf() {
-#ifdef __linux
-  return pthread_self();
-#else
-  return (void*)0;
-#endif
+///set an environment variables. @return 0 if successful, -1 if not
+int setEnv(const string& name, const string& value, bool overwrite) {
+
+  int over = 1;
+  if (not overwrite) {
+    over = 0;
+  }
+
+  return ::setenv(name.c_str(), value.c_str(), over);
+}
+
+
+int unSetEnv(const string& name) {
+  return ::unsetenv(name.c_str());
 }
 
 // -----------------------------------------------------------------------------
 // backtrace utilities
 // -----------------------------------------------------------------------------
-#ifdef __linux
 #include <execinfo.h>
-#endif
 
-int backTrace(void** addresses ELEMENTS_UNUSED,
+int backTrace(std::shared_ptr<void*> addresses ELEMENTS_UNUSED,
     const int depth ELEMENTS_UNUSED) {
 
-#ifdef __linux
-
-  int count = ::backtrace(addresses, depth);
+  int count = ::backtrace(addresses.get(), depth);
   if (count > 0) {
     return count;
   } else {
     return 0;
   }
 
-#else // windows and osx parts not implemented
-  return 0;
-#endif
-
 }
 
 bool backTrace(string& btrace, const int depth, const int offset) {
   // Always hide the first two levels of the stack trace (that's us)
   const int totalOffset = offset + 2;
-  const int totalDepth = depth + totalOffset;
+  const int total_depth = depth + totalOffset;
   bool result = false;
 
-  string fnc, lib;
 
-  void** addresses = (void**) malloc(totalDepth * sizeof(void *));
-  if (addresses != NULL) {
-    int count = backTrace(addresses, totalDepth);
+  shared_ptr<void*> addresses {new void*[total_depth], default_delete<void*[]>()};
+
+  if (addresses != nullptr) {
+    int count = backTrace(addresses, total_depth);
     for (int i = totalOffset; i < count; ++i) {
       void *addr = 0;
-
-      if (getStackLevel(addresses[i], addr, fnc, lib)) {
+      string fnc, lib;
+      if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
         ostringstream ost;
         ost << "#" << setw(3) << setiosflags(ios::left) << i - totalOffset + 1;
         ost << hex << addr << dec << " " << fnc << "  [" << lib << "]" << endl;
         btrace += ost.str();
       }
     }
-    ::free(addresses);
-    addresses = NULL;
     result = true;
   }
 
   return result;
 }
 
+
+const vector<string> backTrace(const int depth, const int offset) {
+
+  // Always hide the first two levels of the stack trace (that's us)
+  const int total_offset = offset + 2;
+  const int total_depth = depth + total_offset;
+  vector<string> trace {};
+
+  shared_ptr<void*> addresses {new void*[total_depth], default_delete<void*[]>()};
+
+  if (addresses != nullptr) {
+
+    int count = backTrace(addresses, total_depth);
+
+    for (int i=total_offset; i<count; ++i) {
+      void *addr = 0;
+      string fnc, lib;
+      if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
+        ostringstream ost;
+        ost << "#" << setw(3) << setiosflags(ios::left) << i - total_offset + 1;
+        ost << hex << addr << dec << " " << fnc << "  [" << lib << "]";
+        trace.push_back(ost.str());
+      }
+    }
+  }
+
+  return trace;
+}
+
 bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
     string& fnc ELEMENTS_UNUSED, string& lib ELEMENTS_UNUSED) {
 
-#ifdef __linux
 
   Dl_info info;
 
@@ -509,12 +484,11 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
 
     lib = info.dli_fname;
     addr = info.dli_saddr;
-    unique_ptr<char> dmg;
 
     if (symbol != 0) {
       int stat;
-      dmg = std::unique_ptr<char>(abi::__cxa_demangle(symbol, 0, 0, &stat));
-      fnc = (stat == 0) ? dmg.get() : symbol;
+      unique_ptr<char, decltype(free)*> dmg(abi::__cxa_demangle(symbol, 0, 0, &stat), free);
+      fnc = string((stat == 0) ? dmg.get() : symbol);
     } else {
       fnc = "local";
     }
@@ -523,27 +497,7 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
     return false;
   }
 
-#else // not implemented for windows and osx
-  return false;
-#endif
-
 }
-
-///set an environment variables. @return 0 if successful, -1 if not
-int setEnv(const string &name, const string &value, int overwrite) {
-  // UNIX version
-  return value.empty() ?
-  // remove if set to nothing (and return success)
-      unSetEnv(name), 0 :
-      // set the value
-      ::setenv(name.c_str(), value.c_str(), overwrite);
-
-}
-
-int unSetEnv(const string& name) {
-  return ::unsetenv(name.c_str());
-}
-
 
 } // namespace System
 } // namespace Elements

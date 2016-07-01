@@ -1,0 +1,71 @@
+/**
+ * @file ElementsKernel/_impl/Path.icpp
+ *
+ * @date May 17, 2016
+ * @author Hubert Degaudenzi
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#ifndef ELEMENTSKERNEL__IMPL_PATH_ICPP_
+#define ELEMENTSKERNEL__IMPL_PATH_ICPP_
+
+#include <string>                      // for string
+#include <vector>                      // for vector
+#include <algorithm>                   // for find_if
+#include <boost/filesystem.hpp>        // for boost::filesystem
+
+namespace Elements {
+namespace Path {
+
+template <typename T, typename U>
+boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations) {
+
+  namespace fs = boost::filesystem;
+
+  fs::path found_path {};
+  fs::path file_path {file_name};
+
+  auto found_pos = std::find_if(locations.cbegin(), locations.cend(),
+      [file_path](U l) {
+    return fs::exists(fs::path{l} / file_path);
+  });
+
+  if (found_pos != locations.cend()) {
+    found_path = fs::path{*found_pos} / file_path;
+  }
+
+  return found_path;
+
+}
+
+
+template <typename T>
+boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable) {
+
+  namespace fs = boost::filesystem;
+  using std::vector;
+
+  vector<fs::path> location_list = getLocationsFromEnv(path_variable);
+
+  return getPathFromLocations(file_name, location_list);
+
+}
+
+} // Path namespace
+} // Elements namespace
+
+
+
+#endif // ELEMENTSKERNEL__IMPL_PATH_ICPP_

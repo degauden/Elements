@@ -1,3 +1,23 @@
+/**
+ * @file ProcessDescriptor.cpp
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ *
+ */
+
+
 #define ELEMENTSKERNEL_PROCSTAT_CPP
 
 #define WINVER 0
@@ -341,8 +361,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     vb->OtherTransferCount = 0;
 #endif
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -358,15 +379,17 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     rlimit lim;
 
     getrlimit(RLIMIT_DATA, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->PeakPagedPoolUsage = lim.rlim_cur;
     vb->PagedPoolUsage = lim.rlim_cur;
     vb->PagedPoolLimit = lim.rlim_max;
 
     getrlimit(RLIMIT_STACK, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->PeakNonPagedPoolUsage = lim.rlim_cur;
     vb->NonPagedPoolUsage = lim.rlim_cur;
     vb->NonPagedPoolLimit = lim.rlim_max;
@@ -380,8 +403,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
 #else                                     // All Other
 #endif                                    // End ALL OS
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -403,8 +427,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     vb = &status;
     break;
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -422,8 +447,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     int fd = open(buf, O_RDONLY);
     ssize_t nread = read(fd, buf, bufsize);
     close(fd);
-    if (nread < bufsize && nread >= 0)
+    if (nread < bufsize && nread >= 0) {
       buf[nread] = '\0';
+    }
     sscanf(buf, "%ld %ld %ld %ld %ld %ld %ld", &size, &resident, &share,
                                                &trs, &drs, &lrs, &dt);
     linux_proc prc;
@@ -443,8 +469,9 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
 #else                                     // All Other
 #endif                                    // End ALL OS
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -459,36 +486,40 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     // (ie. rlim_max=RLIM_INFINITY...)
     rlimit lim;
     getrlimit(RLIMIT_DATA, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->PagedPoolLimit = lim.rlim_max;
 
     getrlimit(RLIMIT_STACK, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->NonPagedPoolLimit = lim.rlim_max;
     vb->MinimumWorkingSetSize = 0;
 
     getrlimit(RLIMIT_RSS, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->MaximumWorkingSetSize = lim.rlim_max;
 
     getrlimit(RLIMIT_AS, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->PagefileLimit = lim.rlim_max;
 
     getrlimit(RLIMIT_CPU, &lim);
-    if (lim.rlim_max == RLIM_INFINITY )
+    if (lim.rlim_max == RLIM_INFINITY ) {
       lim.rlim_max = 0xFFFFFFFF;
+    }
     vb->TimeLimit = lim.rlim_max;
-#elif defined(__APPLE__)
-#else                                     // All Other
 #endif                                    // End ALL OS
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -511,11 +542,11 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     // << prc.flags << endl;
     vb->UniqueProcessId = processID(pid);
     vb->InheritedFromUniqueProcessId = prc.ppid;
-#else                                     // All Other
 #endif                                    // End ALL OS
   }
-  if (info)
+  if (info) {
     *info = *vb;
+  }
   return status;
 }
 
@@ -524,7 +555,7 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
   long status = 1;
   ProcessHandle h(pid);
   KERNEL_USER_TIMES* tb = &m_KERNEL_USER_TIMES[h.item()];
-  ;
+
   if (fetch == InfoType::Times) {
 #if defined(__linux)                      // Linux
     // prc.startup is in ticks since system start :
@@ -580,11 +611,11 @@ long ProcessDescriptor::query(long pid, InfoType fetch,
     status = 1;
 #endif
   }
-  if (info)
+  if (info) {
     *info = *tb;
+  }
   return status;
 }
 
 } // namespace System
 } // namespace Elements
-

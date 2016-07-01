@@ -21,7 +21,7 @@ def main():
 
     project, version, outputfile = args
     if not opts.quiet:
-        print "Creating %s for %s %s" % (outputfile, project, version)
+        print("Creating %s for %s %s" % (outputfile, project, version))
 
     if version.startswith('HEAD'):
         majver, minver, patver = 999, 999, 0  # special handling
@@ -37,19 +37,21 @@ def main():
     outdir = os.path.dirname(outputfile)
     if not os.path.exists(outdir):
         if not opts.quiet:
-            print "Creating directory", outdir
+            print("Creating directory", outdir)
         os.makedirs(outdir)
 
     # Prepare data to be written
-    outputdata = """#ifndef %(proj)s_VERSION
+    outputdata = """#ifndef %(proj)s_VERSION_H
+#define %(proj)s_VERSION_H
 /* Automatically generated file: do not modify! */
-#ifndef CALC_ELEMENTS_VERSION
-#define CALC_ELEMENTS_VERSION(maj,min,pat) (((maj) << 32) + ((min) << 16) + (pat))
-#endif
-#define %(proj)s_MAJOR_VERSION %(maj)d
-#define %(proj)s_MINOR_VERSION %(min)d
-#define %(proj)s_PATCH_VERSION %(pat)d
-#define %(proj)s_VERSION CALC_ELEMENTS_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)
+#include <cstdint>
+#include <string>
+#include "ElementsKernel/Version.h"
+constexpr std::uint_least64_t %(proj)s_MAJOR_VERSION = %(maj)d;
+constexpr std::uint_least64_t %(proj)s_MINOR_VERSION = %(min)d;
+constexpr std::uint_least64_t %(proj)s_PATCH_VERSION = %(pat)d;
+constexpr std::uint_least64_t %(proj)s_VERSION = CALC_PROJECT_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION);
+const std::string %(proj)s_VERSION_STRING {Elements::getVersionString(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)};
 #endif
 """ % { 'proj': project.upper(), 'min': minver, 'maj': majver, 'pat': patver }
 

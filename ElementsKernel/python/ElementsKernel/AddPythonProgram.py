@@ -19,7 +19,6 @@
 """
 File: ElementsKernel/AddPythonProgram.py
 Author: Nicolas Morisset
-         Astronomy Department of the University of Geneva
 
 Date: 01/07/15
 
@@ -64,8 +63,7 @@ def createFiles(module_dir, module_name, program_name):
     Create files needed for a python program
     """
     # Create the executable directory
-    epcr.createPythonInitFile(os.path.join(module_dir, 'python', module_name,
-                                            '__init__.py'))
+    epcr.createPythonInitFile(os.path.join(module_dir, 'python', module_name, '__init__.py'))
 
     conf_file = os.path.join(module_dir, 'conf', module_name, program_name + '.conf')
     if not os.path.exists(conf_file):
@@ -112,7 +110,7 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     Update the <CMakeList.txt> file
     """
-    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Backup the file
@@ -150,8 +148,7 @@ def createPythonProgram(current_dir, module_name, program_name):
     program_path = os.path.join(current_dir, 'python', module_name)
     script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
     if script_goes_on:
-        subStringsInPythonProgramFile(program_path, program_name,
-                                            module_name)
+        subStringsInPythonProgramFile(program_path, program_name, module_name)
         updateCmakeListsFile(current_dir, program_name)
 
     return script_goes_on
@@ -159,6 +156,9 @@ def createPythonProgram(current_dir, module_name, program_name):
 ################################################################################
 
 def defineSpecificProgramOptions():
+    """
+    Define program option(s)
+    """
     description = """
     This script creates an <Elements> python program at your current directory
     (default), this directory must be an <Elements> module.
@@ -173,53 +173,49 @@ def defineSpecificProgramOptions():
 ################################################################################
 
 def mainMethod(args):
+    """
+    Main
+    """
 
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddPythonProgram script')
     logger.info('#')
 
-    try:
-        script_goes_on = True
-        program_name = args.program_name
+    program_name = args.program_name
 
-        # Default is the current directory
-        current_dir = os.getcwd()
+    # Default is the current directory
+    current_dir = os.getcwd()
 
-        logger.info('# Current directory : %s', current_dir)
-        logger.info('')
+    logger.info('# Current directory : %s', current_dir)
+    logger.info('')
 
-        # We absolutely need a Elements cmake file
-        script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
+    # We absolutely need a Elements cmake file
+    script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
 
-        # Module as no version number, '1.0' is just for using the routine
-        if script_goes_on:
-            script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
+    # Module as no version number, '1.0' is just for using the routine
+    if script_goes_on:
+        script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
 
-        # Check aux file exist
-        if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+    # Check aux file exist
+    if script_goes_on:
+        script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
-        program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
+    program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
 
-        # Make sure the program does not already exist
-        if script_goes_on:
-            script_goes_on = epcr.isFileAlreadyExist(program_file_path, program_name)
+    # Make sure the program does not already exist
+    if script_goes_on:
+        script_goes_on = epcr.isFileAlreadyExist(program_file_path, program_name)
 
-        if script_goes_on:
-            if os.path.exists(current_dir):
-                if createPythonProgram(current_dir, module_name, program_name):
-                    logger.info('< %s > program successfully created in < %s >.' %
-                                (program_name, program_file_path))
-                    # Remove backup file
-                    epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-                    logger.info('Script over.')
-            else:
-                logger.error('< %s > project directory does not exist!'
-                             % current_dir)
+    if script_goes_on:
+        if os.path.exists(current_dir):
+            if createPythonProgram(current_dir, module_name, program_name):
+                logger.info('< %s > program successfully created in < %s >.',
+                            program_name, program_file_path)
+                # Remove backup file
+                epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
+                logger.info('Script over.')
+        else:
+            logger.error('< %s > project directory does not exist!', current_dir)
 
-        if not script_goes_on:
-            logger.error('Script aborted!')
-
-    except Exception as e:
-        logger.exception(e)
-        logger.info('Script stopped...')
+    if not script_goes_on:
+        logger.error('Script aborted!')

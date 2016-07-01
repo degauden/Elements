@@ -17,27 +17,31 @@ def main():
 
     project, outputfile = args
     if not opts.quiet:
-        print "Creating %s for %s %s" % (outputfile, project, version)
+        print("Creating %s for %s %s" % (outputfile, project, version))
 
     outdir = os.path.dirname(outputfile)
     if not os.path.exists(outdir):
         if not opts.quiet:
-            print "Creating directory", outdir
+            print("Creating directory", outdir)
         os.makedirs(outdir)
 
     # Prepare data to be written
     outputdata = """#ifndef _THIS_PROJECT_H_
 #define _THIS_PROJECT_H_
 /* Automatically generated file: do not modify! */
+#include <cstdint>
+#include <string>
+#include <set>
 #include "%(proj)s_VERSION.h"
-#include "ElementsKernel/Version.h"
-#define THIS_PROJECT_MAJOR_VERSION %(proj)s_MAJOR_VERSION
-#define THIS_PROJECT_MINOR_VERSION %(proj)s_MINOR_VERSION
-#define THIS_PROJECT_PATCH_VERSION %(proj)s_PATCH_VERSION
-#define THIS_PROJECT_VERSION CALC_ELEMENTS_VERSION(THIS_PROJECT_MAJOR_VERSION,THIS_PROJECT_MINOR_VERSION,THIS_PROJECT_PATCH_VERSION)
-#define THIS_PROJECT_VERSION_STRING Elements::getVersionString(THIS_PROJECT_MAJOR_VERSION,THIS_PROJECT_MINOR_VERSION,THIS_PROJECT_PATCH_VERSION)
-#define THIS_PROJECT_NAME %(Proj)s
-#define THIS_PROJECT_NAME_STRING std::string("%(Proj)s")
+#include "%(proj)s_INSTALL.h"
+constexpr std::uint_least64_t THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION;
+constexpr std::uint_least64_t THIS_PROJECT_MINOR_VERSION = %(proj)s_MINOR_VERSION;
+constexpr std::uint_least64_t THIS_PROJECT_PATCH_VERSION = %(proj)s_PATCH_VERSION;
+constexpr std::uint_least64_t THIS_PROJECT_VERSION = %(proj)s_VERSION;
+const std::string THIS_PROJECT_VERSION_STRING {%(proj)s_VERSION_STRING};
+const std::string THIS_PROJECT_NAME_STRING {"%(Proj)s"};
+const std::string THIS_PROJECT_INSTALL_LOCATION_STRING {%(proj)s_INSTALL_LOCATION_STRING};
+const std::set<std::string> THIS_PROJECT_SEARCH_DIRS {%(proj)s_SEARCH_DIRS};
 #endif
 """ % { 'proj': project.upper(), 'Proj': project}
 

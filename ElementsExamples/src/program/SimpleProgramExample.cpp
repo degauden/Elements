@@ -3,23 +3,41 @@
  *
  * @date Aug 27, 2014
  * @author Hubert Degaudenzi
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
-#include <iostream>
+#include <iostream>                           // for cout, endl
+#include <map>                                // for map
+#include <string>                             // for string
 
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
 
 namespace po = boost::program_options;
 
-using namespace std;
+//using namespace std;
+using std::map;
+using std::string;
 
 namespace Elements {
 namespace Examples {
 
 
 /**
- * @class ElementsProgramExample
+ * @class SimpleProgramExample
  * @brief
  *    Example of an Elements program
  * @details
@@ -41,14 +59,14 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(ELEMENTS_UNUSED map<std::string, po::variable_value>& args) {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();
 
     logger.info("This Works");
 
-    cout << "This Works too!" << endl;
+    std::cout << "This Works too!" << std::endl;
 
     return ExitCode::OK;
 
@@ -56,11 +74,7 @@ public:
 
 };
 
-
-
-
 } // namespace ElementsExamples
 } // namespace Elements
-
 
 MAIN_FOR(Elements::Examples::SimpleProgramExample)

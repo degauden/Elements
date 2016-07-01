@@ -1,5 +1,7 @@
 include_guard()
 
+include(CheckCXXCompilerFlag)
+include(CheckCCompilerFlag)
 
 include(SGSPlatform)
 
@@ -33,8 +35,8 @@ message(STATUS "The relative location for the build is set to ${BUILD_SUBDIR}")
 
 
 # Special defaults
-if ( (SGS_COMP STREQUAL gcc AND ( SGS_COMPVERS MATCHES "4[7-9]|5[0-9]|max" ))
-    OR (SGS_COMP STREQUAL clang AND SGS_COMPVERS MATCHES "3[0-9]")
+if ( (SGS_COMP STREQUAL gcc AND ( (NOT SGS_COMPVERS VERSION_LESS "47") OR (SGS_COMPVERS MATCHES "max") ))
+    OR (SGS_COMP STREQUAL clang AND (NOT SGS_COMPVERS VERSION_LESS "30") )
     OR (SGS_COMP STREQUAL llvm))
 
   # C++11 is enable by default on gcc47 and gcc48
@@ -99,6 +101,10 @@ option(USE_SPHINX_APIDOC
        "Use sphinx API documentation generation"
        ON)
 
+option(USE_SPHINX_BREATHE
+       "Use sphinx C++ API Breathe plugin to bind to doxygen"
+       ON)
+
 option(ELEMENTS_USE_RPATH
        "Use full RPATH for both build and installation"
        ON)
@@ -146,12 +152,18 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the compiler during Debug builds."
         FORCE)
     if(OPT_DEBUG)
-      set(CMAKE_CXX_FLAGS_DEBUG "-Og ${CMAKE_CXX_FLAGS_DEBUG}"
-          CACHE STRING "Flags used by the compiler during Debug builds."
-          FORCE)
-      set(CMAKE_C_FLAGS_DEBUG "-Og ${CMAKE_C_FLAGS_DEBUG}"
-          CACHE STRING "Flags used by the compiler during Debug builds."
-          FORCE)
+      check_cxx_compiler_flag(-Og CXX_HAS_MINUS_OG)
+      if(CXX_HAS_MINUS_OG)
+        set(CMAKE_CXX_FLAGS_DEBUG "-Og ${CMAKE_CXX_FLAGS_DEBUG}"
+            CACHE STRING "Flags used by the compiler during Debug builds."
+            FORCE)
+      endif()
+      check_c_compiler_flag(-Og C_HAS_MINUS_OG)
+      if(C_HAS_MINUS_OG)
+        set(CMAKE_C_FLAGS_DEBUG "-Og ${CMAKE_C_FLAGS_DEBUG}"
+            CACHE STRING "Flags used by the compiler during Debug builds."
+            FORCE)
+      endif()
     endif()
   endif()
 
@@ -240,7 +252,7 @@ if(APPLE)
 endif()
 
 #--- Special build flags -------------------------------------------------------
-if ((ELEMENTS_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND (SGS_COMPVERS MATCHES "4[0-9]|5[0-9]|max")))
+if ((ELEMENTS_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND ( (NOT SGS_COMPVERS VERSION_LESS "40") OR (SGS_COMPVERS MATCHES "max") )))
   set(CMAKE_CXX_VISIBILITY_PRESET hidden)
   set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
   add_definitions(-DELEMENTS_HIDE_SYMBOLS)
@@ -256,8 +268,10 @@ if ( ELEMENTS_CPP11 )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
   if ( APPLE AND ((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") ) )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -stdlib=libc")
+    check_cxx_compiler_flag(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+    if(CXX_HAS_MINUS_STDLIB)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    endif()
   endif()
   if(USE_ODB)
     set(ODB_CXX_EXTRA_FLAGS --std c++11)
@@ -273,7 +287,7 @@ if ( APPLE AND ( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm")))
   if(EXISTS ${macport_inc})
     include_directories(SYSTEM ${macport_inc})
     if(SGS_COMP STREQUAL "clang")
-      if (SGS_COMPVERS MATCHES "3[5-9]")
+      if (SGS_COMPVERS VERSION_GREATER "34")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${macport_inc}")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isystem ${macport_inc}")
       else()
@@ -288,12 +302,12 @@ if ( APPLE AND ( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm")))
   endif()
 endif()
 
-if ( ELEMENTS_PARALLEL AND (SGS_COMP STREQUAL gcc AND (SGS_COMPVERS MATCHES "4[2-9]|5[0-9]|max")) )
+if ( ELEMENTS_PARALLEL AND (SGS_COMP STREQUAL gcc AND ( (SGS_COMPVERS VERSION_GREATER "41") OR (SGS_COMPVERS MATCHES "max") )) )
   add_definitions(-D_GLIBCXX_PARALLEL)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 endif()
 
-if ( ELEMENTS_FORTIFY AND (SGS_COMP STREQUAL gcc AND (SGS_COMPVERS MATCHES "4[1-9]|5[0-9]|max")) )
+if ( ELEMENTS_FORTIFY AND (SGS_COMP STREQUAL gcc AND ( (SGS_COMPVERS VERSION_GREATER "40") OR (SGS_COMPVERS MATCHES "max") )) )
   if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND SGS_COMPVERS VERSION_GREATER "47" AND OPT_DEBUG)
     add_definitions(-D_FORTIFY_SOURCE=2)
   endif()
@@ -323,7 +337,7 @@ endif()
 if(ELEMENTS_HIDE_WARNINGS)
   if( (SGS_COMP MATCHES clang) OR (SGS_COMP MATCHES llvm) )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated -Wno-overloaded-virtual -Wno-char-subscripts -Wno-unused-parameter")
-  elseif(SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "4[3-9]|5[0-9]|max")
+  elseif(SGS_COMP STREQUAL gcc AND ( (SGS_COMPVERS VERSION_GREATER "42") OR (SGS_COMPVERS MATCHES "max") ))
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated -Wno-empty-body")
   endif()
 endif()
@@ -336,7 +350,7 @@ endif()
 #--- Special flags -------------------------------------------------------------
 add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 
-if((SGS_COMP STREQUAL gcc AND SGS_COMPVERS MATCHES "47|48|49|5[0-9]|max") OR ELEMENTS_CPP11)
+if((SGS_COMP STREQUAL gcc AND ( (SGS_COMPVERS VERSION_GREATER "46") OR (SGS_COMPVERS MATCHES "max") )) OR ELEMENTS_CPP11)
   set(GCCXML_CXX_FLAGS "${GCCXML_CXX_FLAGS} -D__STRICT_ANSI__")
 endif()
 
@@ -345,7 +359,7 @@ if(SGS_COMP STREQUAL gcc)
     # The -pedantic flag gives problems on GCC 4.3.
     string(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     string(REPLACE "-pedantic" "" CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}")
-  elseif(SGS_COMPVERS MATCHES "4[8-9]")
+  elseif(SGS_COMPVERS VERSION_GREATER "47")
     string(REPLACE "-pedantic" "-Wpedantic" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     string(REPLACE "-pedantic" "-Wpedantic" CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}")
   endif()

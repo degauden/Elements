@@ -1,3 +1,5 @@
+"""Main Program Class Module"""
+
 import importlib
 import os
 import sys
@@ -5,15 +7,19 @@ import re
 import ElementsKernel.Logging as log
 
 
-class Program (object):
-
-    def __init__(self, app_module, parent_project_version=None, parent_project_name=None):
+class Program(object):
+    """Main Program Class"""
+    def __init__(self, app_module, parent_project_version=None, parent_project_name=None,
+                 search_dirs=None):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
+        self._search_dirs = search_dirs
+        self._program_path = None
 
-    def _setupLogging(self, arg_parser):
+    @staticmethod
+    def _setupLogging(arg_parser):
         options = arg_parser.parse_known_args()[0]
         if options.log_level:
             log.setLevel(options.log_level.upper())
@@ -83,6 +89,7 @@ class Program (object):
         cmd_options = arg_parser.parse_known_args()[0]
         # Now redo the parsing including the configuration file
         options = sys.argv[1:]
+        self._program_path = os.path.dirname(os.path.realpath(sys.argv[0]))
         options.extend(self._parseConfigFile(arg_parser, cmd_options))
         all_options = arg_parser.parse_args(options)
 
@@ -92,7 +99,12 @@ class Program (object):
         # Iterate through the names of the variables keeping the option values
         for var in [v for v in dir(all_options) if not v.startswith('_')]:
             # We get the related action from the argparser
-            action = next((a for a in arg_parser._actions if a.dest == var and a.option_strings), None)
+            action = None
+            for a in arg_parser._actions:
+                if a.dest == var and a.option_strings:
+                    action = a
+                    break
+
             if action:
                 # We chose as name the longest option name and we strip any leading '-'
                 variable_to_option_name[var] = max(action.option_strings, key=len).lstrip('-')

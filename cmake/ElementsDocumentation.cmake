@@ -8,7 +8,7 @@
 
 
   # Add Doxygen generation
-  find_package(Doxygen)
+  find_package(Doxygen QUIET)
 
   if(DOXYGEN_FOUND)
 
@@ -53,10 +53,18 @@
 
   if(USE_SPHINX)
 
-  find_package(Sphinx)
+  find_package(Sphinx QUIET)
   if(SPHINX_FOUND)
-
-    if(USE_DOXYGEN)
+  
+    if(NOT SPHINX_BUILD_OPTIONS)
+      set(SPHINX_BUILD_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-build" FORCE)
+    endif()
+    
+    if(NOT SPHINX_APIDOC_OPTIONS)
+      set(SPHINX_APIDOC_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-apidoc" FORCE)
+    endif()
+    
+    if(USE_DOXYGEN AND USE_SPHINX_BREATHE)
       set(APPEND_BREATHE_EXT "extensions.append('breathe')")
     else()
       set(APPEND_BREATHE_EXT "")
@@ -97,7 +105,7 @@ Related Pages
     endforeach()
 
 
-    if(DOXYGEN_FOUND AND USE_SPHINX_APIDOC)
+    if(DOXYGEN_FOUND AND USE_SPHINX_APIDOC AND USE_SPHINX_BREATHE)
 
       find_file_to_configure(cpp_modules.rst.in
                              FILE_TYPE "C++ main ReST"
@@ -118,7 +126,8 @@ Related Pages
 
     add_custom_target(sphinx
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
-                      COMMAND  ${SPHINX_BUILD_CMD} . ${_py_pack} html
+                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/_static
+                      COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} . ${_py_pack} html
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)
 
@@ -146,7 +155,7 @@ Related Pages
 
         add_custom_target(sphinx_apidoc_${_py_pack_short}
                           COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short}
-                          COMMAND  ${SPHINX_APIDOC_CMD} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short} ${_py_pack}
+                          COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short} ${_py_pack}
                           COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
 
         add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
