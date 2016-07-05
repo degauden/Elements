@@ -22,7 +22,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 '''
 
 from ElementsKernel.Temporary import TempDir, TempFile
-from ElementsKernel.Temporary import Environment
+from ElementsKernel.Temporary import TempEnv
 import os
 
 import unittest
@@ -87,7 +87,7 @@ class TestCase(unittest.TestCase):
 
         os.environ["TESTENVEK"] = "wuk"
 
-        with Environment() as e:
+        with TempEnv() as e:
             e["TESTENVEK"] = "bla"
             e["TESTENVEK2"] = "bla"
             self.assert_(os.environ.get("TESTENVEK") == "bla")
@@ -95,7 +95,7 @@ class TestCase(unittest.TestCase):
         # The environment is restored
         self.assert_(os.environ.get("TESTENVEK") == "wuk")
 
-        with Environment() as e:
+        with TempEnv() as e:
             e["TESTENVEK2"] = "bla"
             self.assert_(os.environ.get("TESTENVEK2") == "bla")
 
