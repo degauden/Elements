@@ -316,3 +316,5 @@ class Environment(object):
                     out += 'set %s=%s\n' % (key, self.env[key])
         return out
 
+
+TempEnv = Environment
