@@ -69,7 +69,7 @@ def updateCmakeListsFile(module_dir, class_name):
         f = open(cmake_filename, 'r')
         data = f.read()
         f.close()
-        # Add the program to be removed
+        # Add the class to be removed
         cmake_object = pcl.CMakeLists(data)
         cmake_object.elements_remove_cpp_class = class_name
 

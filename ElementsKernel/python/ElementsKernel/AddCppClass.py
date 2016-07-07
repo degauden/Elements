@@ -22,7 +22,6 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 """
 
 import argparse
@@ -247,9 +246,8 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                 cmake_object.elements_add_library_list.append(lib_object)
 
             # Add unit test
-            source_name = 'tests' + os.sep + 'src' + os.sep + subdir + \
-            class_name + '_test.cpp'
-            unittest_object = pcl.ElementsAddUnitTest(class_name + '_test',
+            source_name = 'tests' + os.sep + 'src' + os.sep + subdir + class_name +'_test.cpp'
+            unittest_object = pcl.ElementsAddUnitTest(module_name +'_' + class_name,
                                                       [source_name], [module_name],
                                                       [], 'Boost')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
