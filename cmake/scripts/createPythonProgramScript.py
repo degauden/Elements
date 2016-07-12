@@ -23,8 +23,34 @@ template = """\
 #!/usr/bin/env python
 # Automatically generated file: do not modify!
 
+import sys, os
+
+def _updateSysPath(extra_list):
+    if extra_list:
+        os_env_str = os.environ.get("PYTHONPATH", None)
+        if os_env_str:
+            sys_path_str = os.pathsep.join(sys.path)
+            found_idx = sys_path_str.find(os_env_str)
+            size_of_env = len(os_env_str)
+            new_sys_path_str = sys_path_str[:found_idx+size_of_env]
+            new_sys_path_str += os.pathsep + os.pathsep.join(extra_list)
+            new_sys_path_str += sys_path_str[found_idx+size_of_env:]
+            sys.path = new_sys_path_str.split(os.pathsep)
+        else:
+            sys.path = extra_list + sys.path
+
+old_path = sys.path[:]
+
+# insert neighbour python path after the env variable in sys.path
+_updateSysPath(["../python"])
+
 from ThisProject import THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME
 from ThisProject import THIS_PROJECT_SEARCH_DIRS
+
+sys.path = old_path
+
+# insert python path list after the env variable in sys.path
+_updateSysPath(["../python"] + [os.path.join(p, "python") for p in THIS_PROJECT_SEARCH_DIRS[1:]])
 
 from ElementsKernel.Program import Program
 
