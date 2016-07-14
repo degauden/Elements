@@ -65,6 +65,11 @@ option(ELEMENTS_CPP11
        "enable C++11 compilation"
        ${ELEMENTS_CPP11_DEFAULT})
 
+option(ELEMENTS_CPP14
+       "enable C++14 compilation"
+       OFF)
+
+
 option(ELEMENTS_PARALLEL
        "enable C++11 parallel support with OpenMP"
        ${ELEMENTS_PARALLEL_DEFAULT})
@@ -264,6 +269,12 @@ if(USE_ODB)
       FORCE)
 endif()
 
+
+if ( ELEMENTS_CPP11 AND ELEMENTS_CPP14)
+  message(WARNING "Both -std=c++11 and -std=c++14 are active. Please remove one by setting/unsetting the right option")
+endif()
+
+
 if ( ELEMENTS_CPP11 )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
@@ -277,6 +288,18 @@ if ( ELEMENTS_CPP11 )
     set(ODB_CXX_EXTRA_FLAGS --std c++11)
   endif()
 endif()
+
+if ( ELEMENTS_CPP14 )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11") # this is the latest C standard available
+  if ( APPLE AND ((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") ) )
+    check_cxx_compiler_flag(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+    if(CXX_HAS_MINUS_STDLIB)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    endif()
+  endif()
+endif()
+
 
 if ( APPLE AND ( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm")))
   if(DEFINED ENV{MACPORT_LOCATION})
