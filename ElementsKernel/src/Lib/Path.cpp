@@ -66,14 +66,14 @@ map<Type, vector<string>> DEFAULT_LOCATIONS {
   {Type::auxiliary, {"/usr/share/auxiliary"}}
 };
 
-vector<fs::path> getRawLocationsFromEnv(const string& path_variable, bool exist_only) {
+vector<fs::path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
   using System::getEnv;
 
   string env_content = getEnv(path_variable);
 
   vector<string> str_list;
-  boost::split(str_list, env_content, boost::is_any_of(":;"));
+  boost::split(str_list, env_content, boost::is_any_of(":"));
 
   vector<fs::path> found_list(str_list.size());
   std::transform(str_list.cbegin(), str_list.cend(),
@@ -90,12 +90,6 @@ vector<fs::path> getRawLocationsFromEnv(const string& path_variable, bool exist_
                                   });
     found_list.erase(new_end, found_list.end());
   }
-
-  return found_list;
-}
-
-vector<fs::path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
-  vector<fs::path> found_list = getRawLocationsFromEnv(path_variable, exist_only);
 
   return found_list;
 }
