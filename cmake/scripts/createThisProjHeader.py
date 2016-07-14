@@ -29,9 +29,9 @@ def main():
     outputdata = """#ifndef _THIS_PROJECT_H_
 #define _THIS_PROJECT_H_
 /* Automatically generated file: do not modify! */
-#include <cstdint>
-#include <string>
-#include <set>
+#include <cstdint>                  // for uing_least64_t
+#include <string>                   // for string
+#include <vector>                   // for vector
 #include "%(proj)s_VERSION.h"
 #include "%(proj)s_INSTALL.h"
 constexpr std::uint_least64_t THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION;
@@ -41,7 +41,7 @@ constexpr std::uint_least64_t THIS_PROJECT_VERSION = %(proj)s_VERSION;
 const std::string THIS_PROJECT_VERSION_STRING {%(proj)s_VERSION_STRING};
 const std::string THIS_PROJECT_NAME_STRING {"%(Proj)s"};
 const std::string THIS_PROJECT_INSTALL_LOCATION_STRING {%(proj)s_INSTALL_LOCATION_STRING};
-const std::set<std::string> THIS_PROJECT_SEARCH_DIRS {%(proj)s_SEARCH_DIRS};
+const std::vector<std::string> THIS_PROJECT_SEARCH_DIRS {%(proj)s_SEARCH_DIRS};
 #endif
 """ % { 'proj': project.upper(), 'Proj': project}
 
