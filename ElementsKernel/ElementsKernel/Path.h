@@ -72,22 +72,6 @@ ELEMENTS_API extern std::map<Type, std::vector<std::string>> DEFAULT_LOCATIONS;
  * @return
  *    return a list of boost filesystem paths
  */
-ELEMENTS_API std::vector<boost::filesystem::path> getRawLocationsFromEnv(const std::string& path_variable, bool exist_only=false);
-
-/**
- * @brief function to get the locations from an environment variable
- * @details
- *    This function return the locations pointed by the environment
- *    variable. It adds the internal locations which are not in
- *    the variable (like /usr/lib for the LD_LIBRARY_PATH environment variable)
- * @param path_variable
- *    name of the environment variable
- * @param exist_only
- *    if true returns only existing locations. by default it is set
- *    to false.
- * @return
- *    return a list of boost filesystem paths
- */
 ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std::string& path_variable, bool exist_only=false);
 
 /**
