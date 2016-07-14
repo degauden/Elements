@@ -25,7 +25,7 @@
 #include <map>                           // for map
 #include <string>                        // for string
 #include <memory>                        // for unique_ptr
-#include <set>                           // for set
+#include <vector>                        // for vector
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
@@ -57,7 +57,7 @@ public:
   ProgramManager(std::unique_ptr<Program> program_ptr,
                  std::string parent_project_version="",
                  std::string parent_project_name="",
-                 std::set<std::string> search_dirs={}) :
+                 std::vector<std::string> search_dirs={}) :
       m_program_ptr(std::move(program_ptr)),
       m_parent_project_version(std::move(parent_project_version)),
       m_parent_project_name(std::move(parent_project_name)),
@@ -219,7 +219,7 @@ private:
    * and ELEMENTS_AUX_PATH). This list contains the install
    * locations of all the dependent projects.
    */
-  std::set<std::string> m_search_dirs;
+  std::vector<std::string> m_search_dirs;
 
 };
 

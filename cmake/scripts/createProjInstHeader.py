@@ -37,7 +37,7 @@ def main():
 /* Automatically generated file: do not modify! */
 
 #include <string>       // for string
-#include <set>          // for set
+#include <vector>       // for vector
 """ % { 'proj': project.upper() }
 
     for p in used_projects:
@@ -54,7 +54,7 @@ const std::string %(proj)s_INSTALL_LOCATION_STRING {"%(location)s"};
         used_locations.append("%(proj)s_INSTALL_LOCATION_STRING" % { 'proj': p.upper()})
 
     outputdata += """
-const std::set<std::string> %(proj)s_SEARCH_DIRS {%(locations)s};
+const std::vector<std::string> %(proj)s_SEARCH_DIRS {%(locations)s};
 #endif
 """ % { 'proj': project.upper(), 'locations': ", ".join(used_locations) }
 

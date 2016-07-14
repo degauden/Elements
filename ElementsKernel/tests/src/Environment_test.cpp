@@ -51,6 +51,29 @@ struct Environment_fixture {
   }
 };
 
+
+class ThatClass {
+public:
+  ThatClass(): m_env{}, m_internal_var_name{"duhfbs"}, m_internal_var_value{"titi"} {
+    m_env[m_internal_var_name] = m_internal_var_value;
+  }
+  void setEnv(const string& var_name, const string& var_value) {
+    m_env[var_name] = var_value;
+  }
+  string getEnv(const string& var_name) const {
+    return m_env[var_name];
+  }
+
+  bool checkInternalEnv() const {
+    using Elements::System::getEnv;
+    return (getEnv(m_internal_var_name) == m_internal_var_value);
+  }
+private:
+  Environment m_env;
+  string m_internal_var_name;
+  string m_internal_var_value;
+};
+
 BOOST_AUTO_TEST_SUITE(Environment_test)
 
 //-----------------------------------------------------------------------------
@@ -258,6 +281,25 @@ BOOST_AUTO_TEST_CASE(Commit_test) {
 
   BOOST_CHECK(isEnvSet(var_name));
 }
+
+BOOST_AUTO_TEST_CASE(Class_test) {
+
+  using Elements::System::getEnv;
+
+  const string var_name = "ddTdh_lds";
+  const string var_value = "toto";
+
+  ThatClass that;
+
+  that.setEnv(var_name, var_value);
+
+  BOOST_CHECK(var_value == that.getEnv(var_name));
+  BOOST_CHECK(getEnv(var_name) == var_value);
+
+  BOOST_CHECK(that.checkInternalEnv());
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
