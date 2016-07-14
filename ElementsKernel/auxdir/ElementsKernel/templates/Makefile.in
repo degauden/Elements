@@ -147,7 +147,7 @@ test: $(BUILDDIR)/$(BUILD_CONF_FILE)
 # This target ensures that the "all" target is called before
 # running the tests (unlike the "test" default target of CMake)
 tests: all
-	-$(BUILD_CMD) test
+	$(BUILD_CMD) test
 
 # ensure that the target are always passed to the CMake Makefile
 FORCE:
