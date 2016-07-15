@@ -30,13 +30,15 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
-#include "ElementsKernel/Export.h" // ELEMENTS_API
-#include "ElementsKernel/Exit.h"
+#include "ElementsKernel/Export.h"       // ELEMENTS_API
+#include "ElementsKernel/Exit.h"         // For ExitCode
 #include "ElementsKernel/Program.h"
+#include "ElementsKernel/Environment.h"  // For Environment
+#include "ElementsKernel/Path.h"         // For Elements::Path
 
 namespace Elements {
 
-const std::string CONF_ENV_VAR_NAME { "ELEMENTS_CONF_PATH" };
+const std::string CONF_ENV_VAR_NAME { Path::VARIABLE[Path::Type::configuration] };
 
 /**
  * @class ProgramManager
@@ -61,7 +63,8 @@ public:
       m_program_ptr(std::move(program_ptr)),
       m_parent_project_version(std::move(parent_project_version)),
       m_parent_project_name(std::move(parent_project_name)),
-      m_search_dirs(std::move(search_dirs)){
+      m_search_dirs(std::move(search_dirs)),
+      m_env{}{
   }
 
   /**
@@ -122,8 +125,8 @@ private:
    * @return
    *   A complete name/path to the default configuration file
    */
-  const boost::filesystem::path getDefaultConfigFile(
-      const boost::filesystem::path & program_name) const;
+  static const boost::filesystem::path getDefaultConfigFile(
+      const boost::filesystem::path & program_name);
 
   /**
    * @brief
@@ -133,7 +136,7 @@ private:
    * @return
    *    A BOOST path with the program name
    */
-  const boost::filesystem::path setProgramName(char* argv) const;
+  static const boost::filesystem::path setProgramName(char* argv);
 
   /**
    * @brief
@@ -143,7 +146,7 @@ private:
    * @return
    *    A BOOST path with the program path
    */
-  const boost::filesystem::path setProgramPath(char* argv) const;
+  static const boost::filesystem::path setProgramPath(char* argv);
 
   /**
    * @brief
@@ -220,6 +223,11 @@ private:
    * locations of all the dependent projects.
    */
   std::vector<std::string> m_search_dirs;
+
+  /**
+   * Local environment of the executable
+   */
+  Environment m_env;
 
 };
 

@@ -57,8 +57,7 @@ const boost::filesystem::path& ProgramManager::getProgramName() const {
  * @todo check whether priotities are correct if more than one
  * config file is found in pathSearchInEnvVariable
  * */
-const fs::path ProgramManager::getDefaultConfigFile(const
-    fs::path & program_name) const {
+const fs::path ProgramManager::getDefaultConfigFile(const fs::path & program_name) {
 
   fs::path default_config_file{};
   // .conf is the standard extension for configuration file
@@ -72,12 +71,12 @@ const fs::path ProgramManager::getDefaultConfigFile(const
   return default_config_file;
 }
 
-const fs::path ProgramManager::setProgramName(char* argv) const {
+const fs::path ProgramManager::setProgramName(char* argv) {
   fs::path fullPath(argv);
   return fullPath.filename();
 }
 
-const fs::path ProgramManager::setProgramPath(char* argv) const {
+const fs::path ProgramManager::setProgramPath(char* argv) {
   fs::path full_path = fs::system_complete(argv);
   return full_path.parent_path();
 }
