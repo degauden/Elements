@@ -113,6 +113,10 @@ option(USE_SPHINX_BREATHE
 option(ELEMENTS_USE_RPATH
        "Use full RPATH for both build and installation"
        ON)
+       
+option(HIDE_SYSINC_WARNINGS
+       "Hide System includes warnings by using -isystem instead of -I"
+       OFF)
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
