@@ -190,22 +190,9 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
-    # Backup the file
-    epcr.makeACopy(cmake_filename)
-
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
-        f = open(cmake_filename, 'r')
-        data = f.read()
-        f.close()
-        cmake_object = pcl.CMakeLists(data)
-        module_name = cmake_object.elements_subdir_list[0].name
-
-        # Update find_package macro
-        if library_dep_list:
-            for lib in library_dep_list:
-                package_object = pcl.FindPackage(lib, [])
-                cmake_object.find_package_list.append(package_object)
+        cmake_object, module_name = epcr.updateCmakeCommonPart(cmake_filename, library_dep_list)
 
         # Put ElementsKernel as a default
         default_dependency = 'ElementsKernel'

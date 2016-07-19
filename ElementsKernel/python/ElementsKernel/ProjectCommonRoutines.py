@@ -11,6 +11,7 @@ projects, modules, classes etc..
 import os
 import re
 import shutil
+import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('ProjectCommonRoutines')
@@ -221,3 +222,32 @@ def createPythonInitFile(init_path_filename):
         f.write("from pkgutil import extend_path\n")
         f.write("__path__ = extend_path(__path__, __name__)\n")
         f.close()
+
+################################################################################
+
+################################################################################
+
+def updateCmakeCommonPart(cmake_filename, library_dep_list):
+    """
+    Update Library list in CmakeList file. 
+    Common code between scripts
+    It returns a cmake_object object and the module name
+    """
+    # Backup the file
+    makeACopy(cmake_filename)
+    
+    f = open(cmake_filename, 'r')
+    data = f.read()
+    f.close()
+    cmake_object = pcl.CMakeLists(data)
+
+    # Update find_package macro
+    if library_dep_list:
+        for lib in library_dep_list:
+            package_object = pcl.FindPackage(lib, [])
+            cmake_object.find_package_list.append(package_object)
+    
+    module_name = cmake_object.elements_subdir_list[0].name
+    
+    return cmake_object,module_name
+
