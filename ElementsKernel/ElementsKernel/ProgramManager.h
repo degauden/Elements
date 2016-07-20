@@ -38,7 +38,7 @@
 
 namespace Elements {
 
-const std::string CONF_ENV_VAR_NAME { Path::VARIABLE[Path::Type::configuration] };
+const std::string CONF_ENV_VAR_NAME {Path::VARIABLE[Path::Type::configuration]};
 
 /**
  * @class ProgramManager
