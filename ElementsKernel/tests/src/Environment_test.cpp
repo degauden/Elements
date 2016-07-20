@@ -300,6 +300,91 @@ BOOST_AUTO_TEST_CASE(Class_test) {
 
 }
 
+BOOST_AUTO_TEST_CASE(Append_test) {
+
+  Environment local;
+
+  const string added_value = ":ddgfhdf";
+
+  const string original_path = local["PATH"];
+
+  local.append("PATH", added_value);
+
+  BOOST_CHECK(local["PATH"].value() == original_path + added_value);
+
+
+}
+
+BOOST_AUTO_TEST_CASE(Prepend_test) {
+
+  Environment local;
+
+  const string added_value = ":ddgfhdf";
+
+  const string original_path = local["PATH"];
+
+  local.prepend("PATH", added_value);
+
+  BOOST_CHECK(local["PATH"].value() == added_value + original_path);
+
+
+}
+
+
+BOOST_AUTO_TEST_CASE(OperatorPlusEqual_test) {
+
+  Environment local;
+
+  const string added_value = ":ddgfhdf";
+
+  const string original_path = local["PATH"];
+
+  local["PATH"] += added_value;
+
+  BOOST_CHECK(local["PATH"].value() == original_path + added_value);
+
+
+}
+
+BOOST_AUTO_TEST_CASE(OperatorPlus_test) {
+
+  Environment local;
+
+  const string added_value = ":ddgfhdf";
+
+  const string original_path = local["PATH"];
+
+  local["PATH"] = local["PATH"] + added_value;
+
+  BOOST_CHECK(local["PATH"].value() == original_path + added_value);
+
+}
+
+BOOST_AUTO_TEST_CASE(OperatorPlusOther_test) {
+
+  Environment local;
+
+  const string added_value = ":ddgfhdf";
+
+  const string original_path = local["PATH"];
+
+  local["PATH"] = added_value + local["PATH"];
+
+  BOOST_CHECK(local["PATH"].value() == added_value + original_path);
+
+}
+
+BOOST_AUTO_TEST_CASE(CheckCompatibility_test) {
+
+  Environment local;
+
+  local["dkdd"] = "toto";
+  local["edkkd"] = "tata";
+
+  BOOST_CHECK_THROW(local["dkdd"] = local["edkkd"], std::invalid_argument);
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
