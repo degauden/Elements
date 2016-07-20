@@ -229,13 +229,13 @@ def createPythonInitFile(init_path_filename):
 
 def updateCmakeCommonPart(cmake_filename, library_dep_list):
     """
-    Update Library list in CmakeList file. 
+    Update Library list in CmakeList file.
     Common code between scripts
     It returns a cmake_object object and the module name
     """
     # Backup the file
     makeACopy(cmake_filename)
-    
+
     f = open(cmake_filename, 'r')
     data = f.read()
     f.close()
@@ -246,8 +246,8 @@ def updateCmakeCommonPart(cmake_filename, library_dep_list):
         for lib in library_dep_list:
             package_object = pcl.FindPackage(lib, [])
             cmake_object.find_package_list.append(package_object)
-    
+
     module_name = cmake_object.elements_subdir_list[0].name
-    
+
     return cmake_object,module_name
 
