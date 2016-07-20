@@ -24,7 +24,6 @@
 
 #include <string>                      // for string
 #include <vector>                      // for vector
-#include <map>                         // for map
 #include <algorithm>                   // for transform, remove_if
 
 #include <boost/filesystem.hpp>        // for boost::filesystem
@@ -36,35 +35,10 @@ namespace fs = boost::filesystem;
 
 using std::string;
 using std::vector;
-using std::map;
 
 namespace Elements {
 namespace Path {
 
-map<Type, string> VARIABLE  {
-  { Type::executable,                  "PATH"},
-  { Type::library,     System::SHLIB_VAR_NAME},
-  { Type::python,                "PYTHONPATH"},
-  { Type::configuration, "ELEMENTS_CONF_PATH"},
-  { Type::auxiliary,      "ELEMENTS_AUX_PATH"}
-};
-
-map<Type, vector<string>> SUFFIXES {
-  {Type::executable, {"scripts", "bin"}},
-  {Type::library, {"lib"}},
-  {Type::python, {"python"}},
-  {Type::configuration, {"conf"}},
-  {Type::auxiliary, {"auxdir", "aux"}}
-};
-
-
-map<Type, vector<string>> DEFAULT_LOCATIONS {
-  {Type::executable, {}},
-  {Type::library, {"/usr/lib64", "/usr/lib"}},
-  {Type::python, {}},
-  {Type::configuration, {"/usr/share/conf"}},
-  {Type::auxiliary, {"/usr/share/auxiliary"}}
-};
 
 vector<fs::path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 

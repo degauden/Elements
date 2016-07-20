@@ -30,6 +30,8 @@
 #include <map>                      // for map
 #include <boost/filesystem.hpp>     // for boost::filesystem
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/System.h"  // for for SHLIB_VAR_NAME
+
 
 namespace Elements {
 namespace Path {
@@ -45,18 +47,36 @@ enum class Type {
 /**
  * @brief map containing the name of the path variable for each type
  */
-ELEMENTS_API extern std::map<Type, std::string> VARIABLE;
+static std::map<Type, const std::string> VARIABLE  {
+  { Type::executable,                  "PATH"},
+  { Type::library,     System::SHLIB_VAR_NAME},
+  { Type::python,                "PYTHONPATH"},
+  { Type::configuration, "ELEMENTS_CONF_PATH"},
+  { Type::auxiliary,      "ELEMENTS_AUX_PATH"}
+};
 
 /**
  * @brief map containing the default project installation
  * suffixes for each variable
  */
-ELEMENTS_API extern std::map<Type, std::vector<std::string>> SUFFFIXES;
+static std::map<Type, const std::vector<std::string>> SUFFIXES {
+  {Type::executable, {"scripts", "bin"}},
+  {Type::library, {"lib"}},
+  {Type::python, {"python"}},
+  {Type::configuration, {"conf"}},
+  {Type::auxiliary, {"auxdir", "aux"}}
+};
 
 /**
  * @brief map containing the default external locations for each variable
  */
-ELEMENTS_API extern std::map<Type, std::vector<std::string>> DEFAULT_LOCATIONS;
+static std::map<Type, const std::vector<std::string>> DEFAULT_LOCATIONS {
+  {Type::executable, {}},
+  {Type::library, {"/usr/lib64", "/usr/lib"}},
+  {Type::python, {}},
+  {Type::configuration, {"/usr/share/conf"}},
+  {Type::auxiliary, {"/usr/share/auxiliary"}}
+};
 
 /**
  * @brief function to get the locations from an environment variable
