@@ -26,6 +26,7 @@
 #include <map>                                   // for map
 #include <string>                                // for string
 #include <vector>                                // for vector
+#include <functional>                            // for reference_wrapper
 
 #include "ElementsKernel/Export.h"               // for ELEMENTS_API
 
@@ -40,19 +41,37 @@ public:
    * @brief proxy class to overload the assignment
    */
   class Variable {
+
   public:
+    Variable() = delete;
     Variable(Environment& env, const std::string& index): m_env(env), m_index(index) {}
-    void operator=(const std::string&);
-    void set(const std::string&);
-    void unSet();
+    Variable(const Variable& other);
+    Variable(Variable&& other);
+    Variable& operator=(const Variable& other);
+    Variable& operator=(Variable&& other);
+    Variable& operator=(const std::string&);
+    Variable& set(const std::string&);
+    Variable& unSet();
+    Variable& append(const std::string&);
+    Variable& operator+=(const std::string&);
+    Variable& prepend(const std::string&);
+    Variable operator+(const std::string&);
     const std::string& index() const;
+    Environment& env() const;
     std::string value() const;
     /// to string converter
     operator std::string() const;
     bool empty() const;
     bool exists() const;
+
   private:
-    Environment& m_env;
+
+    void checkCompatibility(const Variable&);
+
+    /// a copiable and movable reference
+    std::reference_wrapper<Environment> m_env;
+
+    /// The Name of the variable
     std::string m_index;
   };
 
@@ -61,9 +80,11 @@ public:
 
   Variable operator[](const std::string&);
   const Variable operator[](const std::string& index) const;
-  void restore();
-  void set(const std::string&, const std::string&);
-  void unSet(const std::string&);
+  Environment& restore();
+  Environment& set(const std::string&, const std::string&);
+  Environment& unSet(const std::string&);
+  Environment& append(const std::string&, const std::string&);
+  Environment& prepend(const std::string&, const std::string&);
   std::string get(const std::string& index, const std::string& default_value="") const;
   static bool hasKey(const std::string&);
   void commit();
@@ -74,19 +95,24 @@ public:
 
 private:
 
+  /**
+   * @brief check that the variable is in the environment
+   */
   static void checkOutOfRange(const std::string&);
 
+  /// old value for changed variables
   std::map<std::string, std::string> m_old_values;
+
   bool m_keep_same;
+
+  /// variable added to the environment
   std::vector<std::string> m_added_variables;
 
 };
 
-ELEMENTS_API inline std::ostream& operator<<(std::ostream& stream, const Environment::Variable& v) {
-  stream << v.value();
-  return stream;
-}
+ELEMENTS_API std::ostream& operator<<(std::ostream&, const Environment::Variable&);
 
+ELEMENTS_API Environment::Variable operator+(const std::string&, const Environment::Variable&);
 
 } // Elements namespace
 

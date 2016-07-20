@@ -43,6 +43,20 @@ using namespace std;
 
 namespace Elements {
 
+ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
+                                   std::string parent_project_version,
+                                   std::string parent_project_name,
+                                   std::vector<std::string> search_dirs) :
+                                   m_program_ptr(std::move(program_ptr)),
+                                   m_parent_project_version(std::move(parent_project_version)),
+                                   m_parent_project_name(std::move(parent_project_name)),
+                                   m_search_dirs(std::move(search_dirs)),
+                                   m_env{}{
+
+}
+
+
+
 const boost::filesystem::path& ProgramManager::getProgramPath() const {
   return m_program_path;
 }

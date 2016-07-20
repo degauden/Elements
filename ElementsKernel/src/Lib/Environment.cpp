@@ -23,6 +23,7 @@
 #include <sstream>                           // for stringstream
 #include <stdexcept>                         // for out_of_range
 #include <algorithm>                         // for find
+#include <utility>                           // for move
 
 #include <boost/format.hpp>                  // for format
 
@@ -33,29 +34,100 @@ using std::string;
 
 namespace Elements {
 
-void Environment::Variable::operator=(const string& value) {
+Environment::Variable::Variable(const Environment::Variable& other): m_env{other.m_env} {
+
+  checkCompatibility(other);
+
+}
+
+Environment::Variable::Variable(Environment::Variable&& other): m_env{std::move(other.m_env)} {
+
+  checkCompatibility(other);
+
+}
+
+Environment::Variable& Environment::Variable::operator=(const Environment::Variable& other) {
+
+  checkCompatibility(other);
+
+  m_env = other.m_env;
+
+  return *this;
+}
+
+Environment::Variable& Environment::Variable::operator=(Environment::Variable&& other) {
+
+  checkCompatibility(other);
+
+  m_env = std::move(other.m_env);
+
+  return *this;
+}
+
+
+Environment::Variable& Environment::Variable::operator=(const string& value) {
+
   set(value);
+
+  return *this;
 }
 
-void Environment::Variable::set(const string& value) {
+Environment::Variable& Environment::Variable::set(const string& value) {
 
-  m_env.set(m_index, value);
+  m_env.get().set(m_index, value);
+
+  return *this;
+}
+
+Environment::Variable& Environment::Variable::unSet() {
+
+  m_env.get().unSet(m_index);
+
+  return *this;
+}
+
+Environment::Variable& Environment::Variable::append(const string& value) {
+
+  m_env.get().append(m_index, value);
+
+  return *this;
+}
+
+Environment::Variable& Environment::Variable::operator +=(const string& value) {
+
+  return append(value);
 
 }
 
-void Environment::Variable::unSet() {
+Environment::Variable& Environment::Variable::prepend(const string& value) {
 
-  m_env.unSet(m_index);
+  m_env.get().prepend(m_index, value);
 
+  return *this;
 }
+
+Environment::Variable Environment::Variable::operator+(const string& value) {
+
+  Environment::Variable result(m_env, m_index);
+
+  result.append(value);
+
+  return result;
+}
+
 
 const string& Environment::Variable::index() const {
   return m_index;
 }
 
+Environment& Environment::Variable::env() const {
+  return m_env;
+}
+
+
 string Environment::Variable::value() const {
 
-  return m_env.get(m_index, "");
+  return m_env.get().get(m_index, "");
 
 }
 
@@ -68,8 +140,21 @@ bool Environment::Variable::empty() const {
 }
 
 bool Environment::Variable::exists() const {
-  return m_env.hasKey(m_index);
+  return m_env.get().hasKey(m_index);
 }
+
+void Environment::Variable::checkCompatibility(const Environment::Variable& other) {
+
+  if (m_index != other.m_index) {
+    std::stringstream error_buffer;
+    error_buffer << "The \"" << other.m_index << "\" environment variable"
+                 << " cannot be copied to the \"" << m_index << "\" environment variable."
+                 << std::endl;
+    throw std::invalid_argument(error_buffer.str());
+  }
+
+}
+
 
 //----------------------------------------------------------------------------
 
@@ -78,7 +163,7 @@ Environment::Environment(bool keep_same)
 
 }
 
-void Environment::restore() {
+Environment& Environment::restore() {
 
   for (const auto& v: m_added_variables) {
     System::unSetEnv(v);
@@ -89,6 +174,8 @@ void Environment::restore() {
   }
 
   m_old_values = {};
+
+  return *this;
 }
 
 
@@ -108,7 +195,7 @@ const Environment::Variable Environment::operator[](const string& index) const {
 
 }
 
-void Environment::set(const string& index, const string& value) {
+Environment& Environment::set(const string& index, const string& value) {
 
   if (m_old_values.find(index) == m_old_values.end()) {
     if (hasKey(index)) {
@@ -122,9 +209,11 @@ void Environment::set(const string& index, const string& value) {
 
   System::setEnv(index, value);
 
+  return *this;
+
 }
 
-void Environment::unSet(const string& index) {
+Environment& Environment::unSet(const string& index) {
 
   checkOutOfRange(index);
 
@@ -139,7 +228,33 @@ void Environment::unSet(const string& index) {
 
   System::unSetEnv(index);
 
+  return *this;
+
 }
+
+Environment& Environment::append(const string& index, const string& value) {
+
+  checkOutOfRange(index);
+
+  const string new_value = get(index) + value;
+
+  set(index, new_value);
+
+  return *this;
+}
+
+Environment& Environment::prepend(const string& index, const string& value) {
+
+  checkOutOfRange(index);
+
+  const string new_value = value + get(index);
+
+  set(index, new_value);
+
+  return *this;
+}
+
+
 
 string Environment::get(const string& index, const string& default_value) const {
   string value {default_value};
@@ -197,6 +312,24 @@ void Environment::checkOutOfRange(const string& index) {
     error_buffer << "The environment doesn't contain the " << index << " variable." << std::endl;
     throw std::out_of_range(error_buffer.str());
   }
+
+}
+
+std::ostream& operator<<(std::ostream& stream, const Environment::Variable& v) {
+
+  stream << v.value();
+
+  return stream;
+
+}
+
+Environment::Variable operator+(const string& value, const Environment::Variable& other) {
+
+  Environment::Variable result(other.env(), other.index());
+
+  result.prepend(value);
+
+  return result;
 
 }
 
