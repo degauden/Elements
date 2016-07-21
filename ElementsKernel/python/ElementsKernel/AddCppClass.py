@@ -29,6 +29,7 @@ import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeLists as pcl
+import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddCppClass')
@@ -205,7 +206,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
         # Update ElementsDependsOnSubdirs macro
         if elements_dep_list:
             for mod_dep in elements_dep_list:
-                dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
+                dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
         # Update elements_add_library macro
@@ -227,14 +228,14 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                 source_list = [source]
                 include_dirs_list = []
                 public_headers_list = [module_name]
-                lib_object = pcl.ElementsAddLibrary(module_name, source_list,
+                lib_object = pclm.ElementsAddLibrary(module_name, source_list,
                                                     link_libs, include_dirs_list,
                                                     public_headers_list)
                 cmake_object.elements_add_library_list.append(lib_object)
 
             # Add unit test
             source_name = 'tests' + os.sep + 'src' + os.sep + subdir + class_name +'_test.cpp'
-            unittest_object = pcl.ElementsAddUnitTest(module_name +'_' + class_name,
+            unittest_object = pclm.ElementsAddUnitTest(module_name +'_' + class_name,
                                                       [source_name], [module_name],
                                                       [], 'Boost')
             cmake_object.elements_add_unit_test_list.append(unittest_object)

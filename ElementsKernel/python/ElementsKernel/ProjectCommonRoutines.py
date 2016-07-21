@@ -1,17 +1,36 @@
 """
-file: ElementsKernel/ProjectCommonRoutines.py
-author: Nicolas Morisset
+@file: ElementsKernel/ProjectCommonRoutines.py
+@author: Nicolas Morisset
 
-date: 01/07/15
+@date: 01/07/15
 
-This module offers some common routines used by scripts for creating C++
+Purpose:
+This module offers some common routines used by the Elements scripts for creating (C++, python)
 projects, modules, classes etc..
+
+@copyright: 2012-2020 Euclid Science Ground Segment
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 3.0 of the License, or (at your option)
+any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 """
 
 import os
 import re
 import shutil
 import ElementsKernel.ParseCmakeLists as pcl
+import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('ProjectCommonRoutines')
@@ -244,7 +263,7 @@ def updateCmakeCommonPart(cmake_filename, library_dep_list):
     # Update find_package macro
     if library_dep_list:
         for lib in library_dep_list:
-            package_object = pcl.FindPackage(lib, [])
+            package_object = pclm.FindPackage(lib, [])
             cmake_object.find_package_list.append(package_object)
 
     module_name = cmake_object.elements_subdir_list[0].name

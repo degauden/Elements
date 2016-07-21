@@ -22,13 +22,13 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 """
 
 import argparse
 import os
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeLists as pcl
+import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddElementsModule')
@@ -101,7 +101,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
     cmake_object = pcl.CMakeLists(template_data)
 
     # Add elements_subdir macro
-    subdir_obj = pcl.ElementsSubdir(module_name)
+    subdir_obj = pclm.ElementsSubdir(module_name)
     cmake_object.elements_subdir_list.append(subdir_obj)
 
     # Set <ElementsKernel> as a default
@@ -115,7 +115,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
     # Update ElementsDependsOnSubdirs macro
     if module_dep_list:
         for mod_dep in module_dep_list:
-            dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
+            dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
             cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
     # Write new data

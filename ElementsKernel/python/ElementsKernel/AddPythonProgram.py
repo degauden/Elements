@@ -1,28 +1,27 @@
-#
-# Copyright (C) 2012-2020 Euclid Science Ground Segment
-#
-# This library is free software; you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation; either version 3.0 of the License, or (at your option)
-# any later version.
-#
-# This library is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
 """
-File: ElementsKernel/AddPythonProgram.py
-Author: Nicolas Morisset
+@file: ElementsKernel/AddPythonProgram.py
+@author: Nicolas Morisset
 
-Date: 01/07/15
+@date: 01/07/15
 
-This script creates a new Elements python program
+This script creates a new Elements module
+
+@copyright: 2012-2020 Euclid Science Ground Segment
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 3.0 of the License, or (at your option)
+any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 """
 
 import argparse
@@ -30,6 +29,7 @@ import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeLists as pcl
+import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddPythonProgram')
@@ -129,7 +129,7 @@ def updateCmakeListsFile(module_dir, program_name):
         cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
         cmake_object.elements_install_scripts = 'elements_install_scripts()'
 
-        program_object = pcl.ElementsAddPythonExecutable(program_name, module_name)
+        program_object = pclm.ElementsAddPythonExecutable(program_name, module_name)
         cmake_object.elements_add_python_executable_list.append(program_object)
 
     # Write new data

@@ -29,6 +29,7 @@ import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeLists as pcl
+import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddCppProgram')
@@ -119,7 +120,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         # Update ElementsDependsOnSubdirs macro
         if module_dep_list:
             for mod_dep in module_dep_list:
-                dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
+                dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
         # Add elements_install_conf_files if any
@@ -141,7 +142,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
                 if not lib in existing_exe[0].link_libraries_list:
                     existing_exe[0].link_libraries_list.append(lib)
         else:
-            exe_object = pcl.ElementsAddExecutable(program_name, source,
+            exe_object = pclm.ElementsAddExecutable(program_name, source,
                                                    link_libs)
             cmake_object.elements_add_executable_list.append(exe_object)
 
