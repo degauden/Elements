@@ -78,5 +78,11 @@ template fs::path getPathFromLocations(const string& file_name, const vector<str
 template fs::path getPathFromEnvVariable<fs::path>(const fs::path& file_name, const string& path_variable);
 template fs::path getPathFromEnvVariable<string>(const string& file_name, const string& path_variable);
 
+template vector<fs::path> multiPathAppend(const vector<fs::path>& initial_locations, const vector<fs::path>& suffixes);
+template vector<fs::path> multiPathAppend(const vector<fs::path>& initial_locations, const vector<string>& suffixes);
+template vector<fs::path> multiPathAppend(const vector<string>& initial_locations, const vector<fs::path>& suffixes);
+template vector<fs::path> multiPathAppend(const vector<string>& initial_locations, const vector<string>& suffixes);
+
+
 } // Path namespace
 } // Elements namespace

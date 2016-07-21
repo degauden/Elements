@@ -23,10 +23,12 @@
 #ifndef ELEMENTSKERNEL__IMPL_PATH_ICPP_
 #define ELEMENTSKERNEL__IMPL_PATH_ICPP_
 
-#include <string>                      // for string
-#include <vector>                      // for vector
-#include <algorithm>                   // for find_if
-#include <boost/filesystem.hpp>        // for boost::filesystem
+#include <string>                          // for string
+#include <vector>                          // for vector
+#include <algorithm>                       // for find_if, transform, for_each
+#include <boost/filesystem.hpp>            // for boost::filesystem
+#include <boost/algorithm/string/join.hpp> // for join
+
 
 namespace Elements {
 namespace Path {
@@ -65,9 +67,54 @@ boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::st
 
 }
 
+template <typename T>
+ELEMENTS_API std::string joinPath(const std::vector<T> path_list) {
+
+  namespace fs = boost::filesystem;
+  using std::vector;
+  using std::string;
+
+  vector<string> elems(path_list.size());
+
+  std::transform(path_list.cbegin(), path_list.cend(),
+                 elems.begin(),
+                 [](T s){
+                   return fs::path(s).string();
+                 });
+
+  std::string result = boost::algorithm::join(elems, ":");
+
+  return result;
+}
+
+template <typename T, typename U>
+ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations, const std::vector<U>& suffixes) {
+
+  namespace fs = boost::filesystem;
+  using std::vector;
+
+  vector<fs::path> result(initial_locations.size()*suffixes.size());
+
+  auto pos = result.begin();
+
+  std::for_each(initial_locations.cbegin(), initial_locations.cend(),
+                 [&pos, &suffixes](T l) {
+                   std::transform(suffixes.cbegin(), suffixes.cend(),
+                                  pos,
+                                  [l](U s){
+                                  return fs::path(l) / s;
+                                  });
+                   pos += suffixes.size();
+
+                 });
+
+
+  return result;
+}
+
+
+
 } // Path namespace
 } // Elements namespace
-
-
 
 #endif // ELEMENTSKERNEL__IMPL_PATH_ICPP_
