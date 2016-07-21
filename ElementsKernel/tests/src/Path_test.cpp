@@ -148,6 +148,52 @@ BOOST_FIXTURE_TEST_CASE(getFromStringLocations_test, Path_Fixture) {
 }
 
 
+BOOST_AUTO_TEST_CASE(JoinPath_test) {
+
+  using Elements::Path::joinPath;
+
+  const vector<string> path_list {"/toto", "titi", "./tutu"};
+
+  BOOST_CHECK(joinPath(path_list) == "/toto:titi:./tutu");
+
+  const vector<string> path_list2 {"", "/toto", "titi", "./tutu"};
+
+  BOOST_CHECK(joinPath(path_list2) == ":/toto:titi:./tutu");
+
+  const vector<string> path_list3 {"/toto", "titi", "./tutu", ""};
+
+  BOOST_CHECK(joinPath(path_list3) == "/toto:titi:./tutu:");
+
+}
+
+BOOST_AUTO_TEST_CASE(MultiPathAppend_test) {
+
+  using Elements::Path::multiPathAppend;
+
+  const vector<string> locations {"loc1","/loc2","./loc3"};
+  const vector<string> suffixes {"bin", "scripts"};
+
+  const vector<string> ref_paths {"loc1/bin", "loc1/scripts",
+                                   "/loc2/bin", "/loc2/scripts",
+                                   "./loc3/bin", "./loc3/scripts"};
+
+  const vector<fs::path> full_paths = multiPathAppend(locations, suffixes);
+
+  BOOST_CHECK(full_paths.size() == 6);
+
+  vector<string> full_path_strings(full_paths.size());
+
+  std::transform(full_paths.cbegin(), full_paths.cend(),
+                 full_path_strings.begin(),
+                 [](fs::path p){
+                   return p.string();
+                 });
+
+  BOOST_CHECK(ref_paths == full_path_strings);
+
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 //-----------------------------------------------------------------------------

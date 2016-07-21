@@ -127,8 +127,16 @@ ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, co
 template <typename T>
 ELEMENTS_API boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable);
 
+
+template <typename T>
+ELEMENTS_API std::string joinPath(const std::vector<T> path_list);
+
 }  // Path namespace
 }  // Elements namespace
+
+
+template <typename T, typename U>
+ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations, const std::vector<U>& suffixes);
 
 #include "ElementsKernel/_impl/Path.icpp"
 
