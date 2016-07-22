@@ -121,15 +121,15 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         if module_dep_list:
             for mod_dep in module_dep_list:
                 dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
-                cmake_object._elements_depends_on_subdirs_list.append(dep_object)
+                cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
         # Add elements_install_conf_files if any
         cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
 
         # Update elements_add_executable macro
         source = 'src' + os.sep + 'program' + os.sep + program_name + '.cpp'
-        existing_exe = [x for x in cmake_object._elements_add_executable_list if x.name == program_name]
-        existing_add_lib = [x for x in cmake_object._elements_add_library_list if x.name == module_name]
+        existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name == program_name]
+        existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
         link_libs = ['ElementsKernel']
         if module_dep_list:
             link_libs = link_libs + module_dep_list
@@ -144,7 +144,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         else:
             exe_object = pclm.ElementsAddExecutable(program_name, source,
                                                    link_libs)
-            cmake_object._elements_add_executable_list.append(exe_object)
+            cmake_object.elements_add_executable_list.append(exe_object)
 
     # Write new data
     f = open(cmake_filename, 'w')

@@ -264,9 +264,9 @@ def updateCmakeCommonPart(cmake_filename, library_dep_list):
     if library_dep_list:
         for lib in library_dep_list:
             package_object = pclm.FindPackage(lib, [])
-            cmake_object._find_package_list.append(package_object)
+            cmake_object.find_package_list.append(package_object)
 
-    module_name = cmake_object._elements_subdir_list[0].name
+    module_name = cmake_object.elements_subdir_list[0].name
 
     return cmake_object,module_name
 

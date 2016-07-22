@@ -122,15 +122,15 @@ def updateCmakeListsFile(module_dir, program_name):
         data = f.read()
         f.close()
         cmake_object = pcl.CMakeLists(data)
-        module_name = cmake_object._elements_subdir_list[0].name + '.' + program_name
+        module_name = cmake_object.elements_subdir_list[0].name + '.' + program_name
 
         # Add elements_install_conf_files if any
-        cmake_object._elements_install_python_modules = 'elements_install_python_modules()'
-        cmake_object._elements_install_conf_files = 'elements_install_conf_files()'
-        cmake_object._elements_install_scripts = 'elements_install_scripts()'
+        cmake_object.elements_install_python_modules = 'elements_install_python_modules()'
+        cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
+        cmake_object.elements_install_scripts = 'elements_install_scripts()'
 
         program_object = pclm.ElementsAddPythonExecutable(program_name, module_name)
-        cmake_object._elements_add_python_executable_list.append(program_object)
+        cmake_object.elements_add_python_executable_list.append(program_object)
 
     # Write new data
     f = open(cmake_filename, 'w')
