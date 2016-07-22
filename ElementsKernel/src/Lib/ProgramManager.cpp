@@ -27,6 +27,7 @@
 #include <fstream>
 #include <iostream>
 #include <typeinfo>                        // for the typid operator
+#include <algorithm>                       // for transform
 
 #include "ElementsKernel/ProgramManager.h"
 
@@ -38,24 +39,11 @@ namespace fs = boost::filesystem;
 #include "ElementsKernel/System.h"
 
 #include "ElementsKernel/PathSearch.h"
+#include "ElementsKernel/Path.h"           // for Path::VARIABLE, multiPathAppend
 
 using namespace std;
 
 namespace Elements {
-
-ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
-                                   std::string parent_project_version,
-                                   std::string parent_project_name,
-                                   std::vector<std::string> search_dirs) :
-                                   m_program_ptr(std::move(program_ptr)),
-                                   m_parent_project_version(std::move(parent_project_version)),
-                                   m_parent_project_name(std::move(parent_project_name)),
-                                   m_search_dirs(std::move(search_dirs)),
-                                   m_env{}{
-
-}
-
-
 
 const boost::filesystem::path& ProgramManager::getProgramPath() const {
   return m_program_path;
@@ -85,13 +73,13 @@ const fs::path ProgramManager::getDefaultConfigFile(const fs::path & program_nam
   return default_config_file;
 }
 
-const fs::path ProgramManager::setProgramName(char* argv) {
-  fs::path fullPath(argv);
+const fs::path ProgramManager::setProgramName(char* arg0) {
+  fs::path fullPath(arg0);
   return fullPath.filename();
 }
 
-const fs::path ProgramManager::setProgramPath(char* argv) {
-  fs::path full_path = fs::system_complete(argv);
+const fs::path ProgramManager::setProgramPath(char* arg0) {
+  fs::path full_path = fs::system_complete(arg0);
   return full_path.parent_path();
 }
 
@@ -200,75 +188,91 @@ const po::variables_map ProgramManager::getProgramOptions(
   return variables_map;
 }
 
-// Log all options with a header
-void ProgramManager::logAllOptions(string program_name) {
+void ProgramManager::logHeader(string program_name) const {
 
   Logging logger = Logging::getLogger("ElementsProgram");
 
-  logger.info("##########################################################");
-  logger.info("##########################################################");
-  logger.info("#");
-  logger.info("#  C++ program:  %s starts ", program_name.c_str());
-  logger.info("#");
-  logger.info("##########################################################");
-  logger.info("#");
-  logger.info("# List of all program options");
-  logger.info("# ---------------------------");
-  logger.info("#");
+  logger.info() << "##########################################################";
+  logger.info() << "##########################################################";
+  logger.info() << "#";
+  logger.info() << "#  C++ program:  " <<  program_name << " starts ";
+  logger.info() << "#";
+}
+
+void ProgramManager::logFooter(string program_name) const {
+
+  Logging logger = Logging::getLogger("ElementsProgram");
+
+  logger.info() << "##########################################################";
+  logger.info() << "#";
+  logger.info() << "#  C++ program:  " << program_name << " stops ";
+  logger.info() << "#";
+  logger.info() << "##########################################################";
+  logger.info() << "##########################################################";
+}
+
+
+// Log all options with a header
+void ProgramManager::logAllOptions() const {
+
+
+  Logging logger = Logging::getLogger("ElementsProgram");
+
+  logger.info() << "##########################################################";
+  logger.info() << "#";
+  logger.info() << "# List of all program options";
+  logger.info() << "# ---------------------------";
+  logger.info() << "#";
 
   // Build a log message
-  stringstream log_message { };
+  stringstream log_message {};
 
   // Loop over all options included in the variable_map
-  for (po::variables_map::iterator iter = m_variables_map.begin();
-      iter != m_variables_map.end(); ++iter) {
+  for (const auto& v: m_variables_map) {
     // string option
-    if (iter->second.value().type() == typeid(string)) {
-      log_message << iter->first << " = " << iter->second.as<string>();
+    if (v.second.value().type() == typeid(string)) {
+      log_message << v.first << " = " << v.second.as<string>();
       // double option
-    } else if (iter->second.value().type() == typeid(double)) {
-      log_message << iter->first << " = " << iter->second.as<double>();
+    } else if (v.second.value().type() == typeid(double)) {
+      log_message << v.first << " = " << v.second.as<double>();
       // int64_t option
-    } else if (iter->second.value().type() == typeid(int64_t)) {
-      log_message << iter->first << " = " << iter->second.as<int64_t>();
+    } else if (v.second.value().type() == typeid(int64_t)) {
+      log_message << v.first << " = " << v.second.as<int64_t>();
       // int option
-    } else if (iter->second.value().type() == typeid(int)) {
-      log_message << iter->first << " = " << iter->second.as<int>();
+    } else if (v.second.value().type() == typeid(int)) {
+      log_message << v.first << " = " << v.second.as<int>();
       // fs::path option
-    } else if (iter->second.value().type() == typeid(fs::path)) {
-      log_message << iter->first << " = "
-          << iter->second.as<fs::path>();
+    } else if (v.second.value().type() == typeid(fs::path)) {
+      log_message << v.first << " = "
+          << v.second.as<fs::path>();
       // int vector option
-    } else if (iter->second.value().type() == typeid(vector<int> )) {
-      vector<int> intVec = iter->second.as<vector<int>>();
-      stringstream vecContent { };
-      for (vector<int>::iterator it = intVec.begin(); it != intVec.end();
-          ++it) {
-        vecContent << " " << *it;
+    } else if (v.second.value().type() == typeid(vector<int>)) {
+      vector<int> intVec = v.second.as<vector<int>>();
+      stringstream vecContent {};
+      for (const auto& i: intVec) {
+        vecContent << " " << i;
       }
-      log_message << iter->first << " = {" << vecContent.str() << " }";
+      log_message << v.first << " = {" << vecContent.str() << " }";
       // double vector option
-    } else if (iter->second.value().type() == typeid(vector<double> )) {
-      vector<double> intVec = iter->second.as<vector<double>>();
-      stringstream vecContent { };
-      for (vector<double>::iterator it = intVec.begin(); it != intVec.end();
-          ++it) {
-        vecContent << " " << *it;
+    } else if (v.second.value().type() == typeid(vector<double>)) {
+      vector<double> intVec = v.second.as<vector<double>>();
+      stringstream vecContent {};
+      for (const auto& i: intVec) {
+        vecContent << " " << i;
       }
-      log_message << iter->first << " = {" << vecContent.str() << " }";
+      log_message << v.first << " = {" << vecContent.str() << " }";
       // string vector option
-    } else if (iter->second.value().type() == typeid(vector<string> )) {
-      vector<string> intVec = iter->second.as<vector<string>>();
-      stringstream vecContent { };
-      for (vector<string>::iterator it = intVec.begin(); it != intVec.end();
-          ++it) {
-        vecContent << " " << *it;
+    } else if (v.second.value().type() == typeid(vector<string> )) {
+      vector<string> intVec = v.second.as<vector<string>>();
+      stringstream vecContent {};
+      for (const auto& i: intVec) {
+        vecContent << " " << i;
       }
-      log_message << iter->first << " = {" << vecContent.str() << " }";
+      log_message << v.first << " = {" << vecContent.str() << " }";
       // if nothing else
     } else {
-      log_message << "Option " << iter->first << " of type "
-          << iter->second.value().type().name() << " not supported in logging !"
+      log_message << "Option " << v.first << " of type "
+          << v.second.value().type().name() << " not supported in logging !"
           << endl;
     }
     // write the log message
@@ -277,14 +281,64 @@ void ProgramManager::logAllOptions(string program_name) {
   }
   logger.info("#");
 
+
+}
+
+// Log all options with a header
+void ProgramManager::logTheEnvironment() const {
+
+  Logging logger = Logging::getLogger("ElementsProgram");
+
+  logger.debug() << "##########################################################";
+  logger.debug() << "#";
+  logger.debug() << "# Environment of the Run";
+  logger.debug() << "# ---------------------------";
+  logger.debug() << "#";
+
+  for(const auto& v: Path::VARIABLE) {
+    logger.debug() << v.second << ": " << m_env[v.second];
+  }
+
+  logger.debug() << "#";
+}
+
+void ProgramManager::bootstrapEnvironment(char* arg0){
+
+  m_program_name = setProgramName(arg0);
+  m_program_path = setProgramPath(arg0);
+
+  vector<fs::path> local_search_paths(m_search_dirs.size());
+
+  std::transform(m_search_dirs.cbegin(), m_search_dirs.cend(),
+      local_search_paths.begin(),
+      [](string s){
+      return fs::complete(s);
+  });
+
+  // insert local parent dir if it is not already
+  // the first one of the list
+  const fs::path this_parent_path = fs::canonical(m_program_path.parent_path());
+  if (local_search_paths[0] != this_parent_path) {
+    auto b = local_search_paths.begin();
+    local_search_paths.insert(b, this_parent_path);
+  }
+
+  using Path::multiPathAppend;
+  using Path::joinPath;
+  using Path::Type;
+
+  for(const auto& v: Path::VARIABLE) {
+    m_env[v.second] += joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES[v.first]));
+  }
+
 }
 
 // Get the program options and setup logging
 void ProgramManager::setup(int argc, char* argv[]) {
 
   // store the program name and path in class variable
-  m_program_name = setProgramName(argv[0]);
-  m_program_path = setProgramPath(argv[0]);
+  // and retrieve the local environment
+  bootstrapEnvironment(argv[0]);
 
   // get all program options into the varaiable_map
   m_variables_map = getProgramOptions(argc, argv);
@@ -306,8 +360,20 @@ void ProgramManager::setup(int argc, char* argv[]) {
   // setup the logging
   Logging::setLevel(logging_level);
 
+
+  logHeader(m_program_name.string());
   // log all program options
-  this->logAllOptions(getProgramName().string());
+  logAllOptions();
+  logTheEnvironment();
+}
+
+void ProgramManager::tearDown(const ExitCode& c) {
+
+  Logging logger = Logging::getLogger("ElementsProgram");
+
+  logger.debug() << "# Exit Code: " << int(c);
+
+  logFooter(m_program_name.string());
 }
 
 // This is the method call from the main which does everything
@@ -316,6 +382,8 @@ ExitCode ProgramManager::run(int argc, char* argv[]) {
   setup(argc, argv);
 
   ExitCode exit_code =  m_program_ptr->mainMethod(m_variables_map);
+
+  tearDown(exit_code);
 
   return exit_code;
 
