@@ -219,7 +219,7 @@ Environment& Environment::unSet(const string& index) {
 
   if (m_old_values.find(index) == m_old_values.end()) {
     auto found_index = std::find(m_added_variables.begin(), m_added_variables.end(), index);
-    if(found_index != m_added_variables.end()) {
+    if (found_index != m_added_variables.end()) {
       m_added_variables.erase(found_index);
     } else {
       m_old_values[index] = System::getEnv(index);
@@ -234,8 +234,6 @@ Environment& Environment::unSet(const string& index) {
 
 Environment& Environment::append(const string& index, const string& value) {
 
-  checkOutOfRange(index);
-
   const string new_value = get(index) + value;
 
   set(index, new_value);
@@ -245,16 +243,12 @@ Environment& Environment::append(const string& index, const string& value) {
 
 Environment& Environment::prepend(const string& index, const string& value) {
 
-  checkOutOfRange(index);
-
   const string new_value = value + get(index);
 
   set(index, new_value);
 
   return *this;
 }
-
-
 
 string Environment::get(const string& index, const string& default_value) const {
   string value {default_value};
@@ -335,4 +329,3 @@ Environment::Variable operator+(const string& value, const Environment::Variable
 
 
 } // Elements namespace
-

@@ -59,7 +59,11 @@ public:
   ProgramManager(std::unique_ptr<Program> program_ptr,
                    std::string parent_project_version="",
                    std::string parent_project_name="",
-                   std::vector<std::string> search_dirs={});
+                   std::vector<std::string> search_dirs={}): m_program_ptr(std::move(program_ptr)),
+                   m_parent_project_version(std::move(parent_project_version)),
+                   m_parent_project_name(std::move(parent_project_name)),
+                   m_search_dirs(std::move(search_dirs)),
+                   m_env{}{}
 
   /**
    * @brief Destructor
@@ -67,9 +71,8 @@ public:
   virtual ~ProgramManager();
 
   /**
-   * @brief
-   *  This is the public entry point, i.e., the only method
-   *  called from the main
+   * @brief This is the public entry point,
+   *   i.e., the only method called from the main
    *
    * @param argc
    *   Command line argument number
@@ -79,17 +82,15 @@ public:
   ExitCode run(int argc, char* argv[]);
 
   /**
-   * @brief
-   * This function returns the version of the program computed
-   * at compile time. This is the same as the project version
-   * that contains the program
+   * @brief This function returns the version of the program
+   *   computed at compile time. This is the same as the project
+   *   version that contains the program
    */
   std::string getVersion() const;
 
   /**
-   * @brief
-   * This is the set_terminate handler that is used in the
-   * #MAIN_FOR macro.
+   * @brief This is the set_terminate handler
+   *   that is used in the #MAIN_FOR macro.
    */
   static void onTerminate() noexcept;
 
@@ -130,7 +131,7 @@ private:
    * @return
    *    A BOOST path with the program name
    */
-  static const boost::filesystem::path setProgramName(char* argv);
+  static const boost::filesystem::path setProgramName(char* arg0);
 
   /**
    * @brief
@@ -140,7 +141,7 @@ private:
    * @return
    *    A BOOST path with the program path
    */
-  static const boost::filesystem::path setProgramPath(char* argv);
+  static const boost::filesystem::path setProgramPath(char* arg0);
 
   /**
    * @brief
@@ -149,10 +150,12 @@ private:
    */
   void setup(int argc, char* argv[]);
 
+
+  void tearDown(const ExitCode&);
+
   /**
-   * @brief
-   *  Get the program options from the command line into the
-   *  variables_map
+   * @brief Get the program options from the command line
+   *        into thevariables_map
    *
    *  @return
    *    A BOOST variable_map
@@ -161,11 +164,32 @@ private:
       char* argv[]);
 
   /**
-   * @brief
-   *  Log all program options
+   * @brief Log Header
+   */
+  void logHeader(std::string program_name) const;
+
+  /**
+   * @brief Log Footer
+   */
+  void logFooter(std::string program_name) const;
+
+  /**
+   * @brief Log all program options
    *
    */
-  void logAllOptions(std::string program_name);
+  void logAllOptions() const;
+
+  /**
+   * @brief Log the program environment
+   */
+  void logTheEnvironment() const;
+
+  /**
+   * @brief Bootstrap the Environment
+   *   from the executable location and the
+   *   install path computed at install time.
+   */
+  void bootstrapEnvironment(char* arg0);
 
 private:
 
@@ -175,7 +199,7 @@ private:
    * of different types. See the pseudoMain() in ElementsProgramExample.cpp
    * to see how to retrieve options from this map.
    */
-  boost::program_options::variables_map m_variables_map { };
+  boost::program_options::variables_map m_variables_map {};
 
   /**
    * Name of the executable (from argv[0])

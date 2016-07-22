@@ -112,8 +112,6 @@ ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vec
   return result;
 }
 
-
-
 } // Path namespace
 } // Elements namespace
 
