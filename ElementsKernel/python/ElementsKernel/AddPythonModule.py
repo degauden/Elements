@@ -75,12 +75,13 @@ def updateCmakeListsFile(module_dir):
         cmake_object = pcl.CMakeLists(data)
 
         # Add elements_install_conf_files if any
-        cmake_object.elements_install_python_modules = 'elements_install_python_modules()'
+        cmake_object._elements_install_python_modules = 'elements_install_python_modules()'
 
     # Write new data
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
     f.close()
+
 ################################################################################
 
 def substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_name):

@@ -102,7 +102,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
 
     # Add elements_subdir macro
     subdir_obj = pclm.ElementsSubdir(module_name)
-    cmake_object.elements_subdir_list.append(subdir_obj)
+    cmake_object._elements_subdir_list.append(subdir_obj)
 
     # Set <ElementsKernel> as a default
     default_dependency = 'ElementsKernel'
@@ -116,7 +116,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
     if module_dep_list:
         for mod_dep in module_dep_list:
             dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
-            cmake_object.elements_depends_on_subdirs_list.append(dep_object)
+            cmake_object._elements_depends_on_subdirs_list.append(dep_object)
 
     # Write new data
     f = open(cmake_list_file_final, 'w')

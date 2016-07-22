@@ -207,12 +207,12 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
         if elements_dep_list:
             for mod_dep in elements_dep_list:
                 dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
-                cmake_object.elements_depends_on_subdirs_list.append(dep_object)
+                cmake_object._elements_depends_on_subdirs_list.append(dep_object)
 
         # Update elements_add_library macro
         if module_name:
             source = 'src' + os.sep + 'lib' + os.sep + subdir + '*.cpp'
-            existing = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
+            existing = [x for x in cmake_object._elements_add_library_list if x.name == module_name]
             link_libs = []
             if elements_dep_list:
                 link_libs = link_libs + elements_dep_list
@@ -231,14 +231,14 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                 lib_object = pclm.ElementsAddLibrary(module_name, source_list,
                                                     link_libs, include_dirs_list,
                                                     public_headers_list)
-                cmake_object.elements_add_library_list.append(lib_object)
+                cmake_object._elements_add_library_list.append(lib_object)
 
             # Add unit test
             source_name = 'tests' + os.sep + 'src' + os.sep + subdir + class_name +'_test.cpp'
             unittest_object = pclm.ElementsAddUnitTest(module_name +'_' + class_name,
                                                       [source_name], [module_name],
                                                       [], 'Boost')
-            cmake_object.elements_add_unit_test_list.append(unittest_object)
+            cmake_object._elements_add_unit_test_list.append(unittest_object)
 
     # Write new data
     f = open(cmake_filename, 'w')
