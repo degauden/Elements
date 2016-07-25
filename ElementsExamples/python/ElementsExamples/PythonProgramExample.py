@@ -2,6 +2,7 @@
 
 import argparse
 import ElementsKernel.Logging as log
+from ElementsKernel.Program import str_to_bool
 from ElementsExamples.PythonModuleExample import ClassExample
 
 def defineSpecificProgramOptions():
@@ -23,6 +24,9 @@ def defineSpecificProgramOptions():
                         help='A float option')
     parser.add_argument('--int-list-option', nargs='+', type=int,
                         help='A integer list option')
+    parser.add_argument('--overwrite', nargs='?', dest='overwrite',
+                        default=False, const=True, type=str_to_bool,
+                        help='Overwrite the output files')
     return parser
 
 def mainMethod(args):

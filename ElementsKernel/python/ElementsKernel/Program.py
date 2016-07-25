@@ -6,6 +6,11 @@ import sys
 import re
 import ElementsKernel.Logging as log
 
+def str_to_bool(s):
+    """Convert string to bool (in argparse context)."""
+    if s.lower() not in ['true', 'false']:
+        raise ValueError('Need bool; got %r' % s)
+    return {'true': True, 'false': False}[s.lower()]
 
 class Program(object):
     """Main Program Class"""
