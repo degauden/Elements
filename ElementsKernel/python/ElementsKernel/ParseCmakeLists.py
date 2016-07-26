@@ -172,7 +172,7 @@ class CMakeLists(object):
         regex_pattern = r"elements_install_scripts\(.*?\)"
         if self._findAllPattern(regex_pattern, text, False):
             self.elements_install_scripts = 'elements_install_scripts()'
-        
+
         regex_pattern = r"elements_subdir\(.*?\)"
         for elements_subdir in self._findAllPattern(regex_pattern, text, True):
             name = elements_subdir.replace('\n', ' ').replace('elements_subdir(', '')[:-1].strip()
