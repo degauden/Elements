@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# define this variable if you want to keep the tmploc directory
+# for debugging purposes
+export KEEPTEMPDIR=0
+
 home_dir=${PWD}
 
 project_name="ProjectTest"
@@ -7,12 +11,14 @@ version="1.0"
 module_name="ModuleTest"
 
 # Create unique directory
-tmploc=$(mktemp -dq -t temp.XXXXXX)
+tmploc=$(mktemp -d -t temp.XXXXXX)
 
 # Clean and exit
 clean_and_exit() {
   cd ${home_dir}
-  rm -rf ${tmploc}
+  if [ -z "${KEEPTEMPDIR}" ]; then
+    rm -rf ${tmploc}
+  fi
   exit $1
 }
 
@@ -26,6 +32,7 @@ CreateElementsProject $project_name $version
 
 # if error stop and clean up
 if [ $? -ne 0 ]; then
+   echo "Error: <CreateElementsProject $project_name $version> command failed!" 1>&2
    clean_and_exit 1
 fi
 
@@ -37,6 +44,7 @@ AddElementsModule $module_name
 
 # if error stop and clean up
 if [ $? -ne 0 ]; then
+   echo "Error: <AddElementsModule $module_name> command failed!" 1>&2
    clean_and_exit 1
 fi
 
