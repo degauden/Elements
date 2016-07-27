@@ -62,3 +62,5 @@ def mainMethod(args):
     logger.info('Sum of the list elements : ' + str(example_object.sumListValues()))
 
     logger.info('Exiting ProgramExample mainMethod()')
+
+    return 0

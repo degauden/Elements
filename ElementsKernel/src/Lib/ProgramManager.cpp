@@ -39,7 +39,9 @@ namespace fs = boost::filesystem;
 #include "ElementsKernel/System.h"
 
 #include "ElementsKernel/PathSearch.h"
-#include "ElementsKernel/Path.h"           // for Path::VARIABLE, multiPathAppend
+#include "ElementsKernel/Path.h"           // for Path::VARIABLE, multiPathAppend, PATH_SEP
+#include "ElementsKernel/ModuleInfo.h"     // for getExecutablePath
+#include "ElementsKernel/Unused.h"         // for ELEMENTS_UNUSED
 
 using namespace std;
 
@@ -73,13 +75,17 @@ const fs::path ProgramManager::getDefaultConfigFile(const fs::path & program_nam
   return default_config_file;
 }
 
-const fs::path ProgramManager::setProgramName(char* arg0) {
-  fs::path fullPath(arg0);
-  return fullPath.filename();
+const fs::path ProgramManager::setProgramName(ELEMENTS_UNUSED char* arg0) {
+
+  fs::path full_path = Elements::System::getExecutablePath();
+
+  return full_path.filename();
 }
 
-const fs::path ProgramManager::setProgramPath(char* arg0) {
-  fs::path full_path = fs::system_complete(arg0);
+const fs::path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
+
+  fs::path full_path = Elements::System::getExecutablePath();
+
   return full_path.parent_path();
 }
 
@@ -197,6 +203,8 @@ void ProgramManager::logHeader(string program_name) const {
   logger.info() << "#";
   logger.info() << "#  C++ program:  " <<  program_name << " starts ";
   logger.info() << "#";
+  logger.debug() << "# The Program Name: " << m_program_name.string();
+  logger.debug() << "# The Program Path: " << m_program_path.string();
 }
 
 void ProgramManager::logFooter(string program_name) const {
@@ -328,7 +336,11 @@ void ProgramManager::bootstrapEnvironment(char* arg0){
   using Path::Type;
 
   for(const auto& v: Path::VARIABLE) {
-    m_env[v.second] += joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES[v.first]));
+    if (m_env[v.second].exists()) {
+      m_env[v.second] += Path::PATH_SEP + joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES[v.first]));
+    } else {
+      m_env[v.second] = joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES[v.first]));
+    }
   }
 
 }

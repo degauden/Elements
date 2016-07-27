@@ -24,6 +24,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 
 from ElementsKernel import Logging
+from ElementsKernel.System import SHLIB_VAR_NAME
 import os
 
 Type = ["executable", "library", "python", "configuration", "auxiliary"]
@@ -33,6 +34,13 @@ SUFFIXES = {"executable": ["scripts", "bin"],
             "python": ["python"],
             "configuration": ["conf"],
             "auxiliary": ["auxdir", "aux"]}
+
+VARIABLE = {"executable": "PATH",
+            "library": SHLIB_VAR_NAME,
+            "python":  "PYTHONPATH",
+            "configuration": "ELEMENTS_CONF_PATH",
+            "auxiliary": "ELEMENTS_AUX_PATH"}
+
 
 def getPathFromEnvVariable(file_name, path_variable):
     """
@@ -68,3 +76,19 @@ def getPathFromEnvVariable(file_name, path_variable):
 
 
     return full_path
+
+
+def joinPath(path_list):
+    """ stupid wrapper to look like the C++ call """
+    return os.pathsep.join(path_list)
+
+
+def multiPathAppend(initial_locations, suffixes):
+
+    result = []
+
+    for l in initial_locations:
+        result += [ os.path.join(l, s) for s in suffixes]
+
+    return result
+

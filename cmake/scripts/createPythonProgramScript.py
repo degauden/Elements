@@ -11,6 +11,8 @@ parser.add_argument(
     '--outdir', required=True, help='The directory to generate the script in')
 parser.add_argument('--execname', required=True,
                     help='The name of the executable script to generate')
+parser.add_argument('--local-python-path',
+                    help='The local PYTHONPATH to the sources')
 args = parser.parse_args()
 
 if not os.path.exists(args.outdir):
@@ -22,6 +24,8 @@ if not os.path.isdir(args.outdir):
 template = """\
 #!/usr/bin/env python
 # Automatically generated file: do not modify!
+
+is_installed = False
 
 import sys, os
 
@@ -42,7 +46,10 @@ def _updateSysPath(extra_list):
 old_path = sys.path[:]
 
 # insert neighbour python path after the env variable in sys.path
-_updateSysPath(["../python"])
+update_list = []
+close_python_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "python")
+update_list.append(close_python_dir)
+_updateSysPath(update_list)
 
 from ThisProject import THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME
 from ThisProject import THIS_PROJECT_SEARCH_DIRS
@@ -50,11 +57,11 @@ from ThisProject import THIS_PROJECT_SEARCH_DIRS
 sys.path = old_path
 
 # insert python path list after the env variable in sys.path
-_updateSysPath(["../python"] + [os.path.join(p, "python") for p in THIS_PROJECT_SEARCH_DIRS[1:]])
+_updateSysPath(update_list + [os.path.join(p, "python") for p in THIS_PROJECT_SEARCH_DIRS[1:]])
 
 from ElementsKernel.Program import Program
 
-p = Program('%(MODULE_NAME)s', THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME, THIS_PROJECT_SEARCH_DIRS)
+p = Program('%(MODULE_NAME)s', THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME, THIS_PROJECT_SEARCH_DIRS, os.path.realpath(__file__))
 exit(p.runProgram())
 """ % { 'MODULE_NAME' : args.module }
 

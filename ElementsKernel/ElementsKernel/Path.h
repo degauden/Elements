@@ -36,6 +36,9 @@
 namespace Elements {
 namespace Path {
 
+static std::string PATH_SEP {":"};
+
+
 enum class Type {
   executable,
   library,

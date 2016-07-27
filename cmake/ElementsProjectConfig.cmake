@@ -504,7 +504,6 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
     execute_process(COMMAND
                     ${instmodule_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
-    # install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py DESTINATION python)
     # special install procedure because the install loction can be changed on the fly.
     install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \${CMAKE_INSTALL_PREFIX}/python\"\)
 execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/python/${_proj}_INSTALL.py\)")
@@ -2510,9 +2509,13 @@ endfunction()
 # Add the python files in the directory as test. It collects the python test files
 # and add a test for the python test framework (py.test, nose or unittest)
 #---------------------------------------------------------------------------------------------------
-function(add_python_test_dir subdir)
+function(add_python_test_dir)
 
   CMAKE_PARSE_ARGUMENTS(PYTEST_ARG "" "PREFIX;PATTERN;NAME;TIMEOUT" "" ${ARGN})
+
+  if(NOT PYTEST_ARG_UNPARSED_ARGUMENTS)
+      set(PYTEST_ARG_UNPARSED_ARGUMENTS "tests/python")
+  endif()
 
   if(NOT PYTEST_ARG_PATTERN)
     set(PYTEST_ARG_PATTERN "*.py")
@@ -2534,7 +2537,11 @@ function(add_python_test_dir subdir)
     endif()
   endif()
 
-  elements_expand_sources(pysrcs ${CMAKE_CURRENT_SOURCE_DIR}/${subdir}/${PYTEST_ARG_PATTERN})
+  
+  foreach(pytestsubdir ${PYTEST_ARG_UNPARSED_ARGUMENTS}) 
+    elements_expand_sources(tmp_pysrcs ${CMAKE_CURRENT_SOURCE_DIR}/${pytestsubdir}/${PYTEST_ARG_PATTERN})
+    set(pysrcs ${pysrcs} ${tmp_pysrcs})
+  endforeach()
 
   elements_get_package_name(package)
 
@@ -2542,18 +2549,25 @@ function(add_python_test_dir subdir)
     elements_add_test(${pytest_name}
                       COMMAND ${PYFRMK_TEST} ${pysrcs})
     set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest ${PYFRMK_NAME})
+    if(PYTEST_ARG_TIMEOUT)
+      set_property(TEST ${package}.${pytest_name} PROPERTY TIMEOUT ${PYTEST_ARG_TIMEOUT})
+    endif()
   else()
     if(NOT PYTHON_VERSION_STRING VERSION_LESS "2.7")
-      elements_add_test(${pytest_name}
-                        COMMAND ${PYTHON_EXECUTABLE} -m unittest discover -s ${CMAKE_CURRENT_SOURCE_DIR}/${subdir} -p "${PYTEST_ARG_PATTERN}" )
-      set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest)
+      foreach(pytestsubdir ${PYTEST_ARG_UNPARSED_ARGUMENTS})
+        set(pytest_name "${pytest_name}:${pytestsubdir}")
+        elements_add_test(${pytest_name}
+                          COMMAND ${PYTHON_EXECUTABLE} -m unittest discover -s ${CMAKE_CURRENT_SOURCE_DIR}/${pytestsubdir} -p "${PYTEST_ARG_PATTERN}" )
+        set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest)
+        if(PYTEST_ARG_TIMEOUT)
+          set_property(TEST ${package}.${pytest_name} PROPERTY TIMEOUT ${PYTEST_ARG_TIMEOUT})
+        endif()
+      endforeach()
     endif()
   endif()
 
-  if(PYTEST_ARG_TIMEOUT)
-    set_property(TEST ${package}.${pytest_name} PROPERTY TIMEOUT ${PYTEST_ARG_TIMEOUT})
-  endif()
 
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON_TEST TRUE)
 
 endfunction()
 
@@ -2580,47 +2594,57 @@ endfunction()
 function(elements_install_python_modules)
 
   CMAKE_PARSE_ARGUMENTS(INSTALL_PY_MOD "" "TEST_TIMEOUT" "" ${ARGN})
-
-  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python)
-    install(DIRECTORY python/
-            DESTINATION python
-            FILES_MATCHING
-            PATTERN "*.py"
-            PATTERN "CVS" EXCLUDE
-            PATTERN ".svn" EXCLUDE)
-    # check for the presence of the __init__.py's and install them if needed
-    file(GLOB sub-dir RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} python/*)
-    foreach(dir ${sub-dir})
-      if(NOT dir STREQUAL python/.svn
-         AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}
-         AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
-        set(pyfile ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
-        file(RELATIVE_PATH pyfile ${CMAKE_BINARY_DIR} ${pyfile})
-        message(WARNING "The file ${pyfile} is missing. I shall install an empty one.")
-        if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/__init__.py)
-          file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/__init__.py "# Empty file generated automatically\n")
-        endif()
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
-                DESTINATION ${CMAKE_INSTALL_PREFIX}/${dir})
-      endif()
-      # Add the Python module name to the list of provided ones.
-      get_filename_component(modname ${dir} NAME)
-      set_property(DIRECTORY APPEND PROPERTY has_python_modules ${modname})
-      if(NOT dir STREQUAL python/.svn)
-        set_property(GLOBAL APPEND PROPERTY PROJ_PYTHON_PACKAGE_LIST ${CMAKE_CURRENT_SOURCE_DIR}/${dir})
-      endif()
-    endforeach()
-    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
-    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
-      if(INSTALL_PY_MOD_TEST_TIMEOUT)
-        add_python_test_dir(tests/python TIMEOUT ${INSTALL_PY_MOD_TEST_TIMEOUT})
-      else()
-        add_python_test_dir(tests/python)
-      endif()
-    endif()
-  else()
-    message(FATAL_ERROR "No python directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+  
+  if(NOT INSTALL_PY_MOD_UNPARSED_ARGUMENTS)
+      set(INSTALL_PY_MOD_UNPARSED_ARGUMENTS "python")
   endif()
+  
+  foreach(pysubdir ${INSTALL_PY_MOD_UNPARSED_ARGUMENTS}) 
+
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${pysubdir})
+      install(DIRECTORY ${pysubdir}/
+              DESTINATION python
+              FILES_MATCHING
+              PATTERN "*.py"
+              PATTERN "CVS" EXCLUDE
+              PATTERN ".svn" EXCLUDE)
+    # check for the presence of the __init__.py's and install them if needed
+      file(GLOB sub-dir RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${pysubdir}/*)
+      foreach(dir ${sub-dir})
+        if(NOT dir STREQUAL ${pysubdir}/.svn
+           AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}
+           AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
+          set(pyfile ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/__init__.py)
+          file(RELATIVE_PATH pyfile ${CMAKE_BINARY_DIR} ${pyfile})
+          message(WARNING "The file ${pyfile} is missing. I shall install an empty one.")
+          if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/__init__.py)
+            file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/__init__.py "# Empty file generated automatically\n")
+          endif()
+          install(FILES ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
+                  DESTINATION ${CMAKE_INSTALL_PREFIX}/${dir})
+        endif()
+        # Add the Python module name to the list of provided ones.
+        get_filename_component(modname ${dir} NAME)
+        set_property(DIRECTORY APPEND PROPERTY has_python_modules ${modname})
+        set_property(DIRECTORY PROPERTY module_has_python_dir yes)
+        if(NOT dir STREQUAL ${pysubdir}/.svn)
+          set_property(GLOBAL APPEND PROPERTY PROJ_PYTHON_PACKAGE_LIST ${CMAKE_CURRENT_SOURCE_DIR}/${dir})
+        endif()
+      endforeach()
+      set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+      if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
+        if(INSTALL_PY_MOD_TEST_TIMEOUT)
+          add_python_test_dir(tests/python TIMEOUT ${INSTALL_PY_MOD_TEST_TIMEOUT})
+        else()
+          add_python_test_dir(tests/python)
+        endif()
+      endif()
+    else()
+      message(FATAL_ERROR "No python directory ${pysubdir} in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+    endif()
+
+  endforeach()
+
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -3337,6 +3361,13 @@ endfunction()
 
 
 function(elements_add_python_program executable module)
+
+  get_property(has_python_dir DIRECTORY PROPERTY module_has_python_dir)
+  
+  if (NOT has_python_dir)
+    message(FATAL_ERROR "There is not python module defined. Please call elements_install_python_modules() first.")
+  endif()
+
   # Make the scripts directory in the build directory if it does not exist
   if(NOT EXISTS ${CMAKE_BINARY_DIR}/scripts)
     file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/scripts)
@@ -3347,6 +3378,10 @@ function(elements_add_python_program executable module)
   string(REPLACE "." "/" program_file ${module})
   set(program_file python/${program_file}.py)
 
+  # for the local bootstrapping the python_path pointing to
+  # the sources has to be passed
+  get_property(python_pkg_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
+  
   add_custom_command(OUTPUT ${executable_file}
                      COMMAND ${pythonprogramscript_cmd} --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable}
                      DEPENDS ${program_file})

@@ -82,7 +82,7 @@ ELEMENTS_API std::string joinPath(const std::vector<T> path_list) {
                    return fs::path(s).string();
                  });
 
-  std::string result = boost::algorithm::join(elems, ":");
+  std::string result = boost::algorithm::join(elems, PATH_SEP);
 
   return result;
 }

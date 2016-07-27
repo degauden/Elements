@@ -53,6 +53,13 @@ elements_add_unit_test(Environment tests/src/Environment_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost
                        LABELS Environment)
 
+#-----------------------
+# ModuleInfo_test
+elements_add_unit_test(ModuleInfo tests/src/ModuleInfo_test.cpp
+                       EXECUTABLE ModuleInfo_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
 
 #-----------------------
 # ThisModule_test
@@ -117,6 +124,9 @@ elements_add_unit_test(Sleep tests/src/Sleep_test.cpp
 
 #---Python and Scripts ------------------------------------------------------------
 
+elements_install_python_modules()
+
+
 elements_add_python_program(CreateElementsProject ElementsKernel.Project)
 elements_add_python_program(AddElementsModule ElementsKernel.AddModule)
 elements_add_python_program(AddCppClass ElementsKernel.AddCppClass)
@@ -129,7 +139,6 @@ elements_add_python_program(RemovePythonProgram ElementsKernel.RemovePythonProgr
 elements_add_python_program(RemovePythonModule ElementsKernel.RemovePythonModule)
 
 elements_install_aux_files()
-elements_install_python_modules()
 
 elements_add_test(CreateElementsProject COMMAND createElementsProject_test)
 elements_add_test(AddElementsModule COMMAND addElementsModule_test)

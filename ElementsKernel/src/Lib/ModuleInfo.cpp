@@ -21,6 +21,10 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <sstream>                            // for stringstream
+
+#include <boost/filesystem/path.hpp>          // for filesystem::path
+#include <boost/filesystem/operations.hpp>    // for filesystem::exists
 
 #include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/FuncPtrCast.h"
@@ -34,6 +38,7 @@
 #include <dlfcn.h>
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 static vector<string> s_linkedModules;
 
@@ -174,6 +179,7 @@ const string& exeName()    {
   return module;
 }
 
+
 const vector<string> linkedModules()    {
   if ( s_linkedModules.size() == 0 )    {
     char ff[512], cmd[1024], fname[1024], buf1[64], buf2[64], buf3[64], buf4[64];
@@ -190,6 +196,23 @@ const vector<string> linkedModules()    {
   }
   return s_linkedModules;
 }
+
+fs::path getExecutablePath() {
+  fs::path exe_path {};
+
+  fs::path self_proc {"/proc/self/exe"};
+
+  if (not fs::exists(self_proc)) {
+    stringstream self_str {};
+    self_str << "/proc/" << ::getpid() << "/exe";
+    self_proc = fs::path(self_str.str());
+  }
+
+  exe_path = fs::canonical(self_proc);
+
+  return exe_path;
+}
+
 
 } // namespace System
 } // namespace Elements

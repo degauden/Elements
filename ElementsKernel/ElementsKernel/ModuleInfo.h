@@ -28,9 +28,11 @@
 #include <memory>
 #include <dlfcn.h>
 
+#include <boost/filesystem/path.hpp>    // for filesystem::path
+
 // Framework include files
-#include "ElementsKernel/System.h" // LIB_PREFIX, LIB_EXTENSION
-#include "ElementsKernel/Export.h" // ELEMENTS_API
+#include "ElementsKernel/System.h"      // LIB_PREFIX, LIB_EXTENSION
+#include "ElementsKernel/Export.h"      // ELEMENTS_API
 
 namespace Elements {
 namespace System {
@@ -73,6 +75,8 @@ ELEMENTS_API const std::string& exeName();
 ELEMENTS_API const std::vector<std::string> linkedModules();
 /// Attach module handle
 ELEMENTS_API void setModuleHandle(ImageHandle handle);
+
+ELEMENTS_API boost::filesystem::path getExecutablePath();
 
 }
 }

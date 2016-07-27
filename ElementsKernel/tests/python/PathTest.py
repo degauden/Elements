@@ -23,6 +23,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import unittest
 
 from ElementsKernel.Temporary import TempDir
+from ElementsKernel.Path import joinPath, multiPathAppend
 
 class PathTest(unittest.TestCase):
 
@@ -36,9 +37,27 @@ class PathTest(unittest.TestCase):
         pass
 
 
-    def testName(self):
-        pass
+    def testJoinPath(self):
 
+        path_list = ["/toto", "titi", "./tutu"]
+        self.assert_(joinPath(path_list) == "/toto:titi:./tutu")
+
+        path_list2 = ["", "/toto", "titi", "./tutu"]
+        self.assert_(joinPath(path_list2) == ":/toto:titi:./tutu")
+
+        path_list3 = ["/toto", "titi", "./tutu", ""]
+        self.assert_(joinPath(path_list3) == "/toto:titi:./tutu:")
+
+    def testMultiPathAppend(self):
+
+        locations = ["loc1", "/loc2", "./loc3"]
+        suffixes = ["bin", "scripts"]
+
+        ref_paths = ["loc1/bin", "loc1/scripts",
+                     "/loc2/bin", "/loc2/scripts",
+                     "./loc3/bin", "./loc3/scripts"]
+
+        self.assert_(multiPathAppend(locations, suffixes) == ref_paths)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

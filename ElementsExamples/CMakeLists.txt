@@ -43,14 +43,6 @@ elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramE
 elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
 
 
-#===== Python programs =========================================================
-# Instruction for creating a Python executable
-#    PythonProgramExample is the executable name
-#    ElementsExamples.PythonProgramExample is the source file
-elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramExample)
-
-#===== Test that the python program does run ========================================
-elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
 
 
 #===== Boost tests =============================================================
@@ -198,9 +190,17 @@ endif()
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
-elements_install_conf_files()
-
 elements_install_python_modules(TEST_TIMEOUT 30)
+
+#===== Python programs =========================================================
+# Instruction for creating a Python executable
+#    PythonProgramExample is the executable name
+#    ElementsExamples.PythonProgramExample is the source file
+elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramExample)
+
+#===== Test that the python program does run ========================================
+elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
+
 
 elements_install_scripts()
 
@@ -215,4 +215,6 @@ elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError_test F
 
 elements_add_test(CppProgramExample COMMAND CppProgramExample)
 elements_add_test(SimpleProgramExample COMMAND ElementsSimpleProgramExample)
+
+elements_install_conf_files()
 
