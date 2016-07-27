@@ -28,7 +28,6 @@ import argparse
 import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
