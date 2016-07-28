@@ -303,7 +303,7 @@ void ProgramManager::logTheEnvironment() const {
   logger.debug() << "# ---------------------------";
   logger.debug() << "#";
 
-  for(const auto& v: Path::VARIABLE) {
+  for (const auto& v: Path::VARIABLE) {
     logger.debug() << v.second << ": " << m_env[v.second];
   }
 
@@ -335,7 +335,7 @@ void ProgramManager::bootstrapEnvironment(char* arg0){
   using Path::joinPath;
   using Path::Type;
 
-  for(const auto& v: Path::VARIABLE) {
+  for (const auto& v: Path::VARIABLE) {
     if (m_env[v.second].exists()) {
       m_env[v.second] += Path::PATH_SEP + joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES[v.first]));
     } else {

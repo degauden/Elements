@@ -95,7 +95,8 @@ static std::map<Type, const std::vector<std::string>> DEFAULT_LOCATIONS {
  * @return
  *    return a list of boost filesystem paths
  */
-ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std::string& path_variable, bool exist_only=false);
+ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std::string& path_variable,
+                                                                         bool exist_only=false);
 
 /**
  * @brief retrieve path from a file name and a set of location to look into
@@ -139,7 +140,8 @@ ELEMENTS_API std::string joinPath(const std::vector<T> path_list);
 
 
 template <typename T, typename U>
-ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations, const std::vector<U>& suffixes);
+ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations,
+                                                                    const std::vector<U>& suffixes);
 
 #include "ElementsKernel/_impl/Path.icpp"
 

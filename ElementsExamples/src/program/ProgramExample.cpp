@@ -25,6 +25,7 @@
 #include <memory>                           // for unique_ptr
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
+#include "ElementsKernel/ThisModule.h"      // for getThisExecutableInfo
 
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsExamples/functionExample.h"
@@ -182,6 +183,7 @@ public:
 
     logger.info() << "Function Example: " << functionExample(3);
 
+    logger.info() << "This executable name: " << Elements::System::getThisExecutableInfo().name();
 
     logger.info("#");
     logger.info("Exiting mainMethod()");

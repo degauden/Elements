@@ -198,6 +198,9 @@ const vector<string> linkedModules()    {
 }
 
 fs::path getExecutablePath() {
+  /** @todo implement the equivalent code for MacOSX with the _NSGetExecutablePath() function
+   *        see (man 3 dyld)
+   */
   fs::path exe_path {};
 
   fs::path self_proc {"/proc/self/exe"};

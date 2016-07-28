@@ -80,7 +80,8 @@ public:
       in2[i][1] *= 1./N;
     }
     for (size_t i = 0; i<N; i++) {
-      logger.info() << boost::format("recover: %3d %+9.5f %+9.5f I vs. %+9.5f %+9.5f I") % i % in[i][0] % in[i][1] % in2[i][0] % in2[i][1];
+      logger.info() << boost::format("recover: %3d %+9.5f %+9.5f I vs. %+9.5f %+9.5f I")
+                                      % i % in[i][0] % in[i][1] % in2[i][0] % in2[i][1];
     }
     fftw_destroy_plan(q);
 
