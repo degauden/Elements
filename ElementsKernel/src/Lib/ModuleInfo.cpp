@@ -37,6 +37,12 @@
 #include <cstdio>
 #include <dlfcn.h>
 
+#ifdef __APPLE__
+#include <climits>            // for PATH_MAX
+#include <mach-o/dyld.h>      // for _NSGetExecutablePath
+#endif
+
+
 using namespace std;
 namespace fs = boost::filesystem;
 
@@ -198,11 +204,16 @@ const vector<string> linkedModules()    {
 }
 
 fs::path getExecutablePath() {
-  /** @todo implement the equivalent code for MacOSX with the _NSGetExecutablePath() function
-   *        see (man 3 dyld)
-   */
+
   fs::path exe_path {};
 
+#ifdef __APPLE__
+  fs::path self_proc {};
+  char pathbuf[PATH_MAX + 1];
+  int  bufsize = sizeof(pathbuf);
+  _NSGetExecutablePath( pathbuf, &bufsize);
+  self_proc = fs::path(string(pathbuf));
+#else
   fs::path self_proc {"/proc/self/exe"};
 
   if (not fs::exists(self_proc)) {
@@ -210,6 +221,7 @@ fs::path getExecutablePath() {
     self_str << "/proc/" << ::getpid() << "/exe";
     self_proc = fs::path(self_str.str());
   }
+#endif
 
   exe_path = fs::canonical(self_proc);
 
