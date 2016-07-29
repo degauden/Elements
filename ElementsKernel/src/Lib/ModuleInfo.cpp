@@ -210,7 +210,7 @@ fs::path getExecutablePath() {
 #ifdef __APPLE__
   fs::path self_proc {};
   char pathbuf[PATH_MAX + 1];
-  int  bufsize = sizeof(pathbuf);
+  unsigned int  bufsize = sizeof(pathbuf);
   _NSGetExecutablePath( pathbuf, &bufsize);
   self_proc = fs::path(string(pathbuf));
 #else
