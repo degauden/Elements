@@ -2574,12 +2574,14 @@ endfunction()
 
 
 #-------------------------------------------------------------------------------
-# elements_install_python_modules()
+# elements_install_python_modules([subdir1 [subdir2 ...]])
 #
 # Declare that the subdirectory needs to install python modules.
 # The hierarchy of directories and  files in the python directory will be
 # installed.  If the first level of directories do not contain __init__.py, a
 # warning is issued and an empty one will be installed.
+#
+# If no argument is given the default subdirectory is python. 
 #
 # Note: We need to avoid conflicts with the automatic generated __init__.py for
 #       configurables (elements_generate_configurables)
@@ -2653,19 +2655,31 @@ endfunction()
 # Declare that the package needs to install the content of the 'scripts' directory.
 #---------------------------------------------------------------------------------------------------
 function(elements_install_scripts)
-  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
-    install(DIRECTORY scripts/ DESTINATION scripts
-            FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-                             GROUP_EXECUTE GROUP_READ
-                             WORLD_EXECUTE WORLD_READ
-            PATTERN "CVS" EXCLUDE
-            PATTERN ".svn" EXCLUDE
-            PATTERN "*~" EXCLUDE
-            PATTERN "*.pyc" EXCLUDE)
-    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
-  else()
-    message(FATAL_ERROR "No scripts directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+
+  CMAKE_PARSE_ARGUMENTS(INSTALL_SCR "" "" "" ${ARGN})
+  
+  if(NOT INSTALL_SCR_UNPARSED_ARGUMENTS)
+      set(INSTALL_SCR_UNPARSED_ARGUMENTS "scripts")
   endif()
+  
+  foreach(scrsubdir ${INSTALL_SCR_UNPARSED_ARGUMENTS}) 
+
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${scrsubdir})
+      install(DIRECTORY ${scrsubdir}/ DESTINATION scripts
+              FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                               GROUP_EXECUTE GROUP_READ
+                               WORLD_EXECUTE WORLD_READ
+              PATTERN "CVS" EXCLUDE
+              PATTERN ".svn" EXCLUDE
+              PATTERN "*~" EXCLUDE
+              PATTERN "*.pyc" EXCLUDE)
+      set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
+    else()
+      message(FATAL_ERROR "No \"${scrsubdir}\" scripts directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+    endif()
+  
+  endforeach()
+  
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
