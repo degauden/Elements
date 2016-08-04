@@ -121,6 +121,10 @@ option(HIDE_SYSINC_WARNINGS
 option(CXX_SUGGEST_OVERRIDE
        "Enable the -Wsuggest-override warning"
        OFF)
+       
+option(SQUEEZED_INSTALL
+       "Enable the squizzing of the installation into a prefix directory"
+       OFF)
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
