@@ -2203,6 +2203,11 @@ function(elements_add_swig_binding binding)
 	COMMENT "Generating SWIG binding"
   )
 
+  if(CXX_HAS_SUGGEST_OVERRIDE)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC}
+                 PROPERTY COMPILE_FLAGS -Wno-suggest-override)
+  endif() 
+
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
                              LINK_LIBRARIES ${MODULE_ARG_LINK_LIBRARIES}

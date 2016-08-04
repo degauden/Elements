@@ -59,7 +59,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();

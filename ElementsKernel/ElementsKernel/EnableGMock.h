@@ -28,7 +28,7 @@
 
 class BoostTestAdapter: public testing::EmptyTestEventListener {
 
-  virtual void OnTestPartResult(const testing::TestPartResult& testPartResult) {
+  virtual void OnTestPartResult(const testing::TestPartResult& testPartResult) override {
     if (testPartResult.failed()) {
       BOOST_ERROR(testPartResult.summary());
     }

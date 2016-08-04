@@ -20,7 +20,7 @@
  */
 
 #include <utility>                           // for pair, make_pair
-#include <iostream>                          // for coud, endl
+#include <iostream>                          // for cout, endl
 #include <map>                               // for map
 #include <string>                            // for string
 #include <vector>                            // for vector
@@ -61,7 +61,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod (ELEMENTS_UNUSED map<string, po::variable_value>& args) {
+  ExitCode mainMethod (ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();
@@ -83,7 +83,7 @@ public:
 
   }
 
-  std::pair<po::options_description, po::positional_options_description> defineProgramArguments () {
+  std::pair<po::options_description, po::positional_options_description> defineProgramArguments () override {
     po::options_description desc("");
     desc.add_options()("input-files", po::value<vector<string>>(), "Input files");
 

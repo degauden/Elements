@@ -117,6 +117,10 @@ option(ELEMENTS_USE_RPATH
 option(HIDE_SYSINC_WARNINGS
        "Hide System includes warnings by using -isystem instead of -I"
        OFF)
+       
+option(CXX_SUGGEST_OVERRIDE
+       "Enable the -Wsuggest-override warning"
+       OFF)
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
@@ -132,6 +136,16 @@ if(NOT ELEMENTS_FLAGS_SET)
       "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -Wno-unused-parameter -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
+
+  if(CXX_SUGGEST_OVERRIDE)
+    check_cxx_compiler_flag(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)
+    if(CXX_HAS_SUGGEST_OVERRIDE)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override"
+          CACHE STRING "Flags used by the compiler during all build types."
+          FORCE)
+    endif()
+  endif()
+
 
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"

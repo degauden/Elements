@@ -17,6 +17,10 @@ set(ELEMENTS_HIDE_SYMBOLS ON
     CACHE STRING "enable explicit symbol visibility on gcc-4"
     FORCE)
 
+set(CXX_SUGGEST_OVERRIDE ON
+    CACHE STRING "Enable the -Wsuggest-override warning"
+    FORCE)
+
 # Use only the Doxygen API documentation generation
 set(USE_SPHINX_APIDOC OFF
     CACHE STRING "Generates the sphinx API documentation"

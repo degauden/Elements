@@ -35,8 +35,8 @@ class ClassExampleSuite : public CppUnit::TestFixture {
 
 public:
 
-  void setUp();
-  void tearDown();
+  void setUp() override;
+  void tearDown() override;
   ClassExampleSuite() = default;
 
 protected:
