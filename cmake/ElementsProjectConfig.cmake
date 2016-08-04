@@ -175,18 +175,36 @@ macro(elements_project project version)
   set(ELEMENTS_DATA_SUFFIXES DBASE;PARAM;EXTRAPACKAGES CACHE STRING
       "List of (suffix) directories where to look for data packages.")
 
+
+  if(NOT SQUEEZED_INSTALL)
+    set(SQUEEZED_INSTALL OFF
+        CACHE STRING "Enable the squizzing of the installation into a prefix directory"
+        FORCE)
+  endif()
+
   # Install Area business
   if(USE_LOCAL_INSTALLAREA)
-    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
       set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/InstallArea/${BINARY_TAG} CACHE PATH
           "Install path prefix, prepended onto install directories." FORCE )
-    endif()
+      set(SQUEEZED_INSTALL OFF
+          CACHE STRING "Enable the squizzing of the installation into a prefix directory"
+          FORCE)
   else()
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-      set(CMAKE_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
-          "Install path prefix, prepended onto install directories." FORCE )
+      if(NOT SQUEEZED_INSTALL)
+         set(CMAKE_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
+             "Install path prefix, prepended onto install directories." FORCE )
+      endif()
+    else()
+      if(NOT SQUEEZED_INSTALL)
+         set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
+             "Install path prefix, prepended onto install directories." FORCE )
+      endif()    
     endif()
   endif()
+  
+  message(STATUS "The installation location is ${CMAKE_INSTALL_PREFIX}")
+  message(STATUS "The squeezing of the installation is ${SQUEEZED_INSTALL}")
 
   if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin CACHE STRING
