@@ -57,7 +57,7 @@ set(ELEMENTS_FORTIFY_DEFAULT ON)
 #
 
 option(ELEMENTS_HIDE_SYMBOLS
-       "enable explicit symbol visibility on gcc-4"
+       "Enable explicit symbol visibility on gcc-4"
        OFF)
 
 
@@ -66,16 +66,16 @@ option(ELEMENTS_CPP11
        ${ELEMENTS_CPP11_DEFAULT})
 
 option(ELEMENTS_CPP14
-       "enable C++14 compilation"
+       "Enable C++14 compilation"
        OFF)
 
 
 option(ELEMENTS_PARALLEL
-       "enable C++11 parallel support with OpenMP"
+       "Enable C++11 parallel support with OpenMP"
        ${ELEMENTS_PARALLEL_DEFAULT})
 
 option(ELEMENTS_FORTIFY
-       "enable g++ fortify option"
+       "Enable g++ fortify option"
        ${ELEMENTS_FORTIFY_DEFAULT})
 
 option(USE_LOCAL_INSTALLAREA
