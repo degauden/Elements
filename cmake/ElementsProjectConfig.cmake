@@ -172,9 +172,6 @@ macro(elements_project project version)
   option(ELEMENTS_HIDE_WARNINGS "Turn on or off options that are used to hide warning messages." ON)
   option(ELEMENTS_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix systems (like CMT does)." OFF)
   #-------------------------------------------------------------------------------------------------
-  set(ELEMENTS_DATA_SUFFIXES DBASE;PARAM;EXTRAPACKAGES CACHE STRING
-      "List of (suffix) directories where to look for data packages.")
-
 
   if(NOT SQUEEZED_INSTALL)
     set(SQUEEZED_INSTALL OFF
@@ -182,61 +179,25 @@ macro(elements_project project version)
         FORCE)
   endif()
 
-  # Install Area business
-  if(USE_LOCAL_INSTALLAREA)
-      set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/InstallArea/${BINARY_TAG} CACHE PATH
-          "Install path prefix, prepended onto install directories." FORCE )
-      set(SQUEEZED_INSTALL OFF
-          CACHE STRING "Enable the squizzing of the installation into a prefix directory"
-          FORCE)
-  else()
-    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-      if(NOT SQUEEZED_INSTALL)
-         set(CMAKE_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
-             "Install path prefix, prepended onto install directories." FORCE )
-      endif()
-    else()
-      if(NOT SQUEEZED_INSTALL)
-         set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
-             "Install path prefix, prepended onto install directories." FORCE )
-      endif()    
-    endif()
-  endif()
+  include(ElementsLocations)
   
-  message(STATUS "The installation location is ${CMAKE_INSTALL_PREFIX}")
-  message(STATUS "The squeezing of the installation is ${SQUEEZED_INSTALL}")
-
-  if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin CACHE STRING
-	   "Single build output directory for all executables" FORCE)
-  endif()
-  if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib CACHE STRING
-	   "Single build output directory for all libraries" FORCE)
-  endif()
-
-
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
-      CACHE STRING "path to the XML file for the environment to be used in building and testing")
+     CACHE STRING "path to the XML file for the environment to be used in building and testing")
 
-  set(installed_env_xml \${CMAKE_INSTALL_PREFIX}/${project}BuildEnvironment.xml
-      CACHE STRING "path to the XML file for the environment to be used for installation")
+  set(installed_env_xml \${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}BuildEnvironment.xml
+     CACHE STRING "path to the XML file for the environment to be used for installation")
 
 
   set(env_release_xml ${CMAKE_BINARY_DIR}/${project}Environment.xml
-      CACHE STRING "path to the XML file for the environment to be used once the project is installed")
+     CACHE STRING "path to the XML file for the environment to be used once the project is installed")
 
-  set(installed_env_release_xml \${CMAKE_INSTALL_PREFIX}/${project}Environment.xml
-      CACHE STRING "path to the XML file for the environment to be used once the project is installed")
+  set(installed_env_release_xml \${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}Environment.xml
+     CACHE STRING "path to the XML file for the environment to be used once the project is installed")
 
 
   mark_as_advanced(CMAKE_RUNTIME_OUTPUT_DIRECTORY CMAKE_LIBRARY_OUTPUT_DIRECTORY
                    env_xml env_release_xml
                    installed_env_xml installed_env_release_xml)
-
-  set(CONF_DIR_NAME "conf" CACHE STRING "Name of the configuration files directory")
-  set(AUX_DIR_NAME "auxdir" CACHE STRING "Name of the auxiliary files directory")
-
 
   if(ELEMENTS_BUILD_TESTS)
     find_package(Valgrind QUIET)
@@ -388,7 +349,7 @@ macro(elements_project project version)
                    rpmbuild_wrap_cmd)
 
   #--- Project Installations------------------------------------------------------------------------
-  install(DIRECTORY cmake/ DESTINATION cmake
+  install(DIRECTORY cmake/ DESTINATION ${CMAKE_INSTALL_SUFFIX}
                            FILES_MATCHING
                              PATTERN "*.cmake"
                              PATTERN "*.in"
@@ -405,37 +366,6 @@ macro(elements_project project version)
   #--- Global actions for the project
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
   include(ElementsBuildFlags)
-
-
-  #------------------------------------------------------------------------------------------------
-  # RPATH business
-
-  if(ELEMENTS_USE_RPATH)
-
-    if (CMAKE_SYSTEM_NAME MATCHES Linux)
-      SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-
-      # add the automatically determined parts of the RPATH
-      # which point to directories outside the build tree to the install RPATH
-      SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-
-      # the RPATH to be used when installing, but only if it's not a system directory
-      LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "$ORIGIN/../lib" isSystemDir)
-      IF("${isSystemDir}" STREQUAL "-1")
-        SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-      ENDIF()
-    endif()
-    
-    if(APPLE)
-      set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
-          "Install RPath." FORCE )  
-      set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE PATH
-          "Install Name Dir." FORCE )  
-    endif()
-    
-
-  endif()
 
   #------------------------------------------------------------------------------------------------
 
@@ -482,8 +412,8 @@ macro(elements_project project version)
   if(versheader_cmd)
     execute_process(COMMAND
                     ${versheader_cmd} --quiet
-                    ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h)
-    install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h DESTINATION include)
+                    ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_VERSION.h)
+    install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h DESTINATION ${INCLUDE_INSTALL_SUFFIX})
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
 
@@ -491,10 +421,10 @@ macro(elements_project project version)
     JOIN("${used_elements_projects}" ":" joined_used_projects)
     execute_process(COMMAND
                     ${instheader_cmd} --quiet
-                    ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/include/${_proj}_INSTALL.h)
+                    ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h)
     # special installation because the install location can be changed on the fly
-    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \${CMAKE_INSTALL_PREFIX}/include\"\)
-execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/include/${_proj}_INSTALL.h\)")
+    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}\"\)
+execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
 
@@ -502,18 +432,18 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   if(thisheader_cmd)
     execute_process(COMMAND
                     ${thisheader_cmd} --quiet
-                    ${project} ${CMAKE_BINARY_DIR}/include/ThisProject.h)
+                    ${project} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/ThisProject.h)
     # This header is by design only local. It is then not installed
   endif()
 
   # Add generated headers to the include path.
-  include_directories(${CMAKE_BINARY_DIR}/include)
+  include_directories(${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX})
 
   if(versmodule_cmd)
     execute_process(COMMAND
                     ${versmodule_cmd} --quiet
                     ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py)
-    install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py DESTINATION python)
+    install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   endif()
 
@@ -523,8 +453,8 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
                     ${instmodule_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
     # special install procedure because the install loction can be changed on the fly.
-    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \${CMAKE_INSTALL_PREFIX}/python\"\)
-execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/python/${_proj}_INSTALL.py\)")
+    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}\"\)
+execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}/${_proj}_INSTALL.py\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   endif()
 
@@ -533,7 +463,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
     execute_process(COMMAND
                     ${thismodule_cmd} --quiet
                     ${project} ${CMAKE_BINARY_DIR}/python/ThisProject.py)
-    install(FILES ${CMAKE_BINARY_DIR}/python/ThisProject.py DESTINATION python)
+    install(FILES ${CMAKE_BINARY_DIR}/python/ThisProject.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   endif()
 
@@ -590,7 +520,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   # install(CODE "execute_process(COMMAND  ${zippythondir_cmd} ${CMAKE_INSTALL_PREFIX}/python)")
   if(zippythondir_cmd)
     add_custom_target(python.zip
-                      COMMAND ${zippythondir_cmd} ${CMAKE_INSTALL_PREFIX}/python
+                      COMMAND ${zippythondir_cmd} ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}
                       COMMENT "Zipping Python modules")
   endif()
   #--- Prepare environment configuration
@@ -617,14 +547,19 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 
 
   #   - installation dirs
+  
+  if(NOT SQUEEZED_INSTALL)
+    set(project_environment ${project_environment}
+        PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${SCRIPT_INSTALL_SUFFIX})
+  endif()
+  
   set(project_environment ${project_environment}
-        PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/scripts
-        PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/bin
-        PREPEND LD_LIBRARY_PATH LOCAL_ESCAPE_DOLLAR{.}/lib
-        PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/python
-        PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/python/lib-dynload
-        PREPEND ELEMENTS_CONF_PATH LOCAL_ESCAPE_DOLLAR{.}/${CONF_DIR_NAME}
-        PREPEND ELEMENTS_AUX_PATH LOCAL_ESCAPE_DOLLAR{.}/${AUX_DIR_NAME})
+      PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/bin
+      PREPEND LD_LIBRARY_PATH LOCAL_ESCAPE_DOLLAR{.}/${CMAKE_LIB_INSTALL_SUFFIX}
+      PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${PYTHON_INSTALL_SUFFIX}
+      PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${PYTHON_DYNLIB_INSTALL_SUFFIX}
+      PREPEND ELEMENTS_CONF_PATH LOCAL_ESCAPE_DOLLAR{.}/${CONF_INSTALL_SUFFIX}
+      PREPEND ELEMENTS_AUX_PATH LOCAL_ESCAPE_DOLLAR{.}/${AUX_INSTALL_SUFFIX})  
 
   foreach(other_project ${used_elements_projects})
     set(project_build_environment ${project_build_environment}
@@ -638,26 +573,39 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 
 
   #     (installation dirs added to build env to be able to test pre-built bins)
+  if(NOT SQUEEZED_INSTALL)
+    set(project_build_environment ${project_build_environment}
+        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/${SCRIPT_INSTALL_SUFFIX})  
+  endif()
   set(project_build_environment ${project_build_environment}
-        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/scripts
-        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/bin
-        PREPEND LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib
-        PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python
-        PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/python/lib-dynload
-        PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/${CONF_DIR_NAME}
-        PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/${AUX_DIR_NAME})
+      PREPEND PATH ${CMAKE_INSTALL_PREFIX}/bin
+      PREPEND LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_LIB_INSTALL_SUFFIX}
+      PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}
+      PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/${PYTHON_DYNLIB_INSTALL_SUFFIX}
+      PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/${CONF_INSTALL_SUFFIX}
+      PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/${AUX_INSTALL_SUFFIX})  
+
 
   message(STATUS "  environment for local subdirectories")
   #   - project root (for relocatability)
   string(TOUPPER ${project} _proj)
-  #set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
-  file(RELATIVE_PATH _PROJECT_ROOT ${CMAKE_INSTALL_PREFIX} ${CMAKE_SOURCE_DIR})
-  #message(STATUS "_PROJECT_ROOT -> ${_PROJECT_ROOT}")
-  set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
+  # set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
+  # file(RELATIVE_PATH _PROJECT_ROOT ${CMAKE_INSTALL_PREFIX} ${CMAKE_SOURCE_DIR})
+  # message(STATUS "_PROJECT_ROOT -> ${_PROJECT_ROOT}")
   set(installed_project_environment "${project_environment}")
+  
+  set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
+  if(NOT SQUEEZED_INSTALL)
+    set(installed_project_environment ${installed_project_environment} SET ${_proj}_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
+  endif()
+  
   set(installed_project_build_environment "${project_build_environment}")
   set(project_build_environment ${project_build_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
-  set(installed_project_build_environment ${installed_project_build_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_INSTALL_PREFIX}/../..")
+  
+  if(NOT SQUEEZED_INSTALL)
+    set(installed_project_build_environment ${installed_project_build_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_INSTALL_PREFIX}/../..")
+  endif()
+  
   #   - 'packages':
   foreach(package ${packages})
     message(STATUS "    ${package}")
@@ -715,22 +663,25 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
       PREPEND LD_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       PREPEND PYTHONPATH ${CMAKE_BINARY_DIR}/python
-      PREPEND ELEMENTS_AUX_PATH ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
+      PREPEND ELEMENTS_AUX_PATH ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME}
+      PREPEND ELEMENTS_CONF_PATH ${CMAKE_BINARY_DIR}/${CONF_DIR_NAME})
 
   # - produce environment XML description
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
-  install(CODE "find_package\(ElementsProject\)
-message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
-set\(used_elements_projects ${used_elements_projects}\)
-foreach\(other_project ${used_elements_projects}\)
-set\(\${other_project}_DIR \${\${other_project}_DIR}\)
-endforeach\(\)
-elements_generate_env_conf\(${installed_env_release_xml} ${installed_project_environment}\)")
+  install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  find_package\(ElementsProject\)
+  message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
+  set\(used_elements_projects ${used_elements_projects}\)
+  foreach\(other_project ${used_elements_projects}\)
+  set\(\${other_project}_DIR \${\${other_project}_DIR}\)
+  endforeach\(\)
+  elements_generate_env_conf\(${installed_env_release_xml} ${installed_project_environment}\)")
 #  install(FILES ${env_release_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
-  install(CODE "find_package\(ElementsProject\)
+  install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  find_package\(ElementsProject\)
 message\(STATUS \"Installing: ${installed_env_xml}\"\)
 elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_environment}\)")
 #  install(FILES ${env_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
@@ -754,8 +705,11 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   elements_generate_exports(${packages})
 
   #--- Generate the manifest.xml file.
-  elements_generate_project_manifest(${CMAKE_BINARY_DIR}/manifest.xml ${ARGV})
-  install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION .)
+  if(NOT SQUEEZED_INSTALL)
+    elements_generate_project_manifest(${CMAKE_BINARY_DIR}/manifest.xml ${ARGV})
+    install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION .)
+  endif()
+
 
   #--- CPack configuration
   # Please have a look at the general CPack documentation at
@@ -1925,7 +1879,7 @@ macro(_elements_detach_debinfo target)
         #       see OUTPUT_NAME and LIBRARY_OUPUT_NAME
         set(_tn ${CMAKE_SHARED_${CMAKE_MATCH_0}_PREFIX}${target}${CMAKE_SHARED_${CMAKE_MATCH_0}_SUFFIX})
         set(_builddir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-        set(_dest lib)
+        set(_dest ${CMAKE_LIB_INSTALL_SUFFIX})
       else()
         set(_tn ${target})
         if(ELEMENTS_USE_EXE_SUFFIX)
@@ -2010,10 +1964,10 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
   set_property(GLOBAL APPEND PROPERTY LINKER_LIBRARIES ${library})
 
   #----Installation details-------------------------------------------------------
-  install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION lib OPTIONAL)
+  install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
   elements_export(LIBRARY ${library})
   elements_install_headers(${ARG_PUBLIC_HEADERS})
-  install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
+  install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_INSTALL_SUFFIX} OPTIONAL)
   set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
 endfunction()
@@ -2037,7 +1991,7 @@ function(elements_add_module library)
   set_property(GLOBAL APPEND PROPERTY COMPONENT_LIBRARIES ${library})
 
   #----Installation details-------------------------------------------------------
-  install(TARGETS ${library} LIBRARY DESTINATION lib OPTIONAL)
+  install(TARGETS ${library} LIBRARY DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
   elements_export(MODULE ${library})
   set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
 endfunction()
@@ -2107,9 +2061,9 @@ function(elements_add_dictionary dictionary header selection)
   endif()
 
   #----Installation details-------------------------------------------------------
-  install(TARGETS ${dictionary}Dict LIBRARY DESTINATION lib OPTIONAL)
+  install(TARGETS ${dictionary}Dict LIBRARY DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
   if(ROOT_HAS_PCMS)
-    install(FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname} DESTINATION lib OPTIONAL)
+    install(FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname} DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
   endif()
 endfunction()
 
@@ -2138,7 +2092,7 @@ function(elements_add_python_module module)
 #  _elements_detach_debinfo(${module})
 
   #----Installation details-------------------------------------------------------
-  install(TARGETS ${module} LIBRARY DESTINATION python/lib-dynload OPTIONAL)
+  install(TARGETS ${module} LIBRARY DESTINATION ${PYTHON_DYNLIB_INSTALL_SUFFIX} OPTIONAL)
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
 endfunction()
 
@@ -2231,7 +2185,7 @@ function(elements_add_swig_binding binding)
                              LINK_LIBRARIES ${MODULE_ARG_LINK_LIBRARIES}
                              INCLUDE_DIRS ${MODULE_ARG_INCLUDE_DIRS})
 
-  install(FILES ${PY_MODULE_DIR}/${binding}.py DESTINATION python)
+  install(FILES ${PY_MODULE_DIR}/${binding}.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
   elements_install_headers(${ARG_PUBLIC_HEADERS})
 
 endfunction()
@@ -2259,7 +2213,7 @@ function(elements_add_executable executable)
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${executable} EXPORT ${CMAKE_PROJECT_NAME}Exports RUNTIME DESTINATION bin OPTIONAL)
-  install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION cmake OPTIONAL)
+  install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_INSTALL_SUFFIX} OPTIONAL)
   elements_export(EXECUTABLE ${executable})
   set_property(GLOBAL APPEND PROPERTY REGULAR_BIN_OBJECTS ${executable})
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
@@ -2496,7 +2450,7 @@ function(elements_install_headers)
     endif()
     if(IS_DIRECTORY ${full_hdr_dir})
       install(DIRECTORY ${hdr_dir}
-              DESTINATION include
+              DESTINATION ${INCLUDE_INSTALL_SUFFIX}
               FILES_MATCHING
               PATTERN "*.h"
               PATTERN "*.icpp"
@@ -2628,7 +2582,7 @@ function(elements_install_python_modules)
 
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${pysubdir})
       install(DIRECTORY ${pysubdir}/
-              DESTINATION python
+              DESTINATION ${PYTHON_INSTALL_SUFFIX}
               FILES_MATCHING
               PATTERN "*.py"
               PATTERN "CVS" EXCLUDE
@@ -2684,11 +2638,11 @@ function(elements_install_scripts)
   if(NOT INSTALL_SCR_UNPARSED_ARGUMENTS)
       set(INSTALL_SCR_UNPARSED_ARGUMENTS "scripts")
   endif()
-  
+    
   foreach(scrsubdir ${INSTALL_SCR_UNPARSED_ARGUMENTS}) 
 
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${scrsubdir})
-      install(DIRECTORY ${scrsubdir}/ DESTINATION scripts
+      install(DIRECTORY ${scrsubdir}/ DESTINATION ${SCRIPT_INSTALL_SUFFIX}
               FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                                GROUP_EXECUTE GROUP_READ
                                WORLD_EXECUTE WORLD_READ
@@ -2711,26 +2665,27 @@ endfunction()
 # Declare that the package needs to install the content of the 'aux' directory.
 #---------------------------------------------------------------------------------------------------
 function(elements_install_aux_files)
+
   # early check at configure time for the existence of the directory
   if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME} OR IS_DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux)
       message(WARNING "The aux directory name in the ${CMAKE_CURRENT_SOURCE_DIR} location is dangerous. Please rename it to ${AUX_DIR_NAME}")
       install(DIRECTORY aux/
-              DESTINATION ${AUX_DIR_NAME}
+              DESTINATION ${AUX_INSTALL_SUFFIX}
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE
               PATTERN "*~" EXCLUDE)
     endif()
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME})
       install(DIRECTORY ${AUX_DIR_NAME}/
-              DESTINATION ${AUX_DIR_NAME}
+              DESTINATION ${AUX_INSTALL_SUFFIX}
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE
               PATTERN "*~" EXCLUDE)
     endif()
     if(IS_DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
       install(DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME}/
-              DESTINATION ${AUX_DIR_NAME}
+              DESTINATION ${AUX_INSTALL_SUFFIX}
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE
               PATTERN "*~" EXCLUDE)
@@ -2747,9 +2702,10 @@ endfunction()
 # Declare that the package needs to install the content of the 'conf' directory.
 #---------------------------------------------------------------------------------------------------
 function(elements_install_conf_files)
+
   if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/conf)
     install(DIRECTORY ${CONF_DIR_NAME}/
-            DESTINATION ${CONF_DIR_NAME}
+            DESTINATION ${CONF_INSTALL_SUFFIX}
             PATTERN "CVS" EXCLUDE
             PATTERN ".svn" EXCLUDE
             PATTERN "*~" EXCLUDE)
@@ -2757,6 +2713,7 @@ function(elements_install_conf_files)
   else()
     message(FATAL_ERROR "No ${CONF_DIR_NAME} directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
   endif()
+  
 endfunction()
 
 
@@ -2783,7 +2740,7 @@ exec ${cmd} \"\$@\"
   # make it executable
   execute_process(COMMAND chmod 755 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name})
   # install
-  install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name} DESTINATION scripts)
+  install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name} DESTINATION ${SCRIPT_INSTALL_SUFFIX})  
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()
 
@@ -2816,7 +2773,7 @@ endfunction()
 #-------------------------------------------------------------------------------
 macro(elements_install_cmake_modules)
   install(DIRECTORY cmake/
-          DESTINATION cmake
+          DESTINATION ${CMAKE_INSTALL_SUFFIX}
           FILES_MATCHING
             PATTERN "*.cmake"
             PATTERN "*.in"
@@ -2863,7 +2820,7 @@ if(PACKAGE_NAME STREQUAL PACKAGE_FIND_NAME)
   endif()
 endif()
 ")
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION .)
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION ${CMAKE_CONFIG_INSTALL_SUFFIX})
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}ConfigVersion.cmake)
 endmacro()
 
@@ -2889,11 +2846,22 @@ set(${CMAKE_PROJECT_NAME}_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
 
 set(${CMAKE_PROJECT_NAME}_USES ${PROJECT_USE})
 
+")
+
+  if(NOT SQUEEZED_INSTALL)
+    file(APPEND ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake
+"#
 list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake/modules)
 list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake)
+")
+  endif()
+
+  file(APPEND ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake
+"#
 include(${CMAKE_PROJECT_NAME}PlatformConfig)
 ")
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION .)
+
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION ${CMAKE_CONFIG_INSTALL_SUFFIX})
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}Config.cmake)
 endmacro()
 
@@ -2910,7 +2878,7 @@ macro(elements_generate_project_platform_config_file)
   get_property(linker_libraries GLOBAL PROPERTY LINKER_LIBRARIES)
   get_property(component_libraries GLOBAL PROPERTY COMPONENT_LIBRARIES)
 
-  string(REPLACE "\$" "\\\$" project_environment_string "${project_environment}")
+  string(REPLACE "\$" "\\\$" project_environment_string "${installed_project_environment}")
 
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/config)
   set(filename ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}PlatformConfig.cmake)
@@ -2919,18 +2887,30 @@ macro(elements_generate_project_platform_config_file)
 
 # Get the exported informations about the targets
 get_filename_component(_dir " \${CMAKE_CURRENT_LIST_FILE} " PATH)
-#include(\${_dir}/${CMAKE_PROJECT_NAME}Exports.cmake)
 
 # Set useful properties
 get_filename_component(_dir " \${_dir} " PATH)
-set(${CMAKE_PROJECT_NAME}_INCLUDE_DIRS \${_dir}/include)
-set(${CMAKE_PROJECT_NAME}_LIBRARY_DIRS \${_dir}/lib)
+set(${CMAKE_PROJECT_NAME}_INCLUDE_DIRS \${_dir}/${INCLUDE_INSTALL_SUFFIX})
+set(${CMAKE_PROJECT_NAME}_LIBRARY_DIRS \${_dir}/${CMAKE_LIB_INSTALL_SUFFIX})
 
+")
+
+if(SQUEEZED_INSTALL)
+  file(APPEND ${filename} "
+set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_dir}/bin)
+")
+else()
+  file(APPEND ${filename} "
 set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_dir}/bin \${_dir}/scripts)
-set(${CMAKE_PROJECT_NAME}_PYTHON_PATH \${_dir}/python)
-set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_dir}/${CONF_DIR_NAME})
-set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/${AUX_DIR_NAME})
+")
+endif()
 
+file(APPEND ${filename} "
+set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_dir}/${CONF_INSTALL_SUFFIX})
+set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/${AUX_INSTALL_SUFFIX})
+
+
+set(${CMAKE_PROJECT_NAME}_PYTHON_PATH \${_dir}/${PYTHON_INSTALL_SUFFIX})
 set(${CMAKE_PROJECT_NAME}_COMPONENT_LIBRARIES ${component_libraries})
 set(${CMAKE_PROJECT_NAME}_LINKER_LIBRARIES ${linker_libraries})
 
@@ -2947,7 +2927,7 @@ endforeach()
 set(${CMAKE_PROJECT_NAME}_OVERRIDDEN_SUBDIRS ${override_subdirs})
 ")
 
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}PlatformConfig.cmake DESTINATION cmake)
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}PlatformConfig.cmake DESTINATION ${CMAKE_INSTALL_SUFFIX})
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
 endmacro()
 
@@ -3291,7 +3271,7 @@ get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)
         get_property(prop TARGET ${library} PROPERTY LOCATION)
         get_filename_component(prop ${prop} NAME)
         file(APPEND ${pkg_exp_file} "  IMPORTED_SONAME \"${prop}\"\n")
-        file(APPEND ${pkg_exp_file} "  IMPORTED_LOCATION \"\${_IMPORT_PREFIX}/lib/${prop}\"\n")
+        file(APPEND ${pkg_exp_file} "  IMPORTED_LOCATION \"\${_IMPORT_PREFIX}/${CMAKE_LIB_INSTALL_SUFFIX}/${prop}\"\n")
 
         file(APPEND ${pkg_exp_file} "  )\n")
       endforeach()
@@ -3320,7 +3300,7 @@ get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)
         file(APPEND ${pkg_exp_file} "set(${package}_VERSION ${subdir_version})\n")
       endif()
     endif()
-    install(FILES ${pkg_exp_file} DESTINATION cmake)
+    install(FILES ${pkg_exp_file} DESTINATION ${CMAKE_INSTALL_SUFFIX})
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
   endforeach()
 endmacro()
@@ -3426,6 +3406,7 @@ function(elements_add_python_program executable module)
   string(REPLACE "." "_" python_program_target ${module})
   add_custom_target(${python_program_target} ALL DEPENDS ${executable_file})
 
-  install(PROGRAMS ${executable_file} DESTINATION scripts)
+  install(PROGRAMS ${executable_file} DESTINATION ${SCRIPT_INSTALL_SUFFIX})  
+  
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()
