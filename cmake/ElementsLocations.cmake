@@ -32,8 +32,6 @@ endif()
 message(STATUS "The installation location is ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "The squeezing of the installation is ${SQUEEZED_INSTALL}")
 
-
-
 set(lib_install_suff lib)
 
 if(SQUEEZED_INSTALL)
@@ -142,3 +140,8 @@ get_filename_component(python_install_suffix_parent ${PYTHON_INSTALL_SUFFIX} DIR
 set(PYTHON_DYNLIB_INSTALL_SUFFIX ${python_install_suffix_parent}/lib-dynload)
 
 endif()
+
+get_arch_lib_dir(that_arch)
+
+set(ELEMENTS_DEFAULT_SEARCH_PATH ${CMAKE_INSTALL_PREFIX}/${that_arch}/cmake/Elements)
+set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/Elements)

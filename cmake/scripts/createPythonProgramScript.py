@@ -13,6 +13,9 @@ parser.add_argument('--execname', required=True,
                     help='The name of the executable script to generate')
 parser.add_argument('--local-python-path',
                     help='The local PYTHONPATH to the sources')
+parser.add_argument('--project-name',
+                    help='The name of the project of the script')
+
 args = parser.parse_args()
 
 if not os.path.exists(args.outdir):
@@ -51,19 +54,21 @@ close_python_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath
 update_list.append(close_python_dir)
 _updateSysPath(update_list)
 
-from ThisProject import THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME
-from ThisProject import THIS_PROJECT_SEARCH_DIRS
+from %(proj)s_VERSION import %(proj)s_VERSION_STRING
+from %(proj)s_INSTALL import %(proj)s_SEARCH_DIRS
+
+%(proj)s_NAME = "%(Proj)s"
 
 sys.path = old_path
 
 # insert python path list after the env variable in sys.path
-_updateSysPath(update_list + [os.path.join(p, "python") for p in THIS_PROJECT_SEARCH_DIRS[1:]])
+_updateSysPath(update_list + [os.path.join(p, "python") for p in %(proj)s_SEARCH_DIRS[1:]])
 
 from ElementsKernel.Program import Program
 
-p = Program('%(MODULE_NAME)s', THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME, THIS_PROJECT_SEARCH_DIRS, os.path.realpath(__file__))
+p = Program('%(MODULE_NAME)s', %(proj)s_VERSION_STRING, %(proj)s_NAME, %(proj)s_SEARCH_DIRS, os.path.realpath(__file__))
 exit(p.runProgram())
-""" % { 'MODULE_NAME' : args.module }
+""" % { 'MODULE_NAME' : args.module, 'proj' : args.project_name.upper(), 'Proj' : args.project_name}
 
 filename = os.path.join(args.outdir, args.execname)
 

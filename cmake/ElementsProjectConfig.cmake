@@ -459,16 +459,6 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   endif()
 
 
-  if(thismodule_cmd)
-    execute_process(COMMAND
-                    ${thismodule_cmd} --quiet
-                    ${project} ${CMAKE_BINARY_DIR}/python/ThisProject.py)
-    install(FILES ${CMAKE_BINARY_DIR}/python/ThisProject.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
-    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
-  endif()
-
-
-
   #--- Collect settings for subdirectories
   set(library_path)
   # Take into account the dependencies between local subdirectories before
@@ -548,22 +538,30 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 
   #   - installation dirs
   
+  if(SQUEEZED_INSTALL)
+    set(_inst_offset ../../../)
+  else()
+    set(_inst_offset)  
+  endif()
+  
   if(NOT SQUEEZED_INSTALL)
     set(project_environment ${project_environment}
-        PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${SCRIPT_INSTALL_SUFFIX})
+        PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${SCRIPT_INSTALL_SUFFIX})
   endif()
   
   set(project_environment ${project_environment}
-      PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/bin
-      PREPEND LD_LIBRARY_PATH LOCAL_ESCAPE_DOLLAR{.}/${CMAKE_LIB_INSTALL_SUFFIX}
-      PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${PYTHON_INSTALL_SUFFIX}
-      PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${PYTHON_DYNLIB_INSTALL_SUFFIX}
-      PREPEND ELEMENTS_CONF_PATH LOCAL_ESCAPE_DOLLAR{.}/${CONF_INSTALL_SUFFIX}
-      PREPEND ELEMENTS_AUX_PATH LOCAL_ESCAPE_DOLLAR{.}/${AUX_INSTALL_SUFFIX})  
+      PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}bin
+      PREPEND LD_LIBRARY_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${CMAKE_LIB_INSTALL_SUFFIX}
+      PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${PYTHON_INSTALL_SUFFIX}
+      PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${PYTHON_DYNLIB_INSTALL_SUFFIX}
+      PREPEND ELEMENTS_CONF_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${CONF_INSTALL_SUFFIX}
+      PREPEND ELEMENTS_AUX_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${AUX_INSTALL_SUFFIX})  
 
   foreach(other_project ${used_elements_projects})
-    set(project_build_environment ${project_build_environment}
-        SEARCH_PATH ${${other_project}_DIR})
+    if(EXISTS ${${other_project}_DIR})
+      set(project_build_environment ${project_build_environment}
+          SEARCH_PATH ${${other_project}_DIR})
+    endif()
   endforeach()
 
   foreach(other_project ${used_elements_projects})
@@ -672,19 +670,19 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
   find_package\(ElementsProject\)
   message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
+  set\(ELEMENTS_DEFAULT_SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH}\)
+  set\(ELEMENTS_USR_SEARCH_PATH ${ELEMENTS_USR_SEARCH_PATH}\)
   set\(used_elements_projects ${used_elements_projects}\)
   foreach\(other_project ${used_elements_projects}\)
-  set\(\${other_project}_DIR \${\${other_project}_DIR}\)
+  set\(\${other_project}_DIR ${${other_project}_DIR}\)
   endforeach\(\)
   elements_generate_env_conf\(${installed_env_release_xml} ${installed_project_environment}\)")
-#  install(FILES ${env_release_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
   find_package\(ElementsProject\)
 message\(STATUS \"Installing: ${installed_env_xml}\"\)
 elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_environment}\)")
-#  install(FILES ${env_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
   #   add a small wrapper script in the build directory to easily run anything
   set(_env_cmd_line)
   foreach(t ${env_cmd}) # transform the env_cmd list in a space separated string
@@ -985,6 +983,14 @@ endmacro()
 macro(_elements_use_other_projects)
   # Note: it works even if the env. var. is not set.
   file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" projects_search_path)
+
+  if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
+    set(projects_search_path ${projects_search_path} ${ELEMENTS_DEFAULT_SEARCH_PATH})
+  endif()
+
+  if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
+    set(projects_search_path ${projects_search_path} ${ELEMENTS_USR_SEARCH_PATH})
+  endif()
 
   if(projects_search_path)
     list(REMOVE_DUPLICATES projects_search_path)
@@ -2887,30 +2893,46 @@ macro(elements_generate_project_platform_config_file)
 
 # Get the exported informations about the targets
 get_filename_component(_dir " \${CMAKE_CURRENT_LIST_FILE} " PATH)
-
-# Set useful properties
-get_filename_component(_dir " \${_dir} " PATH)
-set(${CMAKE_PROJECT_NAME}_INCLUDE_DIRS \${_dir}/${INCLUDE_INSTALL_SUFFIX})
-set(${CMAKE_PROJECT_NAME}_LIBRARY_DIRS \${_dir}/${CMAKE_LIB_INSTALL_SUFFIX})
-
+get_filename_component(_p_dir " \${_dir} " PATH)
 ")
 
 if(SQUEEZED_INSTALL)
   file(APPEND ${filename} "
-set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_dir}/bin)
+get_filename_component(_pp_dir " \${_p_dir} " PATH)
+get_filename_component(_ppp_dir " \${_pp_dir} " PATH)
+# Set useful properties
+set(_pref_dir \${_ppp_dir}) 
 ")
 else()
   file(APPEND ${filename} "
-set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_dir}/bin \${_dir}/scripts)
+# Set useful properties
+set(_pref_dir \${_p_dir}) 
+")
+endif()
+
+
+file(APPEND ${filename} "
+set(${CMAKE_PROJECT_NAME}_INCLUDE_DIRS \${_pref_dir}/${INCLUDE_INSTALL_SUFFIX})
+set(${CMAKE_PROJECT_NAME}_LIBRARY_DIRS \${_pref_dir}/${CMAKE_LIB_INSTALL_SUFFIX})
+")
+
+
+if(SQUEEZED_INSTALL)
+  file(APPEND ${filename} "
+set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_pref_dir}/bin)
+")
+else()
+  file(APPEND ${filename} "
+set(${CMAKE_PROJECT_NAME}_BINARY_PATH \${_pref_dir}/bin \${_pref_dir}/scripts)
 ")
 endif()
 
 file(APPEND ${filename} "
-set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_dir}/${CONF_INSTALL_SUFFIX})
-set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_dir}/${AUX_INSTALL_SUFFIX})
+set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_pref_dir}/${CONF_INSTALL_SUFFIX})
+set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_pref_dir}/${AUX_INSTALL_SUFFIX})
 
 
-set(${CMAKE_PROJECT_NAME}_PYTHON_PATH \${_dir}/${PYTHON_INSTALL_SUFFIX})
+set(${CMAKE_PROJECT_NAME}_PYTHON_PATH \${_pref_dir}/${PYTHON_INSTALL_SUFFIX})
 set(${CMAKE_PROJECT_NAME}_COMPONENT_LIBRARIES ${component_libraries})
 set(${CMAKE_PROJECT_NAME}_LINKER_LIBRARIES ${linker_libraries})
 
@@ -2919,7 +2941,7 @@ set(${CMAKE_PROJECT_NAME}_ENVIRONMENT ${project_environment_string})
 set(${CMAKE_PROJECT_NAME}_EXPORTED_SUBDIRS)
 foreach(p ${packages})
   get_filename_component(pn \${p} NAME)
-  if(EXISTS \${_dir}/cmake/\${pn}Export.cmake)
+  if(EXISTS \${_dir}/\${pn}Export.cmake)
     set(${CMAKE_PROJECT_NAME}_EXPORTED_SUBDIRS \${${CMAKE_PROJECT_NAME}_EXPORTED_SUBDIRS} \${p})
   endif()
 endforeach()
@@ -3045,6 +3067,18 @@ function(elements_generate_env_conf filename)
       set(data "${data}  <env:search_path>${${other_project}_DIR}</env:search_path>\n")
     endif()
   endforeach()
+  
+  debug_print_var(ELEMENTS_DEFAULT_SEARCH_PATH)
+  debug_print_var(ELEMENTS_USR_SEARCH_PATH)
+  
+  if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
+      set(data "${data}  <env:search_path>${ELEMENTS_DEFAULT_SEARCH_PATH}</env:search_path>\n")  
+  endif()
+  
+  if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
+      set(data "${data}  <env:search_path>${ELEMENTS_USR_SEARCH_PATH}</env:search_path>\n")  
+  endif()
+
   foreach(other_project ${used_elements_projects})
     if(${${other_project}_DIR})
       set(data "${data}  <env:include>${other_project}Environment.xml</env:include>\n")
@@ -3398,9 +3432,9 @@ function(elements_add_python_program executable module)
   # for the local bootstrapping the python_path pointing to
   # the sources has to be passed
   get_property(python_pkg_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
-  
+    
   add_custom_command(OUTPUT ${executable_file}
-                     COMMAND ${pythonprogramscript_cmd} --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable}
+                     COMMAND ${pythonprogramscript_cmd} --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable} --project-name ${CMAKE_PROJECT_NAME}
                      DEPENDS ${program_file})
 
   string(REPLACE "." "_" python_program_target ${module})
