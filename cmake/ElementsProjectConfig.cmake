@@ -178,6 +178,8 @@ macro(elements_project project version)
         CACHE STRING "Enable the squizzing of the installation into a prefix directory"
         FORCE)
   endif()
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
+  
 
   include(ElementsLocations)
   
