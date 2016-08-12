@@ -20,12 +20,7 @@ else()
     if(NOT SQUEEZED_INSTALL)
        set(CMAKE_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
            "Install path prefix, prepended onto install directories." FORCE )
-    endif()
-  else()
-    if(NOT SQUEEZED_INSTALL)
-       set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
-           "Install path prefix, prepended onto install directories." FORCE )
-    endif()    
+    endif()  
   endif()
 endif()
 
