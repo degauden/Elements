@@ -184,14 +184,14 @@ macro(elements_project project version)
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
      CACHE STRING "path to the XML file for the environment to be used in building and testing")
 
-  set(installed_env_xml \${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}BuildEnvironment.xml
+  set(installed_env_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}BuildEnvironment.xml
      CACHE STRING "path to the XML file for the environment to be used for installation")
 
 
   set(env_release_xml ${CMAKE_BINARY_DIR}/${project}Environment.xml
      CACHE STRING "path to the XML file for the environment to be used once the project is installed")
 
-  set(installed_env_release_xml \${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}Environment.xml
+  set(installed_env_release_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}Environment.xml
      CACHE STRING "path to the XML file for the environment to be used once the project is installed")
 
 
@@ -423,8 +423,8 @@ macro(elements_project project version)
                     ${instheader_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h)
     # special installation because the install location can be changed on the fly
-    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}\"\)
-execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h\)")
+    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}\"\)
+execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
 
@@ -453,8 +453,8 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
                     ${instmodule_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
     # special install procedure because the install loction can be changed on the fly.
-    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}\"\)
-execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}/${_proj}_INSTALL.py\)")
+    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}\"\)
+execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}/${_proj}_INSTALL.py\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   endif()
 
