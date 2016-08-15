@@ -20,14 +20,15 @@ Requires(postun):  /sbin/ldconfig
 %define _proj_name_dir %{_proj_base_dir}/%{name}
 %define _proj_vers_dir %{_proj_name_dir}/%{version}
 %define _proj_ia_dir %{_proj_vers_dir}/InstallArea
-%define _prefix %{_proj_ia_dir}/%{bin_tag}
+%define _prefix @CPACK_PACKAGING_INSTALL_PREFIX@
 %define build_dir_name @BUILD_SUBDIR@
-%define libdir %{_prefix}/lib
-%define pydir %{_prefix}/python
-%define scriptsdir %{_prefix}/scripts
-%define cmakedir %{_prefix}/cmake
-%define confdir %{_prefix}/@CONF_DIR_NAME@
-%define auxdir %{_prefix}/@AUX_DIR_NAME@
+%define libdir %{_prefix}/@CMAKE_LIB_INSTALL_SUFFIX@
+%define pydir %{_prefix}/@PYTHON_INSTALL_SUFFIX@
+%define scriptsdir %{_prefix}/@SCRIPT_INSTALL_SUFFIX@
+%define cmakedir %{_prefix}/@CMAKE_INSTALL_SUFFIX@
+%define confdir %{_prefix}/@CONF_INSTALL_SUFFIX@
+%define auxdir %{_prefix}/@AUX_INSTALL_SUFFIX@
+%define xmldir %{_prefix}/@XML_INSTALL_SUFFIX@
 
 %define debug_package %{nil}
 
