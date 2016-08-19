@@ -11,6 +11,8 @@
   find_package(Doxygen QUIET)
 
   if(DOXYGEN_FOUND)
+  
+    find_package(PlantUML)
 
     # Generation of the main Doxygen configuration: the Doxyfile
     find_file_to_configure(Doxyfile.in
