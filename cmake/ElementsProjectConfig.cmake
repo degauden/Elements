@@ -179,10 +179,10 @@ macro(elements_project project version)
         FORCE)
   endif()
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
-  
+
 
   include(ElementsLocations)
-  
+
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
      CACHE STRING "path to the XML file for the environment to be used in building and testing")
 
@@ -551,25 +551,25 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 
 
   #   - installation dirs
-  
+
   if(SQUEEZED_INSTALL)
     set(_inst_offset ../../../)
   else()
-    set(_inst_offset)  
+    set(_inst_offset)
   endif()
-  
+
   if(NOT SQUEEZED_INSTALL)
     set(project_environment ${project_environment}
         PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${SCRIPT_INSTALL_SUFFIX})
   endif()
-  
+
   set(project_environment ${project_environment}
       PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}bin
       PREPEND LD_LIBRARY_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${CMAKE_LIB_INSTALL_SUFFIX}
       PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${PYTHON_INSTALL_SUFFIX}
       PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${PYTHON_DYNLIB_INSTALL_SUFFIX}
       PREPEND ELEMENTS_CONF_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${CONF_INSTALL_SUFFIX}
-      PREPEND ELEMENTS_AUX_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${AUX_INSTALL_SUFFIX})  
+      PREPEND ELEMENTS_AUX_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${AUX_INSTALL_SUFFIX})
 
   foreach(other_project ${used_elements_projects})
     if(EXISTS ${${other_project}_DIR})
@@ -587,7 +587,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   #     (installation dirs added to build env to be able to test pre-built bins)
   if(NOT SQUEEZED_INSTALL)
     set(project_build_environment ${project_build_environment}
-        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/${SCRIPT_INSTALL_SUFFIX})  
+        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/${SCRIPT_INSTALL_SUFFIX})
   endif()
   set(project_build_environment ${project_build_environment}
       PREPEND PATH ${CMAKE_INSTALL_PREFIX}/bin
@@ -595,7 +595,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
       PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}
       PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/${PYTHON_DYNLIB_INSTALL_SUFFIX}
       PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/${CONF_INSTALL_SUFFIX}
-      PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/${AUX_INSTALL_SUFFIX})  
+      PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/${AUX_INSTALL_SUFFIX})
 
 
   message(STATUS "  environment for local subdirectories")
@@ -605,19 +605,19 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   # file(RELATIVE_PATH _PROJECT_ROOT ${CMAKE_INSTALL_PREFIX} ${CMAKE_SOURCE_DIR})
   # message(STATUS "_PROJECT_ROOT -> ${_PROJECT_ROOT}")
   set(installed_project_environment "${project_environment}")
-  
+
   set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
   if(NOT SQUEEZED_INSTALL)
     set(installed_project_environment ${installed_project_environment} SET ${_proj}_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
   endif()
-  
+
   set(installed_project_build_environment "${project_build_environment}")
   set(project_build_environment ${project_build_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
-  
+
   if(NOT SQUEEZED_INSTALL)
     set(installed_project_build_environment ${installed_project_build_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_INSTALL_PREFIX}/../..")
   endif()
-  
+
   #   - 'packages':
   foreach(package ${packages})
     message(STATUS "    ${package}")
@@ -739,7 +739,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   if(USE_LOCAL_INSTALLAREA)
     set(CPACK_PACKAGING_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   else()
-    set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})  
+    set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
   endif()
   set(CPACK_GENERATOR RPM)
   set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
@@ -764,18 +764,18 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 %defattr(-,root,root,-)")
 
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%{xmldir}/${CPACK_PACKAGE_NAME}Environment.xml")  
-  
+%{xmldir}/${CPACK_PACKAGE_NAME}Environment.xml")
+
   if(NOT SQUEEZED_INSTALL)
     set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{_prefix}/manifest.xml")
   endif()
-  
+
 #------------------------------------------------------------------------------
   get_property(regular_bin_objects GLOBAL PROPERTY REGULAR_BIN_OBJECTS)
 
   if(regular_bin_objects)
-  
+
     list(SORT regular_bin_objects)
     list(REMOVE_DUPLICATES regular_bin_objects)
     foreach(_do ${regular_bin_objects})
@@ -799,7 +799,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
 
   if(regular_lib_objects)
- 
+
     list(SORT regular_lib_objects)
     list(REMOVE_DUPLICATES regular_lib_objects)
     foreach(_do ${regular_lib_objects})
@@ -828,7 +828,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   get_property(proj_has_aux GLOBAL PROPERTY PROJ_HAS_AUX)
 
   if(proj_has_aux)
-  
+
     get_property(regular_aux_objects GLOBAL PROPERTY REGULAR_AUX_OBJECTS)
     foreach(_do ${regular_aux_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
@@ -848,7 +848,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{confdir}/${_do}")
     endforeach()
-  
+
     #message(STATUS "The regular objects: ${CPACK_RPM_REGULAR_FILES}")
   endif()
 
@@ -879,7 +879,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 %defattr(-,root,root,-)")
 
   set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%{xmldir}/${CPACK_PACKAGE_NAME}BuildEnvironment.xml")  
+%{xmldir}/${CPACK_PACKAGE_NAME}BuildEnvironment.xml")
 
 #------------------------------------------------------------------------------
   get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
@@ -890,7 +890,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     foreach(_do ${config_objects})
       if(SQUEEZED_INSTALL)
         set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%{cmakedir}/${_do}")      
+%{cmakedir}/${_do}")
       else()
         set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{_prefix}/${_do}")
@@ -903,9 +903,9 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   get_property(proj_has_include GLOBAL PROPERTY PROJ_HAS_INCLUDE)
 
   if(proj_has_include)
-  
+
     get_property(regular_include_objects GLOBAL PROPERTY REGULAR_INCLUDE_OBJECTS)
-    
+
     list(REMOVE_DUPLICATES regular_include_objects)
     foreach(_do ${regular_include_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
@@ -921,7 +921,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   if(proj_has_cmake)
 
    get_property(regular_cmake_objects GLOBAL PROPERTY REGULAR_CMAKE_OBJECTS)
-    
+
     list(REMOVE_DUPLICATES regular_cmake_objects)
     foreach(_do ${regular_cmake_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
@@ -1432,7 +1432,7 @@ function(include_package_directories)
         if (HIDE_SYSINC_WARNINGS)
           include_directories(SYSTEM ${${to_incl}})
         else()
-          include_directories(${${to_incl}})           
+          include_directories(${${to_incl}})
         endif()
       endif()
     endif()
@@ -2160,7 +2160,7 @@ function(elements_add_python_module module)
   if(HIDE_SYSINC_WARNINGS)
     include_directories(SYSTEM ${PYTHON_INCLUDE_DIRS})
   else()
-    include_directories(${PYTHON_INCLUDE_DIRS})    
+    include_directories(${PYTHON_INCLUDE_DIRS})
   endif()
   add_library(${module} MODULE ${srcs})
   set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "_")
@@ -2255,7 +2255,7 @@ function(elements_add_swig_binding binding)
   if(CXX_HAS_SUGGEST_OVERRIDE)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC}
                  PROPERTY COMPILE_FLAGS -Wno-suggest-override)
-  endif() 
+  endif()
 
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
@@ -2263,13 +2263,13 @@ function(elements_add_swig_binding binding)
                              INCLUDE_DIRS ${MODULE_ARG_INCLUDE_DIRS})
 
   install(FILES ${PY_MODULE_DIR}/${binding}.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
-  
+
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.py)
   set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyo)
   set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyc)
-  
-  
+
+
   elements_install_headers(${ARG_PUBLIC_HEADERS})
 
 endfunction()
@@ -2602,8 +2602,8 @@ function(add_python_test_dir)
     endif()
   endif()
 
-  
-  foreach(pytestsubdir ${PYTEST_ARG_UNPARSED_ARGUMENTS}) 
+
+  foreach(pytestsubdir ${PYTEST_ARG_UNPARSED_ARGUMENTS})
     elements_expand_sources(tmp_pysrcs ${CMAKE_CURRENT_SOURCE_DIR}/${pytestsubdir}/${PYTEST_ARG_PATTERN})
     set(pysrcs ${pysrcs} ${tmp_pysrcs})
   endforeach()
@@ -2646,7 +2646,7 @@ endfunction()
 # installed.  If the first level of directories do not contain __init__.py, a
 # warning is issued and an empty one will be installed.
 #
-# If no argument is given the default subdirectory is python. 
+# If no argument is given the default subdirectory is python.
 #
 # Note: We need to avoid conflicts with the automatic generated __init__.py for
 #       configurables (elements_generate_configurables)
@@ -2661,12 +2661,12 @@ endfunction()
 function(elements_install_python_modules)
 
   CMAKE_PARSE_ARGUMENTS(INSTALL_PY_MOD "" "TEST_TIMEOUT" "" ${ARGN})
-  
+
   if(NOT INSTALL_PY_MOD_UNPARSED_ARGUMENTS)
       set(INSTALL_PY_MOD_UNPARSED_ARGUMENTS "python")
   endif()
-  
-  foreach(pysubdir ${INSTALL_PY_MOD_UNPARSED_ARGUMENTS}) 
+
+  foreach(pysubdir ${INSTALL_PY_MOD_UNPARSED_ARGUMENTS})
 
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${pysubdir})
       install(DIRECTORY ${pysubdir}/
@@ -2723,12 +2723,12 @@ endfunction()
 function(elements_install_scripts)
 
   CMAKE_PARSE_ARGUMENTS(INSTALL_SCR "" "" "" ${ARGN})
-  
+
   if(NOT INSTALL_SCR_UNPARSED_ARGUMENTS)
       set(INSTALL_SCR_UNPARSED_ARGUMENTS "scripts")
   endif()
-    
-  foreach(scrsubdir ${INSTALL_SCR_UNPARSED_ARGUMENTS}) 
+
+  foreach(scrsubdir ${INSTALL_SCR_UNPARSED_ARGUMENTS})
 
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${scrsubdir})
       install(DIRECTORY ${scrsubdir}/ DESTINATION ${SCRIPT_INSTALL_SUFFIX}
@@ -2747,9 +2747,9 @@ function(elements_install_scripts)
     else()
       message(FATAL_ERROR "No \"${scrsubdir}\" scripts directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
     endif()
-  
+
   endforeach()
-  
+
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
@@ -2763,7 +2763,7 @@ function(elements_install_aux_files)
   if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux OR IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME} OR IS_DIRECTORY ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/aux)
       message(WARNING "The aux directory name in the ${CMAKE_CURRENT_SOURCE_DIR} location is dangerous. Please rename it to ${AUX_DIR_NAME}")
-    endif()    
+    endif()
     foreach(ad ${CMAKE_CURRENT_SOURCE_DIR}/aux ${CMAKE_CURRENT_SOURCE_DIR}/${AUX_DIR_NAME} ${CMAKE_BINARY_DIR}/${AUX_DIR_NAME})
       if(IS_DIRECTORY ${ad})
         install(DIRECTORY ${ad}/
@@ -2777,7 +2777,7 @@ function(elements_install_aux_files)
         endforeach()
         set_property(GLOBAL APPEND PROPERTY PROJ_HAS_AUX TRUE)
       endif()
-    endforeach()    
+    endforeach()
   else()
     message(FATAL_ERROR "No ${AUX_DIR_NAME} directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
   endif()
@@ -2804,7 +2804,7 @@ function(elements_install_conf_files)
   else()
     message(FATAL_ERROR "No ${CONF_DIR_NAME} directory in the ${CMAKE_CURRENT_SOURCE_DIR} location")
   endif()
-  
+
 endfunction()
 
 
@@ -2831,8 +2831,8 @@ exec ${cmd} \"\$@\"
   # make it executable
   execute_process(COMMAND chmod 755 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name})
   # install
-  install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name} DESTINATION ${SCRIPT_INSTALL_SUFFIX})  
-  
+  install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name} DESTINATION ${SCRIPT_INSTALL_SUFFIX})
+
   set_property(GLOBAL APPEND PROPERTY REGULAR_SCRIPT_OBJECTS ${name})
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()
@@ -2992,12 +2992,12 @@ if(SQUEEZED_INSTALL)
 get_filename_component(_pp_dir " \${_p_dir} " PATH)
 get_filename_component(_ppp_dir " \${_pp_dir} " PATH)
 # Set useful properties
-set(_pref_dir \${_ppp_dir}) 
+set(_pref_dir \${_ppp_dir})
 ")
 else()
   file(APPEND ${filename} "
 # Set useful properties
-set(_pref_dir \${_p_dir}) 
+set(_pref_dir \${_p_dir})
 ")
 endif()
 
@@ -3159,13 +3159,13 @@ function(elements_generate_env_conf filename)
       set(data "${data}  <env:search_path>${${other_project}_DIR}</env:search_path>\n")
     endif()
   endforeach()
-    
+
   if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
-      set(data "${data}  <env:search_path>${ELEMENTS_DEFAULT_SEARCH_PATH}</env:search_path>\n")  
+      set(data "${data}  <env:search_path>${ELEMENTS_DEFAULT_SEARCH_PATH}</env:search_path>\n")
   endif()
-  
+
   if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
-      set(data "${data}  <env:search_path>${ELEMENTS_USR_SEARCH_PATH}</env:search_path>\n")  
+      set(data "${data}  <env:search_path>${ELEMENTS_USR_SEARCH_PATH}</env:search_path>\n")
   endif()
 
   foreach(other_project ${used_elements_projects})
@@ -3504,7 +3504,7 @@ endfunction()
 function(elements_add_python_program executable module)
 
   get_property(has_python_dir DIRECTORY PROPERTY module_has_python_dir)
-  
+
   if (NOT has_python_dir)
     message(FATAL_ERROR "There is not python module defined. Please call elements_install_python_modules() first.")
   endif()
@@ -3522,7 +3522,7 @@ function(elements_add_python_program executable module)
   # for the local bootstrapping the python_path pointing to
   # the sources has to be passed
   get_property(python_pkg_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
-    
+
   add_custom_command(OUTPUT ${executable_file}
                      COMMAND ${pythonprogramscript_cmd} --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable} --project-name ${CMAKE_PROJECT_NAME}
                      DEPENDS ${program_file})
@@ -3530,8 +3530,8 @@ function(elements_add_python_program executable module)
   string(REPLACE "." "_" python_program_target ${module})
   add_custom_target(${python_program_target} ALL DEPENDS ${executable_file})
 
-  install(PROGRAMS ${executable_file} DESTINATION ${SCRIPT_INSTALL_SUFFIX})  
-    
+  install(PROGRAMS ${executable_file} DESTINATION ${SCRIPT_INSTALL_SUFFIX})
+
   set_property(GLOBAL APPEND PROPERTY REGULAR_SCRIPT_OBJECTS ${executable})
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()

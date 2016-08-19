@@ -112,15 +112,15 @@ option(USE_SPHINX_BREATHE
 option(ELEMENTS_USE_RPATH
        "Use full RPATH for both build and installation"
        ON)
-       
+
 option(HIDE_SYSINC_WARNINGS
        "Hide System includes warnings by using -isystem instead of -I"
        OFF)
-       
+
 option(CXX_SUGGEST_OVERRIDE
        "Enable the -Wsuggest-override warning"
        OFF)
-       
+
 option(SQUEEZED_INSTALL
        "Enable the squizzing of the installation into a prefix directory"
        OFF)

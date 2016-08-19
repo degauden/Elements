@@ -1,7 +1,7 @@
 if(NOT GTEST_FOUND)
 
 find_path(GTEST_INCLUDE_DIR gtest/gtest.h
-          HINTS ENV GTEST_INSTALL_DIR 
+          HINTS ENV GTEST_INSTALL_DIR
           PATH_SUFFIXES include
           )
 

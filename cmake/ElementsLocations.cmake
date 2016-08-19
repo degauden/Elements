@@ -5,9 +5,7 @@ include(ElementsBuildFlags)
 
 set(ELEMENTS_DATA_SUFFIXES DBASE;PARAM;EXTRAPACKAGES CACHE STRING
     "List of (suffix) directories where to look for data packages.")
-    
-    
-    
+
 # Install Area business
 if(USE_LOCAL_INSTALLAREA)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/InstallArea/${BINARY_TAG} CACHE PATH
@@ -20,7 +18,7 @@ else()
     if(NOT SQUEEZED_INSTALL)
        set(CMAKE_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
            "Install path prefix, prepended onto install directories." FORCE )
-    endif()  
+    endif()
   endif()
 endif()
 
@@ -37,7 +35,7 @@ if(SQUEEZED_INSTALL)
     else()
       set(lib_install_suff lib)
     endif()
-  else()  
+  else()
     if(EXISTS /usr/lib32)
       set(lib_install_suff lib32)
     else()
@@ -102,14 +100,14 @@ if(ELEMENTS_USE_RPATH)
       SET(CMAKE_INSTALL_RPATH "$ORIGIN/../${CMAKE_LIB_INSTALL_SUFFIX}")
     ENDIF()
   endif()
-  
+
   if(APPLE)
     set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_LIB_INSTALL_SUFFIX} CACHE PATH
-        "Install RPath." FORCE )  
+        "Install RPath." FORCE )
     set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_LIB_INSTALL_SUFFIX} CACHE PATH
-        "Install Name Dir." FORCE )  
+        "Install Name Dir." FORCE )
   endif()
-  
+
 
 endif()
 
@@ -130,7 +128,7 @@ if(SQUEEZED_INSTALL)
                   OUTPUT_VARIABLE PYTHON_INSTALL_SUFFIX
                   ERROR_QUIET
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
-            
+
 
   get_filename_component(python_install_suffix_parent ${PYTHON_INSTALL_SUFFIX} DIRECTORY)
 

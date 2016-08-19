@@ -11,7 +11,7 @@
   find_package(Doxygen QUIET)
 
   if(DOXYGEN_FOUND)
-  
+
     find_package(PlantUML)
 
     # Generation of the main Doxygen configuration: the Doxyfile
@@ -57,15 +57,15 @@
 
   find_package(Sphinx QUIET)
   if(SPHINX_FOUND)
-  
+
     if(NOT SPHINX_BUILD_OPTIONS)
       set(SPHINX_BUILD_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-build" FORCE)
     endif()
-    
+
     if(NOT SPHINX_APIDOC_OPTIONS)
       set(SPHINX_APIDOC_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-apidoc" FORCE)
     endif()
-    
+
     if(USE_DOXYGEN AND USE_SPHINX_BREATHE)
       set(APPEND_BREATHE_EXT "extensions.append('breathe')")
     else()

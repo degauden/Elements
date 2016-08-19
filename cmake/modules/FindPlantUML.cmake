@@ -1,19 +1,19 @@
 if (NOT PLANTUML_FOUND)
 
-	find_program(PLANTUML_EXECUTABLE plantuml)
-	set(PLANTUML_EXECUTABLE ${PLANTUML_EXECUTABLE} CACHE STRING "")
+    find_program(PLANTUML_EXECUTABLE plantuml)
+    set(PLANTUML_EXECUTABLE ${PLANTUML_EXECUTABLE} CACHE STRING "")
 
 
     find_package(Java)
-    
+
     if(Java_FOUND)
-    
+
       include(UseJava)
-    
+
       find_jar(PLANTUML_JARFILE
                NAMES plantuml
                HINTS ENV PLANTUML_INSTALL_DIR)
-    
+
     endif()
 
 # handle the QUIETLY and REQUIRED arguments and set PLANTUML_FOUND to TRUE if
