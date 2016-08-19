@@ -24,6 +24,7 @@ Requires(postun):  /sbin/ldconfig
 %define build_dir_name @BUILD_SUBDIR@
 %define libdir %{_prefix}/@CMAKE_LIB_INSTALL_SUFFIX@
 %define pydir %{_prefix}/@PYTHON_INSTALL_SUFFIX@
+%define pydyndir %{_prefix}/@PYTHON_DYNLIB_INSTALL_SUFFIX@
 %define scriptsdir %{_prefix}/@SCRIPT_INSTALL_SUFFIX@
 %define cmakedir %{_prefix}/@CMAKE_INSTALL_SUFFIX@
 %define confdir %{_prefix}/@CONF_INSTALL_SUFFIX@

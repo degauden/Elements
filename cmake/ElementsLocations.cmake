@@ -123,18 +123,18 @@ set(PYTHON_INSTALL_SUFFIX python)
 set(PYTHON_DYNLIB_INSTALL_SUFFIX python/lib-dynload)
 
 if(SQUEEZED_INSTALL)
-find_package(PythonInterp)
+  find_package(PythonInterp)
 
-execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c"
-               "from distutils.sysconfig import get_python_lib; print(get_python_lib(plat_specific=True, prefix='${CMAKE_INSTALL_PREFIX}').replace('${CMAKE_INSTALL_PREFIX}/',''))"
-               OUTPUT_VARIABLE PYTHON_INSTALL_SUFFIX
-               ERROR_QUIET
-               OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c"
+                  "from distutils.sysconfig import get_python_lib; print(get_python_lib(plat_specific=True, prefix='${CMAKE_INSTALL_PREFIX}').replace('${CMAKE_INSTALL_PREFIX}/',''))"
+                  OUTPUT_VARIABLE PYTHON_INSTALL_SUFFIX
+                  ERROR_QUIET
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
             
 
-get_filename_component(python_install_suffix_parent ${PYTHON_INSTALL_SUFFIX} DIRECTORY)
+  get_filename_component(python_install_suffix_parent ${PYTHON_INSTALL_SUFFIX} DIRECTORY)
 
-set(PYTHON_DYNLIB_INSTALL_SUFFIX ${python_install_suffix_parent}/lib-dynload)
+  set(PYTHON_DYNLIB_INSTALL_SUFFIX ${python_install_suffix_parent}/lib-dynload)
 
 endif()
 
