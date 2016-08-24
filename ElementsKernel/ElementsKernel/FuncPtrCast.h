@@ -27,20 +27,20 @@
 namespace Elements {
 namespace System {
 
-#if __GNUC__ >= 4
 /**
- * @brief Small helper function that allows the cast from void * to function pointer
- * and vice versa without the message
- * @verbatim
- * warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
- * @endverbatim
- * It is an ugly trick but works.
- * See:
- * @secreflist
- * @refitem http://www.trilithium.com/johan/2004/12/problem-with-dlsym/
- * @refitem http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_active.html#573
- * @refitem http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#195
- * @endsecreflist
+ * @brief Cast from void * to function pointer
+ *
+ * @details
+ *   Small helper function that allows the cast from void * to function pointer
+ *   and vice versa without the message
+ *   @verbatim
+ *   warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
+ *   @endverbatim
+ *   It is an ugly trick but works.
+ *   See:
+ *   - http://www.trilithium.com/johan/2004/12/problem-with-dlsym/
+ *   - http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_active.html#573
+ *   - http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#195
  * @param ptr pointer address to convert
  * @tparam SRCPTR source pointer type
  * @tparam DESTPTR destination pointer type
@@ -48,14 +48,18 @@ namespace System {
  */
 template<typename DESTPTR, typename SRCPTR>
 inline DESTPTR FuncPtrCast(SRCPTR ptr) {
+#ifdef __GNUC__
   union {
     SRCPTR src;
     DESTPTR dst;
   } p2p;
   p2p.src = ptr;
   return p2p.dst;
-}
+#else
+  return reinterpret_cast<DESTPTR>(ptr);
 #endif
+}
+
 
 
 } // namespace System

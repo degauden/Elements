@@ -29,13 +29,15 @@ class PathTest(unittest.TestCase):
 
 
     def setUp(self):
+        unittest.TestCase.setUp(self)
         self._tmpdir_1 = TempDir(suffix="tempdir")
         self._tmpdir_2 = TempDir(suffix="tempdir")
 
 
     def tearDown(self):
-        pass
-
+        unittest.TestCase.tearDown(self)
+        del self._tmpdir_1
+        del self._tmpdir_2
 
     def testJoinPath(self):
 
