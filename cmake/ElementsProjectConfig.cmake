@@ -702,7 +702,8 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   # - produce environment XML description
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
-  install(CODE "find_package\(ElementsProject\)
+  install(CODE "set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
+find_package\(ElementsProject PATHS ${CMAKE_MODULE_PATH}\)
 message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
 set\(used_elements_projects ${used_elements_projects}\)
 foreach\(other_project ${used_elements_projects}\)
@@ -712,7 +713,8 @@ elements_generate_env_conf\(${installed_env_release_xml} ${installed_project_env
 #  install(FILES ${env_release_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
-  install(CODE "find_package\(ElementsProject\)
+  install(CODE "set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
+find_package\(ElementsProject PATHS ${CMAKE_MODULE_PATH}\)
 message\(STATUS \"Installing: ${installed_env_xml}\"\)
 elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_environment}\)")
 #  install(FILES ${env_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
