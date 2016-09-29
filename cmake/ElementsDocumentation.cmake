@@ -1,3 +1,6 @@
+include_guard()
+
+
   add_custom_target(doc
                     COMMENT "Generating API documentation" VERBATIM)
 
@@ -153,12 +156,15 @@ Related Pages
    ${_py_pack_short}/modules")
 
 
-        add_custom_target(sphinx_apidoc_${_py_pack_short}
-                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short}
-                          COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short} ${_py_pack}
-                          COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
+        if(NOT TARGET sphinx_apidoc_${_py_pack_short})
+          add_custom_target(sphinx_apidoc_${_py_pack_short}
+                            COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short}
+                            COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short} ${_py_pack}
+                            COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
 
-        add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
+          add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
+        endif()
+
 
         endif()
 
