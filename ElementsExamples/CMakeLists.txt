@@ -205,10 +205,14 @@ elements_install_python_modules(TEST_TIMEOUT 30)
 #    PythonProgramExample is the executable name
 #    ElementsExamples.PythonProgramExample is the source file
 elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramExample)
-
+if(SWIG_FOUND AND PYTHONLIBS_FOUND)
+  elements_add_python_program(SwigProgramExample ElementsExamples.SwigProgramExample)
+endif()
 #===== Test that the python program does run ========================================
 elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
-
+if(SWIG_FOUND AND PYTHONLIBS_FOUND)
+elements_add_test(SwigProgramExampleRun COMMAND SwigProgramExample)
+endif()
 
 elements_install_scripts()
 
