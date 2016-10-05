@@ -108,7 +108,7 @@ option(USE_SPHINX_APIDOC
 
 option(USE_SPHINX_BREATHE
        "Use sphinx C++ API Breathe plugin to bind to doxygen"
-       ON)
+       OFF)
 
 option(ELEMENTS_USE_RPATH
        "Use full RPATH for both build and installation"
