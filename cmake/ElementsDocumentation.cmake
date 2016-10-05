@@ -46,7 +46,7 @@ include_guard()
     add_dependencies(doc doxygen)
 
 
-  endif()
+    endif()
 
   endif()
 
@@ -273,21 +273,21 @@ Python Package
     endif()
 
 
-   if(USE_DOXYGEN)
-     set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
-   else()
-     set(SPHINX_ORIGINAL_DOX "")
-   endif()
+     if(USE_DOXYGEN)
+       set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
+     else()
+       set(SPHINX_ORIGINAL_DOX "")
+     endif()
 
 
-   find_file_to_configure(index.rst.in
-                          FILETYPE "Sphinx index"
-                          OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
-                          OUTPUTNAME "index.rst"
-                          PATHS ${CMAKE_MODULE_PATH}
-                          PATH_SUFFIXES doc)
+     find_file_to_configure(index.rst.in
+                            FILETYPE "Sphinx index"
+                            OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
+                            OUTPUTNAME "index.rst"
+                            PATHS ${CMAKE_MODULE_PATH}
+                            PATH_SUFFIXES doc)
 
 
-  endif()
+    endif()
 
   endif()
