@@ -252,25 +252,17 @@ Python Package
                              PATH_SUFFIXES doc)
 
 
+#    if(NOT SPHINX_EL_MODULES)
+#      set(SPHINX_EL_MODULES "${_el_pack_short}/index")    
+#    else()
       set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
    ${_el_pack_short}/index")
-
+#    endif()
+    
     endforeach()
 
 
-
-
     # Generation of the top index.rst file for the project
-    find_file(sphinx_main_project_index_file
-              NAMES index.rst
-              PATHS ${CMAKE_SOURCE_DIR}
-              PATH_SUFFIXES doc
-              NO_DEFAULT_PATH)
-
-    if(sphinx_main_project_index_file)
-      file(READ ${sphinx_main_project_index_file} SPHINX_MAIN_PROJECT_INDEX)
-      message(STATUS "Using ${sphinx_main_project_index_file} for the main index of the project")
-    endif()
 
 
      if(USE_DOXYGEN)
@@ -280,13 +272,27 @@ Python Package
      endif()
 
 
-     find_file_to_configure(index.rst.in
-                            FILETYPE "Sphinx index"
-                            OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
-                            OUTPUTNAME "index.rst"
-                            PATHS ${CMAKE_MODULE_PATH}
-                            PATH_SUFFIXES doc)
+    find_file(sphinx_main_project_index_file
+              NAMES index.rst
+              PATHS ${CMAKE_SOURCE_DIR}
+              PATH_SUFFIXES doc
+              NO_DEFAULT_PATH)
 
+
+    if(sphinx_main_project_index_file)
+      configure_file(
+                     "${sphinx_main_project_index_file}"
+                     "${PROJECT_BINARY_DIR}/doc/sphinx/index.rst"
+                     COPYONLY
+                    )
+    else()
+      find_file_to_configure(index.rst.in
+                             FILETYPE "Sphinx index"
+                             OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
+                             OUTPUTNAME "index.rst"
+                             PATHS ${CMAKE_MODULE_PATH}
+                             PATH_SUFFIXES doc)
+    endif()
 
     endif()
 

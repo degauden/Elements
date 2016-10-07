@@ -5,20 +5,40 @@
 ================================================================
 * Version: @CMAKE_PROJECT_VERSION@ 
 
-@SPHINX_MAIN_PROJECT_INDEX@
+Project Overview
+================
 
+.. toctree::
+   :maxdepth: 5
+   :caption: Table of Contents
 
-Contents
-========
+   doc_project
+
+@SPHINX_PROJECT_RELATED_PAGES@
+
+Modules
+=======
 
 .. toctree::
    :maxdepth: 5
 
+   elements_modules
+
    @SPHINX_EL_MODULES@
 
-   @SPHINX_CPP_MODULES@
+API Documentation
+=================
 
-@SPHINX_PROJECT_RELATED_PAGES@
+.. toctree::
+   :maxdepth: 5
+
+   @SPHINX_CPP_MODULES@
+   
+Legacy
+======
+
+@SPHINX_ORIGINAL_DOX@
+
 
 Indices and tables
 ==================
@@ -27,7 +47,3 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-Extra
-=====
-
-@SPHINX_ORIGINAL_DOX@
