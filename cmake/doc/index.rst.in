@@ -1,7 +1,9 @@
 .. @PROJECT_NAME@ @CMAKE_PROJECT_VERSION@ documentation master file
 
-Welcome to @PROJECT_NAME@ @CMAKE_PROJECT_VERSION@ documentation!
 ================================================================
+@PROJECT_NAME@ Documentation
+================================================================
+* Version: @CMAKE_PROJECT_VERSION@ 
 
 @SPHINX_MAIN_PROJECT_INDEX@
 
