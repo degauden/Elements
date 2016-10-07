@@ -1,8 +1,22 @@
 /*
- * PhysConstants.h
+ * @file ElementsKernel/PhysConstants.h
  *
  *  Created on: Dec 18, 2013
  *      Author: hubert
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
 #ifndef ELEMENTSKERNEL_PHYSCONSTANTS_H_
@@ -51,7 +65,7 @@ namespace Elements {
     constexpr double fine_structure_const   = elm_coupling/hbarc;
 
 
-    constexpr double k_Boltzmann = 1.3806488e-23 * joule/kelvin ;
+    constexpr double k_Boltzmann = 1.3806488e-23 * joule/kelvin;
 
     /// @brief Standard Temperature and Pressure
     constexpr double STP_Temperature = 273.15*kelvin;
@@ -62,9 +76,5 @@ namespace Elements {
 
   }  // namespace Units
 } // namespace Elements
-
-
-
-
 
 #endif /* ELEMENTSKERNEL_PHYSCONSTANTS_H_ */

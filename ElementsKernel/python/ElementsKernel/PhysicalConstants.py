@@ -2,7 +2,6 @@
 """ This script is a direct adaptation of CLHEP/Units/PhysicalConstants.h
 and the following is the originial CLHEP comment:
 
------
 This file has been provided by Geant4 (simulation toolkit for HEP).
 
 The basic units are :
@@ -69,7 +68,7 @@ hbarc_squared = hbarc * hbarc
 #
 #
 # see SystemOfUnits.h
-electron_charge = -eplus  # see SystemOfUnits.h
+electron_charge = -eplus
 e_squared = eplus * eplus
 
 #

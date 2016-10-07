@@ -1,31 +1,27 @@
-#
-# Copyright (C) 2012-2020 Euclid Science Ground Segment
-#
-# This library is free software; you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation; either version 3.0 of the License, or (at your option)
-# any later version.
-#
-# This library is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
 """
-File: ElementsKernel/Project.py
-Author: Nicolas Morisset
-         Astronomy Department of the University of Geneva
+@file ElementsKernel/Project.py
+@author Nicolas Morisset
 
-Created on: 01/07/15
+@date 01/07/15
+
 This script will create a new Elements project
 
-Updated on: 12/02/16
-           Feature #2034, add --no-version-directory option:
+@copyright: 2012-2020 Euclid Science Ground Segment
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 3.0 of the License, or (at your option)
+any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 """
 
 import argparse
@@ -49,8 +45,7 @@ def setPath():
     # Check if User_area environment variable exists
     user_area = os.environ.get('User_area')
     if not user_area is None:
-        logger.debug('# <$User_area> environment variable defined to : <%s>'
-                      % user_area)
+        logger.debug('# <$User_area> environment variable defined to : <%s>', user_area)
         destination_path = user_area
     else:
         destination_path = os.getcwd()
@@ -83,8 +78,7 @@ def duplicate_elements(duplicate_list):
         if not elt[0] in name_list:
             name_list.append(elt[0])
         else:
-            logger.error('# Found twice the following dependency : <%s>, '\
-                         'script aborted' % elt[0])
+            logger.error('# Found twice the following dependency : <%s>, script aborted', elt[0])
             not_found_duplicate = False
             break
 
@@ -107,7 +101,7 @@ def getElementsVersion():
     if patch_version > 0:
         elt_version = '.'.join(version_patch)
 
-    logger.info('# Elements version found : <%s>' % elt_version)
+    logger.info('# Elements version found : <%s>', elt_version)
 
     return str(elt_version)
 
@@ -118,7 +112,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     Substitute variables in <CMakeList.txt.in> file and rename the file to
     <CMakeLists.txt>.
     """
-    logger.debug('# Substitute variables in <%s> file' % AUX_CMAKE_LIST_IN)
+    logger.debug('# Substitute variables in <%s> file', AUX_CMAKE_LIST_IN)
     cmake_list_file = os.path.join(project_dir, AUX_CMAKE_LIST_IN)
 
     # Substitute
@@ -133,8 +127,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
             if not dep[0] in str_dep_projects:
                 str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
             else:
-                logger.warning('<%s> dependency already exists. It is skipped!'
-                                % dep[0])
+                logger.warning('<%s> dependency already exists. It is skipped!', dep[0])
         new_data = data % {"PROJECT_NAME": proj_name,
                            "PROJECT_VERSION": proj_version,
                            "DEPENDANCE_LIST": str_dep_projects}
@@ -176,6 +169,9 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
 ################################################################################
 
 def defineSpecificProgramOptions():
+    """
+    Define program option(s)
+    """
     description = """
 This script creates an <Elements> project in your current directory(by default)
 or at the location defined by the <$User_area> environment variable, if defined.
@@ -217,63 +213,59 @@ will be automatically created for you.
 ################################################################################
 
 def mainMethod(args):
-
+    """
+    Main
+    """
     logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the CreateElementsProject'\
-                ' script')
+    logger.info('#  Logging from the mainMethod() of the CreateElementsProject script')
     logger.info('#')
 
-    try:
-        script_goes_on = True
+    script_goes_on = True
 
-        proj_name = args.project_name
-        proj_version = args.project_version
-        dependant_projects = args.dependency
-        destination_path = setPath()
-        logger.info('# Installation directory : %s' % destination_path)
+    proj_name = args.project_name
+    proj_version = args.project_version
+    dependant_projects = args.dependency
+    destination_path = setPath()
+    logger.info('# Installation directory : %s', destination_path)
 
-        # Check project name and version
-        script_goes_on = epcr.isNameAndVersionValid(proj_name, proj_version)
+    # Check project name and version
+    script_goes_on = epcr.isNameAndVersionValid(proj_name, proj_version)
 
-        # Check for duplicate dependencies
-        if script_goes_on and not args.dependency is None:
-            script_goes_on = duplicate_elements(dependant_projects)
+    # Check for duplicate dependencies
+    if script_goes_on and not args.dependency is None:
+        script_goes_on = duplicate_elements(dependant_projects)
 
-        # Check AUX files exist
-        if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_LIST_IN)
-        if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE_IN)
+    # Check AUX files exist
+    if script_goes_on:
+        script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_LIST_IN)
+    if script_goes_on:
+        script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE_IN)
 
-        # Set the project directory
-        if args.no_version_directory:
-            project_dir = os.path.join(destination_path, proj_name)
+    # Set the project directory
+    if args.no_version_directory:
+        project_dir = os.path.join(destination_path, proj_name)
+    else:
+        project_dir = os.path.join(destination_path, proj_name, proj_version)
+
+    # Make sure dependencies name and version are valid
+    if script_goes_on and not args.dependency is None:
+        script_goes_on = isDependencyProjectValid(dependant_projects)
+
+    if script_goes_on and os.path.exists(project_dir):
+        logger.warning('<%s> Project ALREADY exists!!!', project_dir)
+        response_key = raw_input('Do you want to replace the existing '\
+                                 'project and associated module(s) (Yes/No,'\
+                                 ' default: No)?')
+        if response_key == "YES" or response_key == "yes" or response_key == "y":
+            logger.info('# Replacing the existing project: <%s>', project_dir)
+            epcr.eraseDirectory(project_dir)
         else:
-            project_dir = os.path.join(destination_path, proj_name, proj_version)
+            script_goes_on = False
+            logger.info('# Script stopped by user!')
 
-        # Make sure dependencies name and version are valid
-        if script_goes_on and not args.dependency is None:
-            script_goes_on = isDependencyProjectValid(dependant_projects)
-
-        if script_goes_on and os.path.exists(project_dir):
-            logger.warning('<%s> Project ALREADY exists!!!' % project_dir)
-            response_key = raw_input('Do you want to replace the existing '\
-                                     'project and associated module(s) (Yes/No,'\
-                                     ' default: No)?')
-            if response_key == "YES" or response_key == "yes" or response_key == "y":
-                logger.info(
-                    '# Replacing the existing project: <%s>' % project_dir)
-                epcr.eraseDirectory(project_dir)
-            else:
-                script_goes_on = False
-                logger.info('# Script stopped by user!')
-
-        if script_goes_on:
-            createProject(project_dir, proj_name, proj_version, dependant_projects)
-            logger.info('# <%s> project successfully created.' % project_dir)
-            logger.info('# Script over.')
-        else:
-            logger.error('# Script aborted!')
-    except Exception as e:
-        logger.exception(e)
-        logger.error('# Script aborted...')
+    if script_goes_on:
+        createProject(project_dir, proj_name, proj_version, dependant_projects)
+        logger.info('# <%s> project successfully created.', project_dir)
+        logger.info('# Script over.')
+    else:
+        logger.error('# Script aborted!')

@@ -1,4 +1,21 @@
-// $Id: Time.h,v 1.3 2006/01/25 16:02:48 hmd Exp $
+/**
+ *  @file ElementsKernel/Time.h
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+
 #ifndef ELEMENTSKERNEL_TIME_H
 #define ELEMENTSKERNEL_TIME_H 1
 
@@ -6,34 +23,6 @@
 //   for the architecture independent int64 definition (longlong)
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "ElementsKernel/Exception.h"
-
-/** @class TimeException Time.h ElementsKernel/Time.h
- *
- *  Exception thrown by Elements::Time.
- *
- *  @see ElementsException
- *  @see Elements::Time
- *
- *  @author Marco Clemencic
- *  @date   2005-12-14
- */
-//
-// 	This class is commented out by Pierre Dubath (August 5th, 2013) in order to get rid of the class
-//	ElementsException created by Marco Clemencic and to replace it by EuclidException that will be renamed
-// 	ElementsException once the old ElementsException is deleted
-//
-//class ELEMENTS_API TimeException: public ElementsException {
-//public:
-//  // Standard constructor
-//  TimeException(const std::string& Message = "unspecified exception",
-//      const std::string& Tag = "*Elements::Time*", const StatusCode & Code =
-//          StatusCode::FAILURE) :
-//      ElementsException(Message, Tag, Code) {
-//  }
-//  /// Destructor needed to match the signature of ElementsException::~ElementsException().
-//  virtual ~TimeException() noexcept {
-//  }
-//};
 
 struct tm;
 
@@ -256,7 +245,7 @@ public:
   /// Returns the minimum time.
   static Time epoch(void);
   /// Returns the maximum time.
-  static Time max(void);
+  static Time (max)(void);
   /// Returns the current time.
   static Time current(void);
   static Time build(bool local, const tm &base, TimeSpan diff = 0);
@@ -297,8 +286,9 @@ private:
 
   inline void TimeAssert(bool cond, const std::string &msg =
       "time assertion failed") const {
-    if (!cond)
+    if (not cond) {
       throw Exception(msg);
+    }
   }
 
 };

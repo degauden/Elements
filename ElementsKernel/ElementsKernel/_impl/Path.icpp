@@ -1,0 +1,118 @@
+/**
+ * @file ElementsKernel/_impl/Path.icpp
+ * @brief implementation of the templates declared in ElementsKernel/Path.h
+ *
+ * @date May 17, 2016
+ * @author Hubert Degaudenzi
+ *
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#ifndef ELEMENTSKERNEL__IMPL_PATH_ICPP_
+#define ELEMENTSKERNEL__IMPL_PATH_ICPP_
+
+#include <string>                          // for string
+#include <vector>                          // for vector
+#include <algorithm>                       // for find_if, transform, for_each
+#include <boost/filesystem.hpp>            // for boost::filesystem
+#include <boost/algorithm/string/join.hpp> // for join
+
+
+namespace Elements {
+namespace Path {
+
+template <typename T, typename U>
+boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations) {
+
+  namespace fs = boost::filesystem;
+
+  fs::path found_path {};
+  fs::path file_path {file_name};
+
+  auto found_pos = std::find_if(locations.cbegin(), locations.cend(),
+      [file_path](U l) {
+    return fs::exists(fs::path{l} / file_path);
+  });
+
+  if (found_pos != locations.cend()) {
+    found_path = fs::path{*found_pos} / file_path;
+  }
+
+  return found_path;
+
+}
+
+
+template <typename T>
+boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable) {
+
+  namespace fs = boost::filesystem;
+  using std::vector;
+
+  vector<fs::path> location_list = getLocationsFromEnv(path_variable);
+
+  return getPathFromLocations(file_name, location_list);
+
+}
+
+template <typename T>
+ELEMENTS_API std::string joinPath(const std::vector<T> path_list) {
+
+  namespace fs = boost::filesystem;
+  using std::vector;
+  using std::string;
+
+  vector<string> elems(path_list.size());
+
+  std::transform(path_list.cbegin(), path_list.cend(),
+                 elems.begin(),
+                 [](T s){
+                   return fs::path(s).string();
+                 });
+
+  std::string result = boost::algorithm::join(elems, PATH_SEP);
+
+  return result;
+}
+
+template <typename T, typename U>
+ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations, const std::vector<U>& suffixes) {
+
+  namespace fs = boost::filesystem;
+  using std::vector;
+
+  vector<fs::path> result(initial_locations.size()*suffixes.size());
+
+  auto pos = result.begin();
+
+  std::for_each(initial_locations.cbegin(), initial_locations.cend(),
+                 [&pos, &suffixes](T l) {
+                   std::transform(suffixes.cbegin(), suffixes.cend(),
+                                  pos,
+                                  [l](U s){
+                                  return fs::path(l) / s;
+                                  });
+                   pos += suffixes.size();
+
+                 });
+
+
+  return result;
+}
+
+} // Path namespace
+} // Elements namespace
+
+#endif // ELEMENTSKERNEL__IMPL_PATH_ICPP_

@@ -1,19 +1,34 @@
+"""Main Program Class Module"""
+
 import importlib
 import os
 import sys
 import re
 import ElementsKernel.Logging as log
+from ElementsKernel.Path import VARIABLE, SUFFIXES, joinPath, multiPathAppend
+from ElementsKernel.Environment import Environment
 
+def str_to_bool(s):
+    """Convert string to bool (in argparse context)."""
+    if s.lower() not in ['true', 'false']:
+        raise ValueError('Need bool; got %r' % s)
+    return {'true': True, 'false': False}[s.lower()]
 
-class Program (object):
-
-    def __init__(self, app_module, parent_project_version=None, parent_project_name=None):
+class Program(object):
+    """Main Program Class"""
+    def __init__(self, app_module, parent_project_version=None, parent_project_name=None,
+                 search_dirs=None, original_path=None):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
+        self._search_dirs = search_dirs
+        self._program_path = os.path.dirname(original_path)
+        self._program_name = os.path.basename(original_path)
+        self._env = Environment()
 
-    def _setupLogging(self, arg_parser):
+    @staticmethod
+    def _setupLogging(arg_parser):
         options = arg_parser.parse_known_args()[0]
         if options.log_level:
             log.setLevel(options.log_level.upper())
@@ -92,7 +107,12 @@ class Program (object):
         # Iterate through the names of the variables keeping the option values
         for var in [v for v in dir(all_options) if not v.startswith('_')]:
             # We get the related action from the argparser
-            action = next((a for a in arg_parser._actions if a.dest == var and a.option_strings), None)
+            action = None
+            for a in arg_parser._actions:
+                if a.dest == var and a.option_strings:
+                    action = a
+                    break
+
             if action:
                 # We chose as name the longest option name and we strip any leading '-'
                 variable_to_option_name[var] = max(action.option_strings, key=len).lstrip('-')
@@ -104,7 +124,7 @@ class Program (object):
 
         return all_options, variable_to_option_name
 
-    def _logAllOptions(self, args, names):
+    def _logHeader(self):
         self._logger.info(
             "##########################################################")
         self._logger.info(
@@ -113,6 +133,25 @@ class Program (object):
         self._logger.info(
             "#    Python program: %s starts ", self._app_module.__name__)
         self._logger.info("#")
+        self._logger.debug("# Program Name: %s", self._program_name)
+        self._logger.debug("# Program Path: %s", self._program_path)
+        self._logger.debug("#")
+
+    def _logFooter(self):
+        self._logger.info(
+            "##########################################################")
+        self._logger.info("#")
+        self._logger.info(
+            "#    Python program: %s stops ", self._app_module.__name__)
+        self._logger.info("#")
+        self._logger.info(
+            "##########################################################")
+        self._logger.info(
+            "##########################################################")
+
+
+    def _logAllOptions(self, args, names):
+
         self._logger.info(
             "##########################################################")
         self._logger.info("#")
@@ -125,6 +164,22 @@ class Program (object):
             self._logger.info(names[name] + ' = ' + str(value))
         self._logger.info("#")
 
+    def _logTheEnvironment(self):
+        self._logger.debug("##########################################################")
+        self._logger.debug("#")
+        self._logger.debug("# Environment of the Run")
+        self._logger.debug("# ---------------------------")
+        self._logger.debug("#")
+
+#   for(const auto& v: Path::VARIABLE) {
+#     logger.debug() << v.second << ": " << m_env[v.second];
+#   }
+
+        for v in VARIABLE:
+            self._logger.debug("%s: %s", VARIABLE[v], self._env[VARIABLE[v]])
+
+        self._logger.debug("#")
+
     def getVersion(self):
         version = ""
         if self._parent_project_name:
@@ -133,12 +188,49 @@ class Program (object):
             version += self._parent_project_version
         return version
 
-    def runProgram(self):
+
+    def _bootStrapEnvironment(self):
+        self._program_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+
+        local_search_paths = [os.path.realpath(p) for p in self._search_dirs]
+
+        this_parent_path = os.path.dirname(self._program_path)
+
+        if local_search_paths[0] != this_parent_path:
+            local_search_paths.insert(0, this_parent_path)
+
+        for name, value in VARIABLE.iteritems():
+            if value in os.environ:
+                self._env[value] += os.pathsep + joinPath(multiPathAppend(local_search_paths, SUFFIXES[name]))
+            else:
+                self._env[value] = joinPath(multiPathAppend(local_search_paths, SUFFIXES[name]))
+
+    def _setup(self):
+
+        self._bootStrapEnvironment()
+
         args, names = self._parseParameters()
+        self._logHeader()
         self._logAllOptions(args, names)
+        self._logTheEnvironment()
+        return args, names
+
+    def _tearDown(self, exit_code):
+
+        if exit_code is not None:
+            self._logger.debug("# Exit Code: %d" % exit_code)
+        self._logFooter()
+
+    def runProgram(self):
+
+        args, _ = self._setup()
+
         exit_code = 1
         try:
             exit_code = self._app_module.mainMethod(args)
         except:
             self._logger.exception(sys.exc_info()[1])
+
+        self._tearDown(exit_code)
+
         return exit_code

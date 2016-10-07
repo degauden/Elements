@@ -1,6 +1,9 @@
-import argparse  # for program options from configuration
-import ElementsKernel.Logging as log  # for Elements logging support
-from ElementsExamples.PythonModuleExample import ClassExample  # for ClassExample
+""" Small example for a python based script """
+
+import argparse
+import ElementsKernel.Logging as log
+from ElementsKernel.Program import str_to_bool
+from ElementsExamples.PythonModuleExample import ClassExample
 
 def defineSpecificProgramOptions():
     """
@@ -21,15 +24,17 @@ def defineSpecificProgramOptions():
                         help='A float option')
     parser.add_argument('--int-list-option', nargs='+', type=int,
                         help='A integer list option')
+    parser.add_argument('--overwrite', nargs='?', dest='overwrite',
+                        default=False, const=True, type=str_to_bool,
+                        help='Overwrite the output files')
     return parser
 
 def mainMethod(args):
     """
     @brief The "main" method.
-    @details
-        This method is the entry point to the program. In this sense, it is similar to a main
-        (and it is why it is called mainMethod()). The code below contains the calls to the
-        different classes created for the first developer's workshop
+    @details This method is the entry point to the program. In this sense, it is similar to a main
+    (and it is why it is called mainMethod()). The code below contains the calls to the
+    different classes created for the first developer's workshop
 
         See the ElementsProgram documentation for more details.
     """
@@ -57,3 +62,5 @@ def mainMethod(args):
     logger.info('Sum of the list elements : ' + str(example_object.sumListValues()))
 
     logger.info('Exiting ProgramExample mainMethod()')
+
+    return 0

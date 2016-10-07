@@ -1,36 +1,34 @@
-#
-# Copyright (C) 2012-2020 Euclid Science Ground Segment
-#
-# This library is free software; you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation; either version 3.0 of the License, or (at your option)
-# any later version.
-#
-# This library is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
 """
-File: ElementsKernel/AddCppProgram.py
-Author: Nicolas Morisset
-         Astronomy Department of the University of Geneva
+@file ElementsKernel/AddCppProgram.py
+@author Nicolas Morisset
 
-Date: 01/07/15
+@date 01/07/15
 
 This script creates a new Elements C++ Program
+
+@copyright: 2012-2020 Euclid Science Ground Segment
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 3.0 of the License, or (at your option)
+any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 """
 
 import argparse
 import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.ParseCmakeLists as pcl
+import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddCppProgram')
@@ -69,16 +67,12 @@ def addConfFile(module_dir, module_name, program_name):
         f.write('###############################################################################\n')
         f.close()
     else:
-        logger.warning('The < %s > conf file has been kept as it already exists!'
-                        % conf_file)
-        logger.warning('The < %s > conf file already exists! ' % conf_file)
-
-
-
+        logger.warning('The < %s > conf file has been kept as it already exists!', conf_file)
+        logger.warning('The < %s > conf file already exists!', conf_file)
 
 ################################################################################
 
-def substituteStringsInProgramFile(file_path, program_name, module_name):
+def substituteStringsInProgramFile(file_path, program_name):
     """
     Substitute variables in template file and rename the file
     """
@@ -113,31 +107,19 @@ def substituteStringsInProgramFile(file_path, program_name, module_name):
 def updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list):
     """
+    Update CMakeLists.txt file
     """
-    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
-
-    # Backup the file
-    epcr.makeACopy(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
-        f = open(cmake_filename, 'r')
-        data = f.read()
-        f.close()
-        cmake_object = pcl.CMakeLists(data)
-        module_name = cmake_object.elements_subdir_list[0].name
-
-        # Update find_package macro
-        if library_dep_list:
-            for lib in library_dep_list:
-                package_object = pcl.FindPackage(lib, [])
-                cmake_object.find_package_list.append(package_object)
+        cmake_object, module_name = epcr.updateCmakeCommonPart(cmake_filename, library_dep_list)
 
         # Update ElementsDependsOnSubdirs macro
         if module_dep_list:
             for mod_dep in module_dep_list:
-                dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
+                dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
         # Add elements_install_conf_files if any
@@ -159,7 +141,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
                 if not lib in existing_exe[0].link_libraries_list:
                     existing_exe[0].link_libraries_list.append(lib)
         else:
-            exe_object = pcl.ElementsAddExecutable(program_name, source,
+            exe_object = pclm.ElementsAddExecutable(program_name, source,
                                                    link_libs)
             cmake_object.elements_add_executable_list.append(exe_object)
 
@@ -171,15 +153,14 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
 ################################################################################
 
 
-def createCppProgram(module_dir, module_name, program_name, module_dep_list,
-                    library_dep_list):
+def createCppProgram(module_dir, module_name, program_name, module_dep_list, library_dep_list):
     """
     Creates all necessary files for a program
     """
     createDirectories(module_dir, module_name)
     program_path = os.path.join(module_dir, 'src', 'program')
     script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
-    substituteStringsInProgramFile(program_path, program_name, module_name)
+    substituteStringsInProgramFile(program_path, program_name)
     addConfFile(module_dir, module_name, program_name)
     updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list)
@@ -188,6 +169,9 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list,
 ################################################################################
 
 def defineSpecificProgramOptions():
+    """
+    Define program option(s)
+    """
     description = """
 This script creates an <Elements> C++ program at your current directory(default)
 All necessary structure (directory structure, makefiles etc...) will be automat-
@@ -213,50 +197,45 @@ ically created for you if any but you have to be inside an <Elements> module.
 ################################################################################
 
 def mainMethod(args):
+    """
+    Main
+    """
 
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddCppProgram script')
     logger.info('#')
 
-    try:
-        # True: no error occured
-        script_goes_on = True
+    program_name = args.program_name
+    module_list = args.module_dependency
+    library_list = args.library_dependency
 
-        program_name = args.program_name
-        module_list = args.module_dependency
-        library_list = args.library_dependency
+    # Default is the current directory
+    current_dir = os.getcwd()
 
-        # Default is the current directory
-        current_dir = os.getcwd()
+    logger.info('Current directory : %s', current_dir)
+    logger.info('')
 
-        logger.info('Current directory : %s', current_dir)
-        logger.info('')
+    # We absolutely need a Elements cmake file
+    script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
 
-        # We absolutely need a Elements cmake file
-        script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
+    program_file_path = os.path.join(current_dir, 'src', 'program',
+                                     program_name + '.cpp')
+    if script_goes_on:
+        script_goes_on = epcr.isFileAlreadyExist(program_file_path,
+                                                 program_name)
+    # Check program name is valid
+    if script_goes_on:
+        script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
 
-        program_file_path = os.path.join(current_dir, 'src', 'program',
-                                         program_name + '.cpp')
-        if script_goes_on:
-            script_goes_on = epcr.isFileAlreadyExist(program_file_path,
-                                                            program_name)
-        # Check program name is valid
-        if script_goes_on:
-            script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
+    # Check aux file exist
+    if script_goes_on:
+        script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
-        # Check aux file exist
-        if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
-
-        if script_goes_on and createCppProgram(current_dir, module_name, program_name, module_list, library_list):
-            logger.info('< %s > program successfully created in < %s >.' %
-                        (program_name, current_dir + os.sep + 'src' + os.sep + 'program'))
-            # Remove backup file
-            epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-            logger.info('Script over.')
-        else:
-            logger.error('Script aborted!')
-
-    except Exception as e:
-        logger.exception(e)
-        logger.info('Script stopped...')
+    if script_goes_on and createCppProgram(current_dir, module_name, program_name, module_list, library_list):
+        logger.info('< %s > program successfully created in < %s >.',
+                    program_name, current_dir + os.sep + 'src' + os.sep + 'program')
+        # Remove backup file
+        epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
+        logger.info('Script over.')
+    else:
+        logger.error('Script aborted!')

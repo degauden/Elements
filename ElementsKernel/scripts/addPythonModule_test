@@ -10,13 +10,6 @@ python_mod_name="PythonModuleNameTest"
 # Create a unique directory
 tmploc=${TEMPORARY_LOCATION}
 
-# Clean and exit
-clean_and_exit() {
-  cd ${home_dir}
-  rm -rf ${tmploc}
-  exit $1
-}
-
 cd ${MODULE_NAME_PATH}
 
 # Create python mondule
@@ -24,23 +17,28 @@ AddPythonModule $python_mod_name
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
+   echo "Error: <AddPythonModule $python_mod_name> command failed!" 1>&2
    clean_and_exit 1
 fi
 
 # Make sure python files have been been created
 if [ ! -e python/${MODULE_NAME}/${python_mod_name}.py ]; then
+   echo "Error: <python/${MODULE_NAME}/${python_mod_name}.py> file not found!" 1>&2
    clean_and_exit 1
 fi
 if [ ! -e python/${MODULE_NAME}/__init__.py ]; then
+   echo "Error: <python/${MODULE_NAME}/__init__.py> file not found!" 1>&2
    clean_and_exit 1
 fi
 if [ ! -e tests/python/${python_mod_name}_test.py ]; then
+   echo "Error: <tests/python/${python_mod_name}_test.py> file not found!" 1>&2
    clean_and_exit 1
 fi
 
 # Make sure the <elements_install_python_modules> macro is there
 result=$( grep "elements_install_python_modules" CMakeLists.txt | grep -v "#")
 if [ $? -ne 0  ];then
+   echo "Error: <elements_install_python_modules> macro not found!" 1>&2
    clean_and_exit 1
 fi
 

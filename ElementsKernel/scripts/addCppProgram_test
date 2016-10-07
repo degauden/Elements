@@ -12,13 +12,6 @@ library_dep_name="Boost"
 # Create a unique directory
 tmploc=${TEMPORARY_LOCATION}
 
-# Clean and exit
-clean_and_exit() {
-  cd ${home_dir}
-  rm -rf ${tmploc}
-  exit $1
-}
-
 cd ${MODULE_NAME_PATH}
 
 # Create a CPP program
@@ -26,11 +19,13 @@ AddCppProgram $cpp_program_name -md $module_dep_name -ld $library_dep_name
 
 # if error stop and clean up
 if [ $? -ne 0 ]; then
+   echo "Error: <AddCppProgram $cpp_program_name -md $module_dep_name -ld $library_dep_name> command failed!" 1>&2
    clean_and_exit 1
 fi
 
 # make sure the class files are created
 if [ ! -e "src/program/$cpp_program_name.cpp" ]; then
+   echo "Error: <src/program/$cpp_program_name.cpp> file not found!" 1>&2
    clean_and_exit 1
 fi
 
@@ -38,6 +33,7 @@ fi
 result=$( grep "elements_depends_on_subdirs" ${MODULE_NAME_PATH}/CMakeLists.txt |
           grep ElementsKernel )
 if [ $? -ne 0 ]  ;then
+   echo "Error: <elements_depends_on_subdirs> macro with <ElementsKernel> module not found!" 1>&2
    clean_and_exit 1
 fi
 
@@ -45,6 +41,7 @@ fi
 result=$( grep "elements_depends_on_subdirs" ${MODULE_NAME_PATH}/CMakeLists.txt |
            grep -v "#" | grep $module_dep_name )
 if [ $? -ne 0 ]  ;then
+   echo "Error: <elements_depends_on_subdirs> macro with <$module_dep_name> dependency not found!" 1>&2
    clean_and_exit 1
 fi
 
@@ -52,12 +49,14 @@ fi
 result=$( grep "find_package" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
           grep $library_dep_name )
 if [ $? -ne 0 ]  ;then
+   echo "Error: find_package macro not found!" 1>&2
    clean_and_exit 1
 fi
 
 # Make sure the elements_add_executable Macro is there
 result=$( grep "elements_add_executable" ${MODULE_NAME_PATH}/CMakeLists.txt | grep $cpp_program_name )
 if [ $? -ne 0 ]  ;then
+   echo "Error: <elements_add_executable> macro with <$cpp_program_name> executable not found!" 1>&2
    clean_and_exit 1
 fi
 
@@ -65,6 +64,7 @@ fi
 result=$( grep "LINK_LIBRARIES" ${MODULE_NAME_PATH}/CMakeLists.txt | grep -v "#" |
           grep "ElementsKernel" )
 if [ $? -ne 0 ]  ;then
+   echo "Error: <LINK_LIBRARIES> macro with <ElementsKernel> module not found!" 1>&2
    clean_and_exit 1
 fi
 
@@ -72,6 +72,7 @@ fi
 result=$( grep "LINK_LIBRARIES" ${MODULE_NAME_PATH}/CMakeLists.txt | grep -v "#" |
           grep $module_dep_name )
 if [ $? -ne 0 ]  ;then
+   echo "Error: <LINK_LIBRARIES> macro with <$module_dep_name> module not found!" 1>&2
    clean_and_exit 1
 fi
 
@@ -79,12 +80,14 @@ fi
 result=$( grep "LINK_LIBRARIES" ${MODULE_NAME_PATH}/CMakeLists.txt | grep -v "#" |
           grep $library_dep_name )
 if [ $? -ne 0 ]  ;then
+   echo "Error: <LINK_LIBRARIES> macro with <$library_dep_name> library not found!" 1>&2
    clean_and_exit 1
 fi
 
 # Make sure the elements_install_conf_files Macro is there
 result=$( grep "elements_install_conf_files" ${MODULE_NAME_PATH}/CMakeLists.txt )
 if [ $? -ne 0 ]  ;then
+   echo "Error: <elements_install_conf_files> macro not found!" 1>&2
    clean_and_exit 1
 fi
 

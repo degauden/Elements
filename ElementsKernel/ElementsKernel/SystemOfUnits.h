@@ -1,7 +1,21 @@
 /**
  * @file SystemOfUnits.h
  * @brief Definition of the common units based on MKSA
- * @author Hubert Degaudenzi - The Euclid Consortium
+ * @author Hubert Degaudenzi
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
 #ifndef ELEMENTSKERNEL_SYSTEMOFUNITS_H_
@@ -115,7 +129,7 @@ namespace Elements {
     // Electric charge [I][T]
     //
     constexpr double coulomb = ampere * second;
-    constexpr double eplus = 1. ;    // positron charge
+    constexpr double eplus = 1.;    // positron charge
     constexpr double e_SI  = 1.602176565e-19 * coulomb; // positron charge in coulomb
 
 
@@ -171,7 +185,7 @@ namespace Elements {
     //
     // Electric potential [E][Q^-1]
     //
-    constexpr double     volt = electronvolt/eplus ;
+    constexpr double     volt = electronvolt/eplus;
     constexpr double megavolt = 1.e+6*volt;
     constexpr double kilovolt = 1.e+3*volt;
 
@@ -219,13 +233,13 @@ namespace Elements {
     //
     // Activity [T^-1]
     //
-    constexpr double becquerel = 1./second ;
+    constexpr double becquerel = 1./second;
     constexpr double curie = 3.7e+10 * becquerel;
 
     //
     // Absorbed dose [L^2][T^-2]
     //
-    constexpr double gray = joule/kilogram ;
+    constexpr double gray = joule/kilogram;
 
     //
     // Luminous intensity [I]
@@ -247,14 +261,12 @@ namespace Elements {
     //
     // Miscellaneous
     //
-    constexpr double perCent     = 0.01 ;
+    constexpr double perCent     = 0.01;
     constexpr double perThousand = 0.001;
     constexpr double perMillion  = 0.000001;
 
   }  // namespace Units
 } // namespace Elements
-
-
 
 
 #endif /* ELEMENTSKERNEL_SYSTEMOFUNITS_H_ */

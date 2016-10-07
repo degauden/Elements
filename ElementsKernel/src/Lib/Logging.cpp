@@ -2,6 +2,20 @@
  * @file Logging.cpp
  * @date January 13, 2014
  * @author Nikolaos Apostolakos
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
 #include "ElementsKernel/Logging.h"     // for Logging, etc
@@ -22,8 +36,6 @@
 
 #include "ElementsKernel/Exception.h"   // for Exception
 
-
-
 namespace Elements {
 
 static const std::map<std::string, const int> LOG_LEVEL {{"FATAL", log4cpp::Priority::FATAL},
@@ -31,8 +43,6 @@ static const std::map<std::string, const int> LOG_LEVEL {{"FATAL", log4cpp::Prio
                                                          {"WARN", log4cpp::Priority::WARN},
                                                          {"INFO", log4cpp::Priority::INFO},
                                                          {"DEBUG", log4cpp::Priority::DEBUG}};
-
-
 
 std::unique_ptr<log4cpp::Layout> getLogLayout() {
   log4cpp::PatternLayout* layout = new log4cpp::PatternLayout {};
@@ -63,7 +73,7 @@ void Logging::setLevel(std::string level) {
     log4cpp::Category::setRootPriority(it->second);
   } else {
     std::stringstream error_buffer;
-    error_buffer << "Unrecognized logging level: " << level << std::endl; ;
+    error_buffer << "Unrecognized logging level: " << level << std::endl;
     throw Exception(error_buffer.str());
   }
 }

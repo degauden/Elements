@@ -17,6 +17,10 @@ set(ELEMENTS_HIDE_SYMBOLS ON
     CACHE STRING "enable explicit symbol visibility on gcc-4"
     FORCE)
 
+set(CXX_SUGGEST_OVERRIDE ON
+    CACHE STRING "Enable the -Wsuggest-override warning"
+    FORCE)
+
 # Use only the Doxygen API documentation generation
 set(USE_SPHINX_APIDOC ON
     CACHE STRING "Generates the sphinx API documentation"
@@ -26,7 +30,7 @@ set(USE_SPHINX_BREATHE OFF
     CACHE STRING "Use sphinx C++ API Breathe plugin to bind to doxygen"
     FORCE)
 
-elements_project(Elements 4.0 DESCRIPTION "A C++ base framework for the Euclid Software.")
+elements_project(Elements 4.1 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
 
 # This test does not really fit in a subdirectory.

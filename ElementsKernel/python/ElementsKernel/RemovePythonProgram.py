@@ -1,30 +1,28 @@
-#
-# Copyright (C) 2012-2020 Euclid Science Ground Segment
-#
-# This library is free software; you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation; either version 3.0 of the License, or (at your option)
-# any later version.
-#
-# This library is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
+"""
+@file ElementsKernel/python/ElementsKernel/RemovePythonProgram.py
+@author Nicolas Morisset
+
+@date 02/10/16
+
+This script will remove all files related to a python program
+
+@copyright: 2012-2020 Euclid Science Ground Segment
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 3.0 of the License, or (at your option)
+any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 """
-File: python/ElementsKernel/RemovePythonProgram.py
-
-Created on: 02/11/16
-Author: Nicolas Morisset
-"""
-
-from __future__ import division, print_function
-from future_builtins import *
 
 import argparse
 import os
@@ -40,8 +38,9 @@ logger = log.getLogger('RemovePythonProgram')
 
 def getAllFiles(program_name, module_directory, module_name):
     """
+    Get all files related to a python program
     """
-    delete_file_list=[]
+    delete_file_list = []
     file_name_conf = os.path.join(module_directory, 'conf', module_name, program_name) + '.conf'
     if os.path.exists(file_name_conf):
         delete_file_list.append(file_name_conf)
@@ -57,7 +56,7 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     Update the <CMakeLists.txt> file
     """
-    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Cmake file already exist
@@ -79,6 +78,9 @@ def updateCmakeListsFile(module_dir, program_name):
 ################################################################################
 
 def defineSpecificProgramOptions():
+    """
+    Define program option(s)
+    """
     description = """
     This script allows you to remove all files on disk related to a python
     program. Usually you use this script when you made a typo in the program
@@ -97,46 +99,41 @@ def defineSpecificProgramOptions():
 ################################################################################
 
 def mainMethod(args):
+    """
+    Main
+    """
 
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the RemovePythonProgram \
     script ')
     logger.info('#')
 
-    try:
-        # True: no error occured
-        script_goes_on = True
+    program_name = args.program_name
 
-        program_name = args.program_name
+    # Default is the current directory
+    module_dir = os.getcwd()
 
+    logger.info('Current directory : %s', module_dir)
+    logger.info('')
+
+    # We absolutely need a Elements cmake file
+    script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
+
+    if script_goes_on:
         # Default is the current directory
-        module_dir = os.getcwd()
-
-        logger.info('Current directory : %s', module_dir)
-        logger.info('')
-
-        # We absolutely need a Elements cmake file
-        script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
-
-        if script_goes_on:
-            # Default is the current directory
-            file_to_be_deleted = getAllFiles(program_name, module_dir, module_name)
-            if file_to_be_deleted:
-                for file in file_to_be_deleted:
-                    logger.info('File to be deleted: %s' % file)
-                response_key = raw_input('Do you want to continue?(y/n, default: n)')
-                if response_key == 'Y' or response_key =='y':
-                    epcr.removeFilesOnDisk(file_to_be_deleted)
-                    cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
-                    updateCmakeListsFile(module_dir, program_name)
-            else:
-                logger.info('No file found for deletion!')
-                logger.info('')
-
-            logger.info('Script over')
+        file_to_be_deleted = getAllFiles(program_name, module_dir, module_name)
+        if file_to_be_deleted:
+            for elt_file in file_to_be_deleted:
+                logger.info('File to be deleted: %s', elt_file)
+            response_key = raw_input('Do you want to continue?(y/n, default: n)')
+            if response_key == 'Y' or response_key == 'y':
+                epcr.removeFilesOnDisk(file_to_be_deleted)
+                updateCmakeListsFile(module_dir, program_name)
         else:
-            logger.error('No module name found at the current directory : %s' % (module_dir))
-            logger.error('Script stopped...')
-    except Exception as e:
-        logger.exception(e)
-        logger.info('Script stopped...')
+            logger.info('No file found for deletion!')
+            logger.info('')
+
+        logger.info('Script over')
+    else:
+        logger.error('No module name found at the current directory : %s', module_dir)
+        logger.error('Script stopped...')

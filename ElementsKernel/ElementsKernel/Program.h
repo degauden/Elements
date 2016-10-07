@@ -3,29 +3,44 @@
  * @brief define an abstract class for all Elements program
  * @date January 8, 2015
  * @author Pierre Dubath
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
 #ifndef ELEMENTSPROGRAM_H_
 #define ELEMENTSPROGRAM_H_
 
-#include <string>
-#include <utility>
-#include <map>
+#include <string>                       // for string
+#include <utility>                      // for pair
+#include <map>                          // for map
+#include <memory>                       // for unique_ptr
 
 #include <boost/program_options.hpp>
 
 #include "ElementsKernel/Export.h"      // ELEMENTS_API
-#include "ElementsKernel/Exit.h"        // for ExitCode, ExitCode::OK
+#include "ElementsKernel/Exit.h"        // for ExitCode
 
 namespace Elements {
 
 /**
  * @class Program
  * @brief
- * 		Abstract class for all Elements programs
+ *   Abstract class for all Elements programs
  * @details
- * 		This abstract class defines the three interfaces that should
- * 		be implemented by all Elements programs.
+ *   This abstract class defines the three interfaces that should
+ *   be implemented by all Elements programs.
  */
 class ELEMENTS_API Program {
 
@@ -50,7 +65,7 @@ public:
    * @return
    *   A BOOST options description
    */
-  virtual boost::program_options::options_description defineSpecificProgramOptions() ;
+  virtual boost::program_options::options_description defineSpecificProgramOptions();
 
   /**
    * @brief
@@ -61,7 +76,7 @@ public:
    * @return
    *   a pair of  BOOST options description and positional_options_description
    */
-  virtual std::pair<boost::program_options::options_description,boost::program_options::positional_options_description> defineProgramArguments() ;
+  virtual std::pair<boost::program_options::options_description, boost::program_options::positional_options_description> defineProgramArguments();
 
   /**
    * @brief

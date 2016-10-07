@@ -1,176 +1,33 @@
 """
- @file: ElementsKernel/ParseCmakeLists.py
- @author: Nikolaos Apostolakos
-          Nicolas Morisset
-          Astronomy Department of the University of Geneva
+@file: ElementsKernel/ParseCmakeLists.py
+@author: Nikolaos Apostolakos, Nicolas Morisset
 
- @date: 01/07/15
+@date: 01/07/15
 
- Purpose:
- This module parses and updates the <CMakeLists.txt> file
- All these classes are for parsing the macros in this file. Each class
- represents a cmake macro. The "CMakeLists" class uses all the other classes.
+Purpose:
+ This module parses and updates the <CMakeLists.txt> file. It uses the
+ ParseCmakeListsMacros module to parse each cmake macro.
+
+@copyright: 2012-2020 Euclid Science Ground Segment
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 3.0 of the License, or (at your option)
+any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 """
-from __future__ import division, print_function
-from future_builtins import *
 
+import ElementsKernel.ParseCmakeListsMacros as pclm
 import re
-
-
-################################################################################
-
-class ElementsSubdir(object):
-    """
-    Decode the <elements_subdir> macro
-    """
-
-    def __init__(self, name):
-        self.name = name
-
-    def __str__(self):
-        return 'elements_subdir(' + self.name + ')'
-
-################################################################################
-
-class ElementsDependsOnSubdirs(object):
-    """
-    Decode the <elements_depends_on_subdirs> macro
-    """
-
-    def __init__(self, subdir_list):
-        self.subdir_list = subdir_list
-
-    def __str__(self):
-        result = 'elements_depends_on_subdirs('
-        for subdir in self.subdir_list:
-            result += subdir + ' '
-        result = result.strip() + ')'
-        return result
-
-################################################################################
-
-class FindPackage(object):
-    """
-    Decode the <find_package> macro
-    """
-
-    def __init__(self, package, required_components):
-        self.package = package
-        self.required_components_list = required_components
-
-    def __str__(self):
-        result = 'find_package(' + self.package
-        if self.required_components_list:
-            result += ' REQUIRED COMPONENTS'
-        for component in self.required_components_list:
-            result += ' ' + component
-        return result + ')'
-
-################################################################################
-
-class ElementsAddLibrary(object):
-    """
-    Decode the <elements_add_library> macro
-    """
-
-    def __init__(self, name, source_list, link_libraries, include_dirs,
-                 public_headers):
-        self.name = name
-        self.source_list = source_list
-        self.link_libraries_list = link_libraries
-        self.include_dirs_list = include_dirs
-        self.public_headers_list = public_headers
-
-    def __str__(self):
-        result = 'elements_add_library(' + self.name
-        for source in self.source_list:
-            result += ' ' + source
-        if self.link_libraries_list:
-            result += '\n                     LINK_LIBRARIES'
-            for name in self.link_libraries_list:
-                result += ' ' + name
-        if self.include_dirs_list:
-            result += '\n                     INCLUDE_DIRS'
-            for name in self.include_dirs_list:
-                result += ' ' + name
-        if self.public_headers_list:
-            result += '\n                     PUBLIC_HEADERS'
-            for name in self.public_headers_list:
-                result += ' ' + name
-        return result + ')'
-
-################################################################################
-
-class ElementsAddExecutable(object):
-    """
-    Decode the <elements_add_executable> macro
-    """
-
-    def __init__(self, name, source, link_libraries):
-        self.name = name
-        self.source = source
-        self.link_libraries_list = link_libraries
-
-    def __str__(self):
-        result = 'elements_add_executable(' + self.name
-        result += ' ' + self.source
-        if self.link_libraries_list:
-            result += '\n                     LINK_LIBRARIES'
-            for name in self.link_libraries_list:
-                result += ' ' + name
-        result = result.strip() + ')'
-        return result
-
-################################################################################
-
-class ElementsAddPythonExecutable(object):
-    """
-    Decode the <elements_add_python_program> macro
-    """
-
-    def __init__(self, name, module_name):
-        self.name = name
-        self.module_name = module_name
-
-    def __str__(self):
-        result = 'elements_add_python_program(' + self.name
-        result += ' ' + self.module_name
-        result = result.strip() + ')'
-        return result
-
-################################################################################
-
-class ElementsAddUnitTest(object):
-    """
-    Decode the <elements_add_unit_test> macro
-    """
-
-    def __init__(self, class_name, source, link_libraries, include_dir, key_type):
-        self.class_name = class_name
-        self.source_list = source
-        self.link_libraries_list = link_libraries
-        self.include_dir_list = include_dir
-        self.key_type = key_type
-
-    def __str__(self):
-        result = 'elements_add_unit_test(' + self.class_name + ' '
-        if self.source_list:
-            for source in self.source_list:
-                result += source + ' '
-        if self.link_libraries_list:
-            result += '\n                     LINK_LIBRARIES'
-            for name in self.link_libraries_list:
-                result += ' ' + name
-        if self.include_dir_list:
-            result += '\n                     INCLUDE_DIRS'
-            for include in self.include_dir_list:
-                result += ' ' + include
-        if self.key_type:
-            result += '\n                     TYPE ' + self.key_type
-        result = result.strip() + ')'
-        return result
-
-################################################################################
 
 class CMakeLists(object):
     """
@@ -195,50 +52,21 @@ class CMakeLists(object):
         self.elements_remove_cpp_class = None
         self.elements_remove_cpp_program = None
 
-        # here we parse the CMakeLists.txt file
         # Remove all comment lines
-        for_parsing = ''
-        for line in text.splitlines():
-            if '#' in line:
-                for_parsing += line[:line.find('#')] + '\n'
-            else:
-                for_parsing += line + '\n'
+        text_with_no_comment = self._removeComments()
+        #
+        # Here we parse the CMakeLists.txt file
+        #
+        self._getMacroListWithNoParams(text_with_no_comment)
+        self._getMacroListWithParams(text_with_no_comment)
 
-        text = for_parsing
 
-        elements_install_conf_files = re.findall(r"elements_install_conf_files\(.*?\)", text)
-        if elements_install_conf_files:
-            self.elements_install_conf_files = 'elements_install_conf_files()'
-
-        elements_install_python_modules = re.findall(r"elements_install_python_modules\(.*?\)", text)
-        if elements_install_python_modules:
-            self.elements_install_python_modules = 'elements_install_python_modules()'
-
-        elements_install_scripts = re.findall(r"elements_install_scripts\(.*?\)", text)
-        if elements_install_scripts:
-            self.elements_install_scripts = 'elements_install_scripts()'
-
-        elements_subdir_list = re.findall(r"elements_subdir\(.*?\)", text, re.MULTILINE | re.DOTALL)
-        for elements_subdir in elements_subdir_list:
-            name = elements_subdir.replace('\n', ' ').replace('elements_subdir(', '')[:-1].strip()
-            self.elements_subdir_list.append(ElementsSubdir(name))
-
-        elements_depends_on_subdirs_list = re.findall(r"elements_depends_on_subdirs\(.*?\)", text, re.MULTILINE | re.DOTALL)
-        for elements_depends_on_subdirs in elements_depends_on_subdirs_list:
-            names = elements_depends_on_subdirs.replace('elements_depends_on_subdirs(', '')[:-1].strip()
-            self.elements_depends_on_subdirs_list.append(ElementsDependsOnSubdirs(names.split()))
-
-        find_package_list = re.findall(r"find_package\(.*?\)", text, re.MULTILINE | re.DOTALL)
-        for find_package in find_package_list:
-            name = find_package.replace('\n', ' ').replace('find_package(', '')[:-1].strip()
-            components = []
-            if 'REQUIRED COMPONENTS' in name:
-                components = name.split('REQUIRED COMPONENTS')[1].split()
-                name = name.split('REQUIRED COMPONENTS')[0].strip()
-            self.find_package_list.append(FindPackage(name, components))
-
-        elements_add_library_list = re.findall(r"elements_add_library\(.*?\)", text, re.MULTILINE | re.DOTALL)
-        for elements_add_library in elements_add_library_list:
+    def _getMacroListWithParams(self, text):
+        """
+        Look for specific Elements macros (with parameters) and set the object members accordingly
+        """
+        regex_pattern = r"elements_add_library\(.*?\)"
+        for elements_add_library in self._findAllPattern(regex_pattern, text, True):
             content = elements_add_library.replace('\n', ' ').replace('elements_add_library(', '')[:-1].strip().split()
             name = content[0]
             source_list = []
@@ -264,11 +92,15 @@ class CMakeLists(object):
                     include_dirs.append(word)
                 if location == 'PUBLIC_HEADERS':
                     public_headers.append(word)
-            self.elements_add_library_list.append(ElementsAddLibrary(name, source_list, link_libraries, include_dirs, public_headers))
+            self.elements_add_library_list.append(pclm.ElementsAddLibrary(name, source_list,
+                                                                     link_libraries,
+                                                                     include_dirs,
+                                                                     public_headers))
 
-        elements_add_executable_list = re.findall(r"elements_add_executable\(.*?\)", text, re.MULTILINE | re.DOTALL)
-        for elements_add_executable in elements_add_executable_list:
-            content = elements_add_executable.replace('\n', ' ').replace('elements_add_executable(', '')[:-1].strip().split()
+        regex_pattern = r"elements_add_executable\(.*?\)"
+        for elements_add_executable in self._findAllPattern(regex_pattern, text, True):
+            content = elements_add_executable.replace('\n', ' ').replace('elements_add_executable(', '')[:-1]\
+            .strip().split()
             name = content[0]
             source = ''
             link_libraries = []
@@ -281,11 +113,12 @@ class CMakeLists(object):
                     source = word
                 if location == 'LINK_LIBRARIES':
                     link_libraries.append(word)
-            self.elements_add_executable_list.append(ElementsAddExecutable(name, source, link_libraries))
+            self.elements_add_executable_list.append(pclm.ElementsAddExecutable(name, source, link_libraries))
 
-        elements_add_unit_test_list = re.findall(r"elements_add_unit_test\(.*?\)", text, re.MULTILINE | re.DOTALL)
-        for elements_add_unit_test in elements_add_unit_test_list:
-            content = elements_add_unit_test.replace('\n', ' ').replace('elements_add_unit_test(', '')[:-1].strip().split()
+        regex_pattern = r"elements_add_unit_test\(.*?\)"
+        for elements_add_unit_test in self._findAllPattern(regex_pattern, text, True):
+            content = elements_add_unit_test.replace('\n', ' ').replace('elements_add_unit_test(', '')[:-1]\
+            .strip().split()
             name = content[0]
             source_list = []
             link_libraries = []
@@ -310,16 +143,78 @@ class CMakeLists(object):
                     include_dirs.append(word)
                 if location == 'TYPE':
                     key_type = word
-            self.elements_add_unit_test_list.append(ElementsAddUnitTest(name, source_list, link_libraries, include_dirs, key_type))
+            self.elements_add_unit_test_list.append(pclm.ElementsAddUnitTest(name, source_list, link_libraries,
+                                                                             include_dirs, key_type))
         #
         # Python stuff
         #
-        elements_add_python_executable_list = re.findall(r"elements_add_python_program\(.*?\)", text, re.MULTILINE | re.DOTALL)
-        for elements_add_python_program in elements_add_python_executable_list:
-            content = elements_add_python_program.replace('\n', ' ').replace('elements_add_python_program(', '')[:-1].strip().split()
+        regex_pattern = r"elements_add_python_program\(.*?\)"
+        for elements_add_python_program in self._findAllPattern(regex_pattern, text, True):
+            content = elements_add_python_program.replace('\n', ' ').replace('elements_add_python_program(', '')[:-1]\
+            .strip().split()
             name = content[0]
             module_name = content[1]
-            self.elements_add_python_executable_list.append(ElementsAddPythonExecutable(name, module_name))
+            self.elements_add_python_executable_list.append(pclm.ElementsAddPythonExecutable(name, module_name))
+
+
+    def _getMacroListWithNoParams(self, text):
+        """
+        Look for specific Elements macros with no parameters and set the object members accordingly
+        """
+        regex_pattern = r"elements_install_conf_files\(.*?\)"
+        if self._findAllPattern(regex_pattern, text, False):
+            self.elements_install_conf_files = 'elements_install_conf_files()'
+
+        regex_pattern = r"elements_install_python_modules\(.*?\)"
+        if self._findAllPattern(regex_pattern, text, False):
+            self.elements_install_python_modules = 'elements_install_python_modules()'
+
+        regex_pattern = r"elements_install_scripts\(.*?\)"
+        if self._findAllPattern(regex_pattern, text, False):
+            self.elements_install_scripts = 'elements_install_scripts()'
+
+        regex_pattern = r"elements_subdir\(.*?\)"
+        for elements_subdir in self._findAllPattern(regex_pattern, text, True):
+            name = elements_subdir.replace('\n', ' ').replace('elements_subdir(', '')[:-1].strip()
+            self.elements_subdir_list.append(pclm.ElementsSubdir(name))
+
+        regex_pattern = r"elements_depends_on_subdirs\(.*?\)"
+        for elements_depends_on_subdirs in self._findAllPattern(regex_pattern, text, True):
+            names = elements_depends_on_subdirs.replace('elements_depends_on_subdirs(', '')[:-1].strip()
+            self.elements_depends_on_subdirs_list.append(pclm.ElementsDependsOnSubdirs(names.split()))
+
+        regex_pattern = r"find_package\(.*?\)"
+        for find_package in self._findAllPattern(regex_pattern, text, True):
+            name = find_package.replace('\n', ' ').replace('find_package(', '')[:-1].strip()
+            components = []
+            if 'REQUIRED COMPONENTS' in name:
+                components = name.split('REQUIRED COMPONENTS')[1].split()
+                name = name.split('REQUIRED COMPONENTS')[0].strip()
+            self.find_package_list.append(pclm.FindPackage(name, components))
+
+
+    def _removeComments(self):
+        """
+        Remove all comments (with the <#> character et the beginning of the line)
+        """
+        for_parsing = ''
+        for line in self.text.splitlines():
+            if '#' in line:
+                for_parsing += line[:line.find('#')] + '\n'
+            else:
+                for_parsing += line + '\n'
+        return for_parsing
+
+    def _findAllPattern(self, pattern, text_with_nocomments, with_options=True):
+        """
+        Look for a specific pattern in the text
+        """
+        found_pattern = []
+        if with_options:
+            found_pattern = re.findall(pattern, text_with_nocomments, re.MULTILINE | re.DOTALL)
+        else:
+            found_pattern = re.findall(pattern, text_with_nocomments)
+        return found_pattern
 
 
     # Look for the right location for adding the text just after this position
@@ -327,6 +222,7 @@ class CMakeLists(object):
     def _addAfter(text, tag, to_add):
         if tag in text:
             for match in re.finditer(tag + r"\(.*?\)", text, re.MULTILINE | re.DOTALL):
+                # This is an empty loop in order to get the last match.
                 pass
             temp = text[:match.end() + 1]
             rest = text[match.end() + 1:].splitlines()
@@ -342,15 +238,10 @@ class CMakeLists(object):
 
         return text
 
-
-    def __str__(self):
-        # Here we built the CMakeLists.txt file
-        # <text> contains the original contents of the CMakeLists.txt file
-        result = self.text
-        closing_parenthesis = r"(?=[\s\)]).*?\)"
-        leading_spaces = r"((^\s*)|((?<=\n)\s*))"
-        open_parenthesis = r"\(\s*"
-
+    def _remove_elements_macros(self, result):
+        """
+        Remove Elements macros if any from the CMakeLists object
+        """
         # Remove python program from the list if any
         if not self.elements_remove_python_executable is None:
             remove_exe = self.elements_remove_python_executable
@@ -358,7 +249,7 @@ class CMakeLists(object):
                 str_elt = str(elt)
                 if remove_exe in str_elt:
                     self.elements_add_python_executable_list.remove(elt)
-                    result= result.replace(str_elt+'\n','')
+                    result = result.replace(str_elt + '\n', '')
                     self.elements_remove_python_executable = None
 
         # Remove cpp class macro from the list if any
@@ -368,7 +259,7 @@ class CMakeLists(object):
                 str_elt = str(elt)
                 if remove_class in str_elt:
                     self.elements_add_unit_test_list.remove(elt)
-                    result= result.replace(str_elt+'\n','')
+                    result = result.replace(str_elt + '\n', '')
                     self.elements_remove_cpp_class = None
 
         # Remove cpp program macro from the list if any
@@ -378,8 +269,18 @@ class CMakeLists(object):
                 str_elt = str(elt)
                 if remove_prog in str_elt:
                     self.elements_add_executable_list.remove(elt)
-                    result= result.replace(str_elt+'\n','')
+                    result = result.replace(str_elt + '\n', '')
                     self.elements_remove_cpp_program = None
+
+        return result
+
+    def _add_elements_macro_contents(self, result):
+        """
+        Add Elements macro contents from the CMakeLists object
+        """
+        closing_parenthesis = r"(?=[\s\)]).*?\)"
+        leading_spaces = r"((^\s*)|((?<=\n)\s*))"
+        open_parenthesis = r"\(\s*"
 
         for find_package in self.find_package_list:
             if not re.search(leading_spaces + "find_package" + open_parenthesis + find_package.package + \
@@ -406,8 +307,8 @@ class CMakeLists(object):
                                 closing_parenthesis, str(library), result, flags=re.MULTILINE | re.DOTALL)
 
         for exe in self.elements_add_executable_list:
-            if not re.search(leading_spaces + "elements_add_executable" + open_parenthesis + exe.name + closing_parenthesis, \
-                            result, re.MULTILINE | re.DOTALL):
+            if not re.search(leading_spaces + "elements_add_executable" + open_parenthesis + exe.name + \
+                             closing_parenthesis, result, re.MULTILINE | re.DOTALL):
                 result = CMakeLists._addAfter(result, 'elements_add_executable', str(exe))
             else:
                 result = re.sub(leading_spaces + "elements_add_executable" + open_parenthesis + exe.name + \
@@ -429,15 +330,27 @@ class CMakeLists(object):
                 result = re.sub(leading_spaces + "elements_add_python_program" + open_parenthesis + pyexe.name + \
                                 closing_parenthesis, str(pyexe), result, flags=re.MULTILINE | re.DOTALL)
 
-        if not re.search(leading_spaces + "elements_install_python_modules\(.*?\)", result,
+        if not re.search(leading_spaces + r"elements_install_python_modules\(.*?\)", result,
                          re.MULTILINE | re.DOTALL) and self.elements_install_python_modules:
-            result = CMakeLists._addAfter(result, 'elements_install_python_modules', self.elements_install_python_modules)
+            result = CMakeLists._addAfter(result, 'elements_install_python_modules',
+                                          self.elements_install_python_modules)
 
-        if not re.search(leading_spaces + "elements_install_scripts\(.*?\)", result, re.MULTILINE | re.DOTALL) and self.elements_install_scripts:
+        if not re.search(leading_spaces + r"elements_install_scripts\(.*?\)", result, re.MULTILINE | re.DOTALL) and \
+           self.elements_install_scripts:
             result = CMakeLists._addAfter(result, 'elements_install_scripts', self.elements_install_scripts)
 
-        if not re.search(leading_spaces + "elements_install_conf_files\(.*?\)", result, re.MULTILINE | re.DOTALL) and self.elements_install_conf_files:
+        if not re.search(leading_spaces + r"elements_install_conf_files\(.*?\)", result, re.MULTILINE | re.DOTALL) and\
+           self.elements_install_conf_files:
             result = CMakeLists._addAfter(result, 'elements_install_conf_files', self.elements_install_conf_files)
+
+        return result
+
+    def __str__(self):
+        # Here we built the CMakeLists.txt file
+        # <text> contains the original contents of the CMakeLists.txt file
+        result = self.text
+        result = self._remove_elements_macros(result)
+        result = self._add_elements_macro_contents(result)
 
         return result
 

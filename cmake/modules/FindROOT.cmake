@@ -4,7 +4,7 @@
 
 
 if(ROOT_OVERRIDE_PATH)
-  if(NOT ROOTSYS AND NOT ENV{ROOTSYS})
+  if(NOT ROOTSYS AND NOT DEFINED ENV{ROOTSYS})
     message(FATAL_ERROR "You must specify ROOTSYS in conjunction with ROOT_OVERRIDE_PATH.")
   endif()
   #message(STATUS "Overriding CMAKE_PREFIX_PATH looking for ROOT")

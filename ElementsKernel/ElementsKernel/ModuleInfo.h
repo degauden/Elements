@@ -4,6 +4,19 @@
  * configuration of the process.
  * @date Dec 1, 2014
  * @author hubert
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #ifndef ELEMENTSKERNEL_MODULEINFO_H
@@ -15,29 +28,22 @@
 #include <memory>
 #include <dlfcn.h>
 
+#include <boost/filesystem/path.hpp>    // for filesystem::path
+
 // Framework include files
-#include "ElementsKernel/Export.h" // ELEMENTS_API
+#include "ElementsKernel/System.h"      // LIB_PREFIX, LIB_EXTENSION
+#include "ElementsKernel/Export.h"      // ELEMENTS_API
 
 namespace Elements {
 namespace System {
 
-/// constant that represent the common prefix of the libraries
-static std::string LIB_PREFIX = std::string("lib");
-#ifndef __APPLE__
-/// constant that represents the standard extension of the libraries
-static std::string LIB_EXTENSION = std::string("so");
-#else
-static std::string LIB_EXTENSION = std::string("dylib");
-#endif
-/// constant that represents the standard suffix of the libraries:
-/// usually "."+LIB_EXTENSION
-static std::string LIB_SUFFIX = "." + LIB_EXTENSION;
-
 class ELEMENTS_API ModuleInfo {
 public:
   ModuleInfo();
-  ModuleInfo(void *);
+  explicit ModuleInfo(void *);
   const std::string name() const;
+  const std::string libraryName() const;
+  const void* addresse() const;
   operator const Dl_info&() const;
   bool isEmpty() const;
 private:
@@ -69,6 +75,8 @@ ELEMENTS_API const std::string& exeName();
 ELEMENTS_API const std::vector<std::string> linkedModules();
 /// Attach module handle
 ELEMENTS_API void setModuleHandle(ImageHandle handle);
+
+ELEMENTS_API boost::filesystem::path getExecutablePath();
 
 }
 }

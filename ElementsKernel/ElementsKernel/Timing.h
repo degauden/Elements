@@ -1,3 +1,20 @@
+/**
+ *  @file ElementsKernel/Timing.h
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
 #ifndef ELEMENTSKERNEL_TIMING_H
 #define ELEMENTSKERNEL_TIMING_H
 
@@ -121,8 +138,6 @@ ELEMENTS_API int64_t tickCount();
  *
  * Simplify the simultaneous handling of kernel, user and elapsed times of a
  * process.
- *
- * \see {<a href="http://savannah.cern.ch/bugs/?87341">bug #87341</a>}
  */
 class ProcessTime {
 public:

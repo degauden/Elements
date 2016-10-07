@@ -1,36 +1,34 @@
-#
-# Copyright (C) 2012-2020 Euclid Science Ground Segment
-#
-# This library is free software; you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation; either version 3.0 of the License, or (at your option)
-# any later version.
-#
-# This library is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
 """
-File: ElementsKernel/AddCppClass.py
-Author: Nicolas Morisset
-         Astronomy Department of the University of Geneva
+@file ElementsKernel/AddCppClass.py
+@author Nicolas Morisset
 
-Date: 01/07/15
+@date 01/07/15
 
 This script creates a new Elements C++ Class
+
+@copyright: 2012-2020 Euclid Science Ground Segment
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 3.0 of the License, or (at your option)
+any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 """
 
 import argparse
 import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.ParseCmakeLists as pcl
+import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddCppClass')
@@ -52,14 +50,14 @@ def getClassName(str_subdir_class):
     Get the class name and sub directory if any
     """
     name_list = str_subdir_class.split(os.path.sep)
-    className = name_list[-1]
-    subdir = str_subdir_class.replace(className, '')
+    class_name = name_list[-1]
+    subdir = str_subdir_class.replace(class_name, '')
     # Remove end slash
     subdir = subdir[:-1]
-    logger.info('Class name: %s' % className)
+    logger.info('Class name: %s', class_name)
     if subdir:
-        logger.info('Sub directory: %s' % subdir)
-    return subdir, className
+        logger.info('Sub directory: %s', subdir)
+    return subdir, class_name
 
 ################################################################################
 
@@ -185,29 +183,16 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
 ################################################################################
 
 def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
-                        library_dep_list):
+                         library_dep_list):
     """
     Update the <CMakeLists.txt> file for a class
     """
-    logger.info('Updating the <%s> file' % CMAKE_LISTS_FILE)
+    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
-
-    # Backup the file
-    epcr.makeACopy(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
-        f = open(cmake_filename, 'r')
-        data = f.read()
-        f.close()
-        cmake_object = pcl.CMakeLists(data)
-        module_name = cmake_object.elements_subdir_list[0].name
-
-        # Update find_package macro
-        if library_dep_list:
-            for lib in library_dep_list:
-                package_object = pcl.FindPackage(lib, [])
-                cmake_object.find_package_list.append(package_object)
+        cmake_object, module_name = epcr.updateCmakeCommonPart(cmake_filename, library_dep_list)
 
         # Put ElementsKernel as a default
         default_dependency = 'ElementsKernel'
@@ -220,7 +205,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
         # Update ElementsDependsOnSubdirs macro
         if elements_dep_list:
             for mod_dep in elements_dep_list:
-                dep_object = pcl.ElementsDependsOnSubdirs([mod_dep])
+                dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
         # Update elements_add_library macro
@@ -242,16 +227,16 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                 source_list = [source]
                 include_dirs_list = []
                 public_headers_list = [module_name]
-                lib_object = pcl.ElementsAddLibrary(module_name, source_list,
+                lib_object = pclm.ElementsAddLibrary(module_name, source_list,
                                                     link_libs, include_dirs_list,
                                                     public_headers_list)
                 cmake_object.elements_add_library_list.append(lib_object)
 
             # Add unit test
-            source_name = 'tests' + os.sep + 'src' + os.sep + subdir + \
-            class_name + '_test.cpp'
-            unittest_object = pcl.ElementsAddUnitTest(class_name + '_test',
-                                    [source_name], [module_name], [], 'Boost')
+            source_name = 'tests' + os.sep + 'src' + os.sep + subdir + class_name +'_test.cpp'
+            unittest_object = pclm.ElementsAddUnitTest(module_name +'_' + class_name,
+                                                      [source_name], [module_name],
+                                                      [], 'Boost')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
 
     # Write new data
@@ -271,22 +256,22 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
     file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
         script_goes_on = False
-        logger.error('The <%s> class already exists! ' % class_name)
-        logger.error('The header file already exists: <%s>! ' % file_name_path)
+        logger.error('The <%s> class already exists! ', class_name)
+        logger.error('The header file already exists: <%s>! ', file_name_path)
 
     return script_goes_on
 
 ################################################################################
 
 def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
-                    library_dep_list):
+                   library_dep_list):
     """
     Create all necessary files for a cpp class
     """
 
     # Check the class does not exist already
     script_goes_on = isClassFileAlreadyExist(class_name, module_dir, module_name,
-                                          subdir)
+                                             subdir)
     if script_goes_on:
 
         createDirectories(module_dir, module_name, subdir)
@@ -311,6 +296,9 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
 ################################################################################
 
 def defineSpecificProgramOptions():
+    """
+    Define program option(s)
+    """
     description = """
 This script creates an <Elements> class at your current directory (default).
 All necessary structure (directory structure, makefiles etc...)
@@ -337,45 +325,37 @@ will be automatically created for you if any but you have to be inside an
 ################################################################################
 
 def mainMethod(args):
-
+    """ Main method of the AddCppClass Script"""
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddCppClass script ')
     logger.info('#')
 
-    try:
-        # True: no error occured
-        script_goes_on = True
+    elements_dep_list = args.elements_dependency
+    library_dep_list = args.external_dependency
+    (subdir, class_name) = getClassName(args.class_name)
 
-        elements_dep_list = args.elements_dependency
-        library_dep_list = args.external_dependency
-        (subdir, class_name) = getClassName(args.class_name)
+    # Default is the current directory
+    module_dir = os.getcwd()
 
-        # Default is the current directory
-        module_dir = os.getcwd()
+    logger.info('Current directory : %s', module_dir)
+    logger.info('')
 
-        logger.info('Current directory : %s', module_dir)
-        logger.info('')
+    # We absolutely need a Elements cmake file
+    script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
 
-        # We absolutely need a Elements cmake file
-        script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
+    # Check aux files exist
+    if script_goes_on:
+        script_goes_on = epcr.isAuxFileExist(H_TEMPLATE_FILE_IN)
+    if script_goes_on:
+        script_goes_on = epcr.isAuxFileExist(CPP_TEMPLATE_FILE_IN)
 
-        # Check aux files exist
-        if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(H_TEMPLATE_FILE_IN)
-        if script_goes_on:
-            script_goes_on = epcr.isAuxFileExist(CPP_TEMPLATE_FILE_IN)
-
-        # Create CPP class
-        if script_goes_on and createCppClass(module_dir, module_name, subdir,
-                            class_name, elements_dep_list, library_dep_list):
-            logger.info('<%s> class successfully created in <%s>.' %
-                        (class_name, module_dir + os.sep + subdir))
-            # Remove backup file
-            epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
-            logger.info('Script over.')
-        else:
-            logger.error('Script aborted!')
-
-    except Exception as e:
-        logger.exception(e)
-        logger.info('Script stopped...')
+    # Create CPP class
+    if script_goes_on and createCppClass(module_dir, module_name, subdir,
+                        class_name, elements_dep_list, library_dep_list):
+        logger.info('<%s> class successfully created in <%s>.',
+                    class_name, module_dir + os.sep + subdir)
+        # Remove backup file
+        epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
+        logger.info('Script over.')
+    else:
+        logger.error('Script aborted!')
