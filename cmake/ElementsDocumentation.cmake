@@ -93,17 +93,6 @@ include_guard()
           COPYONLY
         )
         message(STATUS "Copy ${r_file} file to ${PROJECT_BINARY_DIR}/doc/sphinx/${r_file_short}")
-        if(NOT SPHINX_PROJECT_RELATED_PAGES)
-          set(SPHINX_PROJECT_RELATED_PAGES "
-Related Pages
-=============
-
-.. toctree::
-   :maxdepth: 2
-")
-        endif()
-        set(SPHINX_PROJECT_RELATED_PAGES "${SPHINX_PROJECT_RELATED_PAGES}
-   ${r_file_short_we}")
       endif()
     endforeach()
 
