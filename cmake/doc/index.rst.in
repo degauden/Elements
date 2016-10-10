@@ -22,7 +22,7 @@ Modules
 
    elements_modules
 
-   @SPHINX_EL_MODULES@
+.. @SPHINX_EL_MODULES@
 
 API Documentation
 =================

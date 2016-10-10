@@ -132,16 +132,6 @@ include_guard()
    ${_py_pack_short}/modules")
 
 
-        if(NOT TARGET sphinx_apidoc_${_py_pack_short})
-          add_custom_target(sphinx_apidoc_${_py_pack_short}
-                            COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short}
-                            COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short} ${_py_pack}
-                            COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
-
-          add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
-        endif()
-
-
         endif()
 
     endforeach()
@@ -197,14 +187,33 @@ Python Package
                              PATH_SUFFIXES doc)
 
 
-#    if(NOT SPHINX_EL_MODULES)
-#      set(SPHINX_EL_MODULES "${_el_pack_short}/index")    
-#    else()
+    if(NOT SPHINX_EL_MODULES)
+      set(SPHINX_EL_MODULES "${_el_pack_short}/index")
+    else()
       set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
    ${_el_pack_short}/index")
-#    endif()
+    endif()
+    
+    if(NOT TARGET sphinx_apidoc_${_el_pack_short})
+       add_custom_target(sphinx_apidoc_${_el_pack_short}
+                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}
+                         COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -e -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short} ${_el_pack}/python
+                         COMMENT "Generating Sphinx API documentation for ${_el_pack_short}" VERBATIM)
+
+       add_dependencies(sphinx sphinx_apidoc_${_el_pack_short})
+    endif()
+    
     
     endforeach()
+
+
+    find_file_to_configure(elements_modules.rst.in
+                           FILETYPE "List of Elements modules"
+                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
+                           OUTPUTNAME "elements_modules.rst"
+                           PATHS ${CMAKE_MODULE_PATH}
+                           PATH_SUFFIXES doc)
+
 
 
     # Generation of the top index.rst file for the project
