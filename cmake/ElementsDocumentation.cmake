@@ -81,20 +81,7 @@ include_guard()
                            PATHS ${CMAKE_MODULE_PATH}
                            PATH_SUFFIXES doc)
 
-    file(GLOB rst-files ${CMAKE_CURRENT_SOURCE_DIR}/doc/*.rst)
-
-    foreach(r_file ${rst-files})
-      get_filename_component(r_file_short ${r_file} NAME)
-      get_filename_component(r_file_short_we ${r_file} NAME_WE)
-      if(NOT r_file_short_we STREQUAL "index")
-        configure_file(
-          "${r_file}"
-          "${PROJECT_BINARY_DIR}/doc/sphinx/${r_file_short}"
-          COPYONLY
-        )
-        message(STATUS "Copy ${r_file} file to ${PROJECT_BINARY_DIR}/doc/sphinx/${r_file_short}")
-      endif()
-    endforeach()
+    configure_files(${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx)
 
 
     if(DOXYGEN_FOUND AND USE_SPHINX_APIDOC AND USE_SPHINX_BREATHE)
@@ -170,39 +157,8 @@ include_guard()
 
       get_filename_component(_el_pack_short ${_el_pack} NAME)
 
-      file(GLOB rst-files ${_el_pack}/doc/*.rst)
+      configure_files(${_el_pack}/doc ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short})
 
-      unset(SPHINX_THIS_RELATED_PAGES)
-
-      foreach(r_file ${rst-files})
-        get_filename_component(r_file_short ${r_file} NAME)
-        get_filename_component(r_file_short_we ${r_file} NAME_WE)
-
-        if(NOT r_file_short_we STREQUAL "index")
-
-          configure_file(
-            "${r_file}"
-            "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${r_file_short}"
-            COPYONLY
-          )
-          message(STATUS "Copy ${r_file} file to ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${r_file_short}")
-
-          if(NOT SPHINX_${_el_pack_short}_RELATED_PAGES)
-            set(SPHINX_${_el_pack_short}_RELATED_PAGES "
-Related Pages
--------------
-
-.. toctree::
-   :maxdepth: 2
-")
-          endif()
-          set(SPHINX_${_el_pack_short}_RELATED_PAGES "${SPHINX_${_el_pack_short}_RELATED_PAGES}
-   ${r_file_short_we}")
-
-        endif()
-      endforeach()
-
-      set(SPHINX_THIS_RELATED_PAGES ${SPHINX_${_el_pack_short}_RELATED_PAGES})
 
       find_file(sphinx_${_el_pack_short}_module_index_file
                 NAMES index.rst
