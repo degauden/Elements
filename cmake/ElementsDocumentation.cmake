@@ -193,7 +193,8 @@ Python Package
       set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
    ${_el_pack_short}/index")
     endif()
-    
+   
+    if(USE_SPHINX_APIDOC)
     if(NOT TARGET sphinx_apidoc_${_el_pack_short})
        add_custom_target(sphinx_apidoc_${_el_pack_short}
                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}
@@ -202,7 +203,7 @@ Python Package
 
        add_dependencies(sphinx sphinx_apidoc_${_el_pack_short})
     endif()
-    
+    endif()
     
     endforeach()
 

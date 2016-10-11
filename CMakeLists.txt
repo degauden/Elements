@@ -22,7 +22,7 @@ set(CXX_SUGGEST_OVERRIDE ON
     FORCE)
 
 # Use only the Doxygen API documentation generation
-set(USE_SPHINX_APIDOC ON
+set(USE_SPHINX_APIDOC OFF
     CACHE STRING "Generates the sphinx API documentation"
     FORCE)
 
