@@ -46,11 +46,5 @@ ElementsConfigVersion.cmake
 .ptp-sync
 .ptp-sync-folder
 .cache
-<<<<<<< HEAD
-.coverage
-sonar-project.properties
-
-=======
 /PAQA
 /sonar-project.properties
->>>>>>> refs/heads/master
