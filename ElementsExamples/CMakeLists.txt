@@ -36,9 +36,14 @@ elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramE
                         INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
 
+# Example of a pure C program with a C++-compatible header file example.
+elements_add_executable(CProgramExample src/CProgram/*.c)
+
+
 #===== Test that the executables do run ========================================
 
 elements_add_test(CppProgramExampleRun COMMAND CppProgramExample)
+elements_add_test(CProgramExampleRun COMMAND CProgramExample)
 elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramExample)
 elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
 
