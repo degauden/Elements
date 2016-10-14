@@ -81,7 +81,7 @@ include_guard()
                            PATHS ${CMAKE_MODULE_PATH}
                            PATH_SUFFIXES doc)
 
-    configure_files(${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx)
+    copy_dir(${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx)
 
 
     if(DOXYGEN_FOUND AND USE_SPHINX_APIDOC AND USE_SPHINX_BREATHE)
@@ -147,7 +147,7 @@ include_guard()
 
       get_filename_component(_el_pack_short ${_el_pack} NAME)
 
-      configure_files(${_el_pack}/doc ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short})
+      copy_dir(${_el_pack}/doc ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short})
 
 
       find_file(sphinx_${_el_pack_short}_module_index_file
