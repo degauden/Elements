@@ -67,7 +67,7 @@ include_guard()
       set(SPHINX_APIDOC_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-apidoc" FORCE)
     endif()
     
-    if(USE_DOXYGEN AND USE_SPHINX_BREATHE)
+    if(USE_DOXYGEN AND DOXYGEN_FOUND AND USE_SPHINX_BREATHE)
       set(APPEND_BREATHE_EXT "extensions.append('breathe')")
     else()
       set(APPEND_BREATHE_EXT "")
@@ -110,7 +110,7 @@ include_guard()
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)
 
-    if(USE_DOXYGEN AND USE_SPHINX_APIDOC)
+    if(USE_DOXYGEN AND DOXYGEN_FOUND AND USE_SPHINX_APIDOC)
       add_dependencies(sphinx doxygen)
     endif()
     add_dependencies(doc sphinx)
@@ -220,7 +220,7 @@ Python Package
     # Generation of the top index.rst file for the project
 
 
-     if(USE_DOXYGEN)
+     if(USE_DOXYGEN AND DOXYGEN_FOUND)
        set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
      else()
        set(SPHINX_ORIGINAL_DOX "")
