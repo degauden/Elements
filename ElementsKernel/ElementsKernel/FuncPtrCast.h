@@ -60,8 +60,6 @@ inline DESTPTR FuncPtrCast(SRCPTR ptr) {
 #endif
 }
 
-
-
 } // namespace System
 } // namespace Elements
 

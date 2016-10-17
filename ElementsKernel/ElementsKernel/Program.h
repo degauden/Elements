@@ -76,7 +76,8 @@ public:
    * @return
    *   a pair of  BOOST options description and positional_options_description
    */
-  virtual std::pair<boost::program_options::options_description, boost::program_options::positional_options_description> defineProgramArguments();
+  virtual std::pair<boost::program_options::options_description,
+                     boost::program_options::positional_options_description> defineProgramArguments();
 
   /**
    * @brief

@@ -502,7 +502,8 @@ inline bool isGreaterOrEqual(const double& left, const double& right)
  * @return
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
-ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right, const int& max_ulps=FLT_DEFAULT_MAX_ULPS);
+ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
+                                             const int& max_ulps=FLT_DEFAULT_MAX_ULPS);
 /**
  * @brief
  *   This function compare 2 doubles with a relative tolerance
@@ -519,7 +520,8 @@ ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
  * @return
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
-ELEMENTS_API bool almostEqual2sComplement(const double& left, const double& right, const int& max_ulps=DBL_DEFAULT_MAX_ULPS);
+ELEMENTS_API bool almostEqual2sComplement(const double& left, const double& right,
+                                             const int& max_ulps=DBL_DEFAULT_MAX_ULPS);
 
 /**
  * @brief
