@@ -185,7 +185,7 @@ macro(configure_files srcDir destDir)
 endmacro(configure_files)
 
 macro(copy_dir srcDir destDir)
-    message(STATUS "Copying directory ${destDir}")
+    message(STATUS "Copying directory the content of ${srcDir} to ${destDir}")
     file(MAKE_DIRECTORY ${destDir})
     file(GLOB templateFiles RELATIVE ${srcDir} ${srcDir}/*)
     foreach(templateFile ${templateFiles})
