@@ -128,22 +128,25 @@ include_guard()
         set(SPHINX_ELEMENTS_PACK_LIST ${SPHINX_ELEMENTS_PACK_LIST} ${_py_pack_main})
 
         if(USE_SPHINX_APIDOC)
-        set(SPHINX_${_el_pack_short}_APIDOC_MODULES "${SPHINX_${_el_pack_short}_APIDOC_MODULES}
+          set(SPHINX_${_el_pack_short}_APIDOC_MODULES "${SPHINX_${_el_pack_short}_APIDOC_MODULES}
    ${_py_pack_short}/modules")
 
 
         endif()
 
     endforeach()
-
+    
+    # This is the list of Elements modules that do contains python packages
     if(SPHINX_ELEMENTS_PACK_LIST)
       list(REMOVE_DUPLICATES SPHINX_ELEMENTS_PACK_LIST)
     endif()
 
+    get_property(proj_package_list GLOBAL PROPERTY PROJ_PACKAGE_LIST)
+
 
     #loop over all Elements module
     # this will create an <module>_index.rst for each of them
-    foreach(_el_pack IN LISTS SPHINX_ELEMENTS_PACK_LIST)
+    foreach(_el_pack IN LISTS proj_package_list)
 
       get_filename_component(_el_pack_short ${_el_pack} NAME)
 
@@ -193,19 +196,34 @@ Python Package
       set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
    ${_el_pack_short}/index")
     endif()
-   
-    if(USE_SPHINX_APIDOC)
-    if(NOT TARGET sphinx_apidoc_${_el_pack_short})
-       add_custom_target(sphinx_apidoc_${_el_pack_short}
-                         COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}
-                         COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -e -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short} ${_el_pack}/python
-                         COMMENT "Generating Sphinx API documentation for ${_el_pack_short}" VERBATIM)
-
-       add_dependencies(sphinx sphinx_apidoc_${_el_pack_short})
-    endif()
-    endif()
     
     endforeach()
+
+
+    foreach (_py_pack IN LISTS proj_python_package_list)
+
+      get_filename_component(_py_pack_short ${_py_pack} NAME)
+      get_filename_component(_py_pack_dir ${_py_pack} PATH)
+      get_filename_component(_py_pack_main ${_py_pack_dir} PATH)
+      get_filename_component(_el_pack_short ${_py_pack_main} NAME)
+
+      if(USE_SPHINX_APIDOC)
+        if(NOT TARGET sphinx_apidoc_${_py_pack_short})
+          add_custom_target(sphinx_apidoc_${_py_pack_short}
+                            COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}
+                            COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -e -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short} ${_py_pack_dir}
+                            COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
+
+          add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
+
+        endif()
+      endif()
+      
+
+
+    endforeach()
+  
+
 
 
     find_file_to_configure(elements_modules.rst.in
