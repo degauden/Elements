@@ -730,7 +730,6 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   endif() # ignore other systems
 
 
-
   #--- Generate config files to be imported by other projects.
   elements_generate_project_config_version_file()
   elements_generate_project_config_file()
