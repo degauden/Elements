@@ -730,7 +730,6 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   endif() # ignore other systems
 
 
-
   #--- Generate config files to be imported by other projects.
   elements_generate_project_config_version_file()
   elements_generate_project_config_file()
@@ -1567,6 +1566,8 @@ macro(elements_subdir name)
   set(subdir_version ${version})
   set_directory_properties(PROPERTIES name ${name})
   set_directory_properties(PROPERTIES version ${version})
+  
+  set_property(GLOBAL APPEND PROPERTY PROJ_PACKAGE_LIST ${CMAKE_CURRENT_SOURCE_DIR})  
 
   # Generate the version header for the package.
   execute_process(COMMAND

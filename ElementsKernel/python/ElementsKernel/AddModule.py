@@ -36,6 +36,7 @@ logger = log.getLogger('AddElementsModule')
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
+AUX_MOD_RST_IN = 'doc_module.rst.in'
 
 ################################################################################
 
@@ -76,6 +77,10 @@ def createModuleDirectories(mod_path, module_name):
     os.makedirs(os.path.join(mod_path, 'doc'))
     os.makedirs(os.path.join(mod_path, 'conf', module_name))
     os.makedirs(os.path.join(mod_path, 'tests', 'src'))
+
+    epcr.copyAuxFile(os.path.join(mod_path, 'doc'), AUX_MOD_RST_IN)
+    mod_rst_file = os.path.join(mod_path, 'doc', AUX_MOD_RST_IN)
+    os.rename(mod_rst_file, mod_rst_file.replace('.in', ''))
 
 ################################################################################
 

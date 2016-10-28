@@ -11,7 +11,7 @@ version="1.0"
 module_name="ModuleTest"
 
 # Create unique directory
-tmploc=$(mktemp -d -t temp.XXXXXX)
+tmploc=$(mktemp -d -t temp1.XXXXXX)
 
 # Clean and exit
 clean_and_exit() {

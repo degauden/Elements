@@ -88,7 +88,7 @@ def multiPathAppend(initial_locations, suffixes):
     result = []
 
     for l in initial_locations:
-        result += [ os.path.join(l, s) for s in suffixes]
+        result += [os.path.join(l, s) for s in suffixes]
 
     return result
 
