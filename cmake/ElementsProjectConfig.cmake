@@ -978,23 +978,26 @@ ${MAIN_PROJECT_CHANGELOG}
                             OUTPUTNAME "${project}.spec"
                             PATHS ${CMAKE_MODULE_PATH})
 
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILDROOT)
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/RPMS)
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SRPMS)
 
-      add_custom_target(rpmbuilddir
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILD
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILDROOT
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/RPMS
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/SRPMS
-                        COMMENT "Generating ${PROJECT_RPM_TOPDIR} as rpmbuild directory" VERBATIM
-      )
 
+      set(RPMBUILD_ARGS "--define=\"_topdir ${PROJECT_RPM_TOPDIR}\"")
+      
+      set(RPMBUILD_EXTRA_ARGS ""
+          CACHE STRING "Pass extra argument to the rpmbuild command line")
+      
+      message(STATUS "${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
 
       add_custom_target(rpm
-                        COMMAND ${rpmbuild_wrap_cmd} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
+                        COMMAND ${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${RPMBUILD_EXTRA_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
                         COMMENT "Generating The RPM Files in ${PROJECT_RPM_TOPDIR}" VERBATIM
       )
+      
 
       add_dependencies(rpm targz)
-      add_dependencies(rpm rpmbuilddir)
 
     endif()
 
