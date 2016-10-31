@@ -2,7 +2,7 @@
 
 # define this variable if you want to keep the tmploc directory
 # for debugging purposes
-export KEEPTEMPDIR=0
+# export KEEPTEMPDIR=1
 
 home_dir=${PWD}
 
@@ -11,7 +11,7 @@ version="1.0"
 module_name="ModuleTest"
 
 # Create unique directory
-tmploc=$(mktemp -d -t temp.XXXXXX)
+tmploc=$(mktemp -d -t temp1.XXXXXX)
 
 # Clean and exit
 clean_and_exit() {
@@ -46,6 +46,11 @@ AddElementsModule $module_name
 if [ $? -ne 0 ]; then
    echo "Error: <AddElementsModule $module_name> command failed!" 1>&2
    clean_and_exit 1
+fi
+
+if [ "$(basename $0)" = "createCommonStructure_test" ]; then
+  # If I have been called standalone, I do a clean.
+  clean_and_exit 0
 fi
 
 # Variables to propagate

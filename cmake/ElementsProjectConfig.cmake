@@ -201,14 +201,14 @@ macro(elements_project project version)
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
       CACHE STRING "path to the XML file for the environment to be used in building and testing")
 
-  set(installed_env_xml \${CMAKE_INSTALL_PREFIX}/${project}BuildEnvironment.xml
+  set(installed_env_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${project}BuildEnvironment.xml
       CACHE STRING "path to the XML file for the environment to be used for installation")
 
 
   set(env_release_xml ${CMAKE_BINARY_DIR}/${project}Environment.xml
       CACHE STRING "path to the XML file for the environment to be used once the project is installed")
 
-  set(installed_env_release_xml \${CMAKE_INSTALL_PREFIX}/${project}Environment.xml
+  set(installed_env_release_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${project}Environment.xml
       CACHE STRING "path to the XML file for the environment to be used once the project is installed")
 
 
@@ -475,8 +475,8 @@ macro(elements_project project version)
                     ${instheader_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/include/${_proj}_INSTALL.h)
     # special installation because the install location can be changed on the fly
-    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \${CMAKE_INSTALL_PREFIX}/include\"\)
-execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/include/${_proj}_INSTALL.h\)")
+    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/include\"\)
+execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/include/${_proj}_INSTALL.h\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   endif()
 
@@ -505,8 +505,8 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
                     ${instmodule_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
     # special install procedure because the install loction can be changed on the fly.
-    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \${CMAKE_INSTALL_PREFIX}/python\"\)
-execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \${CMAKE_INSTALL_PREFIX}/python/${_proj}_INSTALL.py\)")
+    install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/python\"\)
+execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/python/${_proj}_INSTALL.py\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   endif()
 
@@ -702,7 +702,8 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   # - produce environment XML description
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
-  install(CODE "find_package\(ElementsProject\)
+  install(CODE "set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
+find_package\(ElementsProject PATHS ${CMAKE_MODULE_PATH}\)
 message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
 set\(used_elements_projects ${used_elements_projects}\)
 foreach\(other_project ${used_elements_projects}\)
@@ -712,7 +713,8 @@ elements_generate_env_conf\(${installed_env_release_xml} ${installed_project_env
 #  install(FILES ${env_release_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
-  install(CODE "find_package\(ElementsProject\)
+  install(CODE "set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
+find_package\(ElementsProject PATHS ${CMAKE_MODULE_PATH}\)
 message\(STATUS \"Installing: ${installed_env_xml}\"\)
 elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_environment}\)")
 #  install(FILES ${env_xml} DESTINATION ${CMAKE_INSTALL_PREFIX})
@@ -726,7 +728,6 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
          "#!/bin/sh\nexec ${_env_cmd_line} --xml ${env_xml} \"$@\"\n")
     execute_process(COMMAND chmod a+x ${CMAKE_BINARY_DIR}/run)
   endif() # ignore other systems
-
 
 
   #--- Generate config files to be imported by other projects.
@@ -977,23 +978,26 @@ ${MAIN_PROJECT_CHANGELOG}
                             OUTPUTNAME "${project}.spec"
                             PATHS ${CMAKE_MODULE_PATH})
 
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILDROOT)
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/RPMS)
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SRPMS)
 
-      add_custom_target(rpmbuilddir
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILD
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILDROOT
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/RPMS
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/SRPMS
-                        COMMENT "Generating ${PROJECT_RPM_TOPDIR} as rpmbuild directory" VERBATIM
-      )
 
+      set(RPMBUILD_ARGS "--define=\"_topdir ${PROJECT_RPM_TOPDIR}\"")
+      
+      set(RPMBUILD_EXTRA_ARGS ""
+          CACHE STRING "Pass extra argument to the rpmbuild command line")
+      
+      message(STATUS "${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
 
       add_custom_target(rpm
-                        COMMAND ${rpmbuild_wrap_cmd} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
+                        COMMAND ${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${RPMBUILD_EXTRA_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
                         COMMENT "Generating The RPM Files in ${PROJECT_RPM_TOPDIR}" VERBATIM
       )
+      
 
       add_dependencies(rpm targz)
-      add_dependencies(rpm rpmbuilddir)
 
     endif()
 
@@ -1565,6 +1569,8 @@ macro(elements_subdir name)
   set(subdir_version ${version})
   set_directory_properties(PROPERTIES name ${name})
   set_directory_properties(PROPERTIES version ${version})
+  
+  set_property(GLOBAL APPEND PROPERTY PROJ_PACKAGE_LIST ${CMAKE_CURRENT_SOURCE_DIR})  
 
   # Generate the version header for the package.
   execute_process(COMMAND

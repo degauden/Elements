@@ -1,8 +1,11 @@
+.. @PROJECT_NAME@ @CMAKE_PROJECT_VERSION@ - @_el_pack_short@ documentation master file
+
+================
 @_el_pack_short@
 ================
 
-@SPHINX_THIS_MODULE_INDEX@
+.. toctree::
+   :maxdepth: 5
 
-@SPHINX_THIS_PYTHON_PACKAGE@
-
-@SPHINX_THIS_RELATED_PAGES@
+   doc_module
+   modules   

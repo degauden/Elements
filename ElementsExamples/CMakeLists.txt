@@ -36,9 +36,14 @@ elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramE
                         INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
 
+# Example of a pure C program with a C++-compatible header file example.
+elements_add_executable(CProgramExample src/CProgram/*.c)
+
+
 #===== Test that the executables do run ========================================
 
 elements_add_test(CppProgramExampleRun COMMAND CppProgramExample)
+elements_add_test(CProgramExampleRun COMMAND CProgramExample)
 elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramExample)
 elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
 
@@ -205,10 +210,14 @@ elements_install_python_modules(TEST_TIMEOUT 30)
 #    PythonProgramExample is the executable name
 #    ElementsExamples.PythonProgramExample is the source file
 elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramExample)
-
+if(SWIG_FOUND AND PYTHONLIBS_FOUND)
+  elements_add_python_program(SwigProgramExample ElementsExamples.SwigProgramExample)
+endif()
 #===== Test that the python program does run ========================================
 elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
-
+if(SWIG_FOUND AND PYTHONLIBS_FOUND)
+elements_add_test(SwigProgramExampleRun COMMAND SwigProgramExample)
+endif()
 
 elements_install_scripts()
 
