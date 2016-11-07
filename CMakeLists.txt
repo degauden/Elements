@@ -30,6 +30,11 @@ set(USE_SPHINX_BREATHE OFF
     CACHE STRING "Use sphinx C++ API Breathe plugin to bind to doxygen"
     FORCE)
 
+set(HIDE_SYSINC_WARNINGS ON
+    CACHE STRING "Hide System includes warnings by using -isystem instead of -I"
+    FORCE)
+ 
+
 elements_project(Elements 4.1 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
 
