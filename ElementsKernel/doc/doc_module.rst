@@ -1,7 +1,7 @@
 Module Overview <----------------- TO BE WRITTEN ------------------------>
 ==========================================================================
 
-.. important:: Please edit ./ElementsKernel/doc/module.rst to replace this section.
+.. important:: Please edit ./ElementsKernel/doc/doc_module.rst to replace this section.
 
 .. The following sections can be replaced or updated. 
    You may also use a toctree directive for sub documents. 
