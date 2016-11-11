@@ -34,7 +34,7 @@ logger = log.getLogger('CreateElementsProject')
 
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
 AUX_CMAKE_FILE_IN = "Makefile.in"
-AUX_PROJ_RST_IN = "project.rst.in"
+AUX_PROJ_RST_IN = "doc_project.rst.in"
 
 ################################################################################
 
@@ -227,8 +227,6 @@ def mainMethod(args):
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the CreateElementsProject script')
     logger.info('#')
-
-    script_goes_on = True
 
     proj_name = args.project_name
     proj_version = args.project_version

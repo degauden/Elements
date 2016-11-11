@@ -1,9 +1,9 @@
 Project Overview <----------------- TO BE WRITTEN ------------------------>
 ===========================================================================
 
-.. sectionauthor:: Your Name <your.mail@euclid.eu>
+.. sectionauthor:: Hubert Degaudenzi <Hubert.Degauden[AT]unige.ch>
 
-.. important:: Please modify ./doc/project.rst to complete this section.
+.. important:: Please modify ./doc/doc_project.rst to complete this section.
    Adjust title when done.
 
 .. The following sections can be replaced or updated. 
@@ -12,9 +12,12 @@ Project Overview <----------------- TO BE WRITTEN ------------------------>
 Introduction
 ------------
 
-Purpose of this Elements Project.
+The Elements project is a build framework for both C++ and Python. It consists
+of a CMake, C++ and Python software. It provides:
 
-What does it do?
+- the build functionality for the build of C++ libraries and executables,
+- bla
+
 
 Architecture overview
 ---------------------

@@ -45,7 +45,7 @@ static Logging logger = Logging::getLogger("PathSearch");
 //-----------------------------------------------------------------------------
 // Function search
 template<typename T, typename ITER>
-vector<T> pathSearch(std::string searched_name, T directory) {
+vector<T> pathSearch(const std::string& searched_name, T directory) {
 
   // create the resulting vector
   vector<T> searchResults { };
@@ -85,12 +85,12 @@ vector<T> searchOption(string searched_name, T directory,
   return searchResults;
 }
 
-vector<fs::path> pathSearch(string searched_name, fs::path directory,
+vector<fs::path> pathSearch(const string& searched_name, fs::path directory,
     SearchType search_type) {
   return searchOption<fs::path>(searched_name, directory, search_type);
 }
 
-vector<string> pathSearch(string searched_name, string directory,
+vector<string> pathSearch(const string& searched_name, string directory,
     SearchType search_type) {
   return searchOption<string>(searched_name, directory, search_type);
 }
@@ -102,7 +102,7 @@ vector<string> pathSearch(string searched_name, string directory,
  *
  * and call pathSearch(...) for each of them
  */
-vector<fs::path> pathSearchInEnvVariable(std::string file_name,
+vector<fs::path> pathSearchInEnvVariable(const std::string& file_name,
                                             std::string path_like_env_variable,
                                             SearchType search_type) {
 

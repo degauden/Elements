@@ -150,7 +150,7 @@ tests: all
 	-cd $(BUILDDIR) && $(CTEST) -T test $(ARGS)
 
 ifeq ($(VERBOSE),)
-# less verbose install (see GAUDI-1018)
+# less verbose install
 # (emulate the default CMake install target)
 install: all
 	cd $(BUILDDIR) && $(CMAKE) -P cmake_install.cmake | grep -v "^-- Up-to-date:"
