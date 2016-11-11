@@ -3,6 +3,7 @@
 ================================================================
 @PROJECT_NAME@ Documentation
 ================================================================
+* @PROJECT_DESCRIPTION@
 * Version: @CMAKE_PROJECT_VERSION@ 
 
 Project Overview
