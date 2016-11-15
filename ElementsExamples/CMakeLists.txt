@@ -123,8 +123,13 @@ endif(GMOCK_FOUND)
 
 #====== Build Tests =================================================================
 
-find_package(GSL QUIET)
 
+elements_add_executable(BackTraceExample src/program/BackTraceExample.cpp
+                        INCLUDE_DIRS ElementsExamples
+                        LINK_LIBRARIES ElementsExamples)
+elements_add_test(BackTraceFailure COMMAND BackTraceExample FAILS)
+
+find_package(GSL QUIET)
 if(GSL_FOUND)
 elements_add_executable(GslExample src/program/GslExample.cpp
                         INCLUDE_DIRS GSL ElementsExamples
@@ -216,7 +221,7 @@ endif()
 #===== Test that the python program does run ========================================
 elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
-elements_add_test(SwigProgramExampleRun COMMAND SwigProgramExample)
+elements_add_test(SwigProgramExampleRun COMMAND SwigProgramExample LABELS Swig Build)
 endif()
 
 elements_install_scripts()
