@@ -19,4 +19,4 @@ ELEMENTS_API void crashingFunction();
 } // Examples namepace
 } // Elements namespace
 
-#endif // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CRASHINGFUNCTION_H_ 
+#endif // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CRASHINGFUNCTION_H_

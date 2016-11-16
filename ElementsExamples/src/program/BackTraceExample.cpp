@@ -36,17 +36,12 @@ namespace po = boost::program_options;
 using std::map;
 using std::string;
 
-
-
-
 void secondLevelFunction() {
   Logging logger = Logging::getLogger("BackTraceExample");
   logger.info() << "Entering Second Level Function";
 
   crashingFunction();
 }
-
-
 
 void firstLevelFunction() {
   Logging logger = Logging::getLogger("BackTraceExample");
@@ -55,11 +50,9 @@ void firstLevelFunction() {
   secondLevelFunction();
 }
 
-
 class BackTraceExample: public Program {
 
 public:
-
 
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
 
