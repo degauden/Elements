@@ -137,7 +137,7 @@ if(NOT ELEMENTS_FLAGS_SET)
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
-  if(CXX_SUGGEST_OVERRIDE)
+  if(CXX_SUGGEST_OVERRIDE AND (SGS_COMP STREQUAL gcc))
     check_cxx_compiler_flag(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)
     if(CXX_HAS_SUGGEST_OVERRIDE)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override"
