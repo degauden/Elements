@@ -384,8 +384,14 @@ if(ELEMENTS_HIDE_WARNINGS)
 endif()
 
 if( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") )
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
+  check_cxx_compiler_flag(-Qunused-arguments CXX_HAS_MINUS_Q_UNUSED)
+  if(CXX_HAS_MINUS_Q_UNUSED)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
+  endif()
+  check_c_compiler_flag(-Qunused-arguments C_HAS_MINUS_Q_UNUSED)
+  if(C_HAS_MINUS_Q_UNUSED)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
+  endif()
 endif()
 
 #--- Special flags -------------------------------------------------------------
