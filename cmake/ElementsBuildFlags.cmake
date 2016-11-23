@@ -132,6 +132,7 @@ if(NOT ELEMENTS_FLAGS_SET)
       "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
+      
   set(CMAKE_C_FLAGS
       "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -Wno-unused-parameter -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
@@ -384,14 +385,7 @@ if(ELEMENTS_HIDE_WARNINGS)
 endif()
 
 if( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") )
-  check_cxx_compiler_flag(-Qunused-arguments CXX_HAS_MINUS_Q_UNUSED)
-  if(CXX_HAS_MINUS_Q_UNUSED)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
-  endif()
-  check_c_compiler_flag(-Qunused-arguments C_HAS_MINUS_Q_UNUSED)
-  if(C_HAS_MINUS_Q_UNUSED)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
-  endif()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
 endif()
 
 #--- Special flags -------------------------------------------------------------
