@@ -29,7 +29,8 @@
 - Add a pure C program example: ElementsExamples/src/CProgram/cutout.c
 - Add extra arguments passing to the rpmbuild (RPMBUILD_EXTRA_ARGS).
 - Numerous bug fixes and enhancements in the C++, Python and CMake libraries.
-- Add a full description of the various Elements build flags to the Wiki.
+- Add a full description of the various Elements build flags to the Wiki at
+  http://euclid.roe.ac.uk/projects/elements/wiki/GlobalSwitches.
 
 * Tue Mar 22 2016 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 4.0-1
 - This release is foreseen for the Phosphoros version 0.5 project. It
