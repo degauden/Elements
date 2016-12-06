@@ -190,7 +190,7 @@ elements_add_test(CCfitsWorks COMMAND CCfitsExample LABELS CCfits Build)
 endif()
 
 find_package(Cfitsio QUIET)
-if(CFITSIO_FOUND)
+if(CFITSIO_FOUND AND CFITSIO_IS_REENTRANT)
 elements_add_executable(CfitsioExample src/program/CfitsioExample.cpp
                         LINK_LIBRARIES Cfitsio ElementsExamples
                         INCLUDE_DIRS Cfitsio ElementsExamples)

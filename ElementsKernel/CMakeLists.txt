@@ -6,6 +6,7 @@ find_package(Log4CPP REQUIRED)
 #---Libraries---------------------------------------------------------------
 elements_add_library(ElementsKernel src/Lib/*.cpp src/Lib/*.h
                     LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Log4CPP
+                    INCLUDE_DIRS Boost Log4CPP
                     PUBLIC_HEADERS ElementsKernel)
 
 #---Tests-------------------------------------------------------------------
