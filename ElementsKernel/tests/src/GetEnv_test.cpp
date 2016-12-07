@@ -31,8 +31,6 @@
 
 using std::string;
 using std::getenv;                      // standard
-using ::unsetenv;                       // not standard: UNIX version
-using ::setenv;                         // not standard: UNIX version
 
 BOOST_AUTO_TEST_SUITE(GetEnv_test)
 
