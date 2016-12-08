@@ -922,6 +922,11 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
   include(CPack)
 
+  set(RPMBUILD_EXTRA_ARGS ""
+      CACHE STRING "Pass extra argument to the rpmbuild command line")
+
+  option(RPM_NO_CHECK "skip running rpmbuild check when using 'make rpm'" ON)
+
   find_package(Tar QUIET)
   if(TAR_FOUND)
 
@@ -986,10 +991,14 @@ ${MAIN_PROJECT_CHANGELOG}
 
       set(RPMBUILD_ARGS "--define=\"_topdir ${PROJECT_RPM_TOPDIR}\"")
       
-      set(RPMBUILD_EXTRA_ARGS ""
-          CACHE STRING "Pass extra argument to the rpmbuild command line")
+      if(RPM_NO_CHECK) 
       
-      message(STATUS "${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --nocheck")
+      
+      endif()
+      
+      
+      message(STATUS "${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${RPMBUILD_EXTRA_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
 
       add_custom_target(rpm
                         COMMAND ${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${RPMBUILD_EXTRA_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec

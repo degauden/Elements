@@ -90,6 +90,20 @@ export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make install VERBOSE=1 DESTDIR=$RPM_BUILD_ROOT
 
+%check
+export BINARY_TAG=%{bin_tag}
+export VERBOSE=1
+if [[ -z "$EUCLID_BASE" ]]; then
+  export CMAKE_PROJECT_PATH=/opt/euclid
+else
+  export CMAKE_PROJECT_PATH=$EUCLID_BASE
+fi
+export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
+cd $RPM_BUILD_DIR/$BINARY_TAG
+%__make test
+
+
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
