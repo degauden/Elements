@@ -5,6 +5,7 @@ assert sys.version_info >= (2, 6), "Python 2.6 required"
 
 import logging
 
+
 __all__ = []
 
 # Prepare the search path for environment XML files
@@ -12,7 +13,7 @@ path = ['.']
 if 'ENVXMLPATH' in os.environ:
     path.extend(os.environ['ENVXMLPATH'].split(os.pathsep))
 
-import Control
+from . import Control
 
 
 class EnvError(RuntimeError):
@@ -181,7 +182,9 @@ class Script(object):
 
         # apply all the actions
         for action, args in self.opts.actions:
-            apply(getattr(control, action), args)
+            f=getattr(control, action)
+            f(*args)
+            # apply(getattr(control, action), args)
 
         # extract the result env dictionary
         env = control.vars()
@@ -217,7 +220,7 @@ class Script(object):
             template = {'sh':  "export %s='%s'",
                         'csh': "setenv %s '%s'"}.get(self.opts.shell, "%s=%s")
             for nv in sorted(self.env.items()):
-                print template % nv
+                print(template % nv)
 
     def runCmd(self):
         '''

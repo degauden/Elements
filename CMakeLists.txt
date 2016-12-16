@@ -34,10 +34,7 @@ set(USE_SPHINX_BREATHE OFF
     CACHE STRING "Use sphinx C++ API Breathe plugin to bind to doxygen"
     FORCE)
 
- 
-
 elements_project(Elements 4.1 DESCRIPTION "A C++ base framework for the Euclid Software.")
-
 
 # This test does not really fit in a subdirectory.
 
