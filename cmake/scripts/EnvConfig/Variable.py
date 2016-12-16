@@ -90,9 +90,9 @@ class EnvExpander(VariableProcessor):
         if m:
             try:
                 value = (value[:m.start()]
-                         + str(self._env[filter(None, m.groups())[0]])
+                         + str(self._env[list(filter(None, m.groups()))[0]])
                          + value[m.end():])
-            except KeyError, k:
+            except KeyError as k:
                 logging.debug(
                     'KeyError: %s unknown while expanding %s', k, value)
                 return value

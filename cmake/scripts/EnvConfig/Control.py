@@ -3,10 +3,12 @@ Created on Jun 27, 2011
 
 @author: mplajner
 '''
-import xmlModule
+from . import xmlModule
+
 import os
 from time import gmtime, strftime
-import Variable
+
+from . import Variable
 import EnvConfig  # @UnresolvedImport
 import logging
 
@@ -100,7 +102,7 @@ class Environment(object):
                 self.log.debug('trying %s', f)
                 yield f
         try:
-            f = (abspath(f) for f in candidates() if isfile(f)).next()
+            f = next((abspath(f) for f in candidates() if isfile(f)))
             self.log.debug('OK')
             return f
         except StopIteration:
