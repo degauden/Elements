@@ -14,7 +14,7 @@ namespace Elements {
 namespace Examples {
 
 void crashingFunction() {
-  Logging logger = Logging::getLogger();
+  Logging logger = Logging::getLogger("ElementsExamples");
   logger.info() << "Entering Crashing Function";
 
   throw std::logic_error("arrg!");
