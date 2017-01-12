@@ -141,11 +141,12 @@ elements_add_python_program(RemovePythonModule ElementsKernel.RemovePythonModule
 
 elements_install_aux_files()
 
-elements_add_test(CreateElementsProject COMMAND createElementsProject_test)
-elements_add_test(AddElementsModule COMMAND addElementsModule_test)
-elements_add_test(CreateCommonStructure COMMAND createCommonStructure_test)
-elements_add_test(AddCppClass COMMAND addCppClass_test)
-elements_add_test(AddCppProgram COMMAND addCppProgram_test)
-elements_add_test(AddPythonModule COMMAND addPythonModule_test)
-elements_add_test(AddPythonProgram COMMAND addPythonProgram_test)
+elements_add_test(CreateElementsProject COMMAND createElementsProject_test LABELS Creation)
+elements_add_test(AddElementsModule COMMAND addElementsModule_test LABELS Creation)
+elements_add_test(CreateCommonStructure COMMAND createCommonStructure_test LABELS Creation)
+elements_add_test(AddCppClass COMMAND addCppClass_test LABELS Creation)
+elements_add_test(AddCppProgram COMMAND addCppProgram_test LABELS Creation)
+elements_add_test(AddPythonModule COMMAND addPythonModule_test LABELS Creation)
+elements_add_test(AddPythonProgram COMMAND addPythonProgram_test LABELS Creation)
 
+elements_add_test(CreateDependentElementsProjects COMMAND createDependentElementsProjects_test  LABELS Creation)
