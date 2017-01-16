@@ -418,6 +418,12 @@ void ProgramManager::onTerminate() noexcept {
 
     Logging logger = Logging::getLogger("ElementsProgram");
 
+    logger.fatal() << "Crash detected";
+    logger.fatal() << "This is the back trace:";
+    for (auto level: System::backTrace(21, 4)) {
+      logger.fatal() << level;
+    }
+
     // we have an exception
     try {
       rethrow_exception( exc ); // throw to recognize the type
@@ -439,10 +445,6 @@ void ProgramManager::onTerminate() noexcept {
       logger.fatal() << "# ";
     }
 
-    logger.fatal() << "This is the back trace:";
-    for (auto level: System::backTrace(21, 4)) {
-      logger.fatal() << level;
-    }
     abort();
 
   }

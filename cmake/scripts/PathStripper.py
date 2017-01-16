@@ -23,7 +23,7 @@ def StripPath(path):
 
 
 def CleanVariable(varname, shell, out):
-    if environ.has_key(varname):
+    if varname in environ:
         pth = StripPath(environ[varname])
         if shell == "csh" or shell.find("csh") != -1:
             out.write("setenv %s %s" % (varname, pth) + linesep)
@@ -75,7 +75,7 @@ if __name__ == '__main__':
 
     options, args = parser.parse_args()
 
-    if not options.shell and environ.has_key("SHELL"):
+    if not options.shell and "SHELL" in environ:
         options.shell = environ["SHELL"]
 
     if options.envlist:

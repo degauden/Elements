@@ -69,6 +69,7 @@ option(ELEMENTS_CPP14
        "enable C++14 compilation"
        OFF)
 
+
 option(ELEMENTS_PARALLEL
        "enable C++11 parallel support with OpenMP"
        ${ELEMENTS_PARALLEL_DEFAULT})

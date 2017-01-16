@@ -2834,7 +2834,7 @@ endmacro()
 macro(elements_generate_project_config_version_file)
   message(STATUS "Generating ${CMAKE_PROJECT_NAME}ConfigVersion.cmake")
 
-  if(CMAKE_PROJECT_VERSION_PATCH)
+  if(NOT CMAKE_PROJECT_VERSION_PATCH STREQUAL "")
     set(vers_id ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH})
   else()
     set(vers_id ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR})
