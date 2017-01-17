@@ -144,6 +144,7 @@ elements_add_python_program(RemoveCppClass ElementsKernel.RemoveCppClass)
 elements_add_python_program(RemoveCppProgram ElementsKernel.RemoveCppProgram)
 elements_add_python_program(RemovePythonProgram ElementsKernel.RemovePythonProgram)
 elements_add_python_program(RemovePythonModule ElementsKernel.RemovePythonModule)
+elements_add_python_program(ElementsNameCheck ElementsKernel.NameCheck)
 
 elements_install_aux_files()
 
