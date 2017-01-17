@@ -36,13 +36,13 @@ if not 'mkdtemp' in dir(tempfile):
     def mkdtemp():
         """Remplacement for the missing function in the tempfile module"""
         name = os.tmpnam()  # @UndefinedVariable
-        os.mkdir(name, 0700)
+        os.mkdir(name, 0o700)
         return name
 
     def mkstemp():
         """Remplacement for the missing function in the tempfile module"""
         name = os.tmpnam()  # @UndefinedVariable
-        return (os.open(name, os.O_CREAT | os.O_RDWR | os.O_EXCL, 0600),
+        return (os.open(name, os.O_CREAT | os.O_RDWR | os.O_EXCL, 0o600),
                 name)
 else:
     # use the real mkdtemp
