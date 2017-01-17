@@ -70,7 +70,7 @@ class Program(object):
                         continue
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    if key.replace('-', '_') in [k for (k, v) in vars(cmd_options).iteritems() if v]:
+                    if key.replace('-', '_') in [k for (k, v) in vars(cmd_options).items() if v]:
                         continue
                     value = value.strip()
                     if '#' in value:
@@ -158,9 +158,9 @@ class Program(object):
         self._logger.info("# List of all program options")
         self._logger.info("# ---------------------------")
         self._logger.info("#")
-        # for (name,value) in [opt for opt in vars(args).iteritems() if
+        # for (name,value) in [opt for opt in vars(args).items() if
         # opt[1]]:
-        for name, value in [opt for opt in vars(args).iteritems()]:
+        for name, value in [opt for opt in vars(args).items()]:
             self._logger.info(names[name] + ' = ' + str(value))
         self._logger.info("#")
 
@@ -199,7 +199,7 @@ class Program(object):
         if local_search_paths[0] != this_parent_path:
             local_search_paths.insert(0, this_parent_path)
 
-        for name, value in VARIABLE.iteritems():
+        for name, value in VARIABLE.items():
             if value in os.environ:
                 self._env[value] += os.pathsep + joinPath(multiPathAppend(local_search_paths, SUFFIXES[name]))
             else:
