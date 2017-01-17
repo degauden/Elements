@@ -113,6 +113,12 @@ elements_add_unit_test(Sleep tests/src/Sleep_test.cpp
                        EXECUTABLE Sleep_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
+#-----------------------
+# Exception_test
+elements_add_unit_test(Exception tests/src/Exception_test.cpp
+                       EXECUTABLE Exception_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
 
 #if(ELEMENTS_HIDE_WARNINGS)
 #  if(UNIX)
