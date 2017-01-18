@@ -6,6 +6,7 @@ find_package(Log4CPP REQUIRED)
 #---Libraries---------------------------------------------------------------
 elements_add_library(ElementsKernel src/Lib/*.cpp src/Lib/*.h
                     LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Log4CPP
+                    INCLUDE_DIRS Boost Log4CPP
                     PUBLIC_HEADERS ElementsKernel)
 
 #---Tests-------------------------------------------------------------------
@@ -112,6 +113,12 @@ elements_add_unit_test(Sleep tests/src/Sleep_test.cpp
                        EXECUTABLE Sleep_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
+#-----------------------
+# Exception_test
+elements_add_unit_test(Exception tests/src/Exception_test.cpp
+                       EXECUTABLE Exception_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
 
 #if(ELEMENTS_HIDE_WARNINGS)
 #  if(UNIX)
@@ -137,14 +144,16 @@ elements_add_python_program(RemoveCppClass ElementsKernel.RemoveCppClass)
 elements_add_python_program(RemoveCppProgram ElementsKernel.RemoveCppProgram)
 elements_add_python_program(RemovePythonProgram ElementsKernel.RemovePythonProgram)
 elements_add_python_program(RemovePythonModule ElementsKernel.RemovePythonModule)
+elements_add_python_program(ElementsNameCheck ElementsKernel.NameCheck)
 
 elements_install_aux_files()
 
-elements_add_test(CreateElementsProject COMMAND createElementsProject_test)
-elements_add_test(AddElementsModule COMMAND addElementsModule_test)
-elements_add_test(CreateCommonStructure COMMAND createCommonStructure_test)
-elements_add_test(AddCppClass COMMAND addCppClass_test)
-elements_add_test(AddCppProgram COMMAND addCppProgram_test)
-elements_add_test(AddPythonModule COMMAND addPythonModule_test)
-elements_add_test(AddPythonProgram COMMAND addPythonProgram_test)
+elements_add_test(CreateElementsProject COMMAND createElementsProject_test LABELS Creation)
+elements_add_test(AddElementsModule COMMAND addElementsModule_test LABELS Creation)
+elements_add_test(CreateCommonStructure COMMAND createCommonStructure_test LABELS Creation)
+elements_add_test(AddCppClass COMMAND addCppClass_test LABELS Creation)
+elements_add_test(AddCppProgram COMMAND addCppProgram_test LABELS Creation)
+elements_add_test(AddPythonModule COMMAND addPythonModule_test LABELS Creation)
+elements_add_test(AddPythonProgram COMMAND addPythonProgram_test LABELS Creation)
 
+elements_add_test(CreateDependentElementsProjects COMMAND createDependentElementsProjects_test  LABELS Creation)

@@ -51,15 +51,17 @@ namespace System {
  */
 template<typename DESTPTR, typename SRCPTR>
 inline DESTPTR FuncPtrCast(SRCPTR ptr) {
+#ifdef __GNUC__
   union {
     SRCPTR src;
     DESTPTR dst;
   } p2p;
   p2p.src = ptr;
   return p2p.dst;
-}
+#else
+  return reinterpret_cast<DESTPTR>(ptr);
 #endif
-
+}
 
 } // namespace System
 } // namespace Elements

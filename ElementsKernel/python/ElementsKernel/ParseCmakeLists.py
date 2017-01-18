@@ -205,7 +205,8 @@ class CMakeLists(object):
                 for_parsing += line + '\n'
         return for_parsing
 
-    def _findAllPattern(self, pattern, text_with_nocomments, with_options=True):
+    @staticmethod
+    def _findAllPattern(pattern, text_with_nocomments, with_options=True):
         """
         Look for a specific pattern in the text
         """

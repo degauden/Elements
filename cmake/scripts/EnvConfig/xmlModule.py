@@ -6,7 +6,7 @@ Created on Jul 2, 2011
 
 from xml.dom import minidom
 import logging
-from cPickle import load, dump
+from pickle import load, dump
 from hashlib import md5  # pylint: disable=E0611
 import os
 

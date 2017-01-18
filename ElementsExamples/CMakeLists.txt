@@ -36,9 +36,14 @@ elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramE
                         INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
 
+# Example of a pure C program with a C++-compatible header file example.
+elements_add_executable(CProgramExample src/CProgram/*.c)
+
+
 #===== Test that the executables do run ========================================
 
 elements_add_test(CppProgramExampleRun COMMAND CppProgramExample)
+elements_add_test(CProgramExampleRun COMMAND CProgramExample)
 elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramExample)
 elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
 
@@ -117,8 +122,13 @@ endif(GMOCK_FOUND)
 
 #====== Build Tests =================================================================
 
-find_package(GSL QUIET)
 
+elements_add_executable(BackTraceExample src/program/BackTraceExample.cpp
+                        INCLUDE_DIRS ElementsExamples
+                        LINK_LIBRARIES ElementsExamples)
+elements_add_test(BackTraceFailure COMMAND BackTraceExample FAILS)
+
+find_package(GSL QUIET)
 if(GSL_FOUND)
 elements_add_executable(GslExample src/program/GslExample.cpp
                         INCLUDE_DIRS GSL ElementsExamples
@@ -179,7 +189,7 @@ elements_add_test(CCfitsWorks COMMAND CCfitsExample LABELS CCfits Build)
 endif()
 
 find_package(Cfitsio QUIET)
-if(CFITSIO_FOUND)
+if(CFITSIO_FOUND AND CFITSIO_IS_REENTRANT)
 elements_add_executable(CfitsioExample src/program/CfitsioExample.cpp
                         LINK_LIBRARIES Cfitsio ElementsExamples
                         INCLUDE_DIRS Cfitsio ElementsExamples)
@@ -204,10 +214,14 @@ elements_install_python_modules(TEST_TIMEOUT 30)
 #    PythonProgramExample is the executable name
 #    ElementsExamples.PythonProgramExample is the source file
 elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramExample)
-
+if(SWIG_FOUND AND PYTHONLIBS_FOUND)
+  elements_add_python_program(SwigProgramExample ElementsExamples.SwigProgramExample)
+endif()
 #===== Test that the python program does run ========================================
 elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
-
+if(SWIG_FOUND AND PYTHONLIBS_FOUND)
+elements_add_test(SwigProgramExampleRun COMMAND SwigProgramExample LABELS Swig Build)
+endif()
 
 elements_install_scripts()
 

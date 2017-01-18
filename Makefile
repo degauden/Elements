@@ -101,18 +101,15 @@ BUILDDIR := $(CURDIR)/$(BUILD_SUBDIR)
 ifneq ($(USE_NINJA),)
   # enable Ninja
   override CMAKEFLAGS += -GNinja
-  ifneq ($(VERBOSE),)
-    NINJAFLAGS := -v $(NINJAFLAGS)
-  endif
   BUILD_CONF_FILE := build.ninja
-  BUILD_CMD := $(NINJA) -C $(BUILD_SUBDIR) $(NINJAFLAGS)
-#  BUILD_CMD := cd $(BUILD_SUBDIR) && $(NINJA) $(NINJAFLAGS)
+  BUILDFLAGS := $(NINJAFLAGS)
+  ifneq ($(VERBOSE),)
+    BUILDFLAGS := -v $(BUILDFLAGS)
+  endif
 else
   BUILD_CONF_FILE := Makefile
-  BUILD_CMD := $(MAKE) -C $(BUILD_SUBDIR)
 endif
-
-
+BUILD_CMD := $(CMAKE) --build $(BUILD_SUBDIR) --target
 
 # default target
 all:
@@ -120,13 +117,13 @@ all:
 # deep clean
 purge:
 	$(RM) -r $(BUILDDIR) $(CURDIR)/InstallArea/$(BINARY_TAG)
-	find $(CURDIR) -type f -name "*.pyc" -exec $(RM) -v \{} \;
+	find $(CURDIR) "(" -name "InstallArea" -prune -o -name "*.pyc" ")" -a -type f -exec $(RM) -v \{} \;
 	find $(CURDIR) -depth -type d -name "__pycache__" -exec $(RM) -rv \{} \;
 
 # delegate any target to the build directory (except 'purge')
 ifneq ($(MAKECMDGOALS),purge)
 %: $(BUILDDIR)/$(BUILD_CONF_FILE) FORCE
-	+$(BUILD_CMD) $*
+	+$(BUILD_CMD) $* -- $(BUILDFLAGS)
 endif
 
 # aliases
@@ -142,13 +139,22 @@ endif
 # This wrapping around the test target is used to ensure the generation of
 # the XML output from ctest.
 test: $(BUILDDIR)/$(BUILD_CONF_FILE)
-	cd $(BUILDDIR) && $(CTEST) -T Test $(ARGS)
+	$(RM) -r $(BUILDDIR)/Testing $(BUILDDIR)/html
+	-cd $(BUILDDIR) && $(CTEST) -T test $(ARGS)
 
 
 # This target ensures that the "all" target is called before
 # running the tests (unlike the "test" default target of CMake)
 tests: all
-	$(BUILD_CMD) test
+	$(RM) -r $(BUILDDIR)/Testing $(BUILDDIR)/html
+	-cd $(BUILDDIR) && $(CTEST) -T test $(ARGS)
+
+ifeq ($(VERBOSE),)
+# less verbose install
+# (emulate the default CMake install target)
+install: all
+	cd $(BUILDDIR) && $(CMAKE) -P cmake_install.cmake | grep -v "^-- Up-to-date:"
+endif
 
 # ensure that the target are always passed to the CMake Makefile
 FORCE:

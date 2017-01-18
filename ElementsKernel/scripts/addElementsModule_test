@@ -1,5 +1,5 @@
 #!/bin/sh
-export KEEPTEMPDIR=1
+# export KEEPTEMPDIR=1
 
 home_dir=${PWD}
 
@@ -21,6 +21,7 @@ local_clean_exit() {
   if [ -z "${KEEPTEMPDIR}" ]; then
     rm -rf ${tmploc}
   fi
+  
   exit $1
 }
 

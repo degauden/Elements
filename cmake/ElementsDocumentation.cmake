@@ -1,3 +1,6 @@
+include_guard()
+
+
   add_custom_target(doc
                     COMMENT "Generating API documentation" VERBATIM)
 
@@ -45,7 +48,7 @@
     add_dependencies(doc doxygen)
 
 
-  endif()
+    endif()
 
   endif()
 
@@ -65,8 +68,8 @@
     if(NOT SPHINX_APIDOC_OPTIONS)
       set(SPHINX_APIDOC_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-apidoc" FORCE)
     endif()
-
-    if(USE_DOXYGEN AND USE_SPHINX_BREATHE)
+    
+    if(USE_DOXYGEN AND DOXYGEN_FOUND AND USE_SPHINX_BREATHE)
       set(APPEND_BREATHE_EXT "extensions.append('breathe')")
     else()
       set(APPEND_BREATHE_EXT "")
@@ -80,31 +83,7 @@
                            PATHS ${CMAKE_MODULE_PATH}
                            PATH_SUFFIXES doc)
 
-    file(GLOB rst-files ${CMAKE_CURRENT_SOURCE_DIR}/doc/*.rst)
-
-    foreach(r_file ${rst-files})
-      get_filename_component(r_file_short ${r_file} NAME)
-      get_filename_component(r_file_short_we ${r_file} NAME_WE)
-      if(NOT r_file_short_we STREQUAL "index")
-        configure_file(
-          "${r_file}"
-          "${PROJECT_BINARY_DIR}/doc/sphinx/${r_file_short}"
-          COPYONLY
-        )
-        message(STATUS "Copy ${r_file} file to ${PROJECT_BINARY_DIR}/doc/sphinx/${r_file_short}")
-        if(NOT SPHINX_PROJECT_RELATED_PAGES)
-          set(SPHINX_PROJECT_RELATED_PAGES "
-Related Pages
-=============
-
-.. toctree::
-   :maxdepth: 2
-")
-        endif()
-        set(SPHINX_PROJECT_RELATED_PAGES "${SPHINX_PROJECT_RELATED_PAGES}
-   ${r_file_short_we}")
-      endif()
-    endforeach()
+    copy_dir(${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx)
 
 
     if(DOXYGEN_FOUND AND USE_SPHINX_APIDOC AND USE_SPHINX_BREATHE)
@@ -133,7 +112,7 @@ Related Pages
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)
 
-    if(USE_DOXYGEN AND USE_SPHINX_APIDOC)
+    if(USE_DOXYGEN AND DOXYGEN_FOUND AND USE_SPHINX_APIDOC)
       add_dependencies(sphinx doxygen)
     endif()
     add_dependencies(doc sphinx)
@@ -151,65 +130,30 @@ Related Pages
         set(SPHINX_ELEMENTS_PACK_LIST ${SPHINX_ELEMENTS_PACK_LIST} ${_py_pack_main})
 
         if(USE_SPHINX_APIDOC)
-        set(SPHINX_${_el_pack_short}_APIDOC_MODULES "${SPHINX_${_el_pack_short}_APIDOC_MODULES}
+          set(SPHINX_${_el_pack_short}_APIDOC_MODULES "${SPHINX_${_el_pack_short}_APIDOC_MODULES}
    ${_py_pack_short}/modules")
 
-
-        add_custom_target(sphinx_apidoc_${_py_pack_short}
-                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short}
-                          COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -f -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${_py_pack_short} ${_py_pack}
-                          COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
-
-        add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
 
         endif()
 
     endforeach()
-
+    
+    # This is the list of Elements modules that do contains python packages
     if(SPHINX_ELEMENTS_PACK_LIST)
       list(REMOVE_DUPLICATES SPHINX_ELEMENTS_PACK_LIST)
     endif()
 
+    get_property(proj_package_list GLOBAL PROPERTY PROJ_PACKAGE_LIST)
+
 
     #loop over all Elements module
     # this will create an <module>_index.rst for each of them
-    foreach(_el_pack IN LISTS SPHINX_ELEMENTS_PACK_LIST)
+    foreach(_el_pack IN LISTS proj_package_list)
 
       get_filename_component(_el_pack_short ${_el_pack} NAME)
 
-      file(GLOB rst-files ${_el_pack}/doc/*.rst)
+      copy_dir(${_el_pack}/doc ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short})
 
-      unset(SPHINX_THIS_RELATED_PAGES)
-
-      foreach(r_file ${rst-files})
-        get_filename_component(r_file_short ${r_file} NAME)
-        get_filename_component(r_file_short_we ${r_file} NAME_WE)
-
-        if(NOT r_file_short_we STREQUAL "index")
-
-          configure_file(
-            "${r_file}"
-            "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${r_file_short}"
-            COPYONLY
-          )
-          message(STATUS "Copy ${r_file} file to ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}/${r_file_short}")
-
-          if(NOT SPHINX_${_el_pack_short}_RELATED_PAGES)
-            set(SPHINX_${_el_pack_short}_RELATED_PAGES "
-Related Pages
--------------
-
-.. toctree::
-   :maxdepth: 2
-")
-          endif()
-          set(SPHINX_${_el_pack_short}_RELATED_PAGES "${SPHINX_${_el_pack_short}_RELATED_PAGES}
-   ${r_file_short_we}")
-
-        endif()
-      endforeach()
-
-      set(SPHINX_THIS_RELATED_PAGES ${SPHINX_${_el_pack_short}_RELATED_PAGES})
 
       find_file(sphinx_${_el_pack_short}_module_index_file
                 NAMES index.rst
@@ -248,42 +192,83 @@ Python Package
                              PATH_SUFFIXES doc)
 
 
+    if(NOT SPHINX_EL_MODULES)
+      set(SPHINX_EL_MODULES "${_el_pack_short}/index")
+    else()
       set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
    ${_el_pack_short}/index")
-
+    endif()
+    
     endforeach()
 
+
+    foreach (_py_pack IN LISTS proj_python_package_list)
+
+      get_filename_component(_py_pack_short ${_py_pack} NAME)
+      get_filename_component(_py_pack_dir ${_py_pack} PATH)
+      get_filename_component(_py_pack_main ${_py_pack_dir} PATH)
+      get_filename_component(_el_pack_short ${_py_pack_main} NAME)
+
+      if(USE_SPHINX_APIDOC)
+        if(NOT TARGET sphinx_apidoc_${_py_pack_short})
+          add_custom_target(sphinx_apidoc_${_py_pack_short}
+                            COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}
+                            COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -e -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short} ${_py_pack_dir}
+                            COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
+
+          add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
+
+        endif()
+      endif()
+      
+
+
+    endforeach()
+  
+
+
+
+    find_file_to_configure(elements_modules.rst.in
+                           FILETYPE "List of Elements modules"
+                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
+                           OUTPUTNAME "elements_modules.rst"
+                           PATHS ${CMAKE_MODULE_PATH}
+                           PATH_SUFFIXES doc)
 
 
 
     # Generation of the top index.rst file for the project
+
+
+     if(USE_DOXYGEN AND DOXYGEN_FOUND)
+       set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
+     else()
+       set(SPHINX_ORIGINAL_DOX "")
+     endif()
+
+
     find_file(sphinx_main_project_index_file
               NAMES index.rst
               PATHS ${CMAKE_SOURCE_DIR}
               PATH_SUFFIXES doc
               NO_DEFAULT_PATH)
 
+
     if(sphinx_main_project_index_file)
-      file(READ ${sphinx_main_project_index_file} SPHINX_MAIN_PROJECT_INDEX)
-      message(STATUS "Using ${sphinx_main_project_index_file} for the main index of the project")
+      configure_file(
+                     "${sphinx_main_project_index_file}"
+                     "${PROJECT_BINARY_DIR}/doc/sphinx/index.rst"
+                     COPYONLY
+                    )
+    else()
+      find_file_to_configure(index.rst.in
+                             FILETYPE "Sphinx index"
+                             OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
+                             OUTPUTNAME "index.rst"
+                             PATHS ${CMAKE_MODULE_PATH}
+                             PATH_SUFFIXES doc)
     endif()
 
-
-   if(USE_DOXYGEN)
-     set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
-   else()
-     set(SPHINX_ORIGINAL_DOX "")
-   endif()
-
-
-   find_file_to_configure(index.rst.in
-                          FILETYPE "Sphinx index"
-                          OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
-                          OUTPUTNAME "index.rst"
-                          PATHS ${CMAKE_MODULE_PATH}
-                          PATH_SUFFIXES doc)
-
-
-  endif()
+    endif()
 
   endif()

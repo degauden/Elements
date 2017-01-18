@@ -709,7 +709,6 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   endif() # ignore other systems
 
 
-
   #--- Generate config files to be imported by other projects.
   elements_generate_project_config_version_file()
   elements_generate_project_config_file()
@@ -958,6 +957,11 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
   include(CPack)
 
+  set(RPMBUILD_EXTRA_ARGS ""
+      CACHE STRING "Pass extra argument to the rpmbuild command line")
+
+  option(RPM_NO_CHECK "skip running rpmbuild check when using 'make rpm'" ON)
+
   find_package(Tar QUIET)
   if(TAR_FOUND)
 
@@ -1014,23 +1018,30 @@ ${MAIN_PROJECT_CHANGELOG}
                             OUTPUTNAME "${project}.spec"
                             PATHS ${CMAKE_MODULE_PATH})
 
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILDROOT)
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/RPMS)
+     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SRPMS)
 
-      add_custom_target(rpmbuilddir
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILD
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/BUILDROOT
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/RPMS
-                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_RPM_TOPDIR}/SRPMS
-                        COMMENT "Generating ${PROJECT_RPM_TOPDIR} as rpmbuild directory" VERBATIM
-      )
 
+      set(RPMBUILD_ARGS "--define=\"_topdir ${PROJECT_RPM_TOPDIR}\"")
+      
+      if(RPM_NO_CHECK) 
+      
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --nocheck")
+      
+      endif()
+      
+      
+      message(STATUS "${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${RPMBUILD_EXTRA_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
 
       add_custom_target(rpm
-                        COMMAND ${rpmbuild_wrap_cmd} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
+                        COMMAND ${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${RPMBUILD_EXTRA_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec
                         COMMENT "Generating The RPM Files in ${PROJECT_RPM_TOPDIR}" VERBATIM
       )
+      
 
       add_dependencies(rpm targz)
-      add_dependencies(rpm rpmbuilddir)
 
     endif()
 
@@ -1610,6 +1621,8 @@ macro(elements_subdir name)
   set(subdir_version ${version})
   set_directory_properties(PROPERTIES name ${name})
   set_directory_properties(PROPERTIES version ${version})
+  
+  set_property(GLOBAL APPEND PROPERTY PROJ_PACKAGE_LIST ${CMAKE_CURRENT_SOURCE_DIR})  
 
   # Generate the version header for the package.
   execute_process(COMMAND
@@ -2891,7 +2904,7 @@ endmacro()
 macro(elements_generate_project_config_version_file)
   message(STATUS "Generating ${CMAKE_PROJECT_NAME}ConfigVersion.cmake")
 
-  if(CMAKE_PROJECT_VERSION_PATCH)
+  if(NOT CMAKE_PROJECT_VERSION_PATCH STREQUAL "")
     set(vers_id ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH})
   else()
     set(vers_id ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR})

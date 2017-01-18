@@ -1,0 +1,4 @@
+.. toctree::
+   :maxdepth: 5
+
+   @SPHINX_EL_MODULES@

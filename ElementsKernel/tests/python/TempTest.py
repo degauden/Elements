@@ -39,6 +39,7 @@ class TestCase(unittest.TestCase):
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)
+        del self.tmpdir
 
     def testName(self):
         name1 = str(self.tmpdir)

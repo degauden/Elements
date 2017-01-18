@@ -1,3 +1,38 @@
+* Mon Dec 05 2016 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 4.1-1
+- New version of the documentation generation system
+- Add backtrace feature. It displays the stack trace for the crashes. It equips
+  the binary built ontop of the ElementsKernel/Program.h class and there is an
+  example in the ElementsExamples module. This is especially helpful for the
+  forensic study of production crashes.
+- Fix valgrind issues for unbalanced new/delete of smart pointers
+- Add python ElementsKernel.Temporary.TempEnv class for using a temporary
+  environment that will be forgotten after the destruction of the instance.
+- Add C++ Elements::TempEnv class that has to same function has the one above
+  in python. Very useful for the creation of elaborate tests.
+- Add 2 CMake options, SPHINX_BUILD_OPTIONS and SPHINX_APIDOC_OPTIONS ot be
+  added to the CMAKEFLAGS environment variable if needed.
+- Make the python and internal script compatible with python 3.
+- Add script to generate <project>_INSTALL.h header file and python <project>_INSTALL.py
+  module that contain the install location.
+- Add full RPATH handling for the install location.
+- Add a flag to activate C++14 (ELEMENTS_CPP14). It is OFF by default.
+- Fix the error reporting of the "make tests" command. Now it returns the exit
+  code to the calling shell.
+- Add a flag to ignore warnings issued by external included files (like Eigen3
+  for example). The flag is called HIDE_SYSINC_WARNINGS and it uses -isystem instead
+  of -I for the included external path. It is OFF by default.
+- Add the possibility to pass boolean option to the python scripts.
+  This is the redmine issue #2708 (Marco Frailis)
+- Add the CXX_SUGGEST_OVERRIDE option. It warns about overriding virtual
+  functions that are not marked with the override keyword.
+- Add the possibility to add an offset for the install location at install time only (for experts only). .
+- Add a pure C program example: ElementsExamples/src/CProgram/cutout.c
+- Add extra arguments passing to the rpmbuild (RPMBUILD_EXTRA_ARGS).
+- Numerous bug fixes and enhancements in the C++, Python and CMake libraries.
+- Add a full description of the various Elements build flags to the Wiki at
+  http://euclid.roe.ac.uk/projects/elements/wiki/GlobalSwitches.
+- Fix Python 3 compatibility issues.
+
 * Tue Mar 22 2016 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 4.0-1
 - This release is foreseen for the Phosphoros version 0.5 project. It
   also include the first integration of the Sphinx/Doxygen implementation.

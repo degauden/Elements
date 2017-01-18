@@ -34,6 +34,7 @@ logger = log.getLogger('CreateElementsProject')
 
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
 AUX_CMAKE_FILE_IN = "Makefile.in"
+AUX_PROJ_RST_IN = "doc_project.rst.in"
 
 ################################################################################
 
@@ -164,6 +165,13 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
     cmakefile = os.path.join(project_dir, AUX_CMAKE_FILE_IN)
     os.rename(cmakefile, cmakefile.replace('.in', ''))
 
+    project_doc_dir = os.path.join(project_dir, "doc")
+    os.makedirs(project_doc_dir)
+    epcr.copyAuxFile(project_doc_dir, AUX_PROJ_RST_IN)
+    project_rst_file = os.path.join(project_doc_dir, AUX_PROJ_RST_IN)
+    os.rename(project_rst_file, project_rst_file.replace('.in', ''))
+
+
     substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects)
 
 ################################################################################
@@ -219,8 +227,6 @@ def mainMethod(args):
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the CreateElementsProject script')
     logger.info('#')
-
-    script_goes_on = True
 
     proj_name = args.project_name
     proj_version = args.project_version

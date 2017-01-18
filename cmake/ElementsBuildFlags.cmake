@@ -107,7 +107,7 @@ option(USE_SPHINX_APIDOC
 
 option(USE_SPHINX_BREATHE
        "Use sphinx C++ API Breathe plugin to bind to doxygen"
-       ON)
+       OFF)
 
 option(ELEMENTS_USE_RPATH
        "Use full RPATH for both build and installation"
@@ -135,12 +135,13 @@ if(NOT ELEMENTS_FLAGS_SET)
       "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
+      
   set(CMAKE_C_FLAGS
       "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -Wno-unused-parameter -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
-  if(CXX_SUGGEST_OVERRIDE)
+  if(CXX_SUGGEST_OVERRIDE AND (SGS_COMP STREQUAL gcc))
     check_cxx_compiler_flag(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)
     if(CXX_HAS_SUGGEST_OVERRIDE)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override"
@@ -388,7 +389,6 @@ endif()
 
 if( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
 endif()
 
 #--- Special flags -------------------------------------------------------------

@@ -26,6 +26,7 @@
 #include <cstdio>
 #include <utility>
 #include <exception>
+#include <type_traits>
 
 #include "ElementsKernel/Exit.h"
 
@@ -107,16 +108,14 @@ public:
    * The passed parameters can be of any type the &lt;&lt; operator of the
    * std::stringstream can handle.
    * @param message The message to append
-   * @return A reference to the Exception with the appended message
    */
   template <typename T>
-  Exception& operator<<(const T& message) {
+  void appendMessage(const T& message) {
     std::stringstream new_message;
     new_message << m_error_msg << message;
     m_error_msg = new_message.str();
-    return *this;
   }
-
+  
 protected:
   /** Error message.
    */
@@ -156,6 +155,12 @@ private:
   };
 
 };
+
+template <typename Ex, typename T, typename=typename std::enable_if<std::is_base_of<Exception, typename std::remove_reference<Ex>::type>::value>::type>
+auto operator<<(Ex&& ex, const T& message) -> decltype(std::forward<Ex>(ex)) {
+  ex.appendMessage(message);
+  return std::forward<Ex>(ex);
+}
 
 } // namespace Elements
 
