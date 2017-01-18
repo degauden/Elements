@@ -35,13 +35,19 @@ import ssl
 
 logger = log.getLogger('NameCheck')
 
-def getInfo(name, db_url):
-    full_url = db_url + "/NameCheck/exists?name=%s" % name
+TYPES = ["cmake", "library", "executable"]
+DEFAULT_TYPE = "cmake"
+
+def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
+    full_url = db_url + "/NameCheck/exists?name=%s&type=%s" % (name, entity_type)
     logger.debug("The url for the name request: %s" % full_url)
     req = urllib2.Request(full_url, headers={ 'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' })
     gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-    info = urllib2.urlopen(req, context=gcontext).read()
-    return json.loads(info)
+    info = json.loads(urllib2.urlopen(req, context=gcontext).read())
+    for u in ["url", "private_url"]:
+        if u in info and info[u]:
+            info[u] = db_url + info[u]
+    return info
 
 
 ################################################################################
@@ -53,16 +59,18 @@ def defineSpecificProgramOptions():
     description = """
     This script checks a name used for a software entity (project, module
     or product) against the URL stored in the ELEMENTS_NAMING_DB_URL. It
-    return 
-    - 0 if the entity exists
-    - 1 if the entity doesn't exist
-    - 2 if the naming DB is not reachable
+    return \n
+    - 0 if the entity exists\n
+    - 1 if the entity doesn't exist\n
+    - 2 if the naming DB is not reachable\n
+    - 3 if there was an issue querying the DB\n
     """
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('entity_name', metavar='entity-name',
                         type=str,
                         help='Entitiy name')
     parser.add_argument('-U', '--url', default=os.environ.get("ELEMENTS_NAMING_DB_URL", ""), help='URL for the naming database')
+    parser.add_argument('-t', '--type', default=DEFAULT_TYPE, choices=TYPES, help='Type for the check')
 
     return parser
 
@@ -82,15 +90,20 @@ def mainMethod(args):
         logger.critical("The Elements Naming DB URL is not valid")
         exit_code = 2
     else:
-        info = getInfo(entity_name, url)
+        info = getInfo(entity_name, url, args.type)
 
-        if info["exists"]:
-            logger.warn("The \"%s\" name already exists", entity_name)
-            logger.warn("It is of type: %s", info["type"])
-            exit_code = 0
+        if info["error"]:
+            logger.error("There was an error querying the DB: %s", info["message"])
+            exit_code = 3
         else:
-            logger.warn("The \"%s\" name doesn't exist", entity_name)
-            exit_code = 1
+            if info["exists"]:
+                logger.warn("The \"%s\" name for the %s type already exists", entity_name, args.type)
+                logger.info("The result for the global query of the name \"%s\" in the DB: %s", entity_name, info["url"])
+                logger.info("The full information for the \"%s\" name of type %s: %s", entity_name, args.type, info["private_url"])
+                exit_code = 0
+            else:
+                logger.warn("The \"%s\" name of type %s doesn't exist", entity_name, args.type)
+                exit_code = 1
 
     return exit_code
 
