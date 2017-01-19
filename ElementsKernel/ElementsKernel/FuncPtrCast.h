@@ -27,7 +27,6 @@
 namespace Elements {
 namespace System {
 
-#ifdef __GNUC__
 /**
  * @brief Cast from void * to function pointer
  *
