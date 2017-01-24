@@ -26,7 +26,7 @@ import os
 import urllib2
 import ssl
 
-from ElementsKernel.NameCheck import getInfo, DEFAULT_TYPE
+from ElementsKernel.NameCheck import getInfo, DEFAULT_TYPE, checkDataBaseUrl
 
 
 ELEMENTS_NAMING_DB_URL = os.environ.get("ELEMENTS_NAMING_DB_URL", "")
@@ -35,19 +35,7 @@ class NameCheckTestCase(unittest.TestCase):
 
     def setUp(self):
         unittest.TestCase.setUp(self)
-        self.site_exists = True
-        if ELEMENTS_NAMING_DB_URL:
-            try:
-                req = urllib2.Request(ELEMENTS_NAMING_DB_URL + "/NameCheck",
-                                      headers={ 'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' })
-                gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-                urllib2.urlopen(req, context=gcontext)
-
-            except:
-                self.site_exists = False
-        else:
-            self.site_exists = False
-
+        self.site_exists = checkDataBaseUrl(ELEMENTS_NAMING_DB_URL)
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)

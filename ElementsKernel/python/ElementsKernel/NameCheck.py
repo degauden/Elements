@@ -38,16 +38,35 @@ logger = log.getLogger('NameCheck')
 TYPES = ["cmake", "library", "executable"]
 DEFAULT_TYPE = "cmake"
 
+
+def _byPassSslUrlOpen(url):
+    req = urllib2.Request(url, headers={ 'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' })
+    gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+    return urllib2.urlopen(req, context=gcontext)
+
+
 def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
     full_url = db_url + "/NameCheck/exists?name=%s&type=%s" % (name, entity_type)
     logger.debug("The url for the name request: %s" % full_url)
-    req = urllib2.Request(full_url, headers={ 'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' })
-    gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-    info = json.loads(urllib2.urlopen(req, context=gcontext).read())
+    info = json.loads(_byPassSslUrlOpen(full_url).read())
     for u in ["url", "private_url"]:
         if u in info and info[u]:
             info[u] = db_url + info[u]
     return info
+
+def checkDataBaseUrl(db_url):
+    site_exists = True
+    if db_url:
+        try:
+            _byPassSslUrlOpen(db_url + "/NameCheck")
+        except:
+            site_exists = False
+    else:
+        site_exists = False
+
+    return site_exists
+
+
 
 
 ################################################################################
@@ -84,13 +103,12 @@ def mainMethod(args):
     exit_code = 1
 
     entity_name = args.entity_name
-    url = args.url
 
-    if not url:
+    if not checkDataBaseUrl(args.url):
         logger.critical("The Elements Naming DB URL is not valid")
         exit_code = 2
     else:
-        info = getInfo(entity_name, url, args.type)
+        info = getInfo(entity_name, args.url, args.type)
 
         if info["error"]:
             logger.error("There was an error querying the DB: %s", info["message"])
