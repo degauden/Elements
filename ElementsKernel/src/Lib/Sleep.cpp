@@ -23,20 +23,20 @@
 
 namespace Elements {
 
-using namespace std;
+using std::this_thread::sleep_for;
 
 /** @brief Small variation on the sleep function for seconds sleep.
  * @author Hubert Degaudenzi
  */
 void normalSleep(int sec) {
-  this_thread::sleep_for(chrono::seconds(sec));
+  sleep_for(std::chrono::seconds(sec));
 }
 
 /** @brief Small variation on the sleep function for nanoseconds sleep.
  * @author Hubert Degaudenzi
  */
 void nanoSleep(int64_t nsec) {
-  this_thread::sleep_for(chrono::nanoseconds(nsec));
+  sleep_for(std::chrono::nanoseconds(nsec));
 }
 
 }

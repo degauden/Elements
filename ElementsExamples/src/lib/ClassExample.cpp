@@ -26,10 +26,10 @@
 #include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Exception.h"
 
+using std::vector;
+
 namespace Elements {
 namespace Examples {
-
-using namespace std;
 
 std::string ClassExample::s_static_string = "This is a static field example";
 
@@ -50,7 +50,7 @@ double ClassExample::divideNumbers(const double first,
 }
 
 void ClassExample::passingUniquePointer(
-    unique_ptr<vector<double>> vector_unique_ptr) const {
+    std::unique_ptr<vector<double>> vector_unique_ptr) const {
     vector_unique_ptr->size();
 }
 
@@ -59,7 +59,7 @@ void ClassExample::passingObjectInGeneral(
     input_object.size();
 }
 
-ClassExample ClassExample::factoryMethod(const int64_t source_id,
+ClassExample ClassExample::factoryMethod(const std::int64_t source_id,
     const double ra) {
   return ClassExample { source_id, ra };
 }

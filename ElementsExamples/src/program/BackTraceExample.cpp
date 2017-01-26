@@ -31,10 +31,10 @@
 namespace Elements {
 namespace Examples {
 
-namespace po = boost::program_options;
-
 using std::map;
 using std::string;
+
+using boost::program_options::variable_value;
 
 void secondLevelFunction() {
   Logging logger = Logging::getLogger("BackTraceExample");
@@ -54,7 +54,7 @@ class BackTraceExample: public Program {
 
 public:
 
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     Logging logger = Logging::getLogger("BackTraceExample");
 

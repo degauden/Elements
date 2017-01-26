@@ -26,34 +26,32 @@
 #include <xercesc/util/XercesVersion.hpp>   // For gXercesFullVersionStr
 #include <xercesc/util/PlatformUtils.hpp>   // for Initialize and Terminate
 
+namespace Xerces = XERCES_CPP_NAMESPACE;    // needed to avoid an ugly ns
+
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 
-namespace Elements {
-namespace Examples {
-
-using namespace XERCES_CPP_NAMESPACE;       // needed to avoid an unneeded ugly ns
 using std::map;
 using std::string;
 
-namespace po = boost::program_options;
+using boost::program_options::variable_value;
 
-using namespace std;
+namespace Elements {
+namespace Examples {
 
 class XercesExample: public Program {
 
 public:
 
-
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     Logging logger = Logging::getLogger("XercesExample");
 
-    XMLPlatformUtils::Initialize();
+    Xerces::XMLPlatformUtils::Initialize();
 
     logger.info() << "XercesC version:" << gXercesFullVersionStr;
 
-    XMLPlatformUtils::Terminate();
+    Xerces::XMLPlatformUtils::Terminate();
 
     logger.info() << "done with test program! ";
 

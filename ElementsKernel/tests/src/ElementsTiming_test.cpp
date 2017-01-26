@@ -17,8 +17,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
-//using namespace std;
-
 using std::int64_t;
 
 //-----------------------------------------------------------------------------

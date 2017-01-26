@@ -35,10 +35,11 @@
 namespace Elements {
 namespace Examples {
 
-namespace po = boost::program_options;
-
 using std::map;
 using std::string;
+using std::size_t;
+
+using boost::program_options::variable_value;
 
 constexpr size_t N = 32;
 
@@ -47,7 +48,7 @@ class FftwExample: public Program {
 public:
 
 
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     Logging logger = Logging::getLogger("FftwExample");
 

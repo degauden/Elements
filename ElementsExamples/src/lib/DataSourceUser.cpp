@@ -23,13 +23,18 @@
 
 #include "ElementsExamples/DataSourceUser.h"
 
+
 namespace Elements {
 namespace Examples {
 
 double DataSourceUser::sumRecords (const DataSourceInterface& data_source) {
+
+  using std::size_t;
+
   double sum = 0.;
-  std::size_t records_number = data_source.countRecords();
-  for (std::size_t index = 0; index < records_number; ++index) {
+
+  size_t records_number = data_source.countRecords();
+  for (size_t index = 0; index < records_number; ++index) {
     sum += data_source.getRecordValue(index);
   }
 

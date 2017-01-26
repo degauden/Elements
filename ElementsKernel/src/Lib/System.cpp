@@ -40,7 +40,9 @@
 #include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
 #include "ElementsKernel/Unused.h"      // for ELEMENTS_UNUSED
 
-using namespace std;
+using std::string;
+using std::vector;
+using std::size_t;
 
 namespace Elements {
 namespace System {
@@ -181,7 +183,7 @@ const string getErrorString(unsigned long error) {
   return errString;
 }
 
-const string typeinfoName(const type_info& tinfo) {
+const string typeinfoName(const std::type_info& tinfo) {
   return typeinfoName(tinfo.name());
 }
 
@@ -422,7 +424,7 @@ bool backTrace(string& btrace, const int depth, const int offset) {
   bool result = false;
 
 
-  shared_ptr<void*> addresses {new void*[total_depth], default_delete<void*[]>()};
+  std::shared_ptr<void*> addresses {new void*[total_depth], std::default_delete<void*[]>()};
 
   if (addresses != nullptr) {
     int count = backTrace(addresses, total_depth);
@@ -430,9 +432,9 @@ bool backTrace(string& btrace, const int depth, const int offset) {
       void *addr = 0;
       string fnc, lib;
       if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
-        ostringstream ost;
-        ost << "#" << setw(3) << setiosflags(ios::left) << i - totalOffset + 1;
-        ost << hex << addr << dec << " " << fnc << "  [" << lib << "]" << endl;
+        std::ostringstream ost;
+        ost << "#" << std::setw(3) << std::setiosflags(std::ios::left) << i - totalOffset + 1;
+        ost << std::hex << addr << std::dec << " " << fnc << "  [" << lib << "]" << std::endl;
         btrace += ost.str();
       }
     }
@@ -450,7 +452,7 @@ const vector<string> backTrace(const int depth, const int offset) {
   const int total_depth = depth + total_offset;
   vector<string> trace {};
 
-  shared_ptr<void*> addresses {new void*[total_depth], default_delete<void*[]>()};
+  std::shared_ptr<void*> addresses {new void*[total_depth], std::default_delete<void*[]>()};
 
   if (addresses != nullptr) {
 
@@ -460,9 +462,9 @@ const vector<string> backTrace(const int depth, const int offset) {
       void *addr = 0;
       string fnc, lib;
       if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
-        ostringstream ost;
-        ost << "#" << setw(3) << setiosflags(ios::left) << i - total_offset + 1;
-        ost << hex << addr << dec << " " << fnc << "  [" << lib << "]";
+        std::ostringstream ost;
+        ost << "#" << std::setw(3) << std::setiosflags(std::ios::left) << i - total_offset + 1;
+        ost << std::hex << addr << std::dec << " " << fnc << "  [" << lib << "]";
         trace.push_back(ost.str());
       }
     }
@@ -487,7 +489,7 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
 
     if (symbol != 0) {
       int stat;
-      unique_ptr<char, decltype(free)*> dmg(abi::__cxa_demangle(symbol, 0, 0, &stat), free);
+      std::unique_ptr<char, decltype(free)*> dmg(abi::__cxa_demangle(symbol, 0, 0, &stat), free);
       fnc = string((stat == 0) ? dmg.get() : symbol);
     } else {
       fnc = "local";

@@ -32,18 +32,17 @@
 namespace Elements {
 namespace Examples {
 
-namespace po = boost::program_options;
-
-//using namespace std;
 using std::map;
 using std::string;
+
+using boost::program_options::variable_value;
 
 class EigenExample: public Program {
 
 public:
 
 
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     using Eigen::MatrixXd;
 

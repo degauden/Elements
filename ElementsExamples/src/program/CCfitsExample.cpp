@@ -30,18 +30,16 @@
 namespace Elements {
 namespace Examples {
 
-
-namespace po = boost::program_options;
-
-//using namespace std;
 using std::string;
 using std::map;
+
+using boost::program_options::variable_value;
 
 class CCfitsExample: public Program {
 
 public:
 
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     Logging logger = Logging::getLogger("CCfitsExample");
 

@@ -31,8 +31,17 @@
 #include "ElementsKernel/Environment.h"
 
 using std::string;
+using std::move;
+using std::stringstream;
+using std::ostream;
+using std::endl;
 
 namespace Elements {
+
+using System::unSetEnv;
+using System::setEnv;
+using System::getEnv;
+using System::isEnvSet;
 
 Environment::Variable::Variable(const Environment::Variable& other): m_env{other.m_env} {
 
@@ -40,7 +49,7 @@ Environment::Variable::Variable(const Environment::Variable& other): m_env{other
 
 }
 
-Environment::Variable::Variable(Environment::Variable&& other): m_env{std::move(other.m_env)} {
+Environment::Variable::Variable(Environment::Variable&& other): m_env{move(other.m_env)} {
 
   checkCompatibility(other);
 
@@ -59,7 +68,7 @@ Environment::Variable& Environment::Variable::operator=(Environment::Variable&& 
 
   checkCompatibility(other);
 
-  m_env = std::move(other.m_env);
+  m_env = move(other.m_env);
 
   return *this;
 }
@@ -131,7 +140,7 @@ string Environment::Variable::value() const {
 
 }
 
-Environment::Variable::operator std::string() const {
+Environment::Variable::operator string() const {
   return value();
 }
 
@@ -146,10 +155,10 @@ bool Environment::Variable::exists() const {
 void Environment::Variable::checkCompatibility(const Environment::Variable& other) {
 
   if (m_index != other.m_index) {
-    std::stringstream error_buffer;
+    stringstream error_buffer;
     error_buffer << "The \"" << other.m_index << "\" environment variable"
                  << " cannot be copied to the \"" << m_index << "\" environment variable."
-                 << std::endl;
+                 << endl;
     throw std::invalid_argument(error_buffer.str());
   }
 
@@ -166,11 +175,11 @@ Environment::Environment(bool keep_same)
 Environment& Environment::restore() {
 
   for (const auto& v: m_added_variables) {
-    System::unSetEnv(v);
+    unSetEnv(v);
   }
 
   for (const auto& v: m_old_values) {
-    System::setEnv(v.first, v.second);
+    setEnv(v.first, v.second);
   }
 
   m_old_values = {};
@@ -199,15 +208,15 @@ Environment& Environment::set(const string& index, const string& value) {
 
   if (m_old_values.find(index) == m_old_values.end()) {
     if (hasKey(index)) {
-      if ((not m_keep_same) or (System::getEnv(index) != value) ) {
-        m_old_values[index] = System::getEnv(index);
+      if ((not m_keep_same) or (getEnv(index) != value) ) {
+        m_old_values[index] = getEnv(index);
       }
     } else {
       m_added_variables.push_back(index);
     }
   }
 
-  System::setEnv(index, value);
+  setEnv(index, value);
 
   return *this;
 
@@ -222,11 +231,11 @@ Environment& Environment::unSet(const string& index) {
     if (found_index != m_added_variables.end()) {
       m_added_variables.erase(found_index);
     } else {
-      m_old_values[index] = System::getEnv(index);
+      m_old_values[index] = getEnv(index);
     }
   }
 
-  System::unSetEnv(index);
+  unSetEnv(index);
 
   return *this;
 
@@ -254,7 +263,7 @@ string Environment::get(const string& index, const string& default_value) const 
   string value {default_value};
 
   if (hasKey(index)) {
-    value = System::getEnv(index);
+    value = getEnv(index);
   }
 
   return value;
@@ -262,36 +271,39 @@ string Environment::get(const string& index, const string& default_value) const 
 
 bool Environment::hasKey(const string& index){
 
-  return System::isEnvSet(index);
+  return isEnvSet(index);
 
 }
 
 void Environment::commit() {
 
   m_old_values = {};
-  m_added_variables ={};
+  m_added_variables = {};
 
 }
 
 string Environment::generateScript(Environment::ShellType type) const {
 
-  std::stringstream script_text {};
+  using std::map;
+  using boost::format;
 
-  std::map<ShellType, string> set_cmd {{ShellType::sh, "export %s=%s"},
+  stringstream script_text {};
+
+  map<ShellType, string> set_cmd {{ShellType::sh, "export %s=%s"},
                                        {ShellType::csh, "setenv %s %s"}};
-  std::map<ShellType, string> unset_cmd {{ShellType::sh, "unset %s"},
+  map<ShellType, string> unset_cmd {{ShellType::sh, "unset %s"},
                                          {ShellType::csh, "unsetenv %s"}};
 
   for (const auto& v: m_old_values) {
     if (hasKey(v.first)) {
-      script_text << boost::format(set_cmd[type]) % v.first % get(v.first) << std::endl;
+      script_text << format(set_cmd[type]) % v.first % get(v.first) << endl;
     } else {
-      script_text << boost::format(unset_cmd[type]) % v.first << std::endl;
+      script_text << format(unset_cmd[type]) % v.first << endl;
     }
   }
 
   for (const auto& v: m_added_variables) {
-    script_text << boost::format(set_cmd[type]) % v % get(v) << std::endl;
+    script_text << format(set_cmd[type]) % v % get(v) << endl;
   }
 
   return script_text.str();
@@ -302,14 +314,14 @@ string Environment::generateScript(Environment::ShellType type) const {
 void Environment::checkOutOfRange(const string& index) {
 
   if (not hasKey(index)) {
-    std::stringstream error_buffer;
-    error_buffer << "The environment doesn't contain the " << index << " variable." << std::endl;
+    stringstream error_buffer;
+    error_buffer << "The environment doesn't contain the " << index << " variable." << endl;
     throw std::out_of_range(error_buffer.str());
   }
 
 }
 
-std::ostream& operator<<(std::ostream& stream, const Environment::Variable& v) {
+ostream& operator<<(ostream& stream, const Environment::Variable& v) {
 
   stream << v.value();
 
