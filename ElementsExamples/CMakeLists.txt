@@ -116,8 +116,9 @@ elements_add_unit_test(TemplatedDataSourceUser_test_suite tests/src/GMock/Templa
 if(CXX_HAS_SUGGEST_OVERRIDE)
   set_property(SOURCE tests/src/GMock/DataSourceUser_test.cpp tests/src/GMock/TemplatedDataSourceUser_test.cpp
                PROPERTY COMPILE_FLAGS -Wno-suggest-override)
-endif()
-
+endif() 
+                
+                       
 endif(GMOCK_FOUND)
 
 #====== Build Tests =================================================================

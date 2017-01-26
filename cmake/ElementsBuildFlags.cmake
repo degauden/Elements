@@ -122,7 +122,7 @@ option(CXX_SUGGEST_OVERRIDE
        OFF)
 
 option(SQUEEZED_INSTALL
-       "Enable the squizzing of the installation into a prefix directory"
+       "Enable the squeezing of the installation into a prefix directory"
        OFF)
 
 #--- Compilation Flags ---------------------------------------------------------
