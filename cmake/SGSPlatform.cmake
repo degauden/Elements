@@ -19,6 +19,57 @@
 include_guard()
 
 ################################################################################
+# Helper function for the platform build type
+################################################################################
+
+function(getShortBuildType short_type long_type)
+
+  # Convert CMAKE_BUILD_TYPE to SGS_BUILD_TYPE
+
+  string(TOLOWER "${long_type}" lower_long_type)
+  
+  if(${lower_long_type} STREQUAL "release")
+    set(${short_type} opt PARENT_SCOPE)
+  elseif(${lower_long_type} STREQUAL "debug")
+    set(${short_type} dbg PARENT_SCOPE)
+  elseif(${lower_long_type} STREQUAL "coverage")
+    set(${short_type} cov PARENT_SCOPE)
+  elseif(${lower_long_type} STREQUAL "profile")
+    set(${short_type} pro PARENT_SCOPE)
+  elseif(${lower_long_type} STREQUAL "relwithdebinfo")
+    set(${short_type} o2g PARENT_SCOPE)
+  elseif(${lower_long_type} STREQUAL "minsizerel")
+    set(${short_type} min PARENT_SCOPE)
+  else()
+    message(FATAL_ERROR "Build type ${lower_long_type} not supported.")
+  endif()
+
+  
+endfunction()
+
+function(getLongBuildType long_type short_type)
+  
+  # Convert SGS_BUILD_TYPE to CMAKE_BUILD_TYPE
+
+  if(${short_type} STREQUAL "opt")
+    set(${long_type} Release PARENT_SCOPE)
+  elseif(${short_type} STREQUAL "dbg")
+    set(${long_type} Debug PARENT_SCOPE)
+  elseif(${short_type} STREQUAL "cov")
+    set(${long_type} Coverage PARENT_SCOPE)
+  elseif(${short_type} STREQUAL "pro")
+    set(${long_type} Profile PARENT_SCOPE)
+  elseif(${short_type} STREQUAL "o2g")
+    set(${long_type} RelWithDebInfo PARENT_SCOPE)
+  elseif(${short_type} STREQUAL "min")
+    set(${long_type} MinSizeRel PARENT_SCOPE)
+  else()
+    message(FATAL_ERROR "Build type ${short_type} not supported.")
+  endif()
+
+endfunction()
+
+################################################################################
 # Functions to get system informations for the SGS configuration.
 ################################################################################
 # Get the host architecture.
@@ -171,6 +222,7 @@ function(sgs_find_host_compiler)
     mark_as_advanced(SGS_HOST_COMP SGS_HOST_COMPVERS)
   endif()
 endfunction()
+
 ################################################################################
 # Detect host system
 function(sgs_detect_host_platform)
@@ -181,6 +233,7 @@ function(sgs_detect_host_platform)
       CACHE STRING "Platform id of the system.")
   mark_as_advanced(SGS_HOST_SYSTEM)
 endfunction()
+
 ################################################################################
 # Get the target system platform (arch., OS, compiler)
 function(sgs_get_target_platform)
@@ -196,8 +249,14 @@ function(sgs_get_target_platform)
       set(tag $ENV{CMTCONFIG})
       set(tag_source CMTCONFIG)
     else()
-      set(tag ${SGS_HOST_SYSTEM}-o2g)
-      set(tag_source default)
+      if(CMAKE_BUILD_TYPE)
+	getShortBuildType(b_type ${CMAKE_BUILD_TYPE})
+	set(tag_source BUILD_TYPE)
+      else()
+	set(b_type o2g)
+	set(tag_source default)
+      endif()
+      set(tag ${SGS_HOST_SYSTEM}-${b_type})
     endif()
     message(STATUS "Target binary tag from ${tag_source}: ${tag}")
     set(BINARY_TAG ${tag} CACHE STRING "Platform id for the produced binaries.")
@@ -236,22 +295,8 @@ function(sgs_get_target_platform)
     set(SGS_COMPVERS "")
   endif()
 
-  # Convert SGS_BUILD_TYPE to CMAKE_BUILD_TYPE
-  if(SGS_BUILD_TYPE STREQUAL "opt")
-    set(type Release)
-  elseif(SGS_BUILD_TYPE STREQUAL "dbg")
-    set(type Debug)
-  elseif(SGS_BUILD_TYPE STREQUAL "cov")
-    set(type Coverage)
-  elseif(SGS_BUILD_TYPE STREQUAL "pro")
-    set(type Profile)
-  elseif(SGS_BUILD_TYPE STREQUAL "o2g")
-    set(type RelWithDebInfo)
-  elseif(SGS_BUILD_TYPE STREQUAL "min")
-    set(type MinSizeRel)
-  else()
-    message(FATAL_ERROR "SGS build type ${type} not supported.")
-  endif()
+  getLongBuildType(type SGS_BUILD_TYPE)
+  
   set(CMAKE_BUILD_TYPE ${type} CACHE STRING
       "Choose the type of build, options are: empty, Debug, Release, Coverage, Profile, RelWithDebInfo, MinSizeRel." FORCE)
 
