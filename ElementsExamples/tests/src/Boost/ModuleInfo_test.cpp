@@ -10,11 +10,6 @@
 
 #include "ElementsExamples/ModuleInfo.h"
 
-using namespace std;
-using namespace Elements;
-using namespace Examples;
-
-
 //-----------------------------------------------------------------------------
 
 /*
@@ -41,9 +36,10 @@ BOOST_AUTO_TEST_SUITE (ModuleInfo_test)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ModuleName_test, ModuleInfoFixture ) {
-  BOOST_CHECK_EQUAL(getModuleInfo().name(), string(System::LIB_PREFIX
-                                                    + "ElementsExamples"
-                                                    + System::LIB_SUFFIX));
+  BOOST_CHECK_EQUAL(Elements::Examples::getModuleInfo().name(),
+                    std::string(Elements::System::LIB_PREFIX
+                                + "ElementsExamples"
+                                + Elements::System::LIB_SUFFIX));
 }
 
 //-----------------------------------------------------------------------------

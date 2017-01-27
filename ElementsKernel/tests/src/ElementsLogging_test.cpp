@@ -8,7 +8,7 @@
 #include <string>                           // for std::string
 #include <ostream>
 #include <sstream>                          // for std::stringstream
-#include <tuple>                            // for std::tuple
+#include <tuple>                            // for std::tuple, std::tie, std::ignore
 #include <ctime>
 #include <fstream>
 #include <iomanip>                          // for setprecision
@@ -30,6 +30,9 @@ using std::string;
 using std::stringstream;
 using std::vector;
 using std::tuple;
+
+using std::tie;
+using std::ignore;
 
 // A map to translate strings to logging levels
 //std::map<string, Logging::Level> levelMap {
@@ -131,10 +134,10 @@ BOOST_FIXTURE_TEST_CASE(loggerNames_test, ElementsLogging_Fixture) {
   auto messages = m_tracker.getMessages();
   BOOST_CHECK_EQUAL(messages.size(), 2);
   string name1;
-  std::tie(std::ignore, std::ignore, name1, std::ignore) = messages[0];
+  tie(ignore, ignore, name1, ignore) = messages[0];
   BOOST_CHECK_EQUAL(name1, "TestLogger");
   string name2;
-  std::tie(std::ignore, std::ignore, name2, std::ignore) = messages[1];
+  tie(ignore, ignore, name2, ignore) = messages[1];
   BOOST_CHECK_EQUAL(name2, "TestLogger2");
 
 }
@@ -172,52 +175,52 @@ BOOST_FIXTURE_TEST_CASE(messageTextAndLevel_test, ElementsLogging_Fixture) {
   BOOST_CHECK_EQUAL(messages.size(), 16);
   string logLevel;
   string message;
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[0];
+  tie(ignore, logLevel, ignore, message) = messages[0];
   BOOST_CHECK_EQUAL(logLevel, "DEBUG");
   BOOST_CHECK_EQUAL(message, "Debug message");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[1];
+  tie(ignore, logLevel, ignore, message) = messages[1];
   BOOST_CHECK_EQUAL(logLevel, "INFO");
   BOOST_CHECK_EQUAL(message, "Info message");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[2];
+  tie(ignore, logLevel, ignore, message) = messages[2];
   BOOST_CHECK_EQUAL(logLevel, "WARN");
   BOOST_CHECK_EQUAL(message, "Warn message");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[3];
+  tie(ignore, logLevel, ignore, message) = messages[3];
   BOOST_CHECK_EQUAL(logLevel, "ERROR");
   BOOST_CHECK_EQUAL(message, "Error message");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[4];
+  tie(ignore, logLevel, ignore, message) = messages[4];
   BOOST_CHECK_EQUAL(logLevel, "FATAL");
   BOOST_CHECK_EQUAL(message, "Fatal message");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[5];
+  tie(ignore, logLevel, ignore, message) = messages[5];
   BOOST_CHECK_EQUAL(logLevel, "DEBUG");
   BOOST_CHECK_EQUAL(message, "Debug message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[6];
+  tie(ignore, logLevel, ignore, message) = messages[6];
   BOOST_CHECK_EQUAL(logLevel, "INFO");
   BOOST_CHECK_EQUAL(message, "Info message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[7];
+  tie(ignore, logLevel, ignore, message) = messages[7];
   BOOST_CHECK_EQUAL(logLevel, "WARN");
   BOOST_CHECK_EQUAL(message, "Warn message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[8];
+  tie(ignore, logLevel, ignore, message) = messages[8];
   BOOST_CHECK_EQUAL(logLevel, "ERROR");
   BOOST_CHECK_EQUAL(message, "Error message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[9];
+  tie(ignore, logLevel, ignore, message) = messages[9];
   BOOST_CHECK_EQUAL(logLevel, "FATAL");
   BOOST_CHECK_EQUAL(message, "Fatal message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[10];
+  tie(ignore, logLevel, ignore, message) = messages[10];
   BOOST_CHECK_EQUAL(logLevel, "DEBUG");
   BOOST_CHECK_EQUAL(message, "Debug message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[11];
+  tie(ignore, logLevel, ignore, message) = messages[11];
   BOOST_CHECK_EQUAL(logLevel, "INFO");
   BOOST_CHECK_EQUAL(message, "Info message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[12];
+  tie(ignore, logLevel, ignore, message) = messages[12];
   BOOST_CHECK_EQUAL(logLevel, "WARN");
   BOOST_CHECK_EQUAL(message, "Warn message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[13];
+  tie(ignore, logLevel, ignore, message) = messages[13];
   BOOST_CHECK_EQUAL(logLevel, "ERROR");
   BOOST_CHECK_EQUAL(message, "Error message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[14];
+  tie(ignore, logLevel, ignore, message) = messages[14];
   BOOST_CHECK_EQUAL(logLevel, "FATAL");
   BOOST_CHECK_EQUAL(message, "Fatal message with 15 value");
-  std::tie(std::ignore, logLevel, std::ignore, message) = messages[15];
+  tie(ignore, logLevel, ignore, message) = messages[15];
   BOOST_CHECK_EQUAL(logLevel, "INFO");
   BOOST_CHECK_EQUAL(message, "This is the logged Pi: 5 3.14159265359");
 

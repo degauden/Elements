@@ -66,7 +66,7 @@ ELEMENTS_API std::vector<std::string> pathSearch(
  * and call pathSearch(...) for each of them
  */
 ELEMENTS_API std::vector<boost::filesystem::path> pathSearchInEnvVariable(const std::string& file_name,
-                                                                          std::string path_like_env_variable,
+                                                                          const std::string& path_like_env_variable,
                                                                           SearchType search_type=SearchType::Recursive);
 
 //  /**

@@ -104,8 +104,8 @@ vector<string> pathSearch(const string& searched_name, string directory,
  * and call pathSearch(...) for each of them
  */
 vector<path> pathSearchInEnvVariable(const string& file_name,
-                                            string path_like_env_variable,
-                                            SearchType search_type) {
+                                     const string& path_like_env_variable,
+                                     SearchType search_type) {
 
   // Placeholder for the to-be-returned search result
   vector<path> search_results { };

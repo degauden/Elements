@@ -21,17 +21,20 @@
  * @author nikoapos
  */
 
+#include <string>
 #include <boost/test/unit_test.hpp>       // for boost unit test macros
 
 #include "ElementsKernel/Exception.h"
 
+using std::string;
+
 struct TestException : public Elements::Exception {
     
-  TestException(std::string message="") : Exception(message, Elements::ExitCode::NOT_OK) {
+  explicit TestException(const string& message="") : Exception(message, Elements::ExitCode::NOT_OK) {
     m_number = -1;
   }
   
-  TestException(int number) : Exception("", Elements::ExitCode::NOT_OK) {
+  explicit TestException(const int number) : Exception("", Elements::ExitCode::NOT_OK) {
     m_number = number;
   }
   
@@ -45,8 +48,8 @@ BOOST_AUTO_TEST_SUITE(Exception_test)
 BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   
   // Given
-  std::string message_part_1 = "Part 1";
-  std::string message_part_2 = "Part 2";
+  string message_part_1 = "Part 1";
+  string message_part_2 = "Part 2";
   
   // When
   try {
