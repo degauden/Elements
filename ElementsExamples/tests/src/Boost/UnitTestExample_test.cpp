@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(order_test) {
 BOOST_AUTO_TEST_CASE(mean_test) {
   UnitTestExample tested_object{};
   vector<vector<int>> input_vec {{1},{1,2},{1,2,4},{1,2,4,8},{1,2,4,8,16}};
-  vector<double> expected_result {1,1.5,2.33333333333333333,3.75,6.2};
+  vector<double> expected_result {1.0,1.5,2.33333333333333333,3.75,6.2};
   double tolerence {1e-10};
 
   for(int test_id=0; test_id<5;++test_id){

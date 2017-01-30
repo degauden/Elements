@@ -20,7 +20,7 @@ using std::int64_t;
 using Elements::Examples::ClassExample;
 
 // tolerance value to compare floating point numbers
-double tolerance = 1e-12;
+constexpr double tolerance = 1e-12;
 
 /*
  * Fixture to compare the test result against reference values
@@ -33,8 +33,7 @@ struct ClassExampleFixture {
   double input_variable { 1.273645899 };
   double expected_result { 1.273645899 };
 
-  ClassExample example_class = ClassExample::factoryMethod(source_id,
-      ra);
+  ClassExample example_class = ClassExample::factoryMethod(source_id, ra);
 
   ClassExampleFixture() {
     //call constructor if needed
