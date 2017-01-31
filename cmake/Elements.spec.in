@@ -1,11 +1,11 @@
 # -*- rpm-spec -*-
 Summary:        Euclid @CPACK_PACKAGE_NAME@ Project
-Name:           @CPACK_PACKAGE_NAME@
-Version:        @CPACK_PACKAGE_VERSION@
+Name:           @CPACK_RPM_PACKAGE_NAME@
+Version:        @CPACK_RPM_PACKAGE_VERSION@
 Release:        @CPACK_PACKAGE_RELEASE@%{?dist}
 License:        Public Domain
 Group:          Development/Tools
-Source:         @CPACK_PACKAGE_NAME@-@CPACK_PACKAGE_VERSION@.tar.gz
+Source:         @CPACK_RPM_PACKAGE_NAME@-@CPACK_RPM_PACKAGE_VERSION@.tar.gz
 Vendor:         @CPACK_PACKAGE_VENDOR@
 
 
@@ -57,6 +57,7 @@ Debug information for package %{name}
 %build
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
+export HAS_ELEMENTS_TOOLCHAIN=@HAS_ELEMENTS_TOOLCHAIN@
 if [[ -z "$EUCLID_BASE" ]]; then
   export CMAKE_PROJECT_PATH=/opt/euclid
 else
@@ -76,7 +77,11 @@ cd $RPM_BUILD_DIR/$BINARY_TAG
 if [[ -z "${toolchain_file}" ]]; then
   %cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
 else
-  %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} $RPM_BUILD_DIR/%{name}-%{version}
+  if [[ "${HAS_ELEMENTS_TOOLCHAIN}" = "ON" ]]; then
+    %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} $RPM_BUILD_DIR/%{name}-%{version}
+  else
+    %cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
+  fi
 fi
 %__make VERBOSE=1 %{?_smp_mflags} all
 

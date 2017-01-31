@@ -175,7 +175,7 @@ macro(elements_project project version)
 
   if(NOT SQUEEZED_INSTALL)
     set(SQUEEZED_INSTALL OFF
-        CACHE STRING "Enable the squizzing of the installation into a prefix directory"
+        CACHE STRING "Enable the squeezing of the installation into a prefix directory"
         FORCE)
   endif()
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
@@ -751,9 +751,15 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   # RPM packaging specific stuff
   set(CPACK_RPM_PACKAGE_RELOCATABLE TRUE)
 
-  SET(CPACK_RPM_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
+  if(NOT SQUEEZED_INSTALL)
+    SET(CPACK_RPM_PACKAGE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}")
+    SET(CPACK_RPM_PACKAGE_VERSION "1.0")
+  else()
+    SET(CPACK_RPM_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
+    SET(CPACK_RPM_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION})
+  endif()
   SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${SGS_ARCH})
-  SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
+  SET(CPACK_PACKAGE_FILE_NAME "${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
   SET(CPACK_RPM_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}")
   SET(CPACK_RPM_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
 
@@ -981,9 +987,9 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
     add_custom_target(targz
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_TARGZ_DIR}
-                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz --exclude "${BUILD_PREFIX_NAME}.*" --exclude "./${BUILD_SUBDIR}" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}/"  .
+                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}.tar.gz --exclude "${BUILD_PREFIX_NAME}.*" --exclude "./${BUILD_SUBDIR}" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}/"  .
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-                      COMMENT "Generating The Source TarBall ${PROJECT_TARGZ_DIR}/${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.tar.gz" VERBATIM
+                      COMMENT "Generating The Source TarBall ${PROJECT_TARGZ_DIR}/${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}.tar.gz" VERBATIM
     )
 
     if (RPMBUILD_FOUND)
