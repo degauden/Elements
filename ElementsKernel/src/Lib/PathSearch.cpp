@@ -37,7 +37,6 @@ using std::vector;
 using std::string;
 
 using boost::filesystem::path;
-using boost::filesystem::is_directory;
 
 namespace Elements {
 
@@ -46,7 +45,7 @@ static Logging logger = Logging::getLogger("PathSearch");
 //-----------------------------------------------------------------------------
 // Function search
 template<typename T, typename ITER>
-vector<T> pathSearch(const string& searched_name, T directory) {
+vector<T> pathSearch(const std::string& searched_name, T directory) {
 
   // create the resulting vector
   vector<T> searchResults { };
@@ -54,11 +53,12 @@ vector<T> pathSearch(const string& searched_name, T directory) {
   path l_directory { directory };
   // the default constructor of ITER return a pointer to one-past last element
   ITER end_iter;
-  if (is_directory(l_directory)) {
+  if (boost::filesystem::is_directory(l_directory)) {
     // ITER constructor return a pointer to the first element of l_directory
     for (ITER dir_iter(l_directory); dir_iter != end_iter; ++dir_iter) {
       if (dir_iter->path().filename() == searched_name) {
-        // File found: make sure the result is T: string to string or string to path
+        // File found: make sure the result is T: string to string or string to
+        // boost::filesystem::path
         T l_result { dir_iter->path().string() };
         searchResults.push_back(l_result);
       }
@@ -103,9 +103,9 @@ vector<string> pathSearch(const string& searched_name, string directory,
  *
  * and call pathSearch(...) for each of them
  */
-vector<path> pathSearchInEnvVariable(const string& file_name,
-                                     const string& path_like_env_variable,
-                                     SearchType search_type) {
+vector<path> pathSearchInEnvVariable(const std::string& file_name,
+                                        const std::string& path_like_env_variable,
+                                            SearchType search_type) {
 
   // Placeholder for the to-be-returned search result
   vector<path> search_results { };
@@ -124,7 +124,7 @@ vector<path> pathSearchInEnvVariable(const string& file_name,
   // Loop over all path elements
   for (string path_element : path_elements) {
     // Check if directory exists
-    if (boost::filesystem::exists(path_element) && is_directory(path_element)) {
+    if (boost::filesystem::exists(path_element) && boost::filesystem::is_directory(path_element)) {
       // loop recursively inside directory
       auto single_path_results = pathSearch(file_name,
                                             path { path_element },

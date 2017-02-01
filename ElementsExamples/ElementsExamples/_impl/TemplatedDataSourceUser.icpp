@@ -21,7 +21,7 @@ template <typename T>
   return sum;
 }
 
-}
-}
+}  // namespace Examples
+}  // namespace Elementss
 
 

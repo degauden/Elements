@@ -23,8 +23,11 @@
 #include <map>                                // for map
 #include <string>                             // for string
 
+#include "ElementsKernel/Sleep.h"             // for nanoSleep
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
+
+namespace po = boost::program_options;
 
 using std::map;
 using std::string;
@@ -64,6 +67,8 @@ public:
     Logging logger = Logging::getLogger();
 
     logger.info("This Works");
+
+    Elements::nanoSleep(4);
 
     std::cout << "This Works too!" << std::endl;
 

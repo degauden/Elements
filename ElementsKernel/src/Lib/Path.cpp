@@ -31,15 +31,12 @@
 
 #include "ElementsKernel/System.h"     // for getEnv
 
-
 using std::string;
 using std::vector;
-
 using boost::filesystem::path;
 
 namespace Elements {
 namespace Path {
-
 
 vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 

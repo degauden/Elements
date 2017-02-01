@@ -12,13 +12,11 @@
 #include <ctime>
 #include <fstream>
 #include <iomanip>                          // for setprecision
+
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>             // for boost::filesystem
 #include <boost/version.hpp>                // for the BOOST_VERSION define
-
-namespace algo = boost::algorithm;
-namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Temporary.h"      // For TempDir
 #include "ElementsKernel/Logging.h"
@@ -30,9 +28,10 @@ using std::string;
 using std::stringstream;
 using std::vector;
 using std::tuple;
-
 using std::tie;
 using std::ignore;
+
+using boost::filesystem::exists;
 
 // A map to translate strings to logging levels
 //std::map<string, Logging::Level> levelMap {
@@ -58,19 +57,23 @@ class LogMessageTracker {
     m_messages.clear();
   }
   vector<tuple<string, string, string, string>> getMessages() {
+
+    using boost::algorithm::trim;
+    using boost::algorithm::trim_left;
+
     vector<tuple<string, string, string, string>> messages;
     for (string line; std::getline(m_messages, line);) {
       string timestamp = line.substr(0, line.find(' '));
       line = line.substr(line.find(' ') + 1);
       string message = line.substr(line.find(':') + 1);
-      algo::trim_left(message);
+      trim_left(message);
       line = line.substr(0, line.find(':'));
-      algo::trim(line);
+      trim(line);
       string logLevelString = line.substr(line.rfind(' '));
-      algo::trim(logLevelString);
+      trim(logLevelString);
       // Logging::Level logLevel = levelMap[logLevelString];
       string name = line.substr(0, line.rfind(' '));
-      algo::trim(name);
+      trim(name);
       messages.push_back(
           std::make_tuple(timestamp, logLevelString, name, message));
     }
@@ -122,6 +125,7 @@ BOOST_AUTO_TEST_SUITE(ElementsLogging_test)
 
 BOOST_FIXTURE_TEST_CASE(loggerNames_test, ElementsLogging_Fixture) {
 
+  using std::tie;
 
   // Given
   Logging logger2 = Logging::getLogger("TestLogger2");
@@ -314,6 +318,8 @@ BOOST_FIXTURE_TEST_CASE(setLevel_test, ElementsLogging_Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
 
+  using boost::algorithm::ends_with;
+
   // Given
   stringstream logFileName { };
   logFileName << m_tmpdir.path().string() + "/"
@@ -325,7 +331,7 @@ BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
   m_logger.info("Second message");
 
   // Then
-  BOOST_CHECK(fs::exists(logFileName.str()));
+  BOOST_CHECK(exists(logFileName.str()));
   std::ifstream logFile { logFileName.str() };
   vector<string> lines { };
   string line;
@@ -334,8 +340,8 @@ BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
   }
   logFile.close();
   BOOST_CHECK_EQUAL(lines.size(), 2);
-  BOOST_CHECK(algo::ends_with(lines[0], "First message"));
-  BOOST_CHECK(algo::ends_with(lines[1], "Second message"));
+  BOOST_CHECK(ends_with(lines[0], "First message"));
+  BOOST_CHECK(ends_with(lines[1], "Second message"));
 }
 
 //-----------------------------------------------------------------------------
@@ -343,6 +349,8 @@ BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
+
+  using boost::algorithm::ends_with;
 
   // Given
   stringstream logFileName1 { };
@@ -361,7 +369,7 @@ BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
   m_logger.info("Third message");
 
   // Then
-  BOOST_CHECK(fs::exists(logFileName1.str()));
+  BOOST_CHECK(exists(logFileName1.str()));
   std::ifstream logFile1 { logFileName1.str() };
   vector<string> lines { };
   string line;
@@ -370,8 +378,8 @@ BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
   }
   logFile1.close();
   BOOST_CHECK_EQUAL(lines.size(), 1);
-  BOOST_CHECK(algo::ends_with(lines[0], "First message"));
-  BOOST_CHECK(fs::exists(logFileName2.str()));
+  BOOST_CHECK(ends_with(lines[0], "First message"));
+  BOOST_CHECK(exists(logFileName2.str()));
   std::ifstream logFile2 { logFileName2.str() };
   lines = vector<string> { };
   while (std::getline(logFile2, line)) {
@@ -379,8 +387,8 @@ BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
   }
   logFile2.close();
   BOOST_CHECK_EQUAL(lines.size(), 2);
-  BOOST_CHECK(algo::ends_with(lines[0], "Second message"));
-  BOOST_CHECK(algo::ends_with(lines[1], "Third message"));
+  BOOST_CHECK(ends_with(lines[0], "Second message"));
+  BOOST_CHECK(ends_with(lines[1], "Third message"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

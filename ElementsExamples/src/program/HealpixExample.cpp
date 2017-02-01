@@ -28,13 +28,12 @@
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 
-namespace Elements {
-namespace Examples {
-
 using std::map;
 using std::string;
-
 using boost::program_options::variable_value;
+
+namespace Elements {
+namespace Examples {
 
 class HealpixExample: public Program {
 

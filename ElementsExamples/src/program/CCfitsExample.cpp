@@ -27,13 +27,12 @@
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 
-namespace Elements {
-namespace Examples {
-
 using std::string;
 using std::map;
-
 using boost::program_options::variable_value;
+
+namespace Elements {
+namespace Examples {
 
 class CCfitsExample: public Program {
 

@@ -19,7 +19,6 @@
 #ifndef SWIG_CLASSEXAMPLE_H_
 #define SWIG_CLASSEXAMPLE_H_
 
-
 #include "ElementsKernel/Export.h" // for ELEMENTS_API
 
 namespace Elements {
@@ -36,13 +35,11 @@ public:
   virtual ~SwigClassExample () {
   }
 
-
   double getRa () const;
 
   double getDec () const;
 
 private:
-
 
   double m_ra;
   double m_dec;

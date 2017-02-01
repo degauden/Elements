@@ -21,6 +21,8 @@
 
 #include <cstdint>                           // for std::int64_t
 #include <cmath>                             // for std::abs
+#include <vector>                            // for vector
+#include <memory>                            // for unique_ptr
 
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsKernel/Logging.h"

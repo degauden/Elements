@@ -19,19 +19,14 @@
  *
  */
 
-// there is no version of boost with the std::__debug namespace
-// TODO question to Hubert: what is this???
-#include "ElementsKernel/NoGlibDebug.h"
-
 #include <cstdlib>                         // for the exit function
 #include <fstream>
 #include <iostream>
 #include <typeinfo>                        // for the typid operator
 #include <algorithm>                       // for transform
+#include <vector>                          // for vector
 
 #include "ElementsKernel/ProgramManager.h"
-
-namespace po = boost::program_options;
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
@@ -44,7 +39,6 @@ namespace po = boost::program_options;
 
 using std::vector;
 using std::string;
-using std::endl;
 
 using boost::filesystem::path;
 using boost::program_options::variables_map;
@@ -83,14 +77,14 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name) {
 
 const path ProgramManager::setProgramName(ELEMENTS_UNUSED char* arg0) {
 
-  path full_path = getExecutablePath();
+  path full_path = Elements::System::getExecutablePath();
 
   return full_path.filename();
 }
 
 const path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
 
-  path full_path = getExecutablePath();
+  path full_path = Elements::System::getExecutablePath();
 
   return full_path.parent_path();
 }
@@ -101,11 +95,17 @@ const path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
 const variables_map ProgramManager::getProgramOptions(
     int argc, char* argv[]) {
 
+
   using std::cout;
+  using std::endl;
   using boost::program_options::options_description;
-  using boost::program_options::store;
   using boost::program_options::value;
+  using boost::program_options::store;
   using boost::program_options::command_line_parser;
+  using boost::program_options::collect_unrecognized;
+  using boost::program_options::include_positional;
+  using boost::program_options::notify;
+  using boost::program_options::parse_config_file;
 
   variables_map var_map { };
 
@@ -182,8 +182,8 @@ const variables_map ProgramManager::getProgramOptions(
 
   // Parse from the command line the rest of the options. Here we also handle
   // the positional arguments.
-  auto leftover_cmd_options = boost::program_options::collect_unrecognized(cmd_parsed_options.options,
-                                                       boost::program_options::include_positional);
+  auto leftover_cmd_options = collect_unrecognized(cmd_parsed_options.options,
+                                                    include_positional);
   store(command_line_parser(leftover_cmd_options)
                       .options(all_cmd_and_file_options)
                       .positional(program_arguments.second)
@@ -194,15 +194,15 @@ const variables_map ProgramManager::getProgramOptions(
   if (not config_file.empty() && boost::filesystem::exists(config_file)) {
     std::ifstream ifs {config_file.string()};
     if (ifs) {
-      store(boost::program_options::parse_config_file(ifs, all_cmd_and_file_options), var_map);
+      store(parse_config_file(ifs, all_cmd_and_file_options), var_map);
     }
   }
 
   // After parsing both the command line and the conf file notify the variables
   // map, so we can get any messages for missing parameters
-  boost::program_options::notify(var_map);
+  notify(var_map);
 
-  // return the variable_map loaded with all options
+  // return the var_map loaded with all options
   return var_map;
 }
 
@@ -294,7 +294,7 @@ void ProgramManager::logAllOptions() const {
     } else {
       log_message << "Option " << v.first << " of type "
           << v.second.value().type().name() << " not supported in logging !"
-          << endl;
+          << std::endl;
     }
     // write the log message
     logger.info(log_message.str());
@@ -427,7 +427,7 @@ void ProgramManager::onTerminate() noexcept {
 
   ExitCode exit_code {ExitCode::NOT_OK};
 
-  if (auto exc = std::current_exception()) {
+  if ( auto exc = std::current_exception() ) {
 
     Logging logger = Logging::getLogger("ElementsProgram");
 
@@ -439,7 +439,7 @@ void ProgramManager::onTerminate() noexcept {
 
     // we have an exception
     try {
-      rethrow_exception( exc ); // throw to recognize the type
+      std::rethrow_exception( exc ); // throw to recognize the type
     } catch (const Exception & exc) {
       logger.fatal() << "# ";
       logger.fatal() << "# Elements Exception : " << exc.what();

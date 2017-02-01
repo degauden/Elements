@@ -28,27 +28,28 @@
 #include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Temporary.h"
 
-namespace fs = boost::filesystem;
-
 using std::string;
+using boost::filesystem::path;
 
 namespace Elements {
 
 TempPath::TempPath(const string& motif) :
     m_motif(motif) {
 
-  if (m_motif != "") {
-    m_path = fs::temp_directory_path() / fs::unique_path(m_motif);
-  } else {
-    m_path = fs::temp_directory_path() / fs::unique_path();
-  }
+  using boost::filesystem::temp_directory_path;
+  using boost::filesystem::unique_path;
 
+  if (m_motif != "") {
+    m_path = temp_directory_path() / unique_path(m_motif);
+  } else {
+    m_path = temp_directory_path() / unique_path();
+  }
 }
 
 TempPath::~TempPath() {
 }
 
-fs::path TempPath::path() const {
+path TempPath::path() const {
   return m_path;
 }
 
@@ -62,7 +63,7 @@ TempDir::TempDir(const string& motif) :
   Logging logger = Logging::getLogger();
   logger.debug() << "Creation of the " << path() << " temporary directory";
 
-  fs::create_directory(path());
+  boost::filesystem::create_directory(path());
 
 }
 
@@ -72,7 +73,7 @@ TempDir::~TempDir() {
   logger.debug() << "Automatic destruction of the " << path()
       << " temporary directory";
 
-  fs::remove_all(path());
+  boost::filesystem::remove_all(path());
 
 }
 
@@ -82,7 +83,7 @@ TempFile::TempFile(const string& motif) :
   Logging logger = Logging::getLogger();
   logger.debug() << "Creation of the " << path() << " temporary file";
 
-  fs::ofstream ofs(path());
+  boost::filesystem::ofstream ofs(path());
   ofs.close();
 
 }
@@ -92,7 +93,7 @@ TempFile::~TempFile() {
   Logging logger = Logging::getLogger();
   logger.debug() << "Automatic destruction of the " << path() << " file";
 
-  fs::remove(path());
+  boost::filesystem::remove(path());
 
 }
 

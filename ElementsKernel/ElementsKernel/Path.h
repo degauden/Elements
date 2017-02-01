@@ -111,10 +111,10 @@ ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std:
  *   vector of locations to look into
  * @tparam T
  *   type of the file name. Can be anything that can be converted to a boost
- *   filesystem path. In principle either std::string or fs::path.
+ *   filesystem path. In principle either std::string or path.
  * @tparam U
  *   type of the location. Can be anything that can be converted to a boost
- *   filesystem path. In principle either std::string or fs::path.
+ *   filesystem path. In principle either std::string or path.
  * @return
  *   first match of the file stem
  */
@@ -129,7 +129,7 @@ ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, co
  *   name of the environment variable
  * @tparam T
  *   type of the file name. Can be anything that can be converted to a boost
- *   filesystem path. In principle either std::string or fs::path.
+ *   filesystem path. In principle either std::string or path.
  * @return
  *   first match of the file stem
  */

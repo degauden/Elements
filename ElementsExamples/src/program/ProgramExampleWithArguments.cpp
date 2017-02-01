@@ -28,16 +28,14 @@
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
 
-//namespace po = boost::program_options;
-
 using std::map;
 using std::string;
 using std::vector;
 
 using boost::program_options::variable_value;
 using boost::program_options::value;
-using boost::program_options::positional_options_description;
 using boost::program_options::options_description;
+using boost::program_options::positional_options_description;
 
 namespace Elements {
 namespace Examples {

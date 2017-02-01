@@ -21,9 +21,10 @@
 #include <thread>                     // for this_thread
 #include <chrono>                     // for chrono
 
+using std::this_thread::sleep_for;
+
 namespace Elements {
 
-using std::this_thread::sleep_for;
 
 /** @brief Small variation on the sleep function for seconds sleep.
  * @author Hubert Degaudenzi
@@ -35,7 +36,7 @@ void normalSleep(int sec) {
 /** @brief Small variation on the sleep function for nanoseconds sleep.
  * @author Hubert Degaudenzi
  */
-void nanoSleep(int64_t nsec) {
+void nanoSleep(std::int64_t nsec) {
   sleep_for(std::chrono::nanoseconds(nsec));
 }
 

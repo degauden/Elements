@@ -24,7 +24,6 @@
 
 #include "ElementsKernel/Export.h"
 
-
 namespace Elements {
 namespace Examples {
 

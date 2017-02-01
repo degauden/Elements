@@ -172,9 +172,9 @@ if(NOT ELEMENTS_FLAGS_SET)
 
   if (SGS_COMPVERS VERSION_GREATER "47")
     # Use -Og with Debug builds in gcc >= 4.8
-     set(CMAKE_CXX_FLAGS_DEBUG "-g"
-        CACHE STRING "Flags used by the compiler during Debug builds."
-        FORCE)
+    set(CMAKE_CXX_FLAGS_DEBUG "-g"
+      CACHE STRING "Flags used by the compiler during Debug builds."
+      FORCE)
     set(CMAKE_C_FLAGS_DEBUG "-g"
         CACHE STRING "Flags used by the compiler during Debug builds."
         FORCE)

@@ -27,15 +27,13 @@
 
 #include "ElementsKernel/ModuleInfo.h"       // header file to test
 
-namespace fs = boost::filesystem;
-
 BOOST_AUTO_TEST_SUITE(ModuleInfo_test)
 
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(GetExecutablePath_test) {
 
-  fs::path exe_path = Elements::System::getExecutablePath();
+  boost::filesystem::path exe_path = Elements::System::getExecutablePath();
 
   BOOST_CHECK(exe_path.filename().string() == "ModuleInfo_test");
 }

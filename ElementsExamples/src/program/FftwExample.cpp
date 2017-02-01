@@ -32,16 +32,14 @@
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 #include "ElementsKernel/MathConstants.h"   // for pi
 
-namespace Elements {
-namespace Examples {
-
 using std::map;
 using std::string;
-using std::size_t;
-
 using boost::program_options::variable_value;
 
-constexpr size_t N = 32;
+constexpr std::size_t N = 32;
+
+namespace Elements {
+namespace Examples {
 
 class FftwExample: public Program {
 

@@ -43,9 +43,7 @@
 #endif
 
 
-using std::string;
-using std::vector;
-
+using namespace std;
 using boost::filesystem::path;
 
 static vector<string> s_linkedModules;
@@ -210,16 +208,16 @@ path getExecutablePath() {
   path exe_path {};
 
 #ifdef __APPLE__
-  fs::path self_proc {};
+  path self_proc {};
   char pathbuf[PATH_MAX + 1];
   unsigned int  bufsize = sizeof(pathbuf);
   _NSGetExecutablePath( pathbuf, &bufsize);
-  self_proc = fs::path(string(pathbuf));
+  self_proc = path(string(pathbuf));
 #else
   path self_proc {"/proc/self/exe"};
 
   if (not boost::filesystem::exists(self_proc)) {
-    std::stringstream self_str {};
+    stringstream self_str {};
     self_str << "/proc/" << ::getpid() << "/exe";
     self_proc = path(self_str.str());
   }

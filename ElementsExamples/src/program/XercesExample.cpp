@@ -26,10 +26,10 @@
 #include <xercesc/util/XercesVersion.hpp>   // For gXercesFullVersionStr
 #include <xercesc/util/PlatformUtils.hpp>   // for Initialize and Terminate
 
-namespace Xerces = XERCES_CPP_NAMESPACE;    // needed to avoid an ugly ns
-
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
+
+namespace Xerces = XERCES_CPP_NAMESPACE;     // needed to avoid an unneeded ugly ns
 
 using std::map;
 using std::string;

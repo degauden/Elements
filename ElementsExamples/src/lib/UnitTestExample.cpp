@@ -33,7 +33,6 @@ namespace Examples {
 
 double UnitTestExample::average (const vector<int>& v) {
 
-
   double result = 0.0;
   auto size = v.size();
   // Throw an exception if the number of vector elements is null!
@@ -42,7 +41,7 @@ double UnitTestExample::average (const vector<int>& v) {
   }
 
   // We check if we have enough numbers to compute the median
-  //if (size - 5 > 0) { // example mistake to feed a unit test exercise
+  // if (size - 5 > 0) { // example mistake to feed a unit test exercise
   if (size > 5) {
     //
     vector<int> ordered { v.begin(), v.end() };

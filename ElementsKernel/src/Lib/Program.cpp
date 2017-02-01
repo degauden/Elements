@@ -25,6 +25,7 @@
 
 #include "ElementsKernel/Program.h"
 
+using std::pair;
 using boost::program_options::options_description;
 using boost::program_options::positional_options_description;
 
@@ -35,7 +36,7 @@ namespace Elements {
     return config_desc;
   }
 
-  std::pair<options_description, positional_options_description> Program::defineProgramArguments() {
+  pair<options_description, positional_options_description> Program::defineProgramArguments() {
     options_description desc("");
     positional_options_description pos_desc;
 
