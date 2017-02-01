@@ -76,6 +76,11 @@ private:
 
 BOOST_AUTO_TEST_SUITE(Environment_test)
 
+using Elements::System::isEnvSet;
+using Elements::System::getEnv;
+using Elements::System::setEnv;
+using Elements::System::unSetEnv;
+
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Base_test, Environment_fixture) {
@@ -89,10 +94,6 @@ BOOST_FIXTURE_TEST_CASE(Base_test, Environment_fixture) {
 }
 
 BOOST_AUTO_TEST_CASE(SetVariable_test) {
-
-  using Elements::System::isEnvSet;
-  using Elements::System::getEnv;
-  using Elements::System::unSetEnv;
 
   Environment first;
 
@@ -122,9 +123,6 @@ BOOST_AUTO_TEST_CASE(SetVariable_test) {
 
 BOOST_AUTO_TEST_CASE(UnSetVariable_test) {
 
-  using Elements::System::isEnvSet;
-  using Elements::System::getEnv;
-
   Environment first;
 
   const string var_name {"LKkhdfk4lad"};
@@ -145,9 +143,6 @@ BOOST_AUTO_TEST_CASE(UnSetVariable_test) {
 }
 
 BOOST_AUTO_TEST_CASE(SubEnv_test) {
-
-  using Elements::System::isEnvSet;
-  using Elements::System::getEnv;
 
   const string var_name {"dikeZdhjdSHD"};
 
@@ -194,10 +189,6 @@ BOOST_AUTO_TEST_CASE(SubEnv_test) {
 }
 
 BOOST_AUTO_TEST_CASE(NestedSet_test) {
-
-  using Elements::System::isEnvSet;
-  using Elements::System::setEnv;
-  using Elements::System::getEnv;
 
   const string var_name {"ddTdh_lds"};
 
@@ -266,8 +257,6 @@ BOOST_AUTO_TEST_CASE(GenScript_test) {
 
 BOOST_AUTO_TEST_CASE(Commit_test) {
 
-  using Elements::System::isEnvSet;
-
   const string var_name {"ddTdh_lds"};
 
   BOOST_CHECK(not isEnvSet(var_name));
@@ -283,8 +272,6 @@ BOOST_AUTO_TEST_CASE(Commit_test) {
 }
 
 BOOST_AUTO_TEST_CASE(Class_test) {
-
-  using Elements::System::getEnv;
 
   const string var_name = "ddTdh_lds";
   const string var_value = "toto";
@@ -383,6 +370,24 @@ BOOST_AUTO_TEST_CASE(CheckCompatibility_test) {
 
   BOOST_CHECK_THROW(local["dkdd"] = local["edkkd"], std::invalid_argument);
 
+}
+
+BOOST_AUTO_TEST_CASE(CheckCommit_test) {
+
+  setEnv("dkdd", "alpha");
+
+  BOOST_CHECK(getEnv("dkdd") == "alpha");
+
+  {
+    Environment local;
+    local["dkdd"] = "beta";
+    BOOST_CHECK(getEnv("dkdd") == "beta");
+    local.commit();
+    BOOST_CHECK(getEnv("dkdd") == "beta");
+
+  }
+
+  BOOST_CHECK(getEnv("dkdd") == "beta");
 }
 
 

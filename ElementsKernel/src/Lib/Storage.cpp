@@ -27,14 +27,13 @@
 
 using std::pow;
 using std::map;
-using std::string;
 using std::int64_t;
 using std::size_t;
 
 namespace Elements {
 namespace Units {
 
-map<StorageType, string> StorageShortName      { { StorageType::Byte,              "B"},
+map<StorageType, std::string> StorageShortName { { StorageType::Byte,              "B"},
                                                  { StorageType::KiloByte,        "KiB"},
                                                  { StorageType::MegaByte,        "MiB"},
                                                  { StorageType::GigaByte,        "GiB"},
