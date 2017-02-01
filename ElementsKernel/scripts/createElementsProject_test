@@ -20,7 +20,9 @@ export User_area=${tmploc}
 
 cd ${tmploc}
 
-CreateElementsProject $project_name $version
+CreateElementsProject $project_name $version <<EOF
+y
+EOF
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
