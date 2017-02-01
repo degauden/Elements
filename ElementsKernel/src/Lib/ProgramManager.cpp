@@ -437,7 +437,7 @@ void ProgramManager::onTerminate() noexcept {
 
     // we have an exception
     try {
-      rethrow_exception( exc ); // throw to recognize the type
+      std::rethrow_exception( exc ); // throw to recognize the type
     } catch (const Exception & exc) {
       logger.fatal() << "# ";
       logger.fatal() << "# Elements Exception : " << exc.what();
