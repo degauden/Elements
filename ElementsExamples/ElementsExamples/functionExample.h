@@ -24,11 +24,10 @@
 
 #include "ElementsKernel/Export.h"
 
-
 namespace Elements {
 namespace Examples {
 
-ELEMENTS_API int functionExample(int j);
+ELEMENTS_API int functionExample(const int j);
 
 } // namespace Examples
 } // namespace Elements

@@ -36,18 +36,18 @@ namespace Path {
 template <typename T, typename U>
 boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations) {
 
-  namespace fs = boost::filesystem;
+  using boost::filesystem::path;
 
-  fs::path found_path {};
-  fs::path file_path {file_name};
+  path found_path {};
+  path file_path {file_name};
 
   auto found_pos = std::find_if(locations.cbegin(), locations.cend(),
       [file_path](U l) {
-    return fs::exists(fs::path{l} / file_path);
+    return boost::filesystem::exists(path{l} / file_path);
   });
 
   if (found_pos != locations.cend()) {
-    found_path = fs::path{*found_pos} / file_path;
+    found_path = path{*found_pos} / file_path;
   }
 
   return found_path;
@@ -58,10 +58,10 @@ boost::filesystem::path getPathFromLocations(const T& file_name, const std::vect
 template <typename T>
 boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable) {
 
-  namespace fs = boost::filesystem;
   using std::vector;
+  using boost::filesystem::path;
 
-  vector<fs::path> location_list = getLocationsFromEnv(path_variable);
+  vector<path> location_list = getLocationsFromEnv(path_variable);
 
   return getPathFromLocations(file_name, location_list);
 
@@ -70,7 +70,6 @@ boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::st
 template <typename T>
 ELEMENTS_API std::string joinPath(const std::vector<T> path_list) {
 
-  namespace fs = boost::filesystem;
   using std::vector;
   using std::string;
 
@@ -79,7 +78,7 @@ ELEMENTS_API std::string joinPath(const std::vector<T> path_list) {
   std::transform(path_list.cbegin(), path_list.cend(),
                  elems.begin(),
                  [](T s){
-                   return fs::path(s).string();
+                   return boost::filesystem::path(s).string();
                  });
 
   std::string result = boost::algorithm::join(elems, PATH_SEP);
@@ -90,10 +89,10 @@ ELEMENTS_API std::string joinPath(const std::vector<T> path_list) {
 template <typename T, typename U>
 ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations, const std::vector<U>& suffixes) {
 
-  namespace fs = boost::filesystem;
   using std::vector;
+  using boost::filesystem::path;
 
-  vector<fs::path> result(initial_locations.size()*suffixes.size());
+  vector<path> result(initial_locations.size()*suffixes.size());
 
   auto pos = result.begin();
 
@@ -102,7 +101,7 @@ ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vec
                    std::transform(suffixes.cbegin(), suffixes.cend(),
                                   pos,
                                   [l](U s){
-                                  return fs::path(l) / s;
+                                  return path(l) / s;
                                   });
                    pos += suffixes.size();
 

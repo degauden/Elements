@@ -11,8 +11,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
-namespace fs = boost::filesystem;
-
 #include "ElementsKernel/PathSearch.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/System.h"        // for getEnv
@@ -21,6 +19,8 @@ namespace fs = boost::filesystem;
 
 using std::string;
 using std::vector;
+
+using boost::filesystem::path;
 
 using Elements::System::getEnv;
 using Elements::System::setEnv;
@@ -43,7 +43,7 @@ struct PathSearch_Fixture {
 
   string m_root_path = getEnv("ELEMENTSKERNELROOT");
   string m_string_full_path = m_root_path + "/tests/data/PathSearch/";
-  fs::path m_full_path { m_string_full_path };
+  path m_full_path { m_string_full_path };
 
   string m_full_path_1 = m_root_path
       + "/tests/data/PathSearch/dirForTestingRecursiveSearch";
@@ -62,8 +62,8 @@ struct PathSearch_Fixture {
   }
 };
 
-void createTemporaryStructure(const fs::path& top_path) {
-  fs::create_directories(top_path / "tests" / "data" / "PathSearch");
+void createTemporaryStructure(const path& top_path) {
+  boost::filesystem::create_directories(top_path / "tests" / "data" / "PathSearch");
 }
 
 
@@ -75,8 +75,8 @@ BOOST_FIXTURE_TEST_CASE(simple_file_search, PathSearch_Fixture) {
 
   string file_name { "MockFile_up.conf" };
 
-  fs::path expectedFullPath = m_full_path / fs::path(file_name);
-  fs::path actualFullPath =
+  path expectedFullPath = m_full_path / path(file_name);
+  path actualFullPath =
       Elements::pathSearch(file_name, m_full_path, Elements::SearchType::Local).at(0);
   BOOST_CHECK(actualFullPath == expectedFullPath);
   actualFullPath = Elements::pathSearch(file_name, m_full_path, Elements::SearchType::Recursive).at(
@@ -89,8 +89,8 @@ BOOST_FIXTURE_TEST_CASE(simple_directory_search, PathSearch_Fixture) {
 
   string file_name { "ElementsKernel" };
 
-  fs::path expectedFullPath = m_full_path / fs::path(file_name);
-  fs::path actualFullPath =
+  path expectedFullPath = m_full_path / path(file_name);
+  path actualFullPath =
       Elements::pathSearch(file_name, m_full_path, Elements::SearchType::Local).at(0);
   BOOST_CHECK(actualFullPath == expectedFullPath);
   BOOST_CHECK(
@@ -105,10 +105,10 @@ BOOST_FIXTURE_TEST_CASE(recursive_file_search, PathSearch_Fixture) {
   // should not be found on a Local search, pathSearch returns a vector of size = 0
   BOOST_CHECK(Elements::pathSearch(file_name, m_full_path, Elements::SearchType::Local).size() == 0);
 
-  fs::path expectedFullPath = m_full_path
-      / fs::path("dirForTestingRecursiveSearch") / fs::path(file_name);
+  path expectedFullPath = m_full_path
+      / path("dirForTestingRecursiveSearch") / path(file_name);
   // only one MockFile_down.conf in first position of the path vector
-  fs::path actualFullPath = Elements::pathSearch(file_name, m_full_path,
+  path actualFullPath = Elements::pathSearch(file_name, m_full_path,
       Elements::SearchType::Recursive).at(0);
   BOOST_CHECK(actualFullPath == expectedFullPath);
 }
@@ -121,8 +121,8 @@ BOOST_FIXTURE_TEST_CASE(recursive_search_string_interface, PathSearch_Fixture) {
   BOOST_CHECK(
       Elements::pathSearch(file_name, m_full_path.string(), Elements::SearchType::Local).size() == 0);
 
-  fs::path expectedFullPath = m_full_path
-      / fs::path("dirForTestingRecursiveSearch") / fs::path(file_name);
+  path expectedFullPath = m_full_path
+      / path("dirForTestingRecursiveSearch") / path(file_name);
   // only one MockFile_down.conf in first position of the path vector
   string actualFullPath = Elements::pathSearch(file_name, m_full_path.string(),
       Elements::SearchType::Recursive).at(0);
@@ -150,12 +150,12 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_single_file, PathSearch_Fixture)
   setEnv(m_env_variable_name, m_multiple_path, 1);
   string file { "MockFile_in_ElementsKernel_up.conf" };
 
-  vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
+  vector<path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
       m_env_variable_name);
 
   BOOST_CHECK(actualFullPathVector.size() == 1);
 
-  fs::path expectedFullPath = m_full_path / fs::path {
+  path expectedFullPath = m_full_path / path {
       "ElementsKernel/MockFile_in_ElementsKernel_up.conf" };
 
   BOOST_CHECK(expectedFullPath == actualFullPathVector.at(0));
@@ -166,14 +166,14 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_multiple_file, PathSearch_Fixtur
   setEnv(m_env_variable_name, m_multiple_path, 1);
   string file { "MockFile_replicate.conf" };
 
-  vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
+  vector<path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
       m_env_variable_name);
 
   BOOST_CHECK(actualFullPathVector.size() == 2);
 
-  fs::path expectedFullPath_1 = m_full_path_1 / fs::path {
+  path expectedFullPath_1 = m_full_path_1 / path {
       "ElementsKernel/MockFile_replicate.conf" };
-  fs::path expectedFullPath_2 = m_full_path_2 / fs::path {
+  path expectedFullPath_2 = m_full_path_2 / path {
       "MockFile_replicate.conf" };
 
   if (expectedFullPath_1 != actualFullPathVector.at(0)) {
@@ -197,9 +197,9 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_order, PathSearch_Fixture) {
   setEnv(m_env_variable_name, multiple_path, 1);
   string file_1 { "MockFile_replicate.conf" };
 
-  vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file_1,
+  vector<path> actualFullPathVector = Elements::pathSearchInEnvVariable(file_1,
       m_env_variable_name);
-  fs::path expectedFullPath = m_full_path_1 / fs::path {
+  path expectedFullPath = m_full_path_1 / path {
       "ElementsKernel/MockFile_replicate.conf" };
   BOOST_CHECK(expectedFullPath == actualFullPathVector.at(0));
 
@@ -209,7 +209,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_order, PathSearch_Fixture) {
   string file_2 { "MockFile_replicate.conf" };
 
   actualFullPathVector = Elements::pathSearchInEnvVariable(file_2, m_env_variable_name);
-  expectedFullPath = m_full_path_2 / fs::path { "MockFile_replicate.conf" };
+  expectedFullPath = m_full_path_2 / path { "MockFile_replicate.conf" };
   BOOST_CHECK(expectedFullPath == actualFullPathVector.at(0));
 }
 
@@ -218,7 +218,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_file_not_found, PathSearch_Fixtu
   setEnv(m_env_variable_name, m_multiple_path, 1);
   string file { "NonExistentFile.conf" };
 
-  vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
+  vector<path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
       m_env_variable_name);
 
   BOOST_CHECK(actualFullPathVector.size() == 0);
@@ -231,7 +231,7 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_Env_Variable_Undefine, PathSearc
   unSetEnv(m_env_variable_name);
   string file { "MockFile_replicate.conf" };
 
-  vector<fs::path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
+  vector<path> actualFullPathVector = Elements::pathSearchInEnvVariable(file,
           m_env_variable_name);
 
   BOOST_CHECK(actualFullPathVector.empty());
@@ -239,14 +239,14 @@ BOOST_FIXTURE_TEST_CASE(searchFileInEnvVariable_Env_Variable_Undefine, PathSearc
 
 BOOST_AUTO_TEST_CASE(PathConstructor_test) {
 
-  fs::path test_path {"toto/titi"};
+  path test_path {"toto/titi"};
 
   BOOST_CHECK(test_path.is_relative());
   BOOST_CHECK(test_path.filename() == "titi");
   BOOST_CHECK(test_path.parent_path() == "toto");
 
   string test_str {"toto/tutu"};
-  fs::path test_path2 { test_str };
+  path test_path2 { test_str };
 
   BOOST_CHECK(test_path2.is_relative());
   BOOST_CHECK(test_path2.string() == test_path2);
@@ -258,7 +258,7 @@ BOOST_AUTO_TEST_CASE(Recursion_test) {
   using Elements::TempDir;
 
   TempDir top_dir {"PathSearch_Recursion_test-%%%%%%%"};
-  fs::path top_dir_path = top_dir.path();
+  path top_dir_path = top_dir.path();
   createTemporaryStructure(top_dir_path);
 }
 

@@ -18,9 +18,6 @@
 #ifndef PROGRAM_HEADER_H
 #define PROGRAM_HEADER_H
 
-// there is no version of boost with the std::__debug namespace
-#include "ElementsKernel/NoGlibDebug.h"
-
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/filesystem.hpp>             // for boost path type
 

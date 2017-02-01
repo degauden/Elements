@@ -23,14 +23,16 @@
 #include <map>                                // for map
 #include <string>                             // for string
 
+#include "ElementsKernel/Sleep.h"             // for nanoSleep
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
 
 namespace po = boost::program_options;
 
-//using namespace std;
 using std::map;
 using std::string;
+
+using boost::program_options::variable_value;
 
 namespace Elements {
 namespace Examples {
@@ -59,12 +61,14 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();
 
     logger.info("This Works");
+
+    Elements::nanoSleep(4);
 
     std::cout << "This Works too!" << std::endl;
 

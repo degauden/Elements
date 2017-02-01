@@ -21,15 +21,19 @@
 
 #include <numeric>                              // accumulate
 #include <algorithm>                            // sort
+#include <vector>                               // vector
+
 #include "ElementsKernel/Exception.h"
 #include "ElementsExamples/UnitTestExample.h"
+
+using std::vector;
 
 namespace Elements {
 namespace Examples {
 
-double UnitTestExample::average (const std::vector<int>& v) {
+double UnitTestExample::average (const vector<int>& v) {
 
-  double result = 0;
+  double result = 0.0;
   auto size = v.size();
   // Throw an exception if the number of vector elements is null!
   if (size == 0) {
@@ -37,10 +41,10 @@ double UnitTestExample::average (const std::vector<int>& v) {
   }
 
   // We check if we have enough numbers to compute the median
-  //if (size - 5 > 0) { // example mistake to feed a unit test exercise
+  // if (size - 5 > 0) { // example mistake to feed a unit test exercise
   if (size > 5) {
     //
-    std::vector<int> ordered { v.begin(), v.end() };
+    vector<int> ordered { v.begin(), v.end() };
     std::sort(ordered.begin(), ordered.end());
     if (size % 2 == 0) {
       result = (ordered[size / 2 - 1] + ordered[size / 2]) / 2.;

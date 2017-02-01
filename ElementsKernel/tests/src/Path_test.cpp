@@ -15,16 +15,16 @@
 #include <boost/filesystem.hpp>           // for boost::filesystem
 #include <boost/filesystem/fstream.hpp>   // for ofstream
 
-
 #include <ElementsKernel/Temporary.h>     // for TempDir
-
-namespace fs = boost::filesystem;
 
 using std::string;
 using std::vector;
 
-using Elements::TempDir;
+using boost::filesystem::path;
+using boost::filesystem::exists;
+using boost::filesystem::is_regular;
 
+using Elements::TempDir;
 
 //-----------------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ using Elements::TempDir;
 struct Path_Fixture {
 
   TempDir m_top_dir;
-  vector<fs::path> m_item_list;
+  vector<path> m_item_list;
 
   Path_Fixture(): m_top_dir{ "Path_test-%%%%%%%" } {
 
@@ -49,8 +49,8 @@ struct Path_Fixture {
     m_item_list.push_back(m_top_dir.path() / "test3");
 
     for_each(m_item_list.cbegin(), m_item_list.cend(),
-        [](fs::path p) {
-        fs::create_directory(p);
+        [](path p) {
+        boost::filesystem::create_directory(p);
     });
 
   }
@@ -67,19 +67,19 @@ BOOST_AUTO_TEST_SUITE(Path_test)
 
 BOOST_AUTO_TEST_CASE(PathConstructor_test) {
 
-  fs::path test_path {"toto/titi"};
+  path test_path {"toto/titi"};
 
   BOOST_CHECK(test_path.is_relative());
   BOOST_CHECK(test_path.filename() == "titi");
   BOOST_CHECK(test_path.parent_path() == "toto");
 
   string test_str {"toto/tutu"};
-  fs::path test_path2 { test_str };
+  path test_path2 { test_str };
 
   BOOST_CHECK(test_path2.is_relative());
   BOOST_CHECK(test_path2.string() == test_path2);
 
-  fs::path test_path3 {};
+  path test_path3 {};
   BOOST_CHECK(test_path3.string() == "");
   BOOST_CHECK(test_path3.filename() == "");
   BOOST_CHECK(test_path3.parent_path() == "");
@@ -91,24 +91,24 @@ BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Path_Fixture) {
   using Elements::Path::getPathFromLocations;
   using std::endl;
 
-  fs::path that_file = getPathFromLocations("Bla", m_item_list);
+  path that_file = getPathFromLocations("Bla", m_item_list);
 
   BOOST_CHECK(that_file.filename() == "");
 
-  fs::path that_dir = getPathFromLocations("foo", m_item_list);
+  path that_dir = getPathFromLocations("foo", m_item_list);
   BOOST_CHECK(that_dir.filename() != "");
-  BOOST_CHECK(fs::exists(that_dir));
+  BOOST_CHECK(exists(that_dir));
 
-  fs::path f_path {m_top_dir.path() / "test2" / "bar"};
+  path f_path {m_top_dir.path() / "test2" / "bar"};
 
-  fs::ofstream f{f_path.string()};
+  boost::filesystem::ofstream f{f_path.string()};
   f << "test text" << endl;
   f.close();
 
-  fs::path that_file2 = getPathFromLocations("bar", m_item_list);
+  path that_file2 = getPathFromLocations("bar", m_item_list);
   BOOST_CHECK(that_file2.filename() != "");
-  BOOST_CHECK(fs::exists(that_file2));
-  BOOST_CHECK(fs::is_regular_file(that_file2));
+  BOOST_CHECK(exists(that_file2));
+  BOOST_CHECK(is_regular_file(that_file2));
 
 }
 
@@ -122,28 +122,28 @@ BOOST_FIXTURE_TEST_CASE(getFromStringLocations_test, Path_Fixture) {
 
   transform(m_item_list.cbegin(), m_item_list.cend(),
       str_item_list.begin(),
-      [](fs::path p){
+      [](path p){
       return p.string();
   });
 
-  fs::path that_file = getPathFromLocations("Bla", str_item_list);
+  path that_file = getPathFromLocations("Bla", str_item_list);
 
   BOOST_CHECK(that_file.filename() == "");
 
-  fs::path that_dir = getPathFromLocations("foo", str_item_list);
+  path that_dir = getPathFromLocations("foo", str_item_list);
   BOOST_CHECK(that_dir.filename() != "");
-  BOOST_CHECK(fs::exists(that_dir));
+  BOOST_CHECK(exists(that_dir));
 
-  fs::path f_path {m_top_dir.path() / "test2" / "bar"};
+  path f_path {m_top_dir.path() / "test2" / "bar"};
 
-  fs::ofstream f{f_path.string()};
+  boost::filesystem::ofstream f{f_path.string()};
   f << "test text" << endl;
   f.close();
 
-  fs::path that_file2 = getPathFromLocations("bar", str_item_list);
+  path that_file2 = getPathFromLocations("bar", str_item_list);
   BOOST_CHECK(that_file2.filename() != "");
-  BOOST_CHECK(fs::exists(that_file2));
-  BOOST_CHECK(fs::is_regular_file(that_file2));
+  BOOST_CHECK(exists(that_file2));
+  BOOST_CHECK(is_regular_file(that_file2));
 
 }
 
@@ -177,7 +177,7 @@ BOOST_AUTO_TEST_CASE(MultiPathAppend_test) {
                                    "/loc2/bin", "/loc2/scripts",
                                    "./loc3/bin", "./loc3/scripts"};
 
-  const vector<fs::path> full_paths = multiPathAppend(locations, suffixes);
+  const vector<path> full_paths = multiPathAppend(locations, suffixes);
 
   BOOST_CHECK(full_paths.size() == 6);
 
@@ -185,7 +185,7 @@ BOOST_AUTO_TEST_CASE(MultiPathAppend_test) {
 
   std::transform(full_paths.cbegin(), full_paths.cend(),
                  full_path_strings.begin(),
-                 [](fs::path p){
+                 [](path p){
                    return p.string();
                  });
 

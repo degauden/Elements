@@ -43,7 +43,7 @@ public:
   class Variable {
 
   public:
-    Variable() = delete;
+    Variable() = delete ;
     Variable(Environment& env, const std::string& index): m_env(env), m_index(index) {}
     Variable(const Variable& other);
     Variable(Variable&& other);

@@ -28,7 +28,7 @@
 #include "ElementsKernel/Unused.h"
 #include "ElementsKernel/SimpleProgram.h"
 
-namespace fs = boost::filesystem;
+using boost::filesystem::path;
 
 namespace Elements {
 
@@ -59,7 +59,7 @@ ExitCode SimpleProgram::run(int argc, char** argv) noexcept {
 
 void SimpleProgram::setup(ELEMENTS_UNUSED int argc, char** argv) {
 
-  fs::path prog_path {argv[0]};
+  path prog_path {argv[0]};
 
   m_program_name = prog_path.filename();
   m_program_path = prog_path.parent_path();
@@ -68,11 +68,11 @@ void SimpleProgram::setup(ELEMENTS_UNUSED int argc, char** argv) {
 
 }
 
-const fs::path& SimpleProgram::getProgramPath() const {
+const path& SimpleProgram::getProgramPath() const {
   return m_program_path;
 }
 
-const fs::path& SimpleProgram::getProgramName() const {
+const path& SimpleProgram::getProgramName() const {
   return m_program_name;
 }
 

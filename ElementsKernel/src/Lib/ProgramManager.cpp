@@ -19,20 +19,14 @@
  *
  */
 
-// there is no version of boost with the std::__debug namespace
-// TODO question to Hubert: what is this???
-#include "ElementsKernel/NoGlibDebug.h"
-
 #include <cstdlib>                         // for the exit function
 #include <fstream>
 #include <iostream>
 #include <typeinfo>                        // for the typid operator
 #include <algorithm>                       // for transform
+#include <vector>                          // for vector
 
 #include "ElementsKernel/ProgramManager.h"
-
-namespace po = boost::program_options;
-namespace fs = boost::filesystem;
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
@@ -43,7 +37,11 @@ namespace fs = boost::filesystem;
 #include "ElementsKernel/ModuleInfo.h"     // for getExecutablePath
 #include "ElementsKernel/Unused.h"         // for ELEMENTS_UNUSED
 
-using namespace std;
+using std::vector;
+using std::string;
+
+using boost::filesystem::path;
+using boost::program_options::variables_map;
 
 namespace Elements {
 
@@ -61,30 +59,30 @@ const boost::filesystem::path& ProgramManager::getProgramName() const {
  * @todo check whether priotities are correct if more than one
  * config file is found in pathSearchInEnvVariable
  * */
-const fs::path ProgramManager::getDefaultConfigFile(const fs::path & program_name) {
+const path ProgramManager::getDefaultConfigFile(const path & program_name) {
 
-  fs::path default_config_file{};
+  path default_config_file{};
   // .conf is the standard extension for configuration file
-  fs::path conf_name(program_name);
+  path conf_name(program_name);
   conf_name.replace_extension("conf");
   // Construct and return the full path
-  vector<fs::path> configFile = pathSearchInEnvVariable(conf_name.string(), CONF_ENV_VAR_NAME);
+  vector<path> configFile = pathSearchInEnvVariable(conf_name.string(), CONF_ENV_VAR_NAME);
   if (configFile.size() != 0) {
     default_config_file = configFile.at(0);
   }
   return default_config_file;
 }
 
-const fs::path ProgramManager::setProgramName(ELEMENTS_UNUSED char* arg0) {
+const path ProgramManager::setProgramName(ELEMENTS_UNUSED char* arg0) {
 
-  fs::path full_path = Elements::System::getExecutablePath();
+  path full_path = Elements::System::getExecutablePath();
 
   return full_path.filename();
 }
 
-const fs::path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
+const path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
 
-  fs::path full_path = Elements::System::getExecutablePath();
+  path full_path = Elements::System::getExecutablePath();
 
   return full_path.parent_path();
 }
@@ -92,37 +90,49 @@ const fs::path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
 /*
  * Get program options
  */
-const po::variables_map ProgramManager::getProgramOptions(
+const variables_map ProgramManager::getProgramOptions(
     int argc, char* argv[]) {
 
-  po::variables_map variables_map { };
+
+  using std::cout;
+  using std::endl;
+  using boost::program_options::options_description;
+  using boost::program_options::value;
+  using boost::program_options::store;
+  using boost::program_options::command_line_parser;
+  using boost::program_options::collect_unrecognized;
+  using boost::program_options::include_positional;
+  using boost::program_options::notify;
+  using boost::program_options::parse_config_file;
+
+  variables_map variables_map { };
 
   // default value for default_log_level option
   string default_log_level = "INFO";
 
   // Get defaults
-  fs::path default_config_file = getDefaultConfigFile(getProgramName());
+  path default_config_file = getDefaultConfigFile(getProgramName());
 
   // Define the options which can be given only at the command line
-  po::options_description cmd_only_generic_options {};
+  options_description cmd_only_generic_options {};
   cmd_only_generic_options.add_options()
       ("version", "Print version string")
       ("help", "Produce help message")
       ("config-file",
-          po::value<fs::path>()->default_value(default_config_file),
+          value<path>()->default_value(default_config_file),
           "Name of a configuration file");
 
   // Define the options which can be given both at command line and conf file
-  po::options_description cmd_and_file_generic_options {};
+  options_description cmd_and_file_generic_options {};
   cmd_and_file_generic_options.add_options()
-      ("log-level", po::value<string>()->default_value(default_log_level),
+      ("log-level", value<string>()->default_value(default_log_level),
          "Log level: FATAL, ERROR, WARN, INFO (default), DEBUG")
       ("log-file",
-         po::value<fs::path>(), "Name of a log file");
+         value<path>(), "Name of a log file");
 
   // Group all the generic options, for help output. Note that we add the options
   // one by one to avoid having empty lines between the groups
-  po::options_description all_generic_options {"Generic options"};
+  options_description all_generic_options {"Generic options"};
   for (auto o : cmd_only_generic_options.options()) {
     all_generic_options.add(o);
   }
@@ -134,24 +144,24 @@ const po::variables_map ProgramManager::getProgramOptions(
   // from the derived class
   auto specific_options = m_program_ptr->defineSpecificProgramOptions();
   auto program_arguments = m_program_ptr->defineProgramArguments();
-  po::options_description all_specific_options {};
+  options_description all_specific_options {};
   all_specific_options.add(specific_options)
                       .add(program_arguments.first);
 
   // Put together all the options to parse from the cmd line and the file
-  po::options_description all_cmd_and_file_options {};
+  options_description all_cmd_and_file_options {};
   all_cmd_and_file_options.add(cmd_and_file_generic_options)
                           .add(all_specific_options);
 
   // Put together all the options to use for the help message
-  po::options_description help_options {};
+  options_description help_options {};
   help_options.add(all_generic_options).add(all_specific_options);
 
   // Perform a first parsing of the command line, to handle the cmd only options
-  auto cmd_parsed_options = po::command_line_parser(argc, argv)
+  auto cmd_parsed_options = command_line_parser(argc, argv)
                                     .options(cmd_only_generic_options)
                                     .allow_unregistered().run();
-  po::store(cmd_parsed_options, variables_map);
+  store(cmd_parsed_options, variables_map);
 
   // Deal with the "help" option
   if (variables_map.count("help")) {
@@ -166,29 +176,29 @@ const po::variables_map ProgramManager::getProgramOptions(
   }
 
   // Get the configuration file. It is guaranteed to exist, because it has default value
-  auto config_file = variables_map.at("config-file").as<fs::path>();
+  auto config_file = variables_map.at("config-file").as<path>();
 
   // Parse from the command line the rest of the options. Here we also handle
   // the positional arguments.
-  auto leftover_cmd_options = po::collect_unrecognized(cmd_parsed_options.options,
-                                                       po::include_positional);
-  po::store(po::command_line_parser(leftover_cmd_options)
+  auto leftover_cmd_options = collect_unrecognized(cmd_parsed_options.options,
+                                                    include_positional);
+  store(command_line_parser(leftover_cmd_options)
                       .options(all_cmd_and_file_options)
                       .positional(program_arguments.second)
                       .run(),
             variables_map);
 
   // Parse from the configuration file if it exists
-  if (not config_file.empty() && fs::exists(config_file)) {
-    ifstream ifs {config_file.string()};
+  if (not config_file.empty() && boost::filesystem::exists(config_file)) {
+    std::ifstream ifs {config_file.string()};
     if (ifs) {
-      po::store(po::parse_config_file(ifs, all_cmd_and_file_options), variables_map);
+      store(parse_config_file(ifs, all_cmd_and_file_options), variables_map);
     }
   }
 
   // After parsing both the command line and the conf file notify the variables
   // map, so we can get any messages for missing parameters
-  po::notify(variables_map);
+  notify(variables_map);
 
   // return the variable_map loaded with all options
   return variables_map;
@@ -223,6 +233,7 @@ void ProgramManager::logFooter(string program_name) const {
 // Log all options with a header
 void ProgramManager::logAllOptions() const {
 
+  using std::stringstream;
 
   Logging logger = Logging::getLogger("ElementsProgram");
 
@@ -249,10 +260,10 @@ void ProgramManager::logAllOptions() const {
       // int option
     } else if (v.second.value().type() == typeid(int)) {
       log_message << v.first << " = " << v.second.as<int>();
-      // fs::path option
-    } else if (v.second.value().type() == typeid(fs::path)) {
+      // path option
+    } else if (v.second.value().type() == typeid(path)) {
       log_message << v.first << " = "
-          << v.second.as<fs::path>();
+          << v.second.as<path>();
       // int vector option
     } else if (v.second.value().type() == typeid(vector<int>)) {
       vector<int> intVec = v.second.as<vector<int>>();
@@ -281,7 +292,7 @@ void ProgramManager::logAllOptions() const {
     } else {
       log_message << "Option " << v.first << " of type "
           << v.second.value().type().name() << " not supported in logging !"
-          << endl;
+          << std::endl;
     }
     // write the log message
     logger.info(log_message.str());
@@ -315,17 +326,17 @@ void ProgramManager::bootstrapEnvironment(char* arg0){
   m_program_name = setProgramName(arg0);
   m_program_path = setProgramPath(arg0);
 
-  vector<fs::path> local_search_paths(m_search_dirs.size());
+  vector<path> local_search_paths(m_search_dirs.size());
 
   std::transform(m_search_dirs.cbegin(), m_search_dirs.cend(),
       local_search_paths.begin(),
       [](string s){
-      return fs::complete(s);
+      return boost::filesystem::complete(s);
   });
 
   // insert local parent dir if it is not already
   // the first one of the list
-  const fs::path this_parent_path = fs::canonical(m_program_path.parent_path());
+  const path this_parent_path = boost::filesystem::canonical(m_program_path.parent_path());
   if (local_search_paths[0] != this_parent_path) {
     auto b = local_search_paths.begin();
     local_search_paths.insert(b, this_parent_path);
@@ -362,10 +373,10 @@ void ProgramManager::setup(int argc, char* argv[]) {
   } else {
      throw Exception("Required option log-level is not provided!", ExitCode::CONFIG);
   }
-  fs::path log_file_name;
+  path log_file_name;
 
   if (m_variables_map.count("log-file")) {
-    log_file_name = m_variables_map["log-file"].as<fs::path>();
+    log_file_name = m_variables_map["log-file"].as<path>();
     Logging::setLogFile(log_file_name);
   }
 
@@ -432,7 +443,7 @@ void ProgramManager::onTerminate() noexcept {
       logger.fatal() << "# Elements Exception : " << exc.what();
       logger.fatal() << "# ";
       exit_code = exc.exitCode();
-    } catch (const exception & exc) {
+    } catch (const std::exception & exc) {
       /// @todo : set the exit code according to the type of exception
       ///         if a clear match is found.
       logger.fatal() << "# ";

@@ -30,15 +30,19 @@
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsExamples/functionExample.h"
 
-namespace Elements {
-namespace Examples {
-
-namespace po = boost::program_options;
-namespace fs = boost::filesystem;
+//namespace po = boost::program_options;
+//namespace fs = boost::filesystem;
 
 using std::map;
 using std::string;
 using std::vector;
+using boost::program_options::options_description;
+using boost::program_options::value;
+using boost::program_options::variable_value;
+
+namespace Elements {
+namespace Examples {
+
 
 /**
  * @class ProgramExample
@@ -61,23 +65,22 @@ public:
    * @return
    *    A BOOST program options_description
    */
-  po::options_description defineSpecificProgramOptions() override {
-    po::options_description config_options { "Example program options" };
+  options_description defineSpecificProgramOptions() override {
+
+    options_description config_options { "Example program options" };
 
     // Add the specific program options
     config_options.add_options()
-        ("string-option",
-        po::value<string>()->default_value(string { }),
+        ("string-option", value<string>()->default_value(string { }),
         "An example string option")
-        ("string-option-no-default",
-        po::value<string>(), "A string option without default value")
-        ("long-long-option", po::value<int64_t>()->default_value(int64_t { }),
+        ("string-option-no-default", value<string>(),
+        "A string option without default value")
+        ("long-long-option", value<int64_t>()->default_value(int64_t { }),
         "An example long long option")
-        ("double-option",
-        po::value<double>()->default_value(double { }),
+        ("double-option", value<double>()->default_value(double { }),
         "An example double option")
         ("int-vector-option",
-        po::value<vector<int>>()->multitoken()->default_value(vector<int> { }, "Empty"),
+         value<vector<int>>()->multitoken()->default_value(vector<int> { }, "Empty"),
         "An example vector option");
 
     return config_options;
@@ -94,7 +97,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(map<string, po::variable_value>& args)
+  ExitCode mainMethod(map<string, variable_value>& args)
       override {
     Logging logger = Logging::getLogger("ProgramExample");
     logger.info("Entering mainMethod()");

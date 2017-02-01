@@ -28,12 +28,14 @@
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
 
-namespace po = boost::program_options;
-
-//using namespace std;
 using std::map;
 using std::string;
 using std::vector;
+
+using boost::program_options::variable_value;
+using boost::program_options::value;
+using boost::program_options::options_description;
+using boost::program_options::positional_options_description;
 
 namespace Elements {
 namespace Examples {
@@ -61,7 +63,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod (ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod (ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();
@@ -83,11 +85,11 @@ public:
 
   }
 
-  std::pair<po::options_description, po::positional_options_description> defineProgramArguments () override {
-    po::options_description desc("");
-    desc.add_options()("input-files", po::value<vector<string>>(), "Input files");
+  std::pair<options_description, positional_options_description> defineProgramArguments () override {
+    options_description desc("");
+    desc.add_options()("input-files", value<vector<string>>(), "Input files");
 
-    po::positional_options_description pos_desc;
+    positional_options_description pos_desc;
     pos_desc.add("input-files", -1);
 
     return std::make_pair(desc, pos_desc);

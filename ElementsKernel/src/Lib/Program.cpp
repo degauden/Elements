@@ -22,22 +22,23 @@
 #include <utility>
 
 #include <boost/program_options.hpp>
-namespace po = boost::program_options;
 
 #include "ElementsKernel/Program.h"
 
 using std::pair;
+using boost::program_options::options_description;
+using boost::program_options::positional_options_description;
 
 namespace Elements {
 
-  po::options_description Program::defineSpecificProgramOptions() {
-    po::options_description config_desc("");
+  options_description Program::defineSpecificProgramOptions() {
+    options_description config_desc("");
     return config_desc;
   }
 
-  pair<po::options_description, po::positional_options_description> Program::defineProgramArguments() {
-    po::options_description desc("");
-    po::positional_options_description pos_desc;
+  pair<options_description, positional_options_description> Program::defineProgramArguments() {
+    options_description desc("");
+    positional_options_description pos_desc;
 
     using std::make_pair;
 

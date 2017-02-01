@@ -29,7 +29,7 @@ ELEMENTS_API void normalSleep(int sec);
 
 /// Small variation on the sleep function for nanoseconds sleep.
 /// @author Marco Clemencic
-ELEMENTS_API void nanoSleep(int64_t nsec);
+ELEMENTS_API void nanoSleep(std::int64_t nsec);
 
 }
 

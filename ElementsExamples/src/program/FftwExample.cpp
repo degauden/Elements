@@ -32,22 +32,21 @@
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 #include "ElementsKernel/MathConstants.h"   // for pi
 
-namespace Elements {
-namespace Examples {
-
-namespace po = boost::program_options;
-
 using std::map;
 using std::string;
+using boost::program_options::variable_value;
 
-constexpr size_t N = 32;
+constexpr std::size_t N = 32;
+
+namespace Elements {
+namespace Examples {
 
 class FftwExample: public Program {
 
 public:
 
 
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, po::variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     Logging logger = Logging::getLogger("FftwExample");
 

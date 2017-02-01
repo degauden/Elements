@@ -24,7 +24,7 @@
 namespace Elements {
 namespace Examples {
 
-int functionExample(int j) {
+int functionExample(const int j) {
   return j*j;
 }
 

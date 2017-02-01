@@ -33,10 +33,10 @@
 #include "ElementsKernel/System.h"
 #include "ElementsKernel/Logging.h"     // for the logger
 
-namespace fs = boost::filesystem;
-
 using std::vector;
 using std::string;
+
+using boost::filesystem::path;
 
 namespace Elements {
 
@@ -50,14 +50,15 @@ vector<T> pathSearch(const std::string& searched_name, T directory) {
   // create the resulting vector
   vector<T> searchResults { };
   // make sure directory is ps::path, changing from string to path if T is string.
-  fs::path l_directory { directory };
+  path l_directory { directory };
   // the default constructor of ITER return a pointer to one-past last element
   ITER end_iter;
-  if (fs::is_directory(l_directory)) {
+  if (boost::filesystem::is_directory(l_directory)) {
     // ITER constructor return a pointer to the first element of l_directory
     for (ITER dir_iter(l_directory); dir_iter != end_iter; ++dir_iter) {
       if (dir_iter->path().filename() == searched_name) {
-        // File found: make sure the result is T: string to string or string to fs::path
+        // File found: make sure the result is T: string to string or string to
+        // boost::filesystem::path
         T l_result { dir_iter->path().string() };
         searchResults.push_back(l_result);
       }
@@ -74,20 +75,20 @@ vector<T> searchOption(string searched_name, T directory,
   vector<T> searchResults { };
   switch (search_type) {
   case SearchType::Local:
-    searchResults = pathSearch<T, fs::directory_iterator>(searched_name,
+    searchResults = pathSearch<T, boost::filesystem::directory_iterator>(searched_name,
         directory);
     break;
   case SearchType::Recursive:
-    searchResults = pathSearch<T, fs::recursive_directory_iterator>(
+    searchResults = pathSearch<T, boost::filesystem::recursive_directory_iterator>(
         searched_name, directory);
     break;
   }
   return searchResults;
 }
 
-vector<fs::path> pathSearch(const string& searched_name, fs::path directory,
+vector<path> pathSearch(const string& searched_name, path directory,
     SearchType search_type) {
-  return searchOption<fs::path>(searched_name, directory, search_type);
+  return searchOption<path>(searched_name, directory, search_type);
 }
 
 vector<string> pathSearch(const string& searched_name, string directory,
@@ -102,12 +103,12 @@ vector<string> pathSearch(const string& searched_name, string directory,
  *
  * and call pathSearch(...) for each of them
  */
-vector<fs::path> pathSearchInEnvVariable(const std::string& file_name,
+vector<path> pathSearchInEnvVariable(const std::string& file_name,
                                             std::string path_like_env_variable,
                                             SearchType search_type) {
 
   // Placeholder for the to-be-returned search result
-  vector<fs::path> search_results { };
+  vector<path> search_results { };
 
   // get the multiple path from the environment variable
   string multiple_path {};
@@ -123,12 +124,12 @@ vector<fs::path> pathSearchInEnvVariable(const std::string& file_name,
   // Loop over all path elements
   for (string path_element : path_elements) {
     // Check if directory exists
-    if (fs::exists(path_element) && fs::is_directory(path_element)) {
+    if (boost::filesystem::exists(path_element) && boost::filesystem::is_directory(path_element)) {
       // loop recursively inside directory
       auto single_path_results = pathSearch(file_name,
-                                            fs::path { path_element },
+                                            path { path_element },
                                             search_type);
-      for (fs::path aPath : single_path_results) {
+      for (path aPath : single_path_results) {
         search_results.push_back(aPath);
       }
     }

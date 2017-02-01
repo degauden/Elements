@@ -156,7 +156,9 @@ private:
 
 };
 
-template <typename Ex, typename T, typename=typename std::enable_if<std::is_base_of<Exception, typename std::remove_reference<Ex>::type>::value>::type>
+template <typename Ex, typename T,
+           typename=typename std::enable_if<std::is_base_of<Exception,
+           typename std::remove_reference<Ex>::type>::value>::type>
 auto operator<<(Ex&& ex, const T& message) -> decltype(std::forward<Ex>(ex)) {
   ex.appendMessage(message);
   return std::forward<Ex>(ex);
