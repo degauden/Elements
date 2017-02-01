@@ -29,6 +29,7 @@ import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeListsMacros as pclm
+import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddCppProgram')
@@ -217,6 +218,10 @@ def mainMethod(args):
 
     # We absolutely need a Elements cmake file
     script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
+
+    # Check name in the Element Naming Database
+    if script_goes_on:
+        script_goes_on = epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
 
     program_file_path = os.path.join(current_dir, 'src', 'program',
                                      program_name + '.cpp')
