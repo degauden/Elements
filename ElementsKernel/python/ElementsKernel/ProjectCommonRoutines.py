@@ -31,11 +31,56 @@ import re
 import shutil
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
+import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('ProjectCommonRoutines')
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
+
+################################################################################
+
+def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
+    """
+    Check if the entity_name (e.g. project name, module name, class name etc...)
+    already exists in the Euclid Naming Database. This function displays warning messages
+    if the element_name exists already or the database is not available.
+    """
+    script_goes_on = True
+    logger.info("Querying the Element Naming Database...")
+    db_url = os.environ.get("ELEMENTS_NAMING_DB_URL", "")
+    if not nc.checkDataBaseUrl(db_url):
+        logger.info("#")
+        logger.warn("!!! The Elements Naming Database URL is not valid : %s !!!", db_url)
+        logger.warn("Please correct the DB URL by setting up the ELEMENTS_NAMING_DB_URL environment variable!!!")
+        script_goes_on = False
+    else:
+        info = nc.getInfo(entity_name, db_url, entity_type)
+        if info["error"]:
+            logger.error("There was an error querying the DB: %s", info["message"])
+        else:
+            if info["exists"]:
+                logger.info("#")
+                logger.warn("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!", 
+                            entity_name, entity_type)
+                logger.warn("See the result for the global query of the \"%s\" name in the DB: %s", entity_name, 
+                            info["url"])
+                logger.warn("For more information also connect to: %s", info["private_url"])
+                script_goes_on = False
+            else:
+                logger.warn("")
+                logger.warn("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!", entity_name,
+                             entity_type)
+                logger.warn("Please think to add the \"%s\" name in the Element Naming Database below:", entity_name)
+                logger.warn("< %s/NameCheck/project1/ >", db_url)
+                logger.info("")
+
+    if not script_goes_on:
+        response_key = raw_input('Do you want to continue?(Yes/No, default: No)')
+        if response_key == "YES" or response_key == "yes" or response_key == "y":
+            script_goes_on = True
+
+    return script_goes_on
 
 ################################################################################
 

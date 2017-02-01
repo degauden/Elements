@@ -28,6 +28,7 @@ import argparse
 import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
+import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
@@ -201,6 +202,10 @@ def mainMethod(args):
         script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
     program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
+
+    # Check name in the Element Naming Database
+    if script_goes_on:
+        script_goes_on = epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
 
     # Make sure the program does not already exist
     if script_goes_on:
