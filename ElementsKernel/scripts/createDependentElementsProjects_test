@@ -24,7 +24,9 @@ export CMAKE_PROJECT_PATH=${tmploc}:${CMAKE_PROJECT_PATH}
 
 cd ${tmploc}
 
-CreateElementsProject $projectA_name $projectA_version
+CreateElementsProject $projectA_name $projectA_version << EOF
+y
+EOF
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -67,7 +69,9 @@ fi
 
 cd ${tmploc}
 
-CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version
+CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
+y
+EOF
 
 cd $projectB_name/$projectB_version
 
