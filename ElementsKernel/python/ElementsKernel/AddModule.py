@@ -27,6 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import argparse
 import os
 import ElementsKernel.ProjectCommonRoutines as epcr
+import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
@@ -142,7 +143,7 @@ def createModule(project_dir, module_name, dependency_list):
     logger.info('# Creating the module: <%s> ', mod_path)
     if os.path.exists(mod_path):
         # Ask user
-        logger.warning('<%s> module ALREADY exists!!!', module_name)
+        logger.warning('<%s> module ALREADY exists on disk!!!', module_name)
         response_key = raw_input(
             'Do you want to replace the existing module (yes/y/no/n), default: no)?')
         if response_key == "yes" or response_key == "y":
@@ -208,6 +209,10 @@ def mainMethod(args):
     # Module as no version number, '1.0' is just for using the routine
     if script_goes_on:
         script_goes_on = epcr.isNameAndVersionValid(module_name, '1.0')
+
+    # Check name in the Element Naming Database
+    if script_goes_on:
+        script_goes_on = epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0])
 
     if script_goes_on and createModule(project_dir, module_name, dependency_list):
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)

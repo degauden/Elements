@@ -28,6 +28,7 @@ import argparse
 import os
 import ELEMENTS_VERSION  # @UnresolvedImport
 import ElementsKernel.ProjectCommonRoutines as epcr
+import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('CreateElementsProject')
@@ -246,6 +247,10 @@ def mainMethod(args):
         script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_LIST_IN)
     if script_goes_on:
         script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE_IN)
+    
+    # Check name in the Element Naming Database
+    if script_goes_on:
+        script_goes_on = epcr.checkNameInEuclidNamingDatabase(proj_name, nc.TYPES[0])
 
     # Set the project directory
     if args.no_version_directory:
