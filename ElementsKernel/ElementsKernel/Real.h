@@ -85,9 +85,9 @@ constexpr std::size_t DBL_DEFAULT_MAX_ULPS { 10 };
 // For testing purposes only. Rather use the isEqual functions for real
 // life comparison
 /// Single precision float default test tolerance
-static const double FLT_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<float>::digits10);
+ELEMENTS_API extern const double FLT_DEFAULT_TEST_TOLERANCE;
 /// Double precision float default test tolerance
-static const double DBL_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<double>::digits10);
+ELEMENTS_API extern const double DBL_DEFAULT_TEST_TOLERANCE;
 
 
 template<std::size_t size>

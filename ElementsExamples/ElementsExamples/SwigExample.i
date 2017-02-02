@@ -14,7 +14,6 @@ namespace Examples {
 
 int functionExample(int);
 
-
 class SwigClassExample {
 
 public:
@@ -32,8 +31,6 @@ public:
   double getDec () const;
 
 };
-
-
 
 } // namespace Examples
 } // namespace Elements

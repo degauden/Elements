@@ -46,7 +46,9 @@
 using namespace std;
 using boost::filesystem::path;
 
-static vector<string> s_linkedModules;
+namespace {
+  vector<string> s_linkedModules;
+}
 
 namespace Elements {
 namespace System {
@@ -79,8 +81,9 @@ ModuleInfo::operator const Dl_info&() const {
     return *m_dlinfo;
 }
 
-static ImageHandle      ModuleHandle = 0;
-
+namespace {
+  ImageHandle      ModuleHandle = 0;
+}
 /// Retrieve base name of module
 const string& moduleName()   {
   static string module("");

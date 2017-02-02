@@ -29,7 +29,6 @@ constexpr std::uint_least64_t CALC_PROJECT_VERSION(const std::uint_least64_t maj
   return (((maj) << 32) + ((min) << 16) + (pat));
 }
 
-
 namespace Elements {
 
 /**

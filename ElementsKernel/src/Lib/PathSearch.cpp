@@ -40,7 +40,9 @@ using boost::filesystem::path;
 
 namespace Elements {
 
-static Logging logger = Logging::getLogger("PathSearch");
+namespace {
+  Logging logger = Logging::getLogger("PathSearch");
+}
 
 //-----------------------------------------------------------------------------
 // Function search

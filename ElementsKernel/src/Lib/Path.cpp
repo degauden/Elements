@@ -25,6 +25,7 @@
 #include <string>                      // for string
 #include <vector>                      // for vector
 #include <algorithm>                   // for transform, remove_if
+#include <map>                         // for map
 
 #include <boost/filesystem.hpp>        // for boost::filesystem
 #include <boost/algorithm/string.hpp>  // for boost::split
@@ -33,10 +34,38 @@
 
 using std::string;
 using std::vector;
+using std::map;
+
 using boost::filesystem::path;
 
 namespace Elements {
 namespace Path {
+
+const string PATH_SEP {":"};
+
+const map<Type, const string> VARIABLE  {
+  {Type::executable,                  "PATH"},
+  {Type::library,     System::SHLIB_VAR_NAME},
+  {Type::python,                "PYTHONPATH"},
+  {Type::configuration, "ELEMENTS_CONF_PATH"},
+  {Type::auxiliary,      "ELEMENTS_AUX_PATH"}
+};
+
+const map<Type, const vector<string>> SUFFIXES {
+  {Type::executable, {"scripts", "bin"}},
+  {Type::library, {"lib"}},
+  {Type::python, {"python"}},
+  {Type::configuration, {"conf"}},
+  {Type::auxiliary, {"auxdir", "aux"}}
+};
+
+const map<Type, const vector<string>> DEFAULT_LOCATIONS {
+  {Type::executable, {}},
+  {Type::library, {"/usr/lib64", "/usr/lib"}},
+  {Type::python, {}},
+  {Type::configuration, {"/usr/share/conf"}},
+  {Type::auxiliary, {"/usr/share/auxiliary"}}
+};
 
 vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
