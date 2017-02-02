@@ -48,3 +48,4 @@ ElementsConfigVersion.cmake
 .cache
 /PAQA
 /sonar-project.properties
+/.checkstyle
