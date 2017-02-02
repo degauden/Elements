@@ -46,9 +46,34 @@ namespace Elements {
 namespace System {
 
 // --------------------------------------------------------------------------------------
+// various constants
+// --------------------------------------------------------------------------------------
+
+#if defined(__APPLE__)
+  const string SHLIB_VAR_NAME { "DYLD_LIBRARY_PATH" };
+#else
+  const string SHLIB_VAR_NAME { "LD_LIBRARY_PATH" };
+#endif
+
+const string LIB_PREFIX { "lib" };
+
+#ifdef __APPLE__
+  const string LIB_EXTENSION { "dylib" };
+#else
+  const string LIB_EXTENSION { "so" };
+#endif
+
+const string LIB_SUFFIX { "." + LIB_EXTENSION };
+
+const string SHLIB_SUFFIX { LIB_SUFFIX };
+
+// --------------------------------------------------------------------------------------
 // Private functions
 // --------------------------------------------------------------------------------------
-static unsigned long doLoad(const string& name, ImageHandle* handle) {
+
+namespace {
+
+unsigned long doLoad(const string& name, ImageHandle* handle) {
   const char* path = name.c_str();
   void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
   *handle = mh;
@@ -58,7 +83,7 @@ static unsigned long doLoad(const string& name, ImageHandle* handle) {
   return 1;
 }
 
-static unsigned long loadWithoutEnvironment(const string& name,
+unsigned long loadWithoutEnvironment(const string& name,
     ImageHandle* handle) {
 
   string dll_name = name;
@@ -75,6 +100,7 @@ static unsigned long loadWithoutEnvironment(const string& name,
   return doLoad(dll_name, handle);
 }
 
+} // anonymous namespace
 // --------------------------------------------------------------------------------------
 
 /// Load dynamic link library

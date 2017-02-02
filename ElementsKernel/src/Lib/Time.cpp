@@ -15,10 +15,7 @@
  *
  */
 
-
 #include "ElementsKernel/Time.h"
-
-#include "ElementsKernel/time_r.h"
 
 #include <iostream>
 #include <cstdio>

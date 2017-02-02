@@ -41,8 +41,6 @@
 namespace Elements {
 namespace Path {
 
-static std::string PATH_SEP {":"};
-
 
 enum class Type {
   executable,
@@ -52,39 +50,23 @@ enum class Type {
   auxiliary
 };
 
+ELEMENTS_API extern const std::string PATH_SEP;
+
 /**
  * @brief map containing the name of the path variable for each type
  */
-static std::map<Type, const std::string> VARIABLE  {
-  { Type::executable,                  "PATH"},
-  { Type::library,     System::SHLIB_VAR_NAME},
-  { Type::python,                "PYTHONPATH"},
-  { Type::configuration, "ELEMENTS_CONF_PATH"},
-  { Type::auxiliary,      "ELEMENTS_AUX_PATH"}
-};
+ELEMENTS_API extern const std::map<Type, const std::string> VARIABLE;
 
 /**
  * @brief map containing the default project installation
  * suffixes for each variable
  */
-static std::map<Type, const std::vector<std::string>> SUFFIXES {
-  {Type::executable, {"scripts", "bin"}},
-  {Type::library, {"lib"}},
-  {Type::python, {"python"}},
-  {Type::configuration, {"conf"}},
-  {Type::auxiliary, {"auxdir", "aux"}}
-};
+ELEMENTS_API extern const std::map<Type, const std::vector<std::string>> SUFFIXES;
 
 /**
  * @brief map containing the default external locations for each variable
  */
-static std::map<Type, const std::vector<std::string>> DEFAULT_LOCATIONS {
-  {Type::executable, {}},
-  {Type::library, {"/usr/lib64", "/usr/lib"}},
-  {Type::python, {}},
-  {Type::configuration, {"/usr/share/conf"}},
-  {Type::auxiliary, {"/usr/share/auxiliary"}}
-};
+ELEMENTS_API extern const std::map<Type, const std::vector<std::string>> DEFAULT_LOCATIONS;
 
 /**
  * @brief function to get the locations from an environment variable

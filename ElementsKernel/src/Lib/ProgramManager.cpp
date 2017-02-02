@@ -45,11 +45,16 @@ using boost::program_options::variables_map;
 
 namespace Elements {
 
-const boost::filesystem::path& ProgramManager::getProgramPath() const {
+using System::getExecutablePath;
+
+const string CONF_ENV_VAR_NAME {Path::VARIABLE.at(Path::Type::configuration)};
+
+
+const path& ProgramManager::getProgramPath() const {
   return m_program_path;
 }
 
-const boost::filesystem::path& ProgramManager::getProgramName() const {
+const path& ProgramManager::getProgramName() const {
   return m_program_name;
 }
 
@@ -348,9 +353,9 @@ void ProgramManager::bootstrapEnvironment(char* arg0){
 
   for (const auto& v: Path::VARIABLE) {
     if (m_env[v.second].exists()) {
-      m_env[v.second] += Path::PATH_SEP + joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES[v.first]));
+      m_env[v.second] += Path::PATH_SEP + joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES.at(v.first)));
     } else {
-      m_env[v.second] = joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES[v.first]));
+      m_env[v.second] = joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES.at(v.first)));
     }
   }
 

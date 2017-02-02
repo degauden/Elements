@@ -28,6 +28,10 @@
 
 namespace Elements {
 
+extern const double FLT_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<float>::digits10);
+extern const double DBL_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<double>::digits10);
+
+
 // Usable AlmostEqual function
 bool almostEqual2sComplement(const float& left, const float& right, const int& max_ulps) {
 

@@ -24,8 +24,6 @@
 #include "ElementsKernel/Export.h" // ELEMENTS_API
 #include "ElementsKernel/Exception.h"
 
-struct tm;
-
 namespace Elements {
 
 class Time;

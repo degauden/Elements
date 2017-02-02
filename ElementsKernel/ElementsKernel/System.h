@@ -38,39 +38,31 @@
 namespace Elements {
 namespace System {
 
-
 /**
  * @brief name of the shared dynamic library path
  */
-#if defined(__APPLE__)
-  const std::string SHLIB_VAR_NAME { "DYLD_LIBRARY_PATH" };
-#else
-  const std::string SHLIB_VAR_NAME { "LD_LIBRARY_PATH" };
-#endif
+ELEMENTS_API extern const std::string SHLIB_VAR_NAME;
 
 /**
  * @brief constant that represent the common prefix of the libraries
  */
-const std::string LIB_PREFIX = std::string("lib");
+ELEMENTS_API extern const std::string LIB_PREFIX;
 
 /**
  * @brief constant that represent the common extension of the libraries
  */
-#ifdef __APPLE__
-  const std::string LIB_EXTENSION = std::string("dylib");
-#else
-  const std::string LIB_EXTENSION = std::string("so");
-#endif
+ELEMENTS_API extern const std::string LIB_EXTENSION;
 
 /**
  * @brief  constant that represents the standard suffix of
  *   the libraries: usually "."+LIB_EXTENSION
  */
-const std::string LIB_SUFFIX = "." + LIB_EXTENSION;
+ELEMENTS_API extern const std::string LIB_SUFFIX;
+
 /**
  * @brief alias for LIB_SUFFIX
  */
-const std::string SHLIB_SUFFIX { LIB_SUFFIX };
+ELEMENTS_API extern const std::string SHLIB_SUFFIX;
 
 #if defined(__linux) || defined(__APPLE__)
 #define TEMPLATE_SPECIALIZATION
