@@ -995,11 +995,11 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     if (RPMBUILD_FOUND)
 
 
-      get_rpm_dep_list("${PROJECT_USE}" "debuginfo" RPM_DEBUGINFO_DEP_LIST)
+      get_rpm_dep_list("${PROJECT_USE}" "debuginfo" "${SQUEEZED_INSTALL}" RPM_DEBUGINFO_DEP_LIST)
 
-      get_rpm_dep_list("${PROJECT_USE}" "devel" RPM_DEVEL_DEP_LIST)
+      get_rpm_dep_list("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" RPM_DEVEL_DEP_LIST)
 
-      get_rpm_dep_list("${PROJECT_USE}" "" RPM_DEP_LIST)
+      get_rpm_dep_list("${PROJECT_USE}" "" "${SQUEEZED_INSTALL}" RPM_DEP_LIST)
 
       find_file(main_project_changelog_file
                 NAMES ChangeLog
