@@ -138,5 +138,5 @@ endif()
 
 get_arch_lib_dir(that_arch)
 
-set(ELEMENTS_DEFAULT_SEARCH_PATH ${CMAKE_INSTALL_PREFIX}/${that_arch}/cmake/Elements)
-set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/Elements)
+set(ELEMENTS_DEFAULT_SEARCH_PATH ${CMAKE_INSTALL_PREFIX}/${that_arch}/cmake/ElementsProject)
+set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/ElementsProject)
