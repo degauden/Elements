@@ -37,10 +37,8 @@
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 #include "ElementsKernel/System.h"  // for for SHLIB_VAR_NAME
 
-
 namespace Elements {
 namespace Path {
-
 
 enum class Type {
   executable,
