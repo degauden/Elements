@@ -3390,7 +3390,8 @@ macro(elements_generate_exports)
       message(STATUS "Generating ${pkg_exp_file}")
       set(pkg_exp_file ${CMAKE_CURRENT_BINARY_DIR}/${pkg_exp_file})
 
-      file(WRITE ${pkg_exp_file}
+      if (NOT SQUEEZED_INSTALL)
+        file(WRITE ${pkg_exp_file}
 "# File automatically generated: DO NOT EDIT.
 
 # Compute the installation prefix relative to this file.
@@ -3398,6 +3399,15 @@ get_filename_component(_IMPORT_PREFIX \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)
 get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)
 
 ")
+      else()
+        file(WRITE ${pkg_exp_file}
+"# File automatically generated: DO NOT EDIT.
+
+set(_IMPORT_PREFIX \"${CMAKE_INSTALL_PREFIX}\")
+
+")      
+      endif()
+
 
       foreach(library ${exported_libs})
         file(APPEND ${pkg_exp_file} "add_library(${library} SHARED IMPORTED)\n")
