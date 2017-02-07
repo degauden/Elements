@@ -1055,6 +1055,7 @@ ${MAIN_PROJECT_CHANGELOG}
   endif()
 
   include(ElementsDocumentation)
+  include(ElementsUninstall)
 
 endmacro()
 
