@@ -14,7 +14,7 @@ find_package(ElementsProject)
 
 # Declare project name and version
 set(ELEMENTS_HIDE_SYMBOLS ON
-    CACHE STRING "enable explicit symbol visibility on gcc-4"
+    CACHE STRING "Enable explicit symbol visibility on gcc-4"
     FORCE)
 
 set(CXX_SUGGEST_OVERRIDE ON

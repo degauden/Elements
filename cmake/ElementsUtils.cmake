@@ -524,8 +524,8 @@ function(check_project_version_from_file config_file project version match_found
 endfunction()
 
 
-function(get_rpm_dep_list project_use package_suffix output_var)
-
+function(get_rpm_dep_list project_use package_suffix squeezed_install output_var)
+  
   set(output_str_list)
 
   set(ARGN_ ${project_use})
@@ -538,19 +538,44 @@ function(get_rpm_dep_list project_use package_suffix output_var)
     list(GET ARGN_ 0 other_project)
     list(GET ARGN_ 1 other_project_version)
 
-
-    if(package_suffix)
-      set(output_str_list "${output_str_list}, ${other_project}-${package_suffix} = ${other_project_version}")
+    if(squeezed_install)
+      if(package_suffix)
+	set(output_str_list "${output_str_list}, ${other_project}-${package_suffix} = ${other_project_version}")
+      else()
+	set(output_str_list "${output_str_list}, ${other_project} = ${other_project_version}")
+      endif()
     else()
-      set(output_str_list "${output_str_list}, ${other_project} = ${other_project_version}")
+      if(package_suffix)
+	set(output_str_list "${output_str_list}, ${other_project}_${other_project_version}-${package_suffix}")
+      else()
+	set(output_str_list "${output_str_list}, ${other_project}_${other_project_version}")
+      endif()
     endif()
-
+    
+    
     list(REMOVE_AT ARGN_ 0 1)
   endwhile()
 
+  if(NOT squeezed_install)
+    set(output_str_list "${output_str_list}, EuclidEnv")
+  endif()
+    
   set(${output_var} ${output_str_list} PARENT_SCOPE)
 
 endfunction()
+
+function(get_arch_lib_dir output_var)
+
+  if(EXISTS /usr/lib64)
+    set(lib_name lib64)
+  else()
+    set(lib_name lib)
+  endif()
+
+  set(${output_var} ${lib_name} PARENT_SCOPE)
+
+endfunction()
+
 
 macro(print_all_variables)
   get_cmake_property(_variableNames VARIABLES)

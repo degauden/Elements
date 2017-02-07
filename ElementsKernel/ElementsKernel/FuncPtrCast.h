@@ -44,7 +44,7 @@ namespace System {
  * @param ptr pointer address to convert
  * @tparam SRCPTR source pointer type
  * @tparam DESTPTR destination pointer type
- * @return
+ * @return destination pointer
  */
 template<typename DESTPTR, typename SRCPTR>
 inline DESTPTR FuncPtrCast(SRCPTR ptr) {

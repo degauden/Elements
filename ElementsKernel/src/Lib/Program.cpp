@@ -40,9 +40,7 @@ namespace Elements {
     options_description desc("");
     positional_options_description pos_desc;
 
-    using std::make_pair;
-
-    return make_pair(desc, pos_desc);
+    return std::make_pair(desc, pos_desc);
   }
 
   Program::~Program() {}

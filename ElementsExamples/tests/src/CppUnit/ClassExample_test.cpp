@@ -15,9 +15,9 @@
 
 #include "ElementsExamples/ClassExample.h"
 
-using namespace std;
-using namespace Elements;
-using namespace Examples;
+
+using std::string;
+using Elements::Examples::ClassExample;
 
 /*
  * Fixture to compare the test result against reference values
@@ -51,7 +51,7 @@ private:
   //Elements::ClassExample m_class_example {};
 
   // expected static string (hard coded in .cpp file!)
-  std::string m_expected_static_string {"This is a static field example"};
+  string m_expected_static_string {"This is a static field example"};
 
   // Some numbers to feed the constructor
   const int m_source_id {123456789};
@@ -85,13 +85,13 @@ void ClassExampleSuite::gettersTest () {
 
 void ClassExampleSuite::fundamentalTypeMethodTest () {
 
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable), DBL_DEFAULT_TEST_TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable), Elements::DBL_DEFAULT_TEST_TOLERANCE);
 
 }
 
 void ClassExampleSuite::fundamentalTypeMethodSecondTest () {
 
-  CPPUNIT_ASSERT(isEqual(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable)));
+  CPPUNIT_ASSERT(Elements::isEqual(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable)));
 
 }
 

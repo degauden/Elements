@@ -110,7 +110,7 @@ const variables_map ProgramManager::getProgramOptions(
   using boost::program_options::notify;
   using boost::program_options::parse_config_file;
 
-  variables_map variables_map { };
+  variables_map var_map { };
 
   // default value for default_log_level option
   string default_log_level = "INFO";
@@ -166,22 +166,22 @@ const variables_map ProgramManager::getProgramOptions(
   auto cmd_parsed_options = command_line_parser(argc, argv)
                                     .options(cmd_only_generic_options)
                                     .allow_unregistered().run();
-  store(cmd_parsed_options, variables_map);
+  store(cmd_parsed_options, var_map);
 
   // Deal with the "help" option
-  if (variables_map.count("help")) {
+  if (var_map.count("help")) {
     cout << help_options << endl;
     exit(0);
   }
 
   // Deal with the "version" option
-  if (variables_map.count("version")) {
+  if (var_map.count("version")) {
     cout << getVersion() << endl;
     exit(0);
   }
 
   // Get the configuration file. It is guaranteed to exist, because it has default value
-  auto config_file = variables_map.at("config-file").as<path>();
+  auto config_file = var_map.at("config-file").as<path>();
 
   // Parse from the command line the rest of the options. Here we also handle
   // the positional arguments.
@@ -191,22 +191,22 @@ const variables_map ProgramManager::getProgramOptions(
                       .options(all_cmd_and_file_options)
                       .positional(program_arguments.second)
                       .run(),
-            variables_map);
+            var_map);
 
   // Parse from the configuration file if it exists
   if (not config_file.empty() && boost::filesystem::exists(config_file)) {
     std::ifstream ifs {config_file.string()};
     if (ifs) {
-      store(parse_config_file(ifs, all_cmd_and_file_options), variables_map);
+      store(parse_config_file(ifs, all_cmd_and_file_options), var_map);
     }
   }
 
   // After parsing both the command line and the conf file notify the variables
   // map, so we can get any messages for missing parameters
-  notify(variables_map);
+  notify(var_map);
 
-  // return the variable_map loaded with all options
-  return variables_map;
+  // return the var_map loaded with all options
+  return var_map;
 }
 
 void ProgramManager::logHeader(string program_name) const {

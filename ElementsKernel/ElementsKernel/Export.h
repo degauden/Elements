@@ -41,7 +41,7 @@
 #if defined(ELEMENTS_HIDE_SYMBOLS)
 /// These macros will allow selection on exported symbols
 /// taken from http://gcc.gnu.org/wiki/Visibility
-#if __GNUC__ >= 4 && not defined(__CINT__)
+#if defined(__GNUC__) && not defined(__CINT__)
 #  define ELEMENTS_HASCLASSVISIBILITY
 #endif
 

@@ -97,8 +97,8 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(map<string, variable_value>& args)
-      override {
+  ExitCode mainMethod(map<string, variable_value>& args) override {
+
     Logging logger = Logging::getLogger("ProgramExample");
     logger.info("Entering mainMethod()");
     logger.info("#");

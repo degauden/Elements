@@ -10,29 +10,30 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
 #include "ElementsKernel/Exception.h"
+
 // class under test
 #include "ElementsExamples/ClassExample.h"
 
-using namespace std;
-using namespace Elements;
-using namespace Examples;
+using std::string;
+using std::int64_t;
+
+using Elements::Examples::ClassExample;
 
 // tolerance value to compare floating point numbers
-double tolerance = 1e-12;
+constexpr double tolerance = 1e-12;
 
 /*
  * Fixture to compare the test result against reference values
  */
 struct ClassExampleFixture {
 
-  std::string static_string { "This is a static field example" };
+  string static_string { "This is a static field example" };
   int64_t source_id { 123456789 };
   double ra { 266.40506655 };
   double input_variable { 1.273645899 };
   double expected_result { 1.273645899 };
 
-  ClassExample example_class = ClassExample::factoryMethod(source_id,
-      ra);
+  ClassExample example_class = ClassExample::factoryMethod(source_id, ra);
 
   ClassExampleFixture() {
     //call constructor if needed
@@ -43,7 +44,7 @@ struct ClassExampleFixture {
   }
 };
 
-BOOST_AUTO_TEST_SUITE (ClassExample)
+BOOST_AUTO_TEST_SUITE (ClassExampleTestSuite)
 
 BOOST_AUTO_TEST_CASE(WithoutFixture) {
   BOOST_CHECK(true);

@@ -33,6 +33,7 @@ namespace Xerces = XERCES_CPP_NAMESPACE;     // needed to avoid an unneeded ugly
 
 using std::map;
 using std::string;
+
 using boost::program_options::variable_value;
 
 namespace Elements {
@@ -41,7 +42,6 @@ namespace Examples {
 class XercesExample: public Program {
 
 public:
-
 
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 

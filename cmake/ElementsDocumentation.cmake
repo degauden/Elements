@@ -15,6 +15,8 @@ include_guard()
 
   if(DOXYGEN_FOUND)
 
+    find_package(PlantUML)
+
     # Generation of the main Doxygen configuration: the Doxyfile
     find_file_to_configure(Doxyfile.in
                            FILETYPE "Doxygen configuration"
@@ -58,11 +60,11 @@ include_guard()
 
   find_package(Sphinx QUIET)
   if(SPHINX_FOUND)
-  
+
     if(NOT SPHINX_BUILD_OPTIONS)
       set(SPHINX_BUILD_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-build" FORCE)
     endif()
-    
+
     if(NOT SPHINX_APIDOC_OPTIONS)
       set(SPHINX_APIDOC_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-apidoc" FORCE)
     endif()

@@ -36,9 +36,15 @@
 
 #include "ElementsKernel/Exception.h"   // for Exception
 
+
+using std::string;
+
+using log4cpp::Category;
+
+
 namespace Elements {
 
-static const std::map<std::string, const int> LOG_LEVEL {{"FATAL", log4cpp::Priority::FATAL},
+static const std::map<string, const int> LOG_LEVEL {{"FATAL", log4cpp::Priority::FATAL},
                                                          {"ERROR", log4cpp::Priority::ERROR},
                                                          {"WARN", log4cpp::Priority::WARN},
                                                          {"INFO", log4cpp::Priority::INFO},
@@ -50,27 +56,27 @@ std::unique_ptr<log4cpp::Layout> getLogLayout() {
   return std::unique_ptr<log4cpp::Layout>(layout);
 }
 
-Logging::Logging(log4cpp::Category& log4cppLogger)
+Logging::Logging(Category& log4cppLogger)
     : m_log4cppLogger(log4cppLogger) { }
 
-Logging Logging::getLogger(const std::string& name) {
-  if (log4cpp::Category::getRoot().getAppender("console") == NULL) {
+Logging Logging::getLogger(const string& name) {
+  if (Category::getRoot().getAppender("console") == NULL) {
     log4cpp::OstreamAppender* consoleAppender = new log4cpp::OstreamAppender {"console", &std::cerr};
     consoleAppender->setLayout(getLogLayout().release());
-    log4cpp::Category::getRoot().addAppender(consoleAppender);
-    if (log4cpp::Category::getRoot().getPriority() == log4cpp::Priority::NOTSET) {
-      log4cpp::Category::setRootPriority(log4cpp::Priority::INFO);
+    Category::getRoot().addAppender(consoleAppender);
+    if (Category::getRoot().getPriority() == log4cpp::Priority::NOTSET) {
+      Category::setRootPriority(log4cpp::Priority::INFO);
     }
   }
-  return Logging {log4cpp::Category::getInstance(name)};
+  return Logging {Category::getInstance(name)};
 }
 
 
-void Logging::setLevel(std::string level) {
+void Logging::setLevel(string level) {
   boost::to_upper(level);
   auto it = LOG_LEVEL.find(level);
   if ( it != LOG_LEVEL.end() ) {
-    log4cpp::Category::setRootPriority(it->second);
+    Category::setRootPriority(it->second);
   } else {
     std::stringstream error_buffer;
     error_buffer << "Unrecognized logging level: " << level << std::endl;
@@ -79,7 +85,7 @@ void Logging::setLevel(std::string level) {
 }
 
 void Logging::setLogFile(const boost::filesystem::path& fileName) {
-  log4cpp::Category& root = log4cpp::Category::getRoot();
+  Category& root = Category::getRoot();
   root.removeAppender(root.getAppender("file"));
   if (fileName.has_filename()) {
     log4cpp::FileAppender* fileAppender = new log4cpp::FileAppender("file", fileName.string());
@@ -89,7 +95,7 @@ void Logging::setLogFile(const boost::filesystem::path& fileName) {
   root.setPriority(root.getPriority());
 }
 
-Logging::LogMessageStream::LogMessageStream(log4cpp::Category& logger, P_log_func log_func)
+Logging::LogMessageStream::LogMessageStream(Category& logger, P_log_func log_func)
     : m_logger(logger), m_log_func{log_func} { }
 
 Logging::LogMessageStream::LogMessageStream(LogMessageStream&& other)

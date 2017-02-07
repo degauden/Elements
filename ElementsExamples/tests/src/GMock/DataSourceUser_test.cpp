@@ -10,17 +10,15 @@
 #include "ElementsExamples/DataSourceUser.h" // Access the objects you want to test
 #include "DataSourceInterfaceMock.h" // Access the needed mock objects.
 
-
-using namespace Elements;
-using namespace Examples;
-
+using std::size_t;
+using testing::Return;
 
 BOOST_AUTO_TEST_SUITE (DataSourceUser_test_suite)
 
 BOOST_AUTO_TEST_CASE(sumRecords_test) {
 
   // Setup mock
-  DataSourceInterfaceMock data_source_mock;
+  Elements::Examples::DataSourceInterfaceMock data_source_mock;
 
   EXPECT_CALL(data_source_mock, countRecords()).Times(1).WillOnce(Return(5));
 
@@ -29,7 +27,7 @@ BOOST_AUTO_TEST_CASE(sumRecords_test) {
   }
 
   // object to test
-  DataSourceUser user{};
+  Elements::Examples::DataSourceUser user{};
   double result = user.sumRecords(data_source_mock);
 
   BOOST_CHECK_MESSAGE(Elements::isEqual(result, 15.), "Expected value :"<< 15 <<" Actual value :"<<result);

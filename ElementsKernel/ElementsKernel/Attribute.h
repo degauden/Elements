@@ -29,7 +29,7 @@
 */
 
 // Note: __attribute__ is a GCC keyword available since GCC 3.4
-#if __GNUC__ < 4
+#ifndef __GNUC__
 #  define __attribute__(x)
 #endif
 

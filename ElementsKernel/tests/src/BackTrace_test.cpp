@@ -25,11 +25,8 @@
 #include <vector>
 #include <boost/test/unit_test.hpp>
 
-
 // Temporary includes for dev
 #include <iostream>
-
-using namespace std;
 
 void second(){
 
@@ -39,23 +36,24 @@ void first() {
   second();
 }
 
-
 BOOST_AUTO_TEST_SUITE(BackTrace_test)
 
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Raw_test) {
 
+  using std::size_t;
+  using std::string;
+
   const size_t depth = 21;
 
 
-  vector<string> trace = Elements::System::backTrace(depth);
+  std::vector<string> trace = Elements::System::backTrace(depth);
 
   if(!trace.empty()) {
     size_t found = trace[0].find("BackTrace_test");
     BOOST_CHECK_NE(found, string::npos);
   }
-
 
 }
 

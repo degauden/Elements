@@ -6,7 +6,7 @@ find_path(GMOCK_INCLUDE_DIR gmock/gmock.h
           )
 
 find_library(GMOCK_LIBRARY NAMES gmock gmock_main
-             HINTS ENV GMOCK_INSTALL_DIR 
+             HINTS ENV GMOCK_INSTALL_DIR
              PATH_SUFFIXES lib
              )
 

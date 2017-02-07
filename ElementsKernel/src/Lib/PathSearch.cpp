@@ -106,7 +106,7 @@ vector<string> pathSearch(const string& searched_name, string directory,
  * and call pathSearch(...) for each of them
  */
 vector<path> pathSearchInEnvVariable(const std::string& file_name,
-                                            std::string path_like_env_variable,
+                                        const std::string& path_like_env_variable,
                                             SearchType search_type) {
 
   // Placeholder for the to-be-returned search result

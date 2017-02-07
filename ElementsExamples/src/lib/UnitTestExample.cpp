@@ -37,7 +37,7 @@ double UnitTestExample::average (const vector<int>& v) {
   auto size = v.size();
   // Throw an exception if the number of vector elements is null!
   if (size == 0) {
-    throw Elements::Exception() << "Input vector has no element!"; // can be removed to feed a unit test exercise
+    throw Exception() << "Input vector has no element!"; // can be removed to feed a unit test exercise
   }
 
   // We check if we have enough numbers to compute the median
