@@ -68,6 +68,17 @@ boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::st
 }
 
 template <typename T>
+ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name) {
+  return getPathFromEnvVariable(file_name, VARIABLE.at(Type::configuration));
+}
+
+template <typename T>
+ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const T& file_name) {
+  return getPathFromEnvVariable(file_name, VARIABLE.at(Type::auxiliary));
+}
+
+
+template <typename T>
 ELEMENTS_API std::string joinPath(const std::vector<T> path_list) {
 
   using std::vector;

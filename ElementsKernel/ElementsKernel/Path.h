@@ -118,6 +118,12 @@ ELEMENTS_API boost::filesystem::path getPathFromEnvVariable(const T& file_name, 
 
 
 template <typename T>
+ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name);
+
+template <typename T>
+ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const T& file_name);
+
+template <typename T>
 ELEMENTS_API std::string joinPath(const std::vector<T> path_list);
 
 }  // Path namespace
