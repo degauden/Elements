@@ -35,10 +35,17 @@ namespace Elements {
 template <typename T>
 boost::filesystem::path getConfigurationPath(const T& file_name) {
 
-  auto result = Path::getPathFromEnvVariable(file_name, Path::VARIABLE.at(Path::Type::configuration));
+  auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::configuration));
+
+  // @FIXME: use the share/conf subdirectory
+  if (CMAKE_INSTALL_PREFIX_STRING != "") {
+    location_list.push_back(boost::filesystem::path(CMAKE_INSTALL_PREFIX_STRING));
+  }
+
+  auto result = Path::getPathFromLocations(file_name, location_list);
 
   if(result.empty()) {
-    throw Exception() << "The configuration file \"" << file_name << "\" cannot be found";
+    throw Exception() << "The configuration file \"" << file_name << "\" cannot be found!";
   }
 
   return result;

@@ -54,7 +54,6 @@ boost::filesystem::path getPathFromLocations(const T& file_name, const std::vect
 
 }
 
-
 template <typename T>
 boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable) {
 
