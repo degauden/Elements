@@ -34,8 +34,8 @@
 #include <vector>                   // for vector
 #include <map>                      // for map
 #include <boost/filesystem.hpp>     // for boost::filesystem
+
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
-#include "ElementsKernel/System.h"  // for for SHLIB_VAR_NAME
 
 namespace Elements {
 namespace Path {
@@ -116,23 +116,15 @@ ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, co
 template <typename T>
 ELEMENTS_API boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable);
 
-
-template <typename T>
-ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name);
-
-template <typename T>
-ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const T& file_name);
-
 template <typename T>
 ELEMENTS_API std::string joinPath(const std::vector<T> path_list);
-
-}  // Path namespace
-}  // Elements namespace
-
 
 template <typename T, typename U>
 ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations,
                                                                     const std::vector<U>& suffixes);
+
+}  // Path namespace
+}  // Elements namespace
 
 #include "ElementsKernel/_impl/Path.icpp"
 

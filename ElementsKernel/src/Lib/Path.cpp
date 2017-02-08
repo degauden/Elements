@@ -30,7 +30,7 @@
 #include <boost/filesystem.hpp>        // for boost::filesystem
 #include <boost/algorithm/string.hpp>  // for boost::split
 
-#include "ElementsKernel/System.h"     // for getEnv
+#include "ElementsKernel/System.h"     // for getEnv, SHLIB_VAR_NAME
 
 using std::string;
 using std::vector;

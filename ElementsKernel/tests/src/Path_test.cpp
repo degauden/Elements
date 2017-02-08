@@ -76,10 +76,14 @@ BOOST_AUTO_TEST_CASE(PathConstructor_test) {
   string test_str {"toto/tutu"};
   path test_path2 { test_str };
 
+  BOOST_CHECK(not test_path2.empty());
+
   BOOST_CHECK(test_path2.is_relative());
   BOOST_CHECK(test_path2.string() == test_path2);
 
   path test_path3 {};
+  BOOST_CHECK(test_path3.empty());
+
   BOOST_CHECK(test_path3.string() == "");
   BOOST_CHECK(test_path3.filename() == "");
   BOOST_CHECK(test_path3.parent_path() == "");

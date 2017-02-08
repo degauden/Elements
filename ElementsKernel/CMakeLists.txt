@@ -41,6 +41,14 @@ elements_add_unit_test(Path tests/src/Path_test.cpp
                        EXECUTABLE Path_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
+elements_add_unit_test(Configuration tests/src/Configuration_test.cpp
+                       EXECUTABLE Configuration_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+elements_add_unit_test(Auxiliary tests/src/Auxiliary_test.cpp
+                       EXECUTABLE Auxiliary_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
 #-----------------------
 # Temporary_test
 elements_add_unit_test(Temporary tests/src/Temporary_test.cpp

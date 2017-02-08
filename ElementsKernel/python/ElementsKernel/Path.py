@@ -22,7 +22,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 '''
 
-
 from ElementsKernel import Logging
 from ElementsKernel.System import SHLIB_VAR_NAME
 import os
