@@ -21,10 +21,12 @@ elements_add_unit_test(Memory tests/src/Memory_test.cpp
                        LINK_LIBRARIES ElementsKernel)
 elements_add_unit_test(Real tests/src/Real_test.cpp
                        EXECUTABLE Real_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost
+                       LABELS Math)
 elements_add_unit_test(Number tests/src/Number_test.cpp
                        EXECUTABLE Number_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost
+                       LABELS Math)
 elements_add_unit_test(Version tests/src/Version_test.cpp
                        EXECUTABLE Version_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
@@ -35,19 +37,23 @@ elements_add_unit_test(Logging tests/src/ElementsLogging_test.cpp
 # Path_test
 elements_add_unit_test(PathSearch tests/src/PathSearch_test.cpp
                        EXECUTABLE PathSearch_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost 
+                       LABELS Path)
 
 elements_add_unit_test(Path tests/src/Path_test.cpp
                        EXECUTABLE Path_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost 
+                       LABELS Path)
 
 elements_add_unit_test(Configuration tests/src/Configuration_test.cpp
-                       EXECUTABLE Configuration_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       EXECUTABLE BasicConfiguration_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost 
+                       LABELS Path)
 
 elements_add_unit_test(Auxiliary tests/src/Auxiliary_test.cpp
                        EXECUTABLE Auxiliary_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost 
+                       LABELS Path)
 
 #-----------------------
 # Temporary_test
@@ -93,13 +99,15 @@ elements_add_unit_test(Storage tests/src/Storage_test.cpp
 # MathConstants_test
 elements_add_unit_test(MathConstants tests/src/MathConstants_test.cpp
                        EXECUTABLE MathConstants_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost
+                       LABELS Math)
 
 #-----------------------
 # SystemOfUnits_test
 elements_add_unit_test(SystemOfUnits tests/src/SystemOfUnits_test.cpp
                        EXECUTABLE SystemOfUnits_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+                       LINK_LIBRARIES ElementsKernel TYPE Boost
+                       LABELS Math)
 
 
 #-----------------------
@@ -116,7 +124,7 @@ elements_add_unit_test(GetEnv tests/src/GetEnv_test.cpp
                        LABELS Environment)
 
 #-----------------------
-# GetEnv_test
+# Sleep_test
 elements_add_unit_test(Sleep tests/src/Sleep_test.cpp
                        EXECUTABLE Sleep_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
