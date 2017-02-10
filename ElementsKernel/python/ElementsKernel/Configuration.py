@@ -1,10 +1,7 @@
-"""
-@file ElementsKernel/Project.py
-@author Hubert Degaudenzi
+'''
+Created on 10 févr. 2017
 
-@date 28.07.2016
-
-This module irons out some of the system dependent constants
+@author: Hubert Degaudenzi
 
 
 @copyright: 2012-2020 Euclid Science Ground Segment
@@ -23,25 +20,27 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-"""
-import platform
+'''
 
-if platform.system() == "Darwin":
-    SHLIB_VAR_NAME = "DYLD_LIBRARY_PATH"
-else:
-    SHLIB_VAR_NAME = "LD_LIBRARY_PATH"
+import os
 
-LIB_PREFIX = "lib"
+from ElementsKernel.Path import getLocationsFromEnv, VARIABLE,\
+    getPathFromLocations
+from ElementsKernel.System import DEFAULT_INSTALL_PREFIX
+
+from ELEMENTS_INSTALL import CMAKE_INSTALL_PREFIX
 
 
-if platform.system() == "Darwin":
-    LIB_EXTENSION = "dylib"
-else:
-    LIB_EXTENSION = "so"
-
-LIB_SUFFIX = "." + LIB_EXTENSION
-
-SHLIB_SUFFIX = LIB_SUFFIX
-
-DEFAULT_INSTALL_PREFIX = "/usr"
-
+def getConfigurtionPath(file_name):
+    
+    location_list = getLocationsFromEnv(VARIABLE["configuration"]);
+    
+    if (CMAKE_INSTALL_PREFIX == DEFAULT_INSTALL_PREFIX):
+        location_list.append(os.path.join(CMAKE_INSTALL_PREFIX, "share", "conf"))
+        
+    result = getPathFromLocations(file_name, location_list)
+    
+    if (not result) :
+        raise Exception("The configuration file \"%s\" cannot be found!", file_name)
+    
+    return result

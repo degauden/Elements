@@ -74,7 +74,7 @@ vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
   string env_content = getEnv(path_variable);
 
   vector<string> str_list;
-  boost::split(str_list, env_content, boost::is_any_of(":"));
+  boost::split(str_list, env_content, boost::is_any_of(PATH_SEP));
 
   vector<path> found_list(str_list.size());
   std::transform(str_list.cbegin(), str_list.cend(),

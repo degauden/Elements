@@ -23,12 +23,12 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_AUXILIARY_ICPP_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_AUXILIARY_ICPP_
 
-#include <boost/filesystem.hpp>     // for boost::filesystem
+#include <boost/filesystem.hpp>         // for boost::filesystem
 
 #include "ElementsKernel/System.h"      // for DEFAULT_INSTALL_PREFIX
 #include "ElementsKernel/Exception.h"   // for Exception
-#include "ElementsKernel/Path.h"    // for Path::VARIABLE, Path::Type
-                                     // for Path::getPathFromEnvVariable
+#include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type
+                                        // for Path::getPathFromEnvVariable
 #include "ThisProject.h"
 
 namespace Elements {

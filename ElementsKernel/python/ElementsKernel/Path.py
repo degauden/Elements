@@ -22,17 +22,13 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 '''
 
-from ElementsKernel import Logging
 from ElementsKernel.System import SHLIB_VAR_NAME
 import os
 
 Type = ["executable", "library", "python", "configuration", "auxiliary"]
 
-SUFFIXES = {"executable": ["scripts", "bin"],
-            "library": ["lib"],
-            "python": ["python"],
-            "configuration": ["conf"],
-            "auxiliary": ["auxdir", "aux"]}
+
+PATHSEP = os.pathsep
 
 VARIABLE = {"executable": "PATH",
             "library": SHLIB_VAR_NAME,
@@ -40,6 +36,34 @@ VARIABLE = {"executable": "PATH",
             "configuration": "ELEMENTS_CONF_PATH",
             "auxiliary": "ELEMENTS_AUX_PATH"}
 
+SUFFIXES = {"executable": ["scripts", "bin"],
+            "library": ["lib"],
+            "python": ["python"],
+            "configuration": ["conf"],
+            "auxiliary": ["auxdir", "aux"]}
+
+
+def getLocationsFromEnv(path_variable, exist_only=False):
+    
+    env_content = os.environ.get(path_variable, None)
+    
+    found_list = []
+    if (env_content) :
+        found_list = env_content.split(PATHSEP)
+        
+    if exist_only:
+        found_list = [ p for p in found_list if os.path.exists(p)]
+        
+    return found_list
+
+def getPathFromLocations(file_name, locations):
+    
+    for l in locations:
+        file_path = os.path.join(l, file_name)
+        if os.path.exists(file_path):
+            return file_path
+        
+    return None
 
 def getPathFromEnvVariable(file_name, path_variable):
     """
@@ -54,27 +78,9 @@ def getPathFromEnvVariable(file_name, path_variable):
     @return: full path to the first match entry.
     """
 
-    full_path = ""
-
-    log = Logging.getLogger(None)
-
-    found = False
-    file_name = file_name.replace("/", os.sep)
-
-    for elt in os.environ[path_variable].split(os.pathsep):
-        full_path = os.path.join(elt, file_name)
-        # look for the first valid path
-        if os.path.exists(full_path):
-            found = True
-            log.debug("File %s found at the %s location of %s", file_name, elt, path_variable)
-            break
-
-    if not found:
-        full_path = ''
-        log.error("File %s not found in %s", file_name, path_variable)
-
-
-    return full_path
+    location_list = getLocationsFromEnv(path_variable)
+    
+    return getPathFromLocations(file_name, location_list)
 
 
 def joinPath(path_list):
@@ -83,7 +89,12 @@ def joinPath(path_list):
 
 
 def multiPathAppend(initial_locations, suffixes):
-
+    """ Function to append all the suffixes to
+    all the initial location
+    @param initial_locations: as quoted the initial paths to be 
+    appended to
+    @param suffixes: the extensions to be appended.
+    """
     result = []
 
     for l in initial_locations:

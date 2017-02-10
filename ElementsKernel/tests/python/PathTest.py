@@ -23,7 +23,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import unittest
 
 from ElementsKernel.Temporary import TempDir
-from ElementsKernel.Path import joinPath, multiPathAppend
+from ElementsKernel.Path import joinPath, multiPathAppend, getLocationsFromEnv
 
 class PathTest(unittest.TestCase):
 
@@ -60,6 +60,14 @@ class PathTest(unittest.TestCase):
                      "./loc3/bin", "./loc3/scripts"]
 
         self.assert_(multiPathAppend(locations, suffixes) == ref_paths)
+        
+    def testGetLocationsFromEnv(self):
+        
+        self.assert_(getLocationsFromEnv("NonExistingEnvVar") == [])
+        self.assert_(getLocationsFromEnv("PATH") != [])
+        
+        tmp_list = getLocationsFromEnv("PATH", exist_only=True)
+        self.assert_(len(tmp_list)!=0)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
