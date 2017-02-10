@@ -25,9 +25,10 @@
 
 #include <boost/filesystem.hpp>         // for boost::filesystem
 
+#include "ElementsKernel/System.h"      // for DEFAULT_INSTALL_PREFIX
 #include "ElementsKernel/Exception.h"   // for Exception
 #include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type
-                                         // for Path::getPathFromEnvVariable
+                                        // for Path::getPathFromEnvVariable
 #include "ThisProject.h"
 
 namespace Elements {
@@ -40,7 +41,7 @@ boost::filesystem::path getConfigurationPath(const T& file_name) {
   // if the prefix is the canonical one, the search is
   // extended to /usr/share/conf. Otherwise the environment
   // (ELEMENTS_CONF_PATH) has to be set up before hand.
-  if (CMAKE_INSTALL_PREFIX_STRING == "/usr") {
+  if (CMAKE_INSTALL_PREFIX_STRING == Elements::System::DEFAULT_INSTALL_PREFIX) {
     location_list.push_back(boost::filesystem::path(CMAKE_INSTALL_PREFIX_STRING) / "share" / "conf");
   }
 

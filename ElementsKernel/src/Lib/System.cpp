@@ -69,6 +69,8 @@ const string LIB_SUFFIX { "." + LIB_EXTENSION };
 
 const string SHLIB_SUFFIX { LIB_SUFFIX };
 
+const string DEFAULT_INSTALL_PREFIX { "/usr" };
+
 // --------------------------------------------------------------------------------------
 // Private functions
 // --------------------------------------------------------------------------------------

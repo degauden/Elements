@@ -16,6 +16,7 @@
 #include <boost/filesystem/fstream.hpp>   // for ofstream
 
 #include <ElementsKernel/Temporary.h>     // for TempDir
+#include <ElementsKernel/Exception.h>     // for Exception
 
 using std::string;
 using std::vector;
@@ -65,8 +66,9 @@ BOOST_AUTO_TEST_SUITE(Configuration_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(ConfigurationConstructor_test) {
+BOOST_AUTO_TEST_CASE(ConfigurationException_test) {
 
+  BOOST_CHECK_THROW(Elements::getConfigurationPath("NonExistingFile.conf"), Elements::Exception);
 
 }
 

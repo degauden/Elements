@@ -64,6 +64,12 @@ ELEMENTS_API extern const std::string LIB_SUFFIX;
  */
 ELEMENTS_API extern const std::string SHLIB_SUFFIX;
 
+/**
+ * @brief constant for the canonical installation prefix
+ * (on Linux and MacOSX at least)
+ */
+ELEMENTS_API extern const std::string DEFAULT_INSTALL_PREFIX;
+
 #if defined(__linux) || defined(__APPLE__)
 #define TEMPLATE_SPECIALIZATION
 #endif
