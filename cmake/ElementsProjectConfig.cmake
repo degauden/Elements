@@ -426,12 +426,8 @@ macro(elements_project project version)
 
   if(instheader_cmd)
     JOIN("${used_elements_projects}" ":" joined_used_projects)
-    set(INSTHEADER_EXTRA_ARGS)
-    if(SQUEEZED_INSTALL)
-        set(INSTHEADER_EXTRA_ARGS "-i${CMAKE_INSTALL_PREFIX}")  
-    endif()
     execute_process(COMMAND
-                    ${instheader_cmd} --quiet ${INSTHEADER_EXTRA_ARGS}
+                    ${instheader_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h)
     # special installation because the install location can be changed on the fly
     install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}\"\)
@@ -442,8 +438,12 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 
 
   if(thisheader_cmd)
+    set(THISHEADER_EXTRA_ARGS)
+    if(SQUEEZED_INSTALL)
+        set(THISHEADER_EXTRA_ARGS "-i${CMAKE_INSTALL_PREFIX}")  
+    endif()
     execute_process(COMMAND
-                    ${thisheader_cmd} --quiet
+                    ${thisheader_cmd} --quiet ${THISHEADER_EXTRA_ARGS}
                     ${project} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/ThisProject.h)
     # This header is by design only local. It is then not installed
   endif()
@@ -464,12 +464,10 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 
   if(instmodule_cmd)
     JOIN("${used_elements_projects}" ":" joined_used_projects)
-    debug_print_var(CMAKE_INSTALL_PREFIX)
     set(INSTMODULE_EXTRA_ARGS)
     if(SQUEEZED_INSTALL)
         set(INSTMODULE_EXTRA_ARGS "-i${CMAKE_INSTALL_PREFIX}")  
     endif()
-    debug_print_var(INSTMODULE_EXTRA_ARGS)
     execute_process(COMMAND
                     ${instmodule_cmd} --quiet ${INSTMODULE_EXTRA_ARGS}
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
