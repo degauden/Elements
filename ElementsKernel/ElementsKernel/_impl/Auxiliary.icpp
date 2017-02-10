@@ -25,6 +25,7 @@
 
 #include <boost/filesystem.hpp>     // for boost::filesystem
 
+#include "ElementsKernel/Exception.h"   // for Exception
 #include "ElementsKernel/Path.h"    // for Path::VARIABLE, Path::Type
                                      // for Path::getPathFromEnvVariable
 #include "ThisProject.h"
@@ -33,7 +34,24 @@ namespace Elements {
 
 template <typename T>
 boost::filesystem::path getAuxiliaryPath(const T& file_name) {
-  return Path::getPathFromEnvVariable(file_name, Path::VARIABLE.at(Path::Type::auxiliary));
+
+  auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::auxiliary));
+
+  // if the prefix is the canonical one, the search is
+  // extended to /usr/share/aux{dir,}. Otherwise the environment
+  // (ELEMENTS_AUX_PATH) has to be set up before hand.
+  if (CMAKE_INSTALL_PREFIX_STRING == "/usr") {
+    location_list.push_back(boost::filesystem::path(CMAKE_INSTALL_PREFIX_STRING) / "share" / "auxdir");
+    location_list.push_back(boost::filesystem::path(CMAKE_INSTALL_PREFIX_STRING) / "share" / "aux");
+  }
+
+  auto result = Path::getPathFromLocations(file_name, location_list);
+
+  if(result.empty()) {
+    throw Exception() << "The auxiliary file \"" << file_name << "\" cannot be found!";
+  }
+
+  return result;
 }
 
 } // Elements namespace
