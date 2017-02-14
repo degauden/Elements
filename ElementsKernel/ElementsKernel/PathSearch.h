@@ -23,8 +23,7 @@
 #include <string>
 #include <boost/filesystem.hpp>
 
-#include "ElementsKernel/Export.h"  // ELEMENTS_API
-
+#include "ElementsKernel/Export.h"     // ELEMENTS_API
 
 namespace Elements {
 

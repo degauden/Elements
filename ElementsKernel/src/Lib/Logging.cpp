@@ -45,10 +45,10 @@ using log4cpp::Category;
 namespace Elements {
 
 static const std::map<string, const int> LOG_LEVEL {{"FATAL", log4cpp::Priority::FATAL},
-                                                         {"ERROR", log4cpp::Priority::ERROR},
-                                                         {"WARN", log4cpp::Priority::WARN},
-                                                         {"INFO", log4cpp::Priority::INFO},
-                                                         {"DEBUG", log4cpp::Priority::DEBUG}};
+                                                       {"ERROR", log4cpp::Priority::ERROR},
+                                                       {"WARN", log4cpp::Priority::WARN},
+                                                       {"INFO", log4cpp::Priority::INFO},
+                                                       {"DEBUG", log4cpp::Priority::DEBUG}};
 
 std::unique_ptr<log4cpp::Layout> getLogLayout() {
   log4cpp::PatternLayout* layout = new log4cpp::PatternLayout {};
@@ -95,7 +95,7 @@ void Logging::setLogFile(const boost::filesystem::path& fileName) {
   root.setPriority(root.getPriority());
 }
 
-Logging::LogMessageStream::LogMessageStream(Category& logger, P_log_func log_func)
+Logging::LogMessageStream::LogMessageStream(log4cpp::Category& logger, P_log_func log_func)
     : m_logger(logger), m_log_func{log_func} { }
 
 Logging::LogMessageStream::LogMessageStream(LogMessageStream&& other)
