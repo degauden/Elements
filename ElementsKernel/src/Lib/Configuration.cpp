@@ -22,13 +22,21 @@
 
 #include "ElementsKernel/Configuration.h"
 
-#include <string>                      // for string
-#include <boost/filesystem.hpp>        // for boost::filesystem
+#include <string>                         // for string
+#include <boost/filesystem.hpp>           // for boost::filesystem
+
+#include "ElementsKernel/Path.h"          // for Type and VARIABLE
 
 using std::string;
 using boost::filesystem::path;
 
 namespace Elements {
+
+
+string getConfigurationVariableName() {
+  return Path::VARIABLE.at(Path::Type::configuration);
+}
+
 
 // instanciation of the most expected types
 template path getConfigurationPath(const path& file_name);

@@ -25,10 +25,16 @@
 #include <string>                      // for string
 #include <boost/filesystem.hpp>        // for boost::filesystem
 
+#include "ElementsKernel/Path.h"       // for Type and VARIABLE
+
 using std::string;
 using boost::filesystem::path;
 
 namespace Elements {
+
+string getAuxiliaryVariableName() {
+  return Path::VARIABLE.at(Path::Type::auxiliary);
+}
 
 // instanciation of the most expected types
 template path getAuxiliaryPath(const path& file_name);

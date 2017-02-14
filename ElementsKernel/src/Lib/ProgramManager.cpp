@@ -36,6 +36,7 @@
 #include "ElementsKernel/Path.h"           // for Path::VARIABLE, multiPathAppend, PATH_SEP
 #include "ElementsKernel/ModuleInfo.h"     // for getExecutablePath
 #include "ElementsKernel/Unused.h"         // for ELEMENTS_UNUSED
+#include "ElementsKernel/Configuration.h"  // for getConfigurationVariableName
 
 using std::vector;
 using std::string;
@@ -46,8 +47,6 @@ using boost::program_options::variables_map;
 namespace Elements {
 
 using System::getExecutablePath;
-
-const string CONF_ENV_VAR_NAME {Path::VARIABLE.at(Path::Type::configuration)};
 
 
 const path& ProgramManager::getProgramPath() const {
@@ -71,7 +70,7 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name) {
   path conf_name(program_name);
   conf_name.replace_extension("conf");
   // Construct and return the full path
-  vector<path> configFile = pathSearchInEnvVariable(conf_name.string(), CONF_ENV_VAR_NAME);
+  vector<path> configFile = pathSearchInEnvVariable(conf_name.string(), getConfigurationVariableName());
   if (configFile.size() != 0) {
     default_config_file = configFile.at(0);
   }

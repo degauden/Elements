@@ -28,10 +28,14 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 
+#include <string>                   // for string
 #include <boost/filesystem.hpp>     // for boost::filesystem
+
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
+
+ELEMENTS_API std::string getConfigurationVariableName();
 
 template <typename T>
 ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name);

@@ -28,10 +28,14 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 
+#include <string>                   // for string
 #include <boost/filesystem.hpp>     // for boost::filesystem
+
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
+
+ELEMENTS_API std::string getAuxiliaryVariableName();
 
 template <typename T>
 ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const T& file_name);

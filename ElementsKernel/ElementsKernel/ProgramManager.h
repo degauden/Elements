@@ -34,11 +34,8 @@
 #include "ElementsKernel/Exit.h"         // For ExitCode
 #include "ElementsKernel/Program.h"
 #include "ElementsKernel/Environment.h"  // For Environment
-#include "ElementsKernel/Path.h"         // For Elements::Path
 
 namespace Elements {
-
-ELEMENTS_API extern const std::string CONF_ENV_VAR_NAME;
 
 /**
  * @class ProgramManager
