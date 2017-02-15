@@ -38,37 +38,50 @@
 namespace Elements {
 namespace System {
 
+// --------------------------------------------------------------------------------------
+// various constants
+// --------------------------------------------------------------------------------------
+
 /**
  * @brief name of the shared dynamic library path
  */
-ELEMENTS_API extern const std::string SHLIB_VAR_NAME;
+#if defined(__APPLE__)
+const std::string SHLIB_VAR_NAME { "DYLD_LIBRARY_PATH" };
+#else
+const std::string SHLIB_VAR_NAME { "LD_LIBRARY_PATH" };
+#endif
 
 /**
- * @brief constant that represent the common prefix of the libraries
- */
-ELEMENTS_API extern const std::string LIB_PREFIX;
+* @brief constant that represent the common prefix of the libraries
+*/
+const std::string LIB_PREFIX { "lib" };
 
 /**
  * @brief constant that represent the common extension of the libraries
  */
-ELEMENTS_API extern const std::string LIB_EXTENSION;
+#ifdef __APPLE__
+  const std::string LIB_EXTENSION { "dylib" };
+#else
+  const std::string LIB_EXTENSION { "so" };
+#endif
 
 /**
  * @brief  constant that represents the standard suffix of
  *   the libraries: usually "."+LIB_EXTENSION
  */
-ELEMENTS_API extern const std::string LIB_SUFFIX;
+const std::string LIB_SUFFIX { "." + LIB_EXTENSION };
 
 /**
  * @brief alias for LIB_SUFFIX
  */
-ELEMENTS_API extern const std::string SHLIB_SUFFIX;
+const std::string SHLIB_SUFFIX { LIB_SUFFIX };
 
 /**
  * @brief constant for the canonical installation prefix
  * (on Linux and MacOSX at least)
  */
-ELEMENTS_API extern const std::string DEFAULT_INSTALL_PREFIX;
+const std::string DEFAULT_INSTALL_PREFIX { "/usr" };
+
 
 #if defined(__linux) || defined(__APPLE__)
 #define TEMPLATE_SPECIALIZATION

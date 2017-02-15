@@ -48,30 +48,6 @@ namespace Elements {
 namespace System {
 
 // --------------------------------------------------------------------------------------
-// various constants
-// --------------------------------------------------------------------------------------
-
-#if defined(__APPLE__)
-  const string SHLIB_VAR_NAME { "DYLD_LIBRARY_PATH" };
-#else
-  const string SHLIB_VAR_NAME { "LD_LIBRARY_PATH" };
-#endif
-
-const string LIB_PREFIX { "lib" };
-
-#ifdef __APPLE__
-  const string LIB_EXTENSION { "dylib" };
-#else
-  const string LIB_EXTENSION { "so" };
-#endif
-
-const string LIB_SUFFIX { "." + LIB_EXTENSION };
-
-const string SHLIB_SUFFIX { LIB_SUFFIX };
-
-const string DEFAULT_INSTALL_PREFIX { "/usr" };
-
-// --------------------------------------------------------------------------------------
 // Private functions
 // --------------------------------------------------------------------------------------
 
