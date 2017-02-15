@@ -22,6 +22,13 @@ local_clean_exit() {
 export User_area=${tmploc}
 export CMAKE_PROJECT_PATH=${tmploc}:${CMAKE_PROJECT_PATH}
 
+echo "CMAKE_PROJECT_PATH: ${CMAKE_PROJECT_PATH}"
+echo "BINARY_TAG: ${BINARY_TAG}"
+echo "User_area ${User_area}"
+echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
+
+
+
 cd ${tmploc}
 
 CreateElementsProject $projectA_name $projectA_version << EOF

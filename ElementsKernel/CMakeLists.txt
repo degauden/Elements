@@ -172,4 +172,7 @@ elements_add_test(AddCppProgram COMMAND addCppProgram_test LABELS Creation)
 elements_add_test(AddPythonModule COMMAND addPythonModule_test LABELS Creation)
 elements_add_test(AddPythonProgram COMMAND addPythonProgram_test LABELS Creation)
 
-elements_add_test(CreateDependentElementsProjects COMMAND createDependentElementsProjects_test  LABELS Creation)
+elements_add_test(CreateDependentElementsProjects 
+                  COMMAND createDependentElementsProjects_test  
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  LABELS Creation)
