@@ -438,12 +438,8 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 
 
   if(thisheader_cmd)
-    set(THISHEADER_EXTRA_ARGS)
-    if(SQUEEZED_INSTALL)
-        set(THISHEADER_EXTRA_ARGS "-i${CMAKE_INSTALL_PREFIX}")  
-    endif()
     execute_process(COMMAND
-                    ${thisheader_cmd} --quiet ${THISHEADER_EXTRA_ARGS}
+                    ${thisheader_cmd} --quiet
                     ${project} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/ThisProject.h)
     # This header is by design only local. It is then not installed
   endif()
@@ -464,12 +460,8 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 
   if(instmodule_cmd)
     JOIN("${used_elements_projects}" ":" joined_used_projects)
-    set(INSTMODULE_EXTRA_ARGS)
-    if(SQUEEZED_INSTALL)
-        set(INSTMODULE_EXTRA_ARGS "-i${CMAKE_INSTALL_PREFIX}")  
-    endif()
     execute_process(COMMAND
-                    ${instmodule_cmd} --quiet ${INSTMODULE_EXTRA_ARGS}
+                    ${instmodule_cmd} --quiet
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
     # special install procedure because the install loction can be changed on the fly.
     install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}\"\)

@@ -29,8 +29,6 @@
 #include "ElementsKernel/Exception.h"   // for Exception
 #include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type
                                         // for Path::getPathFromEnvVariable
-#include "ThisProject.h"
-
 namespace Elements {
 
 template <typename T>
@@ -38,12 +36,8 @@ boost::filesystem::path getConfigurationPath(const T& file_name) {
 
   auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::configuration));
 
-  // if the prefix is the canonical one, the search is
-  // extended to /usr/share/conf. Otherwise the environment
-  // (ELEMENTS_CONF_PATH) has to be set up before hand.
-  if (CMAKE_INSTALL_PREFIX_STRING == Elements::System::DEFAULT_INSTALL_PREFIX) {
-    location_list.push_back(boost::filesystem::path(CMAKE_INSTALL_PREFIX_STRING) / "share" / "conf");
-  }
+  // the search is extended to the default system /usr/share/conf
+  location_list.push_back(boost::filesystem::path(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
 
   auto result = Path::getPathFromLocations(file_name, location_list);
 

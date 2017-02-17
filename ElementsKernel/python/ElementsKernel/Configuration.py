@@ -28,15 +28,11 @@ from ElementsKernel.Path import getLocationsFromEnv, VARIABLE,\
     getPathFromLocations
 from ElementsKernel.System import DEFAULT_INSTALL_PREFIX
 
-from ELEMENTS_INSTALL import CMAKE_INSTALL_PREFIX
-
-
 def getConfigurtionPath(file_name):
     
     location_list = getLocationsFromEnv(VARIABLE["configuration"]);
     
-    if (CMAKE_INSTALL_PREFIX == DEFAULT_INSTALL_PREFIX):
-        location_list.append(os.path.join(CMAKE_INSTALL_PREFIX, "share", "conf"))
+    location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "conf"))
         
     result = getPathFromLocations(file_name, location_list)
     
