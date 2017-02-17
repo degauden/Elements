@@ -2857,28 +2857,6 @@ exec ${cmd} \"\$@\"
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
 endfunction()
 
-#---------------------------------------------------------------------------------------------------
-# elements_install_joboptions(<files...>)
-#
-# Install the specified options files in the directory 'jobOptions/<package>'.
-#---------------------------------------------------------------------------------------------------
-function(elements_install_joboptions)
-  elements_get_package_name(package)
-  install(FILES ${ARGN} DESTINATION jobOptions/${package})
-endfunction()
-
-#---------------------------------------------------------------------------------------------------
-# elements_install_resources(<data files...> [DESTINATION subdir])
-#
-# Install the specified options files in the directory 'data/<package>[/subdir]'.
-#---------------------------------------------------------------------------------------------------
-function(elements_install_resources)
-  CMAKE_PARSE_ARGUMENTS(ARG "" "DESTINATION" "" ${ARGN})
-
-  elements_get_package_name(package)
-  install(FILES ${ARG_UNPARSED_ARGUMENTS} DESTINATION data/${package}/${ARG_DESTINATION})
-endfunction()
-
 #-------------------------------------------------------------------------------
 # elements_install_cmake_modules()
 #
