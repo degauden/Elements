@@ -27,6 +27,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
 
@@ -129,3 +134,5 @@ ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vec
 #include "ElementsKernel/_impl/Path.icpp"
 
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
+
+/**@}*/

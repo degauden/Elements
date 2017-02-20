@@ -25,6 +25,12 @@
  *
  *
  */
+
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 
@@ -44,5 +50,6 @@ ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const T& file_name);
 
 #include "ElementsKernel/_impl/Auxiliary.icpp"
 
-
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
+
+/**@}*/

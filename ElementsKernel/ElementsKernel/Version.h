@@ -17,6 +17,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef VERSION_H_
 #define VERSION_H_
 
@@ -37,6 +42,7 @@ namespace Elements {
  * @details
  *    ElementsExample/ElementsProgramExample.cpp shows how to use this method to implement
  *    a getVersion in a prgram
+ * @ingroup ElementsKernel
  * @param svnUrl
  *    This is a string that can be filled with the HeadURL svn keywords. Writing
  *       \#define SVN_URL "SVN $HeadURL$
@@ -60,6 +66,7 @@ ELEMENTS_API std::string getVersionFromSvnKeywords(const std::string& svnUrl, co
  * @details
  *    This function return either 2 numbers separated with a "." if the patch number is zero.
  *    Or 3 numbers separated with a "." if the patch is not zero.
+ * @ingroup ElementsKernel
  * @param major
  *    Major version number
  * @param minor
@@ -76,3 +83,5 @@ ELEMENTS_API std::string getVersionString(const unsigned short major,
 } // Elements namespace
 
 #endif /* VERSION_H_ */
+
+/**@}*/

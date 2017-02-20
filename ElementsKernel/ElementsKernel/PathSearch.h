@@ -17,6 +17,12 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
+
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_SEARCHPATH_H_
 #define ELEMENTSKERNEL_SEARCHPATH_H_
 
@@ -94,3 +100,5 @@ ELEMENTS_API std::vector<boost::filesystem::path> pathSearchInEnvVariable(const 
 }  // Elements namespace
 
 #endif  // ELEMENTSKERNEL_SEARCHPATH_H_
+
+/**@}*/

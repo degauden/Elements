@@ -19,6 +19,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
+
 #ifndef EXAMPLEMODULE_EXAMPLEMODULE_TEMPLATEDDATASOURCEUSER_H_
 #define EXAMPLEMODULE_EXAMPLEMODULE_TEMPLATEDDATASOURCEUSER_H_
 
@@ -57,3 +62,5 @@ public:
 #include "ElementsExamples/_impl/TemplatedDataSourceUser.icpp"
 
 #endif /* EXAMPLEMODULE_EXAMPLEMODULE_TEMPLATEDDATASOURCEUSER_H_ */
+
+/**@}*/

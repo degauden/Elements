@@ -5,6 +5,11 @@
  * @author hubert
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
+
 #ifndef _ELEMENTSEXAMPLES_CRASHINGFUNCTION_H_
 #define _ELEMENTSEXAMPLES_CRASHINGFUNCTION_H_
 
@@ -19,3 +24,5 @@ ELEMENTS_API void crashingFunction();
 } // Elements namespace
 
 #endif // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CRASHINGFUNCTION_H_
+
+/**@}*/

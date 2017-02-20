@@ -25,6 +25,12 @@
  *
  *
  */
+
+/**
+ * \addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 
@@ -46,3 +52,4 @@ ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name);
 
 
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_ 
+/**@}*/

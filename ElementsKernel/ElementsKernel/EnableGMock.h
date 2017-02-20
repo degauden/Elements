@@ -17,6 +17,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_ENABLEGMOCK_H
 #define ELEMENTSKERNEL_ENABLEGMOCK_H
 
@@ -58,3 +63,5 @@ BOOST_GLOBAL_FIXTURE(GoogleMockSetupFixture)
 #endif
 
 #endif /* ELEMENTSKERNEL_ENABLEGMOCK_H */
+
+/**@}*/

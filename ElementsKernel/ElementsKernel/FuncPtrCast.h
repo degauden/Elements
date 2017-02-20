@@ -21,6 +21,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_FUNCPTRCAST_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_FUNCPTRCAST_H_
 
@@ -64,3 +69,5 @@ inline DESTPTR FuncPtrCast(SRCPTR ptr) {
 } // namespace Elements
 
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_FUNCPTRCAST_H_
+
+/**@}*/

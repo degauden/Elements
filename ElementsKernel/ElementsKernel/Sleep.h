@@ -14,6 +14,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
 
 #ifndef ELEMENTSKERNEL_SLEEP_H_
 #define ELEMENTSKERNEL_SLEEP_H_
@@ -34,3 +38,5 @@ ELEMENTS_API void nanoSleep(std::int64_t nsec);
 }
 
 #endif /*ELEMENTSKERNEL_SLEEP_H_*/
+
+/**@}*/

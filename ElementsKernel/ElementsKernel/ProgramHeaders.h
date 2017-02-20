@@ -15,6 +15,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef PROGRAM_HEADER_H
 #define PROGRAM_HEADER_H
 
@@ -31,3 +36,5 @@
 #include "ElementsKernel/Version.h"         // ??
 
 #endif
+
+/**@}*/

@@ -19,6 +19,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_MODULEINFO_H
 #define ELEMENTSKERNEL_MODULEINFO_H
 
@@ -81,3 +86,5 @@ ELEMENTS_API boost::filesystem::path getExecutablePath();
 }
 }
 #endif // ELEMENTSKERNEL_MODULEINFO_H
+
+/**@}*/

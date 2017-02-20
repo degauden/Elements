@@ -18,6 +18,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_MATHCONSTANTS_H_
 #define ELEMENTSKERNEL_MATHCONSTANTS_H_
 
@@ -48,3 +53,5 @@ constexpr double e              = 2.71828182845904523536;
 }  // namespace Elements
 
 #endif  // ELEMENTSKERNEL_MATHCONSTANTS_H_
+
+/**@}*/

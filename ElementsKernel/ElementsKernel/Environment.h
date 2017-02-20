@@ -19,6 +19,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_ENVIRONMENT_H_
 #define ELEMENTSKERNEL_ENVIRONMENT_H_
 
@@ -117,3 +122,5 @@ ELEMENTS_API Environment::Variable operator+(const std::string&, const Environme
 } // Elements namespace
 
 #endif // ELEMENTSKERNEL_ENVIRONMENT_H_
+
+/**@}*/

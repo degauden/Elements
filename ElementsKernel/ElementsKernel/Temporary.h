@@ -18,6 +18,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_TEMPORARY_H_
 #define ELEMENTSKERNEL_TEMPORARY_H_
 
@@ -59,3 +64,5 @@ using TempEnv = Environment;
 } // namespace Elements
 
 #endif // ELEMENTSKERNEL_TEMPORARY_H_
+
+/**@}*/

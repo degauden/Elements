@@ -19,6 +19,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
+
 #ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_MODULEINFO_H_
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_MODULEINFO_H_
 
@@ -35,3 +40,5 @@ ELEMENTS_API const System::ModuleInfo& getModuleInfo();
 
 
 #endif // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_MODULEINFO_H_
+
+/**@}*/

@@ -18,6 +18,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
 
 #ifndef ELEMENTSPROGRAMMANAGER_H_
 #define ELEMENTSPROGRAMMANAGER_H_
@@ -249,3 +253,5 @@ private:
 }
 
 #endif /* ELEMENTSPROGRAMMANAGER_H_ */
+
+/**@}*/

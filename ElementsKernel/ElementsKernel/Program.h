@@ -19,6 +19,11 @@
  *
  */
 
+/**
+ * \addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSPROGRAM_H_
 #define ELEMENTSPROGRAM_H_
 
@@ -104,3 +109,5 @@ public:
 }
 
 #endif /* ELEMENTSPROGRAM_H_ */
+
+/**@}*/

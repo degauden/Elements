@@ -29,6 +29,12 @@
  *
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
+
 // Copyright 2005, Google Inc.
 // All rights reserved.
 //
@@ -548,3 +554,5 @@ ELEMENTS_API bool realBitWiseEqual(const RawType& left, const RawType& right) {
 
 
 #endif /* REAL_H_ */
+
+/**@}*/

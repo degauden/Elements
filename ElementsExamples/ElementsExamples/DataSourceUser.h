@@ -19,6 +19,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
+
 #ifndef DATASOURCEUSER_H_
 #define DATASOURCEUSER_H_
 
@@ -89,3 +94,5 @@ public:
 } // namespace Elements
 
 #endif /* DATASOURCEUSER_H_ */
+
+/**@}*/

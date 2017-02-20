@@ -18,6 +18,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_UNUSED_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_UNUSED_H_
 
@@ -34,3 +39,5 @@
 #define ELEMENTS_UNUSED __attribute__ ((unused))
 
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_UNUSED_H_
+
+/**@}*/

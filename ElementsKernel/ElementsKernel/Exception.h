@@ -18,6 +18,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSEXCEPTION_H_
 #define ELEMENTSEXCEPTION_H_
 
@@ -167,3 +172,5 @@ auto operator<<(Ex&& ex, const T& message) -> decltype(std::forward<Ex>(ex)) {
 } // namespace Elements
 
 #endif /* ELEMENTSEXCEPTION_H_ */
+
+/**@}*/

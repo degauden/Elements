@@ -15,6 +15,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_TIMING_H
 #define ELEMENTSKERNEL_TIMING_H
 
@@ -241,3 +246,5 @@ inline int64_t adjustTime<Native>(int64_t t) {
 }
 
 #endif    // ELEMENTSKERNEL_TIMING_H
+
+/**@}*/

@@ -19,6 +19,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
+
 #ifndef ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_
 #define ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_
 
@@ -33,3 +38,5 @@ ELEMENTS_API int functionExample(const int j);
 } // namespace Elements
 
 #endif // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_
+
+/**@}*/

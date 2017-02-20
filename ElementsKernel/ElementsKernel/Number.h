@@ -19,6 +19,10 @@
  *
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
 #ifndef ELEMENTSKERNEL_NUMBER_H_
 #define ELEMENTSKERNEL_NUMBER_H_
 
@@ -58,3 +62,5 @@ ELEMENTS_API TargetType numberCast(const SourceType& s) {
 }  // Elements Namespace
 
 #endif // ELEMENTSKERNEL_NUMBER_H_
+
+/**@}*/

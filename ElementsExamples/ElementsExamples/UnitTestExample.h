@@ -18,6 +18,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
+
 #ifndef ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_
 #define ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_
 
@@ -61,3 +66,5 @@ public:
 } // namespace Elements
 
 #endif /* ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_ */
+
+/**@}*/

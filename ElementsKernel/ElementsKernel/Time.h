@@ -15,6 +15,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
 
 #ifndef ELEMENTSKERNEL_TIME_H
 #define ELEMENTSKERNEL_TIME_H 1
@@ -296,3 +300,5 @@ private:
 #include "ElementsKernel/_impl/Time.icpp"
 
 #endif // ELEMENTSKERNEL_TIME_H
+
+/**@}*/

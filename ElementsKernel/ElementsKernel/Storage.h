@@ -18,6 +18,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_STORAGE_H_
 #define ELEMENTSKERNEL_STORAGE_H_
 
@@ -61,3 +66,5 @@ ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageTyp
 #include "ElementsKernel/_impl/Storage.icpp"
 
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_
+
+/**@}*/

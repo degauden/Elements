@@ -20,6 +20,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 #define ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 
@@ -65,3 +70,5 @@ private:
 
 
 #endif // ELEMENTSKERNEL_SIMPLEPROGRAM_H_
+
+/**@}*/

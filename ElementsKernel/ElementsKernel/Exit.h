@@ -18,6 +18,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_EXIT_H_
 #define ELEMENTSKERNEL_EXIT_H_
 
@@ -119,3 +124,5 @@ using ExitCodeType = std::underlying_type<ExitCode>::type;
 } // namespace Elements
 
 #endif // ELEMENTSKERNEL_EXIT_H_
+
+/**@}*/

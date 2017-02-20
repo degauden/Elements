@@ -18,6 +18,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_LIKELY_H_
 #define ELEMENTSKERNEL_LIKELY_H_
 
@@ -38,3 +43,5 @@
 #endif
 
 #endif /* ELEMENTSKERNEL_LIKELY_H_ */
+
+/**@}*/

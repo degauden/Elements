@@ -21,6 +21,12 @@
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_SYSTEM_H
 #define ELEMENTSKERNEL_SYSTEM_H
 
@@ -158,3 +164,4 @@ ELEMENTS_API bool getStackLevel(ELEMENTS_UNUSED void* addresses, ELEMENTS_UNUSED
 } // end of namespace Elements
 
 #endif    // SYSTEM_SYSTEM_H
+/**@}*/

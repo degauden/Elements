@@ -18,6 +18,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_SYSTEMOFUNITS_H_
 #define ELEMENTSKERNEL_SYSTEMOFUNITS_H_
 
@@ -270,3 +275,5 @@ namespace Elements {
 
 
 #endif /* ELEMENTSKERNEL_SYSTEMOFUNITS_H_ */
+
+/**@}*/

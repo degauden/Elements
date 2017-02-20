@@ -19,6 +19,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_STRINGIFY_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_STRINGIFY_H_
 
@@ -35,3 +40,5 @@
 #define _str(s) #s
 
 #endif // ELEMENTSKERNEL_ELEMENTSKERNEL_STRINGIFY_H_
+
+/**@}*/

@@ -17,6 +17,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSLOGGING_H
 #define ELEMENTSLOGGING_H
 
@@ -305,3 +310,5 @@ private:
 } // namespace Elements
 
 #endif /* ELEMENTSLOGGING_H */
+
+/**@}*/

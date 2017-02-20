@@ -19,6 +19,12 @@
  *
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
+
+
 #ifndef CLASSEXAMPLE_H_
 #define CLASSEXAMPLE_H_
 
@@ -194,3 +200,5 @@ private:
 } // namespace Elements
 
 #endif /* CLASSEXAMPLE_H_ */
+
+/**@}*/

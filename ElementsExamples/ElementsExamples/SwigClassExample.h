@@ -16,6 +16,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
+
 #ifndef SWIG_CLASSEXAMPLE_H_
 #define SWIG_CLASSEXAMPLE_H_
 
@@ -50,3 +55,5 @@ private:
 } // namespace Elements
 
 #endif /* SWIG_CLASSEXAMPLE_H_ */
+
+/**@}*/

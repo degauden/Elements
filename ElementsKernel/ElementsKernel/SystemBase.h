@@ -14,6 +14,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTS_SYSTEM_SYSTEMBASE_H
 #define ELEMENTS_SYSTEM_SYSTEMBASE_H
 
@@ -35,3 +40,5 @@ enum class InfoType {
 }
 }
 #endif // ELEMENTS_SYSTEM_SYSTEMBASE_H
+
+/**@}*/

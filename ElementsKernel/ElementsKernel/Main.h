@@ -18,6 +18,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTSKERNEL_MAIN_H_
 #define ELEMENTSKERNEL_MAIN_H_
 
@@ -65,3 +70,5 @@
 /** \example ElementsExamples/src/program/ProgramExample.cpp
  * Example that shows the usage of the MAIN_FOR macro
  */
+
+/**@}*/

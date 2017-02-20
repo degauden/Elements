@@ -31,6 +31,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsKernel ElementsKernel
+ * @{
+ */
+
 #ifndef ELEMENTS_EXPORT_H_
 #define ELEMENTS_EXPORT_H_
 
@@ -72,3 +77,5 @@
 // ---------------------------------- Symbol visibility macros (end)
 
 #endif /* ELEMENTS_EXPORT_H_ */
+
+/**@}*/
