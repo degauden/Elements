@@ -44,25 +44,25 @@ SUFFIXES = {"executable": ["scripts", "bin"],
 
 
 def getLocationsFromEnv(path_variable, exist_only=False):
-    
+
     env_content = os.environ.get(path_variable, None)
-    
+
     found_list = []
-    if (env_content) :
+    if env_content:
         found_list = env_content.split(PATHSEP)
-        
+
     if exist_only:
         found_list = [ p for p in found_list if os.path.exists(p)]
-        
+
     return found_list
 
 def getPathFromLocations(file_name, locations):
-    
+
     for l in locations:
         file_path = os.path.join(l, file_name)
         if os.path.exists(file_path):
             return file_path
-        
+
     return None
 
 def getPathFromEnvVariable(file_name, path_variable):
@@ -79,7 +79,7 @@ def getPathFromEnvVariable(file_name, path_variable):
     """
 
     location_list = getLocationsFromEnv(path_variable)
-    
+
     return getPathFromLocations(file_name, location_list)
 
 

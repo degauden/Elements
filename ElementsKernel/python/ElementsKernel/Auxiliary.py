@@ -24,21 +24,21 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import os
 
-from ElementsKernel.Path import getLocationsFromEnv, VARIABLE,\
+from ElementsKernel.Path import getLocationsFromEnv, VARIABLE, \
     getPathFromLocations
 from ElementsKernel.System import DEFAULT_INSTALL_PREFIX
 
 
 def getAuxiliaryPath(file_name):
-    
-    location_list = getLocationsFromEnv(VARIABLE["auxiliary"]);
-            
+
+    location_list = getLocationsFromEnv(VARIABLE["auxiliary"])
+
     location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "auxdir"))
     location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "aux"))
-    
+
     result = getPathFromLocations(file_name, location_list)
-    
-    if (not result) :
+
+    if not result:
         raise Exception("The auxiliary file \"%s\" cannot be found!", file_name)
-    
+
     return result

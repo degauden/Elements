@@ -4,7 +4,7 @@
 
 @date: 17/01/17
 
-This script check a name of a project, module or product agains a given 
+This script check a name of a project, module or product agains a given
 online naming DB. The script return 0 if the entity exists and 1 if it doesn't
 
 @copyright: 2012-2020 Euclid Science Ground Segment
@@ -40,14 +40,14 @@ DEFAULT_TYPE = "cmake"
 
 
 def _byPassSslUrlOpen(url):
-    req = urllib2.Request(url, headers={ 'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' })
+    req = urllib2.Request(url, headers={'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'})
     gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
     return urllib2.urlopen(req, context=gcontext)
 
 
 def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
     full_url = db_url + "/NameCheck/exists?name=%s&type=%s" % (name, entity_type)
-    logger.debug("The url for the name request: %s" % full_url)
+    logger.debug("The url for the name request: %s", full_url)
     info = json.loads(_byPassSslUrlOpen(full_url).read())
     for u in ["url", "private_url"]:
         if u in info and info[u]:
@@ -88,8 +88,10 @@ def defineSpecificProgramOptions():
     parser.add_argument('entity_name', metavar='entity-name',
                         type=str,
                         help='Entitiy name')
-    parser.add_argument('-U', '--url', default=os.environ.get("ELEMENTS_NAMING_DB_URL", ""), help='URL for the naming database')
-    parser.add_argument('-t', '--type', default=DEFAULT_TYPE, choices=TYPES, help='Type for the check')
+    parser.add_argument('-U', '--url', default=os.environ.get("ELEMENTS_NAMING_DB_URL", ""),
+                        help='URL for the naming database')
+    parser.add_argument('-t', '--type', default=DEFAULT_TYPE, choices=TYPES,
+                        help='Type for the check')
 
     return parser
 
@@ -116,8 +118,10 @@ def mainMethod(args):
         else:
             if info["exists"]:
                 logger.warn("The \"%s\" name for the %s type already exists", entity_name, args.type)
-                logger.info("The result for the global query of the name \"%s\" in the DB: %s", entity_name, info["url"])
-                logger.info("The full information for the \"%s\" name of type %s: %s", entity_name, args.type, info["private_url"])
+                logger.info("The result for the global query of the name \"%s\" in the DB: %s",
+                            entity_name, info["url"])
+                logger.info("The full information for the \"%s\" name of type %s: %s", entity_name,
+                            args.type, info["private_url"])
                 exit_code = 0
             else:
                 logger.warn("The \"%s\" name of type %s doesn't exist", entity_name, args.type)

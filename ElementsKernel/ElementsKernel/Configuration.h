@@ -51,5 +51,5 @@ ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name);
 #include "ElementsKernel/_impl/Configuration.icpp"
 
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_ 
+#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 /**@}*/
