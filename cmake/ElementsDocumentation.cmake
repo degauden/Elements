@@ -22,27 +22,12 @@ include_guard()
         set(DOXYGEN_EXTRA_FILE_PATTERNS "*.py") 
     endif()
 
-    # Generation of the main Doxygen configuration: the Doxyfile
-    find_file_to_configure(Doxyfile.in
-                           FILETYPE "Doxygen configuration"
-                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
-                           PATHS ${CMAKE_MODULE_PATH}
-                           PATH_SUFFIXES doc)
-
 
     if(USE_SPHINX)
       set(DOX_LINK_TO_SPHINX "<tab type=\"user\" url=\"../../sphinx/html/index.html\" title=\"Sphinx\"/>")
     else()
       set(DOX_LINK_TO_SPHINX "")
     endif()
-
-    # Generation of the Doxygen Layout
-    find_file_to_configure(DoxygenLayout.xml.in
-                           FILETYPE "Doxygen layout"
-                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
-                           PATHS ${CMAKE_MODULE_PATH}
-                           PATH_SUFFIXES doc)
-
 
     # add the doxygen target
     add_custom_target(doxygen
@@ -52,8 +37,48 @@ include_guard()
 
     add_dependencies(doc doxygen)
 
+    option(DOXYGEN_WITH_CPPREFERENCE_LINKS
+           "Link C++ standard library classes to http://cppreference.com documentation."
+           TRUE)
 
+    set(DOXYGEN_TAGFILES)
+    if(DOXYGEN_WITH_CPPREFERENCE_LINKS)
+    
+      find_file(GET_CPPREF_TAGS_SCRIPT
+              get_cppreference_tags.cmake
+              PATHS ${CMAKE_MODULE_PATH}
+              PATH_SUFFIXES doc)
+    
+    
+      # download Doxygen tags from cppreference.com
+      add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/cppreference-doxygen-web.tag.xml
+                         COMMAND ${CMAKE_COMMAND}
+                           -D DEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen
+                           -P ${GET_CPPREF_TAGS_SCRIPT}
+                         COMMENT "Getting cppreference.com doxygen tags...")
+      add_custom_target(get-ccpreference-tags DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/cppreference-doxygen-web.tag.xml)
+      add_dependencies(doxygen get-ccpreference-tags)
+      set(DOXYGEN_TAGFILES
+        "${DOXYGEN_TAGFILES} \"${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/cppreference-doxygen-web.tag.xml=http://en.cppreference.com/w/\"")
     endif()
+
+
+    # Generation of the main Doxygen configuration: the Doxyfile
+    find_file_to_configure(Doxyfile.in
+                           FILETYPE "Doxygen configuration"
+                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
+                           PATHS ${CMAKE_MODULE_PATH}
+                           PATH_SUFFIXES doc)
+
+
+    # Generation of the Doxygen Layout
+    find_file_to_configure(DoxygenLayout.xml.in
+                           FILETYPE "Doxygen layout"
+                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
+                           PATHS ${CMAKE_MODULE_PATH}
+                           PATH_SUFFIXES doc)
+
+  endif()
 
   endif()
 
