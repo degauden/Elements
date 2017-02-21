@@ -41,5 +41,5 @@ double DataSourceUser::sumRecords (const DataSourceInterface& data_source) {
   return sum;
 }
 
-} // namespace ElementsExamples
+} // namespace Examples
 } // namespace Elements

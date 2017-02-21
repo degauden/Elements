@@ -101,6 +101,10 @@ option(USE_DOXYGEN
        "Use doxygen documentation generation"
        ON)
 
+option(USE_PYTHON_DOXYGEN
+       "Use doxygen documentation generation"
+       ON)
+
 option(USE_SPHINX_APIDOC
        "Use sphinx API documentation generation"
        ON)

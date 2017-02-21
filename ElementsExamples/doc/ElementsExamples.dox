@@ -1,0 +1,4 @@
+/**
+@defgroup ElementsExamples ElementsExamples: Programming Examples Module
+@brief    Various examples to create executables, libraries, python modules etc
+*/

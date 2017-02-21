@@ -1,0 +1,4 @@
+/**
+@defgroup ElementsKernel ElementsKernel: The Kernel Module of the Elements Framework
+@brief    Core CMake, C++ and Python utilities
+*/

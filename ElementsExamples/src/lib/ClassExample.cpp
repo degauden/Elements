@@ -66,5 +66,5 @@ ClassExample ClassExample::factoryMethod(const std::int64_t source_id,
   return ClassExample { source_id, ra };
 }
 
-} // namespace ElementsExamples
+} // namespace Examples
 } // namespace Elements

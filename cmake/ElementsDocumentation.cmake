@@ -16,6 +16,11 @@ include_guard()
   if(DOXYGEN_FOUND)
 
     find_package(PlantUML)
+    
+    set(DOXYGEN_EXTRA_FILE_PATTERNS) 
+    if(USE_PYTHON_DOXYGEN)
+        set(DOXYGEN_EXTRA_FILE_PATTERNS "*.py") 
+    endif()
 
     # Generation of the main Doxygen configuration: the Doxyfile
     find_file_to_configure(Doxyfile.in

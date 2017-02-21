@@ -30,5 +30,5 @@ const System::ModuleInfo& getModuleInfo() {
 
 }
 
-} // namespace ElementsExamples
+} // namespace Examples
 } // namespace Elements

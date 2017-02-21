@@ -120,7 +120,6 @@ enum class ExitCode : int {
 /// Underlying type of the ExitCode class
 using ExitCodeType = std::underlying_type<ExitCode>::type;
 
-
 } // namespace Elements
 
 #endif // ELEMENTSKERNEL_EXIT_H_
