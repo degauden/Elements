@@ -59,7 +59,7 @@ def checkDataBaseUrl(db_url):
     if db_url:
         try:
             _byPassSslUrlOpen(db_url + "/NameCheck")
-        except:
+        except urllib2.URLError:
             site_exists = False
     else:
         site_exists = False

@@ -44,6 +44,10 @@ SUFFIXES = {"executable": ["scripts", "bin"],
 
 
 def getLocationsFromEnv(path_variable, exist_only=False):
+    """
+    Get the list of locations provided by the path 
+    environment variable.
+    """
 
     env_content = os.environ.get(path_variable, None)
 
@@ -52,11 +56,15 @@ def getLocationsFromEnv(path_variable, exist_only=False):
         found_list = env_content.split(PATHSEP)
 
     if exist_only:
-        found_list = [ p for p in found_list if os.path.exists(p)]
+        found_list = [p for p in found_list if os.path.exists(p)]
 
     return found_list
 
 def getPathFromLocations(file_name, locations):
+    """
+    Get the path to the searched  file name from the 
+    provided locations. The first found wins.
+    """
 
     for l in locations:
         file_path = os.path.join(l, file_name)
@@ -91,7 +99,7 @@ def joinPath(path_list):
 def multiPathAppend(initial_locations, suffixes):
     """ Function to append all the suffixes to
     all the initial location
-    @param initial_locations: as quoted the initial paths to be 
+    @param initial_locations: as quoted the initial paths to be
     appended to
     @param suffixes: the extensions to be appended.
     """

@@ -1,5 +1,5 @@
 '''
-Created on 10 févr. 2017
+Created on Feb 10, 2017
 
 @author: Hubert Degaudenzi
 
@@ -29,6 +29,9 @@ from ElementsKernel.Path import getLocationsFromEnv, VARIABLE, \
 from ElementsKernel.System import DEFAULT_INSTALL_PREFIX
 
 def getConfigurtionPath(file_name):
+    """
+    Get full path to the file name searched in the Configuration path
+    """
 
     location_list = getLocationsFromEnv(VARIABLE["configuration"])
 
