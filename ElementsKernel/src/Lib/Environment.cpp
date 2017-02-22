@@ -140,7 +140,7 @@ string Environment::Variable::value() const {
 
 }
 
-Environment::Variable::operator string() const {
+Environment::Variable::operator std::string() const {
   return value();
 }
 

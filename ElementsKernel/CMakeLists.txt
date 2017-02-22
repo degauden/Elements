@@ -4,7 +4,7 @@ find_package(Boost REQUIRED COMPONENTS filesystem thread program_options system 
 find_package(Log4CPP REQUIRED)
 
 #---Libraries---------------------------------------------------------------
-elements_add_library(ElementsKernel src/Lib/*.cpp src/Lib/*.h
+elements_add_library(ElementsKernel src/Lib/*.cpp
                     LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Log4CPP
                     INCLUDE_DIRS Boost Log4CPP
                     PUBLIC_HEADERS ElementsKernel)
@@ -13,12 +13,6 @@ elements_add_library(ElementsKernel src/Lib/*.cpp src/Lib/*.h
 elements_add_unit_test(Time tests/src/ElementsTime_test.cpp
                        EXECUTABLE ElementsTime_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(Timing tests/src/ElementsTiming_test.cpp
-                       EXECUTABLE ElementsTiming_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(Memory tests/src/Memory_test.cpp
-                       EXECUTABLE Memory_test
-                       LINK_LIBRARIES ElementsKernel)
 elements_add_unit_test(Real tests/src/Real_test.cpp
                        EXECUTABLE Real_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost
