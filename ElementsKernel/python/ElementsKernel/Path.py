@@ -45,7 +45,7 @@ SUFFIXES = {"executable": ["scripts", "bin"],
 
 def getLocationsFromEnv(path_variable, exist_only=False):
     """
-    Get the list of locations provided by the path 
+    Get the list of locations provided by the path
     environment variable.
     """
 
@@ -62,7 +62,7 @@ def getLocationsFromEnv(path_variable, exist_only=False):
 
 def getPathFromLocations(file_name, locations):
     """
-    Get the path to the searched  file name from the 
+    Get the path to the searched  file name from the
     provided locations. The first found wins.
     """
 
