@@ -87,8 +87,7 @@ public:
 
   /** Virtual destructor.
    */
-  virtual ~Exception() noexcept {
-  }
+  virtual ~Exception() noexcept = default;
 
   /** Returns a pointer to the (constant) error description.
    *  @return A pointer to a const char *. The underlying memory

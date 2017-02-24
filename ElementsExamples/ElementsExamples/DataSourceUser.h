@@ -66,7 +66,7 @@ public:
    */
   virtual double getRecordValue (std::size_t index) const = 0;
 
-  virtual ~DataSourceInterface() {}
+  virtual ~DataSourceInterface() = default;
 };
 
 /**
