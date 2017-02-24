@@ -125,6 +125,10 @@ option(CXX_SUGGEST_OVERRIDE
        "Enable the -Wsuggest-override warning"
        OFF)
 
+option(FLOAT_EQUAL_WARNING
+       "Enable the -Wfloat-equal warning"
+       OFF)
+
 option(SQUEEZED_INSTALL
        "Enable the squeezing of the installation into a prefix directory"
        OFF)
@@ -136,14 +140,29 @@ if(NOT ELEMENTS_FLAGS_SET)
 
     # Common compilation flags
   set(CMAKE_CXX_FLAGS
-      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -fPIC"
+      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
       
   set(CMAKE_C_FLAGS
-      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wfloat-equal -Wno-unused-parameter -fPIC"
+      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wno-unused-parameter -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
+
+  if(FLOAT_EQUAL_WARNING)
+    check_cxx_compiler_flag(-Wfloat-equal CXX_HAS_FLOAT_EQUAL)
+    if(CXX_HAS_FLOAT_EQUAL)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfloat-equal"
+          CACHE STRING "Flags used by the compiler during all build types."
+          FORCE)
+    endif()  
+    check_c_compiler_flag(-Wfloat-equal C_HAS_FLOAT_EQUAL)
+    if(C_HAS_FLOAT_EQUAL)
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wfloat-equal"
+          CACHE STRING "Flags used by the compiler during all build types."
+          FORCE)
+    endif()  
+  endif()
 
   if(CXX_SUGGEST_OVERRIDE AND (SGS_COMP STREQUAL gcc))
     check_cxx_compiler_flag(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)

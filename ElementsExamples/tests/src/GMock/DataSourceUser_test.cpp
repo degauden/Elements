@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(sumRecords_test) {
   Elements::Examples::DataSourceUser user{};
   double result = user.sumRecords(data_source_mock);
 
-  BOOST_CHECK_MESSAGE(Elements::isEqual(result, 15.), "Expected value :"<< 15 <<" Actual value :"<<result);
+  BOOST_CHECK_MESSAGE(Elements::isEqual(result, 15.), "Expected value :"<< 15. <<" Actual value :"<<result);
 }
 
 // Ends the test suite
