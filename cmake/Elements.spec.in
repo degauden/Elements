@@ -59,7 +59,7 @@ export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 export HAS_ELEMENTS_TOOLCHAIN=@HAS_ELEMENTS_TOOLCHAIN@
 if [[ -z "$EUCLID_BASE" ]]; then
-  export CMAKE_PROJECT_PATH=/opt/euclid
+  export CMAKE_PROJECT_PATH=@EUCLID_BASE_DIR@
 else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi
@@ -89,7 +89,7 @@ fi
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 if [[ -z "$EUCLID_BASE" ]]; then
-  export CMAKE_PROJECT_PATH=/opt/euclid
+  export CMAKE_PROJECT_PATH=@EUCLID_BASE_DIR@
 else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi
@@ -101,7 +101,7 @@ cd $RPM_BUILD_DIR/$BINARY_TAG
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 if [[ -z "$EUCLID_BASE" ]]; then
-  export CMAKE_PROJECT_PATH=/opt/euclid
+  export CMAKE_PROJECT_PATH=@EUCLID_BASE_DIR@
 else
   export CMAKE_PROJECT_PATH=$EUCLID_BASE
 fi

@@ -78,6 +78,14 @@ include_guard()
                            PATHS ${CMAKE_MODULE_PATH}
                            PATH_SUFFIXES doc)
 
+    # Generation of the Doxygen Main Page
+    find_file_to_configure(mainpage.dox.in
+                           FILETYPE "Doxygen main page"
+                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
+                           PATHS ${CMAKE_MODULE_PATH}
+                           PATH_SUFFIXES doc)
+
+
   endif()
 
   endif()

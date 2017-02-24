@@ -107,7 +107,7 @@ For the installation, the usual command:
 	$ make install
 
 will do the installation. And since we didn't use the ``-DUSE_LOCAL_INSTALLAREA=on``
-option at configure time, the installation directory will be ``/opt/euclid/Elements/${VERSION}/InstallArea``.
+option at configure time, the installation directory will be ``@EUCLID_BASE_DIR@/Elements/${VERSION}/InstallArea``.
 
 
 Please note that the build can also be performed by pure CMake commands:

@@ -733,8 +733,6 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   endforeach()
   set(CPACK_SYSTEM_NAME ${BINARY_TAG})
   set(CPACK_PACKAGE_RELOCATABLE TRUE)
-  # set(CPACK_PACKAGE_INSTALL_DIRECTORY /opt/euclid)
-  # set(CPACK_RPM_PACKAGE_PREFIX /opt/euclid)
   if(USE_LOCAL_INSTALLAREA)
     set(CPACK_PACKAGING_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   else()
