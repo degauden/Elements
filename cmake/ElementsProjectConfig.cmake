@@ -601,9 +601,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   message(STATUS "  environment for local subdirectories")
   #   - project root (for relocatability)
   string(TOUPPER ${project} _proj)
-  # set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
-  # file(RELATIVE_PATH _PROJECT_ROOT ${CMAKE_INSTALL_PREFIX} ${CMAKE_SOURCE_DIR})
-  # message(STATUS "_PROJECT_ROOT -> ${_PROJECT_ROOT}")
+
   set(installed_project_environment "${project_environment}")
 
   set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
