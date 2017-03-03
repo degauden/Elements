@@ -16,7 +16,7 @@ Requires(post):    /sbin/ldconfig
 Requires(postun):  /sbin/ldconfig
 
 %define bin_tag @CPACK_SYSTEM_NAME@
-%define _proj_base_dir @EUCLID_BASE_DIR@
+%define _proj_base_dir @ELEMENTS_BASE_DIR@
 %define _proj_name_dir %{_proj_base_dir}/%{name}
 %define _proj_vers_dir %{_proj_name_dir}/%{version}
 %define _proj_ia_dir %{_proj_vers_dir}/InstallArea
@@ -58,10 +58,10 @@ Debug information for package %{name}
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 export HAS_ELEMENTS_TOOLCHAIN=@HAS_ELEMENTS_TOOLCHAIN@
-if [[ -z "$EUCLID_BASE" ]]; then
-  export CMAKE_PROJECT_PATH=@EUCLID_BASE_DIR@
+if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
+  export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
 else
-  export CMAKE_PROJECT_PATH=$EUCLID_BASE
+  export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
 toolchain_name=ElementsToolChain.cmake
@@ -88,10 +88,10 @@ fi
 %install
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
-if [[ -z "$EUCLID_BASE" ]]; then
-  export CMAKE_PROJECT_PATH=@EUCLID_BASE_DIR@
+if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
+  export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
 else
-  export CMAKE_PROJECT_PATH=$EUCLID_BASE
+  export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
 cd $RPM_BUILD_DIR/$BINARY_TAG
@@ -100,10 +100,10 @@ cd $RPM_BUILD_DIR/$BINARY_TAG
 %check
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
-if [[ -z "$EUCLID_BASE" ]]; then
-  export CMAKE_PROJECT_PATH=@EUCLID_BASE_DIR@
+if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
+  export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
 else
-  export CMAKE_PROJECT_PATH=$EUCLID_BASE
+  export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
 export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
 cd $RPM_BUILD_DIR/$BINARY_TAG
