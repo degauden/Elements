@@ -108,23 +108,6 @@ option(USE_ODB "Use the ODB libraries" OFF)
 option(ELEMENTS_USE_STRICT_BINARY_DEP "Flag to force the strict binary dependencies" OFF)
 option(ELEMENTS_USE_CASE_SENSITIVE_PROJECTS "No uppercase projects allowed" ON)
 
-if(DEFINED ENV{SOFTWARE_BASE_VAR})
-  set(ELEMENTS_BASE_VAR "$ENV{SOFTWARE_BASE_VAR}" CACHE STRING "Elements Base Install Variable")
-  message(STATUS "SOFTWARE_BASE_VAR is in the environment: ${ELEMENTS_BASE_VAR}")
-else()
-  set(ELEMENTS_BASE_VAR "EUCLID_BASE" CACHE STRING "Elements Base Install Variable")
-  message(STATUS "SOFTWARE_BASE_VAR is not in the environment: falling back to ${ELEMENTS_BASE_VAR}")
-endif()
-
-
-if(DEFINED ENV{${ELEMENTS_BASE_VAR}})
-  set(ELEMENTS_BASE_DIR "$ENV{${ELEMENTS_BASE_VAR}}" CACHE STRING "Elements Base Install Directory from the ${ELEMENTS_BASE_VAR} env variable")
-  message(STATUS "${ELEMENTS_BASE_VAR} is in the environment: ${ELEMENTS_BASE_DIR}")
-else()
-  set(ELEMENTS_BASE_DIR "/opt/euclid" CACHE STRING "Euclid Base Install Directory")
-  message(STATUS "${ELEMENTS_BASE_VAR} is not in the environment: using default ${ELEMENTS_BASE_DIR}")
-endif()
-
 
 #---------------------------------------------------------------------------------------------------
 # Programs and utilities needed for the build

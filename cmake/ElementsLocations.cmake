@@ -3,9 +3,6 @@ include_guard()
 include(SGSPlatform)
 include(ElementsBuildFlags)
 
-set(ELEMENTS_DATA_SUFFIXES DBASE;PARAM;EXTRAPACKAGES CACHE STRING
-    "List of (suffix) directories where to look for data packages.")
-
 # Install Area business
 if(USE_LOCAL_INSTALLAREA)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/InstallArea/${BINARY_TAG} CACHE PATH
@@ -13,7 +10,36 @@ if(USE_LOCAL_INSTALLAREA)
     set(SQUEEZED_INSTALL OFF
         CACHE STRING "Enable the squizzing of the installation into a prefix directory"
         FORCE)
-else()
+endif()
+
+
+
+if(NOT SQUEEZED_INSTALL)
+
+  if(DEFINED ENV{SOFTWARE_BASE_VAR})
+    set(ELEMENTS_BASE_VAR "$ENV{SOFTWARE_BASE_VAR}" CACHE STRING "Elements Base Install Variable")
+    message(STATUS "SOFTWARE_BASE_VAR is in the environment: ${ELEMENTS_BASE_VAR}")
+  else()
+    set(ELEMENTS_BASE_VAR "EUCLID_BASE" CACHE STRING "Elements Base Install Variable")
+    message(STATUS "SOFTWARE_BASE_VAR is not in the environment: falling back to ${ELEMENTS_BASE_VAR}")
+  endif()
+
+
+  if(DEFINED ENV{${ELEMENTS_BASE_VAR}})
+    set(ELEMENTS_BASE_DIR "$ENV{${ELEMENTS_BASE_VAR}}" CACHE STRING "Elements Base Install Directory from the ${ELEMENTS_BASE_VAR} env variable")
+    message(STATUS "${ELEMENTS_BASE_VAR} is in the environment: ${ELEMENTS_BASE_DIR}")
+  else()
+    set(ELEMENTS_BASE_DIR "/opt/euclid" CACHE STRING "Euclid Base Install Directory")
+    message(STATUS "${ELEMENTS_BASE_VAR} is not in the environment: using default ${ELEMENTS_BASE_DIR}")
+  endif()
+  
+endif()
+
+
+set(ELEMENTS_DATA_SUFFIXES DBASE;PARAM;EXTRAPACKAGES CACHE STRING
+    "List of (suffix) directories where to look for data packages.")
+
+if(NOT USE_LOCAL_INSTALLAREA)
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     if(NOT SQUEEZED_INSTALL)
        set(CMAKE_INSTALL_PREFIX ${ELEMENTS_BASE_DIR}/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG} CACHE PATH
