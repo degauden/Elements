@@ -173,11 +173,6 @@ macro(elements_project project version)
   option(ELEMENTS_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix systems (like CMT does)." OFF)
   #-------------------------------------------------------------------------------------------------
 
-  if(NOT SQUEEZED_INSTALL)
-    set(SQUEEZED_INSTALL OFF
-        CACHE STRING "Enable the squeezing of the installation into a prefix directory"
-        FORCE)
-  endif()
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
 
 

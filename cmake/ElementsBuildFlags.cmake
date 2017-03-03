@@ -131,7 +131,7 @@ option(FLOAT_EQUAL_WARNING
 
 option(SQUEEZED_INSTALL
        "Enable the squeezing of the installation into a prefix directory"
-       OFF)
+       ON)
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
