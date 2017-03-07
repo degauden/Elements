@@ -3,6 +3,13 @@ include_guard()
 include(SGSPlatform)
 include(ElementsBuildFlags)
 
+if(NOT DEFINED SQUEEZED_INSTALL)
+    set(SQUEEZED_INSTALL ON
+        CACHE STRING "Enable the squizzing of the installation into a prefix directory"
+        FORCE)
+    message(STATUS "Sets the default value for SQUEEZED_INSTALL to ${SQUEEZED_INSTALL}")     
+endif()
+
 # Install Area business
 if(USE_LOCAL_INSTALLAREA)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/InstallArea/${BINARY_TAG} CACHE PATH

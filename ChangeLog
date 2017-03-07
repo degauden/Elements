@@ -37,7 +37,6 @@
   - falls back on EULID_BASE if it exists
   - the final fallback value is /opt/euclid
 
-
 * Mon Dec 05 2016 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 4.1-1
 - New version of the documentation generation system
 - Add backtrace feature. It displays the stack trace for the crashes. It equips

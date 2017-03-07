@@ -165,10 +165,9 @@ macro(elements_project project version)
   option(ELEMENTS_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix systems (like CMT does)." OFF)
   #-------------------------------------------------------------------------------------------------
 
-  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
-
-
   include(ElementsLocations)
+
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
 
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
      CACHE STRING "path to the XML file for the environment to be used in building and testing")
@@ -998,7 +997,6 @@ ${MAIN_PROJECT_CHANGELOG}
 ")
         message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
       endif()
-
 
 
      find_file_to_configure(Elements.spec.in
