@@ -15,7 +15,7 @@ namespace Examples {
 class DataSourceUserTemplatedTypeMock {
 public:
 
-  virtual ~DataSourceUserTemplatedTypeMock()=default;
+  virtual ~DataSourceUserTemplatedTypeMock() = default;
 
   MOCK_CONST_METHOD0(countRecords, std::size_t ());
 

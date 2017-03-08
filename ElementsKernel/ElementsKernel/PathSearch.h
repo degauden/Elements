@@ -53,12 +53,14 @@ enum class SearchType {
  * @return
  *   A vector of paths of the files found or empty string, if nothing is found
  */
-ELEMENTS_API std::vector<boost::filesystem::path> pathSearch(
+ELEMENTS_API
+std::vector<boost::filesystem::path> pathSearch(
     const std::string& searched_name,
     boost::filesystem::path directory,
     SearchType search_type);
 
-ELEMENTS_API std::vector<std::string> pathSearch(
+ELEMENTS_API
+std::vector<std::string> pathSearch(
     const std::string& searched_name,
     std::string directory,
     SearchType search_type);
@@ -70,9 +72,11 @@ ELEMENTS_API std::vector<std::string> pathSearch(
  *
  * and call pathSearch(...) for each of them
  */
-ELEMENTS_API std::vector<boost::filesystem::path> pathSearchInEnvVariable(const std::string& file_name,
-                                                                            const std::string& path_like_env_variable,
-                                                                            SearchType search_type=SearchType::Recursive);
+ELEMENTS_API
+std::vector<boost::filesystem::path> pathSearchInEnvVariable(
+    const std::string& file_name,
+    const std::string& path_like_env_variable,
+    SearchType search_type=SearchType::Recursive);
 
 //  /**
 //   * @brief

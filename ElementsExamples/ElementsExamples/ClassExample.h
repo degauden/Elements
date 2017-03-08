@@ -73,8 +73,7 @@ public:
   /**
    * @brief Destructor
    */
-  virtual ~ClassExample () {
-  }
+  virtual ~ClassExample() = default;
 
   /**
    * @brief

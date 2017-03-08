@@ -22,8 +22,7 @@ public:
       m_ra(ra), m_dec(dec) {
   }
 
-  virtual ~SwigClassExample () {
-  }
+  virtual ~SwigClassExample() {} 
 
 
   double getRa () const;

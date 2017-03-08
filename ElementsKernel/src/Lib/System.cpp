@@ -285,7 +285,7 @@ const string& hostName() {
   static string host = "";
   if (host == "") {
     char buffer[512];
-    ::memset(buffer, 0, sizeof(buffer));
+    std::memset(buffer, 0, sizeof(buffer));
     ::gethostname(buffer, sizeof(buffer));
     host = buffer;
   }
@@ -296,7 +296,7 @@ const string& hostName() {
 const string& osName() {
   static string osname = "";
   struct utsname ut;
-  if (uname(&ut) == 0) {
+  if (::uname(&ut) == 0) {
     osname = ut.sysname;
   } else {
     osname = "UNKNOWN";
@@ -409,7 +409,7 @@ int unSetEnv(const string& name) {
 // -----------------------------------------------------------------------------
 #include <execinfo.h>
 
-int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses ,
+int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses,
               ELEMENTS_UNUSED const int depth) {
 
   int count = ::backtrace(addresses.get(), depth);

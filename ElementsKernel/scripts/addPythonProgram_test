@@ -34,13 +34,6 @@ if [ ! -e python/${MODULE_NAME}/__init__.py ]; then
    clean_and_exit 1
 fi
 
-# Make sure the <elements_install_scripts> macro is there
-result=$( grep "elements_install_scripts" CMakeLists.txt | grep -v "#")
-if [ $? -ne 0  ];then
-   echo "Error: <elements_install_scripts> macro not found!" 1>&2
-   clean_and_exit 1
-fi
-
 # Make sure the <elements_install_python_modules> macro is there
 result=$( grep "elements_install_python_modules" CMakeLists.txt | grep -v "#")
 if [ $? -ne 0  ];then

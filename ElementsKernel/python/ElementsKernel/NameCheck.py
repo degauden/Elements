@@ -31,24 +31,27 @@ import ElementsKernel.Logging as log
 
 import json
 import urllib2
-import ssl
+# import ssl
 
 logger = log.getLogger('NameCheck')
 
 TYPES = ["cmake", "library", "executable"]
 DEFAULT_TYPE = "cmake"
 
+# # version for a https server without the proper certificate
+# def _byPassSslUrlOpen(url):
+#     req = urllib2.Request(url, headers={'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'})
+#     gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+#     return urllib2.urlopen(req, context=gcontext)
+#
+# _localUrlOpen = _byPassSslUrlOpen
 
-def _byPassSslUrlOpen(url):
-    req = urllib2.Request(url, headers={'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'})
-    gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-    return urllib2.urlopen(req, context=gcontext)
-
+_localUrlOpen = urllib2.urlopen
 
 def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
     full_url = db_url + "/NameCheck/exists?name=%s&type=%s" % (name, entity_type)
     logger.debug("The url for the name request: %s", full_url)
-    info = json.loads(_byPassSslUrlOpen(full_url).read())
+    info = json.loads(_localUrlOpen(full_url).read())
     for u in ["url", "private_url"]:
         if u in info and info[u]:
             info[u] = db_url + info[u]
@@ -58,8 +61,8 @@ def checkDataBaseUrl(db_url):
     site_exists = True
     if db_url:
         try:
-            _byPassSslUrlOpen(db_url + "/NameCheck")
-        except:
+            _localUrlOpen(db_url + "/NameCheck")
+        except urllib2.URLError:
             site_exists = False
     else:
         site_exists = False

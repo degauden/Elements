@@ -1,12 +1,12 @@
-/** \mainpage The basic instruction for building and running the Elements framework
+/** \mainpage The basic instruction for building and running the %@PROJECT_NAME@ framework
 
 \tableofcontents
 
-\section howtobuild How to build and use the Elements framework with CMake
+\section howtobuild How to build and use the @PROJECT_NAME@ project with CMake
 
 \subsection requirements Requirements
 
-The CMake configuration of Elements is based on the version 2.8.5 or later
+The CMake configuration of %@PROJECT_NAME@ is based on the version 2.8.5 or later
 of [CMake](https://cmake.org).
 
 \subsection quickstart Quick Start
@@ -51,7 +51,7 @@ to the generated Makefile of that directory. The complete call to CMake during t
 looks like:
 
 	$ cd build.${BINARY_TAG}
-	$ cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/ElementsToolChain.cmake -DUSE_LOCAL_INSTALLAREA=ON ../
+	$ cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/EuclidEnv/cmake/ElementsToolChain.cmake -DUSE_LOCAL_INSTALLAREA=ON ../
 	$ cd ..
 
 The toolchain file is looked for (by the Makefile wrapper) in the local cmake sub-directory
@@ -71,30 +71,30 @@ a local installation in the ```InstallArea``` sub-directory of the source tree.
 
 ---
 
-There is another way to build Elements by using the standard CMake off-source
+There is another way to build @PROJECT_NAME@ by using the standard CMake off-source
 build, which means that the files required by the build and the build products
 are created in a different directory than the source one. In this example
-``$MY_WORK/Elements/source`` will contain the source checkout and
- ``$MY_WORK/Elements/build`` will contain the built items.
+``$MY_WORK/@PROJECT_NAME@/source`` will contain the source checkout and
+ ``$MY_WORK/@PROJECT_NAME@/build`` will contain the built items.
 
 To prepare the build directory, you have to:
 
-	$ src=$MY_WORK/Elements/source
-	$ dest=$MY_WORK/Elements/build
+	$ src=$MY_WORK/@PROJECT_NAME@/source
+	$ dest=$MY_WORK/@PROJECT_NAME@/build
 	$ mkdir $dest
 	$ cd $dest
-	$ cmake -DCMAKE_TOOLCHAIN_FILE=$src/cmake/ElementsToolChain.cmake \
+	$ cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/EuclidEnv/cmake/ElementsToolChain.cmake \
         -G "Eclipse CDT4 - Unix Makefiles" $src
 
 
 This will create the required Unix makefiles and the Eclipse project
-configuration to build Elements.
+configuration to build @PROJECT_NAME@.
 
 Other options are available on the command line when you prepare the
 build directory the first time or afterwards via the CMake configuration
 tool ``ccmake``.
 
-Now you can build the project with a simple (from ``$MY_WORK/Elements/build``):
+Now you can build the project with a simple (from ``$MY_WORK/@PROJECT_NAME@/build``):
 
 	$ cd $dest
 	$ make
@@ -107,7 +107,7 @@ For the installation, the usual command:
 	$ make install
 
 will do the installation. And since we didn't use the ``-DUSE_LOCAL_INSTALLAREA=on``
-option at configure time, the installation directory will be ``/opt/euclid/Elements/${VERSION}/InstallArea``.
+option at configure time, the installation directory will be ``@ELEMENTS_BASE_DIR@/@PROJECT_NAME@/${VERSION}/InstallArea``.
 
 
 Please note that the build can also be performed by pure CMake commands:
@@ -121,7 +121,7 @@ This render the build agnostic about the used build subsystem (``gmake``, ``ninj
 and gives more options. For example the installation can be done in a different directory chosen
 on the fly:
 
-	$ cmake -DCMAKE_INSTALL_PREFIX=/tmp/install_elements -P cmake_install.cmake
+	$ cmake -DCMAKE_INSTALL_PREFIX=/tmp/install_@PROJECT_NAME@ -P cmake_install.cmake
 
 \subsection runfromthebuilddir Run from the build directory
 

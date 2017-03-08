@@ -47,16 +47,16 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #===============================================================================
 
 #===============================================================================
+# Use the following macro for python modules, scripts and aux files:
+#  elements_install_python_modules()
+#  elements_install_scripts()
+#===============================================================================
+
+#===============================================================================
 # Declare the Python programs here
 # Examples :
 # elements_add_python_program(PythonProgramExample
 #                             ElementsExamples.PythonProgramExample)
-#===============================================================================
-
-#===============================================================================
-# Use the following macro for python modules, scripts and aux files:
-#  elements_install_python_modules()
-#  elements_install_scripts()
 #===============================================================================
 
 #===============================================================================

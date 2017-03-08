@@ -58,6 +58,12 @@ elements_add_unit_test(BoostClassExample tests/src/Boost/ClassExample_test.cpp
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
+elements_add_unit_test(FunctionExample tests/src/Boost/FunctionExample_test.cpp
+                       EXECUTABLE FunctionExample_test
+                       INCLUDE_DIRS ElementsExamples
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+
+
 # Example with explict TestMain.cpp. Please mind the "unit_test_framework" in the boost components
 # from the find_package command. The Boost components have to be also explicitly added to the
 # LINK_LIBRARIES argument.

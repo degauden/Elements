@@ -108,14 +108,6 @@ option(USE_ODB "Use the ODB libraries" OFF)
 option(ELEMENTS_USE_STRICT_BINARY_DEP "Flag to force the strict binary dependencies" OFF)
 option(ELEMENTS_USE_CASE_SENSITIVE_PROJECTS "No uppercase projects allowed" ON)
 
-if(DEFINED ENV{EUCLID_BASE})
-  set(EUCLID_BASE_DIR "$ENV{EUCLID_BASE}" CACHE STRING "Euclid Base Install Directory")
-  message(STATUS "EUCLID_BASE is in the environment: ${EUCLID_BASE_DIR}")
-else()
-  set(EUCLID_BASE_DIR "/opt/euclid" CACHE STRING "Euclid Base Install Directory")
-  message(STATUS "EUCLID_BASE is not in the environment: using default ${EUCLID_BASE_DIR}")
-endif()
-
 
 #---------------------------------------------------------------------------------------------------
 # Programs and utilities needed for the build
@@ -173,15 +165,9 @@ macro(elements_project project version)
   option(ELEMENTS_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix systems (like CMT does)." OFF)
   #-------------------------------------------------------------------------------------------------
 
-  if(NOT SQUEEZED_INSTALL)
-    set(SQUEEZED_INSTALL OFF
-        CACHE STRING "Enable the squeezing of the installation into a prefix directory"
-        FORCE)
-  endif()
-  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
-
-
   include(ElementsLocations)
+
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
 
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
      CACHE STRING "path to the XML file for the environment to be used in building and testing")
@@ -601,9 +587,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   message(STATUS "  environment for local subdirectories")
   #   - project root (for relocatability)
   string(TOUPPER ${project} _proj)
-  # set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
-  # file(RELATIVE_PATH _PROJECT_ROOT ${CMAKE_INSTALL_PREFIX} ${CMAKE_SOURCE_DIR})
-  # message(STATUS "_PROJECT_ROOT -> ${_PROJECT_ROOT}")
+
   set(installed_project_environment "${project_environment}")
 
   set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
@@ -733,10 +717,8 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   endforeach()
   set(CPACK_SYSTEM_NAME ${BINARY_TAG})
   set(CPACK_PACKAGE_RELOCATABLE TRUE)
-  # set(CPACK_PACKAGE_INSTALL_DIRECTORY /opt/euclid)
-  # set(CPACK_RPM_PACKAGE_PREFIX /opt/euclid)
   if(USE_LOCAL_INSTALLAREA)
-    set(CPACK_PACKAGING_INSTALL_PREFIX ${EUCLID_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
+    set(CPACK_PACKAGING_INSTALL_PREFIX ${ELEMENTS_BASE_DIR}/${CPACK_PACKAGE_NAME}/${CMAKE_PROJECT_VERSION}/InstallArea/${BINARY_TAG})
   else()
     set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
   endif()
@@ -1015,7 +997,6 @@ ${MAIN_PROJECT_CHANGELOG}
 ")
         message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
       endif()
-
 
 
      find_file_to_configure(Elements.spec.in

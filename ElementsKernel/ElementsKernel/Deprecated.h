@@ -44,5 +44,6 @@
 #  define ELEMENTS_DEPRECATED_MSG(msg)  __attribute__ ((__deprecated__(msg)))
 #endif
 
-
 #endif /* DEPRECATED_H_ */
+
+/**@}*/
