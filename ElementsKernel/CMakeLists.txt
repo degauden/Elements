@@ -149,6 +149,7 @@ elements_add_python_program(AddElementsModule ElementsKernel.AddModule)
 elements_add_python_program(AddCppClass ElementsKernel.AddCppClass)
 elements_add_python_program(AddCppProgram ElementsKernel.AddCppProgram)
 elements_add_python_program(AddPythonProgram ElementsKernel.AddPythonProgram)
+elements_add_python_program(AddScript ElementsKernel.AddScript)
 elements_add_python_program(AddPythonModule ElementsKernel.AddPythonModule)
 elements_add_python_program(RemoveCppClass ElementsKernel.RemoveCppClass)
 elements_add_python_program(RemoveCppProgram ElementsKernel.RemoveCppProgram)
@@ -165,6 +166,7 @@ elements_add_test(AddCppClass COMMAND addCppClass_test LABELS Creation)
 elements_add_test(AddCppProgram COMMAND addCppProgram_test LABELS Creation)
 elements_add_test(AddPythonModule COMMAND addPythonModule_test LABELS Creation)
 elements_add_test(AddPythonProgram COMMAND addPythonProgram_test LABELS Creation)
+elements_add_test(AddScript COMMAND addScript_test LABELS Creation)
 
 elements_add_test(CreateDependentElementsProjects 
                   COMMAND createDependentElementsProjects_test  

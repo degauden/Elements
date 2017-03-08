@@ -1,0 +1,42 @@
+#!/bin/sh
+
+home_dir=${PWD}
+
+# Call common script
+. createCommonStructure_test
+
+script_name="ScriptTest"
+
+# Create a unique directory
+tmploc=${TEMPORARY_LOCATION}
+
+cd ${MODULE_NAME_PATH}
+
+# Create python program
+AddScript $script_name << EOF
+y
+EOF
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   echo "Error: <AddScript $script_name> command failed!" 1>&2
+   clean_and_exit 1
+fi
+
+
+# Make sure python files have been created
+if [ ! -e scripts/${script_name} ]; then
+   echo "Error: <scripts/${script_name}> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+
+# Make sure the <elements_install_python_modules> macro is there
+result=$( grep "elements_install_scripts" CMakeLists.txt | grep -v "#")
+if [ $? -ne 0  ];then
+   echo "Error: <elements_install_scripts> macro not found!" 1>&2
+   clean_and_exit 1
+fi
+
+
+clean_and_exit 0
