@@ -36,6 +36,13 @@
 - Use SOFTWARE_BASE_VAR for the environment variable for base install
   - falls back on EULID_BASE if it exists
   - the final fallback value is /opt/euclid
+- Fix AddPythonProgram script which was creating an "scripts" sub-directory. The later was 
+  then pruned by the "git clone" command and futher builds were failing.
+- Implementation of the ElementsKernel/Configuration.py, ElementsKernel/Auxiliary.py,
+  ElementsKernel/Configuration.h, ElementsKernel/Auxiliary.h files that implement:
+  - getConfigurtionPath: to get the configuration file in the form "my_prog.conf" or 
+    "prefix/my_prog.conf"
+  - getAuxiliaryPath: to get the auxiliary file in the form "my_aux" or "prefix/my_aux"
 
 * Mon Dec 05 2016 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 4.1-1
 - New version of the documentation generation system
