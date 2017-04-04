@@ -59,7 +59,9 @@ export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 export HAS_ELEMENTS_TOOLCHAIN=@HAS_ELEMENTS_TOOLCHAIN@
 if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
-  export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
+  if [[ ! -z "@ELEMENTS_BASE_DIR@" ]]; then
+    export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
+  fi
 else
   export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
@@ -89,7 +91,9 @@ fi
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
-  export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
+  if [[ ! -z "@ELEMENTS_BASE_DIR@" ]]; then
+    export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
+  fi
 else
   export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
@@ -101,7 +105,9 @@ cd $RPM_BUILD_DIR/$BINARY_TAG
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
-  export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
+  if [[ ! -z "@ELEMENTS_BASE_DIR@" ]]; then
+    export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
+  fi
 else
   export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
