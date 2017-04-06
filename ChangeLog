@@ -1,3 +1,6 @@
+* Thu Apr 06 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.0.1-1
+- Fix the SPEC file generation for the squeezed installation.
+
 * Mon Mar 06 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.0-1
 - Doxygen now processes *.md files as well.
 - The message from the exceptions is now shown after the stack trace.
