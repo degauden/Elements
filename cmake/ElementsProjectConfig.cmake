@@ -998,12 +998,20 @@ ${MAIN_PROJECT_CHANGELOG}
         message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
       endif()
 
-
-     find_file_to_configure(Elements.spec.in
-                            FILETYPE "RPM SPEC"
-                            OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
-                            OUTPUTNAME "${project}.spec"
-                            PATHS ${CMAKE_MODULE_PATH})
+     if(SQUEEZED_INSTALL)
+         find_file_to_configure(Elements_squeezed.spec.in
+                                FILETYPE "RPM SPEC"
+                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
+                                OUTPUTNAME "${project}.spec"
+                                PATHS ${CMAKE_MODULE_PATH})
+     else()
+         find_file_to_configure(Elements.spec.in
+                                FILETYPE "RPM SPEC"
+                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
+                                OUTPUTNAME "${project}.spec"
+                                PATHS ${CMAKE_MODULE_PATH})
+     endif()
+    
 
      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILDROOT)

@@ -43,7 +43,6 @@ set(USE_PYTHON_DOXYGEN OFF
     FORCE)
 
 
-
 elements_project(Elements 5.1 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
 # This test does not really fit in a subdirectory.
