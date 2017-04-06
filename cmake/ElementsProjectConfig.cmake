@@ -304,6 +304,13 @@ macro(elements_project project version)
   endif()
 
 
+  find_program(thismodheader_cmd createThisModHeader.py HINTS ${binary_paths})
+  if(thismodheader_cmd)
+    set(thismodheader_cmd ${PYTHON_EXECUTABLE} ${thismodheader_cmd})
+  endif()
+
+
+
   find_program(Boost_testmain_cmd createBoostTestMain.py HINTS ${binary_paths})
   if(Boost_testmain_cmd)
     set(Boost_testmain_cmd ${PYTHON_EXECUTABLE} ${Boost_testmain_cmd})
@@ -332,6 +339,7 @@ macro(elements_project project version)
 
   mark_as_advanced(env_cmd merge_cmd versheader_cmd instheader_cmd versmodule_cmd instmodule_cmd
                    thisheader_cmd thismodule_cmd
+                   thismodheader_cmd
                    Boost_testmain_cmd CppUnit_testmain_cmd
                    zippythondir_cmd elementsrun_cmd
                    rpmbuild_wrap_cmd)
@@ -1624,6 +1632,12 @@ macro(elements_subdir name)
   execute_process(COMMAND
                   ${versheader_cmd} --quiet
                   ${name} ${version} ${CMAKE_CURRENT_BINARY_DIR}/${name}Version.h)
+
+
+  execute_process(COMMAND
+                  ${thismodheader_cmd} --quiet
+                  ${name} ${CMAKE_CURRENT_BINARY_DIR}/ThisElementsModule.h)
+
 endmacro()
 
 #-------------------------------------------------------------------------------
