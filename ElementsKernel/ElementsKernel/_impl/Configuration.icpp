@@ -28,7 +28,7 @@
 #include "ElementsKernel/System.h"      // for DEFAULT_INSTALL_PREFIX
 #include "ElementsKernel/Exception.h"   // for Exception
 #include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type
-                                        // for Path::getPathFromEnvVariable
+                                         // for Path::getPathFromEnvVariable
 namespace Elements {
 
 template <typename T>

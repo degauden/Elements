@@ -36,7 +36,7 @@
 #include "ElementsKernel/Path.h"           // for Path::VARIABLE, multiPathAppend, PATH_SEP
 #include "ElementsKernel/ModuleInfo.h"     // for getExecutablePath
 #include "ElementsKernel/Unused.h"         // for ELEMENTS_UNUSED
-#include "ElementsKernel/Configuration.h"  // for getConfigurationVariableName
+#include "ElementsKernel/Configuration.h"  // for getConfigurationPath
 
 using std::vector;
 using std::string;
@@ -70,10 +70,8 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name) {
   path conf_name(program_name);
   conf_name.replace_extension("conf");
   // Construct and return the full path
-  vector<path> configFile = pathSearchInEnvVariable(conf_name.string(), getConfigurationVariableName());
-  if (configFile.size() != 0) {
-    default_config_file = configFile.at(0);
-  }
+  default_config_file = getConfigurationPath(conf_name.string());
+
   return default_config_file;
 }
 
