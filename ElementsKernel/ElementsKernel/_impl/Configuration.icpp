@@ -25,23 +25,19 @@
 
 #include <boost/filesystem.hpp>         // for boost::filesystem
 
-#include "ElementsKernel/System.h"      // for DEFAULT_INSTALL_PREFIX
 #include "ElementsKernel/Exception.h"   // for Exception
-#include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type
-                                         // for Path::getPathFromEnvVariable
+#include "ElementsKernel/Path.h"        // for Path::getPathFromLocations
+
 namespace Elements {
 
 template <typename T>
-boost::filesystem::path getConfigurationPath(const T& file_name) {
+boost::filesystem::path getConfigurationPath(const T& file_name, bool raise_exception) {
 
-  auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::configuration));
-
-  // the search is extended to the default system /usr/share/conf
-  location_list.push_back(boost::filesystem::path(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
+  auto location_list = getConfigurationLocations();
 
   auto result = Path::getPathFromLocations(file_name, location_list);
 
-  if(result.empty()) {
+  if(result.empty() and raise_exception) {
     throw Exception() << "The configuration file \"" << file_name << "\" cannot be found!";
   }
 

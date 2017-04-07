@@ -28,14 +28,24 @@ from ElementsKernel.Path import getLocationsFromEnv, VARIABLE, \
     getPathFromLocations
 from ElementsKernel.System import DEFAULT_INSTALL_PREFIX
 
-def getConfigurtionPath(file_name):
+def getConfigurationLocations(exist_only=False):
+
+    location_list = getLocationsFromEnv(VARIABLE["configuration"], exist_only)
+
+    location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "conf"))
+
+    if exist_only:
+        location_list = [p for p in location_list if os.path.exists(p)]
+
+    return location_list
+
+
+def getConfigurationPath(file_name):
     """
     Get full path to the file name searched in the Configuration path
     """
 
-    location_list = getLocationsFromEnv(VARIABLE["configuration"])
-
-    location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "conf"))
+    location_list = getConfigurationLocations()
 
     result = getPathFromLocations(file_name, location_list)
 
@@ -43,3 +53,7 @@ def getConfigurtionPath(file_name):
         raise Exception("The configuration file \"%s\" cannot be found!", file_name)
 
     return result
+
+
+
+

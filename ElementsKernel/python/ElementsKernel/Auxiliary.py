@@ -28,16 +28,25 @@ from ElementsKernel.Path import getLocationsFromEnv, VARIABLE, \
     getPathFromLocations
 from ElementsKernel.System import DEFAULT_INSTALL_PREFIX
 
+def getAuxiliaryLocations(exist_only=False):
+
+    location_list = getLocationsFromEnv(VARIABLE["auxiliary"], exist_only)
+
+    location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "auxdir"))
+    location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "aux"))
+
+    if exist_only:
+        location_list = [p for p in location_list if os.path.exists(p)]
+
+    return location_list
+
 
 def getAuxiliaryPath(file_name):
     """
     Get full path to the file name searched in the auxiliary path
     """
 
-    location_list = getLocationsFromEnv(VARIABLE["auxiliary"])
-
-    location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "auxdir"))
-    location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "aux"))
+    location_list = getAuxiliaryLocations()
 
     result = getPathFromLocations(file_name, location_list)
 
