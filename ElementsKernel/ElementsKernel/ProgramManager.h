@@ -126,7 +126,8 @@ private:
    *   A complete name/path to the default configuration file
    */
   static const boost::filesystem::path getDefaultConfigFile(
-      const boost::filesystem::path & program_name);
+      const boost::filesystem::path & program_name,
+      const std::string& module_name);
 
   /**
    * @brief
