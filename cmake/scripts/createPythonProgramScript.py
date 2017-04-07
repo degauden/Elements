@@ -5,16 +5,26 @@ import os
 import stat
 
 parser = argparse.ArgumentParser()
+
 parser.add_argument('--module', required=True,
                     help='The module containing the program implementation')
+
 parser.add_argument(
     '--outdir', required=True, help='The directory to generate the script in')
+
 parser.add_argument('--execname', required=True,
                     help='The name of the executable script to generate')
+
 parser.add_argument('--local-python-path',
                     help='The local PYTHONPATH to the sources')
 parser.add_argument('--project-name',
                     help='The name of the project of the script')
+
+parser.add_argument('--elements-module-name',
+                    help='The name of the Elements module of the script')
+
+parser.add_argument('--elements-module-version',
+                    help='The name of the Elements module of the script')
 
 args = parser.parse_args()
 
