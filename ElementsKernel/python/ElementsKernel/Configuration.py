@@ -40,7 +40,7 @@ def getConfigurationLocations(exist_only=False):
     return location_list
 
 
-def getConfigurationPath(file_name):
+def getConfigurationPath(file_name, raise_exception=True):
     """
     Get full path to the file name searched in the Configuration path
     """
@@ -49,7 +49,7 @@ def getConfigurationPath(file_name):
 
     result = getPathFromLocations(file_name, location_list)
 
-    if not result:
+    if not result and raise_exception:
         raise Exception("The configuration file \"%s\" cannot be found!", file_name)
 
     return result

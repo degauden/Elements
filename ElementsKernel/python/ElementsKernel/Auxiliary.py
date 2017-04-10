@@ -41,7 +41,7 @@ def getAuxiliaryLocations(exist_only=False):
     return location_list
 
 
-def getAuxiliaryPath(file_name):
+def getAuxiliaryPath(file_name, raise_exception=True):
     """
     Get full path to the file name searched in the auxiliary path
     """
@@ -50,7 +50,7 @@ def getAuxiliaryPath(file_name):
 
     result = getPathFromLocations(file_name, location_list)
 
-    if not result:
+    if not result and raise_exception:
         raise Exception("The auxiliary file \"%s\" cannot be found!", file_name)
 
     return result
