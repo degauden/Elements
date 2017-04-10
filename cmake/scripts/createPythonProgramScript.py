@@ -42,6 +42,7 @@ is_installed = False
 
 import sys, os
 
+# This function is embedded to allow standalone execution.
 def _updateSysPath(extra_list):
     if extra_list:
         os_env_str = os.environ.get("PYTHONPATH", None)

@@ -80,9 +80,11 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name, const
     for(auto l: getConfigurationLocations()) {
       logger.warn() << " " << l;
     }
-    conf_name = path{module_name} / conf_name;
-    logger.warn() << "Trying \"" << conf_name.string() << "\".";
-    default_config_file = getConfigurationPath(conf_name.string(), false);
+    if (not module_name.empty()) {
+      conf_name = path{module_name} / conf_name;
+      logger.warn() << "Trying \"" << conf_name.string() << "\".";
+      default_config_file = getConfigurationPath(conf_name.string(), false);
+    }
   }
 
   if (default_config_file.empty()) {
