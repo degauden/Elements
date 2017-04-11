@@ -138,7 +138,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
   }
   if ( 0 == *pFunction ) {
     errno = 0xAFFEDEAD;
-    cout << "Elements::System::getProcedureByName>" << getLastErrorString() << endl;
+    std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
     return 0;
   }
   return 1;
