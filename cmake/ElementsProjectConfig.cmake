@@ -2645,7 +2645,7 @@ function(add_python_test_dir)
       foreach(pytestsubdir ${PYTEST_ARG_UNPARSED_ARGUMENTS})
         set(pytest_name "${pytest_name}:${pytestsubdir}")
         elements_add_test(${pytest_name}
-                          COMMAND ${env_cmd} --xml ${env_xml} ${PYTHON_EXECUTABLE} -m unittest discover -s ${CMAKE_CURRENT_SOURCE_DIR}/${pytestsubdir} -p "${PYTEST_ARG_PATTERN}" )
+                          COMMAND ${PYTHON_EXECUTABLE} -m unittest discover -s ${CMAKE_CURRENT_SOURCE_DIR}/${pytestsubdir} -p "${PYTEST_ARG_PATTERN}" )
         set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest)
         if(PYTEST_ARG_TIMEOUT)
           set_property(TEST ${package}.${pytest_name} PROPERTY TIMEOUT ${PYTEST_ARG_TIMEOUT})
