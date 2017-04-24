@@ -102,8 +102,16 @@ class Program(object):
                         continue
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    if key.replace('-', '_') in [k for (k, v) in vars(cmd_options).items() if v]:
-                        continue
+                    # Get the action of the arg_parser for the given key and check if
+                    # we already have it from the command line
+                    try:
+                        action = next(act for act in arg_parser._actions if ('--' + key) in act.option_strings)
+                        if action.dest in [k for (k, v) in vars(cmd_options).items() if v]:
+                            continue
+                    except StopIteration:
+                        # There is no action for this key
+                        self._logger.error('Unknown option "' + key + '" in configuration file ' + config_file)
+                        exit(1)
                     value = value.strip()
                     if '#' in value:
                         value = value[:value.find('#')]
