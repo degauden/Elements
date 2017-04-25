@@ -789,6 +789,13 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     endforeach()
   endif()
 
+  file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" env_prefix_path)
+  set(CPACK_PREFIX_PATH)
+  foreach(prefix_comp ${env_prefix_path})
+      debug_print_var(prefix_comp)
+      list(APPEND CPACK_PREFIX_PATH "${prefix_comp}")
+  endforeach()
+  debug_print_var(CPACK_PREFIX_PATH)
 
 #------------------------------------------------------------------------------
   get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
