@@ -789,6 +789,9 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     endforeach()
   endif()
 
+  option(RPM_FORWARD_PREFIX_PATH "Forward the CMAKE_PREFIX_PATH when using 'make rpm'" ON)
+
+
   file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" env_prefix_path)
   set(CPACK_PREFIX_PATH)
   foreach(prefix_comp ${env_prefix_path})
