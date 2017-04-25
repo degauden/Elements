@@ -65,16 +65,15 @@ class Program(object):
 
         conf_name = os.path.splitext(program_name)[0] + '.conf'
 
-        default_config_file = getConfigurationPath(conf_name, False);
-        if not default_config_file  :
+        default_config_file = getConfigurationPath(conf_name, False)
+        if not default_config_file:
             self._logger.warn('The "%s" configuration file cannot be found in:', conf_name)
             for l in getConfigurationLocations():
                 self._logger.warn(" %s", l)
-            if not module_name:
-                if '.' in self._app_module.__name__:
-                    module_name = self._app_module.__name__[
-                        :self._app_module.__name__.index('.')]
-                    module_name = module_name.replace('.', os.sep)
+            if not module_name and '.' in self._app_module.__name__:
+                module_name = self._app_module.__name__[
+                    :self._app_module.__name__.index('.')]
+                module_name = module_name.replace('.', os.sep)
             if module_name:
                 conf_name = os.sep.join([module_name, conf_name])
                 self._logger.warn('Trying "%s".', conf_name)
