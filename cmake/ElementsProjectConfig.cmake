@@ -790,6 +790,11 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   endif()
 
   option(RPM_FORWARD_PREFIX_PATH "Forward the CMAKE_PREFIX_PATH when using 'make rpm'" ON)
+  if(NOT SQUEEZED_INSTALL)
+    set(CPACK_CMAKE_PREFIX_PATH_LINE "export CMAKE_PREFIX_PATH=\$PWD/cmake:/usr/share/EuclidEnv/cmake")
+  else()
+    set(CPACK_CMAKE_PREFIX_PATH_LINE "#")  
+  endif()
 
 
   file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" env_prefix_path)

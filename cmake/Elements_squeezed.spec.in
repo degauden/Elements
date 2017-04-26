@@ -54,6 +54,7 @@ Debug information for package %{name}
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
 %__mkdir -p $RPM_BUILD_DIR/$BINARY_TAG
+@CPACK_CMAKE_PREFIX_PATH_LINE@
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
 %__make VERBOSE=1 %{?_smp_mflags} all
@@ -61,12 +62,14 @@ cd $RPM_BUILD_DIR/$BINARY_TAG
 %install
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
+@CPACK_CMAKE_PREFIX_PATH_LINE@
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make install VERBOSE=1 DESTDIR=$RPM_BUILD_ROOT
 
 %check
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
+@CPACK_CMAKE_PREFIX_PATH_LINE@
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make test
 
