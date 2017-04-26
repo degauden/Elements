@@ -65,7 +65,7 @@ if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
 else
   export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
-export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
+@CPACK_CMAKE_PREFIX_PATH_LINE@
 toolchain_name=ElementsToolChain.cmake
 if [[ -f "${PWD}/cmake/${toolchain_name}" ]]; then
   toolchain_file=${PWD}/cmake/${toolchain_name}
@@ -97,7 +97,7 @@ if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
 else
   export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
-export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
+@CPACK_CMAKE_PREFIX_PATH_LINE@
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make install VERBOSE=1 DESTDIR=$RPM_BUILD_ROOT
 
@@ -111,7 +111,7 @@ if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
 else
   export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
-export CMAKE_PREFIX_PATH=$PWD/cmake:/usr/share/EuclidEnv/cmake
+@CPACK_CMAKE_PREFIX_PATH_LINE@
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make test
 

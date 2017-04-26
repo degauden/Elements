@@ -789,6 +789,51 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     endforeach()
   endif()
 
+  option(RPM_FORWARD_PREFIX_PATH "Forward the CMAKE_PREFIX_PATH when using 'make rpm'" ON)
+
+  if(NOT SQUEEZED_INSTALL)
+    set(CPACK_CMAKE_PREFIX_PATH_LINE "export CMAKE_PREFIX_PATH=\$PWD/cmake:/usr/share/EuclidEnv/cmake")
+  else()
+    set(CPACK_CMAKE_PREFIX_PATH_LINE "#")  
+  endif()
+
+
+  if(RPM_FORWARD_PREFIX_PATH)
+  
+      file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" env_prefix_path)
+      set(CPACK_PREFIX_LIST)
+  
+      if(NOT SQUEEZED_INSTALL)
+          list(APPEND CPACK_PREFIX_LIST "\$PWD/cmake")
+      endif()
+  
+      foreach(prefix_comp ${env_prefix_path})
+          debug_print_var(prefix_comp)
+          list(FIND CPACK_PREFIX_LIST "${prefix_comp}" _index)
+          if(${_index} EQUAL -1)
+              list(APPEND CPACK_PREFIX_LIST "${prefix_comp}")
+          endif()
+      endforeach()
+
+      if(NOT SQUEEZED_INSTALL)
+          list(FIND CPACK_PREFIX_LIST "/usr/share/EuclidEnv/cmake" _index)
+          if(${_index} EQUAL -1)
+              list(APPEND CPACK_PREFIX_LIST "/usr/share/EuclidEnv/cmake")
+          endif()
+      endif()
+
+
+      debug_print_var(CPACK_PREFIX_LIST)
+  
+      if(CPACK_PREFIX_LIST)
+          JOIN("${CPACK_PREFIX_LIST}" ":" CPACK_PREFIX_PATH)
+  
+          debug_print_var(CPACK_PREFIX_PATH)
+  
+          set(CPACK_CMAKE_PREFIX_PATH_LINE "export CMAKE_PREFIX_PATH=${CPACK_PREFIX_PATH}")
+      endif()
+  
+  endif()
 
 #------------------------------------------------------------------------------
   get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
