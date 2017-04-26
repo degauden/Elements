@@ -64,6 +64,8 @@ def checkDataBaseUrl(db_url):
             _localUrlOpen(db_url + "/NameCheck")
         except urllib2.URLError:
             site_exists = False
+        except ValueError:
+            site_exists = False
     else:
         site_exists = False
 
