@@ -808,7 +808,6 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
       endif()
   
       foreach(prefix_comp ${env_prefix_path})
-          debug_print_var(prefix_comp)
           list(FIND CPACK_PREFIX_LIST "${prefix_comp}" _index)
           if(${_index} EQUAL -1)
               list(APPEND CPACK_PREFIX_LIST "${prefix_comp}")
@@ -821,17 +820,14 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
               list(APPEND CPACK_PREFIX_LIST "/usr/share/EuclidEnv/cmake")
           endif()
       endif()
-
-
-      debug_print_var(CPACK_PREFIX_LIST)
   
       if(CPACK_PREFIX_LIST)
           JOIN("${CPACK_PREFIX_LIST}" ":" CPACK_PREFIX_PATH)
-  
-          debug_print_var(CPACK_PREFIX_PATH)
-  
+    
           set(CPACK_CMAKE_PREFIX_PATH_LINE "export CMAKE_PREFIX_PATH=${CPACK_PREFIX_PATH}")
       endif()
+  
+      message(STATUS "The CMAKE_PREFIX_PATH used in the spec file is: ${CPACK_PREFIX_PATH}")
   
   endif()
 
