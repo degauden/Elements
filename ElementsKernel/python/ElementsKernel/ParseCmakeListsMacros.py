@@ -154,18 +154,21 @@ class ElementsAddUnitTest(object):
     Decode the <elements_add_unit_test> macro
     """
 
-    def __init__(self, class_name, source, link_libraries, include_dir, key_type):
+    def __init__(self, class_name, source, link_libraries, include_dir, key_type, exec_name):
         self.class_name = class_name
         self.source_list = source
         self.link_libraries_list = link_libraries
         self.include_dir_list = include_dir
         self.key_type = key_type
+        self.exec_name = exec_name
 
     def __str__(self):
         result = 'elements_add_unit_test(' + self.class_name + ' '
         if self.source_list:
             for source in self.source_list:
                 result += source + ' '
+        if self.exec_name:
+            result += '\n                     EXECUTABLE ' + self.exec_name
         if self.link_libraries_list:
             result += '\n                     LINK_LIBRARIES'
             for name in self.link_libraries_list:

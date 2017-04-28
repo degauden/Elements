@@ -234,9 +234,10 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
 
             # Add unit test
             source_name = 'tests' + os.sep + 'src' + os.sep + subdir + class_name +'_test.cpp'
-            unittest_object = pclm.ElementsAddUnitTest(module_name + '_' + class_name + '_test',
+##zzz            unittest_object = pclm.ElementsAddUnitTest(module_name + '_' + class_name + '_test',
+            unittest_object = pclm.ElementsAddUnitTest(class_name,
                                                       [source_name], [module_name],
-                                                      [], 'Boost')
+                                                      [], 'Boost', module_name +"_" + class_name + '_test')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
 
     # Write new data
