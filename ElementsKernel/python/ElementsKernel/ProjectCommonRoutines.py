@@ -76,8 +76,8 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
                 logger.info("")
 
     if not script_goes_on:
-        response_key = raw_input('Do you want to continue?(Yes/No, default: No)')
-        if response_key == "YES" or response_key == "yes" or response_key == "y":
+        response_key = raw_input('Do you want to continue?(y/n, default: n)')
+        if response_key.lower() == "yes" or response_key.lower() == "y":
             script_goes_on = True
 
     return script_goes_on
