@@ -3489,7 +3489,7 @@ endmacro()
 #-------------------------------------------------------------------------------
 function(elements_generate_project_manifest filename project version)
   # FIXME: partial replication of function argument parsing done in elements_project()
-  CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "USE;DATA" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(PROJECT "" "DESCRIPTION" "USE;DATA" ${ARGN})
   # Non need to check consistency because it's already done in elements_project().
 
   #header
@@ -3497,7 +3497,7 @@ function(elements_generate_project_manifest filename project version)
 <manifest>\n")
 
   # Project name and version
-  set(data "${data}  <project name=\"${project}\" version=\"${version}\" />\n")
+  set(data "${data}  <project name=\"${project}\" version=\"${version}\" description=\"${PROJECT_DESCRIPTION}\" />\n")
 
   # Astro toolchain infos
   if(astrotools_version)
