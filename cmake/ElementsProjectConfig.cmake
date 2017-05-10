@@ -141,7 +141,7 @@ macro(elements_project project version)
   set(CMAKE_PROJECT_VERSION ${version} CACHE STRING "Version of the project")
 
   #--- Parse the other arguments on the
-  CMAKE_PARSE_ARGUMENTS(PROJECT "" "" "USE;DATA;DESCRIPTION" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(PROJECT "" "DESCRIPTION" "USE;DATA" ${ARGN})
   if (PROJECT_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "Wrong arguments.")
   endif()
