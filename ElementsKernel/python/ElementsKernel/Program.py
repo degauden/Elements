@@ -20,7 +20,7 @@ class Program(object):
     def __init__(self, app_module,
                  parent_project_version=None, parent_project_name=None,
                  elements_module_name=None, elements_module_version=None,
-                 search_dirs=None, original_path=None):
+                 search_dirs=None, original_path=""):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
         self._parent_project_version = parent_project_version
