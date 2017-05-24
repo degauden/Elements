@@ -114,7 +114,7 @@ option(ELEMENTS_USE_CASE_SENSITIVE_PROJECTS "No uppercase projects allowed" ON)
 #---------------------------------------------------------------------------------------------------
 include(CMakeParseArguments)
 
-find_package(PythonInterp QUIET)
+find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION} QUIET)
 
 #-------------------------------------------------------------------------------
 # elements_project(project version
@@ -2219,7 +2219,7 @@ function(elements_add_python_module module)
   elements_common_add_build(${ARGN})
 
   # require Python libraries
-  find_package(PythonLibs QUIET REQUIRED)
+  find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
 
   if(HIDE_SYSINC_WARNINGS)
     include_directories(SYSTEM ${PYTHON_INCLUDE_DIRS})
@@ -2252,7 +2252,8 @@ endfunction()
 function(elements_add_swig_binding binding)
 
   find_package(SWIG QUIET REQUIRED)
-  find_package(PythonLibs QUIET REQUIRED)
+
+  find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
 
   # this function uses an extra option: 'PUBLIC_HEADERS'
   CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
@@ -3579,7 +3580,7 @@ function(elements_add_python_program executable module)
   get_directory_property(elements_module_version version)
 
   add_custom_command(OUTPUT ${executable_file}
-                     COMMAND ${pythonprogramscript_cmd} --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable} --project-name ${CMAKE_PROJECT_NAME} --elements-module-name ${elements_module_name} --elements-module-version ${elements_module_version}
+                     COMMAND ${pythonprogramscript_cmd} --python-explicit-version="${PYTHON_EXPLICIT_VERSION}" --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable} --project-name ${CMAKE_PROJECT_NAME} --elements-module-name ${elements_module_name} --elements-module-version ${elements_module_version}
                      DEPENDS ${program_file})
 
   string(REPLACE "." "_" python_program_target ${module})

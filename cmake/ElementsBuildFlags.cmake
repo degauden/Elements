@@ -20,8 +20,13 @@ endif()
 if(NOT BUILD_PREFIX_NAME)
   set(BUILD_PREFIX_NAME "build" CACHE STRING "Prefix name for the build directory" FORCE)
 endif()
-
 message(STATUS "The build prefix is set to ${BUILD_PREFIX_NAME}")
+
+if(NOT PYTHON_EXPLICIT_VERSION)
+  set(PYTHON_EXPLICIT_VERSION "" CACHE STRING "Set the explicit python version to be used" FORCE)
+endif()
+
+
 
 if(NOT BUILD_SUBDIR)
   file(RELATIVE_PATH build_subdir_name ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})

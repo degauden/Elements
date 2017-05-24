@@ -590,7 +590,7 @@ endmacro()
 
 function(find_python_module module)
 
-    find_package(PythonInterp)
+    find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION})
 
     string(TOUPPER ${module} module_upper)
     if(NOT PY_${module_upper})

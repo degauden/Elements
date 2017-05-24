@@ -203,7 +203,7 @@ elements_add_test(CfitsioWorks COMMAND CfitsioExample LABELS Cfitsio Build)
 endif()
 
 find_package(SWIG QUIET)
-find_package(PythonLibs QUIET)
+find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET)
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
 elements_add_swig_binding(SwigExample ElementsExamples/SwigExample.i
                           LINK_LIBRARIES ElementsExamples

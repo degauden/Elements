@@ -26,16 +26,20 @@ parser.add_argument('--elements-module-name',
 parser.add_argument('--elements-module-version',
                     help='The name of the Elements module of the script')
 
+parser.add_argument('--python-explicit-version', default="",
+                    help='the version of python used in the shebang line')
+
+
 args = parser.parse_args()
 
 if not os.path.exists(args.outdir):
     os.makedirs(args.outdir)
 if not os.path.isdir(args.outdir):
-    print 'Cannot create output directory', args.outdir
+    print('Cannot create output directory', args.outdir)
     exit(1)
 
 template = """\
-#!/usr/bin/env python
+#!/usr/bin/env python%(Python_version)s
 # Automatically generated file: do not modify!
 
 is_installed = False
@@ -90,7 +94,8 @@ exit(p.runProgram())
         'proj' : args.project_name.upper(),
         'Proj' : args.project_name,
         'Mod_name' : args.elements_module_name,
-        'Mod_version' : args.elements_module_version
+        'Mod_version' : args.elements_module_version,
+        'Python_version': args.python_explicit_version
         }
 
 filename = os.path.join(args.outdir, args.execname)
