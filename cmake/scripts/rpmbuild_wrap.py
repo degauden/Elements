@@ -14,7 +14,7 @@ if __name__ == '__main__':
     rpm_root = dirname(dirname(spec_file))
 
     if rpm_root:
-        print rpm_root
+        print(rpm_root)
         cmd = 'rpmbuild %s -ba %s' % (" ".join(extra_args), spec_file)
         status = call(cmd, shell=True)
         sys.exit(status)
