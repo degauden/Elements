@@ -11,7 +11,7 @@ Vendor:         @CPACK_PACKAGE_VENDOR@
 
 BuildRequires: gcc > 4.7, cmake >= 2.6@RPM_DEVEL_DEP_LIST@
 
-Requires: python@RPM_DEP_LIST@
+Requires: python@PYTHON_EXPLICIT_VERSION@@RPM_DEP_LIST@
 Requires(post):    /sbin/ldconfig
 Requires(postun):  /sbin/ldconfig
 
