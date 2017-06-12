@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Simple script to remove lines from a file.
 """

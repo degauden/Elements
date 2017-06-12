@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # file ZipPythonDir.py
 # Script to generate a zip file that can replace a directory in the python
 # path.

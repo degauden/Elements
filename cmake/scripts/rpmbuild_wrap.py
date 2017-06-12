@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from subprocess import call
 from os.path import dirname
 

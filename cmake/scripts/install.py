@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Script used to install files keeping track of the files that have
 been installed, so that at the next installation the file removed

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # @file: Elements/cmake/scripts/merge_files.py
 # @purpose: merge_files <fragment> file into a 'per-project' <merged> file
 # @author: Sebastien Binet <binet@cern.ch>
