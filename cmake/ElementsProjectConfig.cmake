@@ -2271,8 +2271,10 @@ function(elements_add_swig_binding binding)
   list(REMOVE_DUPLICATES dirs)
   set(SWIG_MOD_INCLUDE_DIRS)
   foreach(dir ${dirs})
-    set(SWIG_MOD_INCLUDE_DIRS ${SWIG_MOD_INCLUDE_DIRS} -I${dir})
+    set(SWIG_MOD_INCLUDE_DIRS "-I${dir} ${SWIG_MOD_INCLUDE_DIRS}")
   endforeach()
+
+  debug_print_var(SWIG_MOD_INCLUDE_DIRS)
 
   if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
     elements_get_package_name(package)
@@ -2290,12 +2292,25 @@ function(elements_add_swig_binding binding)
     else()
       list(APPEND cpp_srcs ${s})
     endif()
+    set_property(SOURCE ${s} PROPERTY CPLUSPLUS ON)
   endforeach()
 
   set(PY_MODULE_DIR ${CMAKE_BINARY_DIR}/python)
   set(PY_MODULE ${binding})
   set(PY_MODULE_SWIG_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PY_MODULE}PYTHON_wrap.cxx)
 
+  execute_process(
+    COMMAND ${SWIG_EXECUTABLE} -MM -python -module ${binding} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} ${i_srcs}
+    OUTPUT_VARIABLE swmm_dependencies
+    RESULT_VARIABLE swmm_return_value
+  )
+
+  string(REGEX MATCHALL "\n  [^ ]+" temp ${swmm_dependencies})
+  set(swig_deps)
+  foreach(t ${temp})
+    string(STRIP "${t}" t)
+    set(swig_deps ${swig_deps} "${t}")
+  endforeach()
 
   #SWIG command
   add_custom_command(
@@ -2313,9 +2328,11 @@ function(elements_add_swig_binding binding)
 		-o ${PY_MODULE_SWIG_SRC}
 		${i_srcs}
 	DEPENDS
-		${i_srcs}
-	COMMENT "Generating SWIG binding"
+		${i_srcs} ${swig_deps}
+	COMMENT "Generating SWIG binding: ${SWIG_EXECUTABLE} -python -module ${binding} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} -o ${PY_MODULE_SWIG_SRC} ${i_srcs}"
   )
+
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${i_srcs} ${swig_deps})
 
   if(CXX_HAS_SUGGEST_OVERRIDE)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC}
