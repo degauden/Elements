@@ -2017,6 +2017,13 @@ macro(_elements_detach_debinfo target)
         set(_tn ${CMAKE_SHARED_${CMAKE_MATCH_0}_PREFIX}${target}${CMAKE_SHARED_${CMAKE_MATCH_0}_SUFFIX})
         set(_builddir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
         set(_dest ${CMAKE_LIB_INSTALL_SUFFIX})
+        get_property(_prefix TARGET ${target} PROPERTY PREFIX)
+        # python module
+        if(_prefix STREQUAL "_")
+          set(_tn _${target}.so)
+          set(_builddir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+          set(_dest ${PYTHON_DYNLIB_INSTALL_SUFFIX})
+        endif()
       else()
         set(_tn ${target})
         if(ELEMENTS_USE_EXE_SUFFIX)
@@ -2229,7 +2236,7 @@ function(elements_add_python_module module)
   add_library(${module} MODULE ${srcs})
   set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "_")
   target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
-#  _elements_detach_debinfo(${module})
+  _elements_detach_debinfo(${module})
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${module} LIBRARY DESTINATION ${PYTHON_DYNLIB_INSTALL_SUFFIX} OPTIONAL)
@@ -2274,11 +2281,9 @@ function(elements_add_swig_binding binding)
     set(SWIG_MOD_INCLUDE_DIRS "-I${dir} ${SWIG_MOD_INCLUDE_DIRS}")
   endforeach()
 
-  debug_print_var(SWIG_MOD_INCLUDE_DIRS)
-
   if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
     elements_get_package_name(package)
-    message(WARNING "Binding ${binding} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
+    message(WARNING "Swig binding ${binding} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
   endif()
 
   # find the sources
