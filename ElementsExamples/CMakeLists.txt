@@ -211,6 +211,20 @@ elements_add_swig_binding(SwigExample ElementsExamples/SwigExample.i
                           PUBLIC_HEADERS ElementsExamples)
 endif()
 
+find_package(Cython QUIET)
+find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET)
+if(CYTHON_FOUND AND PYTHONLIBS_FOUND)
+elements_add_cython_module(PiCalculator src/Cython/lib/PiCalculator.pyx
+                          LINK_LIBRARIES ElementsExamples
+                          INCLUDE_DIRS ElementsExamples
+                          NO_PUBLIC_HEADERS)
+elements_add_cython_module(Rect src/Cython/lib/Rect.pyx
+                          LINK_LIBRARIES ElementsExamples
+                          INCLUDE_DIRS ElementsExamples/ElementsExamples ElementsExamples
+                          PUBLIC_HEADERS ElementsExamples)
+endif()
+
+
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
 elements_install_python_modules(TEST_TIMEOUT 30)

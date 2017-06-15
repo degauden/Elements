@@ -2216,14 +2216,22 @@ endfunction()
 
 #---------------------------------------------------------------------------------------------------
 # elements_add_python_module(name
-#                         sources ...
-#                         LINK_LIBRARIES ...
-#                         INCLUDE_DIRS ...)
+#                           sources ...
+#                           PLAIN_MODULE
+#                           LINK_LIBRARIES ...
+#                           INCLUDE_DIRS ...)
 #
 # Build a binary python module from the given sources.
 #---------------------------------------------------------------------------------------------------
 function(elements_add_python_module module)
-  elements_common_add_build(${ARGN})
+
+  # this function uses an extra option: 'PLAIN_MODULE'
+  CMAKE_PARSE_ARGUMENTS(ARG "PLAIN_MODULE" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
+                            LIBRARIES ${ARG_LIBRARIES}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
 
   # require Python libraries
   find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
@@ -2234,7 +2242,12 @@ function(elements_add_python_module module)
     include_directories(${PYTHON_INCLUDE_DIRS})
   endif()
   add_library(${module} MODULE ${srcs})
-  set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "_")
+  
+  if(NOT ${ARG_PLAIN_MODULE})
+    set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "_")
+  else()
+    set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "")
+  endif()
   target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
   _elements_detach_debinfo(${module})
 
@@ -2278,7 +2291,7 @@ function(elements_add_swig_binding binding)
   list(REMOVE_DUPLICATES dirs)
   set(SWIG_MOD_INCLUDE_DIRS)
   foreach(dir ${dirs})
-    set(SWIG_MOD_INCLUDE_DIRS "-I${dir} ${SWIG_MOD_INCLUDE_DIRS}")
+    set(SWIG_MOD_INCLUDE_DIRS -I${dir} ${SWIG_MOD_INCLUDE_DIRS})
   endforeach()
 
   if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
@@ -2323,7 +2336,7 @@ function(elements_add_swig_binding binding)
 		${PY_MODULE_DIR}/${PY_MODULE}.py
 		${PY_MODULE_SWIG_SRC}
 	COMMAND
-		${SWIG_EXECUTABLE}
+		${env_cmd} --xml ${env_xml} ${SWIG_EXECUTABLE}
 		-python
 		-module ${binding}
 		-Wextra
@@ -2337,8 +2350,10 @@ function(elements_add_swig_binding binding)
 	COMMENT "Generating SWIG binding: ${SWIG_EXECUTABLE} -python -module ${binding} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} -o ${PY_MODULE_SWIG_SRC} ${i_srcs}"
   )
 
-  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${i_srcs} ${swig_deps})
+  set_source_files_properties(${PY_MODULE_SWIG_SRC} PROPERTIES GENERATED TRUE)
 
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${i_srcs} ${swig_deps})
+ 
   if(CXX_HAS_SUGGEST_OVERRIDE)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC}
                  PROPERTY COMPILE_FLAGS -Wno-suggest-override)
@@ -2360,7 +2375,137 @@ function(elements_add_swig_binding binding)
   elements_install_headers(${ARG_PUBLIC_HEADERS})
 
 endfunction()
+#---------------------------------------------------------------------------------------------------
+# elements_add_cython_module(<name>
+#                           [interface] source1 source2 ...
+#                           LINK_LIBRARIES library1 library2 ...
+#                           INCLUDE_DIRS dir1 package2 ...
+#                           [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
+#
+# Create a Cython binary python module from the specified sources (glob patterns are allowed), linking
+# it with the libraries specified and adding the include directories to the search path. The sources
+# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package
+# (module).
+#---------------------------------------------------------------------------------------------------
+function(elements_add_cython_module mod_name)
 
+  find_package(Cython QUIET REQUIRED)
+
+  find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
+
+  # this function uses an extra option: 'PUBLIC_HEADERS'
+  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+
+  set(MODULE_ARG_LINK_LIBRARIES ${ARG_LINK_LIBRARIES})
+  set(MODULE_ARG_INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
+                            LIBRARIES ${ARG_LIBRARIES}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+                            
+  get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+  list(REMOVE_DUPLICATES dirs)
+  set(CYTHON_MOD_INCLUDE_DIRS)
+  foreach(dir ${dirs})
+    set(CYTHON_MOD_INCLUDE_DIRS -I${dir} ${CYTHON_MOD_INCLUDE_DIRS})
+  endforeach()
+
+  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
+    elements_get_package_name(package)
+    message(WARNING "Cython module ${mod_name} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
+  endif()
+
+  # find the sources
+  elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
+  set(pyx_module_sources)
+  set(other_module_sources)
+  foreach( _file ${srcs})
+    if( ${_file} MATCHES ".*\\.py[x]?$" )
+      list( APPEND pyx_module_sources ${_file} )
+    else()
+      list( APPEND other_module_sources ${_file} )
+    endif()
+  endforeach()
+    
+  list(LENGTH pyx_module_sources nb_pyx)
+  
+  if(${nb_pyx} EQUAL 2)
+    message(FATAL_ERROR "To many pyx files for the ${mod_name} Cython module: ${pyx_module_sources}")
+  endif()
+  
+  set(PY_MODULE_DIR ${CMAKE_BINARY_DIR}/python)
+  set(PY_MODULE ${mod_name})
+  set(PY_MODULE_CYTHON_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PY_MODULE}CYTHON_wrap.cxx)
+  
+  
+  # Set additional flags.
+  set(annotate_arg)
+  if(CYTHON_ANNOTATE)
+    set(annotate_arg "--annotate")
+  endif()
+
+  set(no_docstrings_arg)
+  if( CYTHON_NO_DOCSTRINGS )
+    set(no_docstrings_arg "--no-docstrings")
+  endif()
+
+  if( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
+        "${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo" )
+      set(cython_debug_arg "--gdb")
+  endif()
+  if("${PYTHONLIBS_VERSION_STRING}" MATCHES "^2.")
+    set(version_arg "-2")
+  elseif("${PYTHONLIBS_VERSION_STRING}" MATCHES "^3.")
+    set(version_arg "-3")
+  else()
+    set(version_arg)
+  endif()
+  
+  
+  add_custom_command(
+    OUTPUT 
+        ${PY_MODULE_CYTHON_SRC}
+    COMMAND 
+        ${env_cmd} --xml ${env_xml} ${CYTHON_EXECUTABLE}
+        --cplus
+        ${CYTHON_MOD_INCLUDE_DIRS}
+        ${version_arg}
+        ${annotate_arg} 
+        ${no_docstrings_arg} 
+        ${cython_debug_arg}
+        ${CYTHON_FLAGS}
+        --output-file ${PY_MODULE_CYTHON_SRC}
+        ${pyx_module_sources}
+    DEPENDS 
+        ${pyx_module_sources}
+    COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${PY_MODULE_CYTHON_SRC}  ${pyx_module_sources}"
+    )
+  
+  set_source_files_properties(${PY_MODULE_CYTHON_SRC} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")
+  
+  debug_print_var(MODULE_ARG_LINK_LIBRARIES)
+  debug_print_var(MODULE_ARG_INCLUDE_DIRS)
+  
+  
+  elements_add_python_module(${mod_name}
+                             PLAIN_MODULE
+                             ${PY_MODULE_CYTHON_SRC} ${other_module_sources}
+                             LINK_LIBRARIES ${MODULE_ARG_LINK_LIBRARIES}
+                             INCLUDE_DIRS ${MODULE_ARG_INCLUDE_DIRS})
+
+  set_target_properties(${mod_name} PROPERTIES PLAIN_MODULE TRUE)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+  
+  elements_recurse_dirs(hsubdir ${ARG_PUBLIC_HEADERS})
+  foreach(h ${hsubdir})  
+    set_property(GLOBAL APPEND PROPERTY EXTRA_INCLUDE_DIRS ${h})
+  endforeach()
+  elements_install_headers(${ARG_PUBLIC_HEADERS})
+       
+                             
+endfunction()
 #---------------------------------------------------------------------------------------------------
 # elements_add_executable(<name>
 #                      source1 source2 ...
@@ -2631,6 +2776,7 @@ function(elements_install_headers)
               PATTERN "*.hpp"
               PATTERN "*.hxx"
               PATTERN "*.i"
+              PATTERN "*.pxd"
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE)
       if(NOT IS_ABSOLUTE ${hdr_dir})
