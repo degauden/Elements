@@ -2421,8 +2421,7 @@ function(elements_add_swig_binding binding)
 
 endfunction()
 #---------------------------------------------------------------------------------------------------
-# elements_add_cython_module(<name>
-#                           [interface] source1 source2 ...
+# elements_add_cython_module([interface] source1 source2 ...
 #                           LINK_LIBRARIES library1 library2 ...
 #                           INCLUDE_DIRS dir1 package2 ...
 #                           [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
@@ -2432,7 +2431,7 @@ endfunction()
 # can be either *.i or *.cpp files. Their location is relative to the base of the Elements package
 # (module).
 #---------------------------------------------------------------------------------------------------
-function(elements_add_cython_module mod_name)
+function(elements_add_cython_module)
 
   find_package(Cython QUIET REQUIRED)
 
@@ -2505,10 +2504,6 @@ function(elements_add_cython_module mod_name)
     set(CYTHON_MOD_INCLUDE_DIRS ${CYTHON_MOD_INCLUDE_DIRS} -I${dir})
   endforeach()
 
-  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
-    elements_get_package_name(package)
-    message(WARNING "Cython module ${mod_name} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
-  endif()
 
   # find the sources
   elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
@@ -2525,7 +2520,14 @@ function(elements_add_cython_module mod_name)
   list(LENGTH pyx_module_sources nb_pyx)
   
   if(${nb_pyx} EQUAL 2)
-    message(FATAL_ERROR "To many pyx files for the ${mod_name} Cython module: ${pyx_module_sources}")
+    message(FATAL_ERROR "To many pyx files for the Cython module: ${pyx_module_sources}")
+  endif()
+
+  get_filename_component(mod_name ${pyx_module_sources} NAME_WE)
+
+  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
+    elements_get_package_name(package)
+    message(WARNING "Cython module ${mod_name} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
   endif()
   
   set(PY_MODULE_DIR ${CMAKE_BINARY_DIR}/python)

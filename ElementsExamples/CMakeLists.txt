@@ -214,11 +214,11 @@ endif()
 find_package(Cython QUIET)
 find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET)
 if(CYTHON_FOUND AND PYTHONLIBS_FOUND)
-elements_add_cython_module(PiCalculator src/Cython/lib/PiCalculator.pyx
+elements_add_cython_module(src/Cython/lib/PiCalculator.pyx
                            LINK_LIBRARIES ElementsExamples
                            INCLUDE_DIRS ElementsExamples 
                            NO_PUBLIC_HEADERS)
-elements_add_cython_module(Rect src/Cython/lib/Rect.pyx
+elements_add_cython_module(src/Cython/lib/Rect.pyx
                            LINK_LIBRARIES ElementsExamples
                            INCLUDE_DIRS ElementsExamples
                            PUBLIC_HEADERS ElementsExamples)
