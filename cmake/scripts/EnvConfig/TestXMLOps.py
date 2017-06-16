@@ -5,8 +5,12 @@ Created on Jul 15, 2011
 '''
 import unittest
 import os
-from StringIO import StringIO
-
+try:
+    from StringIO import StringIO
+except ImportError:
+    # python 3 version
+    from io import StringIO
+    
 from EnvConfig import Control  # @UnresolvedImport
 from EnvConfig import xmlModule  # @UnresolvedImport
 

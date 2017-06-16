@@ -1,6 +1,22 @@
 if (NOT PYTEST_FOUND)
 
-	find_program(PYTEST_EXECUTABLE py.test)
+    find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION})
+    
+    set(explicit_pytest)
+    if(PYTHON_EXPLICIT_VERSION)
+      set(explicit_pytest py.test-${PYTHON_EXPLICIT_VERSION})
+    endif()
+    
+    
+    if(PYTHONINTERP_FOUND)
+        get_filename_component(_python_path ${PYTHON_EXECUTABLE} PATH)
+        find_program(PYTEST_EXECUTABLE
+                     NAMES ${explicit_pytest} py.test
+                     HINTS ${_python_path})
+    else()
+	    find_program(PYTEST_EXECUTABLE NAMES ${explicit_pytest} py.test)
+    endif()
+
 	set(PYTEST_EXECUTABLE ${PYTEST_EXECUTABLE} CACHE STRING "")
 
 # handle the QUIETLY and REQUIRED arguments and set PYTEST_FOUND to TRUE if

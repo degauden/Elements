@@ -23,9 +23,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import unittest
 import os
 
-import urllib2
-import ssl
-
 from ElementsKernel.NameCheck import getInfo, DEFAULT_TYPE, checkDataBaseUrl
 
 

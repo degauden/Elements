@@ -1,16 +1,22 @@
 if (NOT CYTHON_FOUND)
 
-    find_package(PythonInterp)
+    find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION})
+    
+    set(explicit_cython)
+    if(PYTHON_EXPLICIT_VERSION)
+      set(explicit_cython cython${PYTHON_EXPLICIT_VERSION})
+    endif()
+    
+    
     if(PYTHONINTERP_FOUND)
         get_filename_component(_python_path ${PYTHON_EXECUTABLE} PATH)
         find_program(CYTHON_EXECUTABLE
-                     NAMES cython cython3
+                     NAMES ${explicit_cython} cython cython3
                      HINTS ${_python_path})
     else()
-	    find_program(CYTHON_EXECUTABLE NAMES cython cython3)
+	    find_program(CYTHON_EXECUTABLE NAMES ${explicit_cython} cython cython3)
     endif()
 
-	find_program(CYTHON_EXECUTABLE NAMES cython)
 	set(CYTHON_EXECUTABLE ${CYTHON_EXECUTABLE} CACHE STRING "")
 
 # handle the QUIETLY and REQUIRED arguments and set CYTHON_FOUND to TRUE if

@@ -25,6 +25,8 @@ import unittest
 
 import os, sys
 
+from imp import reload
+
 from ElementsKernel.Temporary import TempEnv
 
 
