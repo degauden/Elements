@@ -1496,6 +1496,51 @@ function(include_package_directories)
 endfunction()
 
 #-------------------------------------------------------------------------------
+# print_package_directories(Package1 [Package2 ...])
+#
+# print the include directories of each package.
+#-------------------------------------------------------------------------------
+function(print_package_directories)
+  message(STATUS "print_package_directories(${ARGN})")
+  foreach(package ${ARGN})
+    # we need to ensure that the user can call this function also for directories
+    if(TARGET ${package})
+      get_target_property(to_incl ${package} SOURCE_DIR)
+      if(to_incl)
+        message(STATUS "print_package_directories1 include_directories(${to_incl})")
+      endif()
+    elseif(IS_ABSOLUTE ${package} AND IS_DIRECTORY ${package})
+      message(STATUS "print_package_directories2 include_directories(${package})")
+    elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${package})
+      message(STATUS "print_package_directories3 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/${package})")
+    elseif(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${package}) # package can be the name of a subdir
+      message(STATUS "print_package_directories4 include_directories(${CMAKE_SOURCE_DIR}/${package})")
+    else()
+      # ensure that the current directory knows about the package
+      find_package(${package} QUIET)
+      set(to_incl)
+      string(TOUPPER ${package} _pack_upper)
+      if(${_pack_upper}_FOUND OR ${package}_FOUND)
+        # Handle some special cases first, then try for package uppercase (DIRS and DIR)
+        # If the package is found, add INCLUDE_DIRS or (if not defined) INCLUDE_DIR.
+        # If none of the two is defined, do not add anything.
+        if(${package} STREQUAL PythonLibs)
+          set(to_incl PYTHON_INCLUDE_DIRS)
+        elseif(${_pack_upper}_INCLUDE_DIRS)
+          set(to_incl ${_pack_upper}_INCLUDE_DIRS)
+        elseif(${_pack_upper}_INCLUDE_DIR)
+          set(to_incl ${_pack_upper}_INCLUDE_DIR)
+        elseif(${package}_INCLUDE_DIRS)
+          set(to_incl ${package}_INCLUDE_DIRS)
+        endif()
+        # Include the directories
+        message(STATUS "print_package_directories5 include_directories(${${to_incl}})")
+      endif()
+    endif()
+  endforeach()
+endfunction()
+
+#-------------------------------------------------------------------------------
 # elements_depends_on_subdirs(subdir1 [subdir2 ...])
 #
 # The presence of this function in a CMakeLists.txt is used by elements_sort_subdirectories
@@ -2399,6 +2444,53 @@ function(elements_add_cython_module mod_name)
   set(MODULE_ARG_LINK_LIBRARIES ${ARG_LINK_LIBRARIES})
   set(MODULE_ARG_INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
 
+  set(full_hsubdir)
+  foreach(pck ${ARG_INCLUDE_DIRS})
+    # we need to ensure that the user can call this function also for directories
+    set(f_pack)
+    set(RECURSE_DIR TRUE)
+    if(TARGET ${pck})
+      get_target_property(to_incl ${pck} SOURCE_DIR)
+      if(to_incl)
+        set(f_pack ${to_incl})
+      endif()
+    elseif(IS_ABSOLUTE ${pck} AND IS_DIRECTORY ${pck})
+      set(f_pack ${pck})
+    elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${pck})
+      set(f_pack ${CMAKE_CURRENT_SOURCE_DIR}/${pck})
+    elseif(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${pck}) # package can be the name of a subdir
+      set(f_pack ${CMAKE_SOURCE_DIR}/${pck})
+    else()
+      # ensure that the current directory knows about the package
+      find_package(${pck} QUIET)
+      set(to_incl)
+      string(TOUPPER ${pck} _pack_upper)
+      if(${_pack_upper}_FOUND OR ${pck}_FOUND)
+        # Handle some special cases first, then try for package uppercase (DIRS and DIR)
+        # If the package is found, add INCLUDE_DIRS or (if not defined) INCLUDE_DIR.
+        # If none of the two is defined, do not add anything.
+        if(${pck} STREQUAL PythonLibs)
+          set(to_incl PYTHON_INCLUDE_DIRS)
+        elseif(${_pack_upper}_INCLUDE_DIRS)
+          set(to_incl ${_pack_upper}_INCLUDE_DIRS)
+        elseif(${_pack_upper}_INCLUDE_DIR)
+          set(to_incl ${_pack_upper}_INCLUDE_DIR)
+        elseif(${pck}_INCLUDE_DIRS)
+          set(to_incl ${pck}_INCLUDE_DIRS)
+        endif()      
+        set(f_pack ${${to_incl}})
+        set(RECURSE_DIR FALSE)
+      endif()
+    endif()
+    if(RECURSE_DIR)
+      elements_recurse_cython_include_dirs(hsubdir ${f_pack})
+      set(full_hsubdir ${full_hsubdir} ${hsubdir})
+    endif()
+    set(full_hsubdir ${full_hsubdir} ${f_pack})
+  endforeach()
+  if(full_hsubdir)
+      list(REMOVE_DUPLICATES full_hsubdir)
+  endif()
 
   elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
                             LIBRARIES ${ARG_LIBRARIES}
@@ -2406,10 +2498,11 @@ function(elements_add_cython_module mod_name)
                             INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
                             
   get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+  set(dirs ${full_hsubdir} ${dirs})
   list(REMOVE_DUPLICATES dirs)
   set(CYTHON_MOD_INCLUDE_DIRS)
   foreach(dir ${dirs})
-    set(CYTHON_MOD_INCLUDE_DIRS -I${dir} ${CYTHON_MOD_INCLUDE_DIRS})
+    set(CYTHON_MOD_INCLUDE_DIRS ${CYTHON_MOD_INCLUDE_DIRS} -I${dir})
   endforeach()
 
   if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
@@ -2483,11 +2576,7 @@ function(elements_add_cython_module mod_name)
     COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${PY_MODULE_CYTHON_SRC}  ${pyx_module_sources}"
     )
   
-  set_source_files_properties(${PY_MODULE_CYTHON_SRC} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")
-  
-  debug_print_var(MODULE_ARG_LINK_LIBRARIES)
-  debug_print_var(MODULE_ARG_INCLUDE_DIRS)
-  
+  set_source_files_properties(${PY_MODULE_CYTHON_SRC} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
   
   elements_add_python_module(${mod_name}
                              PLAIN_MODULE
@@ -2498,10 +2587,6 @@ function(elements_add_cython_module mod_name)
   set_target_properties(${mod_name} PROPERTIES PLAIN_MODULE TRUE)
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   
-  elements_recurse_dirs(hsubdir ${ARG_PUBLIC_HEADERS})
-  foreach(h ${hsubdir})  
-    set_property(GLOBAL APPEND PROPERTY EXTRA_INCLUDE_DIRS ${h})
-  endforeach()
   elements_install_headers(${ARG_PUBLIC_HEADERS})
        
                              
