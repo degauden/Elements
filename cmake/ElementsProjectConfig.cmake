@@ -2496,13 +2496,9 @@ function(elements_add_cython_module)
                             LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
                             INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
                             
-  get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-  set(dirs ${full_hsubdir} ${dirs})
-  list(REMOVE_DUPLICATES dirs)
-  set(CYTHON_MOD_INCLUDE_DIRS)
-  foreach(dir ${dirs})
-    set(CYTHON_MOD_INCLUDE_DIRS ${CYTHON_MOD_INCLUDE_DIRS} -I${dir})
-  endforeach()
+  get_property(cy_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+  set(cy_dirs ${full_hsubdir} ${cy_dirs})
+  list(REMOVE_DUPLICATES cy_dirs)
 
 
   # find the sources
@@ -2524,6 +2520,14 @@ function(elements_add_cython_module)
   endif()
 
   get_filename_component(mod_name ${pyx_module_sources} NAME_WE)
+  get_filename_component(pyx_dir ${pyx_module_sources} DIRECTORY)
+  set(cy_dirs ${pyx_dir} ${cy_dirs})
+  list(REMOVE_DUPLICATES cy_dirs)
+
+  set(CYTHON_MOD_INCLUDE_DIRS)
+  foreach(dir ${cy_dirs})
+    set(CYTHON_MOD_INCLUDE_DIRS ${CYTHON_MOD_INCLUDE_DIRS} -I${dir})
+  endforeach()
 
   if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
     elements_get_package_name(package)
