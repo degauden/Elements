@@ -2302,65 +2302,37 @@ function(elements_add_python_module module)
   set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS _${module}.so)
 endfunction()
 
+
 #---------------------------------------------------------------------------------------------------
-# elements_add_swig_binding(<name>
-#                           [interface] source1 source2 ...
-#                           LINK_LIBRARIES library1 library2 ...
-#                           INCLUDE_DIRS dir1 package2 ...
-#                           [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
+# _generate_swig_files(<swig_module>
+#                      i_src1 i_src2 ...
+#                      OUTFILE out.cxx
+#                      INCLUDE_DIRS dir1 package2 ...)
 #
-# Create a SWIG binary python module from the specified sources (glob patterns are allowed), linking
-# it with the libraries specified and adding the include directories to the search path. The sources
-# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package
-# (module).
+# generate the SWIG python and C++ files
 #---------------------------------------------------------------------------------------------------
-function(elements_add_swig_binding binding)
+function(_generate_swig_files swig_module)
 
   find_package(SWIG QUIET REQUIRED)
+  CMAKE_PARSE_ARGUMENTS(ARG "" "OUTFILE" "INCLUDE_DIRS" ${ARGN})
+  
+  if("${ARG_OUTFILE}" STREQUAL "")
+    message(FATAL_ERROR "_generate_swig_files: No OUTFILE defined")
+  endif()
 
-  find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
+  set(i_srcs ${ARG_UNPARSED_ARGUMENTS})
 
-  # this function uses an extra option: 'PUBLIC_HEADERS'
-  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
-
-  set(MODULE_ARG_LINK_LIBRARIES ${ARG_LINK_LIBRARIES})
-  set(MODULE_ARG_INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-
-
-  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
-                            LIBRARIES ${ARG_LIBRARIES}
-                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
-                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-
+  include_package_directories(${ARG_INCLUDE_DIRS})
   get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
   list(REMOVE_DUPLICATES dirs)
   set(SWIG_MOD_INCLUDE_DIRS)
   foreach(dir ${dirs})
     set(SWIG_MOD_INCLUDE_DIRS -I${dir} ${SWIG_MOD_INCLUDE_DIRS})
   endforeach()
-
-  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
-    elements_get_package_name(package)
-    message(WARNING "Swig binding ${binding} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
-  endif()
-
-  # find the sources
-  elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
-
-  set(cpp_srcs)
-  set(i_srcs)
-  foreach(s ${srcs})
-    if(s MATCHES "(.*).i")
-      list(APPEND i_srcs ${s})
-    else()
-      list(APPEND cpp_srcs ${s})
-    endif()
-    set_property(SOURCE ${s} PROPERTY CPLUSPLUS ON)
-  endforeach()
-
+  
   set(PY_MODULE_DIR ${CMAKE_BINARY_DIR}/python)
-  set(PY_MODULE ${binding})
-  set(PY_MODULE_SWIG_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PY_MODULE}PYTHON_wrap.cxx)
+  set(PY_MODULE ${swig_module})
+  set(PY_MODULE_SWIG_SRC ${ARG_OUTFILE})
 
   execute_process(
     COMMAND ${SWIG_EXECUTABLE} -MM -python -module ${PY_MODULE} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} ${i_srcs}
@@ -2375,24 +2347,25 @@ function(elements_add_swig_binding binding)
     set(swig_deps ${swig_deps} "${t}")
   endforeach()
 
+
   #SWIG command
   add_custom_command(
-	OUTPUT
-		${PY_MODULE_DIR}/${PY_MODULE}.py
-		${PY_MODULE_SWIG_SRC}
-	COMMAND
-		${env_cmd} --xml ${env_xml} ${SWIG_EXECUTABLE}
-		-python
-		-module ${PY_MODULE}
-		-Wextra
-		-outdir ${PY_MODULE_DIR}
-		-c++
-		${SWIG_MOD_INCLUDE_DIRS}
-		-o ${PY_MODULE_SWIG_SRC}
-		${i_srcs}
-	DEPENDS
-		${i_srcs} ${swig_deps}
-	COMMENT "Generating SWIG binding: ${SWIG_EXECUTABLE} -python -module ${PY_MODULE} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} -o ${PY_MODULE_SWIG_SRC} ${i_srcs}"
+    OUTPUT
+        ${PY_MODULE_DIR}/${PY_MODULE}.py
+        ${PY_MODULE_SWIG_SRC}
+    COMMAND
+        ${env_cmd} --xml ${env_xml} ${SWIG_EXECUTABLE}
+        -python
+        -module ${PY_MODULE}
+        -Wextra
+        -outdir ${PY_MODULE_DIR}
+        -c++
+        ${SWIG_MOD_INCLUDE_DIRS}
+        -o ${PY_MODULE_SWIG_SRC}
+        ${i_srcs}
+    DEPENDS
+        ${i_srcs} ${swig_deps}
+    COMMENT "Generating SWIG binding: ${SWIG_EXECUTABLE} -python -module ${PY_MODULE} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} -o ${PY_MODULE_SWIG_SRC} ${i_srcs}"
   )
 
   set_source_files_properties(${PY_MODULE_SWIG_SRC} PROPERTIES GENERATED TRUE)
@@ -2404,18 +2377,60 @@ function(elements_add_swig_binding binding)
                  PROPERTY COMPILE_FLAGS -Wno-suggest-override)
   endif()
 
-  elements_add_python_module(${PY_MODULE}
-                             ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
-                             LINK_LIBRARIES ${MODULE_ARG_LINK_LIBRARIES}
-                             INCLUDE_DIRS ${MODULE_ARG_INCLUDE_DIRS})
-
   install(FILES ${PY_MODULE_DIR}/${PY_MODULE}.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
+  
+endfunction()
+
+#---------------------------------------------------------------------------------------------------
+# elements_add_swig_binding(<name>
+#                           [interface] source1 source2 ...
+#                           LINK_LIBRARIES library1 library2 ...
+#                           INCLUDE_DIRS dir1 package2 ...
+#                           [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
+#
+# Create a SWIG binary python module from the specified sources (glob patterns are allowed), linking
+# it with the libraries specified and adding the include directories to the search path. The sources
+# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package
+# (module).
+#---------------------------------------------------------------------------------------------------
+function(elements_add_swig_binding binding)
+
+  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+
+  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
+    elements_get_package_name(package)
+    message(WARNING "Swig binding ${binding} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
+  endif()
+
+  elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
+  set(cpp_srcs)
+  set(i_srcs)
+  foreach(s ${srcs})
+    if(s MATCHES "(.*).i")
+      list(APPEND i_srcs ${s})
+    else()
+      list(APPEND cpp_srcs ${s})
+    endif()
+    set_property(SOURCE ${s} PROPERTY CPLUSPLUS ON)
+  endforeach()
+  
+  set(PY_MODULE_SWIG_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${binding}PYTHON_wrap.cxx)
+  
+  _generate_swig_files(${binding}
+                       ${i_srcs}
+                       OUTFILE ${PY_MODULE_SWIG_SRC}
+                       INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+
+  elements_add_python_module(${binding}
+                             ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
+                             LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                             INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
 
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${PY_MODULE}.py)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${PY_MODULE}.pyo)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${PY_MODULE}.pyc)
-
+  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.py)
+  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyo)
+  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyc)
 
   elements_install_headers(${ARG_PUBLIC_HEADERS})
 
