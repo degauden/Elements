@@ -171,7 +171,7 @@ macro(elements_recurse_cython_include_dirs VAR)
   set(${VAR})
   foreach(fp ${ARGN})
   
-    file(GLOB_RECURSE files ${fp}/*.pxd)
+    file(GLOB_RECURSE files ${fp}/*.px[di])
     set(dir_list)
     foreach(file_path ${files})
       get_filename_component(dir_path ${file_path} PATH)
