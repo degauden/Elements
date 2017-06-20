@@ -2363,7 +2363,7 @@ function(elements_add_swig_binding binding)
   set(PY_MODULE_SWIG_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PY_MODULE}PYTHON_wrap.cxx)
 
   execute_process(
-    COMMAND ${SWIG_EXECUTABLE} -MM -python -module ${binding} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} ${i_srcs}
+    COMMAND ${SWIG_EXECUTABLE} -MM -python -module ${PY_MODULE} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} ${i_srcs}
     OUTPUT_VARIABLE swmm_dependencies
     RESULT_VARIABLE swmm_return_value
   )
@@ -2383,7 +2383,7 @@ function(elements_add_swig_binding binding)
 	COMMAND
 		${env_cmd} --xml ${env_xml} ${SWIG_EXECUTABLE}
 		-python
-		-module ${binding}
+		-module ${PY_MODULE}
 		-Wextra
 		-outdir ${PY_MODULE_DIR}
 		-c++
@@ -2392,7 +2392,7 @@ function(elements_add_swig_binding binding)
 		${i_srcs}
 	DEPENDS
 		${i_srcs} ${swig_deps}
-	COMMENT "Generating SWIG binding: ${SWIG_EXECUTABLE} -python -module ${binding} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} -o ${PY_MODULE_SWIG_SRC} ${i_srcs}"
+	COMMENT "Generating SWIG binding: ${SWIG_EXECUTABLE} -python -module ${PY_MODULE} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} -o ${PY_MODULE_SWIG_SRC} ${i_srcs}"
   )
 
   set_source_files_properties(${PY_MODULE_SWIG_SRC} PROPERTIES GENERATED TRUE)
@@ -2404,44 +2404,40 @@ function(elements_add_swig_binding binding)
                  PROPERTY COMPILE_FLAGS -Wno-suggest-override)
   endif()
 
-  elements_add_python_module(${binding}
+  elements_add_python_module(${PY_MODULE}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
                              LINK_LIBRARIES ${MODULE_ARG_LINK_LIBRARIES}
                              INCLUDE_DIRS ${MODULE_ARG_INCLUDE_DIRS})
 
-  install(FILES ${PY_MODULE_DIR}/${binding}.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
+  install(FILES ${PY_MODULE_DIR}/${PY_MODULE}.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
 
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.py)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyo)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyc)
+  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${PY_MODULE}.py)
+  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${PY_MODULE}.pyo)
+  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${PY_MODULE}.pyc)
 
 
   elements_install_headers(${ARG_PUBLIC_HEADERS})
 
 endfunction()
+
 #---------------------------------------------------------------------------------------------------
-# elements_add_cython_module([interface] source1 source2 ...
-#                           LINK_LIBRARIES library1 library2 ...
-#                           INCLUDE_DIRS dir1 package2 ...
-#                           [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
+# _generate_cython_cpp(interface
+#                      OUTFILE out.cxx
+#                      INCLUDE_DIRS dir1 package2 ...)
 #
-# Create a Cython binary python module from the specified sources (glob patterns are allowed), linking
-# it with the libraries specified and adding the include directories to the search path. The sources
-# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package
-# (module).
+# Generate the C++ source file from the .pyx file using the INCLUDE_DIRS
 #---------------------------------------------------------------------------------------------------
-function(elements_add_cython_module)
+function(_generate_cython_cpp)
 
   find_package(Cython QUIET REQUIRED)
+  CMAKE_PARSE_ARGUMENTS(ARG "" "OUTFILE" "INCLUDE_DIRS" ${ARGN})
+  
+  if("${ARG_OUTFILE}" STREQUAL "")
+    message(FATAL_ERROR "_generate_cython_cpp: No OUTFILE defined")
+  endif()
 
-  find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
-
-  # this function uses an extra option: 'PUBLIC_HEADERS'
-  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
-
-  set(MODULE_ARG_LINK_LIBRARIES ${ARG_LINK_LIBRARIES})
-  set(MODULE_ARG_INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+  set(srcs ${ARG_UNPARSED_ARGUMENTS})
 
   set(full_hsubdir)
   foreach(pck ${ARG_INCLUDE_DIRS})
@@ -2490,53 +2486,21 @@ function(elements_add_cython_module)
   if(full_hsubdir)
       list(REMOVE_DUPLICATES full_hsubdir)
   endif()
-
-  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
-                            LIBRARIES ${ARG_LIBRARIES}
-                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
-                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-                            
+  
   get_property(cy_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
   set(cy_dirs ${full_hsubdir} ${cy_dirs})
   list(REMOVE_DUPLICATES cy_dirs)
-
-
-  # find the sources
-  elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
-  set(pyx_module_sources)
-  set(other_module_sources)
-  foreach( _file ${srcs})
-    if( ${_file} MATCHES ".*\\.py[x]?$" )
-      list( APPEND pyx_module_sources ${_file} )
-    else()
-      list( APPEND other_module_sources ${_file} )
-    endif()
-  endforeach()
-    
-  list(LENGTH pyx_module_sources nb_pyx)
   
-  if(${nb_pyx} EQUAL 2)
-    message(FATAL_ERROR "To many pyx files for the Cython module: ${pyx_module_sources}")
-  endif()
-
-  get_filename_component(mod_name ${pyx_module_sources} NAME_WE)
-  get_filename_component(pyx_dir ${pyx_module_sources} DIRECTORY)
+  # get the source file directory
+  get_source_file_property(src_location ${srcs} LOCATION)
+  get_filename_component(pyx_dir ${src_location} DIRECTORY)
   set(cy_dirs ${pyx_dir} ${cy_dirs})
   list(REMOVE_DUPLICATES cy_dirs)
-
+  
   set(CYTHON_MOD_INCLUDE_DIRS)
   foreach(dir ${cy_dirs})
     set(CYTHON_MOD_INCLUDE_DIRS ${CYTHON_MOD_INCLUDE_DIRS} -I${dir})
-  endforeach()
-
-  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
-    elements_get_package_name(package)
-    message(WARNING "Cython module ${mod_name} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
-  endif()
-  
-  set(PY_MODULE_DIR ${CMAKE_BINARY_DIR}/python)
-  set(PY_MODULE ${mod_name})
-  set(PY_MODULE_CYTHON_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PY_MODULE}CYTHON_wrap.cxx)
+  endforeach()  
   
   
   # Set additional flags.
@@ -2560,12 +2524,11 @@ function(elements_add_cython_module)
     set(version_arg "-3")
   else()
     set(version_arg)
-  endif()
-  
-  
+  endif()  
+    
   add_custom_command(
     OUTPUT 
-        ${PY_MODULE_CYTHON_SRC}
+        ${ARG_OUTFILE}
     COMMAND 
         ${env_cmd} --xml ${env_xml} ${CYTHON_EXECUTABLE}
         --cplus
@@ -2575,28 +2538,81 @@ function(elements_add_cython_module)
         ${no_docstrings_arg} 
         ${cython_debug_arg}
         ${CYTHON_FLAGS}
-        --output-file ${PY_MODULE_CYTHON_SRC}
-        ${pyx_module_sources}
+        --output-file ${ARG_OUTFILE}
+        ${srcs}
     DEPENDS 
-        ${pyx_module_sources}
-    COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${PY_MODULE_CYTHON_SRC}  ${pyx_module_sources}"
+        ${srcs}
+    COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${ARG_OUTFILE}  ${srcs}"
     )
   
-  set_source_files_properties(${PY_MODULE_CYTHON_SRC} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
+  set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
   
+endfunction()
+
+#---------------------------------------------------------------------------------------------------
+# elements_add_cython_module([interface] source1 source2 ...
+#                            LINK_LIBRARIES library1 library2 ...
+#                            INCLUDE_DIRS dir1 package2 ...
+#                            [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
+#
+# Create a Cython binary python module from the specified sources (glob patterns are allowed), linking
+# it with the libraries specified and adding the include directories to the search path. The sources
+# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package
+# (module).
+#---------------------------------------------------------------------------------------------------
+function(elements_add_cython_module)
+
+  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+
+  elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
+  set(pyx_module_sources)
+  set(other_module_sources)
+  foreach( _file ${srcs})
+    if( ${_file} MATCHES ".*\\.py[x]?$" )
+      list( APPEND pyx_module_sources ${_file} )
+    else()
+      list( APPEND other_module_sources ${_file} )
+    endif()
+  endforeach()
+
+  list(LENGTH pyx_module_sources nb_pyx)
+  
+  if(${nb_pyx} GREATER 1)
+    message(FATAL_ERROR "To many pyx files for the Cython module: ${pyx_module_sources}")
+  endif()
+
+  get_filename_component(mod_name ${pyx_module_sources} NAME_WE)
+
+  if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
+    elements_get_package_name(package)
+    message(WARNING "Cython module ${mod_name} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
+  endif()
+
+  set(PY_MODULE_CYTHON_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${mod_name}CYTHON_wrap.cxx)
+
+
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
+                            LIBRARIES ${ARG_LIBRARIES}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+  _generate_cython_cpp(${pyx_module_sources}
+                       OUTFILE ${PY_MODULE_CYTHON_SRC}
+                       INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
   elements_add_python_module(${mod_name}
                              PLAIN_MODULE
                              ${PY_MODULE_CYTHON_SRC} ${other_module_sources}
-                             LINK_LIBRARIES ${MODULE_ARG_LINK_LIBRARIES}
-                             INCLUDE_DIRS ${MODULE_ARG_INCLUDE_DIRS})
+                             LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                             INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
 
   set_target_properties(${mod_name} PROPERTIES PLAIN_MODULE TRUE)
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   
   elements_install_headers(${ARG_PUBLIC_HEADERS})
-       
-                             
+
 endfunction()
+
 #---------------------------------------------------------------------------------------------------
 # elements_add_executable(<name>
 #                      source1 source2 ...
