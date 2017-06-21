@@ -153,8 +153,6 @@ endmacro()
 macro(elements_recurse_dirs VAR)
   set(${VAR})
   foreach(fp ${ARGN})
-
-    debug_print_var(fp)
   
     file(GLOB_RECURSE files ${fp}/*)
     set(dir_list)
@@ -163,7 +161,7 @@ macro(elements_recurse_dirs VAR)
       set(dir_list ${dir_list} ${dir_path})
     endforeach()
     list(REMOVE_DUPLICATES dir_list)
-    set(${VAR} ${dir_list})  
+    set(${VAR} ${${VAR}} ${dir_list})  
   endforeach()
 endmacro()
 
@@ -180,9 +178,41 @@ macro(elements_recurse_cython_include_dirs VAR)
     if(dir_list)
       list(REMOVE_DUPLICATES dir_list)
     endif()
-    set(${VAR} ${dir_list})  
+    set(${VAR} ${${VAR}} ${dir_list})  
   endforeach()
 endmacro()
+
+function(elements_recurse result)
+
+  CMAKE_PARSE_ARGUMENTS(ARG "" "PATTERN" "" ${ARGN})
+    
+    
+  if(NOT ARG_PATTERN)
+    set(ARG_PATTERN "*")
+  endif()
+  
+  set(total_dir_list)
+  
+  foreach(fp ${ARG_UNPARSED_ARGUMENTS})
+    file(GLOB_RECURSE files ${fp}/${ARG_PATTERN})
+    set(dir_list)
+    foreach(file_path ${files})
+      get_filename_component(dir_path ${file_path} PATH)
+      set(dir_list ${dir_list} ${dir_path})
+    endforeach()
+    if(dir_list)
+      list(REMOVE_DUPLICATES dir_list)
+    endif()
+    set(total_dir_list ${total_dir_list} ${dir_list})  
+  endforeach()
+  
+  if(total_dir_list)
+    list(REMOVE_DUPLICATES total_dir_list)
+  endif()
+  
+  set(${result} ${total_dir_list} PARENT_SCOPE)
+
+endfunction()
 
 
 function(filter_comments var)

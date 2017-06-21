@@ -1441,59 +1441,83 @@ macro(_elements_handle_data_packages)
   endwhile()
 endmacro()
 
+macro(_get_include_dir_from_package inc_dir is_sys pck)
+
+  set(${inc_dir})
+  set(${is_sys} FALSE)
+  if(TARGET ${pck})
+    get_target_property(${inc_dir} ${pck} SOURCE_DIR)
+  elseif(IS_ABSOLUTE ${pck} AND IS_DIRECTORY ${pck})
+    set(${inc_dir} ${pck})
+  elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${pck})
+    set(${inc_dir} ${CMAKE_CURRENT_SOURCE_DIR}/${pck})
+  elseif(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${pck}) # pck can be the name of a subdir
+    set(${inc_dir} ${CMAKE_SOURCE_DIR}/${pck})
+  else()
+    # ensure that the current directory knows about the package
+    find_package(${pck} QUIET)
+    set(to_incl_var)
+    string(TOUPPER ${pck} _pack_upper)
+    if(${_pack_upper}_FOUND OR ${pck}_FOUND)
+      # Handle some special cases first, then try for package uppercase (DIRS and DIR)
+      # If the package is found, add INCLUDE_DIRS or (if not defined) INCLUDE_DIR.
+      # If none of the two is defined, do not add anything.
+      if(${pck} STREQUAL PythonLibs)
+        set(to_incl_var PYTHON_INCLUDE_DIRS)
+      elseif(${_pack_upper}_INCLUDE_DIRS)
+        set(to_incl_var ${_pack_upper}_INCLUDE_DIRS)
+      elseif(${_pack_upper}_INCLUDE_DIR)
+        set(to_incl_var ${_pack_upper}_INCLUDE_DIR)
+      elseif(${pck}_INCLUDE_DIRS)
+        set(to_incl_var ${pck}_INCLUDE_DIRS)
+      endif()
+      # Include the directories
+      set(${inc_dir} ${${to_incl_var}})
+      set(${is_sys} TRUE)  
+    endif()
+  endif()
+ 
+endmacro()
+
+
 #-------------------------------------------------------------------------------
-# include_package_directories(Package1 [Package2 ...])
+# include_package_directories(Package1 [Package2 ...]
+#                             RECURSE_PATTERN pattern)
 #
-# Add the include directories of each package to the include directories.
+# Add the include directories of each package to the include directories. If the recurse
+# pattern is present the subdirectories are also individually search for and the ones 
+# containing files that respect the pattern are also included.
 #-------------------------------------------------------------------------------
 function(include_package_directories)
-  #message(STATUS "include_package_directories(${ARGN})")
-  foreach(package ${ARGN})
+
+  CMAKE_PARSE_ARGUMENTS(ARG "" "RECURSE_PATTERN" "" ${ARGN})
+
+  foreach(package ${ARG_UNPARSED_ARGUMENTS})
     # we need to ensure that the user can call this function also for directories
-    if(TARGET ${package})
-      get_target_property(to_incl ${package} SOURCE_DIR)
-      if(to_incl)
-        #message(STATUS "include_package_directories1 include_directories(${to_incl})")
-        include_directories(${to_incl})
-      endif()
-    elseif(IS_ABSOLUTE ${package} AND IS_DIRECTORY ${package})
-      #message(STATUS "include_package_directories2 include_directories(${package})")
-      include_directories(${package})
-    elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${package})
-      #message(STATUS "include_package_directories3 include_directories(${package})")
-      include_directories(${CMAKE_CURRENT_SOURCE_DIR}/${package})
-    elseif(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${package}) # package can be the name of a subdir
-      #message(STATUS "include_package_directories4 include_directories(${package})")
-      include_directories(${CMAKE_SOURCE_DIR}/${package})
-    else()
-      # ensure that the current directory knows about the package
-      find_package(${package} QUIET)
-      set(to_incl)
-      string(TOUPPER ${package} _pack_upper)
-      if(${_pack_upper}_FOUND OR ${package}_FOUND)
-        # Handle some special cases first, then try for package uppercase (DIRS and DIR)
-        # If the package is found, add INCLUDE_DIRS or (if not defined) INCLUDE_DIR.
-        # If none of the two is defined, do not add anything.
-        if(${package} STREQUAL PythonLibs)
-          set(to_incl PYTHON_INCLUDE_DIRS)
-        elseif(${_pack_upper}_INCLUDE_DIRS)
-          set(to_incl ${_pack_upper}_INCLUDE_DIRS)
-        elseif(${_pack_upper}_INCLUDE_DIR)
-          set(to_incl ${_pack_upper}_INCLUDE_DIR)
-        elseif(${package}_INCLUDE_DIRS)
-          set(to_incl ${package}_INCLUDE_DIRS)
-        endif()
-        # Include the directories
-        #message(STATUS "include_package_directories5 include_directories(${${to_incl}})")
-        if (HIDE_SYSINC_WARNINGS)
-          include_directories(SYSTEM ${${to_incl}})
+    _get_include_dir_from_package(to_incl is_sys_inc ${package})
+
+    if(to_incl)
+      if(is_sys_inc AND HIDE_SYSINC_WARNINGS)
+        include_directories(SYSTEM ${to_incl})    
+      else()
+        # recursion applies only to non-system dirs
+        if(ARG_RECURSE_PATTERN)
+          elements_recurse(hsubdir ${to_incl} PATTERN ${ARG_RECURSE_PATTERN})
+          if(hsubdir)
+            list(REMOVE_DUPLICATES hsubdir)
+          endif()
+          foreach(hs ${hsubdir})
+            include_directories(${hs})    
+          endforeach()
         else()
-          include_directories(${${to_incl}})
-        endif()
+          include_directories(${to_incl})
+        endif()    
       endif()
     endif()
+    
   endforeach()
 endfunction()
+
 
 #-------------------------------------------------------------------------------
 # print_package_directories(Package1 [Package2 ...])
@@ -2299,7 +2323,12 @@ function(elements_add_python_module module)
   #----Installation details-------------------------------------------------------
   install(TARGETS ${module} LIBRARY DESTINATION ${PYTHON_DYNLIB_INSTALL_SUFFIX} OPTIONAL)
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS _${module}.so)
+  if(NOT ${ARG_PLAIN_MODULE})
+    set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS _${module}.so)
+  else()
+    set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS ${module}.so)
+  endif()
+
 endfunction()
 
 
@@ -2452,65 +2481,20 @@ function(_generate_cython_cpp)
     message(FATAL_ERROR "_generate_cython_cpp: No OUTFILE defined")
   endif()
 
-  set(srcs ${ARG_UNPARSED_ARGUMENTS})
+  set(src ${ARG_UNPARSED_ARGUMENTS})
 
-  set(full_hsubdir)
-  foreach(pck ${ARG_INCLUDE_DIRS})
-    # we need to ensure that the user can call this function also for directories
-    set(f_pack)
-    set(RECURSE_DIR TRUE)
-    if(TARGET ${pck})
-      get_target_property(to_incl ${pck} SOURCE_DIR)
-      if(to_incl)
-        set(f_pack ${to_incl})
-      endif()
-    elseif(IS_ABSOLUTE ${pck} AND IS_DIRECTORY ${pck})
-      set(f_pack ${pck})
-    elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${pck})
-      set(f_pack ${CMAKE_CURRENT_SOURCE_DIR}/${pck})
-    elseif(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${pck}) # package can be the name of a subdir
-      set(f_pack ${CMAKE_SOURCE_DIR}/${pck})
-    else()
-      # ensure that the current directory knows about the package
-      find_package(${pck} QUIET)
-      set(to_incl)
-      string(TOUPPER ${pck} _pack_upper)
-      if(${_pack_upper}_FOUND OR ${pck}_FOUND)
-        # Handle some special cases first, then try for package uppercase (DIRS and DIR)
-        # If the package is found, add INCLUDE_DIRS or (if not defined) INCLUDE_DIR.
-        # If none of the two is defined, do not add anything.
-        if(${pck} STREQUAL PythonLibs)
-          set(to_incl PYTHON_INCLUDE_DIRS)
-        elseif(${_pack_upper}_INCLUDE_DIRS)
-          set(to_incl ${_pack_upper}_INCLUDE_DIRS)
-        elseif(${_pack_upper}_INCLUDE_DIR)
-          set(to_incl ${_pack_upper}_INCLUDE_DIR)
-        elseif(${pck}_INCLUDE_DIRS)
-          set(to_incl ${pck}_INCLUDE_DIRS)
-        endif()      
-        set(f_pack ${${to_incl}})
-        set(RECURSE_DIR FALSE)
-      endif()
-    endif()
-    if(RECURSE_DIR)
-      elements_recurse_cython_include_dirs(hsubdir ${f_pack})
-      set(full_hsubdir ${full_hsubdir} ${hsubdir})
-    endif()
-    set(full_hsubdir ${full_hsubdir} ${f_pack})
-  endforeach()
-  if(full_hsubdir)
-      list(REMOVE_DUPLICATES full_hsubdir)
-  endif()
-  
-  get_property(cy_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-  set(cy_dirs ${full_hsubdir} ${cy_dirs})
-  list(REMOVE_DUPLICATES cy_dirs)
-  
+  include_package_directories(${ARG_INCLUDE_DIRS} RECURSE_PATTERN  "*.px[di]")
+
   # get the source file directory
-  get_source_file_property(src_location ${srcs} LOCATION)
+  get_source_file_property(src_location ${src} LOCATION)
   get_filename_component(pyx_dir ${src_location} DIRECTORY)
-  set(cy_dirs ${pyx_dir} ${cy_dirs})
-  list(REMOVE_DUPLICATES cy_dirs)
+
+  include_directories(BEFORE ${pyx_dir})
+
+  get_property(cy_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+  if(cy_dirs)
+    list(REMOVE_DUPLICATES cy_dirs)
+  endif()
   
   set(CYTHON_MOD_INCLUDE_DIRS)
   foreach(dir ${cy_dirs})
@@ -2554,15 +2538,16 @@ function(_generate_cython_cpp)
         ${cython_debug_arg}
         ${CYTHON_FLAGS}
         --output-file ${ARG_OUTFILE}
-        ${srcs}
+        ${src}
     DEPENDS 
-        ${srcs}
+        ${src}
     COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${ARG_OUTFILE}  ${srcs}"
     )
   
   set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
-  
+
 endfunction()
+
 
 #---------------------------------------------------------------------------------------------------
 # elements_add_cython_module([interface] source1 source2 ...
