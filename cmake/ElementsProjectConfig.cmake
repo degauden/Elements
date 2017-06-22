@@ -1473,9 +1473,10 @@ macro(_get_include_dir_from_package inc_dir is_sys pck)
       endif()
       # Include the directories
       set(${inc_dir} ${${to_incl_var}})
-      set(${is_sys} TRUE)  
     endif()
   endif()
+ 
+  starts_with_sys_include(${is_sys} ${${inc_dir}})
  
 endmacro()
 
@@ -1495,6 +1496,9 @@ function(include_package_directories)
   foreach(package ${ARG_UNPARSED_ARGUMENTS})
     # we need to ensure that the user can call this function also for directories
     _get_include_dir_from_package(to_incl is_sys_inc ${package})
+    
+    debug_print_var(to_incl)
+    debug_print_var(is_sys_inc)
 
     if(to_incl)
       if(is_sys_inc AND HIDE_SYSINC_WARNINGS)
@@ -2336,6 +2340,7 @@ endfunction()
 # _generate_swig_files(<swig_module>
 #                      i_src1 i_src2 ...
 #                      OUTFILE out.cxx
+#                      LINK_LIBRARIES library1 library2 ...
 #                      INCLUDE_DIRS dir1 package2 ...)
 #
 # generate the SWIG python and C++ files
@@ -2343,7 +2348,7 @@ endfunction()
 function(_generate_swig_files swig_module)
 
   find_package(SWIG QUIET REQUIRED)
-  CMAKE_PARSE_ARGUMENTS(ARG "" "OUTFILE" "INCLUDE_DIRS" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "" "OUTFILE" "INCLUDE_DIRS;LINK_LIBRARIES" ${ARGN})
   
   if("${ARG_OUTFILE}" STREQUAL "")
     message(FATAL_ERROR "_generate_swig_files: No OUTFILE defined")
@@ -2351,7 +2356,13 @@ function(_generate_swig_files swig_module)
 
   set(i_srcs ${ARG_UNPARSED_ARGUMENTS})
 
-  include_package_directories(${ARG_INCLUDE_DIRS})
+
+  # locate and set include directories
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+
   get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
   list(REMOVE_DUPLICATES dirs)
   set(SWIG_MOD_INCLUDE_DIRS)
@@ -2468,6 +2479,7 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 # _generate_cython_cpp(interface
 #                      OUTFILE out.cxx
+#                      LINK_LIBRARIES library1 library2 ...
 #                      INCLUDE_DIRS dir1 package2 ...)
 #
 # Generate the C++ source file from the .pyx file using the INCLUDE_DIRS
@@ -2475,7 +2487,7 @@ endfunction()
 function(_generate_cython_cpp)
 
   find_package(Cython QUIET REQUIRED)
-  CMAKE_PARSE_ARGUMENTS(ARG "" "OUTFILE" "INCLUDE_DIRS" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "" "OUTFILE" "INCLUDE_DIRS;LINK_LIBRARIES" ${ARGN})
   
   if("${ARG_OUTFILE}" STREQUAL "")
     message(FATAL_ERROR "_generate_cython_cpp: No OUTFILE defined")
@@ -2598,6 +2610,7 @@ function(elements_add_cython_module)
 
   _generate_cython_cpp(${pyx_module_sources}
                        OUTFILE ${PY_MODULE_CYTHON_SRC}
+                       LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
                        INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
 
   elements_add_python_module(${mod_name}
