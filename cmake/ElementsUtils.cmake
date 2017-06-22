@@ -74,6 +74,58 @@ function(JOIN VALUES GLUE OUTPUT)
   set (${OUTPUT} "${_TMP_STR}" PARENT_SCOPE)
 endfunction()
 
+
+function(get_all_sys_includes inc_list)
+    
+  set(full_list)
+  foreach(d ${CMAKE_PREFIX_PATH})
+    set(full_list ${full_list} ${d}/include)
+  endforeach()
+
+  foreach(d ${CMAKE_SYSTEM_PREFIX_PATH})
+    set(full_list ${full_list} ${d}/include)
+  endforeach()
+
+  foreach(d ${CMAKE_SYSTEM_INCLUDE_PATH})
+    set(full_list ${full_list} ${d})
+  endforeach()
+
+  if(full_list)
+    list(REMOVE_DUPLICATES full_list)
+  endif()
+
+  set(${inc_list} ${full_list} PARENT_SCOPE)
+  
+endfunction()
+
+
+function(is_sys_include is_sys dir)
+
+  set(${is_sys} FALSE PARENT_SCOPE)
+  get_all_sys_includes(inc_list)
+
+  list(FIND inc_list ${dir} _index)
+   
+  if(_index GREATER -1)
+    set(${is_sys} TRUE PARENT_SCOPE)
+  endif()
+
+endfunction()
+
+function(starts_with_sys_include starts_with_sys dir)
+
+    set(${starts_with_sys} FALSE PARENT_SCOPE)
+    get_all_sys_includes(inc_list)
+
+    foreach(inc_dir ${inc_list})
+      if("${dir}" MATCHES "^${inc_dir}/.*$" ) 
+        set(${starts_with_sys} FALSE PARENT_SCOPE)
+        break()   
+      endif()
+    endforeach()
+
+endfunction()
+
 #----------------------------------------------------------------
 # Filename utils
 #----------------------------------------------------------------------
@@ -285,27 +337,6 @@ function(get_full_binary_list binary_tag binary_base full_list)
   set(${full_list} ${the_list} PARENT_SCOPE)
 
 endfunction()
-
-#function(get_project_bases project version full_list)
-#
-#  set(the_list ${project})
-#  if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
-#    string(TOUPPER ${project} project_upcase)
-#    list(APPEND the_list ${project_upcase}/${project_upcase}_${version})
-#  endif()
-#
-#  list(APPEND the_list ${project}/${version})
-#  list(APPEND the_list ${project}_${version})
-#
-#  if(NOT ELEMENTS_USE_CASE_SENSITIVE_PROJECTS)
-#    list(APPEND the_list ${project_upcase})
-#  endif()
-#
-#  list(REMOVE_DUPLICATES the_list)
-#
-#  set(${full_list} ${the_list} PARENT_SCOPE)
-#
-#endfunction()
 
 
 function(get_project_bases project version full_list)
