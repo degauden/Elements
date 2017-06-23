@@ -1499,10 +1499,10 @@ function(include_package_directories)
           elements_recurse(hsubdir ${_i} PATTERN ${ARG_RECURSE_PATTERN})
           if(hsubdir)
             list(REMOVE_DUPLICATES hsubdir)
+            foreach(hs ${hsubdir})
+              include_directories(${hs})    
+            endforeach()
           endif()
-          foreach(hs ${hsubdir})
-            include_directories(${hs})    
-          endforeach()
         else()
           include_directories(${_i})
         endif()    
@@ -2493,21 +2493,44 @@ function(_generate_cython_cpp)
 
   set(src ${ARG_UNPARSED_ARGUMENTS})
 
-  include_package_directories(${ARG_INCLUDE_DIRS} RECURSE_PATTERN  "*.px[di]")
+  # locate and set include directories
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+
 
   # get the source file directory
   get_source_file_property(src_location ${src} LOCATION)
   get_filename_component(pyx_dir ${src_location} DIRECTORY)
 
-  include_directories(BEFORE ${pyx_dir})
+  include_directories(AFTER ${pyx_dir})
 
   get_property(cy_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
   if(cy_dirs)
     list(REMOVE_DUPLICATES cy_dirs)
   endif()
   
+  # pattern enabled recursion in non-system directories
+  set(all_cy_dirs)
+  foreach(_i ${cy_dirs})
+    set(starts_with_sys FALSE)
+    starts_with_sys_include(starts_with_sys ${_i})
+    if(NOT ${starts_with_sys})
+      elements_recurse(hsubdir ${_i} PATTERN "*.px[di]")
+      if(hsubdir)
+        list(REMOVE_DUPLICATES hsubdir)
+        set(all_cy_dirs ${all_cy_dirs} ${hsubdir})    
+      endif()
+    endif()
+    set(all_cy_dirs ${all_cy_dirs} ${_i})    
+  endforeach()
+  list(REMOVE_DUPLICATES all_cy_dirs)
+  
+  
   set(CYTHON_MOD_INCLUDE_DIRS)
-  foreach(dir ${cy_dirs})
+  foreach(dir ${all_cy_dirs})
+    debug_print_var(dir)
     set(CYTHON_MOD_INCLUDE_DIRS ${CYTHON_MOD_INCLUDE_DIRS} -I${dir})
   endforeach()  
   
