@@ -1441,10 +1441,9 @@ macro(_elements_handle_data_packages)
   endwhile()
 endmacro()
 
-macro(_get_include_dir_from_package inc_dir is_sys pck)
+macro(_get_include_dir_from_package inc_dir pck)
 
   set(${inc_dir})
-  set(${is_sys} FALSE)
   if(TARGET ${pck})
     get_target_property(${inc_dir} ${pck} SOURCE_DIR)
   elseif(IS_ABSOLUTE ${pck} AND IS_DIRECTORY ${pck})
@@ -1476,8 +1475,6 @@ macro(_get_include_dir_from_package inc_dir is_sys pck)
     endif()
   endif()
  
-  starts_with_sys_include(${is_sys} ${${inc_dir}})
- 
 endmacro()
 
 
@@ -1495,18 +1492,16 @@ function(include_package_directories)
 
   foreach(package ${ARG_UNPARSED_ARGUMENTS})
     # we need to ensure that the user can call this function also for directories
-    _get_include_dir_from_package(to_incl is_sys_inc ${package})
-    
-    debug_print_var(to_incl)
-    debug_print_var(is_sys_inc)
+    _get_include_dir_from_package(to_incl ${package})
 
-    if(to_incl)
-      if(is_sys_inc AND HIDE_SYSINC_WARNINGS)
-        include_directories(SYSTEM ${to_incl})    
+    foreach(_i ${to_incl})
+      starts_with_sys_include(_is_sys ${_i})
+      if(${_is_sys} AND ${HIDE_SYSINC_WARNINGS})
+        include_directories(SYSTEM ${_i})    
       else()
         # recursion applies only to non-system dirs
         if(ARG_RECURSE_PATTERN)
-          elements_recurse(hsubdir ${to_incl} PATTERN ${ARG_RECURSE_PATTERN})
+          elements_recurse(hsubdir ${_i} PATTERN ${ARG_RECURSE_PATTERN})
           if(hsubdir)
             list(REMOVE_DUPLICATES hsubdir)
           endif()
@@ -1514,10 +1509,10 @@ function(include_package_directories)
             include_directories(${hs})    
           endforeach()
         else()
-          include_directories(${to_incl})
+          include_directories(${_i})
         endif()    
       endif()
-    endif()
+    endforeach()
     
   endforeach()
 endfunction()
