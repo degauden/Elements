@@ -1221,7 +1221,7 @@ macro(_elements_use_other_projects)
             list(APPEND known_packages ${exported})
             get_filename_component(expname ${exported} NAME)
             include(${expname}Export)
-            message(STATUS "    imported ${exported} ${${exported}_VERSION}")
+            message(STATUS "    imported module ${exported} ${${exported}_MODULE_VERSION}")
           endif()
         endforeach()
         list(APPEND known_packages ${${other_project}_OVERRIDDEN_SUBDIRS})
@@ -1250,6 +1250,7 @@ in the paths: ${projects_search_path}
     endif()
 
   endwhile()
+  
 endmacro()
 
 #-------------------------------------------------------------------------------
@@ -3783,7 +3784,7 @@ set(_IMPORT_PREFIX \"${CMAKE_INSTALL_PREFIX}\")
       endif()
 
       if(subdir_version)
-        file(APPEND ${pkg_exp_file} "set(${package}_VERSION ${subdir_version})\n")
+        file(APPEND ${pkg_exp_file} "set(${package}_MODULE_VERSION ${subdir_version})\n")
       endif()
     endif()
     install(FILES ${pkg_exp_file} DESTINATION ${CMAKE_INSTALL_SUFFIX})
