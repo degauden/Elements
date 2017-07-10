@@ -26,6 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import argparse
 import os
+import sys
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
@@ -41,29 +42,27 @@ AUX_MOD_RST_IN = 'doc_module.rst.in'
 
 ################################################################################
 
-def isElementsProjectExist(project_directory):
+def isCmakelistFileExist(project_directory):
     """
     Checks if a <CMakeLists.txt> file exists and is really an Elements
     cmake file
     """
-    file_exists = True
     cmake_file = os.path.join(project_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
-        file_exists = False
-        logger.error('# <%s> cmake project file is missing! Are you inside a '\
-                     'project directory?', cmake_file)
+        logger.error('<%s> cmake project file is missing!', cmake_file)
+        logger.error('Are you inside a project directory?')
+        sys.exit(1)
     else:
         # Check the make file is an Elements cmake file
         # it should contain the string : "elements_project"
         f = open(cmake_file, 'r')
         data = f.read()
         if not 'elements_project' in data:
-            file_exists = False
-            logger.error('# <%s> is not an Elements project cmake file! Can '\
-                         'not find the <elements_project> directive', cmake_file)
+            logger.error('<%s> is not an Elements project cmake file!', cmake_file)
+            logger.error('Can not find the <elements_project> directive.')
+            f.close()
+            sys.exit(1)
         f.close()
-
-    return file_exists
 
 ################################################################################
 
@@ -136,8 +135,6 @@ def createModule(project_dir, module_name, dependency_list):
     Create a module, copy auxiliary files and substitute variables in the
     CMakefile.txt file
     """
-    script_goes_on = True
-
     # Create module directory
     mod_path = os.path.join(project_dir, module_name)
     logger.info('# Creating the module: <%s> ', mod_path)
@@ -146,21 +143,38 @@ def createModule(project_dir, module_name, dependency_list):
         logger.warning('<%s> module ALREADY exists on disk!!!', module_name)
         response_key = raw_input(
             'Do you want to replace the existing module (yes/y/no/n), default: no)?')
-        if response_key == "yes" or response_key == "y":
+        if response_key.lower() == "yes" or response_key.lower() == "y":
             logger.info('# Replacing the existing module: <%s>', module_name)
             epcr.eraseDirectory(mod_path)
         else:
-            logger.info("Script stopped by user!")
-            script_goes_on = False
+            sys.exit(0)
 
-    if script_goes_on:
-        createModuleDirectories(mod_path, module_name)
-        createCmakeListFile(mod_path, module_name, dependency_list)
+    createModuleDirectories(mod_path, module_name)
+    createCmakeListFile(mod_path, module_name, dependency_list)
+################################################################################
 
-    return script_goes_on
+def isDependencyListValid(str_list):
+    """
+    Check if the dependency name(s) is(are) valid
+    """
+    if str_list:
+        for elt in str_list:
+            epcr.isNameAndVersionValid(elt, '1.0')
 
 ################################################################################
 
+def makeChecks(project_dir, module_name, dependency_list):
+    """
+    Make some checks
+    """
+    # We absolutely need a Elements cmake file
+    isCmakelistFileExist(project_dir)
+    epcr.isNameAndVersionValid(module_name, '1.0')
+    isDependencyListValid(dependency_list)
+    epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0])
+
+################################################################################
+    
 def defineSpecificProgramOptions():
     """
     Define program option(s)
@@ -197,25 +211,17 @@ def mainMethod(args):
 
     module_name = args.module_name
     dependency_list = args.module_dependency
-
+    
     # Default is the current directory
     project_dir = os.getcwd()
-
     logger.info('# Current directory : %s', project_dir)
 
-    # We absolutely need a Elements cmake file
-    script_goes_on = isElementsProjectExist(project_dir)
-
-    # Module as no version number, '1.0' is just for using the routine
-    if script_goes_on:
-        script_goes_on = epcr.isNameAndVersionValid(module_name, '1.0')
-
-    # Check name in the Element Naming Database
-    if script_goes_on:
-        script_goes_on = epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0])
-
-    if script_goes_on and createModule(project_dir, module_name, dependency_list):
+    try:
+        makeChecks(project_dir, module_name, dependency_list)
+        createModule(project_dir, module_name, dependency_list)
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
-        logger.info('# Script over.')
+    except:
+        logger.info('# Script aborted.')
+        return 1
     else:
-        logger.warning('# Script aborted')
+        logger.info('# Script over.')

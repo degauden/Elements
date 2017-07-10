@@ -116,12 +116,24 @@ def createScript(current_dir, module_name, program_name):
     """
     createDirectories(current_dir, module_name)
     program_path = os.path.join(current_dir, 'scripts')
-    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
-    if script_goes_on:
-        subStringsInScriptFile(program_path, program_name, module_name)
-        updateCmakeListsFile(current_dir, program_name)
+    epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
+    subStringsInScriptFile(program_path, program_name, module_name)
+    updateCmakeListsFile(current_dir, program_name)
 
-    return script_goes_on
+################################################################################
+
+def makeChecks(program_file_path, program_name):
+    """
+    Make some checks
+    """
+    # Module as no version number, '1.0' is just for using the routine
+    epcr.isNameAndVersionValid(program_name, '1.0')
+    # Make sure the program does not already exist
+    epcr.isFileAlreadyExist(program_file_path, program_name)
+    # Check aux file exist
+    epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+    # Check name in DB
+    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
 
 ################################################################################
 
@@ -134,9 +146,7 @@ def defineSpecificProgramOptions():
     (default), this directory must be an <Elements> module.
            """
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('program_name', metavar='program-name',
-                        type=str,
-                        help='Program name')
+    parser.add_argument('program_name', metavar='program-name', type=str, help='Program name')
 
     return parser
 
@@ -159,37 +169,21 @@ def mainMethod(args):
     logger.info('# Current directory : %s', current_dir)
     logger.info('')
 
-    # We absolutely need a Elements cmake file
-    script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
+    try:
+        # We absolutely need a Elements cmake file
+        module_name = epcr.isElementsModuleExist(current_dir)
+        # Check name in the Element Naming Database
+        program_file_path = os.path.join(current_dir, 'scripts', program_name)
+        # Make checks
+        makeChecks(program_file_path, program_name)
 
-    # Module as no version number, '1.0' is just for using the routine
-    if script_goes_on:
-        script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
-
-    # Check aux file exist
-    if script_goes_on:
-        script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
-
-    program_file_path = os.path.join(current_dir, 'scripts', program_name)
-
-    # Check name in the Element Naming Database
-    if script_goes_on:
-        script_goes_on = epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
-
-    # Make sure the program does not already exist
-    if script_goes_on:
-        script_goes_on = epcr.isFileAlreadyExist(program_file_path, program_name)
-
-    if script_goes_on:
-        if os.path.exists(current_dir):
-            if createScript(current_dir, module_name, program_name):
-                logger.info('< %s > program successfully created in < %s >.',
-                            program_name, program_file_path)
-                # Remove backup file
-                epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-                logger.info('Script over.')
-        else:
-            logger.error('< %s > project directory does not exist!', current_dir)
-
-    if not script_goes_on:
-        logger.error('Script aborted!')
+        createScript(current_dir, module_name, program_name)
+        logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
+        
+        # Remove backup file
+        epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
+    except:
+        logger.info('# Script aborted.')
+        return 1
+    else:
+        logger.info('# Script over.')

@@ -26,6 +26,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import argparse
 import os
+import sys
+import re
 import ELEMENTS_VERSION  # @UnresolvedImport
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.NameCheck as nc
@@ -36,6 +38,10 @@ logger = log.getLogger('CreateElementsProject')
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
 AUX_CMAKE_FILE_IN = "Makefile.in"
 AUX_PROJ_RST_IN = "doc_project.rst.in"
+
+class NameVersionError(Exception):
+   def __init__(self, message):
+      self.args = str(message)
 
 ################################################################################
 
@@ -60,13 +66,8 @@ def isDependencyProjectValid(str_list):
     """
     Check if the dependency project name and version list is valid
     """
-    valid = True
     for i in range(len(str_list)):
-        if not epcr.isNameAndVersionValid(str_list[i][0], str_list[i][1]):
-            valid = False
-            break
-
-    return valid
+        epcr.isNameAndVersionValid(str_list[i][0], str_list[i][1])
 
 ################################################################################
 
@@ -80,11 +81,8 @@ def duplicate_elements(duplicate_list):
         if not elt[0] in name_list:
             name_list.append(elt[0])
         else:
-            logger.error('# Found twice the following dependency : <%s>, script aborted', elt[0])
-            not_found_duplicate = False
-            break
-
-    return not_found_duplicate
+            logger.error('Found twice the following dependency : %s', elt[0])
+            sys.exit(1)
 
 ################################################################################
 
@@ -158,22 +156,92 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
     logger.info('# Creating the project')
 
     # Create project
-    os.makedirs(project_dir)
+    if not os.path.exists(project_dir):
+        os.makedirs(project_dir)
 
     epcr.copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
     epcr.copyAuxFile(project_dir, AUX_CMAKE_FILE_IN)
+
     # Remove '.in'
     cmakefile = os.path.join(project_dir, AUX_CMAKE_FILE_IN)
     os.rename(cmakefile, cmakefile.replace('.in', ''))
 
     project_doc_dir = os.path.join(project_dir, "doc")
-    os.makedirs(project_doc_dir)
+    if not os.path.exists(project_doc_dir):
+        os.makedirs(project_doc_dir)
     epcr.copyAuxFile(project_doc_dir, AUX_PROJ_RST_IN)
     project_rst_file = os.path.join(project_doc_dir, AUX_PROJ_RST_IN)
     os.rename(project_rst_file, project_rst_file.replace('.in', ''))
 
-
     substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects)
+
+################################################################################
+
+def makeChecks(proj_name, proj_version, dependency, dependant_projects):
+    """
+    Make some checks
+    """
+    # Check project name and version
+    epcr.isNameAndVersionValid(proj_name, proj_version)
+    if not dependency is None:
+        isDependencyProjectValid(dependant_projects)
+    # Check for duplicate dependencies
+    if not dependency is None:
+        duplicate_elements(dependant_projects)
+    # Check AUX files exist
+    epcr.isAuxFileExist(AUX_CMAKE_LIST_IN)
+    epcr.isAuxFileExist(AUX_CMAKE_FILE_IN)
+    # Check name in the Element Naming Database
+    epcr.checkNameInEuclidNamingDatabase(proj_name, nc.TYPES[0])
+
+
+################################################################################
+
+def buildProjectDir(no_version_directory, destination_path, proj_name, proj_version):
+    """
+    Build project directory path
+    """
+    if no_version_directory:
+        project_dir = os.path.join(destination_path, proj_name)
+    else:
+        project_dir = os.path.join(destination_path, proj_name, proj_version)
+    return project_dir
+
+################################################################################
+
+def lookForDirectories(project_dir):
+    """
+    Look for any version directory in the project directory e.g 1.0,1.2 etc...
+    """
+    matchList=[]
+    regex_pattern =r"\d+\.\d+(\.\d+)?"
+    dirlist = [elt for elt in os.listdir(project_dir) if os.path.isdir(os.path.join(project_dir,elt)) ]
+    version_array = [ m.group(0) for l in dirlist for m in [ re.search(regex_pattern,l) ] if m ]
+    for elt in dirlist:
+        match = re.search(regex_pattern,elt)
+        if match:
+            matchList.append(match.group(0))
+    return matchList
+
+################################################################################
+
+def CheckProjectExist(project_dir, no_version_directory, force_erase):
+    """
+    Look for any version directory in the project directory e.g 1.0,1.2 etc...
+    """
+    if os.path.exists(project_dir) and not force_erase:
+        logger.warning('<%s> Project ALREADY exists!!!', project_dir)
+        version_dir_list = lookForDirectories(project_dir)
+        # Warn user about directory under the project
+        if no_version_directory and version_dir_list:
+            logger.warning('Found the following version(s) directory(ies) : %s', version_dir_list)
+        response_key = raw_input('Do you want to overwrite the existing project (y/n, default: n)?')
+        if response_key.lower() == "yes" or response_key == "y":
+            logger.info('# Overwriting the existing project: <%s>', project_dir)
+        else:
+            sys.exit(0)
+    elif force_erase:
+        epcr.eraseDirectory(project_dir)
 
 ################################################################################
 
@@ -183,22 +251,38 @@ def defineSpecificProgramOptions():
     """
     description = """
 This script creates an <Elements> project in your current directory(by default)
-or at the location defined by the <$User_area> environment variable, if defined.
+or at the location defined by the <$User_area> environment variable.
 It means that all the necessary structure (directory structure, makefiles etc...)
-will be automatically created for you.
+will be automatically created for you. In addition, the project name will be registered (if any) into
+the Naming Database with the URL defined by the ELEMENTS_NAMING_DB_URL environment variable.
+The options are:
 
-[-d]    Use this option if your project has some dependencies on other project(s).
-[-novd] Use this option if you do not want to create a version directory
-        e.g.
-            > CreateElementsProject test_project 1.0
-              This creates the following directories : "test_project/1.0"
+[-d]          Use this option if your project has some dependencies on other project(s).
+[-n or -novd] Use this option if you do not want to create a version directory
+[-e]          Use this option to erase an already existing project
 
-            > CreateElementsProject test 1.0 -novd
-              This creates the following directory : "test_project"
+e.g.
+    > CreateElementsProject test_project 1.0
+      This creates the following directories : "test_project/1.0"
 
-            The "test_project" project is created at your current directory or
-            at the location pointed by the $User_area environment variable
+    > CreateElementsProject test 1.0 -n (or -novd)
+      This creates the following directory : "test_project"
 
+    > CreateElementsProject test 1.0 -e
+      With this option an already existing project ("test_project/1.0") will be fully erased before
+      the creation of the new one.
+      This creates the following directory : "test_project/1.0"
+
+    The "test_project" project is created at your current directory or
+    at the location pointed by the $User_area environment variable
+
+Note:
+    - If your project directory exists already(e.g. project cloned from git), the script will not erase it,
+      it will just replace the files needed to be updated. For instance, the <.git> directory will
+      not be erased (and/or whatever files/directory there).
+      If you do not use the -n (or -novd) option, in such a case the <.git> directory for instance will not be
+      copied under the version directory. It is the responsability of the user to do that and whatever file(s)
+      needed to be copied.
             """
 
     from argparse import RawTextHelpFormatter
@@ -213,9 +297,11 @@ will be automatically created for you.
                         nargs=2, action='append', type=str,
                         help='Dependency project name and its version number"\
                          e.g "-d Elements x.x.x"')
-    parser.add_argument('-novd', '--no-version-directory', action="store_true",
+    parser.add_argument('-n','-novd', '--no-version-directory', action="store_true",
                         help='Does not create the <project-version> directory only\
                         the <project-name> directory will be created')
+    parser.add_argument('-e', '--erase', action="store_true",
+                        help='Erase the <project-version> directory if it does exists')
 
     return parser
 
@@ -233,50 +319,25 @@ def mainMethod(args):
     proj_version = args.project_version
     dependant_projects = args.dependency
     destination_path = setPath()
+    dependency = args.dependency
+    no_version_directory = args.no_version_directory
+    force_erase = args.erase
+
     logger.info('# Installation directory : %s', destination_path)
 
-    # Check project name and version
-    script_goes_on = epcr.isNameAndVersionValid(proj_name, proj_version)
+    try:
+        # Set the project directory
+        project_dir = buildProjectDir(no_version_directory, destination_path, proj_name, proj_version)
+        makeChecks(proj_name, proj_version, dependency, dependant_projects)
 
-    # Check for duplicate dependencies
-    if script_goes_on and not args.dependency is None:
-        script_goes_on = duplicate_elements(dependant_projects)
+        CheckProjectExist(project_dir, no_version_directory, force_erase)
 
-    # Check AUX files exist
-    if script_goes_on:
-        script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_LIST_IN)
-    if script_goes_on:
-        script_goes_on = epcr.isAuxFileExist(AUX_CMAKE_FILE_IN)
-    
-    # Check name in the Element Naming Database
-    if script_goes_on:
-        script_goes_on = epcr.checkNameInEuclidNamingDatabase(proj_name, nc.TYPES[0])
-
-    # Set the project directory
-    if args.no_version_directory:
-        project_dir = os.path.join(destination_path, proj_name)
-    else:
-        project_dir = os.path.join(destination_path, proj_name, proj_version)
-
-    # Make sure dependencies name and version are valid
-    if script_goes_on and not args.dependency is None:
-        script_goes_on = isDependencyProjectValid(dependant_projects)
-
-    if script_goes_on and os.path.exists(project_dir):
-        logger.warning('<%s> Project ALREADY exists!!!', project_dir)
-        response_key = raw_input('Do you want to replace the existing '\
-                                 'project and associated module(s) (Yes/No,'\
-                                 ' default: No)?')
-        if response_key == "YES" or response_key == "yes" or response_key == "y":
-            logger.info('# Replacing the existing project: <%s>', project_dir)
-            epcr.eraseDirectory(project_dir)
-        else:
-            script_goes_on = False
-            logger.info('# Script stopped by user!')
-
-    if script_goes_on:
+        # Create the project
         createProject(project_dir, proj_name, proj_version, dependant_projects)
+
         logger.info('# <%s> project successfully created.', project_dir)
-        logger.info('# Script over.')
+    except:
+        logger.info('# Script aborted.')
+        return 1
     else:
-        logger.error('# Script aborted!')
+        logger.info('# Script over.')

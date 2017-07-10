@@ -3,6 +3,7 @@
 home_dir=${PWD}
 
 project_name="ProjectTest"
+dep_project="DependentProject"
 version="1.0"
 
 # Create unique directory
@@ -20,7 +21,7 @@ export User_area=${tmploc}
 
 cd ${tmploc}
 
-CreateElementsProject $project_name $version <<EOF
+CreateElementsProject $project_name $version -d $dep_project $version<<EOF
 y
 EOF
 
@@ -47,6 +48,13 @@ fi
 result=$( grep "$project_name $version" $User_area/$project_name/$version/CMakeLists.txt )
 if [ $? -ne 0 ]; then
    echo "Error: <$project_name $version> not found in <$User_area/$project_name/$version/CMakeLists.txt> file!" 1>&2
+   local_clean_exit 1
+fi
+
+#  Make sure elements_project macro contains the dependent project
+result=$( grep "$dep_project $version" $User_area/$project_name/$version/CMakeLists.txt )
+if [ $? -ne 0 ]; then
+   echo "Error: <$dep_project $version> not found in <$User_area/$project_name/$version/CMakeLists.txt> file!" 1>&2
    local_clean_exit 1
 fi
 
