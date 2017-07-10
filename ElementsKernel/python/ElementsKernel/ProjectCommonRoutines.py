@@ -27,6 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 """
 
 import os
+import sys
 import re
 import shutil
 import ElementsKernel.ParseCmakeLists as pcl
@@ -52,7 +53,7 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
     if not nc.checkDataBaseUrl(db_url):
         logger.info("#")
         logger.warn("!!! The Elements Naming Database URL is not valid : %s !!!", db_url)
-        logger.warn("Please correct the DB URL by setting up the ELEMENTS_NAMING_DB_URL environment variable!!!")
+        logger.warn("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
         script_goes_on = False
     else:
         info = nc.getInfo(entity_name, db_url, entity_type)
@@ -77,10 +78,8 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
 
     if not script_goes_on:
         response_key = raw_input('Do you want to continue?(y/n, default: n)')
-        if response_key.lower() == "yes" or response_key.lower() == "y":
-            script_goes_on = True
-
-    return script_goes_on
+        if not response_key.lower() == "yes" and not response_key.lower() == "y":
+            sys.exit(0)
 
 ################################################################################
 
@@ -88,9 +87,11 @@ def removeFilesOnDisk(file_list):
     """
     Remove all files on hard drive from the <file_list> list.
     """
+    logger.info('')
     for elt in file_list:
         logger.info('File deleted : %s', elt)
         deleteFile(elt)
+    logger.info('')
 
 ################################################################################
 
@@ -136,17 +137,15 @@ def isNameAndVersionValid(name, version):
     valid = True
     name_regex = "^[A-Za-z0-9][A-Za-z0-9_-]*$"
     if re.match(name_regex, name) is None:
-        logger.error("< %s %s > name not valid. It must follow this regex : < %s >",
-                     name, version, name_regex)
-        valid = False
+        logger.error("Name not valid : < %s >",name)
+        logger.error("It must follow this regex : < %s >", name_regex)
+        sys.exit(1)
 
     version_regex = "^\\d+\\.\\d+(\\.\\d+)?$"
     if re.match(version_regex, version) is None:
-        logger.error("< %s %s > ,Version number not valid. It must follow this regex: < %s >",
-                     name, version, version_regex)
-        valid = False
-
-    return valid
+        logger.error("Version number not valid : < %s >", version)
+        logger.error("It must follow this regex: < %s >",version_regex)
+        sys.exit(1)
 
 ################################################################################
 
@@ -154,8 +153,9 @@ def eraseDirectory(directory):
     """
     Erase a directory and its contents from disk
     """
-    shutil.rmtree(directory)
-    logger.info('< %s > directory erased!', directory)
+    if os.path.isdir(directory):
+        shutil.rmtree(directory)
+        logger.info('< %s > directory erased!', directory)
 
 ################################################################################
 
@@ -180,7 +180,7 @@ def getAuxPathFile(file_name):
 
     if not found:
         full_filename = ''
-        logger.error("Auxiliary path NOT FOUND  : <%s>", file_name)
+        logger.error("Auxiliary file NOT FOUND  : <%s>", file_name)
 
     return full_filename
 
@@ -191,14 +191,12 @@ def copyAuxFile(destination, aux_file_name):
     Copy the <aux_file_name> file to the <destination> directory.
     <aux_file_name> is just the name without path
     """
-    scripts_goes_on = True
     aux_path_file = getAuxPathFile(os.path.join('ElementsKernel', 'templates', aux_file_name))
     if aux_path_file:
         shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
     else:
-        scripts_goes_on = False
-
-    return scripts_goes_on
+        print 'zzzz'
+        sys.exit(1)
 
 ################################################################################
 
@@ -207,12 +205,10 @@ def isAuxFileExist(aux_file_name):
     Make sure the <aux_file> auxiliary file exists.
     <aux_file> is just the name without the path.
     """
-    found = False
-    aux_path_file = getAuxPathFile(os.path.join('ElementsKernel', 'templates', aux_file_name))
-    if aux_path_file:
-        found = True
-
-    return found
+    auxpath = os.path.join('ElementsKernel', 'templates', aux_file_name)
+    if not getAuxPathFile(auxpath):
+        logger.error("< "+  aux_file_name +" > Auxiliary file does not exist!")
+        sys.exit(1)
 
 ################################################################################
 
@@ -233,13 +229,12 @@ def isElementsModuleExist(module_directory):
     """
     Get the module name in the <CMAKE_LISTS_FILE> file
     """
-    found_keyword = True
     module_name = ''
     cmake_file = os.path.join(module_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
-        found_keyword = False
-        logger.error('< %s > cmake module file is missing! Are you inside a ' \
+        logger.error('# < %s > cmake module file is missing! Are you inside a ' \
         'module directory?', cmake_file)
+        sys.exit(1)
     else:
         # Check the make file is an Elements cmake file
         # it should contain the string : "elements_project"
@@ -254,9 +249,9 @@ def isElementsModuleExist(module_directory):
         if not module_name:
             logger.error('Module name not found in the <%s> file!', cmake_file)
             logger.error('Maybe you are not in a module directory...')
-            found_keyword = False
+            sys.exit(1)
 
-    return found_keyword, module_name
+    return module_name
 
 ################################################################################
 
@@ -265,13 +260,10 @@ def isFileAlreadyExist(path_filename, name):
     Check if the <path_filename> file does not already exist
     <path_filename> : path + filename
     """
-    script_goes_on = True
     if os.path.exists(path_filename):
-        script_goes_on = False
         logger.error('The < %s > name already exists! ', name)
         logger.error('File found here : < %s >! ', path_filename)
-
-    return script_goes_on
+        sys.exit(1)
 
 ################################################################################
 
