@@ -6,9 +6,9 @@
 namespace Elements {
 namespace Examples {
 
-class ELEMENTS_API PiCalculator
-{
+class ELEMENTS_API PiCalculator {
 public:
+  PiCalculator() = default;
   void calculate(unsigned int terms);
 
   typedef void (*show_result_callback_type)(double pi);
