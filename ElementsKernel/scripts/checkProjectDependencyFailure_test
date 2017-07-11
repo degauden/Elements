@@ -227,7 +227,9 @@ fi
 
 
 else
-echo "Warning: The Elements framework is not available in its InstallArea" 1>&2
+echo "Warning: The Elements framework is not available in its InstallArea ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}" 1>&2
+# the script must fail by default
+local_clean_exit 1
 fi
 
 
