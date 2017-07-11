@@ -24,6 +24,7 @@ import unittest
 
 from ElementsKernel.Temporary import TempDir
 from ElementsKernel.Path import joinPath, multiPathAppend, getLocationsFromEnv
+from ElementsKernel.Path import which
 
 class PathTest(unittest.TestCase):
 
@@ -60,14 +61,17 @@ class PathTest(unittest.TestCase):
                      "./loc3/bin", "./loc3/scripts"]
 
         self.assert_(multiPathAppend(locations, suffixes) == ref_paths)
-        
+
     def testGetLocationsFromEnv(self):
-        
+
         self.assert_(getLocationsFromEnv("NonExistingEnvVar") == [])
         self.assert_(getLocationsFromEnv("PATH") != [])
-        
+
         tmp_list = getLocationsFromEnv("PATH", exist_only=True)
-        self.assert_(len(tmp_list)!=0)
+        self.assert_(len(tmp_list) != 0)
+
+    def testWhich(self):
+        self.assertEqual("/usr/bin/ls", which("/usr/bin/ls"))
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
