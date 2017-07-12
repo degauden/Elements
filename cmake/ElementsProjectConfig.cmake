@@ -538,6 +538,17 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         SEARCH_PATH ${${other_project}_DIR})
   endforeach()
 
+  if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
+      set(project_environment ${project_environment}
+        SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH})
+  endif()
+
+  if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
+      set(project_environment ${project_environment}
+        SEARCH_PATH ${ELEMENTS_USR_SEARCH_PATH})
+  endif()
+
+
   foreach(other_project ${used_elements_projects})
     set(project_environment ${project_environment}
         INCLUDE ${other_project}Environment.xml)
@@ -3514,14 +3525,6 @@ function(elements_generate_env_conf filename)
     endif()
   endforeach()
 
-  if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
-      set(data "${data}  <env:search_path>${ELEMENTS_DEFAULT_SEARCH_PATH}</env:search_path>\n")
-  endif()
-
-  if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
-      set(data "${data}  <env:search_path>${ELEMENTS_USR_SEARCH_PATH}</env:search_path>\n")
-  endif()
-
   foreach(other_project ${used_elements_projects})
     if(${${other_project}_DIR})
       set(data "${data}  <env:include>${other_project}Environment.xml</env:include>\n")
@@ -3543,7 +3546,8 @@ function(elements_generate_env_conf filename)
   set(data "${data}</env:config>\n")
 
   get_filename_component(fn ${filename} NAME)
-  message(STATUS "Generating ${fn}")
+  message(STATUS "Generating ${fn}")  
+  
   file(WRITE ${filename} "${data}")
 endfunction()
 
