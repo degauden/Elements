@@ -5,6 +5,28 @@ include(CheckCCompilerFlag)
 
 include(SGSPlatform)
 
+macro(check_and_use_cxx_option opt var)
+    check_cxx_compiler_flag(${opt} ${var})
+    if(${var})
+      message(STATUS "   C++ uses \"${opt}\"")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${opt}"
+          CACHE STRING "Flags used by the compiler during all build types."
+          FORCE)
+    endif()
+endmacro()
+
+
+macro(check_and_use_c_option opt var)
+    check_c_compiler_flag(${opt} ${var})
+    if(${var})
+      message(STATUS "   C uses \"${opt}\"")
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${opt}"
+          CACHE STRING "Flags used by the compiler during all build types."
+          FORCE)
+    endif()
+endmacro()
+
+
 if((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm"))
   find_package(Clang)
   SET (CMAKE_C_COMPILER    "${CLANG_C_COMPILER}")
@@ -146,10 +168,17 @@ option(SQUEEZED_INSTALL
        "Enable the squeezing of the installation into a prefix directory"
        ON)
 
+option(SANITIZE_OPTIONS
+       "Activate the Sanitizing options"
+       OFF)
+       
+if(NOT SANITIZE_STYLE)
+  set(SANITIZE_STYLE "undefined" CACHE STRING "Style used for the -fsanitize= option" FORCE)
+endif()
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   #message(STATUS "Setting cached build flags")
-
 
     # Common compilation flags
   set(CMAKE_CXX_FLAGS
@@ -162,30 +191,20 @@ if(NOT ELEMENTS_FLAGS_SET)
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
+
+  if(SANITIZE_OPTIONS AND (SGS_COMP STREQUAL gcc))
+    check_and_use_cxx_option(-fsanitize=${SANITIZE_STYLE} CXX_HAS_SANITIZE)
+    check_and_use_c_option(-fsanitize=${SANITIZE_STYLE} C_HAS_SANITIZE)
+  endif()
+
   if(FLOAT_EQUAL_WARNING)
-    check_cxx_compiler_flag(-Wfloat-equal CXX_HAS_FLOAT_EQUAL)
-    if(CXX_HAS_FLOAT_EQUAL)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfloat-equal"
-          CACHE STRING "Flags used by the compiler during all build types."
-          FORCE)
-    endif()  
-    check_c_compiler_flag(-Wfloat-equal C_HAS_FLOAT_EQUAL)
-    if(C_HAS_FLOAT_EQUAL)
-      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wfloat-equal"
-          CACHE STRING "Flags used by the compiler during all build types."
-          FORCE)
-    endif()  
+    check_and_use_cxx_option(-Wfloat-equal CXX_HAS_FLOAT_EQUAL)
+    check_and_use_c_option(-Wfloat-equal C_HAS_FLOAT_EQUAL)
   endif()
 
   if(CXX_SUGGEST_OVERRIDE AND (SGS_COMP STREQUAL gcc))
-    check_cxx_compiler_flag(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)
-    if(CXX_HAS_SUGGEST_OVERRIDE)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override"
-          CACHE STRING "Flags used by the compiler during all build types."
-          FORCE)
-    endif()
+    check_and_use_cxx_option(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)
   endif()
-
 
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"
@@ -343,10 +362,7 @@ if ( ELEMENTS_CPP11 )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
   if ( APPLE AND ((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") ) )
-    check_cxx_compiler_flag(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
-    if(CXX_HAS_MINUS_STDLIB)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-    endif()
+    check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
   endif()
   if(USE_ODB)
     set(ODB_CXX_EXTRA_FLAGS --std c++11)
@@ -357,10 +373,7 @@ if ( ELEMENTS_CPP14 )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11") # this is the latest C standard available
   if ( APPLE AND ((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") ) )
-    check_cxx_compiler_flag(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
-    if(CXX_HAS_MINUS_STDLIB)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-    endif()
+    check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
   endif()
 endif()
 
