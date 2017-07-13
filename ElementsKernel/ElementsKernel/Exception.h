@@ -34,10 +34,11 @@
 #include <type_traits>
 
 #include "ElementsKernel/Exit.h"
+#include "ElementsKernel/Export.h"    // for ELEMENTS_API
 
 namespace Elements {
 
-class Exception: public std::exception {
+class ELEMENTS_API Exception: public std::exception {
 public:
   /**
    * Default constructor. The message is set  to the empty string.

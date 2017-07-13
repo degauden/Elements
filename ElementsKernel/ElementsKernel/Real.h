@@ -97,7 +97,7 @@ ELEMENTS_API extern const double DBL_DEFAULT_TEST_TOLERANCE;
 
 
 template<std::size_t size>
-class TypeWithSize {
+class ELEMENTS_API TypeWithSize {
 public:
   // This prevents the user from using TypeWithSize<N> with incorrect
   // values of N.
@@ -106,7 +106,7 @@ public:
 
 // The specialization for size 4.
 template<>
-class TypeWithSize<4> {
+class ELEMENTS_API TypeWithSize<4> {
 public:
   // unsigned int has size 4 in both gcc and MSVC.
   //
@@ -118,7 +118,7 @@ public:
 
 // The specialization for size 8.
 template<>
-class TypeWithSize<8> {
+class ELEMENTS_API TypeWithSize<8> {
 public:
   using Int = long long; // NOLINT
   using UInt = unsigned long long; // NOLINT
@@ -173,7 +173,7 @@ constexpr std::size_t defaultMaxUlps<double>()
 //
 //   RawType: the raw floating-point type (either float or double)
 template<typename RawType>
-class FloatingPoint {
+class ELEMENTS_API FloatingPoint {
 public:
   // Defines the unsigned integer type that has the same size as the
   // floating point number.
