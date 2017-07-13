@@ -192,4 +192,9 @@ elements_add_test(checkProjectDependencyFailure
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation
                   FAILS)
+
+elements_add_test(HEADVersionProject
+                  COMMAND HEADVersionProject_test
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  LABELS Creation)
                   
