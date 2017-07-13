@@ -90,16 +90,8 @@ def getElementsVersion():
     """
     Get the Elements version number
     """
-    patch_version = ELEMENTS_VERSION.ELEMENTS_PATCH_VERSION
-    version = [str(ELEMENTS_VERSION.ELEMENTS_MAJOR_VERSION),
-               str(ELEMENTS_VERSION.ELEMENTS_MINOR_VERSION)]
-    version_patch = [str(ELEMENTS_VERSION.ELEMENTS_MAJOR_VERSION),
-                     str(ELEMENTS_VERSION.ELEMENTS_MINOR_VERSION),
-                     str(patch_version)]
 
-    elt_version = '.'.join(version)
-    if patch_version > 0:
-        elt_version = '.'.join(version_patch)
+    elt_version = ELEMENTS_VERSION.ELEMENTS_ORIGINAL_VERSION
 
     logger.info('# Elements version found : <%s>', elt_version)
 
@@ -213,12 +205,12 @@ def lookForDirectories(project_dir):
     """
     Look for any version directory in the project directory e.g 1.0,1.2 etc...
     """
-    matchList=[]
-    regex_pattern =r"\d+\.\d+(\.\d+)?"
-    dirlist = [elt for elt in os.listdir(project_dir) if os.path.isdir(os.path.join(project_dir,elt)) ]
-    version_array = [ m.group(0) for l in dirlist for m in [ re.search(regex_pattern,l) ] if m ]
+    matchList = []
+    regex_pattern = r"\d+\.\d+(\.\d+)?"
+    dirlist = [elt for elt in os.listdir(project_dir) if os.path.isdir(os.path.join(project_dir, elt)) ]
+    version_array = [ m.group(0) for l in dirlist for m in [ re.search(regex_pattern, l) ] if m ]
     for elt in dirlist:
-        match = re.search(regex_pattern,elt)
+        match = re.search(regex_pattern, elt)
         if match:
             matchList.append(match.group(0))
     return matchList
@@ -297,7 +289,7 @@ Note:
                         nargs=2, action='append', type=str,
                         help='Dependency project name and its version number"\
                          e.g "-d Elements x.x.x"')
-    parser.add_argument('-n','-novd', '--no-version-directory', action="store_true",
+    parser.add_argument('-n', '-novd', '--no-version-directory', action="store_true",
                         help='Does not create the <project-version> directory only\
                         the <project-name> directory will be created')
     parser.add_argument('-e', '--erase', action="store_true",

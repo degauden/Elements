@@ -155,7 +155,7 @@ macro(elements_project project version)
     # 'HEAD' version is special
     set(CMAKE_PROJECT_VERSION_MAJOR 999)
     set(CMAKE_PROJECT_VERSION_MINOR 999)
-    set(CMAKE_PROJECT_VERSION_PATCH 0)
+    set(CMAKE_PROJECT_VERSION_PATCH "")
   endif()
 
   #--- Project Options and Global settings----------------------------------------------------------
@@ -1164,13 +1164,14 @@ macro(_elements_use_other_projects)
       # "HEAD" is a special version id (mapped to v999r999).
       set(other_project_cmake_version 999.999)
     endif()
+    set(other_project_original_version ${other_project_version})
 
     # Manage the lists which contains the dependencies and the project which
     # introduced them
     if(${other_project}_FOUND)
       # If the dependency is already handled check that the version numbers
       # much, otherwise raise an error
-      string(COMPARE NOTEQUAL "${${other_project}_VERSION}" "${other_project_cmake_version}" ver_mismatch)
+      string(COMPARE NOTEQUAL "${${other_project}_VERSION}" "${other_project_original_version}" ver_mismatch)
       if(ver_mismatch)
         list(FIND dependency_list "${other_project}" dep_index)
         list(GET dependency_dependee_list ${dep_index} dep_name)
@@ -1178,7 +1179,7 @@ macro(_elements_use_other_projects)
         list(GET dependency_dependee_list ${dep_index} dep_version)
         set(ver_mis_message "Dependency version mismatch:")
         set(ver_mis_message "${ver_mis_message} ${other_dependee} ${other_dependee_version}")
-        set(ver_mis_message "${ver_mis_message} -> ${other_project} ${other_project_cmake_version}")
+        set(ver_mis_message "${ver_mis_message} -> ${other_project} ${other_project_original_version}")
         set(ver_mis_message "${ver_mis_message} , ${dep_name} ${dep_version}")
         set(ver_mis_message "${ver_mis_message} -> ${other_project} ${${other_project}_VERSION}")
         message(FATAL_ERROR ${ver_mis_message})
@@ -1191,6 +1192,8 @@ macro(_elements_use_other_projects)
 
       set(suffixes)
       get_installed_project_suffixes(${other_project} ${other_project_version} ${BINARY_TAG} ${SGS_SYSTEM} suffixes)
+      set(suffixes2)
+      get_installed_versionless_project_suffixes(${other_project} ${BINARY_TAG} ${SGS_SYSTEM} suffixes2)
       foreach(pth ${projects_search_path})
         find_package(${other_project} ${other_project_cmake_version} QUIET
                      HINTS ${pth}
@@ -1198,8 +1201,6 @@ macro(_elements_use_other_projects)
         if(${other_project}_FOUND)
           break()
         else()
-          set(suffixes2)
-          get_installed_versionless_project_suffixes(${other_project} ${BINARY_TAG} ${SGS_SYSTEM} suffixes2)
           find_package(${other_project} ${other_project_cmake_version} QUIET
                        HINTS ${pth}
                        PATH_SUFFIXES ${suffixes2})
@@ -1208,6 +1209,7 @@ macro(_elements_use_other_projects)
           endif()
         endif()
       endforeach()
+
       if(${other_project}_FOUND)
         message(STATUS "  found ${other_project} ${${other_project}_VERSION} ${${other_project}_DIR}")
         if(NOT SGS_SYSTEM STREQUAL ${other_project}_astrotools_system)
@@ -1254,6 +1256,7 @@ macro(_elements_use_other_projects)
         message(FATAL_ERROR "
 Cannot find project ${other_project} ${other_project_version}
 with the suffixes: ${suffixes}
+or with the suffixes: ${suffixes}
 in the paths: ${projects_search_path}
 ")
       endif()

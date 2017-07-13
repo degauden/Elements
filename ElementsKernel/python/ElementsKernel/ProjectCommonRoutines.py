@@ -62,9 +62,9 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
         else:
             if info["exists"]:
                 logger.info("#")
-                logger.warn("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!", 
+                logger.warn("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!",
                             entity_name, entity_type)
-                logger.warn("See the result for the global query of the \"%s\" name in the DB: %s", entity_name, 
+                logger.warn("See the result for the global query of the \"%s\" name in the DB: %s", entity_name,
                             info["url"])
                 logger.warn("For more information also connect to: %s", info["private_url"])
                 script_goes_on = False
@@ -134,17 +134,16 @@ def isNameAndVersionValid(name, version):
     """
     Check that the <name> and <version> respect a regex
     """
-    valid = True
     name_regex = "^[A-Za-z0-9][A-Za-z0-9_-]*$"
     if re.match(name_regex, name) is None:
-        logger.error("Name not valid : < %s >",name)
+        logger.error("Name not valid : < %s >", name)
         logger.error("It must follow this regex : < %s >", name_regex)
         sys.exit(1)
 
-    version_regex = "^\\d+\\.\\d+(\\.\\d+)?$"
+    version_regex = "^(\\d+\\.\\d+(\\.\\d+)?)|(HEAD)$"
     if re.match(version_regex, version) is None:
         logger.error("Version number not valid : < %s >", version)
-        logger.error("It must follow this regex: < %s >",version_regex)
+        logger.error("It must follow this regex: < %s >", version_regex)
         sys.exit(1)
 
 ################################################################################
@@ -207,7 +206,7 @@ def isAuxFileExist(aux_file_name):
     """
     auxpath = os.path.join('ElementsKernel', 'templates', aux_file_name)
     if not getAuxPathFile(auxpath):
-        logger.error("< "+  aux_file_name +" > Auxiliary file does not exist!")
+        logger.error("< " + aux_file_name + " > Auxiliary file does not exist!")
         sys.exit(1)
 
 ################################################################################
@@ -305,5 +304,5 @@ def updateCmakeCommonPart(cmake_filename, library_dep_list):
 
     module_name = cmake_object.elements_subdir_list[0].name
 
-    return cmake_object,module_name
+    return cmake_object, module_name
 

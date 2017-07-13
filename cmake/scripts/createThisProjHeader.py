@@ -35,6 +35,7 @@ def main():
 #include <vector>                   // for vector
 #include "%(proj)s_VERSION.h"
 #include "%(proj)s_INSTALL.h"
+const std::string THIS_PROJECT_ORIGINAL_VERSION = %(proj)s_ORIGINAL_VERSION;
 constexpr std::uint_least64_t THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION;
 constexpr std::uint_least64_t THIS_PROJECT_MINOR_VERSION = %(proj)s_MINOR_VERSION;
 constexpr std::uint_least64_t THIS_PROJECT_PATCH_VERSION = %(proj)s_PATCH_VERSION;
