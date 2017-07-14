@@ -187,7 +187,7 @@ elements_add_test(CheckElementsProjectsTree
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation)
 
-elements_add_test(checkProjectDependencyFailure
+elements_add_test(CheckProjectDependencyFailure
                   COMMAND checkProjectDependencyFailure_test  
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation
@@ -195,6 +195,11 @@ elements_add_test(checkProjectDependencyFailure
 
 elements_add_test(HEADVersionProject
                   COMMAND HEADVersionProject_test
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  LABELS Creation)
+                  
+elements_add_test(PatchVersionProject
+                  COMMAND patchVersionProject_test
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation)
                   
