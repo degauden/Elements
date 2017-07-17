@@ -84,7 +84,7 @@ def createModuleDirectories(mod_path, module_name):
 
 ################################################################################
 
-def createCmakeListFile(module_dir, module_name, module_dep_list):
+def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=False):
     """
     Create the <CMakeList.txt> file and add dependencies to it
     """
@@ -110,12 +110,13 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
     cmake_object.elements_subdir_list.append(subdir_obj)
 
     # Set <ElementsKernel> as a default
-    default_dependency = 'ElementsKernel'
-    if module_dep_list:
-        if not default_dependency in module_dep_list:
-            module_dep_list.insert(0, default_dependency)
-    else:
-        module_dep_list = [default_dependency]
+    if not standalone:
+        default_dependency = 'ElementsKernel'
+        if module_dep_list:
+            if not default_dependency in module_dep_list:
+                module_dep_list.insert(0, default_dependency)
+        else:
+            module_dep_list = [default_dependency]
 
     # Update ElementsDependsOnSubdirs macro
     if module_dep_list:
@@ -130,7 +131,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list):
 
 ################################################################################
 
-def createModule(project_dir, module_name, dependency_list):
+def createModule(project_dir, module_name, dependency_list, standalone=False):
     """
     Create a module, copy auxiliary files and substitute variables in the
     CMakefile.txt file
@@ -150,7 +151,7 @@ def createModule(project_dir, module_name, dependency_list):
             sys.exit(0)
 
     createModuleDirectories(mod_path, module_name)
-    createCmakeListFile(mod_path, module_name, dependency_list)
+    createCmakeListFile(mod_path, module_name, dependency_list, standalone)
 ################################################################################
 
 def isDependencyListValid(str_list):
@@ -174,7 +175,7 @@ def makeChecks(project_dir, module_name, dependency_list):
     epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0])
 
 ################################################################################
-    
+
 def defineSpecificProgramOptions():
     """
     Define program option(s)
@@ -195,6 +196,9 @@ This script creates an <Elements> module at your current directory
     parser.add_argument('-md', '--module-dependency', metavar='module_name',
                         action='append', type=str,
                         help='Dependency module name e.g "-md ElementsKernel"')
+    parser.add_argument('-s', '--standalone', default=False, action="store_true",
+                        help='Remove the implicit dependency onto the ElementsKernel module (expert only)')
+
 
     return parser
 
@@ -211,14 +215,15 @@ def mainMethod(args):
 
     module_name = args.module_name
     dependency_list = args.module_dependency
-    
+    standalone = args.standalone
+
     # Default is the current directory
     project_dir = os.getcwd()
     logger.info('# Current directory : %s', project_dir)
 
     try:
         makeChecks(project_dir, module_name, dependency_list)
-        createModule(project_dir, module_name, dependency_list)
+        createModule(project_dir, module_name, dependency_list, standalone)
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
     except:
         logger.info('# Script aborted.')

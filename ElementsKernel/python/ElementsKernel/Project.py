@@ -99,7 +99,7 @@ def getElementsVersion():
 
 ################################################################################
 
-def substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects):
+def substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects, standalone=False):
     """
     Substitute variables in <CMakeList.txt.in> file and rename the file to
     <CMakeLists.txt>.
@@ -113,22 +113,25 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
 
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
-    str_dep_projects = 'Elements ' + getElementsVersion()
+    if standalone:
+        str_dep_projects = ""
+    else:
+        str_dep_projects = 'Elements ' + getElementsVersion()
+
     if not dep_projects is None:
         for dep in dep_projects:
             if not dep[0] in str_dep_projects:
                 str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
             else:
                 logger.warning('<%s> dependency already exists. It is skipped!', dep[0])
-        new_data = data % {"PROJECT_NAME": proj_name,
-                           "PROJECT_VERSION": proj_version,
-                           "DEPENDANCE_LIST": str_dep_projects}
-    else:
-        # Add an comment example with the USE keyword
 
-        new_data = data % {"PROJECT_NAME": proj_name,
-                           "PROJECT_VERSION": proj_version,
-                           "DEPENDANCE_LIST": str_dep_projects}
+    if str_dep_projects:
+        str_dep_projects = "USE " + str_dep_projects
+
+
+    new_data = data % {"PROJECT_NAME": proj_name,
+                       "PROJECT_VERSION": proj_version,
+                       "DEPENDANCE_LIST": str_dep_projects}
 
     f.close()
 
@@ -141,7 +144,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
 
 ################################################################################
 
-def createProject(project_dir, proj_name, proj_version, dep_projects):
+def createProject(project_dir, proj_name, proj_version, dep_projects, standalone=False):
     """
     Create the project structure
     """
@@ -165,7 +168,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects):
     project_rst_file = os.path.join(project_doc_dir, AUX_PROJ_RST_IN)
     os.rename(project_rst_file, project_rst_file.replace('.in', ''))
 
-    substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects)
+    substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects, standalone)
 
 ################################################################################
 
@@ -294,6 +297,9 @@ Note:
                         the <project-name> directory will be created')
     parser.add_argument('-e', '--erase', action="store_true",
                         help='Erase the <project-version> directory if it does exists')
+    parser.add_argument('-s', '--standalone', default=False, action="store_true",
+                        help='Remove the implicit dependency onto the Elements project (expert only)')
+
 
     return parser
 
@@ -313,6 +319,7 @@ def mainMethod(args):
     destination_path = setPath()
     dependency = args.dependency
     no_version_directory = args.no_version_directory
+    standalone = args.standalone
     force_erase = args.erase
 
     logger.info('# Installation directory : %s', destination_path)
@@ -325,7 +332,7 @@ def mainMethod(args):
         CheckProjectExist(project_dir, no_version_directory, force_erase)
 
         # Create the project
-        createProject(project_dir, proj_name, proj_version, dependant_projects)
+        createProject(project_dir, proj_name, proj_version, dependant_projects, standalone)
 
         logger.info('# <%s> project successfully created.', project_dir)
     except:

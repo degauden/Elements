@@ -26,6 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import argparse
 import os
+import sys
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeListsMacros as pclm
@@ -233,10 +234,10 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                 cmake_object.elements_add_library_list.append(lib_object)
 
             # Add unit test
-            source_name = 'tests' + os.sep + 'src' + os.sep + subdir + class_name +'_test.cpp'
+            source_name = 'tests' + os.sep + 'src' + os.sep + subdir + class_name + '_test.cpp'
             unittest_object = pclm.ElementsAddUnitTest(class_name,
                                                       [source_name], [module_name],
-                                                      [], 'Boost', module_name +"_" + class_name + '_test')
+                                                      [], 'Boost', module_name + "_" + class_name + '_test')
             cmake_object.elements_add_unit_test_list.append(unittest_object)
 
     # Write new data

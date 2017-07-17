@@ -39,20 +39,19 @@ echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
 
 
 
-
-# check that the Elements framework has been installed. It is
-# not enough to have it built
-if [ -e ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}/manifest.xml ]; then
+# because the "-s" (standalone) option is used, this test script must work after the build only.
+# The install step is not needed when the created project have no dependency onto Elements and 
+# its modules.
 
 cd ${User_area}
 
-CreateElementsProject $projectA_name $projectA_version << EOF
+CreateElementsProject -s $projectA_name $projectA_version << EOF
 y
 EOF
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
-   echo "Error: <CreateElementsProject $projectA_name $projectA_version> command failed!" 1>&2
+   echo "Error: <CreateElementsProject -s $projectA_name $projectA_version> command failed!" 1>&2
    local_clean_exit 1
 fi
 
@@ -89,13 +88,13 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject $projectAp_name $projectAp_version << EOF
+CreateElementsProject -s $projectAp_name $projectAp_version << EOF
 y
 EOF
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
-   echo "Error: <CreateElementsProject $projectAp_name $projectAp_version> command failed!" 1>&2
+   echo "Error: <CreateElementsProject -s $projectAp_name $projectAp_version> command failed!" 1>&2
    local_clean_exit 1
 fi
 
@@ -132,7 +131,7 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
+CreateElementsProject -s -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
 y
 EOF
 
@@ -163,7 +162,7 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -d $projectAp_name $projectAp_version $projectC_name $projectC_version << EOF
+CreateElementsProject -s -d $projectAp_name $projectAp_version $projectC_name $projectC_version << EOF
 y
 EOF
 
@@ -195,12 +194,12 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -d $projectB_name $projectB_version -d $projectC_name $projectC_version $projectD_name $projectD_version << EOF
+CreateElementsProject -s -d $projectB_name $projectB_version -d $projectC_name $projectC_version $projectD_name $projectD_version << EOF
 y
 EOF
 
 cd $projectD_name/$projectD_version
-#AddElementsModule $projectD_name
+AddElementsModule -s $projectD_name
 
 # this one must fail because of the wrong dependency tree.
 make configure
@@ -209,14 +208,5 @@ if [ $? -eq 0 ]; then
    echo "Error: <Configuration of $projectD_name $projectD_version> failed!" 1>&2
    local_clean_exit 1
 fi
-
-
-
-else
-echo "Warning: The Elements framework is not available in its InstallArea ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}" 1>&2
-# the script must fail by default
-local_clean_exit 1
-fi
-
 
 local_clean_exit 0
