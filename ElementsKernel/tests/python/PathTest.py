@@ -21,6 +21,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 '''
 import unittest
+import subprocess
 
 from ElementsKernel.Temporary import TempDir
 from ElementsKernel.Path import joinPath, multiPathAppend, getLocationsFromEnv
@@ -71,7 +72,8 @@ class PathTest(unittest.TestCase):
         self.assert_(len(tmp_list) != 0)
 
     def testWhich(self):
-        self.assertEqual("/usr/bin/ls", which("/usr/bin/ls"))
+        sys_ls = subprocess.check_output(["which", "ls"]).strip()
+        self.assertEqual(sys_ls, which(sys_ls))
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
