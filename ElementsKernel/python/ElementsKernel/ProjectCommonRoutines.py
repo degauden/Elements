@@ -194,7 +194,6 @@ def copyAuxFile(destination, aux_file_name):
     if aux_path_file:
         shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
     else:
-        print 'zzzz'
         sys.exit(1)
 
 ################################################################################
