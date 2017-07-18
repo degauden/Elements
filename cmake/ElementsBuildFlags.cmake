@@ -27,6 +27,61 @@ macro(check_and_use_c_option opt var)
 endmacro()
 
 
+if (ELEMENTS_BUILD_PREFIX_CMD)
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${ELEMENTS_BUILD_PREFIX_CMD}")
+  message(STATUS "Prefix build commands with '${ELEMENTS_BUILD_PREFIX_CMD}'")
+else()
+
+  find_package(CCache QUIET)
+
+  if(CCACHE_FOUND)
+    option(CMAKE_USE_CCACHE "Use ccache to speed up compilation." OFF)
+    if(CMAKE_USE_CCACHE)
+      set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_EXECUTABLE})
+      message(STATUS "Using ccache for building")
+    endif()
+  endif()
+
+  find_package(DistCC QUIET)
+
+  if(DISTCC_FOUND)
+    option(CMAKE_USE_DISTCC "Use distcc to speed up compilation." OFF)
+    if(CMAKE_USE_DISTCC)
+      if(CMAKE_USE_CCACHE AND CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "CCACHE_PREFIX=${DISTCC_EXECUTABLE} ${CCACHE_EXECUTABLE}")
+        message(STATUS "Enabling distcc builds in ccache")
+      else()
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${DISTCC_EXECUTABLE})
+        message(STATUS "Using distcc for building")
+      endif()
+    endif()
+  endif()
+
+endif()
+
+# This option make sense only if we have 'objcopy'
+if(CMAKE_OBJCOPY)
+  option(ELEMENTS_DETACHED_DEBINFO
+         "When CMAKE_BUILD_TYPE is RelWithDebInfo, save the debug information on a different file."
+         ON)
+else()
+  set(ELEMENTS_DETACHED_DEBINFO OFF)
+endif()
+
+option(USE_ODB "Use the ODB libraries" OFF)
+option(ELEMENTS_USE_STRICT_BINARY_DEP "Flag to force the strict binary dependencies" OFF)
+option(ELEMENTS_USE_CASE_SENSITIVE_PROJECTS "No uppercase projects allowed" ON)
+
+#--- Project Options and Global settings----------------------------------------------------------
+option(BUILD_SHARED_LIBS "Set to OFF to build static libraries." ON)
+option(ELEMENTS_BUILD_TESTS "Set to OFF to disable the build of the tests (libraries and executables)." ON)
+option(ELEMENTS_HIDE_WARNINGS "Turn on or off options that are used to hide warning messages." ON)
+option(ELEMENTS_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix systems (like CMT does)." OFF)
+#-------------------------------------------------------------------------------------------------
+
+
+
+
 if((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm"))
   find_package(Clang)
   SET (CMAKE_C_COMPILER    "${CLANG_C_COMPILER}")
