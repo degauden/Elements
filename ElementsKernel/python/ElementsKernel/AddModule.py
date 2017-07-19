@@ -26,7 +26,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import argparse
 import os
-import sys
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
@@ -224,12 +223,12 @@ def mainMethod(args):
         makeChecks(project_dir, module_name, dependency_list)
         createModule(project_dir, module_name, dependency_list, standalone)
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
-    except epcr.ErrorOccured, msg:
+    except epcr.ErrorOccured as msg:
         if str(msg):
-           logger.error(msg)
+            logger.error(msg)
         logger.error('# Script aborted.')
         return 1
-    except Exception, msg:
+    except Exception as msg:
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')

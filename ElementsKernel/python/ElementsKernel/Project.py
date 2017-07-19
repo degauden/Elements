@@ -331,12 +331,12 @@ def mainMethod(args):
 
         logger.info('# <%s> project successfully created.', project_dir)
 
-    except epcr.ErrorOccured, msg:
+    except epcr.ErrorOccured as msg:
         if str(msg):
-           logger.error(msg)
+            logger.error(msg)
         logger.error('# Script aborted.')
         return 1
-    except Exception, msg:
+    except Exception as msg:
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')

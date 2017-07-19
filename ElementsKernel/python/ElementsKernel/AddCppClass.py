@@ -26,7 +26,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import argparse
 import os
-import sys
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeListsMacros as pclm
@@ -256,7 +255,7 @@ def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
     file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
         raise epcr.ErrorOccured("The <%s> class already exists! "
-                                "The header file already exists: < %s >" % (class_name,file_name_path))
+                                "The header file already exists: < %s >" % (class_name, file_name_path))
 
 ################################################################################
 
@@ -354,12 +353,12 @@ def mainMethod(args):
         # Remove backup file
         epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
 
-    except epcr.ErrorOccured, msg:
+    except epcr.ErrorOccured as msg:
         if str(msg):
-           logger.error(msg)
+            logger.error(msg)
         logger.error('# Script aborted.')
         return 1
-    except Exception, msg:
+    except Exception as msg:
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')

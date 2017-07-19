@@ -179,16 +179,16 @@ def mainMethod(args):
 
         createScript(current_dir, module_name, program_name)
         logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
-        
+
         # Remove backup file
         epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
 
-    except epcr.ErrorOccured, msg:
+    except epcr.ErrorOccured as msg:
         if str(msg):
-           logger.error(msg)
+            logger.error(msg)
         logger.error('# Script aborted.')
         return 1
-    except Exception, msg:
+    except Exception as msg:
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')

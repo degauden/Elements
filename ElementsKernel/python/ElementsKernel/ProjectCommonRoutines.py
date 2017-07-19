@@ -27,7 +27,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 """
 
 import os
-import sys
 import re
 import shutil
 import ElementsKernel.ParseCmakeLists as pcl
