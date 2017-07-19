@@ -153,11 +153,11 @@ def makeChecks(program_file_path, program_name):
     Make some checks
     """
     # Module as no version number, '1.0' is just for using the routine
-    epcr.isNameAndVersionValid(program_name, '1.0')
+    epcr.checkNameAndVersionValid(program_name, '1.0')
     # Check aux file exist
-    epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+    epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
     # Make sure the program does not already exist
-    epcr.isFileAlreadyExist(program_file_path, program_name)
+    epcr.checkFileNotExist(program_file_path, program_name)
     # Check name in the Element Naming Database
     epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
 
@@ -199,7 +199,7 @@ def mainMethod(args):
         logger.info('')
 
         # We absolutely need a Elements cmake file
-        module_name = epcr.isElementsModuleExist(current_dir)
+        module_name = epcr.checkElementsModuleNotExist(current_dir)
 
         program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
         # Make checks
