@@ -58,4 +58,43 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
+# Test a wrong project name
+project_name="WrongProjectTest]"
+version="1.0"
+
+CreateElementsProject $project_name $version <<EOF
+y
+EOF
+
+if [ $? -eq 0 ]; then
+   echo "Error: this <$project_name> project name should failed but it did not!" 1>&2
+   local_clean_exit 1
+fi
+
+# Test a wrong version number
+project_name="WrongProjectTest"
+version="1.0]"
+
+CreateElementsProject $project_name $version <<EOF
+y
+EOF
+
+if [ $? -eq 0 ]; then
+   echo "Error: this <$version> version number should failed but it did not!" 1>&2
+   local_clean_exit 1
+fi
+
+# Test the <HEAD> version number
+project_name="ProjectHeadTest"
+version="HEAD"
+
+CreateElementsProject $project_name $version <<EOF
+y
+EOF
+
+if [ $? -ne 0 ]; then
+   echo "Error: this <$version> version number should not failed!!!" 1>&2
+   local_clean_exit 1
+fi
+
 local_clean_exit 0

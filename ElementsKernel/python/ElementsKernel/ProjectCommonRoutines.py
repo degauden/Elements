@@ -39,6 +39,10 @@ logger = log.getLogger('ProjectCommonRoutines')
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
+# Define exception class
+class ErrorOccured(Exception):
+    pass
+
 ################################################################################
 
 def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
@@ -79,7 +83,7 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
     if not script_goes_on:
         response_key = raw_input('Do you want to continue?(y/n, default: n)')
         if not response_key.lower() == "yes" and not response_key.lower() == "y":
-            sys.exit(0)
+                raise ErrorOccured
 
 ################################################################################
 
@@ -130,21 +134,19 @@ def makeACopy(cmakefile):
 
 ################################################################################
 
-def isNameAndVersionValid(name, version):
+def checkNameAndVersionValid(name, version):
     """
     Check that the <name> and <version> respect a regex
     """
     name_regex = "^[A-Za-z0-9][A-Za-z0-9_-]*$"
-    if re.match(name_regex, name) is None:
-        logger.error("Name not valid : < %s >", name)
-        logger.error("It must follow this regex : < %s >", name_regex)
-        sys.exit(1)
+    if not re.match(name_regex, name):
+        raise ErrorOccured("Name not valid : < %s >. It must follow this regex : < %s >"
+                            % (name, name_regex))
 
-    version_regex = "^(\\d+\\.\\d+(\\.\\d+)?)|(HEAD)$"
-    if re.match(version_regex, version) is None:
-        logger.error("Version number not valid : < %s >", version)
-        logger.error("It must follow this regex: < %s >", version_regex)
-        sys.exit(1)
+    version_regex = "^(\\d+\\.\\d+(\\.\\d+)?|HEAD)$"
+    if not re.match(version_regex, version):
+        raise ErrorOccured("Version number not valid : < %s >. It must follow this regex : < %s >"
+                            % (version, version_regex))
 
 ################################################################################
 
@@ -179,7 +181,7 @@ def getAuxPathFile(file_name):
 
     if not found:
         full_filename = ''
-        logger.error("Auxiliary file NOT FOUND  : <%s>", file_name)
+        raise ErrorOccured("Auxiliary file not found : < %s >" % file_name)
 
     return full_filename
 
@@ -194,19 +196,17 @@ def copyAuxFile(destination, aux_file_name):
     if aux_path_file:
         shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
     else:
-        sys.exit(1)
+        raise ErrorOccured("Auxiliary file not found : < %s >" % aux_path_file)
 
 ################################################################################
 
-def isAuxFileExist(aux_file_name):
+def checkAuxFileExist(aux_file_name):
     """
     Make sure the <aux_file> auxiliary file exists.
     <aux_file> is just the name without the path.
     """
     auxpath = os.path.join('ElementsKernel', 'templates', aux_file_name)
-    if not getAuxPathFile(auxpath):
-        logger.error("< " + aux_file_name + " > Auxiliary file does not exist!")
-        sys.exit(1)
+    getAuxPathFile(auxpath)
 
 ################################################################################
 
@@ -223,16 +223,14 @@ def getAuthor():
 
 ################################################################################
 
-def isElementsModuleExist(module_directory):
+def checkElementsModuleNotExist(module_directory):
     """
     Get the module name in the <CMAKE_LISTS_FILE> file
     """
     module_name = ''
     cmake_file = os.path.join(module_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
-        logger.error('# < %s > cmake module file is missing! Are you inside a ' \
-        'module directory?', cmake_file)
-        sys.exit(1)
+        raise ErrorOccured("< %s > cmake module file is missing! Are you inside a module directory?" % cmake_file)
     else:
         # Check the make file is an Elements cmake file
         # it should contain the string : "elements_project"
@@ -245,23 +243,20 @@ def isElementsModuleExist(module_directory):
         f.close()
 
         if not module_name:
-            logger.error('Module name not found in the <%s> file!', cmake_file)
-            logger.error('Maybe you are not in a module directory...')
-            sys.exit(1)
+            raise ErrorOccured("Module name not found in the <%s> file! Perhaps you are not in a " \
+                                "module directory!" % cmake_file)
 
     return module_name
 
 ################################################################################
 
-def isFileAlreadyExist(path_filename, name):
+def checkFileNotExist(path_filename, name):
     """
     Check if the <path_filename> file does not already exist
     <path_filename> : path + filename
     """
     if os.path.exists(path_filename):
-        logger.error('The < %s > name already exists! ', name)
-        logger.error('File found here : < %s >! ', path_filename)
-        sys.exit(1)
+        raise ErrorOccured("File already exists there : < %s > with name : < %s >" % (path_filename, name))
 
 ################################################################################
 

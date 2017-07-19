@@ -247,7 +247,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
 
 ################################################################################
 
-def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
+def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
     """
     Check if the class file does not already exist
     """
@@ -255,9 +255,8 @@ def isClassFileAlreadyExist(class_name, module_dir, module_name, subdir):
     file_name = class_name + '.h'
     file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
-        logger.error('The <%s> class already exists! ', class_name)
-        logger.error('The header file already exists: <%s>! ', file_name_path)
-        sys.exit(1)
+        raise epcr.ErrorOccured("The <%s> class already exists! "
+                                "The header file already exists: < %s >" % (class_name,file_name_path))
 
 ################################################################################
 
@@ -268,7 +267,7 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
     """
 
     # Check the class does not exist already
-    isClassFileAlreadyExist(class_name, module_dir, module_name, subdir)
+    checkClassFileNotExist(class_name, module_dir, module_name, subdir)
 
     createDirectories(module_dir, module_name, subdir)
 
@@ -293,8 +292,8 @@ def makeChecks():
     Make some checks
     """
     # Check aux files exist
-    epcr.isAuxFileExist(H_TEMPLATE_FILE_IN)
-    epcr.isAuxFileExist(CPP_TEMPLATE_FILE_IN)
+    epcr.checkAuxFileExist(H_TEMPLATE_FILE_IN)
+    epcr.checkAuxFileExist(CPP_TEMPLATE_FILE_IN)
 
 ################################################################################
 
@@ -343,7 +342,7 @@ def mainMethod(args):
         # Make checks
         makeChecks()
         # We absolutely need a Elements cmake file
-        module_name = epcr.isElementsModuleExist(module_dir)
+        module_name = epcr.checkElementsModuleNotExist(module_dir)
 
         logger.info('Current directory : %s', module_dir)
         logger.info('')
@@ -354,8 +353,16 @@ def mainMethod(args):
         logger.info('<%s> class successfully created in <%s>.', class_name, module_dir + os.sep + subdir)
         # Remove backup file
         epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
-    except:
-        logger.info('# Script aborted.')
+
+    except epcr.ErrorOccured, msg:
+        if str(msg):
+           logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
+    except Exception, msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
         return 1
     else:
         logger.info('# Script over.')

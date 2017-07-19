@@ -127,11 +127,11 @@ def makeChecks(program_file_path, program_name):
     Make some checks
     """
     # Module as no version number, '1.0' is just for using the routine
-    epcr.isNameAndVersionValid(program_name, '1.0')
+    epcr.checkNameAndVersionValid(program_name, '1.0')
     # Make sure the program does not already exist
-    epcr.isFileAlreadyExist(program_file_path, program_name)
+    epcr.checkFileNotExist(program_file_path, program_name)
     # Check aux file exist
-    epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+    epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
     # Check name in DB
     epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
 
@@ -171,7 +171,7 @@ def mainMethod(args):
 
     try:
         # We absolutely need a Elements cmake file
-        module_name = epcr.isElementsModuleExist(current_dir)
+        module_name = epcr.checkElementsModuleNotExist(current_dir)
         # Check name in the Element Naming Database
         program_file_path = os.path.join(current_dir, 'scripts', program_name)
         # Make checks
@@ -182,8 +182,16 @@ def mainMethod(args):
         
         # Remove backup file
         epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-    except:
-        logger.info('# Script aborted.')
+
+    except epcr.ErrorOccured, msg:
+        if str(msg):
+           logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
+    except Exception, msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
         return 1
     else:
         logger.info('# Script over.')

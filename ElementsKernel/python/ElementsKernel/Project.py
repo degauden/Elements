@@ -39,10 +39,6 @@ AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
 AUX_CMAKE_FILE_IN = "Makefile.in"
 AUX_PROJ_RST_IN = "doc_project.rst.in"
 
-class NameVersionError(Exception):
-   def __init__(self, message):
-      self.args = str(message)
-
 ################################################################################
 
 def setPath():
@@ -62,12 +58,12 @@ def setPath():
 
 ################################################################################
 
-def isDependencyProjectValid(str_list):
+def checkDependencyProjectValid(str_list):
     """
     Check if the dependency project name and version list is valid
     """
     for i in range(len(str_list)):
-        epcr.isNameAndVersionValid(str_list[i][0], str_list[i][1])
+        epcr.checkNameAndVersionValid(str_list[i][0], str_list[i][1])
 
 ################################################################################
 
@@ -81,8 +77,7 @@ def duplicate_elements(duplicate_list):
         if not elt[0] in name_list:
             name_list.append(elt[0])
         else:
-            logger.error('Found twice the following dependency : %s', elt[0])
-            sys.exit(1)
+            raise epcr.ErrorOccured("Found twice the following dependency : < %s >" % elt[0])
 
 ################################################################################
 
@@ -177,15 +172,15 @@ def makeChecks(proj_name, proj_version, dependency, dependant_projects):
     Make some checks
     """
     # Check project name and version
-    epcr.isNameAndVersionValid(proj_name, proj_version)
+    epcr.checkNameAndVersionValid(proj_name, proj_version)
     if not dependency is None:
-        isDependencyProjectValid(dependant_projects)
+        checkDependencyProjectValid(dependant_projects)
     # Check for duplicate dependencies
     if not dependency is None:
         duplicate_elements(dependant_projects)
     # Check AUX files exist
-    epcr.isAuxFileExist(AUX_CMAKE_LIST_IN)
-    epcr.isAuxFileExist(AUX_CMAKE_FILE_IN)
+    epcr.checkAuxFileExist(AUX_CMAKE_LIST_IN)
+    epcr.checkAuxFileExist(AUX_CMAKE_FILE_IN)
     # Check name in the Element Naming Database
     epcr.checkNameInEuclidNamingDatabase(proj_name, nc.TYPES[0])
 
@@ -234,7 +229,7 @@ def CheckProjectExist(project_dir, no_version_directory, force_erase):
         if response_key.lower() == "yes" or response_key == "y":
             logger.info('# Overwriting the existing project: <%s>', project_dir)
         else:
-            sys.exit(0)
+            raise epcr.ErrorOccured
     elif force_erase:
         epcr.eraseDirectory(project_dir)
 
@@ -335,8 +330,16 @@ def mainMethod(args):
         createProject(project_dir, proj_name, proj_version, dependant_projects, standalone)
 
         logger.info('# <%s> project successfully created.', project_dir)
-    except:
-        logger.info('# Script aborted.')
+
+    except epcr.ErrorOccured, msg:
+        if str(msg):
+           logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
+    except Exception, msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
         return 1
     else:
         logger.info('# Script over.')

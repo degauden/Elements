@@ -176,11 +176,11 @@ def makeChecks(current_dir, program_name):
     epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
     # Check if file exits
     program_file_path = os.path.join(current_dir, 'src', 'program', program_name + '.cpp')
-    epcr.isFileAlreadyExist(program_file_path, program_name)
+    epcr.checkFileNotExist(program_file_path, program_name)
     # Check program name is valid
-    epcr.isNameAndVersionValid(program_name, '1.0')
+    epcr.checkNameAndVersionValid(program_name, '1.0')
     # Check aux file exist
-    epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+    epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
 
 ################################################################################
@@ -233,7 +233,7 @@ def mainMethod(args):
         logger.info('Current directory : %s', current_dir)
         logger.info('')
         # We absolutely need a Elements cmake file
-        module_name = epcr.isElementsModuleExist(current_dir)
+        module_name = epcr.checkElementsModuleNotExist(current_dir)
         # make some checks
         makeChecks(current_dir, program_name)
 
@@ -244,8 +244,16 @@ def mainMethod(args):
         logger.info('< %s > program successfully created in < %s >.', program_name, location)
         # Remove backup file
         epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-    except:
-        logger.info('# Script aborted.')
+
+    except epcr.ErrorOccured, msg:
+        if str(msg):
+           logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
+    except Exception, msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
         return 1
     else:
         logger.info('# Script over.')
