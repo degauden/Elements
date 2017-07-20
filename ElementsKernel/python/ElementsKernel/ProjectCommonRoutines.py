@@ -34,6 +34,10 @@ import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
+# Define regex for name & version checking
+name_regex = r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
+version_regex = r"^(\d+\.\d+(\.\d+)?|HEAD)$"
+
 logger = log.getLogger('ProjectCommonRoutines')
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
@@ -137,12 +141,10 @@ def checkNameAndVersionValid(name, version):
     """
     Check that the <name> and <version> respect a regex
     """
-    name_regex = "^[A-Za-z0-9][A-Za-z0-9_-]*$"
     if not re.match(name_regex, name):
         raise ErrorOccured("Name not valid : < %s >. It must follow this regex : < %s >"
                             % (name, name_regex))
 
-    version_regex = "^(\\d+\\.\\d+(\\.\\d+)?|HEAD)$"
     if not re.match(version_regex, version):
         raise ErrorOccured("Version number not valid : < %s >. It must follow this regex : < %s >"
                             % (version, version_regex))
@@ -222,9 +224,9 @@ def getAuthor():
 
 ################################################################################
 
-def checkElementsModuleNotExist(module_directory):
+def getElementsModuleName(module_directory):
     """
-    Get the module name in the <CMAKE_LISTS_FILE> file
+    Get the module name from the <CMAKE_LISTS_FILE> file
     """
     module_name = ''
     cmake_file = os.path.join(module_directory, CMAKE_LISTS_FILE)

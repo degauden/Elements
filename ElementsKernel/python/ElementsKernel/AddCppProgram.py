@@ -233,7 +233,7 @@ def mainMethod(args):
         logger.info('Current directory : %s', current_dir)
         logger.info('')
         # We absolutely need a Elements cmake file
-        module_name = epcr.checkElementsModuleNotExist(current_dir)
+        module_name = epcr.getElementsModuleName(current_dir)
         # make some checks
         makeChecks(current_dir, program_name)
 

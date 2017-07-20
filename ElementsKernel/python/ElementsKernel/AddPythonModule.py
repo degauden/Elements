@@ -206,7 +206,7 @@ def mainMethod(args):
         logger.info('')
 
         # We absolutely need a Elements cmake file
-        module_name = epcr.checkElementsModuleNotExist(current_dir)
+        module_name = epcr.getElementsModuleName(current_dir)
 
         module_file_path = os.path.join(current_dir, 'python', module_name,
                                         python_module_name + '.py')

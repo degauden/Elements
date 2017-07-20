@@ -255,7 +255,7 @@ def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
     file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
         raise epcr.ErrorOccured("The <%s> class already exists! "
-                                "The header file already exists: < %s >" % (class_name, file_name_path))
+                                "Header file found here : < %s >" % (class_name, file_name_path))
 
 ################################################################################
 
@@ -341,7 +341,7 @@ def mainMethod(args):
         # Make checks
         makeChecks()
         # We absolutely need a Elements cmake file
-        module_name = epcr.checkElementsModuleNotExist(module_dir)
+        module_name = epcr.getElementsModuleName(module_dir)
 
         logger.info('Current directory : %s', module_dir)
         logger.info('')

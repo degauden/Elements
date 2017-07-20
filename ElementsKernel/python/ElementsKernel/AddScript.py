@@ -171,7 +171,7 @@ def mainMethod(args):
 
     try:
         # We absolutely need a Elements cmake file
-        module_name = epcr.checkElementsModuleNotExist(current_dir)
+        module_name = epcr.getElementsModuleName(current_dir)
         # Check name in the Element Naming Database
         program_file_path = os.path.join(current_dir, 'scripts', program_name)
         # Make checks
