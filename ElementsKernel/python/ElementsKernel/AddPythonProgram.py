@@ -199,7 +199,7 @@ def mainMethod(args):
         logger.info('')
 
         # We absolutely need a Elements cmake file
-        module_name = epcr.checkElementsModuleNotExist(current_dir)
+        module_name = epcr.getElementsModuleName(current_dir)
 
         program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
         # Make checks
@@ -212,8 +212,15 @@ def mainMethod(args):
         # Remove backup file
         epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
 
-    except:
-        logger.info('# Script aborted.')
+    except epcr.ErrorOccured as msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
+    except Exception as msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
         return 1
     else:
         logger.info('# Script over.')

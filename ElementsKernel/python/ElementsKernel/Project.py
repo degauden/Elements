@@ -201,14 +201,12 @@ def buildProjectDir(no_version_directory, destination_path, proj_name, proj_vers
 
 def lookForDirectories(project_dir):
     """
-    Look for any version directory in the project directory e.g 1.0,1.2 etc...
+    Look for any version directory in the project directory e.g HEAD, 1.2.3, 1.0 etc...
     """
     matchList = []
-    regex_pattern = r"\d+\.\d+(\.\d+)?"
     dirlist = [elt for elt in os.listdir(project_dir) if os.path.isdir(os.path.join(project_dir, elt)) ]
-    version_array = [ m.group(0) for l in dirlist for m in [ re.search(regex_pattern, l) ] if m ]
     for elt in dirlist:
-        match = re.search(regex_pattern, elt)
+        match = re.match(epcr.version_regex, elt)
         if match:
             matchList.append(match.group(0))
     return matchList

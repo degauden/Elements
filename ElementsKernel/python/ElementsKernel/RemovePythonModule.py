@@ -119,7 +119,7 @@ def mainMethod(args):
 
     try:
         # We absolutely need a Elements cmake file
-        module_name = epcr.checkElementsModuleNotExist(module_dir)
+        module_name = epcr.getElementsModuleName(module_dir)
 
         # Default is the current directory
         file_to_be_deleted = getAllFiles(pymodule_name, module_dir, module_name)
