@@ -67,6 +67,7 @@ def addConfFile(module_dir, module_name, program_name):
         f.write('#\n')
         f.write('###############################################################################\n')
         f.close()
+        epcr.addItemToElementsCreationList(conf_file)
     else:
         logger.warning('The < %s > conf file has been kept as it already exists!', conf_file)
         logger.warning('The < %s > conf file already exists!', conf_file)
@@ -102,6 +103,7 @@ def substituteStringsInProgramFile(file_path, program_name):
     f.write(new_data)
     f.close()
     os.remove(template_file)
+    epcr.addItemToElementsCreationList(file_name)
 
 ################################################################################
 
@@ -112,6 +114,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+    epcr.addItemToElementsCreationList(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
@@ -242,8 +245,12 @@ def mainMethod(args):
 
         location = current_dir + os.sep + 'src' + os.sep + 'program'
         logger.info('< %s > program successfully created in < %s >.', program_name, location)
+
         # Remove backup file
         epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
+
+        # Print all files created
+        epcr.printElementsCreationList()
 
     except epcr.ErrorOccured as msg:
         if str(msg):

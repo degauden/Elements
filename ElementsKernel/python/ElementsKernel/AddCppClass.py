@@ -112,6 +112,7 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     f.write(new_data)
     f.close()
     os.remove(template_file)
+    epcr.addItemToElementsCreationList(file_name)
 
 ################################################################################
 
@@ -148,6 +149,7 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     f.write(new_data)
     f.close()
     os.remove(template_file)
+    epcr.addItemToElementsCreationList(file_name)
 
 ################################################################################
 
@@ -179,6 +181,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     f.write(new_data)
     f.close()
     os.remove(template_file)
+    epcr.addItemToElementsCreationList(file_name)
 
 ################################################################################
 
@@ -189,6 +192,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+    epcr.addItemToElementsCreationList(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
@@ -350,8 +354,12 @@ def mainMethod(args):
         createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list, library_dep_list)
 
         logger.info('<%s> class successfully created in <%s>.', class_name, module_dir + os.sep + subdir)
+
         # Remove backup file
         epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
+
+        # Print all files created
+        epcr.printElementsCreationList()
 
     except epcr.ErrorOccured as msg:
         if str(msg):
