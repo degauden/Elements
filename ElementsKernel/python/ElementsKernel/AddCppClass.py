@@ -112,7 +112,7 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     f.write(new_data)
     f.close()
     os.remove(template_file)
-    epcr.addItemToElementsCreationList(file_name)
+    epcr.addItemToCreationList(file_name)
 
 ################################################################################
 
@@ -149,7 +149,7 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     f.write(new_data)
     f.close()
     os.remove(template_file)
-    epcr.addItemToElementsCreationList(file_name)
+    epcr.addItemToCreationList(file_name)
 
 ################################################################################
 
@@ -181,7 +181,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     f.write(new_data)
     f.close()
     os.remove(template_file)
-    epcr.addItemToElementsCreationList(file_name)
+    epcr.addItemToCreationList(file_name)
 
 ################################################################################
 
@@ -192,7 +192,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
-    epcr.addItemToElementsCreationList(cmake_filename)
+    epcr.addItemToCreationList(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
@@ -359,7 +359,7 @@ def mainMethod(args):
         epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
 
         # Print all files created
-        epcr.printElementsCreationList()
+        epcr.printCreationList()
 
     except epcr.ErrorOccured as msg:
         if str(msg):

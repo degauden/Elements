@@ -80,7 +80,7 @@ def createModuleDirectories(mod_path, module_name):
 
     file_no_dot_in=mod_rst_file.replace('.in', '')
     os.rename(mod_rst_file, file_no_dot_in)
-    epcr.addItemToElementsCreationList(file_no_dot_in)
+    epcr.addItemToCreationList(file_no_dot_in)
 
 
 ################################################################################
@@ -98,7 +98,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=Fal
     file_template = os.path.join(module_dir, CMAKE_LISTS_FILE)
     os.rename(os.path.join(module_dir, CMAKE_LISTS_FILE_IN),
               file_template)
-    epcr.addItemToElementsCreationList(file_template)
+    epcr.addItemToCreationList(file_template)
 
     # Read the template file
     fo = open(file_template, 'r')
@@ -229,7 +229,7 @@ def mainMethod(args):
         createModule(project_dir, module_name, dependency_list, standalone)
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
         # Print all files created
-        epcr.printElementsCreationList()
+        epcr.printCreationList()
     except epcr.ErrorOccured as msg:
         if str(msg):
             logger.error(msg)

@@ -51,14 +51,14 @@ class ErrorOccured(Exception):
     pass
 
 ################################################################################
-def addItemToElementsCreationList(element):
+def addItemToCreationList(element):
     """
     Add an element to the global list.
     """
     _filelist.append(element)
 
 ################################################################################
-def printElementsCreationList():
+def printCreationList():
     """
     Add an element to the global list.
     """

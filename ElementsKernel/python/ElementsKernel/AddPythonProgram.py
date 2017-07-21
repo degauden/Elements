@@ -62,10 +62,10 @@ def createFiles(module_dir, module_name, program_name):
     # Create the executable directory
     init_file = os.path.join(module_dir, 'python', module_name, '__init__.py')
     epcr.createPythonInitFile(init_file)
-    epcr.addItemToElementsCreationList(init_file)
+    epcr.addItemToCreationList(init_file)
 
     conf_file = os.path.join(module_dir, 'conf', module_name, program_name + '.conf')
-    epcr.addItemToElementsCreationList(conf_file)
+    epcr.addItemToCreationList(conf_file)
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
         f.write('# Write your program options here. e.g. : option = string')
@@ -103,7 +103,7 @@ def subStringsInPythonProgramFile(file_path, program_name, module_name):
     f.write(new_data)
     f.close()
     os.remove(template_file)
-    epcr.addItemToElementsCreationList(file_name)
+    epcr.addItemToCreationList(file_name)
 
 ################################################################################
 
@@ -113,7 +113,7 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
-    epcr.addItemToElementsCreationList(cmake_filename)
+    epcr.addItemToCreationList(cmake_filename)
 
     # Backup the file
     epcr.makeACopy(cmake_filename)
@@ -218,7 +218,7 @@ def mainMethod(args):
         epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
 
         # Print all files created
-        epcr.printElementsCreationList()
+        epcr.printCreationList()
 
     except epcr.ErrorOccured as msg:
         if str(msg):
