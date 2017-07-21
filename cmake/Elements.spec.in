@@ -8,10 +8,12 @@ Group:          Development/Tools
 Source:         @CPACK_RPM_PACKAGE_NAME@-@CPACK_RPM_PACKAGE_VERSION@.tar.gz
 Vendor:         @CPACK_PACKAGE_VENDOR@
 
+@CPACK_RPM_AUTOREQ_LINE@
 
-BuildRequires: gcc > 4.7, cmake >= 2.6@RPM_DEVEL_DEP_LIST@
-
-Requires: python@PYTHON_EXPLICIT_VERSION@@RPM_DEP_LIST@
+@RPM_DEVEL_BUILDDEP_SYS_LINES@
+@RPM_DEVEL_BUILDDEP_LINES@
+@RPM_DEP_SYS_LINES@
+@RPM_DEP_LINES@
 Requires(post):    /sbin/ldconfig
 Requires(postun):  /sbin/ldconfig
 
@@ -39,14 +41,17 @@ Requires(postun):  /sbin/ldconfig
 %package devel
 Group:  Development/Libraries
 Summary: The development part of the %{name} package
-Requires: cmake >= 2.6, %{name} = %{version}-%{release}@RPM_DEVEL_DEP_LIST@
+@RPM_DEVEL_DEP_SYS_LINES@
+Requires: %{name} = %{version}-%{release}
+@RPM_DEVEL_DEP_LINES@
 
 %description devel
 The development part of the %{name} package.
 
 %package debuginfo
 Summary: Debug information for package %{name}
-Requires: %{name} = %{version}-%{release}@RPM_DEBUGINFO_DEP_LIST@
+Requires: %{name} = %{version}-%{release}
+@RPM_DEBUGINFO_DEP_LINES@
 
 %description debuginfo
 Debug information for package %{name}

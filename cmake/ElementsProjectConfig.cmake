@@ -990,12 +990,27 @@ ${_do}")
 
     if (RPMBUILD_FOUND)
 
+      if(CPACK_REMOVE_SYSTEM_DEPS)
+        set(CPACK_RPM_AUTOREQ_LINE "Autoreq: 0")
+        set(RPM_DEVEL_BUILDDEP_SYS_LINES)
+        set(RPM_DEP_SYS_LINES)
+        set(RPM_DEVEL_DEP_SYS_LINES)
+      else()
+        set(CPACK_RPM_AUTOREQ_LINE)
+        get_rpm_sys_dep_lines("gcc > 4.7;cmake >= 2.6" "BuildRequires" RPM_DEVEL_BUILDDEP_SYS_LINES)
+        get_rpm_sys_dep_lines("python${PYTHON_EXPLICIT_VERSION};EucliEnv" "Requires" RPM_DEP_SYS_LINES)
+        get_rpm_sys_dep_lines("cmake >= 2.6" "Requires" RPM_DEVEL_DEP_SYS_LINES)
+      endif()
 
       get_rpm_dep_list("${PROJECT_USE}" "debuginfo" "${SQUEEZED_INSTALL}" RPM_DEBUGINFO_DEP_LIST)
+      get_rpm_dep_lines("${PROJECT_USE}" "debuginfo" "${SQUEEZED_INSTALL}" "Requires" RPM_DEBUGINFO_DEP_LINES)
 
       get_rpm_dep_list("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" RPM_DEVEL_DEP_LIST)
+      get_rpm_dep_lines("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" "BuildRequires" RPM_DEVEL_BUILDDEP_LINES)
+      get_rpm_dep_lines("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" "Requires" RPM_DEVEL_DEP_LINES)
 
       get_rpm_dep_list("${PROJECT_USE}" "" "${SQUEEZED_INSTALL}" RPM_DEP_LIST)
+      get_rpm_dep_lines("${PROJECT_USE}" "" "${SQUEEZED_INSTALL}" "Requires" RPM_DEP_LINES)
 
       find_file(main_project_changelog_file
                 NAMES ChangeLog

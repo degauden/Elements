@@ -669,6 +669,85 @@ function(get_rpm_dep_list project_use package_suffix squeezed_install output_var
 
 endfunction()
 
+
+function(get_rpm_dep_lines project_use package_suffix squeezed_install line_prefix output_var)
+  
+  set(output_str_lines)
+
+  set(ARGN_ ${project_use})
+    
+  while(ARGN_)
+    list(LENGTH ARGN_ len)
+    if(len LESS 2)
+      message(FATAL_ERROR "Wrong number of arguments to USE option")
+    endif()
+    list(GET ARGN_ 0 other_project)
+    list(GET ARGN_ 1 other_project_version)
+
+    set(other_proj_pack_name)
+    if(squeezed_install)
+      set(other_proj_pack_name "${other_project}")
+    else()
+      set(other_proj_pack_name "${other_project}_${other_project_version}")
+    endif()
+    
+    if(package_suffix)
+	  set(other_proj_pack_name "${other_proj_pack_name}-${package_suffix}")
+    endif()
+ 
+    if(squeezed_install)
+      set(other_proj_pack_line "${other_proj_pack_name} = ${other_project_version}")
+    else()
+      set(other_proj_pack_line "${other_proj_pack_name}")
+    endif()
+ 
+    if(line_prefix)
+      set(other_proj_pack_line "${line_prefix}: ${other_proj_pack_line}")  
+    endif()
+
+    
+    if( "${output_str_lines}" STREQUAL "")
+      set(output_str_lines "${other_proj_pack_line}")
+    else()
+      set(output_str_lines "${output_str_lines}
+${other_proj_pack_line}")    
+    endif()
+
+    list(REMOVE_AT ARGN_ 0 1)
+  endwhile()
+    
+  set(${output_var} ${output_str_lines} PARENT_SCOPE)
+
+endfunction()
+
+function(get_rpm_sys_dep_lines dep_list line_prefix output_var)
+  
+  set(output_str_lines)
+  
+  list(REMOVE_DUPLICATES dep_list)
+  
+  foreach(other_sys_pack_line ${dep_list})
+  
+    debug_print_var(other_sys_pack_line)
+    if(line_prefix)
+      set(other_sys_pack_line "${line_prefix}: ${other_sys_pack_line}")  
+    endif()
+    
+    if( "${output_str_lines}" STREQUAL "")
+      set(output_str_lines "${other_sys_pack_line}")
+    else()
+      set(output_str_lines "${output_str_lines}
+${other_sys_pack_line}")    
+    endif()
+
+  endforeach()
+  
+  set(${output_var} ${output_str_lines} PARENT_SCOPE)
+
+  debug_print_var(output_str_lines)
+
+endfunction()
+
 function(get_arch_lib_dir output_var)
 
   if(EXISTS /usr/lib64)
