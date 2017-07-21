@@ -68,6 +68,8 @@ else
   endif
 endif
 
+override CMAKEFLAGS += --no-warn-unused-cli
+
 ifneq ($(TOOLCHAIN_FILE),)
   # A toolchain has been found. Lets use it.
   override CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)

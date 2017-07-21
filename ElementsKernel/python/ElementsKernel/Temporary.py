@@ -84,7 +84,7 @@ class TempResource(object):
         self._get_resource()
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, *_):
         """ function called at the end of a context """
         self._del_resource()
 
@@ -267,7 +267,7 @@ class Environment(object):
         self._aq_env()
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, *_):
         """
         Revert the changes on the end of the context.
         """
