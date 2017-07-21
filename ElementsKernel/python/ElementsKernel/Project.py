@@ -135,7 +135,9 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     f.write(new_data)
     f.close()
     # Remove '.in'
-    os.rename(cmake_list_file, cmake_list_file.replace('.in', ''))
+    file_no_dot_in=cmake_list_file.replace('.in', '')
+    os.rename(cmake_list_file, file_no_dot_in)
+    epcr.addItemToElementsCreationList(file_no_dot_in)
 
 ################################################################################
 
@@ -154,14 +156,19 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
 
     # Remove '.in'
     cmakefile = os.path.join(project_dir, AUX_CMAKE_FILE_IN)
-    os.rename(cmakefile, cmakefile.replace('.in', ''))
+    file_no_dot_in=cmakefile.replace('.in', '')
+    os.rename(cmakefile, file_no_dot_in)
+    epcr.addItemToElementsCreationList(file_no_dot_in)
 
     project_doc_dir = os.path.join(project_dir, "doc")
     if not os.path.exists(project_doc_dir):
         os.makedirs(project_doc_dir)
     epcr.copyAuxFile(project_doc_dir, AUX_PROJ_RST_IN)
     project_rst_file = os.path.join(project_doc_dir, AUX_PROJ_RST_IN)
-    os.rename(project_rst_file, project_rst_file.replace('.in', ''))
+
+    file_no_dot_in=project_rst_file.replace('.in', '')
+    os.rename(project_rst_file, file_no_dot_in)
+    epcr.addItemToElementsCreationList(file_no_dot_in)
 
     substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects, standalone)
 
@@ -326,6 +333,9 @@ def mainMethod(args):
 
         # Create the project
         createProject(project_dir, proj_name, proj_version, dependant_projects, standalone)
+
+        # Print all files created
+        epcr.printElementsCreationList()
 
         logger.info('# <%s> project successfully created.', project_dir)
 

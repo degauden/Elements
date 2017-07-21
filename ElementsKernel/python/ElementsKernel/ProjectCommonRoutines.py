@@ -34,6 +34,10 @@ import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
+# Define a global list containing files created or modified
+# by the python scripts for the creation of a Elements project
+_filelist = []
+
 # Define regex for name & version checking
 name_regex = r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
 version_regex = r"^(\d+\.\d+(\.\d+)?|HEAD)$"
@@ -47,7 +51,25 @@ class ErrorOccured(Exception):
     pass
 
 ################################################################################
+def addItemToElementsCreationList(element):
+    """
+    Add an element to the global list.
+    """
+    _filelist.append(element)
 
+################################################################################
+def printElementsCreationList():
+    """
+    Add an element to the global list.
+    """
+    logger.info("#")
+    logger.info("# File(s) created/modified:")
+    logger.info("#")
+    for elt in _filelist:
+        logger.info("#  file --> %s" % elt)
+    logger.info("#")
+
+################################################################################
 def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
     """
     Check if the entity_name (e.g. project name, module name, class name etc...)
