@@ -727,8 +727,7 @@ function(get_rpm_sys_dep_lines dep_list line_prefix output_var)
   list(REMOVE_DUPLICATES dep_list)
   
   foreach(other_sys_pack_line ${dep_list})
-  
-    debug_print_var(other_sys_pack_line)
+
     if(line_prefix)
       set(other_sys_pack_line "${line_prefix}: ${other_sys_pack_line}")  
     endif()
@@ -743,8 +742,6 @@ ${other_sys_pack_line}")
   endforeach()
   
   set(${output_var} ${output_str_lines} PARENT_SCOPE)
-
-  debug_print_var(output_str_lines)
 
 endfunction()
 
