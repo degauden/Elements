@@ -124,7 +124,7 @@ def mainMethod(args):
     try:
         # We absolutely need a Elements cmake file
         module_name = epcr.getElementsModuleName(module_dir)
-    
+
         # Default is the current directory
         file_to_be_deleted = getAllFiles(class_name, module_dir, module_name)
         if file_to_be_deleted:
@@ -146,13 +146,13 @@ def mainMethod(args):
         else:
             logger.info('No file found for deletion!')
             logger.info('')
-    
-    except epcr.ErrorOccured, msg:
+
+    except epcr.ErrorOccured as msg:
         if str(msg):
-           logger.error(msg)
+            logger.error(msg)
         logger.error('# Script aborted.')
         return 1
-    except Exception, msg:
+    except Exception as msg:
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
