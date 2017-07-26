@@ -403,8 +403,12 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
     install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.py)
-    set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyo)
-    set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyc)
+    if("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3)
+      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyo)
+      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyc)
+    else()
+      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
+    endif()
   endif()
 
   if(instmodule_cmd)
@@ -417,8 +421,12 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}/${_proj}_INSTALL.py\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.py)
-    set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.pyo)
-    set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.pyc)
+    if("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3)
+      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.pyo)
+      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.pyc)
+    else()
+      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
+    endif()
   endif()
 
 
@@ -2462,8 +2470,12 @@ function(elements_add_swig_binding binding)
 
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.py)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyo)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyc)
+  if("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyo)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyc)
+  else()
+    set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
+  endif()
 
   elements_install_headers(${ARG_PUBLIC_HEADERS})
 
@@ -3106,7 +3118,9 @@ function(elements_install_scripts)
               PATTERN "CVS" EXCLUDE
               PATTERN ".svn" EXCLUDE
               PATTERN "*~" EXCLUDE
-              PATTERN "*.pyc" EXCLUDE)
+              PATTERN "*.pyc" EXCLUDE
+              PATTERN "__pycache__" EXCLUDE
+              PATTERN "*.pyo" EXCLUDE)
       set_property(GLOBAL APPEND PROPERTY PROJ_HAS_SCRIPTS TRUE)
       file(GLOB scr_list RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${scrsubdir} ${CMAKE_CURRENT_SOURCE_DIR}/${scrsubdir}/*)
       foreach(scr ${scr_list})

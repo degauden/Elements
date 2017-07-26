@@ -174,7 +174,7 @@ def zipdir(directory, no_pyc=False):
             log.info("File '%s' closed", filename)
         else:
             log.info("Nothing to do on '%s'", filename)
-    except UnicodeDecodeError, x:
+    except UnicodeDecodeError as x:
         log.error("Wrong encoding in file '%s':", src)
         log.error("    %s", x)
         log.error("Probably you forgot the line '# -*- coding: utf-8 -*-'")
