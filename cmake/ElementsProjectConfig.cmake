@@ -2168,6 +2168,8 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
 
   add_library(${library} ${srcs} ${h_srcs})
 
+  set_target_properties(${library} PROPERTIES BASENAME "${CMAKE_SHARED_LIBRARY_PREFIX}${library}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
   if(ARG_LINKER_LANGUAGE)
     set_target_properties(${library} PROPERTIES LINKER_LANGUAGE ${ARG_LINKER_LANGUAGE})
   endif()
@@ -2321,8 +2323,10 @@ function(elements_add_python_module module)
   
   if(NOT ${ARG_PLAIN_MODULE})
     set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "_")
+    set_target_properties(${module} PROPERTIES BASENAME "_${module}.so")
   else()
     set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "")
+    set_target_properties(${module} PROPERTIES BASENAME "${module}.so")
   endif()
   target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
   _elements_detach_debinfo(${module})
@@ -2672,6 +2676,9 @@ function(elements_add_executable executable)
 
   if (ELEMENTS_USE_EXE_SUFFIX)
     set_target_properties(${executable} PROPERTIES SUFFIX .exe)
+    set_target_properties(${executable} PROPERTIES BASENAME ${executable}.exe)
+  else()
+    set_target_properties(${executable} PROPERTIES BASENAME ${executable}.exe)
   endif()
 
   #----Installation details-------------------------------------------------------
@@ -3755,11 +3762,12 @@ set(_IMPORT_PREFIX \"${CMAKE_INSTALL_PREFIX}\")
         endforeach()
 
         if(NOT CMAKE_VERSION VERSION_LESS 3.9.0)
-          set(prop $<TARGET_FILE:${library}>)
+#          set(prop $<TARGET_FILE:${library}>)
+          get_property(prop TARGET ${library} PROPERTY BASENAME)        
         else()
           get_property(prop TARGET ${library} PROPERTY LOCATION)        
+          get_filename_component(prop ${prop} NAME)
         endif()
-        get_filename_component(prop ${prop} NAME)
         file(APPEND ${pkg_exp_file} "  IMPORTED_SONAME \"${prop}\"\n")
         file(APPEND ${pkg_exp_file} "  IMPORTED_LOCATION \"\${_IMPORT_PREFIX}/${CMAKE_LIB_INSTALL_SUFFIX}/${prop}\"\n")
 
@@ -3772,11 +3780,11 @@ set(_IMPORT_PREFIX \"${CMAKE_INSTALL_PREFIX}\")
         file(APPEND ${pkg_exp_file} "set_target_properties(${executable} PROPERTIES\n")
 
         if(NOT CMAKE_VERSION VERSION_LESS 3.9.0)
-          set(prop $<TARGET_FILE:${executable}>)
+          get_property(prop TARGET ${executable} PROPERTY BASENAME)        
         else()
           get_property(prop TARGET ${executable} PROPERTY LOCATION)        
+          get_filename_component(prop ${prop} NAME)
         endif()
-        get_filename_component(prop ${prop} NAME)
         file(APPEND ${pkg_exp_file} "  IMPORTED_LOCATION \"\${_IMPORT_PREFIX}/bin/${prop}\"\n")
 
         file(APPEND ${pkg_exp_file} "  )\n")
