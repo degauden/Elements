@@ -1,0 +1,153 @@
+#!/bin/sh
+
+home_dir=${PWD}
+
+projectA_name="ProjectA"
+projectA_version="1.1.0"
+
+projectB_name="ProjectB"
+projectB_version="1.2"
+
+projectC_name="ProjectC"
+projectC_version="1.3"
+
+projectB_name="ProjectD"
+projectB_version="1.4"
+
+# Create unique directory
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+# Clean and exit
+local_clean_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+# Set to the User_area
+export User_area=${tmploc}
+export CMAKE_PROJECT_PATH=${User_area}
+
+echo "CMAKE_PROJECT_PATH: ${CMAKE_PROJECT_PATH}"
+echo "BINARY_TAG: ${BINARY_TAG}"
+echo "User_area ${User_area}"
+echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
+
+
+# check that the Elements framework has been installed. It is
+# not enough to have it built
+if [ -e ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}/manifest.xml ]; then
+
+cd ${User_area}
+
+CreateElementsProject $projectA_name $projectA_version << EOF
+y
+EOF
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   echo "Error: <CreateElementsProject $projectA_name $projectA_version> command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+cd $projectA_name/$projectA_version
+
+make configure
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Configuration of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+make
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Builld of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+make install
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
+   echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+
+cd ${User_area}
+
+CreateElementsProject -d $projectA_name 1.1.0 $projectB_name $projectB_version << EOF
+y
+EOF
+
+cd $projectB_name/$projectB_version
+
+make configure
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Configuration of $projectB_name $projectB_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+make
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Builld of $projectB_name $projectB_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+make install
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Installation of $projectB_name $projectB_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+
+cd ${User_area}
+
+CreateElementsProject -d $projectA_name 1.1 $projectC_name $projectC_version << EOF
+y
+EOF
+
+cd $projectC_name/$projectC_version
+
+make configure
+
+# strict version dependency is requested (1.1.0 != 1.1) and this must fail
+if [ $? -eq 0 ]; then
+   echo "Error: <Configuration of $projectC_name $projectC_version> succeeded!" 1>&2
+   local_clean_exit 1
+fi
+
+
+cd ${User_area}
+
+CreateElementsProject -d $projectA_name 1.1.0 -d $projectB_name 1.2.0 $projectD_name $projectD_version << EOF
+y
+EOF
+
+cd $projectD_name/$projectD_version
+
+make configure
+
+# strict version dependency is requested (1.2 != 1.2.0) and this must fail
+if [ $? -eq 0 ]; then
+   echo "Error: <Configuration of $projectD_name $projectD_version> succeeded!" 1>&2
+   local_clean_exit 1
+fi
+
+
+
+else
+echo "Warning: The Elements framework is not available in its InstallArea ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}" 1>&2
+local_clean_exit 0
+fi
+
+
+local_clean_exit 0

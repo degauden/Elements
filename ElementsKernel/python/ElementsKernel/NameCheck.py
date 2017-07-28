@@ -30,7 +30,14 @@ import argparse
 import ElementsKernel.Logging as log
 
 import json
-import urllib2
+
+try:
+    from urllib2 import urlopen
+    from urllib2 import URLError
+except:
+    from urllib.request import urlopen
+    from urllib.error import URLError
+
 # import ssl
 
 logger = log.getLogger('NameCheck')
@@ -46,12 +53,12 @@ DEFAULT_TYPE = "cmake"
 #
 # _localUrlOpen = _byPassSslUrlOpen
 
-_localUrlOpen = urllib2.urlopen
+_localUrlOpen = urlopen
 
 def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
     full_url = db_url + "/NameCheck/exists?name=%s&type=%s" % (name, entity_type)
     logger.debug("The url for the name request: %s", full_url)
-    info = json.loads(_localUrlOpen(full_url).read())
+    info = json.loads(_localUrlOpen(full_url).read().decode("utf-8"))
     for u in ["url", "private_url"]:
         if u in info and info[u]:
             info[u] = db_url + info[u]
@@ -62,7 +69,9 @@ def checkDataBaseUrl(db_url):
     if db_url:
         try:
             _localUrlOpen(db_url + "/NameCheck")
-        except urllib2.URLError:
+        except URLError:
+            site_exists = False
+        except ValueError:
             site_exists = False
     else:
         site_exists = False

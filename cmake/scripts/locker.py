@@ -1,8 +1,8 @@
-#@PydevCodeAnalysisIgnore
+# @PydevCodeAnalysisIgnore
 ##########################################################
 # stolen and (slighty) adapted from:
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/65203
-##
+# #
 
 import os
 import time
@@ -31,7 +31,7 @@ if os.name == 'nt':
             try:
                 msvcrt.locking(filename.fileno(), msvcrt.LK_LOCK, 10)
                 acquired = True
-            except IOError, x:
+            except IOError as x:
                 # 36, AKA 'Resource deadlock avoided', is normal
                 if x.errno != 36:
                     raise
@@ -59,7 +59,7 @@ elif os.name == 'posix':
     def _linkCount(lockFileName):
         try:
             return os.stat(lockFileName).st_nlink
-        except OSError, e:
+        except OSError as e:
             if e.errno != errno.ENOENT:
                 raise
             return -1
@@ -72,7 +72,7 @@ elif os.name == 'posix':
             finally:
                 fp.close()
             return readFileName
-        except EnvironmentError, e:
+        except EnvironmentError as e:
             if e.errno != errno.ENOENT:
                 raise
             return None
@@ -94,7 +94,7 @@ elif os.name == 'posix':
                 os.link(tmpFileName, lockFileName)
                 # we acquired the lock
                 return
-            except OSError, e:
+            except OSError as e:
                 if e.errno == errno.ENOENT:
                     pass
                 elif e.errno != errno.EEXIST:
@@ -121,13 +121,13 @@ elif os.name == 'posix':
 
         try:
             os.unlink(lockFileName)
-        except OSError, e:
+        except OSError as e:
             if e.errno != errno.ENOENT:
                 raise
         # remove the tmp filename
         try:
             os.unlink(tmpFileName)
-        except OSError, e:
+        except OSError as e:
             if e.errno != errno.ENOENT:
                 raise
         return

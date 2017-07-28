@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import re
 from optparse import OptionParser
@@ -29,10 +27,10 @@ def main():
     outputdata = """# Automatically generated file: do not modify!
 
 from %(proj)s_VERSION import %(proj)s_MAJOR_VERSION, %(proj)s_MINOR_VERSION, %(proj)s_PATCH_VERSION
-from %(proj)s_VERSION import %(proj)s_VERSION, %(proj)s_VERSION_STRING
+from %(proj)s_VERSION import %(proj)s_VERSION, %(proj)s_VERSION_STRING, %(proj)s_ORIGINAL_VERSION
 from %(proj)s_INSTALL import %(proj)s_INSTALL_LOCATION, %(proj)s_SEARCH_DIRS
 
-
+THIS_PROJECT_ORIGINAL_VERSION = %(proj)s_ORIGINAL_VERSION
 THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION
 THIS_PROJECT_MINOR_VERSION = %(proj)s_MINOR_VERSION
 THIS_PROJECT_PATCH_VERSION = %(proj)s_PATCH_VERSION

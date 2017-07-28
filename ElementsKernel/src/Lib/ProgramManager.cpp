@@ -36,7 +36,7 @@
 #include "ElementsKernel/Path.h"           // for Path::VARIABLE, multiPathAppend, PATH_SEP
 #include "ElementsKernel/ModuleInfo.h"     // for getExecutablePath
 #include "ElementsKernel/Unused.h"         // for ELEMENTS_UNUSED
-#include "ElementsKernel/Configuration.h"  // for getConfigurationVariableName
+#include "ElementsKernel/Configuration.h"  // for getConfigurationPath
 
 using std::vector;
 using std::string;
@@ -63,17 +63,36 @@ const path& ProgramManager::getProgramName() const {
  * @todo check whether priotities are correct if more than one
  * config file is found in pathSearchInEnvVariable
  * */
-const path ProgramManager::getDefaultConfigFile(const path & program_name) {
+const path ProgramManager::getDefaultConfigFile(const path & program_name, const string& module_name) {
+
+  Logging logger = Logging::getLogger("ElementsProgram");
 
   path default_config_file{};
+
   // .conf is the standard extension for configuration file
   path conf_name(program_name);
   conf_name.replace_extension("conf");
+
   // Construct and return the full path
-  vector<path> configFile = pathSearchInEnvVariable(conf_name.string(), getConfigurationVariableName());
-  if (configFile.size() != 0) {
-    default_config_file = configFile.at(0);
+  default_config_file = getConfigurationPath(conf_name.string(), false);
+  if (default_config_file.empty()) {
+    logger.warn() << "The \"" << conf_name.string() << "\" configuration file cannot be found in:";
+    for(auto l: getConfigurationLocations()) {
+      logger.warn() << " " << l;
+    }
+    if (not module_name.empty()) {
+      conf_name = path{module_name} / conf_name;
+      logger.warn() << "Trying \"" << conf_name.string() << "\".";
+      default_config_file = getConfigurationPath(conf_name.string(), false);
+    }
   }
+
+  if (default_config_file.empty()) {
+    logger.debug() << "Couldn't find \"" << conf_name << "\" configuration file.";
+  } else {
+    logger.debug() << "Found \"" << conf_name << "\" configuration file at " << default_config_file;
+  }
+
   return default_config_file;
 }
 
@@ -115,7 +134,7 @@ const variables_map ProgramManager::getProgramOptions(
   string default_log_level = "INFO";
 
   // Get defaults
-  path default_config_file = getDefaultConfigFile(getProgramName());
+  path default_config_file = getDefaultConfigFile(getProgramName(), m_parent_module_name);
 
   // Define the options which can be given only at the command line
   options_description cmd_only_generic_options {};

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # @file: Elements/cmake/scripts/merge_files.py
 # @purpose: merge_files <fragment> file into a 'per-project' <merged> file
 # @author: Sebastien Binet <binet@cern.ch>
@@ -51,12 +49,12 @@ def mergeFiles(fragFileNames, mergedFileName, commentChar, doMerge, ignoreMissin
             if line.startswith(skipBlock):
                 skipBlock = ""
         if skipBlock:
-            print "WARNING: missing end mark ('%s')" % skipBlock
+            print("WARNING: missing end mark ('%s')", skipBlock)
 
         if doMerge:
             for f in fragFileNames:
                 if ignoreMissing and not os.path.exists(f):
-                    print "WARNING: '%s' does not exist, I'm ignoring it" % f
+                    print("WARNING: '%s' does not exist, I'm ignoring it", f)
                     continue
                 # I do not want to add 2 empty lines at the beginning of a file
                 if newLines:
@@ -156,7 +154,7 @@ if __name__ == "__main__":
     if not options.fragFileNames or \
        not options.mergedFileName:
         str(parser.print_help() or "")
-        print "*** ERROR ***", sys.argv
+        print("*** ERROR ***", sys.argv)
         sys.exit(sc)
         pass
 

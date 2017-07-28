@@ -35,6 +35,7 @@
 #include "ElementsKernel/Unused.h"                 // for ELEMENTS_UNUSED
 
 #include "ThisProject.h"
+#include "ThisElementsModule.h"
 
 
 /** @def MAIN_FOR(ELEMENTS_PROGRAM_NAME)
@@ -60,6 +61,7 @@
   {                                             \
     Elements::ProgramManager manager {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
                                       THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
+                                      THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
                                       THIS_PROJECT_SEARCH_DIRS}; \
     Elements::ExitCode exit_code =  manager.run(argc, argv);   \
     return static_cast<Elements::ExitCodeType>(exit_code);    \

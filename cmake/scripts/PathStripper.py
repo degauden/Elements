@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from sys import stdout
 from os import pathsep, listdir, environ, fdopen, linesep
 from os.path import exists, isdir, realpath
@@ -42,7 +40,7 @@ def _check_output_options_cb(option, opt_str, value, parser):
             parser.values.mktemp = True
             fd, outname = mkstemp()
             parser.values.output = fdopen(fd, "w")
-            print outname
+            print(outname)
     elif opt_str == "--output" or opt_str == "-o":
         if parser.values.mktemp:
             raise OptionValueError(
@@ -83,4 +81,4 @@ if __name__ == '__main__':
             CleanVariable(v, options.shell, options.output)
 
     for a in args:
-        print StripPath(a)
+        print(StripPath(a))

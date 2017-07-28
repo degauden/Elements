@@ -117,15 +117,16 @@ def mainMethod(args):
     logger.info('Current directory : %s', module_dir)
     logger.info('')
 
-    # We absolutely need a Elements cmake file
-    script_goes_on, module_name = epcr.isElementsModuleExist(module_dir)
+    try:
+        # We absolutely need a Elements cmake file
+        module_name = epcr.getElementsModuleName(module_dir)
 
-    if script_goes_on:
         # Default is the current directory
         file_to_be_deleted = getAllFiles(pymodule_name, module_dir, module_name)
         if file_to_be_deleted:
+            logger.info('File to be deleted:')
             for elt_file in file_to_be_deleted:
-                logger.info('File to be deleted: %s', elt_file)
+                logger.info(' --> %s', elt_file)
             response_key = raw_input('Do you want to continue?(y/n, default: n)')
             if response_key == 'Y' or response_key == 'y':
                 epcr.removeFilesOnDisk(file_to_be_deleted)
@@ -135,7 +136,15 @@ def mainMethod(args):
             logger.info('No file found for deletion!')
             logger.info('')
 
-        logger.info('Script over')
+    except epcr.ErrorOccured as msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
+    except Exception as msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
     else:
-        logger.error('No module name found at the current directory : %s', module_dir)
-        logger.error('Script stopped...')
+        logger.info('# Script over.')

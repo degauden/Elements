@@ -124,6 +124,7 @@ class CMakeLists(object):
             link_libraries = []
             include_dirs = []
             key_type = ''
+            exec_name = ''
             location = 'SOURCE'
             for word in content[1:]:
                 if word == 'LINK_LIBRARIES':
@@ -135,6 +136,9 @@ class CMakeLists(object):
                 if word == 'TYPE':
                     location = 'TYPE'
                     continue
+                if word == 'EXECUTABLE':
+                    location = 'EXECUTABLE'
+                    continue
                 if location == 'SOURCE':
                     source_list.append(word)
                 if location == 'LINK_LIBRARIES':
@@ -143,8 +147,10 @@ class CMakeLists(object):
                     include_dirs.append(word)
                 if location == 'TYPE':
                     key_type = word
+                if location == 'EXECUTABLE':
+                    exec_name = word
             self.elements_add_unit_test_list.append(pclm.ElementsAddUnitTest(name, source_list, link_libraries,
-                                                                             include_dirs, key_type))
+                                                                             include_dirs, key_type, exec_name))
         #
         # Python stuff
         #

@@ -77,7 +77,6 @@ elements_add_unit_test(ModuleInfo tests/src/Boost/ModuleInfo_test.cpp
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
-
 elements_add_unit_test(AllTests tests/src/Boost/*_test.cpp
                        EXECUTABLE BoostElementsExampleAllTests
                        INCLUDE_DIRS ElementsExamples
@@ -99,7 +98,7 @@ elements_add_unit_test(OtherClassExample tests/src/CppUnit/ClassExample_test.cpp
 
 # Test with the CppUnit library. The TestMain.cpp is not generated
 elements_add_unit_test(OtherClassExampleWithMain tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
-                       EXECUTABLE OtherClassExampleWithMain_test
+                       EXECUTABLE ElementsExamples_OtherClassExampleWithMain_test
                        LINK_LIBRARIES CppUnit ElementsExamples
                        INCLUDE_DIRS CppUnit ElementsExamples
                        LABELS CustomLabel CppUnit)
@@ -204,13 +203,27 @@ elements_add_test(CfitsioWorks COMMAND CfitsioExample LABELS Cfitsio Build)
 endif()
 
 find_package(SWIG QUIET)
-find_package(PythonLibs QUIET)
+find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET)
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
 elements_add_swig_binding(SwigExample ElementsExamples/SwigExample.i
                           LINK_LIBRARIES ElementsExamples
                           INCLUDE_DIRS ElementsExamples
                           PUBLIC_HEADERS ElementsExamples)
 endif()
+
+find_package(Cython QUIET)
+find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET)
+if(CYTHON_FOUND AND PYTHONLIBS_FOUND)
+elements_add_cython_module(src/Cython/lib/PiCalculator.pyx
+                           LINK_LIBRARIES ElementsExamples
+                           INCLUDE_DIRS ElementsExamples 
+                           NO_PUBLIC_HEADERS)
+elements_add_cython_module(src/Cython/lib/Rect.pyx
+                           LINK_LIBRARIES ElementsExamples
+                           INCLUDE_DIRS ElementsExamples
+                           PUBLIC_HEADERS ElementsExamples)
+endif()
+
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 

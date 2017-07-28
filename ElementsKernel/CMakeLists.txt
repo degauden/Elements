@@ -72,6 +72,7 @@ elements_add_unit_test(ModuleInfo tests/src/ModuleInfo_test.cpp
 
 #-----------------------
 # ThisModule_test
+# Test for the BINARY module (a library or an executable)
 elements_add_unit_test(ThisModule tests/src/ThisModule_test.cpp
                        EXECUTABLE ThisModule_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
@@ -81,6 +82,14 @@ elements_add_unit_test(ThisModule tests/src/ThisModule_test.cpp
 elements_add_unit_test(ThisProject tests/src/ThisProject_test.cpp
                        EXECUTABLE ThisProject_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+#-----------------------
+# ThisElementsModule_test
+# Test for the Elements Module (ElementsKernel for example)
+elements_add_unit_test(ThisElementsModule tests/src/ThisElementsModule_test.cpp
+                       EXECUTABLE ThisElementsModule_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
 
 #-----------------------
 # Storage_test
@@ -172,3 +181,24 @@ elements_add_test(CreateDependentElementsProjects
                   COMMAND createDependentElementsProjects_test  
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation)
+
+elements_add_test(CheckElementsProjectsTree
+                  COMMAND checkElementsProjectsTree_test  
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  LABELS Creation)
+
+elements_add_test(CheckProjectDependencyFailure
+                  COMMAND checkProjectDependencyFailure_test  
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  LABELS Creation)
+
+elements_add_test(HEADVersionProject
+                  COMMAND HEADVersionProject_test
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  LABELS Creation)
+                  
+elements_add_test(PatchVersionProject
+                  COMMAND patchVersionProject_test
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  LABELS Creation)
+                  

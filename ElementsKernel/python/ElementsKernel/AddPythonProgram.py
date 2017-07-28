@@ -60,9 +60,12 @@ def createFiles(module_dir, module_name, program_name):
     Create files needed for a python program
     """
     # Create the executable directory
-    epcr.createPythonInitFile(os.path.join(module_dir, 'python', module_name, '__init__.py'))
+    init_file = os.path.join(module_dir, 'python', module_name, '__init__.py')
+    epcr.createPythonInitFile(init_file)
+    epcr.addItemToCreationList(init_file)
 
     conf_file = os.path.join(module_dir, 'conf', module_name, program_name + '.conf')
+    epcr.addItemToCreationList(conf_file)
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
         f.write('# Write your program options here. e.g. : option = string')
@@ -100,6 +103,7 @@ def subStringsInPythonProgramFile(file_path, program_name, module_name):
     f.write(new_data)
     f.close()
     os.remove(template_file)
+    epcr.addItemToCreationList(file_name)
 
 ################################################################################
 
@@ -109,6 +113,7 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+    epcr.addItemToCreationList(cmake_filename)
 
     # Backup the file
     epcr.makeACopy(cmake_filename)
@@ -142,12 +147,24 @@ def createPythonProgram(current_dir, module_name, program_name):
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, program_name)
     program_path = os.path.join(current_dir, 'python', module_name)
-    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
-    if script_goes_on:
-        subStringsInPythonProgramFile(program_path, program_name, module_name)
-        updateCmakeListsFile(current_dir, program_name)
+    epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
+    subStringsInPythonProgramFile(program_path, program_name, module_name)
+    updateCmakeListsFile(current_dir, program_name)
 
-    return script_goes_on
+################################################################################
+
+def makeChecks(program_file_path, program_name):
+    """
+    Make some checks
+    """
+    # Module as no version number, '1.0' is just for using the routine
+    epcr.checkNameAndVersionValid(program_name, '1.0')
+    # Check aux file exist
+    epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+    # Make sure the program does not already exist
+    epcr.checkFileNotExist(program_file_path, program_name)
+    # Check name in the Element Naming Database
+    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
 
 ################################################################################
 
@@ -179,43 +196,39 @@ def mainMethod(args):
 
     program_name = args.program_name
 
-    # Default is the current directory
-    current_dir = os.getcwd()
+    try:
+        # Default is the current directory
+        current_dir = os.getcwd()
 
-    logger.info('# Current directory : %s', current_dir)
-    logger.info('')
+        logger.info('# Current directory : %s', current_dir)
+        logger.info('')
 
-    # We absolutely need a Elements cmake file
-    script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
+        # We absolutely need a Elements cmake file
+        module_name = epcr.getElementsModuleName(current_dir)
 
-    # Module as no version number, '1.0' is just for using the routine
-    if script_goes_on:
-        script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
+        program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
+        # Make checks
+        makeChecks(program_file_path, program_name)
 
-    # Check aux file exist
-    if script_goes_on:
-        script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+        # Create program
+        createPythonProgram(current_dir, module_name, program_name)
 
-    program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
+        logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
+        # Remove backup file
+        epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
 
-    # Check name in the Element Naming Database
-    if script_goes_on:
-        script_goes_on = epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
+        # Print all files created
+        epcr.printCreationList()
 
-    # Make sure the program does not already exist
-    if script_goes_on:
-        script_goes_on = epcr.isFileAlreadyExist(program_file_path, program_name)
-
-    if script_goes_on:
-        if os.path.exists(current_dir):
-            if createPythonProgram(current_dir, module_name, program_name):
-                logger.info('< %s > program successfully created in < %s >.',
-                            program_name, program_file_path)
-                # Remove backup file
-                epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-                logger.info('Script over.')
-        else:
-            logger.error('< %s > project directory does not exist!', current_dir)
-
-    if not script_goes_on:
-        logger.error('Script aborted!')
+    except epcr.ErrorOccured as msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
+    except Exception as msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
+    else:
+        logger.info('# Script over.')

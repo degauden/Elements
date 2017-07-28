@@ -1,37 +1,50 @@
-#!/usr/bin/env python
-
 import argparse
 import os
 import stat
 
 parser = argparse.ArgumentParser()
+
 parser.add_argument('--module', required=True,
                     help='The module containing the program implementation')
+
 parser.add_argument(
     '--outdir', required=True, help='The directory to generate the script in')
+
 parser.add_argument('--execname', required=True,
                     help='The name of the executable script to generate')
+
 parser.add_argument('--local-python-path',
                     help='The local PYTHONPATH to the sources')
 parser.add_argument('--project-name',
                     help='The name of the project of the script')
+
+parser.add_argument('--elements-module-name',
+                    help='The name of the Elements module of the script')
+
+parser.add_argument('--elements-module-version',
+                    help='The name of the Elements module of the script')
+
+parser.add_argument('--python-explicit-version', default="",
+                    help='the version of python used in the shebang line')
+
 
 args = parser.parse_args()
 
 if not os.path.exists(args.outdir):
     os.makedirs(args.outdir)
 if not os.path.isdir(args.outdir):
-    print 'Cannot create output directory', args.outdir
+    print('Cannot create output directory', args.outdir)
     exit(1)
 
 template = """\
-#!/usr/bin/env python
+#!/usr/bin/env python%(Python_version)s
 # Automatically generated file: do not modify!
 
 is_installed = False
 
 import sys, os
 
+# This function is embedded to allow standalone execution.
 def _updateSysPath(extra_list):
     if extra_list:
         os_env_str = os.environ.get("PYTHONPATH", None)
@@ -59,6 +72,9 @@ from %(proj)s_INSTALL import %(proj)s_SEARCH_DIRS
 
 %(proj)s_NAME = "%(Proj)s"
 
+ELEMENTS_MODULE_NAME = "%(Mod_name)s"
+ELEMENTS_MODULE_VERSION = "%(Mod_version)s"
+
 sys.path = old_path
 
 # insert python path list after the env variable in sys.path
@@ -66,9 +82,19 @@ _updateSysPath(update_list + [os.path.join(p, "python") for p in %(proj)s_SEARCH
 
 from ElementsKernel.Program import Program
 
-p = Program('%(MODULE_NAME)s', %(proj)s_VERSION_STRING, %(proj)s_NAME, %(proj)s_SEARCH_DIRS, os.path.realpath(__file__))
+p = Program('%(MODULE_NAME)s', 
+             %(proj)s_VERSION_STRING, %(proj)s_NAME, 
+             ELEMENTS_MODULE_NAME, ELEMENTS_MODULE_VERSION,
+             %(proj)s_SEARCH_DIRS, os.path.realpath(__file__))
+
 exit(p.runProgram())
-""" % { 'MODULE_NAME' : args.module, 'proj' : args.project_name.upper(), 'Proj' : args.project_name}
+""" % { 'MODULE_NAME' : args.module,
+        'proj' : args.project_name.upper(),
+        'Proj' : args.project_name,
+        'Mod_name' : args.elements_module_name,
+        'Mod_version' : args.elements_module_version,
+        'Python_version': args.python_explicit_version
+        }
 
 filename = os.path.join(args.outdir, args.execname)
 

@@ -7,6 +7,7 @@ import re
 import ElementsKernel.Logging as log
 from ElementsKernel.Path import VARIABLE, SUFFIXES, joinPath, multiPathAppend
 from ElementsKernel.Environment import Environment
+from ElementsKernel.Configuration import getConfigurationPath, getConfigurationLocations
 
 def str_to_bool(s):
     """Convert string to bool (in argparse context)."""
@@ -16,12 +17,16 @@ def str_to_bool(s):
 
 class Program(object):
     """Main Program Class"""
-    def __init__(self, app_module, parent_project_version=None, parent_project_name=None,
-                 search_dirs=None, original_path=None):
+    def __init__(self, app_module,
+                 parent_project_version=None, parent_project_name=None,
+                 elements_module_name=None, elements_module_version=None,
+                 search_dirs=None, original_path=""):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
+        self._elements_module_name = elements_module_name
+        self._elements_module_version = elements_module_version
         self._search_dirs = search_dirs
         self._program_path = os.path.dirname(original_path)
         self._program_name = os.path.basename(original_path)
@@ -56,11 +61,37 @@ class Program(object):
                 break
         return conf_file
 
+    def getDefaultConfigFile(self, program_name, module_name):
+
+        conf_name = os.path.splitext(program_name)[0] + '.conf'
+
+        default_config_file = getConfigurationPath(conf_name, False)
+        if not default_config_file:
+            self._logger.warn('The "%s" configuration file cannot be found in:', conf_name)
+            for l in getConfigurationLocations():
+                self._logger.warn(" %s", l)
+            if not module_name and '.' in self._app_module.__name__:
+                module_name = self._app_module.__name__[
+                    :self._app_module.__name__.index('.')]
+                module_name = module_name.replace('.', os.sep)
+            if module_name:
+                conf_name = os.sep.join([module_name, conf_name])
+                self._logger.warn('Trying "%s".', conf_name)
+                default_config_file = getConfigurationPath(conf_name, False)
+
+        if not default_config_file:
+            self._logger.debug('Couldn\'t find "%s" configuration file.', conf_name)
+        else:
+            self._logger.debug('Found "%s" configuration file at %s', conf_name, default_config_file)
+
+        return default_config_file;
+
     def _parseConfigFile(self, arg_parser, cmd_options):
         # First we check if the user gave the --config-file option
         config_file = arg_parser.parse_known_args()[0].config_file
         if not config_file:
-            config_file = self._findConfigFile()
+            config_file = self.getDefaultConfigFile(self._program_name,
+                                                    self._elements_module_name)
         conf = []
         if config_file:
             with open(config_file) as f:
@@ -70,8 +101,16 @@ class Program(object):
                         continue
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    if key.replace('-', '_') in [k for (k, v) in vars(cmd_options).items() if v]:
-                        continue
+                    # Get the action of the arg_parser for the given key and check if
+                    # we already have it from the command line
+                    try:
+                        action = next(act for act in arg_parser._actions if ('--' + key) in act.option_strings)
+                        if action.dest in [k for (k, v) in vars(cmd_options).items() if v]:
+                            continue
+                    except StopIteration:
+                        # There is no action for this key
+                        self._logger.error('Unknown option "' + key + '" in configuration file ' + config_file)
+                        exit(1)
                     value = value.strip()
                     if '#' in value:
                         value = value[:value.find('#')]
@@ -220,6 +259,9 @@ class Program(object):
         if exit_code is not None:
             self._logger.debug("# Exit Code: %d" % exit_code)
         self._logFooter()
+
+    def getProgramName(self):
+        return self._program_name
 
     def runProgram(self):
 

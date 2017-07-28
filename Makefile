@@ -68,6 +68,8 @@ else
   endif
 endif
 
+override CMAKEFLAGS += --no-warn-unused-cli
+
 ifneq ($(TOOLCHAIN_FILE),)
   # A toolchain has been found. Lets use it.
   override CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)
@@ -117,7 +119,7 @@ all:
 # deep clean
 purge:
 	$(RM) -r $(BUILDDIR) $(CURDIR)/InstallArea/$(BINARY_TAG)
-	find $(CURDIR) "(" -name "InstallArea" -prune -o -name "*.pyc" ")" -a -type f -exec $(RM) -v \{} \;
+	find $(CURDIR) "(" -name "InstallArea" -prune -o -name "*.pyc" -o -name "*.pyo" ")" -a -type f -exec $(RM) -v \{} \;
 	find $(CURDIR) -depth -type d -name "__pycache__" -exec $(RM) -rv \{} \;
 
 # delegate any target to the build directory (except 'purge')

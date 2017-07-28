@@ -86,7 +86,7 @@ namespace Elements {
  * Elements::Logging::setLogFile method) will only appear in the standard error
  * stream.
  */
-class Logging {
+class ELEMENTS_API Logging {
 
 private:
 
@@ -102,7 +102,7 @@ public:
    * @param name The name to use for identifying the logger messages
    * @return A logger instance
    */
-  ELEMENTS_API static Logging getLogger(const std::string& name = "");
+  static Logging getLogger(const std::string& name = "");
 
   /**
    * @brief
@@ -114,7 +114,7 @@ public:
    *
    * @param level The new message level
    */
-  ELEMENTS_API static void setLevel(std::string level);
+  static void setLevel(std::string level);
 
   /**
    * @brief
@@ -132,7 +132,7 @@ public:
    *
    * @param fileName The file where the log messages will be stored
    */
-  ELEMENTS_API static void setLogFile(const boost::filesystem::path& fileName);
+  static void setLogFile(const boost::filesystem::path& fileName);
 
   /**
    * Logs a debug message.
@@ -285,7 +285,7 @@ private:
    * during the destruction of the object. Instances can only be retrieved by
    * using the Elements::Logging::debug, Elements::Logging::info, etc methods.
    */
-  class ELEMENTS_API LogMessageStream {
+  class LogMessageStream {
     // The P_log_func is a pointer to member function. If you have no idea what
     // this is don't get scared! Just have a look in the following link:
     // http://www.codeproject.com/Articles/7150/Member-Function-Pointers-and-the-Fastest-Possible

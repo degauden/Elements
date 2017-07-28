@@ -25,6 +25,8 @@ import unittest
 
 import os, sys
 
+from imp import reload
+
 from ElementsKernel.Temporary import TempEnv
 
 
@@ -69,8 +71,11 @@ class BoostrapCase(unittest.TestCase):
 
         # ensure that sys.path is updated with the
         # new environment
-        import site
-        reload(site)
+        try:
+            import site
+            reload(site)
+        except:
+            pass
 
         orig_sys_path = sys.path
 
