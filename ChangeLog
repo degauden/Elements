@@ -1,3 +1,42 @@
+* Fri Jul 28 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.1-1
+- Add the generation of the current Elements module header file
+- Use the new getConfigurationPath function to locate the conf files.
+- Add the getConfigurationLocations and getAuxiliaryLocations functions. They take 
+  into account the /usr/share locations.
+- Use the Elements module name as search possibitlity for conf. First default tried 
+  is the name of the executable with a ".conf" extension. If not found, 
+  <module>/<executable>.conf is tried as a fallback.
+- Add the --elements-module-name and --elements-module-version options for the python 
+  script creation.
+- Add option to forward the CMAKE_PREFIX_PATH to the RPM creation. The option is called 
+  RPM_FORWARD_PREFIX_PATH and it is ON by default.
+- Fix a bug which was giving priority to the options from the configuration file over 
+  the ones from the command line (Nikos Apostolakos)
+- Add option to forward the CMAKE_PREFIX_PATH to the RPM creation
+- Bug fixed: https://euclid.roe.ac.uk/issues/2305 (Nicolas Morisset)
+- Fix the description parsing in the elements_project macro
+- Fix issue with wrong default argument for the construction of Program
+- Add experimental support for Cython
+- Fix issue with incompatible -pg and -pie for executable. It is somehow related 
+  with the glibc 2.17. the fix will only be used if the build is "Profile" and 
+  the gcc version is less that 5.0. The problem appears on CentOS 7 (and not on 
+  Fedora) when linking executables.
+- Fix the lookup order in the Environment XML files. There was a bug where the 
+  system directories where looked up first.
+- Add options to use the sanitize feature of gcc. "-DSANITIZE_OPTIONS=ON" activate 
+  the feature. The default is OFF. "-DSANITIZE_STYLE=leak" choose the sanitizer. 
+  The default is the "undefined". The undefined checker. Please note that the 
+  corresponding sanitizer library must be installed for this feature to work.
+- Fix the usage of the "HEAD" keyword for the project version.
+- Add options to use distcc and ccache for the build of the rpm. These options are 
+  CPACK_USE_CCACHE and CPACK_USE_DISTCC. They are OFF by default.
+- Add the -s option for the project and module creation. it allows to remove the 
+  implicit dependencies onto Elements and ElementsKernel.
+- Pass option to avoid warnings about unused CMake options/variables.
+- add new cmake option CPACK_REMOVE_SYSTEM_DEPS to remove system dependencies. Very
+  useful when building agains a CVMFS-based RPM db.
+- Add correct version of the compiled py files for python 3 in the rpm.
+
 * Thu Apr 06 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.0.1-1
 - Fix the SPEC file generation for the squeezed installation.
 
