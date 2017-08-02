@@ -1012,7 +1012,7 @@ ${_do}")
       else()
         set(CPACK_RPM_AUTOREQ_LINE)
         get_rpm_sys_dep_lines("gcc > 4.7;cmake >= 2.8.5" "BuildRequires" RPM_DEVEL_BUILDDEP_SYS_LINES)
-        get_rpm_sys_dep_lines("python${PYTHON_EXPLICIT_VERSION};EucliEnv" "Requires" RPM_DEP_SYS_LINES)
+        get_rpm_sys_dep_lines("python${PYTHON_EXPLICIT_VERSION};EuclidEnv" "Requires" RPM_DEP_SYS_LINES)
         get_rpm_sys_dep_lines("cmake >= 2.8.5" "Requires" RPM_DEVEL_DEP_SYS_LINES)
       endif()
 
