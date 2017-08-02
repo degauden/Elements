@@ -67,6 +67,7 @@ def addConfFile(module_dir, module_name, program_name):
         f.write('#\n')
         f.write('###############################################################################\n')
         f.close()
+        epcr.addItemToCreationList(conf_file)
     else:
         logger.warning('The < %s > conf file has been kept as it already exists!', conf_file)
         logger.warning('The < %s > conf file already exists!', conf_file)
@@ -102,6 +103,7 @@ def substituteStringsInProgramFile(file_path, program_name):
     f.write(new_data)
     f.close()
     os.remove(template_file)
+    epcr.addItemToCreationList(file_name)
 
 ################################################################################
 
@@ -112,6 +114,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
+    epcr.addItemToCreationList(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
@@ -160,12 +163,28 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list, lib
     """
     createDirectories(module_dir, module_name)
     program_path = os.path.join(module_dir, 'src', 'program')
-    script_goes_on = epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
+    epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
     substituteStringsInProgramFile(program_path, program_name)
     addConfFile(module_dir, module_name, program_name)
     updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list)
-    return script_goes_on
+
+################################################################################
+
+def makeChecks(current_dir, program_name):
+    """
+    Make some checks
+    """
+    # Check name in the Element Naming Database
+    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
+    # Check if file exits
+    program_file_path = os.path.join(current_dir, 'src', 'program', program_name + '.cpp')
+    epcr.checkFileNotExist(program_file_path, program_name)
+    # Check program name is valid
+    epcr.checkNameAndVersionValid(program_name, '1.0')
+    # Check aux file exist
+    epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+
 
 ################################################################################
 
@@ -210,37 +229,38 @@ def mainMethod(args):
     module_list = args.module_dependency
     library_list = args.library_dependency
 
-    # Default is the current directory
-    current_dir = os.getcwd()
+    try:
+        # Default is the current directory
+        current_dir = os.getcwd()
 
-    logger.info('Current directory : %s', current_dir)
-    logger.info('')
+        logger.info('Current directory : %s', current_dir)
+        logger.info('')
+        # We absolutely need a Elements cmake file
+        module_name = epcr.getElementsModuleName(current_dir)
+        # make some checks
+        makeChecks(current_dir, program_name)
 
-    # We absolutely need a Elements cmake file
-    script_goes_on, module_name = epcr.isElementsModuleExist(current_dir)
+        # Create CPP program
+        createCppProgram(current_dir, module_name, program_name, module_list, library_list)
 
-    # Check name in the Element Naming Database
-    if script_goes_on:
-        script_goes_on = epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
+        location = current_dir + os.sep + 'src' + os.sep + 'program'
+        logger.info('< %s > program successfully created in < %s >.', program_name, location)
 
-    program_file_path = os.path.join(current_dir, 'src', 'program',
-                                     program_name + '.cpp')
-    if script_goes_on:
-        script_goes_on = epcr.isFileAlreadyExist(program_file_path,
-                                                 program_name)
-    # Check program name is valid
-    if script_goes_on:
-        script_goes_on = epcr.isNameAndVersionValid(program_name, '1.0')
-
-    # Check aux file exist
-    if script_goes_on:
-        script_goes_on = epcr.isAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
-
-    if script_goes_on and createCppProgram(current_dir, module_name, program_name, module_list, library_list):
-        logger.info('< %s > program successfully created in < %s >.',
-                    program_name, current_dir + os.sep + 'src' + os.sep + 'program')
         # Remove backup file
         epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
-        logger.info('Script over.')
+
+        # Print all files created
+        epcr.printCreationList()
+
+    except epcr.ErrorOccured as msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
+    except Exception as msg:
+        if str(msg):
+            logger.error(msg)
+        logger.error('# Script aborted.')
+        return 1
     else:
-        logger.error('Script aborted!')
+        logger.info('# Script over.')

@@ -34,12 +34,42 @@ import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
+# Define a global list containing files created or modified
+# by the python scripts for the creation of a Elements project
+_filelist = []
+
+# Define regex for name & version checking
+name_regex = r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
+version_regex = r"^(\d+\.\d+(\.\d+)?|HEAD)$"
+
 logger = log.getLogger('ProjectCommonRoutines')
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
-################################################################################
+# Define exception class
+class ErrorOccured(Exception):
+    pass
 
+################################################################################
+def addItemToCreationList(element):
+    """
+    Add an element to the global list.
+    """
+    _filelist.append(element)
+
+################################################################################
+def printCreationList():
+    """
+    Add an element to the global list.
+    """
+    logger.info("#")
+    logger.info("# File(s) created/modified:")
+    logger.info("#")
+    for elt in _filelist:
+        logger.info("#  file --> %s" % elt)
+    logger.info("#")
+
+################################################################################
 def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
     """
     Check if the entity_name (e.g. project name, module name, class name etc...)
@@ -52,7 +82,7 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
     if not nc.checkDataBaseUrl(db_url):
         logger.info("#")
         logger.warn("!!! The Elements Naming Database URL is not valid : %s !!!", db_url)
-        logger.warn("Please correct the DB URL by setting up the ELEMENTS_NAMING_DB_URL environment variable!!!")
+        logger.warn("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
         script_goes_on = False
     else:
         info = nc.getInfo(entity_name, db_url, entity_type)
@@ -61,9 +91,9 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
         else:
             if info["exists"]:
                 logger.info("#")
-                logger.warn("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!", 
+                logger.warn("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!",
                             entity_name, entity_type)
-                logger.warn("See the result for the global query of the \"%s\" name in the DB: %s", entity_name, 
+                logger.warn("See the result for the global query of the \"%s\" name in the DB: %s", entity_name,
                             info["url"])
                 logger.warn("For more information also connect to: %s", info["private_url"])
                 script_goes_on = False
@@ -76,11 +106,9 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
                 logger.info("")
 
     if not script_goes_on:
-        response_key = raw_input('Do you want to continue?(Yes/No, default: No)')
-        if response_key == "YES" or response_key == "yes" or response_key == "y":
-            script_goes_on = True
-
-    return script_goes_on
+        response_key = raw_input('Do you want to continue?(y/n, default: n)')
+        if not response_key.lower() == "yes" and not response_key.lower() == "y":
+                raise ErrorOccured
 
 ################################################################################
 
@@ -88,9 +116,11 @@ def removeFilesOnDisk(file_list):
     """
     Remove all files on hard drive from the <file_list> list.
     """
+    logger.info('')
     for elt in file_list:
         logger.info('File deleted : %s', elt)
         deleteFile(elt)
+    logger.info('')
 
 ################################################################################
 
@@ -129,24 +159,17 @@ def makeACopy(cmakefile):
 
 ################################################################################
 
-def isNameAndVersionValid(name, version):
+def checkNameAndVersionValid(name, version):
     """
     Check that the <name> and <version> respect a regex
     """
-    valid = True
-    name_regex = "^[A-Za-z0-9][A-Za-z0-9_-]*$"
-    if re.match(name_regex, name) is None:
-        logger.error("< %s %s > name not valid. It must follow this regex : < %s >",
-                     name, version, name_regex)
-        valid = False
+    if not re.match(name_regex, name):
+        raise ErrorOccured("Name not valid : < %s >. It must follow this regex : < %s >"
+                            % (name, name_regex))
 
-    version_regex = "^\\d+\\.\\d+(\\.\\d+)?$"
-    if re.match(version_regex, version) is None:
-        logger.error("< %s %s > ,Version number not valid. It must follow this regex: < %s >",
-                     name, version, version_regex)
-        valid = False
-
-    return valid
+    if not re.match(version_regex, version):
+        raise ErrorOccured("Version number not valid : < %s >. It must follow this regex : < %s >"
+                            % (version, version_regex))
 
 ################################################################################
 
@@ -154,8 +177,9 @@ def eraseDirectory(directory):
     """
     Erase a directory and its contents from disk
     """
-    shutil.rmtree(directory)
-    logger.info('< %s > directory erased!', directory)
+    if os.path.isdir(directory):
+        shutil.rmtree(directory)
+        logger.info('< %s > directory erased!', directory)
 
 ################################################################################
 
@@ -180,7 +204,7 @@ def getAuxPathFile(file_name):
 
     if not found:
         full_filename = ''
-        logger.error("Auxiliary path NOT FOUND  : <%s>", file_name)
+        raise ErrorOccured("Auxiliary file not found : < %s >" % file_name)
 
     return full_filename
 
@@ -191,28 +215,21 @@ def copyAuxFile(destination, aux_file_name):
     Copy the <aux_file_name> file to the <destination> directory.
     <aux_file_name> is just the name without path
     """
-    scripts_goes_on = True
     aux_path_file = getAuxPathFile(os.path.join('ElementsKernel', 'templates', aux_file_name))
     if aux_path_file:
         shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
     else:
-        scripts_goes_on = False
-
-    return scripts_goes_on
+        raise ErrorOccured("Auxiliary file not found : < %s >" % aux_path_file)
 
 ################################################################################
 
-def isAuxFileExist(aux_file_name):
+def checkAuxFileExist(aux_file_name):
     """
     Make sure the <aux_file> auxiliary file exists.
     <aux_file> is just the name without the path.
     """
-    found = False
-    aux_path_file = getAuxPathFile(os.path.join('ElementsKernel', 'templates', aux_file_name))
-    if aux_path_file:
-        found = True
-
-    return found
+    auxpath = os.path.join('ElementsKernel', 'templates', aux_file_name)
+    getAuxPathFile(auxpath)
 
 ################################################################################
 
@@ -229,17 +246,14 @@ def getAuthor():
 
 ################################################################################
 
-def isElementsModuleExist(module_directory):
+def getElementsModuleName(module_directory):
     """
-    Get the module name in the <CMAKE_LISTS_FILE> file
+    Get the module name from the <CMAKE_LISTS_FILE> file
     """
-    found_keyword = True
     module_name = ''
     cmake_file = os.path.join(module_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
-        found_keyword = False
-        logger.error('< %s > cmake module file is missing! Are you inside a ' \
-        'module directory?', cmake_file)
+        raise ErrorOccured("< %s > cmake module file is missing! Are you inside a module directory?" % cmake_file)
     else:
         # Check the make file is an Elements cmake file
         # it should contain the string : "elements_project"
@@ -252,26 +266,20 @@ def isElementsModuleExist(module_directory):
         f.close()
 
         if not module_name:
-            logger.error('Module name not found in the <%s> file!', cmake_file)
-            logger.error('Maybe you are not in a module directory...')
-            found_keyword = False
+            raise ErrorOccured("Module name not found in the <%s> file! Perhaps you are not in a " \
+                                "module directory!" % cmake_file)
 
-    return found_keyword, module_name
+    return module_name
 
 ################################################################################
 
-def isFileAlreadyExist(path_filename, name):
+def checkFileNotExist(path_filename, name):
     """
     Check if the <path_filename> file does not already exist
     <path_filename> : path + filename
     """
-    script_goes_on = True
     if os.path.exists(path_filename):
-        script_goes_on = False
-        logger.error('The < %s > name already exists! ', name)
-        logger.error('File found here : < %s >! ', path_filename)
-
-    return script_goes_on
+        raise ErrorOccured("File already exists there : < %s > with name : < %s >" % (path_filename, name))
 
 ################################################################################
 
@@ -313,5 +321,5 @@ def updateCmakeCommonPart(cmake_filename, library_dep_list):
 
     module_name = cmake_object.elements_subdir_list[0].name
 
-    return cmake_object,module_name
+    return cmake_object, module_name
 

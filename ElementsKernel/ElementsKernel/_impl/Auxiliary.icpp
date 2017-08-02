@@ -28,24 +28,17 @@
 #include "ElementsKernel/System.h"      // for DEFAULT_INSTALL_PREFIX
 #include "ElementsKernel/Exception.h"   // for Exception
 #include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type
-                                        // for Path::getPathFromEnvVariable
+                                         // for Path::getPathFromEnvVariable
 namespace Elements {
 
 template <typename T>
-boost::filesystem::path getAuxiliaryPath(const T& file_name) {
+boost::filesystem::path getAuxiliaryPath(const T& file_name, bool raise_exception) {
 
-  using boost::filesystem::path;
-
-  auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::auxiliary));
-
-  // extended to /usr/share/aux{dir,}
-  location_list.push_back(path(System::DEFAULT_INSTALL_PREFIX) / "share" / "auxdir");
-  // for backward compatibility with the former convention
-  location_list.push_back(path(System::DEFAULT_INSTALL_PREFIX) / "share" / "aux");
+  auto location_list = getAuxiliaryLocations();
 
   auto result = Path::getPathFromLocations(file_name, location_list);
 
-  if(result.empty()) {
+  if(result.empty() and raise_exception) {
     throw Exception() << "The auxiliary file \"" << file_name << "\" cannot be found!";
   }
 

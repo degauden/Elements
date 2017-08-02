@@ -34,29 +34,29 @@
 
 namespace Elements {
 
-class TempPath {
+class ELEMENTS_API TempPath {
 public:
   explicit TempPath(const std::string& motif);
   virtual ~TempPath();
-  ELEMENTS_API boost::filesystem::path path() const;
-  ELEMENTS_API std::string motif() const;
+  boost::filesystem::path path() const;
+  std::string motif() const;
 private:
   const std::string m_motif;
   boost::filesystem::path m_path;
 };
 
 
-class TempDir : public TempPath {
+class ELEMENTS_API TempDir : public TempPath {
 public:
-  ELEMENTS_API explicit TempDir(const std::string& motif="");
-  ELEMENTS_API ~TempDir();
+  explicit TempDir(const std::string& motif="");
+  virtual ~TempDir();
 };
 
 
-class TempFile : public TempPath {
+class ELEMENTS_API TempFile : public TempPath {
 public:
-  ELEMENTS_API explicit TempFile(const std::string&  motif="");
-  ELEMENTS_API ~TempFile();
+  explicit TempFile(const std::string&  motif="");
+  virtual ~TempFile();
 };
 
 using TempEnv = Environment;

@@ -24,6 +24,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 from ElementsKernel.System import SHLIB_VAR_NAME
 import os
+import sys
+import re
 
 Type = ["executable", "library", "python", "configuration", "auxiliary"]
 
@@ -110,3 +112,46 @@ def multiPathAppend(initial_locations, suffixes):
 
     return result
 
+def which(program):
+    """ Command to assert the existance of an executable
+        @param program: program path, absolute or relative
+    """
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, _ = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
+
+def pyVersionWhich(program, program3_prefix=None):
+    """ Version of which that returns the right executable
+        depending on the calling python version.
+        @param program: program path, absolute or relative
+        @param program3: program3 prefix,
+    """
+    executable_name = None
+    python_version = ""
+
+    if not program3_prefix:
+        program3_prefix = program
+
+    m = re.match(r".*python(.*)$", sys.executable)
+    if m:
+        python_version = m.group(1)
+
+    if python_version:
+        executable_name = program3_prefix + python_version
+    else:
+        executable_name = program
+
+    return which(executable_name)

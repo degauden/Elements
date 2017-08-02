@@ -5,6 +5,85 @@ include(CheckCCompilerFlag)
 
 include(SGSPlatform)
 
+macro(check_and_use_cxx_option opt var)
+    check_cxx_compiler_flag(${opt} ${var})
+    if(${var})
+      message(STATUS "   C++ uses \"${opt}\"")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${opt}"
+          CACHE STRING "Flags used by the compiler during all build types."
+          FORCE)
+    endif()
+endmacro()
+
+
+macro(check_and_use_c_option opt var)
+    check_c_compiler_flag(${opt} ${var})
+    if(${var})
+      message(STATUS "   C uses \"${opt}\"")
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${opt}"
+          CACHE STRING "Flags used by the compiler during all build types."
+          FORCE)
+    endif()
+endmacro()
+
+
+if (ELEMENTS_BUILD_PREFIX_CMD)
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${ELEMENTS_BUILD_PREFIX_CMD}")
+  message(STATUS "Prefix build commands with '${ELEMENTS_BUILD_PREFIX_CMD}'")
+else()
+
+  find_package(CCache QUIET)
+
+  if(CCACHE_FOUND)
+    option(CMAKE_USE_CCACHE "Use ccache to speed up compilation." OFF)
+    if(CMAKE_USE_CCACHE)
+      set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_EXECUTABLE})
+      message(STATUS "Using ccache for building")
+    endif()
+    option(CPACK_USE_CCACHE "Use ccache to speed up compilation when creating the distribution package." OFF)
+  endif()
+
+  find_package(DistCC QUIET)
+
+  if(DISTCC_FOUND)
+    option(CMAKE_USE_DISTCC "Use distcc to speed up compilation." OFF)
+    if(CMAKE_USE_DISTCC)
+      if(CMAKE_USE_CCACHE AND CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "CCACHE_PREFIX=${DISTCC_EXECUTABLE} ${CCACHE_EXECUTABLE}")
+        message(STATUS "Enabling distcc builds in ccache")
+      else()
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${DISTCC_EXECUTABLE})
+        message(STATUS "Using distcc for building")
+      endif()
+    endif()
+    option(CPACK_USE_DISTCC "Use distcc to speed up compilation when creating the distribution package." OFF)
+  endif()
+
+endif()
+
+# This option make sense only if we have 'objcopy'
+if(CMAKE_OBJCOPY)
+  option(ELEMENTS_DETACHED_DEBINFO
+         "When CMAKE_BUILD_TYPE is RelWithDebInfo, save the debug information on a different file."
+         ON)
+else()
+  set(ELEMENTS_DETACHED_DEBINFO OFF)
+endif()
+
+option(USE_ODB "Use the ODB libraries" OFF)
+option(ELEMENTS_USE_STRICT_BINARY_DEP "Flag to force the strict binary dependencies" OFF)
+option(ELEMENTS_USE_CASE_SENSITIVE_PROJECTS "No uppercase projects allowed" ON)
+
+#--- Project Options and Global settings----------------------------------------------------------
+option(BUILD_SHARED_LIBS "Set to OFF to build static libraries." ON)
+option(ELEMENTS_BUILD_TESTS "Set to OFF to disable the build of the tests (libraries and executables)." ON)
+option(ELEMENTS_HIDE_WARNINGS "Turn on or off options that are used to hide warning messages." ON)
+option(ELEMENTS_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix systems (like CMT does)." OFF)
+#-------------------------------------------------------------------------------------------------
+
+
+
+
 if((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm"))
   find_package(Clang)
   SET (CMAKE_C_COMPILER    "${CLANG_C_COMPILER}")
@@ -20,8 +99,15 @@ endif()
 if(NOT BUILD_PREFIX_NAME)
   set(BUILD_PREFIX_NAME "build" CACHE STRING "Prefix name for the build directory" FORCE)
 endif()
-
 message(STATUS "The build prefix is set to ${BUILD_PREFIX_NAME}")
+
+if(NOT PYTHON_EXPLICIT_VERSION)
+  set(PYTHON_EXPLICIT_VERSION "" CACHE STRING "Set the explicit python version to be used" FORCE)
+endif()
+
+if(NOT "${PYTHON_EXPLICIT_VERSION}" STREQUAL "")
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DPYTHON_EXPLICIT_VERSION=${PYTHON_EXPLICIT_VERSION}")
+endif()
 
 if(NOT BUILD_SUBDIR)
   file(RELATIVE_PATH build_subdir_name ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
@@ -32,6 +118,12 @@ message(STATUS "The path to the sources is set to ${CMAKE_SOURCE_DIR}")
 message(STATUS "The path to the build is set to ${CMAKE_BINARY_DIR}")
 message(STATUS "The relative location for the build is set to ${BUILD_SUBDIR}")
 
+set(CYTHON_ANNOTATE OFF
+  CACHE BOOL "Create an annotated .html file when compiling *.pyx.")
+set(CYTHON_NO_DOCSTRINGS OFF
+  CACHE BOOL "Strip docstrings from the compiled module.")
+set(CYTHON_FLAGS "" CACHE STRING
+  "Extra flags to the cython compiler.")
 
 # Special defaults
 if ( (SGS_COMP STREQUAL gcc AND ( (NOT SGS_COMPVERS VERSION_LESS "47") OR (SGS_COMPVERS MATCHES "max") ))
@@ -133,10 +225,21 @@ option(SQUEEZED_INSTALL
        "Enable the squeezing of the installation into a prefix directory"
        ON)
 
+option(SANITIZE_OPTIONS
+       "Activate the Sanitizing options"
+       OFF)
+       
+if(NOT SANITIZE_STYLE)
+  set(SANITIZE_STYLE "undefined" CACHE STRING "Style used for the -fsanitize= option" FORCE)
+endif()
+
+option(CPACK_REMOVE_SYSTEM_DEPS
+       "When active this option remove the dependencies onto the system (external) packages"
+       OFF)
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   #message(STATUS "Setting cached build flags")
-
 
     # Common compilation flags
   set(CMAKE_CXX_FLAGS
@@ -149,30 +252,20 @@ if(NOT ELEMENTS_FLAGS_SET)
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
+
+  if(SANITIZE_OPTIONS AND (SGS_COMP STREQUAL gcc))
+    check_and_use_cxx_option(-fsanitize=${SANITIZE_STYLE} CXX_HAS_SANITIZE)
+    check_and_use_c_option(-fsanitize=${SANITIZE_STYLE} C_HAS_SANITIZE)
+  endif()
+
   if(FLOAT_EQUAL_WARNING)
-    check_cxx_compiler_flag(-Wfloat-equal CXX_HAS_FLOAT_EQUAL)
-    if(CXX_HAS_FLOAT_EQUAL)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfloat-equal"
-          CACHE STRING "Flags used by the compiler during all build types."
-          FORCE)
-    endif()  
-    check_c_compiler_flag(-Wfloat-equal C_HAS_FLOAT_EQUAL)
-    if(C_HAS_FLOAT_EQUAL)
-      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wfloat-equal"
-          CACHE STRING "Flags used by the compiler during all build types."
-          FORCE)
-    endif()  
+    check_and_use_cxx_option(-Wfloat-equal CXX_HAS_FLOAT_EQUAL)
+    check_and_use_c_option(-Wfloat-equal C_HAS_FLOAT_EQUAL)
   endif()
 
   if(CXX_SUGGEST_OVERRIDE AND (SGS_COMP STREQUAL gcc))
-    check_cxx_compiler_flag(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)
-    if(CXX_HAS_SUGGEST_OVERRIDE)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override"
-          CACHE STRING "Flags used by the compiler during all build types."
-          FORCE)
-    endif()
+    check_and_use_cxx_option(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)
   endif()
-
 
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"
@@ -269,9 +362,15 @@ if(NOT ELEMENTS_FLAGS_SET)
     set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
         CACHE STRING "Flags used by the linker during the creation of modules."
         FORCE)
-    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -pie ${CMAKE_EXE_LINKER_FLAGS}"
-        CACHE STRING "Flags used by the linker during the creation of exe's."
-        FORCE)
+    if(CMAKE_BUILD_TYPE STREQUAL "Profile" AND SGS_COMPVERS VERSION_LESS "50")
+      set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}"
+          CACHE STRING "Flags used by the linker during the creation of exe's."
+          FORCE)
+    else()
+      set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -pie ${CMAKE_EXE_LINKER_FLAGS}"
+          CACHE STRING "Flags used by the linker during the creation of exe's."
+          FORCE)    
+    endif()
   endif()
 
   if(APPLE)
@@ -324,10 +423,7 @@ if ( ELEMENTS_CPP11 )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
   if ( APPLE AND ((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") ) )
-    check_cxx_compiler_flag(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
-    if(CXX_HAS_MINUS_STDLIB)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-    endif()
+    check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
   endif()
   if(USE_ODB)
     set(ODB_CXX_EXTRA_FLAGS --std c++11)
@@ -338,10 +434,7 @@ if ( ELEMENTS_CPP14 )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11") # this is the latest C standard available
   if ( APPLE AND ((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") ) )
-    check_cxx_compiler_flag(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
-    if(CXX_HAS_MINUS_STDLIB)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-    endif()
+    check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
   endif()
 endif()
 

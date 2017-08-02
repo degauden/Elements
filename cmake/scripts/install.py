@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Script used to install files keeping track of the files that have
 been installed, so that at the next installation the file removed
@@ -68,7 +67,7 @@ def main():
             from os import remove
             try:
                 remove(opts.logfile)
-            except OSError, x:
+            except OSError as x:
                 if x.errno != 2:
                     raise
     else:  # install mode
@@ -166,22 +165,22 @@ def expand_source_dir(source, destination, exclusions=[],
 def remove(filename, logdir):
     filename = normpath(join(logdir, filename))
     try:
-        print "Remove '%s'" % filename
+        print("Remove '%s'", filename)
         os.remove(filename)
         # For python files, remove the compiled versions too
         if splitext(filename)[-1] == ".py":
             for c in ['c', 'o']:
                 if exists(filename + c):
-                    print "Remove '%s'" % (filename + c)
+                    print("Remove '%s'", filename + c)
                     os.remove(filename + c)
         file_path = split(filename)[0]
         while file_path and (len(listdir(file_path)) == 0):
-            print "Remove empty dir '%s'" % file_path
+            print("Remove empty dir '%s'", file_path)
             rmdir(file_path)
             file_path = split(file_path)[0]
-    except OSError, x:  # ignore file-not-found errors
+    except OSError as x:  # ignore file-not-found errors
         if x.errno in [2, 13]:
-            print "Previous removal ignored"
+            print("Previous removal ignored")
         else:
             raise
 
@@ -236,16 +235,16 @@ def update(src, dest, old_dest=None, syml=False, logdir=realpath(".")):
     #   http://bugs.python.org/issue1565150
     if (not exists(realdest)) or (int(getmtime(realsrc)) > int(getmtime(realdest))):
         if not isdir(dest_path):
-            print "Create dir '%s'" % (dest_path)
+            print("Create dir '%s'", dest_path)
             makedirs(dest_path)
         # the destination file is missing or older than the source
         if syml and sys.platform != "win32":
             if exists(realdest):
                 remove(realdest, logdir)
-            print "Create Link to '%s' in '%s'" % (src, dest_path)
+            print("Create Link to '%s' in '%s'", src, dest_path)
             os.symlink(src, realdest)
         else:
-            print "Copy '%s' -> '%s'" % (src, realdest)
+            print("Copy '%s' -> '%s'", src, realdest)
             if exists(realdest):
                 # If the destination path exists it is better to remove it before
                 # doing the copy (shutil.copystat fails if the destination file

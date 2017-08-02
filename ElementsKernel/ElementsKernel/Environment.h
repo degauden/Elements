@@ -81,7 +81,7 @@ public:
   };
 
   Environment(bool keep_same=true);
-  ~Environment();
+  virtual ~Environment();
 
   Variable operator[](const std::string&);
   const Variable operator[](const std::string& index) const;
