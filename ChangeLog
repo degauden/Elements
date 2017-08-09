@@ -1,3 +1,6 @@
+* Wed Aug 9 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2.1
+- Fix the test on the version of sphinx.
+
 * Tue Aug 8 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2
 - fix C++ include directories ordering.
 
