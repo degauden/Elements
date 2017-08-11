@@ -1,5 +1,4 @@
 #!/bin/sh
-home_dir=${PWD}
 
 # Call common script
 . createCommonStructure_test
@@ -11,6 +10,7 @@ external_dep_name="Boost"
 # Create a unique directory
 tmploc=${TEMPORARY_LOCATION}
 
+cd ${tmploc}
 cd ${MODULE_NAME_PATH}
 
 # Create a class

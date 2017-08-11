@@ -32,7 +32,7 @@ echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
 # not enough to have it built
 if [ -e ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}/manifest.xml ]; then
 
-cd ${User_area}
+cd ${User_area} || local_clean_exit 1
 
 CreateElementsProject $projectA_name $projectA_version << EOF
 y
@@ -44,7 +44,7 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
-cd $projectA_name/$projectA_version
+cd $projectA_name/$projectA_version || local_clean_exit 1
 #AddElementsModule $projectA_name
 
 
@@ -76,7 +76,7 @@ if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
 fi
 
 
-cd ${User_area}
+cd ${User_area} || local_clean_exit 1
 
 CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
 y
