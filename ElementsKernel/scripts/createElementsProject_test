@@ -21,7 +21,7 @@ local_clean_exit() {
 # Set to the User_area
 export User_area=${tmploc}
 
-cd ${tmploc}
+cd ${tmploc} || local_clean_exit 1
 
 CreateElementsProject $project_name $version -d $dep_project $version<<EOF
 y
@@ -60,7 +60,7 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
-cd ${User_area}/${project_name}/${version}
+cd ${User_area}/${project_name}/${version} || local_clean_exit 1
 
 AddElementsModule ${module_name}
 
@@ -70,7 +70,7 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
-cd ${module_name}
+cd ${module_name} || local_clean_exit 1
 
 AddPythonModule ${py_module_name}
 
@@ -81,7 +81,7 @@ if [ $? -ne 0 ]; then
 fi
 
 
-cd ${tmploc}
+cd ${tmploc} || local_clean_exit 1
 
 # Test a wrong project name
 project_name="WrongProjectTest]"
@@ -97,7 +97,7 @@ if [ $? -eq 0 ]; then
 fi
 
 
-cd ${tmploc}
+cd ${tmploc} || local_clean_exit 1
 
 # Test a wrong version number
 project_name="WrongProjectTest"
@@ -112,7 +112,7 @@ if [ $? -eq 0 ]; then
    local_clean_exit 1
 fi
 
-cd ${tmploc}
+cd ${tmploc} || local_clean_exit 1
 
 # Test the <HEAD> version number
 project_name="ProjectHeadTest"

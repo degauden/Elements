@@ -29,7 +29,7 @@ echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
 
 
 
-cd ${tmploc}
+cd ${tmploc} || local_clean_exit 1
 
 CreateElementsProject $projectA_name $projectA_version << EOF
 y
@@ -45,7 +45,7 @@ fi
 # not enough to have it built
 if [ -e ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}/manifest.xml ]; then
 
-cd $projectA_name/$projectA_version
+cd $projectA_name/$projectA_version || local_clean_exit 1
 
 make configure
 
@@ -74,13 +74,13 @@ if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
 fi
 
 
-cd ${tmploc}
+cd ${tmploc} || local_clean_exit 1
 
 CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
 y
 EOF
 
-cd $projectB_name/$projectB_version
+cd $projectB_name/$projectB_version || local_clean_exit 1
 
 make configure
 
