@@ -70,6 +70,8 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
+cd ${module_name}
+
 AddPythonModule ${py_module_name}
 
 # Error? stop and clean up
