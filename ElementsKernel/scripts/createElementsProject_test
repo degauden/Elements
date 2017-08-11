@@ -4,6 +4,8 @@ home_dir=${PWD}
 
 project_name="ProjectTest"
 dep_project="DependentProject"
+module_name="ModuleTest"
+py_module_name="PyModuleTest"
 version="1.0"
 
 # Create unique directory
@@ -58,6 +60,27 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
+cd ${User_area}/${project_name}/${version}
+
+AddElementsModule ${module_name}
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   echo "Error: <AddElementsModule ${module_name} command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+AddPythonModule ${py_module_name}
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   echo "Error: <AddPythonModule ${py_module_name} command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+
+cd ${tmploc}
+
 # Test a wrong project name
 project_name="WrongProjectTest]"
 version="1.0"
@@ -71,6 +94,9 @@ if [ $? -eq 0 ]; then
    local_clean_exit 1
 fi
 
+
+cd ${tmploc}
+
 # Test a wrong version number
 project_name="WrongProjectTest"
 version="1.0]"
@@ -83,6 +109,8 @@ if [ $? -eq 0 ]; then
    echo "Error: this <$version> version number should failed but it did not!" 1>&2
    local_clean_exit 1
 fi
+
+cd ${tmploc}
 
 # Test the <HEAD> version number
 project_name="ProjectHeadTest"
