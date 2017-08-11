@@ -24,4 +24,6 @@ Author: %(AUTHOR)s
 """
 
 from __future__ import division, print_function
-from future_builtins import *
+import sys
+if sys.version_info[0] < 3:
+    from future_builtins import *
