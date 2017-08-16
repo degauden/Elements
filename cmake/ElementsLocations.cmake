@@ -93,6 +93,7 @@ endif()
 
 set(CONF_DIR_NAME "conf" CACHE STRING "Name of the configuration files directory")
 set(AUX_DIR_NAME "auxdir" CACHE STRING "Name of the auxiliary files directory")
+set(MAKE_DIR_NAME "make" CACHE STRING "Name of the make files directory")
 
 set(INCLUDE_INSTALL_SUFFIX include)
 if(SQUEEZED_INSTALL)
@@ -103,6 +104,7 @@ if(SQUEEZED_INSTALL)
   set(CMAKE_INSTALL_SUFFIX ${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject)
   set(CMAKE_CONFIG_INSTALL_SUFFIX ${CMAKE_INSTALL_SUFFIX})
   set(XML_INSTALL_SUFFIX ${CMAKE_INSTALL_SUFFIX})
+  set(MAKE_INSTALL_SUFFIX share/Elements/${MAKE_DIR_NAME})
 else()
   set(BIN_INSTALL_SUFFIX bin)
   set(SCRIPT_INSTALL_SUFFIX scripts)
@@ -111,6 +113,7 @@ else()
   set(CMAKE_INSTALL_SUFFIX cmake)
   set(CMAKE_CONFIG_INSTALL_SUFFIX .)
   set(XML_INSTALL_SUFFIX .)
+  set(MAKE_INSTALL_SUFFIX ${MAKE_DIR_NAME})
 endif()
 
 
