@@ -323,22 +323,6 @@ macro(elements_project project version)
     set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${cm})
   endforeach()
 
-  #------------------------------------------------------------------------------------------------
-
-#  find_file(elements_mk_file
-#            NAMES Elements.mk
-#            PATHS ${CMAKE_SOURCE_DIR}
-#            PATH_SUFFIXES ${MAKE_DIR_NAME})
-#  
-#  debug_print_var(elements_mk_file)
-#  
-#  if(elements_mk_file)
-#    install(FILES ${elements_mk_file} DESTINATION ${MAKE_INSTALL_SUFFIX})
-#    debug_message(STATUS "Installing ${elements_mk_file} in ${MAKE_INSTALL_SUFFIX}")
-#    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_MAKE TRUE)
-#    set_property(GLOBAL APPEND PROPERTY REGULAR_MAKE_OBJECTS Elements.mk)
-#  endif()
-
   file(GLOB m_list RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${MAKE_DIR_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/${MAKE_DIR_NAME}/*)
   foreach(m ${m_list})
     install(FILES ${MAKE_DIR_NAME}/${m} DESTINATION ${MAKE_INSTALL_SUFFIX})
