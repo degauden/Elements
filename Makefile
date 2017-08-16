@@ -54,9 +54,9 @@ else
     PREFIX_LIST := $(subst :, ,$(CMAKE_PREFIX_PATH))
     ELEMENTS_MAKE_LIB_LIST := $(foreach dir,$(PREFIX_LIST),$(wildcard $(dir)/../make/$(ELEMENTS_MAKE_LIB)))
     ELEMENTS_MAKE_LIB_LIST += $(foreach dir,$(PREFIX_LIST),$(wildcard $(dir)/share/Elements/make/$(ELEMENTS_MAKE_LIB)))
-    ELEMENTS_MAKE_LIB_LIST += /usr/share/Elements/make/$(ELEMENTS_MAKE_LIB)
-    ELEMENTS_MAKE_LIB_FILE := $(firstword $(ELEMENTS_MAKE_LIB_LIST))
   endif
+  ELEMENTS_MAKE_LIB_LIST += /usr/share/Elements/make/$(ELEMENTS_MAKE_LIB)
+  ELEMENTS_MAKE_LIB_FILE := $(firstword $(ELEMENTS_MAKE_LIB_LIST))
 endif
 
 include $(ELEMENTS_MAKE_LIB_FILE)
