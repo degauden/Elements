@@ -47,11 +47,11 @@
 
 ELEMENTS_MAKE_LIB := Elements.mk
 
-ifneq ($(wildcard $(CURDIR)/cmake/$(ELEMENTS_MAKE_LIB)),)
-  ELEMENTS_MAKE_LIB_FILE := $(CURDIR)/cmake/$(ELEMENTS_MAKE_LIB)
+ifneq ($(wildcard $(CURDIR)/make/$(ELEMENTS_MAKE_LIB)),)
+  ELEMENTS_MAKE_LIB_FILE := $(CURDIR)/make/$(ELEMENTS_MAKE_LIB)
 else
   ifneq ($(CMAKE_PREFIX_PATH),)
-    PREFIX_LIST := $(subst :, ,$(CMAKE_PREFIX_PATH))
+    PREFIX_LIST := $(subst :, ,$(CMAKE_PREFIX_PATH)/../make)
     ELEMENTS_MAKE_LIB_LIST := $(foreach dir,$(PREFIX_LIST),$(wildcard $(dir)/$(ELEMENTS_MAKE_LIB)))
     ELEMENTS_MAKE_LIB_LIST += $(foreach dir,$(PREFIX_LIST),$(wildcard $(dir)/share/Elements/make/$(ELEMENTS_MAKE_LIB)))
     ELEMENTS_MAKE_LIB_LIST += /usr/share/Elements/make/$(ELEMENTS_MAKE_LIB)
