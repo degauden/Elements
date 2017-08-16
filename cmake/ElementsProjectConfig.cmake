@@ -139,6 +139,7 @@ macro(elements_project project version)
                    env_xml env_release_xml
                    installed_env_xml installed_env_release_xml)
 
+
   if(ELEMENTS_BUILD_TESTS)
     find_package(Valgrind QUIET)
     if(VALGRIND_FOUND)
@@ -312,7 +313,8 @@ macro(elements_project project version)
                              PATTERN "*.sh"
                              PATTERN "*.csh"
                              PATTERN "*.bat"
-                             PATTERN ".svn" EXCLUDE)
+                             PATTERN ".svn" EXCLUDE
+                             PATTERN ".git" EXCLUDE)
 
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
 
@@ -321,6 +323,29 @@ macro(elements_project project version)
     set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${cm})
   endforeach()
 
+  #------------------------------------------------------------------------------------------------
+
+#  find_file(elements_mk_file
+#            NAMES Elements.mk
+#            PATHS ${CMAKE_SOURCE_DIR}
+#            PATH_SUFFIXES ${MAKE_DIR_NAME})
+#  
+#  debug_print_var(elements_mk_file)
+#  
+#  if(elements_mk_file)
+#    install(FILES ${elements_mk_file} DESTINATION ${MAKE_INSTALL_SUFFIX})
+#    debug_message(STATUS "Installing ${elements_mk_file} in ${MAKE_INSTALL_SUFFIX}")
+#    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_MAKE TRUE)
+#    set_property(GLOBAL APPEND PROPERTY REGULAR_MAKE_OBJECTS Elements.mk)
+#  endif()
+
+  file(GLOB m_list RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${MAKE_DIR_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/${MAKE_DIR_NAME}/*)
+  foreach(m ${m_list})
+    install(FILES ${MAKE_DIR_NAME}/${m} DESTINATION ${MAKE_INSTALL_SUFFIX})
+    message(STATUS "Installing ${m} in ${MAKE_INSTALL_SUFFIX}")
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_MAKE TRUE)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_MAKE_OBJECTS ${m}) 
+  endforeach()
 
   #------------------------------------------------------------------------------------------------
 
@@ -946,6 +971,22 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     foreach(_do ${regular_cmake_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{cmakedir}/${_do}")
+    endforeach()
+
+    #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
+  endif()
+
+#------------------------------------------------------------------------------
+  get_property(proj_has_make GLOBAL PROPERTY PROJ_HAS_MAKE)
+
+  if(proj_has_make)
+
+   get_property(regular_make_objects GLOBAL PROPERTY REGULAR_MAKE_OBJECTS)
+
+    list(REMOVE_DUPLICATES regular_make_objects)
+    foreach(_do ${regular_make_objects})
+      set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{makedir}/${_do}")
     endforeach()
 
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
