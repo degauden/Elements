@@ -209,6 +209,14 @@ elements_add_swig_binding(SwigExample ElementsExamples/SwigExample.i
                           LINK_LIBRARIES ElementsExamples
                           INCLUDE_DIRS ElementsExamples
                           PUBLIC_HEADERS ElementsExamples)
+                          
+find_package(NumPy)
+if(NUMPY_FOUND)
+elements_add_swig_binding(NumPyExample  ElementsExamples/NumPyExample.i
+                          INCLUDE_DIRS NumPy
+                          NO_PUBLIC_HEADERS)
+endif()
+
 endif()
 
 find_package(Cython QUIET)
