@@ -1,6 +1,5 @@
 if (NOT XSD_FOUND)
 
-
     find_program(XSDCXX_EXECUTABLE xsdcxx)
 	message(STATUS "This is XSDCXX executable: ${XSDCXX_EXECUTABLE}")
 
