@@ -125,11 +125,8 @@ fi
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make test
 
-
-
 %clean
 rm -rf $RPM_BUILD_ROOT
-
 
 %postun
 /sbin/ldconfig
