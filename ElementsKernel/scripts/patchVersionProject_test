@@ -25,9 +25,9 @@ local_clean_exit() {
 }
 
 if [ "$(basename ${ELEMENTS_PROJECT_ROOT})" = "Elements" ]; then
-  extra_proj_path=${ELEMENTS_PROJECT_ROOT}
-else
   extra_proj_path=$(dirname ${ELEMENTS_PROJECT_ROOT})
+else
+  extra_proj_path=$(dirname $(dirname ${ELEMENTS_PROJECT_ROOT}))
 fi
 
 # Set to the User_area
