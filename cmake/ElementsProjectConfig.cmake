@@ -1214,13 +1214,15 @@ macro(_elements_use_other_projects)
       foreach(pth ${projects_search_path})
         find_package(${other_project} ${other_project_cmake_version} QUIET
                      HINTS ${pth}
-                     PATH_SUFFIXES ${suffixes})
+                     PATH_SUFFIXES ${suffixes}
+                     NO_DEFAULT_PATH)
         if(${other_project}_FOUND)
           break()
         else()
           find_package(${other_project} ${other_project_cmake_version} QUIET
                        HINTS ${pth}
-                       PATH_SUFFIXES ${suffixes2})
+                       PATH_SUFFIXES ${suffixes2}
+                       NO_DEFAULT_PATH)
           if(${other_project}_FOUND)
             break()
           endif()
