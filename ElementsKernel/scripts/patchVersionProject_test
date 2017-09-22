@@ -24,9 +24,15 @@ local_clean_exit() {
   exit $1
 }
 
+if [ "$(basename ${ELEMENTS_PROJECT_ROOT})" = "Elements" ]; then
+  extra_proj_path=${ELEMENTS_PROJECT_ROOT}
+else
+  extra_proj_path=$(dirname ${ELEMENTS_PROJECT_ROOT})
+fi
+
 # Set to the User_area
 export User_area=${tmploc}
-export CMAKE_PROJECT_PATH=${User_area}:${CMAKE_PROJECT_PATH}
+export CMAKE_PROJECT_PATH=${User_area}:${extra_proj_path}:${CMAKE_PROJECT_PATH}
 
 echo "CMAKE_PROJECT_PATH: ${CMAKE_PROJECT_PATH}"
 echo "BINARY_TAG: ${BINARY_TAG}"
