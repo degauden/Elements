@@ -20,7 +20,7 @@ local_clean_exit() {
 
 # Set to the User_area
 export User_area=${tmploc}
-export CMAKE_PROJECT_PATH=${tmploc}
+export CMAKE_PROJECT_PATH=${tmploc}:${CMAKE_PROJECT_PATH}
 
 echo "CMAKE_PROJECT_PATH: ${CMAKE_PROJECT_PATH}"
 echo "BINARY_TAG: ${BINARY_TAG}"
