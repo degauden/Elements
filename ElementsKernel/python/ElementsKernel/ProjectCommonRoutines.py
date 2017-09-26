@@ -34,7 +34,10 @@ import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
-from builtins import input
+try:
+    from builtins import input
+except:
+    from __builtin__ import input
 
 # Define a global list containing files created or modified
 # by the python scripts for the creation of a Elements project
