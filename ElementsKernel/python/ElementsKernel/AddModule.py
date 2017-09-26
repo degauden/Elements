@@ -32,6 +32,9 @@ import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
+from builtins import input
+
+
 logger = log.getLogger('AddElementsModule')
 
 # Define constants
@@ -78,7 +81,7 @@ def createModuleDirectories(mod_path, module_name):
     epcr.copyAuxFile(os.path.join(mod_path, 'doc'), AUX_MOD_RST_IN)
     mod_rst_file = os.path.join(mod_path, 'doc', AUX_MOD_RST_IN)
 
-    file_no_dot_in=mod_rst_file.replace('.in', '')
+    file_no_dot_in = mod_rst_file.replace('.in', '')
     os.rename(mod_rst_file, file_no_dot_in)
     epcr.addItemToCreationList(file_no_dot_in)
 
@@ -144,7 +147,7 @@ def createModule(project_dir, module_name, dependency_list, standalone=False):
     if os.path.exists(mod_path):
         # Ask user
         logger.warning('<%s> module ALREADY exists on disk!!!', module_name)
-        response_key = raw_input(
+        response_key = input(
             'Do you want to replace the existing module (y/n), default: n)?')
         if response_key.lower() == "y":
             logger.info('# Replacing the existing module: <%s>', module_name)
