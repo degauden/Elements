@@ -32,8 +32,10 @@ import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
-from builtins import input
-
+try:
+    from builtins import input
+except:
+    from __builtin__ import input
 
 logger = log.getLogger('AddElementsModule')
 
