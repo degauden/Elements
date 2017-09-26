@@ -30,6 +30,8 @@ import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.Logging as log
 import ElementsKernel.ParseCmakeLists as pcl
 
+from builtins import input
+
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 logger = log.getLogger('RemovePythonProgram')
@@ -126,7 +128,7 @@ def mainMethod(args):
             logger.info('File to be deleted:')
             for elt_file in file_to_be_deleted:
                 logger.info(' --> %s', elt_file)
-            response_key = raw_input('Do you want to continue?(y/n, default: n)')
+            response_key = input('Do you want to continue?(y/n, default: n)')
             if response_key.lower() == 'y':
                 epcr.removeFilesOnDisk(file_to_be_deleted)
                 updateCmakeListsFile(module_dir, program_name)

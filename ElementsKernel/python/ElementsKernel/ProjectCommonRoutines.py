@@ -34,6 +34,8 @@ import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
+from builtins import input
+
 # Define a global list containing files created or modified
 # by the python scripts for the creation of a Elements project
 _filelist = []
@@ -106,7 +108,7 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
                 logger.info("")
 
     if not script_goes_on:
-        response_key = raw_input('Do you want to continue?(y/n, default: n)')
+        response_key = input('Do you want to continue?(y/n, default: n)')
         if not response_key.lower() == "yes" and not response_key.lower() == "y":
                 raise ErrorOccured
 
