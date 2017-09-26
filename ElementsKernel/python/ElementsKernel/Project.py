@@ -33,6 +33,8 @@ import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
+from builtins import input
+
 logger = log.getLogger('CreateElementsProject')
 
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
@@ -135,7 +137,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     f.write(new_data)
     f.close()
     # Remove '.in'
-    file_no_dot_in=cmake_list_file.replace('.in', '')
+    file_no_dot_in = cmake_list_file.replace('.in', '')
     os.rename(cmake_list_file, file_no_dot_in)
     epcr.addItemToCreationList(file_no_dot_in)
 
@@ -156,7 +158,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
 
     # Remove '.in'
     cmakefile = os.path.join(project_dir, AUX_CMAKE_FILE_IN)
-    file_no_dot_in=cmakefile.replace('.in', '')
+    file_no_dot_in = cmakefile.replace('.in', '')
     os.rename(cmakefile, file_no_dot_in)
     epcr.addItemToCreationList(file_no_dot_in)
 
@@ -166,7 +168,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
     epcr.copyAuxFile(project_doc_dir, AUX_PROJ_RST_IN)
     project_rst_file = os.path.join(project_doc_dir, AUX_PROJ_RST_IN)
 
-    file_no_dot_in=project_rst_file.replace('.in', '')
+    file_no_dot_in = project_rst_file.replace('.in', '')
     os.rename(project_rst_file, file_no_dot_in)
     epcr.addItemToCreationList(file_no_dot_in)
 
@@ -230,7 +232,7 @@ def CheckProjectExist(project_dir, no_version_directory, force_erase):
         # Warn user about directory under the project
         if no_version_directory and version_dir_list:
             logger.warning('Found the following version(s) directory(ies) : %s', version_dir_list)
-        response_key = raw_input('Do you want to overwrite the existing project (y/n, default: n)?')
+        response_key = input('Do you want to overwrite the existing project (y/n, default: n)?')
         if response_key.lower() == "yes" or response_key == "y":
             logger.info('# Overwriting the existing project: <%s>', project_dir)
         else:

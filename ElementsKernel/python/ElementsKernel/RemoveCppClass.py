@@ -30,6 +30,8 @@ import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
+from builtins import input
+
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 logger = log.getLogger('RemoveCppClass')
@@ -131,7 +133,7 @@ def mainMethod(args):
                 logger.info('File to be deleted:')
                 for elt_file in file_to_be_deleted:
                     logger.info('--> %s', elt_file)
-                response_key = raw_input('Do you want to continue?(y/n, default: n)')
+                response_key = input('Do you want to continue?(y/n, default: n)')
                 if response_key.lower() == 'y':
                     epcr.removeFilesOnDisk(file_to_be_deleted)
                     cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
