@@ -29,7 +29,7 @@
 
 #include "ElementsKernel/System.h"        // for DEFAULT_INSTALL_PREFIX
 #include "ElementsKernel/Path.h"          // for Path::VARIABLE, Path::Type
-                                           // for Path::getLocationsFromEnv
+                                          // for Path::getLocationsFromEnv
 using std::string;
 using std::vector;
 using boost::filesystem::path;
@@ -60,7 +60,6 @@ vector<path> getConfigurationLocations(bool exist_only) {
                                   });
     location_list.erase(new_end, location_list.end());
   }
-
 
   return location_list;
 }
