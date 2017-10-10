@@ -578,15 +578,19 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   set(installed_project_environment "${project_environment}")
 
   set(project_environment ${project_environment} SET ${_proj}_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
+  set(project_environment ${project_environment} SET THIS_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
   if(NOT SQUEEZED_INSTALL)
     set(installed_project_environment ${installed_project_environment} SET ${_proj}_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
+    set(installed_project_environment ${installed_project_environment} SET THIS_PROJECT_ROOT "LOCAL_ESCAPE_DOLLAR{.}/../..")
   endif()
 
   set(installed_project_build_environment "${project_build_environment}")
   set(project_build_environment ${project_build_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
+  set(project_build_environment ${project_build_environment} SET THIS_PROJECT_ROOT "${CMAKE_SOURCE_DIR}")
 
   if(NOT SQUEEZED_INSTALL)
     set(installed_project_build_environment ${installed_project_build_environment} SET ${_proj}_PROJECT_ROOT "${CMAKE_INSTALL_PREFIX}/../..")
+    set(installed_project_build_environment ${installed_project_build_environment} SET THIS_PROJECT_ROOT "${CMAKE_INSTALL_PREFIX}/../..")
   endif()
 
   #   - 'packages':
