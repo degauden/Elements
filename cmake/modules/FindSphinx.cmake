@@ -22,6 +22,8 @@ if (NOT SPHINX_FOUND)
     set(explicit_sphinx)
     if(PYTHON_EXPLICIT_VERSION)
       set(explicit_sphinx sphinx-${_sphinx_tool}-${PYTHON_EXPLICIT_VERSION})
+    else()
+      set(explicit_sphinx sphinx-${_sphinx_tool})
     endif()
     find_program (
       SPHINX_${_SPHINX_TOOL_UPPER}_EXECUTABLE
