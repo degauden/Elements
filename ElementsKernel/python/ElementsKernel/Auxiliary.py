@@ -22,35 +22,14 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 '''
 
-import os
-
-from ElementsKernel.Path import getLocationsFromEnv, VARIABLE, \
-    getPathFromLocations
-from ElementsKernel.System import DEFAULT_INSTALL_PREFIX
+from ElementsKernel.Path import getLocations, getPath
 
 def getAuxiliaryLocations(exist_only=False):
-
-    location_list = getLocationsFromEnv(VARIABLE["auxiliary"], exist_only)
-
-    location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "auxdir"))
-    location_list.append(os.path.join(DEFAULT_INSTALL_PREFIX, "share", "aux"))
-
-    if exist_only:
-        location_list = [p for p in location_list if os.path.exists(p)]
-
-    return location_list
+    return getLocations("auxiliary", exist_only)
 
 
 def getAuxiliaryPath(file_name, raise_exception=True):
     """
     Get full path to the file name searched in the auxiliary path
     """
-
-    location_list = getAuxiliaryLocations()
-
-    result = getPathFromLocations(file_name, location_list)
-
-    if not result and raise_exception:
-        raise Exception("The auxiliary file \"%s\" cannot be found!", file_name)
-
-    return result
+    return getPath(file_name, "auxiliary", raise_exception)
