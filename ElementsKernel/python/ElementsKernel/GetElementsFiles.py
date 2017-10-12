@@ -16,7 +16,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
 """
 File: python/ElementsKernel/GetElementsFiles.py
 
@@ -42,8 +41,13 @@ def defineSpecificProgramOptions():
     @return
         An  ArgumentParser.
     """
-
     parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--self', default=False, action="store_true",
+                        help='Get only the files from the current project. No recursion.')
+
+    parser.add_argument('-v', '--variable', default="PATH",
+                        help='The variable to search in [default: PATH]')
+
 
     #
     # !!! Write your program options here !!!
