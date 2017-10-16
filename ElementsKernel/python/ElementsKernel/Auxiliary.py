@@ -25,6 +25,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 from ElementsKernel.Path import getLocations, getPath
 
 def getAuxiliaryLocations(exist_only=False):
+    """
+    Get all the auxiliary locations -- including the default ones
+    """
     return getLocations("auxiliary", exist_only)
 
 

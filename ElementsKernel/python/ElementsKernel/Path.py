@@ -55,6 +55,9 @@ DEFAULT_INSTALL_LOCATIONS = {"executable": [ os.path.join(DEFAULT_INSTALL_PREFIX
                                              os.path.join(DEFAULT_INSTALL_PREFIX, "aux")]}
 
 def getLocations(file_type="executable", exist_only=False):
+    """
+    Get the locations of a type of file -- including the default ones
+    """
 
     location_list = getLocationsFromEnv(VARIABLE[file_type], exist_only)
 
@@ -67,7 +70,7 @@ def getLocations(file_type="executable", exist_only=False):
 
 def getPath(file_name, file_type="executable", raise_exception=True):
     """
-    Get full path to the file name searched in the auxiliary path
+    Get full path to the file name searched in the file-type path
     """
 
     location_list = getLocations(file_type)
