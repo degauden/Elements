@@ -1,5 +1,5 @@
 import unittest
-from ElementsExamples.PythonModuleExample import ClassExample  # for ClassExample
+from ElementsExamples.PythonModuleExample import ClassExample
 
 
 class TestCase(unittest.TestCase):
