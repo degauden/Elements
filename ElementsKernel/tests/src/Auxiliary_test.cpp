@@ -67,6 +67,7 @@ BOOST_AUTO_TEST_SUITE(Auxiliary_test)
 
 BOOST_AUTO_TEST_CASE(AuxiliaryConstructor_test) {
 
+  path make_template = Elements::getAuxiliaryPath("ElementsKernel/templates/Makefile.in");
 
 }
 
