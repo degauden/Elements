@@ -87,7 +87,7 @@ find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION} QUIET)
 # The USE list can be used to declare which Elements-based projects are required by
 # the broject being compiled.
 #
-# The DATA list can be used to declare the data packages requried by the project
+# The DATA list can be used to declare the data packages required by the project
 # runtime.
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
@@ -1369,7 +1369,7 @@ endfunction()
 #
 # The package will be searched for in all the directories specified in the
 # environment variable CMAKE_PROJECT_PATH and in CMAKE_PREFIX_PATH. If specified,
-# the suffixes willbe appended to eache searched directory to look for the
+# the suffixes will be appended to each searched directory to look for the
 # data packages.
 #
 # The root of the data package will be stored in <variable>.
