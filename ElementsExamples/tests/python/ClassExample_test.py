@@ -1,10 +1,10 @@
 import unittest
-from ElementsExamples.PythonModuleExample import ClassExample  # for ClassExample
+from ElementsExamples.PythonModuleExample import ClassExample
 
 
-class TestCase(unittest.TestCase):
+class ClassExampleTestCase(unittest.TestCase):
     """
-
+    Simple test case for the ClassExample class
     """
     def setUp(self):
         unittest.TestCase.setUp(self)
