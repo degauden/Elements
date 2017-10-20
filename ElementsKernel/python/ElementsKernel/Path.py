@@ -133,7 +133,7 @@ def getAllPathFromLocations(file_name, locations):
         if os.path.exists(file_path):
             file_list.append(file_path)
 
-    return file_list
+    return list(set(file_list))
 
 
 def getPathFromEnvVariable(file_name, path_variable):
