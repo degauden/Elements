@@ -92,8 +92,13 @@ def mainMethod(args):
     if stem:
         found_list = Path.getAllPathFromLocations(stem, locations)
     else:
-        logger.error("You must provide a term to look for.")
-        return 1
+        logger.info("No stem provided. Listing all files")
+        found_list = []
+        for l in locations:
+            for root, _, files in os.walk(l):
+                for f in files:
+                    found_list.append(os.path.join(root, f))
+
 
     this_project_root = os.environ.get("THIS_PROJECT_ROOT", None)
 
