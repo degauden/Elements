@@ -104,8 +104,9 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
                 script_goes_on = False
             else:
                 logger.warn("")
-                logger.warn("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!", entity_name,
-                             entity_type)
+                logger.warn("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!",
+                            entity_name,
+                            entity_type)
                 logger.warn("Please think to add the \"%s\" name in the Element Naming Database below:", entity_name)
                 logger.warn("< %s/NameCheck/project1/ >", db_url)
                 logger.info("")
