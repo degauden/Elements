@@ -99,7 +99,7 @@ def defineSpecificProgramOptions():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('entity_name', metavar='entity-name',
                         type=str,
-                        help='Entitiy name')
+                        help='Entity name')
     parser.add_argument('-U', '--url', default=os.environ.get("ELEMENTS_NAMING_DB_URL", ""),
                         help='URL for the naming database')
     parser.add_argument('-t', '--type', default=DEFAULT_TYPE, choices=TYPES,
