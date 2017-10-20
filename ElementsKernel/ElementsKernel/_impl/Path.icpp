@@ -25,6 +25,7 @@
 
 #include <string>                          // for string
 #include <vector>                          // for vector
+#include <set>                             // for set
 #include <algorithm>                       // for find_if, transform, for_each
 #include <boost/filesystem.hpp>            // for boost::filesystem
 #include <boost/algorithm/string/join.hpp> // for join
@@ -51,6 +52,33 @@ boost::filesystem::path getPathFromLocations(const T& file_name, const std::vect
   }
 
   return found_path;
+
+}
+
+template <typename T, typename U>
+std::vector<boost::filesystem::path> getAllPathFromLocations(const T& file_name, const std::vector<U>& locations) {
+
+  using boost::filesystem::path;
+
+  std::vector<path> file_list(locations.size());
+  path file_path {file_name};
+
+  std::transform(locations.cbegin(), locations.cend(),
+                 file_list.begin(),
+                 [file_path](U l){
+    return path{l}/file_path;
+  });
+
+  auto found_pos = std::remove_if(file_list.begin(), file_list.end(),
+      [](path p){
+          return not boost::filesystem::exists(p);
+  });
+
+  file_list.erase(found_pos, file_list.end());
+
+  std::set<path> file_set(file_list.begin(), file_list.end());
+
+  return std::vector<path>(file_set.begin(), file_set.end());
 
 }
 

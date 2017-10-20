@@ -45,14 +45,21 @@ SUFFIXES = {"executable": ["scripts", "bin"],
             "configuration": ["conf"],
             "auxiliary": ["auxdir", "aux"]}
 
-DEFAULT_INSTALL_LOCATIONS = {"executable": [ os.path.join(DEFAULT_INSTALL_PREFIX, "bin")],
-                                "library": [ os.path.join(DEFAULT_INSTALL_PREFIX, "lib64"),
-                                             os.path.join(DEFAULT_INSTALL_PREFIX, "lib"),
-                                             os.path.join(DEFAULT_INSTALL_PREFIX, "lib32")],
-                                 "python": [ get_python_lib(prefix=DEFAULT_INSTALL_PREFIX)],
-                          "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "conf") ],
-                              "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "auxdir"),
+DEFAULT_INSTALL_LOCATIONS = { "executable": [ os.path.join(DEFAULT_INSTALL_PREFIX, "bin")],
+                                 "library": [ os.path.join(DEFAULT_INSTALL_PREFIX, "lib64"),
+                                              os.path.join(DEFAULT_INSTALL_PREFIX, "lib"),
+                                              os.path.join(DEFAULT_INSTALL_PREFIX, "lib32")],
+                                  "python": [ get_python_lib(prefix=DEFAULT_INSTALL_PREFIX)],
+                           "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "conf") ],
+                               "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "auxdir"),
                                              os.path.join(DEFAULT_INSTALL_PREFIX, "aux")]}
+
+HAS_SUBLEVELS = { "executable": False,
+                     "library": False,
+                      "python": True,
+               "configuration": True,
+                   "auxiliary": True}
+
 
 def getLocations(file_type="executable", exist_only=False):
     """
@@ -112,6 +119,22 @@ def getPathFromLocations(file_name, locations):
             return file_path
 
     return None
+
+def getAllPathFromLocations(file_name, locations):
+    """
+    Get all the paths to the searched  file name from the
+    provided locations.
+    """
+
+    file_list = []
+
+    for l in locations:
+        file_path = os.path.join(l, file_name)
+        if os.path.exists(file_path):
+            file_list.append(file_path)
+
+    return list(set(file_list))
+
 
 def getPathFromEnvVariable(file_name, path_variable):
     """

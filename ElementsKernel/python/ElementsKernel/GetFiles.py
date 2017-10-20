@@ -28,8 +28,15 @@ import sys
 if sys.version_info[0] < 3:
     from future_builtins import *
 
+import os
 import argparse
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Path
+
+
+DEFAULT_TYPE = "executable"
+TYPES = [DEFAULT_TYPE, "library", "python", "configuration", "library"]
 
 def defineSpecificProgramOptions():
     """
@@ -42,17 +49,23 @@ def defineSpecificProgramOptions():
         An  ArgumentParser.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--self', default=False, action="store_true",
+
+    parser.add_argument('file_stem', metavar='file-stem',
+                        type=str,
+                        default="",
+                        nargs='?',
+                        help='File stem')
+
+    parser.add_argument('-s', '--self',
+                        default=False,
+                        action="store_true",
                         help='Get only the files from the current project. No recursion.')
 
-    parser.add_argument('-v', '--variable', default="PATH",
-                        help='The variable to search in [default: PATH]')
+    parser.add_argument('-t', '--type',
+                        default=DEFAULT_TYPE,
+                        choices=TYPES,
+                        help='The type of file to search for [default: %s]' % DEFAULT_TYPE)
 
-
-    #
-    # !!! Write your program options here !!!
-    # e.g. parser.add_argument('--string-value', type=str, help='A string option')
-    #
 
     return parser
 
@@ -67,17 +80,34 @@ def mainMethod(args):
 
     logger = log.getLogger('GetElementsFiles')
 
-    logger.info('#')
-    logger.info('# Entering GetElementsFiles mainMethod()')
-    logger.info('#')
+    stem = args.file_stem
+    file_type = args.type
 
-    # !! Getting the option from the example option in defineSpecificProgramOption
-    # !! e.g string_option = args.string_value
+    if stem.find(os.path.sep) != -1 and (not Path.HAS_SUBLEVELS[file_type]):
+        logger.error("The search stem cannot contain \"%s\" for the %s type", os.path.sep, file_type)
+        return 1
 
-    #
-    # !!! Write you main code here !!!
-    #
+    locations = Path.getLocations(file_type, exist_only=True)
 
-    logger.info('#')
-    logger.info('# Exiting GetElementsFiles mainMethod()')
-    logger.info('#')
+    if stem:
+        found_list = Path.getAllPathFromLocations(stem, locations)
+    else:
+        logger.info("No stem provided. Listing all files")
+        found_list = []
+        for l in locations:
+            for root, _, files in os.walk(l):
+                for f in files:
+                    found_list.append(os.path.join(root, f))
+
+
+    this_project_root = os.environ.get("THIS_PROJECT_ROOT", None)
+
+    if this_project_root and args.self:
+        found_list = [f for f in found_list if f.startswith(this_project_root)]
+
+
+    for f in found_list:
+        print(f)
+
+
+
