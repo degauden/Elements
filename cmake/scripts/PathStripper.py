@@ -63,8 +63,12 @@ if __name__ == '__main__':
                       help="select the type of shell to use")
 
     parser.set_defaults(output=stdout)
-    parser.add_option("-o", "--output", action="callback", metavar="FILE",
-                      type="string", callback=_check_output_options_cb,
+    parser.add_option("-o",
+                      "--output",
+                      action="callback",
+                      metavar="FILE",
+                      type="string",
+                      callback=_check_output_options_cb,
                       help="(internal) output the command to set up the environment ot the given file instead of stdout")
     parser.add_option("--mktemp", action="callback",
                       dest="mktemp",
