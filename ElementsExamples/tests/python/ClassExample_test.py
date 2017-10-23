@@ -1,3 +1,5 @@
+""" test module for the class example"""
+
 import unittest
 from ElementsExamples.PythonModuleExample import ClassExample
 

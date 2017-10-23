@@ -6,7 +6,10 @@ from tempfile import mkstemp
 from zipfile import is_zipfile
 
 
-def StripPath(path):
+def stripPath(path):
+    """ Main function to remove non-existing entries
+    in the path list
+    """
     collected = []
     for p in path.split(pathsep):
         rp = realpath(p)
@@ -20,9 +23,10 @@ def StripPath(path):
     return pathsep.join(collected)
 
 
-def CleanVariable(varname, shell, out):
+def cleanVariable(varname, shell, out):
+    """ Clean up the variable and write out the shell snipet"""
     if varname in environ:
-        pth = StripPath(environ[varname])
+        pth = stripPath(environ[varname])
         if shell == "csh" or shell.find("csh") != -1:
             out.write("setenv %s %s" % (varname, pth) + linesep)
         elif shell == "sh" or shell.find("sh") != -1:
@@ -32,6 +36,7 @@ def CleanVariable(varname, shell, out):
 
 
 def _check_output_options_cb(option, opt_str, value, parser):
+    """ Callback for the output options"""
     if opt_str == "--mktemp":
         if parser.values.output != stdout:
             raise OptionValueError(
@@ -69,11 +74,13 @@ if __name__ == '__main__':
                       metavar="FILE",
                       type="string",
                       callback=_check_output_options_cb,
-                      help="(internal) output the command to set up the environment ot the given file instead of stdout")
+                      help="(internal) output the command to set up the environment"
+                            "of the given file instead of stdout")
     parser.add_option("--mktemp", action="callback",
                       dest="mktemp",
                       callback=_check_output_options_cb,
-                      help="(internal) send the output to a temporary file and print on stdout the file name (like mktemp)")
+                      help="(internal) send the output to a temporary file and print"
+                           "on stdout the file name (like mktemp)")
 
     options, args = parser.parse_args()
 
@@ -82,7 +89,7 @@ if __name__ == '__main__':
 
     if options.envlist:
         for v in options.envlist:
-            CleanVariable(v, options.shell, options.output)
+            cleanVariable(v, options.shell, options.output)
 
     for a in args:
-        print(StripPath(a))
+        print(stripPath(a))
