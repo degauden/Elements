@@ -86,7 +86,7 @@ def getPath(file_name, file_type="executable", raise_exception=True):
     result = getPathFromLocations(file_name, location_list)
 
     if not result and raise_exception:
-        raise Exception("The %s file \"%s\" cannot be found!", file_type, file_name)
+        raise Exception("The %s file \"%s\" cannot be found!" % (file_type, file_name))
 
     return result
 
