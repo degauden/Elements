@@ -36,7 +36,7 @@ from ElementsKernel import Path
 
 
 DEFAULT_TYPE = "executable"
-TYPES = [DEFAULT_TYPE, "library", "python", "configuration", "library"]
+TYPES = [DEFAULT_TYPE, "library", "python", "configuration", "auxiliary"]
 
 def defineSpecificProgramOptions():
     """
@@ -61,6 +61,12 @@ def defineSpecificProgramOptions():
                         action="store_true",
                         help='Get only the files from the current project. No recursion.')
 
+    parser.add_argument('-d', '--with-defaults',
+                        default=False,
+                        action="store_true",
+                        help='Add the system internal paths to the environment for the lookup')
+
+
     parser.add_argument('-t', '--type',
                         default=DEFAULT_TYPE,
                         choices=TYPES,
@@ -68,6 +74,20 @@ def defineSpecificProgramOptions():
 
 
     return parser
+
+def selfFilter(f_list, only_self):
+    """
+    @brief function to filter the entries that don't belong to the
+    current program.
+    """
+
+    this_project_root = os.environ.get("THIS_PROJECT_ROOT", None)
+
+    if this_project_root and only_self:
+        f_list = [f for f in f_list if f.startswith(this_project_root)]
+
+    return f_list
+
 
 
 def mainMethod(args):
@@ -87,7 +107,7 @@ def mainMethod(args):
         logger.error("The search stem cannot contain \"%s\" for the %s type", os.path.sep, file_type)
         return 1
 
-    locations = Path.getLocations(file_type, exist_only=True)
+    locations = Path.getLocations(file_type, exist_only=True, with_defaults=args.with_defaults)
 
     if stem:
         found_list = Path.getAllPathFromLocations(stem, locations)
@@ -100,11 +120,7 @@ def mainMethod(args):
                     found_list.append(os.path.join(root, f))
 
 
-    this_project_root = os.environ.get("THIS_PROJECT_ROOT", None)
-
-    if this_project_root and args.self:
-        found_list = [f for f in found_list if f.startswith(this_project_root)]
-
+    found_list = selfFilter(found_list, args.self)
 
     for f in found_list:
         print(f)

@@ -61,14 +61,15 @@ HAS_SUBLEVELS = { "executable": False,
                    "auxiliary": True}
 
 
-def getLocations(file_type="executable", exist_only=False):
+def getLocations(file_type="executable", exist_only=False, with_defaults=True):
     """
     Get the locations of a type of file -- including the default ones
     """
 
     location_list = getLocationsFromEnv(VARIABLE[file_type], exist_only)
 
-    location_list += DEFAULT_INSTALL_LOCATIONS[file_type]
+    if with_defaults:
+        location_list += DEFAULT_INSTALL_LOCATIONS[file_type]
 
     if exist_only:
         location_list = [p for p in location_list if os.path.exists(p)]
