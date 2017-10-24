@@ -26,9 +26,7 @@ local_clean_exit() {
 }
 
 # We need first to create a project
-CreateElementsProject $project_name $version << EOF
-y
-EOF
+CreateElementsProject $project_name $version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -40,9 +38,7 @@ fi
 cd $User_area/$project_name/$version/
 
 # Create a module
-AddElementsModule $module_name -md $module_dep_name << EOF
-y
-EOF
+AddElementsModule $module_name -md $module_dep_name --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then

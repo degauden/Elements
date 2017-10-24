@@ -46,9 +46,7 @@ if [ -e ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}/manifest.xml ]; then
 
 cd ${User_area} || local_clean_exit 1
 
-CreateElementsProject $projectA_name $projectA_version << EOF
-y
-EOF
+CreateElementsProject $projectA_name $projectA_version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -87,9 +85,7 @@ fi
 
 cd ${User_area} || local_clean_exit 1
 
-CreateElementsProject -d $projectA_name 1.1.0 $projectB_name $projectB_version << EOF
-y
-EOF
+CreateElementsProject -d $projectA_name 1.1.0 $projectB_name $projectB_version --yes
 
 cd $projectB_name/$projectB_version || local_clean_exit 1
 
@@ -117,9 +113,7 @@ fi
 
 cd ${User_area} || local_clean_exit 1
 
-CreateElementsProject -d $projectA_name 1.1 $projectC_name $projectC_version << EOF
-y
-EOF
+CreateElementsProject -d $projectA_name 1.1 $projectC_name $projectC_version --yes
 
 cd $projectC_name/$projectC_version || local_clean_exit 1
 
@@ -134,9 +128,7 @@ fi
 
 cd ${User_area} || local_clean_exit 1
 
-CreateElementsProject -d $projectA_name 1.1.0 -d $projectB_name 1.2.0 $projectD_name $projectD_version << EOF
-y
-EOF
+CreateElementsProject -d $projectA_name 1.1.0 -d $projectB_name 1.2.0 $projectD_name $projectD_version --yes
 
 cd ${projectD_name}/${projectD_version} || local_clean_exit 1
 

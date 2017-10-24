@@ -43,6 +43,7 @@ logger = log.getLogger('CreateElementsProject')
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
 AUX_CMAKE_FILE_IN = "Makefile.in"
 AUX_PROJ_RST_IN = "doc_project.rst.in"
+AUX_GITIGNORE_IN = "gitignore_template.in"
 
 ################################################################################
 
@@ -158,6 +159,13 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
 
     epcr.copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
     epcr.copyAuxFile(project_dir, AUX_CMAKE_FILE_IN)
+    epcr.copyAuxFile(project_dir, AUX_GITIGNORE_IN)
+
+    # Rename the git file as ".gitignore"
+    gitfile = os.path.join(project_dir, AUX_GITIGNORE_IN)
+    git_ignore_file_dot_name = os.path.join(project_dir, ('.' + AUX_GITIGNORE_IN.replace('_template.in', '')))
+    os.rename(gitfile, git_ignore_file_dot_name)
+    epcr.addItemToCreationList(git_ignore_file_dot_name)
 
     # Remove '.in'
     cmakefile = os.path.join(project_dir, AUX_CMAKE_FILE_IN)
@@ -179,7 +187,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
 
 ################################################################################
 
-def makeChecks(proj_name, proj_version, dependency, dependant_projects):
+def makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_yes=False):
     """
     Make some checks
     """
@@ -194,7 +202,7 @@ def makeChecks(proj_name, proj_version, dependency, dependant_projects):
     epcr.checkAuxFileExist(AUX_CMAKE_LIST_IN)
     epcr.checkAuxFileExist(AUX_CMAKE_FILE_IN)
     # Check name in the Element Naming Database
-    epcr.checkNameInEuclidNamingDatabase(proj_name, nc.TYPES[0])
+    epcr.checkNameInEuclidNamingDatabase(proj_name, nc.TYPES[0], answer_yes)
 
 
 ################################################################################
@@ -225,7 +233,7 @@ def lookForDirectories(project_dir):
 
 ################################################################################
 
-def CheckProjectExist(project_dir, no_version_directory, force_erase):
+def CheckProjectExist(project_dir, no_version_directory, force_erase, answer_yes=False):
     """
     Look for any version directory in the project directory e.g 1.0,1.2 etc...
     """
@@ -235,124 +243,11 @@ def CheckProjectExist(project_dir, no_version_directory, force_erase):
         # Warn user about directory under the project
         if no_version_directory and version_dir_list:
             logger.warning('Found the following version(s) directory(ies) : %s', version_dir_list)
-        response_key = input('Do you want to overwrite the existing project (y/n, default: n)?')
-        if response_key.lower() == "yes" or response_key == "y":
+        if not answer_yes:
+            response_key = input('Do you want to overwrite the existing project (y/n, default: n)?')
+        if answer_yes or response_key.lower() == "yes" or response_key == "y":
             logger.info('# Overwriting the existing project: <%s>', project_dir)
         else:
             raise epcr.ErrorOccured
     elif force_erase:
         epcr.eraseDirectory(project_dir)
-
-################################################################################
-
-def defineSpecificProgramOptions():
-    """
-    Define program option(s)
-    """
-    description = """
-This script creates an <Elements> project in your current directory(by default)
-or at the location defined by the <$User_area> environment variable.
-It means that all the necessary structure (directory structure, makefiles etc...)
-will be automatically created for you. In addition, the project name will be registered (if any) into
-the Naming Database with the URL defined by the ELEMENTS_NAMING_DB_URL environment variable.
-The options are:
-
-[-d]          Use this option if your project has some dependencies on other project(s).
-[-n or -novd] Use this option if you do not want to create a version directory
-[-e]          Use this option to erase an already existing project
-
-e.g.
-    > CreateElementsProject test_project 1.0
-      This creates the following directories : "test_project/1.0"
-
-    > CreateElementsProject test 1.0 -n (or -novd)
-      This creates the following directory : "test_project"
-
-    > CreateElementsProject test 1.0 -e
-      With this option an already existing project ("test_project/1.0") will be fully erased before
-      the creation of the new one.
-      This creates the following directory : "test_project/1.0"
-
-    The "test_project" project is created at your current directory or
-    at the location pointed by the $User_area environment variable
-
-Note:
-    - If your project directory exists already(e.g. project cloned from git), the script will not erase it,
-      it will just replace the files needed to be updated. For instance, the <.git> directory will
-      not be erased (and/or whatever files/directory there).
-      If you do not use the -n (or -novd) option, in such a case the <.git> directory for instance will not be
-      copied under the version directory. It is the responsability of the user to do that and whatever file(s)
-      needed to be copied.
-            """
-
-    from argparse import RawTextHelpFormatter
-
-    parser = argparse.ArgumentParser(description=description,
-                                     formatter_class=RawTextHelpFormatter)
-    parser.add_argument('project_name', metavar='project-name', type=str,
-                        help='Project name')
-    parser.add_argument('project_version', metavar='project-version',
-                        type=str, default='1.0', help='Project version number')
-    parser.add_argument('-d', '--dependency', metavar=('project_name', 'version'),
-                        nargs=2, action='append', type=str,
-                        help='Dependency project name and its version number"\
-                         e.g "-d Elements x.x.x"')
-    parser.add_argument('-n', '-novd', '--no-version-directory', action="store_true",
-                        help='Does not create the <project-version> directory only\
-                        the <project-name> directory will be created')
-    parser.add_argument('-e', '--erase', action="store_true",
-                        help='Erase the <project-version> directory if it does exists')
-    parser.add_argument('-s', '--standalone', default=False, action="store_true",
-                        help='Remove the implicit dependency onto the Elements project (expert only)')
-
-
-    return parser
-
-################################################################################
-
-def mainMethod(args):
-    """
-    Main
-    """
-    logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the CreateElementsProject script')
-    logger.info('#')
-
-    proj_name = args.project_name
-    proj_version = args.project_version
-    dependant_projects = args.dependency
-    destination_path = setPath()
-    dependency = args.dependency
-    no_version_directory = args.no_version_directory
-    standalone = args.standalone
-    force_erase = args.erase
-
-    logger.info('# Installation directory : %s', destination_path)
-
-    try:
-        # Set the project directory
-        project_dir = buildProjectDir(no_version_directory, destination_path, proj_name, proj_version)
-        makeChecks(proj_name, proj_version, dependency, dependant_projects)
-
-        CheckProjectExist(project_dir, no_version_directory, force_erase)
-
-        # Create the project
-        createProject(project_dir, proj_name, proj_version, dependant_projects, standalone)
-
-        # Print all files created
-        epcr.printCreationList()
-
-        logger.info('# <%s> project successfully created.', project_dir)
-
-    except epcr.ErrorOccured as msg:
-        if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
-        return 1
-    except Exception as msg:
-        if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
-        return 1
-    else:
-        logger.info('# Script over.')
