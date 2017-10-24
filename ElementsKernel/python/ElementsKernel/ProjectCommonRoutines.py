@@ -206,7 +206,7 @@ def copyAuxFile(destination, aux_file_name):
 def checkAuxFileExist(aux_file_name):
     """
     Make sure the <aux_file> auxiliary file exists. Return an exception in case of
-    an error. 
+    an error.
     <aux_file_name> is just the name without the path.
     """
     auxpath = os.path.join('ElementsKernel', 'templates', aux_file_name)
