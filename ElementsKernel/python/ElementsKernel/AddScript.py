@@ -124,7 +124,7 @@ def createScript(current_dir, module_name, program_name):
 
 ################################################################################
 
-def makeChecks(program_file_path, program_name):
+def makeChecks(program_file_path, program_name, answer_yes=False):
     """
     Make some checks
     """
@@ -135,7 +135,7 @@ def makeChecks(program_file_path, program_name):
     # Check aux file exist
     epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
     # Check name in DB
-    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
+    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2], answer_yes)
 
 ################################################################################
 
@@ -149,6 +149,9 @@ def defineSpecificProgramOptions():
            """
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('program_name', metavar='program-name', type=str, help='Program name')
+    parser.add_argument('-y', '--yes', default=False, action="store_true",
+                        help='Answer <yes> by default to any question, useful when the script is called by another'\
+                         'script')
 
     return parser
 
@@ -164,6 +167,7 @@ def mainMethod(args):
     logger.info('#')
 
     program_name = args.program_name
+    answer_yes = args.yes
 
     # Default is the current directory
     current_dir = os.getcwd()
@@ -177,7 +181,7 @@ def mainMethod(args):
         # Check name in the Element Naming Database
         program_file_path = os.path.join(current_dir, 'scripts', program_name)
         # Make checks
-        makeChecks(program_file_path, program_name)
+        makeChecks(program_file_path, program_name, answer_yes)
 
         createScript(current_dir, module_name, program_name)
         logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)

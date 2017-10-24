@@ -41,9 +41,7 @@ echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
 
 cd ${tmploc}
 
-CreateElementsProject $projectA_name $projectA_version << EOF
-y
-EOF
+CreateElementsProject $projectA_name $projectA_version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -88,9 +86,7 @@ fi
 
 cd ${tmploc}
 
-CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
-y
-EOF
+CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version --yes
 
 cd $projectB_name/$projectB_version
 
@@ -120,9 +116,7 @@ fi
 
 cd ${tmploc}
 
-CreateElementsProject -d $projectA_name $projectA_version -d $projectB_name $projectB_version $projectC_name $projectC_version << EOF
-y
-EOF
+CreateElementsProject -d $projectA_name $projectA_version -d $projectB_name $projectB_version $projectC_name $projectC_version --yes
 
 cd $projectC_name/$projectC_version
 
