@@ -133,7 +133,7 @@ def mainMethod(args):
         project_dir = cep.buildProjectDir(no_version_directory, destination_path, proj_name, proj_version)
         cep.makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_yes)
 
-        cep.CheckProjectExist(project_dir, no_version_directory, force_erase, answer_yes)
+        cep.checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes)
 
         # Create the project
         cep.createProject(project_dir, proj_name, proj_version, dependant_projects, standalone)

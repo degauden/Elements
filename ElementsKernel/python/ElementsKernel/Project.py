@@ -223,17 +223,17 @@ def lookForDirectories(project_dir):
     """
     Look for any version directory in the project directory e.g HEAD, 1.2.3, 1.0 etc...
     """
-    matchList = []
+    match_list = []
     dirlist = [elt for elt in os.listdir(project_dir) if os.path.isdir(os.path.join(project_dir, elt)) ]
     for elt in dirlist:
         match = re.match(epcr.version_regex, elt)
         if match:
-            matchList.append(match.group(0))
-    return matchList
+            match_list.append(match.group(0))
+    return match_list
 
 ################################################################################
 
-def CheckProjectExist(project_dir, no_version_directory, force_erase, answer_yes=False):
+def checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes=False):
     """
     Look for any version directory in the project directory e.g 1.0,1.2 etc...
     """

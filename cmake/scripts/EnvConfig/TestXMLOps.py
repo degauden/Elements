@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
 
     def testFileLoad(self):
         '''Test loading of previously written file.'''
-        self.control = Control.Environment(useAsWriter=True)
+        self.control = Control.Environment(use_as_writer=True)
         self.control.unset('varToUnset')
 
         self.control.declare('myVar', 'list', True)

@@ -86,7 +86,7 @@ def _zipChanges(directory, infolist):
     return (added, modified, untouched, removed)
 
 
-def checkEncoding(fileObj):
+def checkEncoding(file_obj):
     '''
     Check that a file honors the declared encoding (default ASCII for Python 2
     and UTF-8 for Python 3).
@@ -106,21 +106,21 @@ def checkEncoding(fileObj):
 
     # find the encoding of the file, if specified (in the first two lines)
     enc_exp = re.compile(r"coding[:=]\s*([-\w.]+)")
-    for l in islice(fileObj, 2):
+    for l in islice(file_obj, 2):
         m = enc_exp.search(l)
         if m:
             enc = m.group(1)
             break
 
-    if hasattr(fileObj, 'name'):
+    if hasattr(file_obj, 'name'):
         logging.getLogger('checkEncoding').debug('checking encoding %s on %s',
-                                                 enc, fileObj.name)
+                                                 enc, file_obj.name)
     else:
         logging.getLogger('checkEncoding').debug('checking encoding %s on file object',
                                                  enc)
     # try to read the file with the declared encoding
-    fileObj.seek(0)
-    codecs.getreader(enc)(fileObj).read()
+    file_obj.seek(0)
+    codecs.getreader(enc)(file_obj).read()
 
 
 # Make a zip file out of a directory containing python modules
@@ -136,14 +136,14 @@ def zipdir(directory, no_pyc=False):
 
     # Open the file in read an update mode
     if os.path.exists(filename):
-        zipFile = open(filename, "r+b")
+        zip_file = open(filename, "r+b")
     else:
         # If the file does not exist, we need to create it.
         # "append mode" ensures that, in case of two processes trying to
         # create the file, they do not truncate each other file
-        zipFile = open(filename, "ab")
+        zip_file = open(filename, "ab")
 
-    locker.lock(zipFile)
+    locker.lock(zip_file)
     try:
         if zipfile.is_zipfile(filename):
             infolist = zipfile.ZipFile(filename).infolist()
@@ -152,8 +152,8 @@ def zipdir(directory, no_pyc=False):
         (added, modified, untouched, removed) = _zipChanges(
             directory, infolist)
         if added or modified or removed:
-            tempBuf = StringIO()
-            z = zipfile.PyZipFile(tempBuf, "w", zipfile.ZIP_DEFLATED)
+            temp_buf = StringIO()
+            z = zipfile.PyZipFile(temp_buf, "w", zipfile.ZIP_DEFLATED)
             for f in added + modified + untouched:
                 src = os.path.join(directory, f)
                 checkEncoding(open(src, 'rb'))
@@ -168,9 +168,9 @@ def zipdir(directory, no_pyc=False):
                     log.debug("adding '%s'", f)
                     z.writepy(src, os.path.dirname(f))
             z.close()
-            zipFile.seek(0)
-            zipFile.write(tempBuf.getvalue())
-            zipFile.truncate()
+            zip_file.seek(0)
+            zip_file.write(temp_buf.getvalue())
+            zip_file.truncate()
             log.info("File '%s' closed", filename)
         else:
             log.info("Nothing to do on '%s'", filename)
@@ -180,8 +180,8 @@ def zipdir(directory, no_pyc=False):
         log.error("Probably you forgot the line '# -*- coding: utf-8 -*-'")
         sys.exit(1)
     finally:
-        locker.unlock(zipFile)
-        zipFile.close()
+        locker.unlock(zip_file)
+        zip_file.close()
 
 # Main function of the script.
 #  Parse arguments and call zipdir() for each directory passed as argument

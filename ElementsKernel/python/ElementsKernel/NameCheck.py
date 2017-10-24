@@ -38,8 +38,6 @@ except:
     from urllib.request import urlopen
     from urllib.error import URLError
 
-# import ssl
-
 logger = log.getLogger('NameCheck')
 
 TYPES = ["cmake", "library", "executable"]
