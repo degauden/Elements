@@ -25,7 +25,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 from ElementsKernel.Path import getLocations, getPath
 
 def getConfigurationLocations(exist_only=False):
-
+    """
+    Get all the configuration locations -- including the default ones
+    """
     return getLocations("configuration", exist_only)
 
 
