@@ -153,7 +153,7 @@ elements_add_unit_test(Exception tests/src/Exception_test.cpp
 elements_install_python_modules()
 
 
-elements_add_python_program(CreateElementsProject ElementsKernel.Project)
+elements_add_python_program(CreateElementsProject ElementsKernel.CreateProject)
 elements_add_python_program(AddElementsModule ElementsKernel.AddModule)
 elements_add_python_program(AddCppClass ElementsKernel.AddCppClass)
 elements_add_python_program(AddCppProgram ElementsKernel.AddCppProgram)

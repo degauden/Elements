@@ -41,9 +41,7 @@ if [ -e ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}/manifest.xml ]; then
 
 cd ${User_area} || local_clean_exit 1
 
-CreateElementsProject $projectA_name $projectA_version << EOF
-y
-EOF
+CreateElementsProject $projectA_name $projectA_version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -85,9 +83,7 @@ fi
 
 cd ${User_area} || local_clean_exit 1
 
-CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
-y
-EOF
+CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version --yes
 
 cd $projectB_name/$projectB_version
 #AddElementsModule $projectB_name

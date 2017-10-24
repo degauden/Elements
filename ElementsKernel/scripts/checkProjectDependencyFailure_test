@@ -45,9 +45,7 @@ echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
 
 cd ${User_area}
 
-CreateElementsProject -s $projectA_name $projectA_version << EOF
-y
-EOF
+CreateElementsProject -s $projectA_name $projectA_version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -88,9 +86,7 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -s $projectAp_name $projectAp_version << EOF
-y
-EOF
+CreateElementsProject -s $projectAp_name $projectAp_version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -131,9 +127,7 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -s -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
-y
-EOF
+CreateElementsProject -s -d $projectA_name $projectA_version $projectB_name $projectB_version --yes
 
 cd $projectB_name/$projectB_version
 #AddElementsModule $projectB_name
@@ -162,9 +156,7 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -s -d $projectAp_name $projectAp_version $projectC_name $projectC_version << EOF
-y
-EOF
+CreateElementsProject -s -d $projectAp_name $projectAp_version $projectC_name $projectC_version --yes
 
 cd $projectC_name/$projectC_version
 #AddElementsModule $projectC_name
@@ -194,9 +186,7 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -s -d $projectB_name $projectB_version -d $projectC_name $projectC_version $projectD_name $projectD_version << EOF
-y
-EOF
+CreateElementsProject -s -d $projectB_name $projectB_version -d $projectC_name $projectC_version $projectD_name $projectD_version --yes
 
 cd $projectD_name/$projectD_version
 AddElementsModule -s $projectD_name
