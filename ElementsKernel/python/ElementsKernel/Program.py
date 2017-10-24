@@ -84,7 +84,7 @@ class Program(object):
         else:
             self._logger.debug('Found "%s" configuration file at %s', conf_name, default_config_file)
 
-        return default_config_file;
+        return default_config_file
 
     def _parseConfigFile(self, arg_parser, cmd_options):
         # First we check if the user gave the --config-file option

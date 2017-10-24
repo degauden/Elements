@@ -1,3 +1,5 @@
+""" Script to wrap extra command for the rpmbuild call """
+
 from subprocess import call
 from os.path import dirname
 

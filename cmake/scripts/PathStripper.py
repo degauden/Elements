@@ -1,3 +1,8 @@
+""" Module to remove non-existing entries
+    in the path list
+"""
+
+
 from sys import stdout
 from os import pathsep, listdir, environ, fdopen, linesep
 from os.path import exists, isdir, realpath

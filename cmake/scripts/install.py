@@ -27,6 +27,7 @@ import shutil
 
 
 def main():
+    """ Main function for the install script """
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("-x", "--exclude", action="append",
@@ -37,7 +38,8 @@ def main():
                       help="where to store the informations about installed files [default: %default]")
     parser.add_option("-d", "--destname", action="store",
                       dest="destname", default=None,
-                      help="name to use when installing the source into the destination directory [default: source name]")
+                      help="name to use when installing the source into the destination directory"
+                           "[default: source name]")
     parser.add_option("-u", "--uninstall", action="store_true",
                       dest="uninstall", default=False,
                       help="do uninstall")
