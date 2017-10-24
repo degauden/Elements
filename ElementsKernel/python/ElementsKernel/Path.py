@@ -179,6 +179,7 @@ def which(program):
         @param program: program path, absolute or relative
     """
     def is_exe(fpath):
+        """ small function to check if the item is an executable """
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
     fpath, _ = os.path.split(program)

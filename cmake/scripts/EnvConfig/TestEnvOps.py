@@ -196,8 +196,8 @@ class Test(unittest.TestCase):
 
         control.append('MY_PATH', 'newValue:mess:something new:aaaabbcc')
 
-        def count(val, regExp=False):
-            return len(control.search('MY_PATH', val, regExp))
+        def count(val, reg_exp=False):
+            return len(control.search('MY_PATH', val, reg_exp))
 
         self.assertEqual(count('new'), 0)
         self.assertEqual(count('newValue'), 1)
@@ -423,7 +423,7 @@ class Test(unittest.TestCase):
 
         control = Control.Environment(searchPath=[])
 
-        #self.assertRaises(OSError, control.loadXML, tmp('first.xml'))
+        # self.assertRaises(OSError, control.loadXML, tmp('first.xml'))
         control.loadXML(tmp('first.xml'))
         self.assertEqual(str(control['main']), 'first')
         self.assertEqual(str(control['test_path']), 'data1:data2')
@@ -468,14 +468,13 @@ class Test(unittest.TestCase):
         self.assertEqual(str(control['test_path']), 'data1:data2')
         self.assertEqual(str(control['derived']), 'another_first')
 
-        #os.environ['ENVXMLPATH'] = os.pathsep.join([tmp(), tmp('subdir')])
         EnvConfig.path[:] = ['.', tmp(), tmp('subdir')]
         control = Control.Environment(searchPath=[])
         control.loadXML(tmp('second.xml'))
         self.assertEqual(str(control['main']), 'second')
         self.assertEqual(str(control['test_path']), 'data0:data1')
         self.assertEqual(str(control['map']), 'this_is_second_inc')
-        #del os.environ['ENVXMLPATH']
+
         EnvConfig.path[:] = ['.']
 
         control = Control.Environment(searchPath=[])
@@ -495,7 +494,7 @@ class Test(unittest.TestCase):
         self.assertEqual(str(control['included']), 'from subdir2')
 
         control = Control.Environment(searchPath=[])
-        #self.assertRaises(OSError, control.loadXML, tmp('first.xml'))
+        # self.assertRaises(OSError, control.loadXML, tmp('first.xml'))
         control.loadXML(tmp('recursion.xml'))
 
         # restore search path
@@ -573,12 +572,8 @@ class Test(unittest.TestCase):
         s.set("/some//strange/../nice/./location")
         assert s.value(asString=True) == "/some/nice/location"
 
-        # This is undefined
-        # l.set("http://cern.ch")
-
         s.set("http://cern.ch")
         assert s.value(asString=True) == "http://cern.ch"
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
