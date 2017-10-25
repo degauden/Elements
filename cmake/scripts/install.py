@@ -92,10 +92,10 @@ def main():
         dump(log, open(opts.logfile, "wb"))
 
 
-class LogFile:
+class LogFile(object):
 
     """
-    Class to incapsulate the logfile functionalities.
+    Class to encapsulate the logfile functionalities.
     """
 
     def __init__(self):
