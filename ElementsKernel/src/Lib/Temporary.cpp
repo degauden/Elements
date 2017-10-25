@@ -47,6 +47,7 @@ TempPath::TempPath(const string& motif) :
 }
 
 TempPath::~TempPath() {
+  boost::filesystem::remove_all(m_path);
 }
 
 path TempPath::path() const {
@@ -71,9 +72,7 @@ TempDir::~TempDir() {
 
   Logging logger = Logging::getLogger();
   logger.debug() << "Automatic destruction of the " << path()
-      << " temporary directory";
-
-  boost::filesystem::remove_all(path());
+                 << " temporary directory";
 
 }
 
@@ -92,8 +91,6 @@ TempFile::~TempFile() {
 
   Logging logger = Logging::getLogger();
   logger.debug() << "Automatic destruction of the " << path() << " file";
-
-  boost::filesystem::remove(path());
 
 }
 
