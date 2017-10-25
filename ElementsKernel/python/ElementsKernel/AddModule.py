@@ -46,7 +46,7 @@ AUX_MOD_RST_IN = 'doc_module.rst.in'
 
 ################################################################################
 
-def CheckCmakelistFileExist(project_directory):
+def checkCmakelistFileExist(project_directory):
     """
     Checks if a <CMakeLists.txt> file exists and is really an Elements
     cmake file
@@ -178,7 +178,7 @@ def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
     Make some checks
     """
     # We absolutely need a Elements cmake file
-    CheckCmakelistFileExist(project_dir)
+    checkCmakelistFileExist(project_dir)
     epcr.checkNameAndVersionValid(module_name, '1.0')
     checkDependencyListValid(dependency_list)
     epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0], answer_yes)

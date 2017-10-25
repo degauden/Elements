@@ -25,19 +25,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 """
 
 import argparse
-import os
-import sys
-import re
-import ELEMENTS_VERSION  # @UnresolvedImport
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 import ElementsKernel.Project as cep
-
-try:
-    from builtins import input
-except:
-    from __builtin__ import input
 
 def defineSpecificProgramOptions():
     """

@@ -7,7 +7,7 @@ Created on Jul 2, 2011
 from xml.dom import minidom
 import logging
 from pickle import load, dump
-from hashlib import md5  # pylint: disable=E0611
+from hashlib import md5
 import os
 
 
@@ -28,13 +28,14 @@ class XMLFile(object):
 
         If no name given, returns list of lists of all variables and locals(instead of action 'local' is filled).
         '''
-        isFilename = type(path) is str
-        if isFilename:
+        is_filename = type(path) is str
+        if is_filename:
             checksum = md5()
             checksum.update(open(path, 'rb').read())
             checksum = checksum.digest()
 
-            cpath = path + "c"  # preparsed file
+            # preparsed file
+            cpath = path + "c"
             try:
                 f = open(cpath, 'rb')
                 oldsum, data = load(f)
@@ -93,7 +94,7 @@ class XMLFile(object):
                             value = ''
                         variables.append((action, (varname, value, None)))
 
-        if isFilename:
+        if is_filename:
             try:
                 f = open(cpath, 'wb')
                 dump((checksum, variables), f, protocol=2)
@@ -108,17 +109,17 @@ class XMLFile(object):
             os.linesep
         self.declaredVars = []
 
-    def writeToFile(self, outputFile=None):
+    def writeToFile(self, output_file=None):
         '''Finishes the XML input and writes XML to file.'''
-        if outputFile is None:
+        if output_file is None:
             raise IOError("No output file given")
         self.xmlResult += '</env:config>'
 
         doc = minidom.parseString(self.xmlResult)
-        with open(outputFile, "w") as f:
+        with open(output_file, "w") as f:
             f.write(doc.toxml())
 
-        return outputFile
+        return output_file
 
     def writeVar(self, varName, action, value, vartype='list', local=False):
         '''Writes a action to a file. Declare undeclared elements (non-local list is default type).'''

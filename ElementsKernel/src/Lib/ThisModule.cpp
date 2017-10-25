@@ -22,6 +22,8 @@
 #include <cstddef>
 
 #include "ElementsKernel/ThisModule.h"
+#include "ElementsKernel/FuncPtrCast.h"  // for FuncPtrCast
+#include "ElementsKernel/ModuleInfo.h"   // for ModuleInfo
 
 namespace Elements {
 namespace System {

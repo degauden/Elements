@@ -43,17 +43,10 @@ logger = log.getLogger('NameCheck')
 TYPES = ["cmake", "library", "executable"]
 DEFAULT_TYPE = "cmake"
 
-# # version for a https server without the proper certificate
-# def _byPassSslUrlOpen(url):
-#     req = urllib2.Request(url, headers={'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'})
-#     gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-#     return urllib2.urlopen(req, context=gcontext)
-#
-# _localUrlOpen = _byPassSslUrlOpen
-
 _localUrlOpen = urlopen
 
 def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
+    """ Get the informations about a given entity of a specific type """
     full_url = db_url + "/NameCheck/exists?name=%s&type=%s" % (name, entity_type)
     logger.debug("The url for the name request: %s", full_url)
     info = json.loads(_localUrlOpen(full_url).read().decode("utf-8"))
@@ -63,6 +56,7 @@ def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
     return info
 
 def checkDataBaseUrl(db_url):
+    """ check if the DB URL exists """
     site_exists = True
     if db_url:
         try:

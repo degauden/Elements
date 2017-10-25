@@ -22,7 +22,8 @@ if os.name == 'nt':
         """
         Lock first 10 bytes of a filename.
         """
-        pos = filename.tell()  # remember current position
+        # remember current position
+        pos = filename.tell()
         filename.seek(0)
         # By default, python tries about 10 times, then throws an exception.
         # We want to wait forever.
@@ -35,16 +36,19 @@ if os.name == 'nt':
                 # 36, AKA 'Resource deadlock avoided', is normal
                 if x.errno != 36:
                     raise
-        filename.seek(pos)  # reset position
+        # reset position
+        filename.seek(pos)
 
     def unlock(filename):
         """
         Unlock first 10 bytes of a filename.
         """
-        pos = filename.tell()  # remember current position
+        # remember current position
+        pos = filename.tell()
         filename.seek(0)
         msvcrt.locking(filename.fileno(), msvcrt.LK_UNLCK, 10)
-        filename.seek(pos)  # reset position
+        # reset position
+        filename.seek(pos)
 
 elif os.name == 'posix':
     import socket
