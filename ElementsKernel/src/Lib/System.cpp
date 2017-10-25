@@ -32,7 +32,7 @@
 #include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
 #include <cerrno>                       // for errno
 #include <execinfo.h>                   // for backtrace
-#include <cstring>                      // for strlen
+#include <cstring>                      // for strnlen
 #include <unistd.h>                     // for environ
 #include <cxxabi.h>
 #include <sys/utsname.h>
@@ -193,7 +193,7 @@ const string typeinfoName(const std::type_info& tinfo) {
 
 const string typeinfoName(const char* class_name) {
   string result;
-  if (strlen(class_name) == 1) {
+  if (strnlen(class_name, 1024) == 1) {
     // See http://www.realitydiluted.com/mirrors/reality.sgi.com/dehnert_engr/cxx/abi.pdf
     // for details
     switch (class_name[0]) {

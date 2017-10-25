@@ -24,9 +24,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 """
 
-import argparse
 import os
-import sys
 import re
 import ELEMENTS_VERSION  # @UnresolvedImport
 import ElementsKernel.ProjectCommonRoutines as epcr
@@ -78,7 +76,6 @@ def duplicate_elements(duplicate_list):
     Look for duplicate element in a list
     """
     name_list = []
-    not_found_duplicate = True
     for elt in duplicate_list:
         if not elt[0] in name_list:
             name_list.append(elt[0])

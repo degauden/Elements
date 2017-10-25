@@ -3,6 +3,7 @@ from optparse import OptionParser
 
 
 def main():
+    """ main function of this script module """
     parser = OptionParser(
         usage="ERROR: Usage %prog <package> <outputfile>")
     parser.add_option("-q", "--quiet", action="store_true",

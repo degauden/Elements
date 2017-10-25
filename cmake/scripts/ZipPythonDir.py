@@ -213,7 +213,7 @@ def main(argv=None):
     logging.basicConfig(level=level)
 
     if "ELEMENTS_BUILD_LOCK" in os.environ:
-        _scopedLock = locker.LockFile(
+        _scoped_lock = locker.LockFile(
             os.environ["ELEMENTS_BUILD_LOCK"], temporary=True)
     # zip all the directories passed as arguments
     for d in args:
