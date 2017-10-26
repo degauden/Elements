@@ -78,9 +78,10 @@ ELEMENTS_API ImageHandle exeHandle();
 ELEMENTS_API const std::string& exeName();
 /// Vector of names of linked modules
 ELEMENTS_API const std::vector<std::string> linkedModules();
+ELEMENTS_API std::vector<boost::filesystem::path> linkedModulePaths();
 /// Attach module handle
 ELEMENTS_API void setModuleHandle(ImageHandle handle);
-
+/// Get the full executable path
 ELEMENTS_API boost::filesystem::path getExecutablePath();
 
 }
