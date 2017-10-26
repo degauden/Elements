@@ -214,7 +214,7 @@ vector<path> linkedModulePaths() {
     std::string address, perms, offset, dev, pathname;
     unsigned inode;
     std::istringstream iss(line);
-    if (!(iss >> address >> perms >> offset >> dev >> inode >> pathname)) {
+    if (not(iss >> address >> perms >> offset >> dev >> inode >> pathname)) {
       continue;
     }
     if (perms == "r-xp" and boost::filesystem::exists(pathname)) {
@@ -228,11 +228,11 @@ vector<path> linkedModulePaths() {
 
 }
 
-const vector<string> linkedModules()    {
+const vector<string> linkedModules() {
 
-  if ( s_linkedModules.size() == 0 )    {
+  if (s_linkedModules.size() == 0) {
 
-    for(auto m: linkedModulePaths()) {
+    for (auto m: linkedModulePaths()) {
       s_linkedModules.push_back(m.string());
     }
 
