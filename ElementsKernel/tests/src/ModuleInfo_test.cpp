@@ -21,6 +21,7 @@
 
 
 #include <iostream>
+#include <string>
 
 #include <boost/test/unit_test.hpp>          // for the boost test macros
 #include <boost/filesystem.hpp>              // for boost/filesystem
@@ -36,7 +37,18 @@ BOOST_AUTO_TEST_CASE(GetExecutablePath_test) {
   boost::filesystem::path exe_path = Elements::System::getExecutablePath();
 
   BOOST_CHECK(exe_path.filename().string() == "ModuleInfo_test");
+
 }
+
+BOOST_AUTO_TEST_CASE(ExeName_test) {
+
+  boost::filesystem::path exe_path = Elements::System::getExecutablePath();
+  std::string name = Elements::System::exeName();
+
+  BOOST_CHECK_EQUAL(exe_path.string(), name);
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

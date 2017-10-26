@@ -22,6 +22,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <sstream>                            // for stringstream
+#include <fstream>                            // for ifstream
+#include <iostream>
 
 #include <boost/filesystem/path.hpp>          // for filesystem::path
 #include <boost/filesystem/operations.hpp>    // for filesystem::exists
@@ -82,7 +84,7 @@ ModuleInfo::operator const Dl_info&() const {
 }
 
 namespace {
-  ImageHandle      ModuleHandle = 0;
+  ImageHandle s_module_handle = 0;
 }
 /// Retrieve base name of module
 const string& moduleName()   {
@@ -140,11 +142,11 @@ void* processHandle()   {
 }
 
 void setModuleHandle(ImageHandle handle)    {
-  ModuleHandle = handle;
+  s_module_handle = handle;
 }
 
 ImageHandle moduleHandle()    {
-  if ( 0 == ModuleHandle )    {
+  if ( 0 == s_module_handle )    {
     if ( processHandle() )    {
       static Dl_info info;
       if ( 0 !=
@@ -153,12 +155,14 @@ ImageHandle moduleHandle()    {
       }
     }
   }
-  return ModuleHandle;
+  return s_module_handle;
 }
 
 ImageHandle exeHandle()    {
   // This does NOT work!
-  static Dl_info infoBuf, *info = &infoBuf;
+  static Dl_info infoBuf;
+  static Dl_info *info;
+
   if ( 0 == info ) {
     void* handle = ::dlopen(0, RTLD_LAZY);
     if ( 0 != handle ) {
@@ -173,63 +177,86 @@ ImageHandle exeHandle()    {
   return info;
 }
 
-const string& exeName()    {
+
+const string& exeName() {
   static string module("");
   if ( module.length() == 0 )    {
-    char name[PATH_MAX] = {"Unknown.module"};
-    name[0] = 0;
-    char cmd[512];
-    ::sprintf(cmd, "/proc/%d/exe", ::getpid());
-    module = "Unknown";
-    if (::readlink(cmd, name, sizeof(name)) >= 0) {
-      module = name;
-    }
+    module = getExecutablePath().string();
   }
   return module;
 }
 
+path getSelfProc(){
+
+  path self_proc {"/proc/self"};
+
+  path exe = self_proc / "exe";
+
+  if (not boost::filesystem::exists(exe)) {
+    stringstream self_str {};
+    self_str << "/proc/" << ::getpid();
+    self_proc = path(self_str.str());
+  }
+
+  return self_proc;
+
+}
+
+vector<path> linkedModulePaths() {
+
+  vector<path> linked_modules;
+
+  path self_maps = getSelfProc() / "maps";
+  std::ifstream maps_str(self_maps.string());
+
+  string line;
+  while (std::getline(maps_str, line)) {
+    std::string address, perms, offset, dev, pathname;
+    unsigned inode;
+    std::istringstream iss(line);
+    if (!(iss >> address >> perms >> offset >> dev >> inode >> pathname)) {
+      continue;
+    }
+    if (perms == "r-xp" and boost::filesystem::exists(pathname)) {
+      linked_modules.push_back(path(pathname));
+    }
+  }
+
+  maps_str.close();
+
+  return linked_modules;
+
+}
 
 const vector<string> linkedModules()    {
+
   if ( s_linkedModules.size() == 0 )    {
-    char ff[512], cmd[1024], fname[1024], buf1[64], buf2[64], buf3[64], buf4[64];
-    ::sprintf(ff, "/proc/%d/maps", ::getpid());
-    FILE* maps = ::fopen(ff, "r");
-    while (::fgets(cmd, sizeof(cmd), maps) ) {
-      int len;
-      ::sscanf(cmd, "%63s %63s %63s %63s %d %1023s", buf1, buf2, buf3, buf4, &len, fname);
-      if ( len > 0 && strncmp(buf2, "r-xp", strlen("r-xp")) == 0 ) {
-        s_linkedModules.push_back(fname);
-      }
+
+    for(auto m: linkedModulePaths()) {
+      s_linkedModules.push_back(m.string());
     }
-    ::fclose(maps);
+
   }
   return s_linkedModules;
 }
 
 path getExecutablePath() {
 
-  path exe_path {};
-
 #ifdef __APPLE__
   path self_proc {};
   char pathbuf[PATH_MAX + 1];
   unsigned int  bufsize = sizeof(pathbuf);
   _NSGetExecutablePath( pathbuf, &bufsize);
-  self_proc = path(string(pathbuf));
+  self_exe = path(string(pathbuf));
 #else
-  path self_proc {"/proc/self/exe"};
 
-  if (not boost::filesystem::exists(self_proc)) {
-    stringstream self_str {};
-    self_str << "/proc/" << ::getpid() << "/exe";
-    self_proc = path(self_str.str());
-  }
+  path self_exe = getSelfProc() / "exe";
+
 #endif
 
-  exe_path = boost::filesystem::canonical(self_proc);
-
-  return exe_path;
+  return boost::filesystem::canonical(self_exe);
 }
+
 
 
 } // namespace System
