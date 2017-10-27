@@ -284,9 +284,9 @@ const string typeinfoName(const char* class_name) {
 const string& hostName() {
   static string host = "";
   if (host == "") {
-    char buffer[512];
-    std::memset(buffer, 0, sizeof(buffer));
-    ::gethostname(buffer, sizeof(buffer));
+    string buffer;
+    buffer.resize(512);
+    ::gethostname(const_cast<char *>(buffer.c_str()), sizeof(buffer));
     host = buffer;
   }
   return host;

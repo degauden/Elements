@@ -388,6 +388,7 @@ BOOST_AUTO_TEST_CASE(CheckCommit_test) {
   }
 
   BOOST_CHECK(getEnv("dkdd") == "beta");
+
 }
 
 
