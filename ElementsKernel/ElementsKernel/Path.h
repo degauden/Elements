@@ -127,7 +127,8 @@ ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, co
  *   all the found paths
  */
 template <typename T, typename U>
-ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const T& file_name, const std::vector<U>& locations);
+ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const T& file_name,
+                                                                          const std::vector<U>& locations);
 
 /**
  * @brief retrieve path from a file name and an environment variable to look into

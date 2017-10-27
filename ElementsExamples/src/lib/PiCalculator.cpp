@@ -8,7 +8,7 @@ void PiCalculator::calculate(unsigned int terms){
   // Leibniz formula for pi
   double numerator = -1.0;
   double denominator = -1.0;
-  for( unsigned int ii = 0; ii < terms; ++ii ) {
+  for (unsigned int ii = 0; ii < terms; ++ii) {
     numerator   *= -1;
     denominator += 2.0;
     pi += numerator / denominator;
