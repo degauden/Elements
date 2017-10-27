@@ -77,8 +77,8 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name, const
   default_config_file = getConfigurationPath(conf_name.string(), false);
   if (default_config_file.empty()) {
     logger.warn() << "The \"" << conf_name.string() << "\" configuration file cannot be found in:";
-    for(auto l: getConfigurationLocations()) {
-      logger.warn() << " " << l;
+    for (auto loc: getConfigurationLocations()) {
+      logger.warn() << " " << loc;
     }
     if (not module_name.empty()) {
       conf_name = path{module_name} / conf_name;

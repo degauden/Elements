@@ -257,7 +257,5 @@ path getExecutablePath() {
   return boost::filesystem::canonical(self_exe);
 }
 
-
-
 } // namespace System
 } // namespace Elements
