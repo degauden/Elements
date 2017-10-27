@@ -187,10 +187,10 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -s -d $projectB_name $projectB_version -d $projectC_name $projectC_version $projectD_name $projectD_version --yes
+CreateElementsProject --yes -s -d $projectB_name $projectB_version -d $projectC_name $projectC_version $projectD_name $projectD_version
 
 cd $projectD_name/$projectD_version
-AddElementsModule -s $projectD_name
+AddElementsModule --yes -s $projectD_name
 
 # this one must fail because of the wrong dependency tree.
 make configure

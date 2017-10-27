@@ -67,10 +67,11 @@ Time Time::current(void) {
 
   timeval tv;
   if (::gettimeofday(&tv, 0) != 0) {
-    char buf[256];
+    string buf;
+    buf.resize(256);
     ostringstream tag, msg;
     tag << "errno=" << errno;
-    if (::strerror_r(errno, buf, 256) == 0) {
+    if (::strerror_r(errno, const_cast<char *>(buf.c_str()), 256) == 0) {
       msg << buf;
     } else {
       msg << "Unknown error retrieving current time";
