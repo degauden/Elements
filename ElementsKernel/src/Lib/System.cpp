@@ -328,22 +328,6 @@ const string& machineType() {
   return mach;
 }
 
-/// User login name
-string accountName() {
-  string account = ::getlogin();
-    if (0 == account.size()) {
-      account = getEnv("LOGNAME");
-    }
-    if (0 == account.size()) {
-      account = getEnv("USER");
-    }
-    if (0 == account.size()) {
-      account = "Unknown";
-    }
-
-  return account;
-}
-
 string getEnv(const string& var) {
 
   string env_str {};
@@ -369,7 +353,8 @@ bool getEnv(const string& var, string& value) {
 
 
 bool isEnvSet(const string& var) {
-  return ::getenv(var.c_str()) != 0;
+  string result;
+  return getEnv(var, result);
 }
 
 /// get all defined environment vars

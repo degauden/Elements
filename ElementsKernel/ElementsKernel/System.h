@@ -132,8 +132,6 @@ ELEMENTS_API const std::string& osName();
 ELEMENTS_API const std::string& osVersion();
 /// Machine type
 ELEMENTS_API const std::string& machineType();
-/// User login name
-ELEMENTS_API std::string accountName();
 ///get a particular environment variable
 ELEMENTS_API std::string getEnv(const std::string& var);
 /// get a particular environment variable, storing the value in the passed string if the
