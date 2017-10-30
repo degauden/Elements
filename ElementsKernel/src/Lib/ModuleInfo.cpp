@@ -247,7 +247,7 @@ path getExecutablePath() {
   char pathbuf[PATH_MAX + 1];
   unsigned int  bufsize = sizeof(pathbuf);
   _NSGetExecutablePath( pathbuf, &bufsize);
-  self_exe = path(string(pathbuf));
+  path self_exe = path(string(pathbuf));
 #else
 
   path self_exe = getSelfProc() / "exe";
