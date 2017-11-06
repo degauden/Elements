@@ -32,7 +32,6 @@
 #include "ElementsKernel/Logging.h"
 #include "ElementsKernel/System.h"
 
-#include "ElementsKernel/PathSearch.h"
 #include "ElementsKernel/Path.h"           // for Path::VARIABLE, multiPathAppend, PATH_SEP
 #include "ElementsKernel/ModuleInfo.h"     // for getExecutablePath
 #include "ElementsKernel/Unused.h"         // for ELEMENTS_UNUSED

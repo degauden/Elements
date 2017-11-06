@@ -77,8 +77,9 @@ std::vector<T> searchOption(std::string searched_name, T directory,
 
 
 template <typename T>
-std::vector<T> pathSearch(const std::string& searched_name, T directory,
-                           SearchType search_type) {
+std::vector<T> pathSearch(const std::string& searched_name,
+                          T directory,
+                          SearchType search_type) {
   return searchOption<T>(searched_name, directory, search_type);
 }
 
