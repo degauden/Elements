@@ -185,7 +185,6 @@ def makeChecks(current_dir, program_name, answer_yes=False):
     # Check aux file exist
     epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
-
 ################################################################################
 
 def defineSpecificProgramOptions():
