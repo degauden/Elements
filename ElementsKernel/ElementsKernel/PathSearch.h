@@ -45,8 +45,8 @@ enum class SearchType {
  *
  * @param searched_name
  *   Name of the searched file or directory
- * @param directory
- *   Boost path of the directory in which the search is carried out
+ * @tparam directory
+ *   string or Boost path of the directory in which the search is carried out
  * @param search_type
  *   Two options:
  *    SearchType.Local search in directory only
@@ -54,14 +54,8 @@ enum class SearchType {
  * @return
  *   A vector of paths of the files found or empty string, if nothing is found
  */
-ELEMENTS_API
-std::vector<boost::filesystem::path> pathSearch(
-    const std::string& searched_name,
-    boost::filesystem::path directory,
-    SearchType search_type);
-
-ELEMENTS_API
-std::vector<std::string> pathSearch(
+template <typename T>
+ELEMENTS_API std::vector<T> pathSearch(
     const std::string& searched_name,
     T directory,
     SearchType search_type);
