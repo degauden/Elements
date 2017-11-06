@@ -27,6 +27,7 @@
 #define ELEMENTSKERNEL_SEARCHPATH_H_
 
 #include <string>
+#include <vector>
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/Export.h"     // ELEMENTS_API
@@ -62,8 +63,9 @@ std::vector<boost::filesystem::path> pathSearch(
 ELEMENTS_API
 std::vector<std::string> pathSearch(
     const std::string& searched_name,
-    std::string directory,
+    T directory,
     SearchType search_type);
+
 
 /**
  * Iterate over the different directories included in a path-like environment variable, i.e.,
@@ -78,30 +80,10 @@ std::vector<boost::filesystem::path> pathSearchInEnvVariable(
     const std::string& path_like_env_variable,
     SearchType search_type=SearchType::Recursive);
 
-//  /**
-//   * @brief
-//   *    Split a path using the into segments
-//   * @details
-//   *    Extract the last segment of a file full path variable excluding the filename. E.g.,
-//   *    if path is
-//   *
-//   *    /Users/dubath/Elements/ElementsKernel/tests/conf/ElementsKernel/MockFileForTestingFileLocator.conf
-//   *
-//   *    it returns "ElementsKernel". Elements are split between "/". If the given path do not
-//   *    contain any "/" it return an empty path
-//   *
-//   * @param fileFullPath
-//   *    The path variable to be processed
-//   * @return
-//   *    The last segment of the path variable, or an empty path if there is no "/" in the variable.
-//   */
-//  static std::vector<boost::filesystem::path> tokenizer(
-//      boost::filesystem::path path);
-//
-//  static std::vector<boost::filesystem::path> tokenizePathLikeVariable(
-//      std::string path_like_env_variable);
-
 }  // Elements namespace
+
+#include "ElementsKernel/_impl/PathSearch.icpp"
+
 
 #endif  // ELEMENTSKERNEL_SEARCHPATH_H_
 
