@@ -14,7 +14,9 @@ if (NOT NOSE_FOUND)
                      NAMES ${explicit_nose} nosetests
                      HINTS ${_python_path})
     else()
-	    find_program(NOSE_EXECUTABLE NAMES ${explicit_nose} nosetests)
+	    find_program(NOSE_EXECUTABLE NAMES ${explicit_nose} nosetests
+	                 HINTS ENV NOSE_INSTALL_DIR
+                     PATH_SUFFIXES bin)
     endif()
 
 	set(NOSE_EXECUTABLE ${NOSE_EXECUTABLE} CACHE STRING "")

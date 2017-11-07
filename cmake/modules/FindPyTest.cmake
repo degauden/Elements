@@ -14,10 +14,12 @@ if (NOT PYTEST_FOUND)
                      NAMES ${explicit_pytest} py.test
                      HINTS ${_python_path})
     else()
-	    find_program(PYTEST_EXECUTABLE NAMES ${explicit_pytest} py.test)
+        find_program(PYTEST_EXECUTABLE NAMES ${explicit_pytest} py.test
+                     HINTS ENV PYTEST_INSTALL_DIR
+                     PATH_SUFFIXES bin)
     endif()
 
-	set(PYTEST_EXECUTABLE ${PYTEST_EXECUTABLE} CACHE STRING "")
+    set(PYTEST_EXECUTABLE ${PYTEST_EXECUTABLE} CACHE STRING "")
 
 # handle the QUIETLY and REQUIRED arguments and set PYTEST_FOUND to TRUE if
 # all listed variables are TRUE
