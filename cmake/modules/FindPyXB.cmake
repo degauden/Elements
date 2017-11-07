@@ -1,7 +1,9 @@
 if (NOT PYXB_FOUND)
 
-	find_program(PYXBGEN_EXECUTABLE pyxbgen)
-	set(PYXBGEN_EXECUTABLE ${PYXBGEN_EXECUTABLE} CACHE STRING "")
+    find_program(PYXBGEN_EXECUTABLE pyxbgen
+                 HINTS ENV PYXB_INSTALL_DIR
+                 PATH_SUFFIXES bin)
+    set(PYXBGEN_EXECUTABLE ${PYXBGEN_EXECUTABLE} CACHE STRING "")
 
 # handle the QUIETLY and REQUIRED arguments and set PYXBGEN_FOUND to TRUE if
 # all listed variables are TRUE

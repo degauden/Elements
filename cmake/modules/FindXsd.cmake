@@ -1,13 +1,15 @@
 if (NOT XSD_FOUND)
 
-    find_program(XSDCXX_EXECUTABLE xsdcxx)
-	message(STATUS "This is XSDCXX executable: ${XSDCXX_EXECUTABLE}")
+    find_program(XSDCXX_EXECUTABLE xsdcxx
+                 HINTS ENV XSD_ROOT_DIR XSD_INSTALL_DIR
+                 PATH_SUFFIXES bin)
+    message(STATUS "This is XSDCXX executable: ${XSDCXX_EXECUTABLE}")
 
     find_path(XSD_INCLUDE_DIR xsd/cxx/config.hxx
-              HINTS ENV XSD_ROOT_DIR
+              HINTS ENV XSD_ROOT_DIR XSD_INSTALL_DIR
               PATH_SUFFIXES include)
-	
-	set(XSD_INCLUDE_DIRS ${XSD_INCLUDE_DIR})
+
+    set(XSD_INCLUDE_DIRS ${XSD_INCLUDE_DIR})
 
 # handle the QUIETLY and REQUIRED arguments and set XSD_FOUND to TRUE if
 # all listed variables are TRUE
