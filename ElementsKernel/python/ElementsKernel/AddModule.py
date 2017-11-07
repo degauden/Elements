@@ -177,7 +177,7 @@ def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
     """
     Make some checks
     """
-    # We absolutely need a Elements cmake file
+    # We absolutely need an Elements cmake file
     checkCmakelistFileExist(project_dir)
     epcr.checkNameAndVersionValid(module_name, '1.0')
     checkDependencyListValid(dependency_list)
@@ -240,11 +240,7 @@ def mainMethod(args):
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
         # Print all files created
         epcr.printCreationList()
-    except epcr.ErrorOccured as msg:
-        if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
-        return 1
+
     except Exception as msg:
         if str(msg):
             logger.error(msg)
