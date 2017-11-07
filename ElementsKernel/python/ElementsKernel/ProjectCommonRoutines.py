@@ -89,7 +89,6 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=Fals
         logger.info("#")
         logger.warn("!!! The Elements Naming Database URL is not valid : <%s> !!!", db_url)
         logger.warn("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
-        script_goes_on = False
     else:
         info = nc.getInfo(entity_name, db_url, entity_type)
         if info["error"]:

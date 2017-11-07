@@ -229,11 +229,6 @@ def mainMethod(args):
         # Print all files created
         epcr.printCreationList()
 
-    except epcr.ErrorOccured as msg:
-        if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
-        return 1
     except Exception as msg:
         if str(msg):
             logger.error(msg)
