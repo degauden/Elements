@@ -144,7 +144,7 @@ endif()
 
 
 find_package(HealpixCpp QUIET)
-if(HEALPIXCPP_FOUND)
+if(HEALPIXCPP_FOUND AND HEALPIXCPP_NEW_LAYOUT)
 elements_add_executable(HealpixExample src/program/HealpixExample.cpp
                         INCLUDE_DIRS HealpixCpp ElementsExamples
                         LINK_LIBRARIES HealpixCpp ElementsExamples)
