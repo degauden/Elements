@@ -39,6 +39,7 @@ using std::vector;
 using boost::program_options::options_description;
 using boost::program_options::value;
 using boost::program_options::variable_value;
+using boost::program_options::bool_switch;
 
 namespace Elements {
 namespace Examples {
@@ -69,10 +70,16 @@ public:
 
     options_description config_options { "Example program options" };
 
+    bool flag;
+
     // Add the specific program options
     config_options.add_options()
         ("string-option", value<string>()->default_value(string { }),
         "An example string option")
+        ("boolean-option", value<bool>()->default_value(false),
+         "An example boolean option")
+        ("flag,f", bool_switch(&flag)->default_value(false),
+         "An option to set to true")
         ("string-option-no-default", value<string>(),
         "A string option without default value")
         ("long-long-option", value<int64_t>()->default_value(int64_t { }),
