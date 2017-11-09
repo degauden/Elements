@@ -28,7 +28,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
   find_package(GCovr)
 
   add_custom_target(gcovr
-                    COMMAND ${GCOVR_EXECUTABLE} -x -r ${CMAKE_SOURCE_DIR} --exclude=/usr/include/.* --exclude=${PROJECT_BINARY_DIR}/.* -o ${PROJECT_NAME}.xml
+                    COMMAND ${GCOVR_EXECUTABLE} -x -r ${CMAKE_SOURCE_DIR} --exclude=/usr/include/.* --exclude=${PROJECT_BINARY_DIR}/.* --exclude=.*/InstallArea/.* -o ${PROJECT_NAME}.xml
                     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/gcovr
                     COMMENT "Produce Cobertura output" VERBATIM)
                     
