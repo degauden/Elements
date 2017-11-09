@@ -383,6 +383,12 @@ if(NOT ELEMENTS_FLAGS_SET)
         FORCE)
   endif()
 
+  if(CMAKE_BUILD_TYPE STREQUAL Coverage AND SGS_COMP STREQUAL gcc)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage"
+          CACHE STRING "Flags used by the linker during the creation of exe's."
+          FORCE)
+  endif()
+
   # prevent resetting of the flags
   set(ELEMENTS_FLAGS_SET ON
       CACHE INTERNAL "flag to check if the compilation flags have already been set")
