@@ -1,7 +1,9 @@
 if (NOT VALGRIND_FOUND)
 
-	find_program(VALGRIND_EXECUTABLE valgrind)
-	set(VALGRIND_EXECUTABLE ${VALGRIND_EXECUTABLE} CACHE STRING "")
+    find_program(VALGRIND_EXECUTABLE valgrind
+                 HINTS ENV VALGRIND_INSTALL_DIR
+                 PATH_SUFFIXES bin)
+    set(VALGRIND_EXECUTABLE ${VALGRIND_EXECUTABLE} CACHE STRING "")
 
 # handle the QUIETLY and REQUIRED arguments and set VALGRIND_FOUND to TRUE if
 # all listed variables are TRUE

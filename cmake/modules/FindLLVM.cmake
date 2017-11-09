@@ -4,23 +4,33 @@ if(NOT LLVM_FOUND)
 
 find_program(LLVM_AR
              NAMES llvm-ar
-         	 DOC "LLVM ar")
+             HINTS ENV LLVM_INSTALL_DIR
+             PATH_SUFFIXES bin
+             DOC "LLVM ar")
 
 find_program(LLVM_LINKER
              NAMES llvm-link
-         	 DOC "LLVM linker")
+             HINTS ENV LLVM_INSTALL_DIR
+             PATH_SUFFIXES bin
+             DOC "LLVM linker")
 
 find_program(LLVM_NM
              NAMES llvm-nm
-         	 DOC "LLVM nm")
+             HINTS ENV LLVM_INSTALL_DIR
+             PATH_SUFFIXES bin
+             DOC "LLVM nm")
 
 find_program(LLVM_OBJDUMP
              NAMES llvm-objdump
+             HINTS ENV LLVM_INSTALL_DIR
+             PATH_SUFFIXES bin
          	 DOC "LLVM objdump")
 
 find_program(LLVM_RANLIB
              NAMES llvm-ranlib
-         	 DOC "LLVM ranlib")
+             HINTS ENV LLVM_INSTALL_DIR
+             PATH_SUFFIXES bin
+             DOC "LLVM ranlib")
 
 # handle the QUIETLY and REQUIRED arguments and set LLVM_FOUND to TRUE if
 # all listed variables are TRUE

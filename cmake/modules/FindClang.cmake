@@ -6,12 +6,16 @@ if(NOT CLANG_FOUND)
 find_package(LLVM)
 
 find_program(CLANG_C_COMPILER
-             NAMES clang
-         	 DOC "Clang C Compiler")
+             NAMES clang                 
+             HINTS ENV CLANG_INSTALL_DIR
+             PATH_SUFFIXES bin
+             DOC "Clang C Compiler")
 
 find_program(CLANG_CXX_COMPILER
              NAMES clang++
-         	 DOC "Clang C++ Compiler")
+             HINTS ENV CLANG_INSTALL_DIR
+             PATH_SUFFIXES bin
+             DOC "Clang C++ Compiler")
 
 # handle the QUIETLY and REQUIRED arguments and set CLANG_FOUND to TRUE if
 # all listed variables are TRUE
