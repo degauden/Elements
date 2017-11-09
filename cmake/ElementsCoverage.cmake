@@ -43,18 +43,14 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
   add_custom_command(TARGET cov POST_BUILD
                     COMMAND ;
-                    COMMENT "===================================================================================================\n\
-Open ./${BUILD_SUBDIR}/cov/lcov/html/index.html in your browser to view the coverage report.\n\
-===================================================================================================\n"
+                    COMMENT "===================================================================================================\nOpen ./${BUILD_SUBDIR}/cov/lcov/html/index.html in your browser to view the coverage report.\n===================================================================================================\n"
                     )
 
 else()
 
   add_custom_command(TARGET cov POST_BUILD
                     COMMAND ;
-                    COMMENT "=======================================================================\n\
-Please build in coverage mode in order to instrument the binaries.\n\
-=======================================================================\n"
+                    COMMENT "=======================================================================\nPlease build in coverage mode in order to instrument the binaries.\n=======================================================================\n"
                     )
 
 endif()
