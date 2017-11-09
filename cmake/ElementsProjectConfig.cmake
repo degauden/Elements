@@ -1120,6 +1120,7 @@ ${MAIN_PROJECT_CHANGELOG}
   endif()
 
   include(ElementsDocumentation)
+  include(ElementsCoverage)
   include(ElementsUninstall)
 
 endmacro()
