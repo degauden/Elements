@@ -8,8 +8,14 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
   find_package(GenHTML)
 
+  add_custom_target(lcov_init ALL
+                    COMMAND ${LCOV_EXECUTABLE} --zerocounters --directory ${PROJECT_BINARY_DIR}
+                    COMMAND COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --initial --capture --output-file ${PROJECT_NAME}.info
+                    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
+                    COMMENT "Initialize the coverage info" VERBATIM)
+  add_dependencies(lcov_init lcov_dir)
+
   add_custom_target(lcov
-                    #COMMAND ${LCOV_EXECUTABLE} --directory  ${PROJECT_BINARY_DIR} --zerocounters
                     COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --capture --output-file ${PROJECT_NAME}.info
                     COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* --output-file ${PROJECT_NAME}.info.cleaned
                     COMMAND ${GENHTML_EXECUTABLE} -o html ${PROJECT_NAME}.info.cleaned
@@ -33,6 +39,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
                     COMMENT "Produce Cobertura output" VERBATIM)
                     
   add_dependencies(cov gcovr)                    
+  add_dependencies(lcov gcovr)
 
   add_custom_target(gcovr_dir
                     COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/cov/gcovr
