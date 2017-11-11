@@ -17,7 +17,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
   add_custom_target(lcov
                     COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --capture --output-file ${PROJECT_NAME}.info
-                    COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* --output-file ${PROJECT_NAME}.info.cleaned
+                    COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* ${PROJECT_BINARY_DIR}/* --output-file ${PROJECT_NAME}.info.cleaned
                     COMMAND ${GENHTML_EXECUTABLE} -o html ${PROJECT_NAME}.info.cleaned
                     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
                     COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters" VERBATIM)
