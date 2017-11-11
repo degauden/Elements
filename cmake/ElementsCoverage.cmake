@@ -8,28 +8,36 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
   find_package(GenHTML)
 
-  add_custom_target(lcov_init ALL
+  if(GENHTML_EXECUTABLE)
+    add_custom_target(lcov_init ALL
                     COMMAND ${LCOV_EXECUTABLE} --zerocounters --directory ${PROJECT_BINARY_DIR}
                     COMMAND COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --initial --capture --output-file ${PROJECT_NAME}.info
                     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
                     COMMENT "Initialize the coverage info" VERBATIM)
-  add_dependencies(lcov_init lcov_dir)
+    add_dependencies(lcov_init lcov_dir)
 
-  add_custom_target(lcov
+    add_custom_target(lcov
                     COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --capture --output-file ${PROJECT_NAME}.info
                     COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* ${PROJECT_BINARY_DIR}/* --output-file ${PROJECT_NAME}.info.cleaned
                     COMMAND ${GENHTML_EXECUTABLE} -o html ${PROJECT_NAME}.info.cleaned
                     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
                     COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters" VERBATIM)
 
-  add_dependencies(cov lcov)
+    add_dependencies(cov lcov)
   
-  add_custom_target(lcov_dir
+    add_custom_target(lcov_dir
                     COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/cov/lcov
                     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
                     COMMENT "Create the lcov output directory" VERBATIM)
   
-  add_dependencies(lcov lcov_dir)
+    add_dependencies(lcov lcov_dir)
+
+    add_custom_command(TARGET lcov POST_BUILD
+                      COMMAND ;
+                      COMMENT "===================================================================================================\nOpen ./${BUILD_SUBDIR}/cov/lcov/html/index.html in your browser to view the coverage report.\n===================================================================================================\n"
+                      )
+
+  endif()
 
   find_package(GCovr)
 
@@ -48,10 +56,10 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
   
   add_dependencies(gcovr gcovr_dir)
 
-  add_custom_command(TARGET cov POST_BUILD
-                    COMMAND ;
-                    COMMENT "===================================================================================================\nOpen ./${BUILD_SUBDIR}/cov/lcov/html/index.html in your browser to view the coverage report.\n===================================================================================================\n"
-                    )
+    add_custom_command(TARGET gcovr POST_BUILD
+                      COMMAND ;
+                      COMMENT "===================================================================================================\nThe ./${BUILD_SUBDIR}/cov/gcovr/${PROJECT_NAME}.xml file contains the Cobertura XML report.\n===================================================================================================\n"
+                      )
 
 else()
 
