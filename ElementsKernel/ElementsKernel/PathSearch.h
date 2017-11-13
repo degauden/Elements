@@ -39,14 +39,15 @@ enum class SearchType {
 };
 
 /**
- * @brief search
+ * @brief
  *   Searches for a file or a directory in a directory. The search can be recursive (SearchType.Recursive)
  *   and in that case more than one results can be return
- *
  * @param searched_name
  *   Name of the searched file or directory
- * @tparam directory
- *   string or Boost path of the directory in which the search is carried out
+ * @tparam T
+ *   input type string or Boost path of the directory in which the search is carried out
+ * @param directory
+ *   The directory where the search is performed.
  * @param search_type
  *   Two options:
  *    SearchType.Local search in directory only
@@ -60,13 +61,22 @@ ELEMENTS_API std::vector<T> pathSearch(
     T directory,
     SearchType search_type);
 
-
 /**
- * Iterate over the different directories included in a path-like environment variable, i.e.,
- *
- * path1:path2:path3 ...
- *
- * and call pathSearch(...) for each of them
+ * @brief
+ *   Searches for a file or a directory in a path pointed by an environment variable.
+ *   It can contains collection of colon separated locations.
+ *   The search can be recursive (SearchType.Recursive)
+ *   and in that case more than one results can be return
+ * @param file_name
+ *   Name of the searched file or directory
+ * @param path_like_env_variable
+ *   The environment variable name that contains the list of directories
+ * @param search_type
+ *   Two options:
+ *    SearchType.Local search in directory only
+ *    SearchType.Recursive search in sub-directories too
+ * @return
+ *   A vector of paths of the files found or empty string, if nothing is found
  */
 ELEMENTS_API
 std::vector<boost::filesystem::path> pathSearchInEnvVariable(
