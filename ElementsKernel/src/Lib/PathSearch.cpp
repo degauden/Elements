@@ -56,8 +56,6 @@ template vector<path> pathSearch<path, recursive_directory_iterator>(const strin
 template vector<string> searchOption(string searched_name, string directory, SearchType search_type);
 template vector<path> searchOption(string searched_name, path directory, SearchType search_type);
 
-
-
 template vector<path> pathSearch(const string& searched_name, path directory,
                                    SearchType search_type);
 template vector<string> pathSearch(const string& searched_name, string directory,
