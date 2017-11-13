@@ -17,6 +17,12 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
                     COMMENT "Initialize the coverage info" VERBATIM)
     add_dependencies(lcov_init lcov_dir)
 
+  add_custom_command(TARGET lcov_init POST_BUILD
+                    COMMAND ;
+                    COMMENT "Please run:make; make test; make cov in order to get the coverage reports"
+                    )
+
+
     add_custom_target(lcov
                     COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --capture --output-file ${PROJECT_NAME}.info
                     COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* ${PROJECT_BINARY_DIR}/* --output-file ${PROJECT_NAME}.info.cleaned
