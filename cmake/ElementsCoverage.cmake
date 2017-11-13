@@ -38,32 +38,32 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
                       COMMENT "===================================================================================================\nOpen ./${BUILD_SUBDIR}/cov/lcov/html/index.html in your browser to view the coverage report.\n===================================================================================================\n"
                       )
 
-  endif()
-
   find_package(GCovr)
 
-  if(GCOVR_EXECUTABLE)
+    if(GCOVR_EXECUTABLE)
 
-    add_custom_target(gcovr
-                      COMMAND ${GCOVR_EXECUTABLE} -x -r ${CMAKE_SOURCE_DIR} --exclude=/usr/include/.* --exclude=${PROJECT_BINARY_DIR}/.* --exclude=.*/InstallArea/.* -o ${PROJECT_NAME}.xml
-                      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/gcovr
-                      COMMENT "Produce Cobertura output" VERBATIM)
+      add_custom_target(gcovr
+                        COMMAND ${GCOVR_EXECUTABLE} -x -r ${CMAKE_SOURCE_DIR} --exclude=/usr/include/.* --exclude=${PROJECT_BINARY_DIR}/.* --exclude=.*/InstallArea/.* -o ${PROJECT_NAME}.xml
+                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/gcovr
+                        COMMENT "Produce Cobertura output" VERBATIM)
 
-    add_dependencies(cov gcovr)
-    add_dependencies(lcov gcovr)
+      add_dependencies(cov gcovr)
+    
+      add_dependencies(lcov gcovr)
 
-    add_custom_target(gcovr_dir
-                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/cov/gcovr
-                      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-                      COMMENT "Create the gcovr output directory" VERBATIM)
+      add_custom_target(gcovr_dir
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/cov/gcovr
+                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                        COMMENT "Create the gcovr output directory" VERBATIM)
   
-    add_dependencies(gcovr gcovr_dir)
+      add_dependencies(gcovr gcovr_dir)
 
-    add_custom_command(TARGET gcovr POST_BUILD
-                      COMMAND ;
-                      COMMENT "===================================================================================================\nThe ./${BUILD_SUBDIR}/cov/gcovr/${PROJECT_NAME}.xml file contains the Cobertura XML report.\n===================================================================================================\n"
-                      )
+      add_custom_command(TARGET gcovr POST_BUILD
+                        COMMAND ;
+                        COMMENT "===================================================================================================\nThe ./${BUILD_SUBDIR}/cov/gcovr/${PROJECT_NAME}.xml file contains the Cobertura XML report.\n===================================================================================================\n"
+                        )
 
+     endif()
    endif()
 
 else()
