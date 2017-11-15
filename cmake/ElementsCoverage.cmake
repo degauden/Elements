@@ -80,3 +80,14 @@ else()
                     )
 
 endif()
+
+find_file(ctest2junit_xsl_file
+          NAMES CTest2JUnit.xsl
+          PATHS ${CMAKE_MODULE_PATH}
+          PATH_SUFFIXES auxdir
+          NO_DEFAULT_PATH)
+          
+add_custom_command(TARGET cov POST_BUILD
+                    COMMAND ${ctest2junit_cmd} ${PROJECT_BINARY_DIR} ${ctest2junit_xsl_file}
+                    )
+
