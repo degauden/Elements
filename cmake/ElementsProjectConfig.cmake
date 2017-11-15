@@ -290,12 +290,16 @@ macro(elements_project project version)
   find_program(pythonprogramscript_cmd createPythonProgramScript.py HINTS ${binary_paths})
   set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
 
+  find_program(ctest2junit_cmd ctest2JUnit.py HINTS ${binary_paths})
+  set(ctest2junit_cmd ${PYTHON_EXECUTABLE} ${ctest2junit_cmd})
+
+
   mark_as_advanced(env_cmd merge_cmd versheader_cmd instheader_cmd versmodule_cmd instmodule_cmd
                    thisheader_cmd thismodule_cmd
                    thismodheader_cmd
                    Boost_testmain_cmd CppUnit_testmain_cmd
                    zippythondir_cmd elementsrun_cmd
-                   rpmbuild_wrap_cmd)
+                   rpmbuild_wrap_cmd pythonprogramscript_cmd ctest2junit_cmd)
 
 #--- Global actions for the project
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")

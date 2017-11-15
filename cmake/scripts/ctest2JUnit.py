@@ -1,13 +1,16 @@
 """ Script to transform the CTest XML output into Junit XML """
 
-from lxml import etree
 import StringIO
 import sys
 import os
 
+from optparse import OptionParser
+
 
 def main():
     """ main function of this script module """
+
+    from lxml import etree
 
     parser = OptionParser(
         usage="ERROR: Usage %prog <build_dir> <xsl_file>")
@@ -34,9 +37,11 @@ def main():
     transform = etree.XSLT(xslt_root)
     result_tree = transform(xml_doc)
 
-    open(junit_xml_file, "w").write(result_tree)
+    open(junit_xml_file, "w").write(etree.tostring(result_tree, pretty_print=True))
 
 
 if __name__ == '__main__':
-
-    main()
+    try:
+        main()
+    except:
+        pass
