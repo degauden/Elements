@@ -3038,8 +3038,12 @@ function(add_python_test_dir)
   elements_get_package_name(package)
 
   if(PYFRMK_TEST)
+    set(PYFRMK_JUNIT_OPT)
+    if(PYFRMK_NAME STREQUAL "PyTest")
+        set(PYFRMK_JUNIT_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.xml")
+    endif()
     elements_add_test(${pytest_name}
-                      COMMAND ${PYFRMK_TEST} ${pysrcs})
+                      COMMAND ${PYFRMK_TEST} ${PYFRMK_JUNIT_OPT} ${pysrcs})
     set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest ${PYFRMK_NAME})
     if(PYTEST_ARG_TIMEOUT)
       set_property(TEST ${package}.${pytest_name} PROPERTY TIMEOUT ${PYTEST_ARG_TIMEOUT})

@@ -22,8 +22,6 @@ def main():
         parser.error("wrong number of arguments")
 
     build_dir, xsl_file = args
-    if not opts.quiet:
-        print("Processing %s with %s", build_dir, xsl_file)
 
     tag_file = os.path.join(build_dir, "Testing", "TAG")
     dir_name = open(tag_file).readline().strip()
