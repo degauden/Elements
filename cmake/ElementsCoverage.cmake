@@ -81,6 +81,10 @@ else()
 
 endif()
 
+
+find_python_module(lxml)
+
+if(PY_LXML)
 find_file(ctest2junit_xsl_file
           NAMES CTest2JUnit.xsl
           PATHS ${CMAKE_MODULE_PATH}
@@ -91,3 +95,4 @@ add_custom_command(TARGET cov POST_BUILD
                     COMMAND ${ctest2junit_cmd} ${PROJECT_BINARY_DIR} ${ctest2junit_xsl_file}
                     )
 
+endif()
