@@ -92,7 +92,7 @@ find_file(ctest2junit_xsl_file
           NO_DEFAULT_PATH)
           
 add_custom_command(TARGET cov POST_BUILD
-                    COMMAND ${ctest2junit_cmd} ${PROJECT_BINARY_DIR} ${ctest2junit_xsl_file}
-                    )
+                   COMMAND ${ctest2junit_cmd} ${PROJECT_BINARY_DIR} ${ctest2junit_xsl_file}
+                   )
 
 endif()
