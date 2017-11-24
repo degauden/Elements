@@ -4,6 +4,7 @@ include_guard()
   add_custom_target(cov
                     COMMENT "Generating the coverage report" VERBATIM)
 
+
 if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
   find_package(GenHTML)
@@ -24,18 +25,18 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
 
     add_custom_target(lcov
-                    COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --capture --output-file ${PROJECT_NAME}.info
-                    COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* ${PROJECT_BINARY_DIR}/* --output-file ${PROJECT_NAME}.info.cleaned
-                    COMMAND ${GENHTML_EXECUTABLE} -o html ${PROJECT_NAME}.info.cleaned
-                    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
-                    COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters" VERBATIM)
+                      COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --capture --output-file ${PROJECT_NAME}.info
+                      COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* ${PROJECT_BINARY_DIR}/* --output-file ${PROJECT_NAME}.info.cleaned
+                      COMMAND ${GENHTML_EXECUTABLE} -o html ${PROJECT_NAME}.info.cleaned
+                      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
+                      COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters" VERBATIM)
 
     add_dependencies(cov lcov)
 
     add_custom_target(lcov_dir
-                    COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/cov/lcov
-                    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-                    COMMENT "Create the lcov output directory" VERBATIM)
+                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/cov/lcov
+                      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                      COMMENT "Create the lcov output directory" VERBATIM)
   
     add_dependencies(lcov lcov_dir)
 
@@ -44,7 +45,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
                       COMMENT "===================================================================================================\nOpen ./${BUILD_SUBDIR}/cov/lcov/html/index.html in your browser to view the coverage report.\n===================================================================================================\n"
                       )
 
-  find_package(GCovr)
+    find_package(GCovr)
 
     if(GCOVR_EXECUTABLE)
 
@@ -70,6 +71,12 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
                         )
 
      endif()
+   endif()
+   
+   # The pytest directory has to be created at configure time
+   find_python_module(pytest_cov)
+   if (PY_PYTEST_COV AND PYFRMK_NAME STREQUAL "PyTest")
+     file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/cov/${PYFRMK_NAME})
    endif()
 
 else()
