@@ -1,8 +1,12 @@
 """ Script to transform the CTest XML output into Junit XML """
 
-import StringIO
 import sys
 import os
+try:
+    from StringIO import StringIO
+except ImportError:
+    # python 3 version
+    from io import StringIO
 
 from optparse import OptionParser
 
@@ -30,7 +34,7 @@ def main():
 
     xml_content = open(qtest_xml_file).read()
     xsl_content = open(xsl_file).read()
-    xml_doc = etree.parse(StringIO.StringIO(xml_content))
+    xml_doc = etree.parse(StringIO(xml_content))
     xslt_root = etree.XML(xsl_content)
     transform = etree.XSLT(xslt_root)
     result_tree = transform(xml_doc)
