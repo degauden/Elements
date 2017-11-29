@@ -13,7 +13,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
     add_custom_target(lcov_init ALL
                     COMMAND ${LCOV_EXECUTABLE} --zerocounters --directory ${PROJECT_BINARY_DIR}
-                    COMMAND COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --initial --capture --output-file ${PROJECT_NAME}.info || exit "No gcno files"
+                    COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --initial --capture --output-file ${PROJECT_NAME}.info || exit "No gcno files"
                     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
                     COMMENT "Initialize the coverage info" VERBATIM)
 
