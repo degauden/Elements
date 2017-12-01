@@ -1012,7 +1012,7 @@ ${_do}")
       else()
         set(CPACK_RPM_AUTOREQ_LINE)
         get_rpm_sys_dep_lines("gcc > 4.7;cmake >= 2.8.5" "BuildRequires" RPM_DEVEL_BUILDDEP_SYS_LINES)
-        get_rpm_sys_dep_lines("python${PYTHON_EXPLICIT_VERSION};EucliEnv" "Requires" RPM_DEP_SYS_LINES)
+        get_rpm_sys_dep_lines("python${PYTHON_EXPLICIT_VERSION};EuclidEnv" "Requires" RPM_DEP_SYS_LINES)
         get_rpm_sys_dep_lines("cmake >= 2.8.5" "Requires" RPM_DEVEL_DEP_SYS_LINES)
       endif()
 
@@ -1496,7 +1496,7 @@ function(include_package_directories)
       foreach(_i ${to_incl})
         starts_with_sys_include(_is_sys ${_i})
         if(${_is_sys} AND ${HIDE_SYSINC_WARNINGS})
-          include_directories(SYSTEM ${_i})    
+          include_directories(AFTER SYSTEM ${_i})    
         else()
           # recursion applies only to non-system dirs
           if(ARG_RECURSE_PATTERN)
@@ -1504,11 +1504,11 @@ function(include_package_directories)
             if(hsubdir)
               list(REMOVE_DUPLICATES hsubdir)
               foreach(hs ${hsubdir})
-                include_directories(${hs})    
+                include_directories(AFTER ${hs})    
               endforeach()
             endif()
           else()
-            include_directories(${_i})
+            include_directories(AFTER ${_i})
           endif()    
         endif()
       endforeach()
@@ -1716,6 +1716,7 @@ endfunction()
 # It is recommended not to set one.
 #-------------------------------------------------------------------------------
 macro(elements_subdir name)
+
   elements_get_package_name(_guessed_name)
   if (NOT _guessed_name STREQUAL "${name}")
     message(WARNING "Declared subdir name (${name}) does not match the name of the directory (${_guessed_name})")
@@ -1741,7 +1742,6 @@ macro(elements_subdir name)
   execute_process(COMMAND
                   ${versheader_cmd} --quiet
                   ${name} ${version} ${CMAKE_CURRENT_BINARY_DIR}/${name}Version.h)
-
 
   execute_process(COMMAND
                   ${thismodheader_cmd} --quiet
@@ -2315,9 +2315,9 @@ function(elements_add_python_module module)
   find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
 
   if(HIDE_SYSINC_WARNINGS)
-    include_directories(SYSTEM ${PYTHON_INCLUDE_DIRS})
+    include_directories(AFTER SYSTEM ${PYTHON_INCLUDE_DIRS})
   else()
-    include_directories(${PYTHON_INCLUDE_DIRS})
+    include_directories(AFTER ${PYTHON_INCLUDE_DIRS})
   endif()
   add_library(${module} MODULE ${srcs})
   
@@ -2515,7 +2515,7 @@ function(_generate_cython_cpp)
   get_source_file_property(src_location ${src} LOCATION)
   get_filename_component(pyx_dir ${src_location} DIRECTORY)
 
-  include_directories(AFTER ${pyx_dir})
+  include_directories(${pyx_dir})
 
   get_property(cy_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
   if(cy_dirs)

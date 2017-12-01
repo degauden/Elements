@@ -1,3 +1,9 @@
+* Wed Aug 9 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2.1
+- Fix the test on the version of sphinx.
+
+* Tue Aug 8 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2
+- fix C++ include directories ordering.
+
 * Fri Jul 28 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.1-1
 - Add the generation of the current Elements module header file
 - Use the new getConfigurationPath function to locate the conf files.
