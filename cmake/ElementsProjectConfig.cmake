@@ -2427,13 +2427,14 @@ function(_generate_swig_files swig_module)
     RESULT_VARIABLE swmm_return_value
   )
 
-  string(REGEX MATCHALL "\n  [^ ]+" temp ${swmm_dependencies})
-  set(swig_deps)
-  foreach(t ${temp})
-    string(STRIP "${t}" t)
-    set(swig_deps ${swig_deps} "${t}")
-  endforeach()
-
+  if(swmm_dependencies)
+    string(REGEX MATCHALL "\n  [^ ]+" temp ${swmm_dependencies})
+    set(swig_deps)
+    foreach(t ${temp})
+      string(STRIP "${t}" t)
+      set(swig_deps ${swig_deps} "${t}")
+    endforeach()
+  endif()
 
   #SWIG command
   add_custom_command(
