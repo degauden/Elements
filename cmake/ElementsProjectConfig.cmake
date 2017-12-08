@@ -2490,6 +2490,11 @@ function(elements_add_swig_binding binding)
     message(WARNING "Swig binding ${binding} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
   endif()
 
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
+                            LIBRARIES ${ARG_LIBRARIES}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
   elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
   set(cpp_srcs)
   set(i_srcs)
