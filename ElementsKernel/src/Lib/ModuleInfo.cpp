@@ -19,30 +19,35 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "ElementsKernel/ModuleInfo.h"
+
+#include <sys/times.h>
+#include <sys/param.h>
+#include <unistd.h>
+#include <libgen.h>
+#include <dlfcn.h>
+
+#ifdef __APPLE__
+#include <mach-o/dyld.h>      // for _NSGetExecutablePath
+#endif
+
 #include <cstring>
 #include <cstdlib>
 #include <sstream>                            // for stringstream
 #include <fstream>                            // for ifstream
 #include <iostream>
+#include <cerrno>
+#include <cstdio>
+
+#ifdef __APPLE__
+#include <climits>            // for PATH_MAX
+#endif
 
 #include <boost/filesystem/path.hpp>          // for filesystem::path
 #include <boost/filesystem/operations.hpp>    // for filesystem::exists
 
-#include "ElementsKernel/ModuleInfo.h"
 #include "ElementsKernel/FuncPtrCast.h"
 
-#include <cerrno>
-#include <sys/times.h>
-#include <sys/param.h>
-#include <unistd.h>
-#include <libgen.h>
-#include <cstdio>
-#include <dlfcn.h>
-
-#ifdef __APPLE__
-#include <climits>            // for PATH_MAX
-#include <mach-o/dyld.h>      // for _NSGetExecutablePath
-#endif
 
 
 using namespace std;
@@ -91,7 +96,7 @@ const string& moduleName()   {
   static string module("");
   if ( module == "" )   {
     if ( processHandle() && moduleHandle() )    {
-      string mod = ::basename((char*)((Dl_info*)moduleHandle())->dli_fname);
+      string mod = ::basename(const_cast<char *>((reinterpret_cast<Dl_info*>(moduleHandle()))->dli_fname));
       module = mod.substr(static_cast<string::size_type>(0), mod.rfind('.'));
     }
   }
@@ -106,7 +111,7 @@ const string& moduleNameFull()   {
       char name[PATH_MAX] = {"Unknown.module"};
       name[0] = 0;
       const char *path =
-          ((Dl_info*)moduleHandle())->dli_fname;
+          (reinterpret_cast<Dl_info*>(moduleHandle())->dli_fname);
       if (::realpath(path, name)) {
         module = name;
       }
@@ -136,8 +141,8 @@ ModuleType moduleType()   {
 
 /// Retrieve processhandle
 void* processHandle()   {
-  static long pid = ::getpid();
-  static void* hP = (void*)pid;
+  static std::int64_t pid = ::getpid();
+  static void* hP = reinterpret_cast<void*>(pid);
   return hP;
 }
 
@@ -232,7 +237,7 @@ const vector<string> linkedModules() {
 
   if (s_linkedModules.size() == 0) {
 
-    for (auto m: linkedModulePaths()) {
+    for (auto m : linkedModulePaths()) {
       s_linkedModules.push_back(m.string());
     }
 
@@ -246,7 +251,7 @@ path getExecutablePath() {
   path self_proc {};
   char pathbuf[PATH_MAX + 1];
   unsigned int  bufsize = sizeof(pathbuf);
-  _NSGetExecutablePath( pathbuf, &bufsize);
+  _NSGetExecutablePath(pathbuf, &bufsize);
   path self_exe = path(string(pathbuf));
 #else
 
@@ -257,5 +262,5 @@ path getExecutablePath() {
   return boost::filesystem::canonical(self_exe);
 }
 
-} // namespace System
-} // namespace Elements
+}  // namespace System
+}  // namespace Elements

@@ -103,4 +103,4 @@ vector<path> pathSearchInEnvVariable(const std::string& file_name,
   return search_results;
 }
 
-} // Elements namespace
+}  // namespace Elements

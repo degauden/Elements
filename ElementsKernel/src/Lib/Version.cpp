@@ -79,4 +79,4 @@ string getVersionString(const unsigned short major, const unsigned short minor, 
   return version;
 }
 
-} // Elements namespace
+}  // namespace Elements

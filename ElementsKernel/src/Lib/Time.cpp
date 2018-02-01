@@ -17,6 +17,9 @@
 
 #include "ElementsKernel/Time.h"
 
+// architecture dependent includes
+#include <sys/time.h>
+
 #include <iostream>
 #include <cstdio>
 #include <ctime>
@@ -25,11 +28,6 @@
 #include <sstream>
 #include <string>     // for std::string
 #include <algorithm>  // for std::max
-
-// architecture dependent includes
-
-#include <sys/time.h>
-
 
 using std::string;
 
@@ -262,7 +260,7 @@ string Time::nanoformat(size_t minwidth /* = 1 */,
       "nanoformat options do not satisfy: 1 <= minwidth <= maxwidth <= 9");
 
   // Calculate the nanosecond fraction.  This will be < 1000000000.
-  int value = (int) (m_nsecs % SEC_NSECS);
+  int value = static_cast<int> (m_nsecs % SEC_NSECS);
 
   ostringstream buf;
   buf.fill('0');

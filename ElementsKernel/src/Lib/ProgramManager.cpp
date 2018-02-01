@@ -76,7 +76,7 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name, const
   default_config_file = getConfigurationPath(conf_name.string(), false);
   if (default_config_file.empty()) {
     logger.warn() << "The \"" << conf_name.string() << "\" configuration file cannot be found in:";
-    for (auto loc: getConfigurationLocations()) {
+    for (auto loc : getConfigurationLocations()) {
       logger.warn() << " " << loc;
     }
     if (not module_name.empty()) {
@@ -269,7 +269,7 @@ void ProgramManager::logAllOptions() const {
   stringstream log_message {};
 
   // Loop over all options included in the variable_map
-  for (const auto& v: m_variables_map) {
+  for (const auto& v : m_variables_map) {
     // string option
     if (v.second.value().type() == typeid(string)) {
       log_message << v.first << " = " << v.second.as<string>();
@@ -290,7 +290,7 @@ void ProgramManager::logAllOptions() const {
     } else if (v.second.value().type() == typeid(vector<int>)) {
       vector<int> intVec = v.second.as<vector<int>>();
       stringstream vecContent {};
-      for (const auto& i: intVec) {
+      for (const auto& i : intVec) {
         vecContent << " " << i;
       }
       log_message << v.first << " = {" << vecContent.str() << " }";
@@ -298,7 +298,7 @@ void ProgramManager::logAllOptions() const {
     } else if (v.second.value().type() == typeid(vector<double>)) {
       vector<double> intVec = v.second.as<vector<double>>();
       stringstream vecContent {};
-      for (const auto& i: intVec) {
+      for (const auto& i : intVec) {
         vecContent << " " << i;
       }
       log_message << v.first << " = {" << vecContent.str() << " }";
@@ -306,7 +306,7 @@ void ProgramManager::logAllOptions() const {
     } else if (v.second.value().type() == typeid(vector<string> )) {
       vector<string> intVec = v.second.as<vector<string>>();
       stringstream vecContent {};
-      for (const auto& i: intVec) {
+      for (const auto& i : intVec) {
         vecContent << " " << i;
       }
       log_message << v.first << " = {" << vecContent.str() << " }";
@@ -336,7 +336,7 @@ void ProgramManager::logTheEnvironment() const {
   logger.debug() << "# ---------------------------";
   logger.debug() << "#";
 
-  for (const auto& v: Path::VARIABLE) {
+  for (const auto& v : Path::VARIABLE) {
     logger.debug() << v.second << ": " << m_env[v.second];
   }
 
@@ -368,7 +368,7 @@ void ProgramManager::bootstrapEnvironment(char* arg0){
   using Path::joinPath;
   using Path::Type;
 
-  for (const auto& v: Path::VARIABLE) {
+  for (const auto& v : Path::VARIABLE) {
     if (m_env[v.second].exists()) {
       m_env[v.second] += Path::PATH_SEP + joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES.at(v.first)));
     } else {
@@ -453,13 +453,13 @@ void ProgramManager::onTerminate() noexcept {
 
     logger.fatal() << "Crash detected";
     logger.fatal() << "This is the back trace:";
-    for (auto level: System::backTrace(21, 4)) {
+    for (auto level : System::backTrace(21, 4)) {
       logger.fatal() << level;
     }
 
     // we have an exception
     try {
-      std::rethrow_exception( exc ); // throw to recognize the type
+      std::rethrow_exception(exc);  // throw to recognize the type
     } catch (const Exception & exc) {
       logger.fatal() << "# ";
       logger.fatal() << "# Elements Exception : " << exc.what();
@@ -486,4 +486,4 @@ void ProgramManager::onTerminate() noexcept {
 
 }
 
-} // namespace Elements
+}  // namespace Elements
