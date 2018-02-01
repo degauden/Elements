@@ -106,4 +106,4 @@ Logging::LogMessageStream::~LogMessageStream() {
 }
 
 
-} // Elements namespace
+}  // namespace Elements

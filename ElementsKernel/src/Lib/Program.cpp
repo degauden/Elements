@@ -45,4 +45,4 @@ namespace Elements {
 
   Program::~Program() {}
 
-} // namespace Elements
+}  // namespace Elements

@@ -17,9 +17,13 @@
  *
  */
 
-
 #include "ElementsKernel/System.h"
-#include "ElementsKernel/FuncPtrCast.h"
+
+#include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
+#include <execinfo.h>                   // for backtrace
+#include <unistd.h>                     // for environ
+#include <cxxabi.h>
+#include <sys/utsname.h>
 
 #include <cstdlib>                      // for free, getenv, malloc, etc
 #include <typeinfo>                     // for type_info
@@ -29,14 +33,10 @@
 #include <string>                       // for string
 #include <vector>                       // for vector
 
-#include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
 #include <cerrno>                       // for errno
-#include <execinfo.h>                   // for backtrace
 #include <cstring>                      // for strnlen
-#include <unistd.h>                     // for environ
-#include <cxxabi.h>
-#include <sys/utsname.h>
 
+#include "ElementsKernel/FuncPtrCast.h"
 #include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
 #include "ElementsKernel/Unused.h"      // for ELEMENTS_UNUSED
 
@@ -175,7 +175,7 @@ const string getErrorString(unsigned long error) {
     }
     if (0 == cerrString) {
       cerrString =
-          (char *) "Unknown error. No information found in strerror()!";
+          const_cast<char *> ("Unknown error. No information found in strerror()!");
     } else {
       errString = string(cerrString);
     }
@@ -392,7 +392,6 @@ int unSetEnv(const string& name) {
 // -----------------------------------------------------------------------------
 // backtrace utilities
 // -----------------------------------------------------------------------------
-#include <execinfo.h>
 
 int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses,
               ELEMENTS_UNUSED const int depth) {
@@ -447,7 +446,7 @@ const vector<string> backTrace(const int depth, const int offset) {
 
     int count = backTrace(addresses, total_depth);
 
-    for (int i=total_offset; i<count; ++i) {
+    for (int i=total_offset; i < count; ++i) {
       void *addr = 0;
       string fnc, lib;
       if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
@@ -490,5 +489,5 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
 
 }
 
-} // namespace System
-} // namespace Elements
+}  // namespace System
+}  // namespace Elements

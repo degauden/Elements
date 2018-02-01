@@ -125,5 +125,5 @@ template vector<path> multiPathAppend(const vector<string>& initial_locations, c
 template vector<path> multiPathAppend(const vector<string>& initial_locations, const vector<string>& suffixes);
 
 
-} // Path namespace
-} // Elements namespace
+}  // namespace Path
+}  // namespace Elements

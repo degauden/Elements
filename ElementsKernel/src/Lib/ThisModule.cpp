@@ -33,9 +33,9 @@ const ModuleInfo& getThisExecutableInfo() {
   static ModuleInfo this_module;
   if (this_module.isEmpty()) {
     void* handle = ::dlopen(0, RTLD_LAZY);
-    if ( NULL != handle) {
+    if (NULL != handle) {
       void* func = ::dlsym(handle, "main");
-      if ( NULL != func) {
+      if (NULL != func) {
         this_module = ModuleInfo(FuncPtrCast<void*>(func));
       }
     }
@@ -45,5 +45,5 @@ const ModuleInfo& getThisExecutableInfo() {
 }
 
 
-} // namespace System
-} // namespace Elements
+}  // namespace System
+}  // namespace Elements

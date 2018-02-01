@@ -40,4 +40,4 @@ void nanoSleep(std::int64_t nsec) {
   sleep_for(std::chrono::nanoseconds(nsec));
 }
 
-}
+}  // namespace Elements
