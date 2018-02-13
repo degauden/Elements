@@ -1,9 +1,12 @@
 include_guard()
 
-
-  add_custom_target(doc
-                    COMMENT "Generating API documentation" VERBATIM)
-
+  if(INSTALL_DOC)
+    add_custom_target(doc ALL
+                      COMMENT "Generating API documentation" VERBATIM)
+  else()
+    add_custom_target(doc
+                      COMMENT "Generating API documentation" VERBATIM)  
+  endif()
 
 #===========================================================================================================
 
@@ -310,3 +313,14 @@ Python Package
     endif()
 
   endif()
+
+
+  if(INSTALL_DOC)
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/
+            DESTINATION ${DOC_INSTALL_SUFFIX}
+            PATTERN "CVS" EXCLUDE
+            PATTERN ".svn" EXCLUDE
+            PATTERN "*~" EXCLUDE)
+  endif()
+  
+  
