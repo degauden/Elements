@@ -44,7 +44,6 @@ include_guard()
            "Link C++ standard library classes to http://cppreference.com documentation."
            TRUE)
 
-    set(DOXYGEN_TAGFILES)
     if(DOXYGEN_WITH_CPPREFERENCE_LINKS)
     
       find_file(GET_CPPREF_TAGS_SCRIPT
@@ -157,7 +156,6 @@ include_guard()
       add_dependencies(sphinx doxygen)
     endif()
     add_dependencies(doc sphinx)
-
 
 
     # loop over all python packages found (can have many for each Elements module)
