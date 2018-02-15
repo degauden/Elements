@@ -83,8 +83,8 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 else()
 
   add_custom_command(TARGET cov POST_BUILD
-                    COMMAND ;
-                    COMMENT "=======================================================================\nPlease build in coverage mode in order to instrument the binaries.\n=======================================================================\n"
+                     COMMAND ;
+                     COMMENT "=======================================================================\nPlease build in coverage mode in order to instrument the binaries.\n=======================================================================\n"
                     )
 
 endif()
