@@ -1055,9 +1055,20 @@ ${_do}")
 
       get_rpm_dep_list("${PROJECT_USE}" "debuginfo" "${SQUEEZED_INSTALL}" RPM_DEBUGINFO_DEP_LIST)
       get_rpm_dep_lines("${PROJECT_USE}" "debuginfo" "${SQUEEZED_INSTALL}" "Requires" RPM_DEBUGINFO_DEP_LINES)
+      
+      
 
       get_rpm_dep_list("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" RPM_DEVEL_DEP_LIST)
       get_rpm_dep_lines("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" "BuildRequires" RPM_DEVEL_BUILDDEP_LINES)
+      if( "${PROJECT_USE}" STREQUAL "")
+        # if the project has no USE statement set a default build dependency
+        if(SQUEEZED_INSTALL)
+           if(NOT "${CPACK_PACKAGE_NAME}" STREQUAL "Elements")
+             set(RPM_DEVEL_BUILDDEP_LINES "BuildRequires: Elements-devel")
+           endif()         
+        endif()
+      endif()
+      
       get_rpm_dep_lines("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" "Requires" RPM_DEVEL_DEP_LINES)
 
       get_rpm_dep_list("${PROJECT_USE}" "" "${SQUEEZED_INSTALL}" RPM_DEP_LIST)
