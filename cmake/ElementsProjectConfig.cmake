@@ -1119,9 +1119,11 @@ ${MAIN_PROJECT_CHANGELOG}
       set(RPMBUILD_ARGS "--define=\"_topdir ${PROJECT_RPM_TOPDIR}\"")
       
       if(RPM_NO_CHECK) 
-      
          set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --nocheck")
+      endif()
       
+      if(SQUEEZED_INSTALL)
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with squeeze")      
       endif()
       
       
