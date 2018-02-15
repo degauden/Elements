@@ -30,6 +30,7 @@ Requires(postun):  /sbin/ldconfig
 %define makedir %{_prefix}/@MAKE_INSTALL_SUFFIX@
 %define confdir %{_prefix}/@CONF_INSTALL_SUFFIX@
 %define auxdir %{_prefix}/@AUX_INSTALL_SUFFIX@
+%define docdir %{_prefix}/@DOC_INSTALL_SUFFIX@
 %define xmldir %{_prefix}/@XML_INSTALL_SUFFIX@
 
 %define debug_package %{nil}
