@@ -120,6 +120,9 @@ macro(elements_project project version)
   include(ElementsLocations)
 
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DINSTALL_DOC:BOOL=${INSTALL_DOC}")
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "--no-warn-unused-cli")
+  
 
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
      CACHE STRING "path to the XML file for the environment to be used in building and testing")
@@ -1004,6 +1007,14 @@ ${_do}")
 
 #===============================================================================
 
+  set(CPACK_RPM_DOC_FILES "%files doc")
+  set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
+%defattr(-,root,root,-)")
+  set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
+%{docdir}")
+
+#===============================================================================
+
   include(CPack)
 
   set(RPMBUILD_EXTRA_ARGS ""
@@ -1055,9 +1066,27 @@ ${_do}")
 
       get_rpm_dep_list("${PROJECT_USE}" "debuginfo" "${SQUEEZED_INSTALL}" RPM_DEBUGINFO_DEP_LIST)
       get_rpm_dep_lines("${PROJECT_USE}" "debuginfo" "${SQUEEZED_INSTALL}" "Requires" RPM_DEBUGINFO_DEP_LINES)
+      get_rpm_dep_lines("${PROJECT_USE}" "doc" "${SQUEEZED_INSTALL}" "Requires" RPM_DOC_DEP_LINES)
+      
+      
 
       get_rpm_dep_list("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" RPM_DEVEL_DEP_LIST)
       get_rpm_dep_lines("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" "BuildRequires" RPM_DEVEL_BUILDDEP_LINES)
+      if(INSTALL_DOC)
+        get_rpm_dep_lines("${PROJECT_USE}" "doc" "${SQUEEZED_INSTALL}" "BuildRequires" RPM_DOC_BUILDDEP_LINES)      
+      endif()
+      if( "${PROJECT_USE}" STREQUAL "")
+        # if the project has no USE statement set a default build dependency
+        if(SQUEEZED_INSTALL)
+           if(NOT "${CPACK_PACKAGE_NAME}" STREQUAL "Elements")
+             set(RPM_DEVEL_BUILDDEP_LINES "BuildRequires: Elements-devel")
+             if(INSTALL_DOC)
+               set(RPM_DOC_BUILDDEP_LINES "BuildRequires: Elements-doc")
+             endif()
+           endif()         
+        endif()
+      endif()
+      
       get_rpm_dep_lines("${PROJECT_USE}" "devel" "${SQUEEZED_INSTALL}" "Requires" RPM_DEVEL_DEP_LINES)
 
       get_rpm_dep_list("${PROJECT_USE}" "" "${SQUEEZED_INSTALL}" RPM_DEP_LIST)
@@ -1102,11 +1131,17 @@ ${MAIN_PROJECT_CHANGELOG}
       set(RPMBUILD_ARGS "--define=\"_topdir ${PROJECT_RPM_TOPDIR}\"")
       
       if(RPM_NO_CHECK) 
-      
          set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --nocheck")
-      
       endif()
       
+      if(NOT SQUEEZED_INSTALL)
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --without squeeze")
+      endif()
+      
+      if(INSTALL_DOC)
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with doc")
+      endif()
+
       
       message(STATUS "${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${RPMBUILD_EXTRA_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
 
@@ -1256,6 +1291,12 @@ macro(_elements_use_other_projects)
         get_property(_inc_dirs GLOBAL PROPERTY INCLUDE_PATHS)
         set_property(GLOBAL PROPERTY INCLUDE_PATHS ${${other_project}_INCLUDE_DIRS} ${_inc_dirs})
         set(binary_paths ${${other_project}_BINARY_PATH} ${binary_paths})
+        if(EXISTS ${${other_project}_DOC_PATH}/doxygen/${other_project}.tag)
+          if(EXISTS ${${other_project}_DOC_PATH}/doxygen/html)
+            set(DOXYGEN_TAGFILES
+                "${DOXYGEN_TAGFILES} \"${${other_project}_DOC_PATH}/doxygen/${other_project}.tag=${${other_project}_DOC_PATH}/doxygen/html\"")
+          endif()
+        endif()
         foreach(exported ${${other_project}_EXPORTED_SUBDIRS})
           list(FIND known_packages ${exported} is_needed)
           if(is_needed LESS 0)
@@ -3439,6 +3480,7 @@ endif()
 file(APPEND ${filename} "
 set(${CMAKE_PROJECT_NAME}_CONF_PATH \${_pref_dir}/${CONF_INSTALL_SUFFIX})
 set(${CMAKE_PROJECT_NAME}_AUX_PATH \${_pref_dir}/${AUX_INSTALL_SUFFIX})
+set(${CMAKE_PROJECT_NAME}_DOC_PATH \${_pref_dir}/${DOC_INSTALL_SUFFIX})
 
 
 set(${CMAKE_PROJECT_NAME}_PYTHON_PATH \${_pref_dir}/${PYTHON_INSTALL_SUFFIX})
@@ -3664,6 +3706,7 @@ macro(elements_external_project_environment)
       list(APPEND python_path   ${${pack}_PYTHON_PATH})
       list(APPEND conf_path     ${${pack}_CONF_PATH})
       list(APPEND aux_path      ${${pack}_AUX_PATH})
+      list(APPEND doc_path      ${${pack}_DOC_PATH})
       list(APPEND environment   ${${pack}_ENVIRONMENT})
       list(APPEND library_path2 ${${pack}_LIBRARY_DIR} ${${pack}_LIBRARY_DIRS})
       # Try the version with the name of the package uppercase (unless the
@@ -3673,6 +3716,7 @@ macro(elements_external_project_environment)
         list(APPEND python_path   ${${_pack_upper}_PYTHON_PATH})
         list(APPEND conf_path     ${${_pack_upper}_CONF_PATH})
         list(APPEND aux_path      ${${_pack_upper}_AUX_PATH})
+        list(APPEND doc_path      ${${_pack_upper}_DOC_PATH})
         list(APPEND environment   ${${_pack_upper}_ENVIRONMENT})
         list(APPEND library_path2 ${${_pack_upper}_LIBRARY_DIR} ${${_pack_upper}_LIBRARY_DIRS})
       endif()

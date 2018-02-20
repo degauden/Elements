@@ -237,6 +237,10 @@ option(CPACK_REMOVE_SYSTEM_DEPS
        "When active this option remove the dependencies onto the system (external) packages"
        OFF)
 
+option(INSTALL_DOC
+       "Build and Install the API documentation by default"
+       OFF)
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   #message(STATUS "Setting cached build flags")

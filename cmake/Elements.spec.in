@@ -1,5 +1,5 @@
 # -*- rpm-spec -*-
-Summary:        Euclid @CPACK_PACKAGE_NAME@ Project
+Summary:        @CPACK_PACKAGE_NAME@ Project
 Name:           @CPACK_RPM_PACKAGE_NAME@
 Version:        @CPACK_RPM_PACKAGE_VERSION@
 Release:        @CPACK_PACKAGE_RELEASE@%{?dist}
@@ -8,12 +8,17 @@ Group:          Development/Tools
 Source:         @CPACK_RPM_PACKAGE_NAME@-@CPACK_RPM_PACKAGE_VERSION@.tar.gz
 Vendor:         @CPACK_PACKAGE_VENDOR@
 
+%bcond_without squeeze
+%bcond_with doc
+
 %global __python @PYTHON_EXECUTABLE@ 
 
 @CPACK_RPM_AUTOREQ_LINE@
 
 @RPM_DEVEL_BUILDDEP_SYS_LINES@
 @RPM_DEVEL_BUILDDEP_LINES@
+@RPM_DOC_BUILDDEP_LINES@
+
 @RPM_DEP_SYS_LINES@
 @RPM_DEP_LINES@
 Requires(post):    /sbin/ldconfig
@@ -34,6 +39,7 @@ Requires(postun):  /sbin/ldconfig
 %define makedir %{_prefix}/@MAKE_INSTALL_SUFFIX@
 %define confdir %{_prefix}/@CONF_INSTALL_SUFFIX@
 %define auxdir %{_prefix}/@AUX_INSTALL_SUFFIX@
+%define docdir %{_prefix}/@DOC_INSTALL_SUFFIX@
 %define xmldir %{_prefix}/@XML_INSTALL_SUFFIX@
 
 %define debug_package %{nil}
@@ -58,6 +64,16 @@ Requires: %{name} = %{version}-%{release}
 
 %description debuginfo
 Debug information for package %{name}
+
+%if %{with doc}
+%package doc
+Summary: Documentation for package %{name}
+Requires: %{name}-devel = %{version}-%{release}
+@RPM_DOC_DEP_LINES@
+
+%description doc
+Documentation for package %{name}
+%endif
 
 %prep
 %setup -q
@@ -144,5 +160,9 @@ done
 @CPACK_RPM_DEVEL_FILES@
 
 @CPACK_RPM_DEBINFO_FILES@
+
+%if %{with doc}
+@CPACK_RPM_DOC_FILES@
+%endif
 
 @CPACK_RPM_CHANGELOG@

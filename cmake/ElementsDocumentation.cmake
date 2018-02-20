@@ -1,9 +1,12 @@
 include_guard()
 
-
-  add_custom_target(doc
-                    COMMENT "Generating API documentation" VERBATIM)
-
+  if(INSTALL_DOC)
+    add_custom_target(doc ALL
+                      COMMENT "Generating API documentation" VERBATIM)
+  else()
+    add_custom_target(doc
+                      COMMENT "Generating API documentation" VERBATIM)  
+  endif()
 
 #===========================================================================================================
 
@@ -41,7 +44,6 @@ include_guard()
            "Link C++ standard library classes to http://cppreference.com documentation."
            TRUE)
 
-    set(DOXYGEN_TAGFILES)
     if(DOXYGEN_WITH_CPPREFERENCE_LINKS)
     
       find_file(GET_CPPREF_TAGS_SCRIPT
@@ -154,7 +156,6 @@ include_guard()
       add_dependencies(sphinx doxygen)
     endif()
     add_dependencies(doc sphinx)
-
 
 
     # loop over all python packages found (can have many for each Elements module)
@@ -310,3 +311,14 @@ Python Package
     endif()
 
   endif()
+
+
+  if(INSTALL_DOC)
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/
+            DESTINATION ${DOC_INSTALL_SUFFIX}
+            PATTERN "CVS" EXCLUDE
+            PATTERN ".svn" EXCLUDE
+            PATTERN "*~" EXCLUDE)
+  endif()
+  
+  
