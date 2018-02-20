@@ -66,6 +66,7 @@ Debug information for package %{name}
 %package doc
 Summary: Documentation for package %{name}
 Requires: %{name}-devel = %{version}-%{release}
+@RPM_DOC_DEP_LINES@
 
 %description doc
 Documentation for package %{name}
