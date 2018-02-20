@@ -979,11 +979,15 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
    get_property(regular_make_objects GLOBAL PROPERTY REGULAR_MAKE_OBJECTS)
 
     list(REMOVE_DUPLICATES regular_make_objects)
-    foreach(_do ${regular_make_objects})
+    if(regular_make_objects)
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{makedir}")
+      foreach(_do ${regular_make_objects})
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{makedir}/${_do}")
-    endforeach()
-
+      endforeach()
+    endif()
+    
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
   endif()
 
@@ -1107,19 +1111,11 @@ ${MAIN_PROJECT_CHANGELOG}
         message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
       endif()
 
-     if(SQUEEZED_INSTALL)
-         find_file_to_configure(Elements_squeezed.spec.in
-                                FILETYPE "RPM SPEC"
-                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
-                                OUTPUTNAME "${project}.spec"
-                                PATHS ${CMAKE_MODULE_PATH})
-     else()
-         find_file_to_configure(Elements.spec.in
-                                FILETYPE "RPM SPEC"
-                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
-                                OUTPUTNAME "${project}.spec"
-                                PATHS ${CMAKE_MODULE_PATH})
-     endif()
+      find_file_to_configure(Elements.spec.in
+                             FILETYPE "RPM SPEC"
+                             OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
+                             OUTPUTNAME "${project}.spec"
+                             PATHS ${CMAKE_MODULE_PATH})
     
 
      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
