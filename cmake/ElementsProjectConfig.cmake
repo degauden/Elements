@@ -1066,6 +1066,7 @@ ${_do}")
 
       get_rpm_dep_list("${PROJECT_USE}" "debuginfo" "${SQUEEZED_INSTALL}" RPM_DEBUGINFO_DEP_LIST)
       get_rpm_dep_lines("${PROJECT_USE}" "debuginfo" "${SQUEEZED_INSTALL}" "Requires" RPM_DEBUGINFO_DEP_LINES)
+      get_rpm_dep_lines("${PROJECT_USE}" "doc" "${SQUEEZED_INSTALL}" "Requires" RPM_DOC_DEP_LINES)
       
       
 
