@@ -120,6 +120,9 @@ macro(elements_project project version)
   include(ElementsLocations)
 
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DINSTALL_DOC:BOOL=${INSTALL_DOC}")
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "--no-warn-unused-cli")
+  
 
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
      CACHE STRING "path to the XML file for the environment to be used in building and testing")
@@ -1004,6 +1007,14 @@ ${_do}")
 
 #===============================================================================
 
+  set(CPACK_RPM_DOC_FILES "%files doc")
+  set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
+%defattr(-,root,root,-)")
+  set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
+%{docdir}")
+
+#===============================================================================
+
   include(CPack)
 
   set(RPMBUILD_EXTRA_ARGS ""
@@ -1126,6 +1137,10 @@ ${MAIN_PROJECT_CHANGELOG}
          set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --without squeeze")
       endif()
       
+      if(INSTALL_DOC)
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with doc")
+      endif()
+
       
       message(STATUS "${rpmbuild_wrap_cmd} ${RPMBUILD_ARGS} ${RPMBUILD_EXTRA_ARGS} ${PROJECT_RPM_TOPDIR}/SPECS/${project}.spec")
 
