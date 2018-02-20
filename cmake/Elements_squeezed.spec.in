@@ -10,6 +10,8 @@ Source:         @CPACK_RPM_PACKAGE_NAME@-@CPACK_RPM_PACKAGE_VERSION@.tar.gz
 Vendor:         @CPACK_PACKAGE_VENDOR@
 
 %bcond_without squeeze
+%bcond_with doc
+
 %global __python @PYTHON_EXECUTABLE@ 
 
 @CPACK_RPM_AUTOREQ_LINE@
@@ -60,6 +62,15 @@ Requires: %{name} = %{version}-%{release}
 %description debuginfo
 Debug information for package %{name}
 
+%if %{with doc}
+%package doc
+Summary: Documentation for package %{name}
+Requires: %{name}-devel = %{version}-%{release}
+
+%description doc
+Documentation for package %{name}
+%endif
+
 %prep
 %setup -q
 
@@ -100,4 +111,12 @@ rm -rf $RPM_BUILD_ROOT
 
 @CPACK_RPM_DEBINFO_FILES@
 
+%if %{with doc}
+@CPACK_RPM_DOC_FILES@
+%endif
+
+
 @CPACK_RPM_CHANGELOG@
+
+
+
