@@ -1122,8 +1122,8 @@ ${MAIN_PROJECT_CHANGELOG}
          set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --nocheck")
       endif()
       
-      if(SQUEEZED_INSTALL)
-         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with squeeze")      
+      if(NOT SQUEEZED_INSTALL)
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --without squeeze")
       endif()
       
       
