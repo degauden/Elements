@@ -8,7 +8,7 @@ Group:          Development/Tools
 Source:         @CPACK_RPM_PACKAGE_NAME@-@CPACK_RPM_PACKAGE_VERSION@.tar.gz
 Vendor:         @CPACK_PACKAGE_VENDOR@
 
-%bcond_with squeeze
+%bcond_without squeeze
 %global __python @PYTHON_EXECUTABLE@ 
 
 @CPACK_RPM_AUTOREQ_LINE@
