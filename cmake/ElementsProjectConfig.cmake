@@ -928,10 +928,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     list(SORT config_objects)
     list(REMOVE_DUPLICATES config_objects)
     foreach(_do ${config_objects})
-      if(SQUEEZED_INSTALL)
-        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%{cmakedir}/${_do}")
-      else()
+      if(NOT SQUEEZED_INSTALL)
         set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{_prefix}/${_do}")
       endif()
@@ -961,13 +958,21 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   if(proj_has_cmake)
 
    get_property(regular_cmake_objects GLOBAL PROPERTY REGULAR_CMAKE_OBJECTS)
-
+   if(SQUEEZED_INSTALL)
+     get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
+     foreach(_do ${config_objects})
+       list(APPEND regular_cmake_objects ${_do})
+     endforeach()
+   endif()
     list(REMOVE_DUPLICATES regular_cmake_objects)
+    if(regular_cmake_objects)
+    set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{cmakedir}")    
     foreach(_do ${regular_cmake_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{cmakedir}/${_do}")
     endforeach()
-
+    endif()
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
   endif()
 
