@@ -944,10 +944,16 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     get_property(regular_include_objects GLOBAL PROPERTY REGULAR_INCLUDE_OBJECTS)
 
     list(REMOVE_DUPLICATES regular_include_objects)
+    if(regular_include_objects)
+    if(NOT SQUEEZED_INSTALL)
+      set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{_includedir}")    
+    endif()
     foreach(_do ${regular_include_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{_includedir}/${_do}")
     endforeach()
+    endif()
 
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
   endif()
