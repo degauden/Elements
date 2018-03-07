@@ -744,9 +744,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   SET(CPACK_RPM_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
 
 
-  set(CPACK_RPM_REGULAR_FILES "%files")
-  set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%defattr(-,root,root,-)")
+  set(CPACK_RPM_REGULAR_FILES "%defattr(-,root,root,-)")
 
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{xmldir}/${CPACK_PACKAGE_NAME}Environment.xml")
@@ -914,9 +912,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
 #===============================================================================
 
-  set(CPACK_RPM_DEVEL_FILES "%files devel")
-  set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%defattr(-,root,root,-)")
+  set(CPACK_RPM_DEVEL_FILES "%defattr(-,root,root,-)")
 
   set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{xmldir}/${CPACK_PACKAGE_NAME}BuildEnvironment.xml")
@@ -1008,23 +1004,19 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   get_property(debinfo_objects GLOBAL PROPERTY DEBINFO_OBJECTS)
 
   if(debinfo_objects)
-    set(CPACK_RPM_DEBINFO_FILES "%files debuginfo")
-    set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
-%defattr(-,root,root,-)")
+    set(CPACK_RPM_DEBINFO_FILES "%defattr(-,root,root,-)")
 
     list(SORT debinfo_objects)
     foreach(_do ${debinfo_objects})
       set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
 ${_do}")
     endforeach()
-    #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
+  #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")
 
 #===============================================================================
 
-  set(CPACK_RPM_DOC_FILES "%files doc")
-  set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
-%defattr(-,root,root,-)")
+  set(CPACK_RPM_DOC_FILES "%defattr(-,root,root,-)")
   set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
 %{docdir}")
 
@@ -1147,6 +1139,10 @@ ${MAIN_PROJECT_CHANGELOG}
       
       if(INSTALL_DOC)
          set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with doc")
+      endif()
+
+      if(debinfo_objects)
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with debinfo")      
       endif()
 
       
