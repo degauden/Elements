@@ -11,6 +11,7 @@ Vendor:         @CPACK_PACKAGE_VENDOR@
 
 %bcond_without squeeze
 %bcond_with doc
+%bcond_with debinfo
 
 %global __python @PYTHON_EXECUTABLE@ 
 
@@ -68,7 +69,6 @@ Requires: %{name} = %{version}-%{release}
 %description debuginfo
 Debug information for package %{name}
 
-%if %{with doc}
 %package doc
 Summary: Documentation for package %{name}
 Requires: %{name}-devel = %{version}-%{release}
@@ -76,7 +76,6 @@ Requires: %{name}-devel = %{version}-%{release}
 
 %description doc
 Documentation for package %{name}
-%endif
 
 %prep
 %setup -q
@@ -174,13 +173,19 @@ for d in  %{_proj_ia_dir}  %{_proj_vers_dir} %{_proj_name_dir}; do
 done
 %endif
 
+%files
 @CPACK_RPM_REGULAR_FILES@
 
+%files devel
 @CPACK_RPM_DEVEL_FILES@
 
+%if %{with debinfo}
+%files debuginfo
 @CPACK_RPM_DEBINFO_FILES@
+%endif
 
 %if %{with doc}
+%files doc
 @CPACK_RPM_DOC_FILES@
 %endif
 
