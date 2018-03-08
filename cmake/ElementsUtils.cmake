@@ -289,6 +289,11 @@ function(filter_comments var)
   set(${var} ${contents3} PARENT_SCOPE)
 endfunction()
 
+function(dir_strip_end var)
+  string(REGEX REPLACE "(/\\.|/)+$" "" content "${${var}}")
+  set(${var} ${content} PARENT_SCOPE)
+endfunction()
+
 # Copy files from source directory to destination directory, substituting any
 # variables.  Create destination directory if it does not exist.
 

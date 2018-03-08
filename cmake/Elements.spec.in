@@ -35,16 +35,17 @@ Requires(postun):  /sbin/ldconfig
 %endif
 %define _prefix @CPACK_PACKAGING_INSTALL_PREFIX@
 %define build_dir_name @BUILD_SUBDIR@
-%define libdir %{_prefix}/@CMAKE_LIB_INSTALL_SUFFIX@
-%define pydir %{_prefix}/@PYTHON_INSTALL_SUFFIX@
-%define pydyndir %{_prefix}/@PYTHON_DYNLIB_INSTALL_SUFFIX@
-%define scriptsdir %{_prefix}/@SCRIPT_INSTALL_SUFFIX@
-%define cmakedir %{_prefix}/@CMAKE_INSTALL_SUFFIX@
-%define makedir %{_prefix}/@MAKE_INSTALL_SUFFIX@
-%define confdir %{_prefix}/@CONF_INSTALL_SUFFIX@
-%define auxdir %{_prefix}/@AUX_INSTALL_SUFFIX@
-%define docdir %{_prefix}/@DOC_INSTALL_SUFFIX@
-%define xmldir %{_prefix}/@XML_INSTALL_SUFFIX@
+
+%define libdir @SPEC_LIBDIR@
+%define pydir @SPEC_PYDIR@
+%define pydyndir @SPEC_PYDYNDIR@
+%define scriptsdir @SPEC_SCRIPTSDIR@
+%define cmakedir @SPEC_CMAKEDIR@
+%define makedir @SPEC_MAKEDIR@
+%define confdir @SPEC_CONFDIR@
+%define auxdir @SPEC_AUXDIR@
+%define docdir @SPEC_DOCDIR@
+%define xmldir @SPEC_XMLDIR@
 
 %define debug_package %{nil}
 
