@@ -314,11 +314,26 @@ Python Package
 
 
   if(INSTALL_DOC)
+
     install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/
             DESTINATION ${DOC_INSTALL_SUFFIX}
             PATTERN "CVS" EXCLUDE
             PATTERN ".svn" EXCLUDE
             PATTERN "*~" EXCLUDE)
+
+    foreach(_do ChangeLog README README.md)
+      find_file(_do_file
+                NAMES ${_do}
+                PATHS ${CMAKE_SOURCE_DIR}
+                PATH_SUFFIXES doc
+                NO_DEFAULT_PATH)
+
+      if(_do_file)
+          install(FILES ${_do_file}
+                  DESTINATION ${DOC_INSTALL_SUFFIX})
+      endif()
+    endforeach()
+
   endif()
   
   
