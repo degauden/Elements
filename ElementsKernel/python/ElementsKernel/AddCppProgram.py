@@ -47,8 +47,7 @@ def createDirectories(module_dir, module_name):
     program_path = os.path.join(module_dir, 'src', 'program')
     epcr.makeDirectory(program_path)
     # Create the conf directory
-    conf_dir = os.path.join(module_dir, 'conf', module_name)
-    epcr.makeDirectory(conf_dir)
+    epcr.makeDirectory('conf')
 
 
 ################################################################################
@@ -57,7 +56,7 @@ def addConfFile(module_dir, module_name, program_name):
     """
     Create the configuration file by default
     """
-    conf_file = os.path.join(module_dir, 'conf', module_name, program_name + '.conf')
+    conf_file = os.path.join(module_dir, 'conf', program_name + '.conf')
     # check file does not exist
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
