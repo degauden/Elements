@@ -664,6 +664,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
   find_package\(ElementsProject\)
   message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
   set\(ELEMENTS_DEFAULT_SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH}\)
@@ -676,6 +677,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
   find_package\(ElementsProject\)
 message\(STATUS \"Installing: ${installed_env_xml}\"\)
 elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_environment}\)")
