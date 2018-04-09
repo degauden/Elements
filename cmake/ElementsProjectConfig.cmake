@@ -664,6 +664,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
   find_package\(ElementsProject\)
   message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
   set\(ELEMENTS_DEFAULT_SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH}\)
@@ -676,6 +677,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
   find_package\(ElementsProject\)
 message\(STATUS \"Installing: ${installed_env_xml}\"\)
 elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_environment}\)")
@@ -744,9 +746,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   SET(CPACK_RPM_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
 
 
-  set(CPACK_RPM_REGULAR_FILES "%files")
-  set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%defattr(-,root,root,-)")
+  set(CPACK_RPM_REGULAR_FILES "%defattr(-,root,root,-)")
 
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{xmldir}/${CPACK_PACKAGE_NAME}Environment.xml")
@@ -914,9 +914,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
 #===============================================================================
 
-  set(CPACK_RPM_DEVEL_FILES "%files devel")
-  set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%defattr(-,root,root,-)")
+  set(CPACK_RPM_DEVEL_FILES "%defattr(-,root,root,-)")
 
   set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{xmldir}/${CPACK_PACKAGE_NAME}BuildEnvironment.xml")
@@ -928,10 +926,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     list(SORT config_objects)
     list(REMOVE_DUPLICATES config_objects)
     foreach(_do ${config_objects})
-      if(SQUEEZED_INSTALL)
-        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%{cmakedir}/${_do}")
-      else()
+      if(NOT SQUEEZED_INSTALL)
         set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{_prefix}/${_do}")
       endif()
@@ -947,10 +942,16 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     get_property(regular_include_objects GLOBAL PROPERTY REGULAR_INCLUDE_OBJECTS)
 
     list(REMOVE_DUPLICATES regular_include_objects)
+    if(regular_include_objects)
+    if(NOT SQUEEZED_INSTALL)
+      set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{_includedir}")    
+    endif()
     foreach(_do ${regular_include_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{_includedir}/${_do}")
     endforeach()
+    endif()
 
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
   endif()
@@ -961,13 +962,21 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   if(proj_has_cmake)
 
    get_property(regular_cmake_objects GLOBAL PROPERTY REGULAR_CMAKE_OBJECTS)
-
+   if(SQUEEZED_INSTALL)
+     get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
+     foreach(_do ${config_objects})
+       list(APPEND regular_cmake_objects ${_do})
+     endforeach()
+   endif()
     list(REMOVE_DUPLICATES regular_cmake_objects)
+    if(regular_cmake_objects)
+    set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{cmakedir}")    
     foreach(_do ${regular_cmake_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{cmakedir}/${_do}")
     endforeach()
-
+    endif()
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
   endif()
 
@@ -979,11 +988,15 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
    get_property(regular_make_objects GLOBAL PROPERTY REGULAR_MAKE_OBJECTS)
 
     list(REMOVE_DUPLICATES regular_make_objects)
-    foreach(_do ${regular_make_objects})
+    if(regular_make_objects)
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{makedir}")
+      foreach(_do ${regular_make_objects})
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{makedir}/${_do}")
-    endforeach()
-
+      endforeach()
+    endif()
+    
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
   endif()
 
@@ -993,23 +1006,19 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   get_property(debinfo_objects GLOBAL PROPERTY DEBINFO_OBJECTS)
 
   if(debinfo_objects)
-    set(CPACK_RPM_DEBINFO_FILES "%files debuginfo")
-    set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
-%defattr(-,root,root,-)")
+    set(CPACK_RPM_DEBINFO_FILES "%defattr(-,root,root,-)")
 
     list(SORT debinfo_objects)
     foreach(_do ${debinfo_objects})
       set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
 ${_do}")
     endforeach()
-    #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
+  #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")
 
 #===============================================================================
 
-  set(CPACK_RPM_DOC_FILES "%files doc")
-  set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
-%defattr(-,root,root,-)")
+  set(CPACK_RPM_DOC_FILES "%defattr(-,root,root,-)")
   set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
 %{docdir}")
 
@@ -1107,19 +1116,11 @@ ${MAIN_PROJECT_CHANGELOG}
         message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
       endif()
 
-     if(SQUEEZED_INSTALL)
-         find_file_to_configure(Elements_squeezed.spec.in
-                                FILETYPE "RPM SPEC"
-                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
-                                OUTPUTNAME "${project}.spec"
-                                PATHS ${CMAKE_MODULE_PATH})
-     else()
-         find_file_to_configure(Elements.spec.in
-                                FILETYPE "RPM SPEC"
-                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
-                                OUTPUTNAME "${project}.spec"
-                                PATHS ${CMAKE_MODULE_PATH})
-     endif()
+      find_file_to_configure(Elements.spec.in
+                             FILETYPE "RPM SPEC"
+                             OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
+                             OUTPUTNAME "${project}.spec"
+                             PATHS ${CMAKE_MODULE_PATH})
     
 
      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
@@ -1140,6 +1141,10 @@ ${MAIN_PROJECT_CHANGELOG}
       
       if(INSTALL_DOC)
          set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with doc")
+      endif()
+
+      if(debinfo_objects)
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with debinfo")      
       endif()
 
       
