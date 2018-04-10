@@ -2847,9 +2847,18 @@ function(elements_add_unit_test name)
                           DEPENDS ${package}_tests_dir
                           COMMENT "Generating the ${package} ${${name}_UNIT_TEST_TYPE}TestMain.cpp" VERBATIM)
       endif()
-      set(srcs ${srcs} ${testmain_file})
+      
+      if (NOT TARGET ${package}${${name}_UNIT_TEST_TYPE}Test)
+        elements_add_library(${package}${${name}_UNIT_TEST_TYPE}Test ${testmain_file}
+                             LINK_LIBRARIES ${${name}_UNIT_TEST_TYPE}
+                             INCLUDE_DIRS ${${name}_UNIT_TEST_TYPE}
+                             NO_PUBLIC_HEADERS
+                             )
+        add_dependencies(${package}${${name}_UNIT_TEST_TYPE}Test ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
+      endif()
+      
       elements_add_executable(${executable} ${srcs}
-                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE} ${package}${${name}_UNIT_TEST_TYPE}Test
                               INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_UNIT_TEST_TYPE})
       add_dependencies(${executable} ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
 
