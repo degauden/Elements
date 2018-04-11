@@ -70,7 +70,7 @@ public:
 
     options_description config_options { "Example program options" };
 
-    bool flag;
+    bool flag = false;
 
     // Add the specific program options
     config_options.add_options()
@@ -78,7 +78,7 @@ public:
         "An example string option")
         ("boolean-option", value<bool>()->default_value(false),
          "An example boolean option")
-        ("flag,f", bool_switch(&flag)->default_value(false),
+        ("flag,f", bool_switch(&flag),
          "An option to set to true")
         ("string-option-no-default", value<string>(),
         "A string option without default value")
