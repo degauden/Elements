@@ -2886,7 +2886,9 @@ function(elements_add_unit_test name)
              COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
              ${executable}${exec_suffix})
 
+    set_property(TEST ${package}.${name} PROPERTY CMDLINE "${executable}${exec_suffix}")
     set_property(TEST ${package}.${name} APPEND PROPERTY LABELS UnitTest ${package} Binary)
+    
     if(NOT ${${name}_UNIT_TEST_TYPE} STREQUAL "None")
       set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${${name}_UNIT_TEST_TYPE})
     endif()
@@ -2973,6 +2975,7 @@ function(elements_add_test name)
            ${cmdline})
 
   set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${package})
+  set_property(TEST ${package}.${name} PROPERTY CMDLINE "${cmdline}")
 
   foreach(t ${ARG_LABELS})
     set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${t})
