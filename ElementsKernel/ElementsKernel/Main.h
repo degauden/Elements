@@ -63,7 +63,7 @@
                                       THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
                                       THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
                                       THIS_PROJECT_SEARCH_DIRS}; \
-    Elements::ExitCode exit_code =  manager.run(argc, argv);   \
+    Elements::ExitCode exit_code = manager.run(argc, argv);   \
     return static_cast<Elements::ExitCodeType>(exit_code);    \
   }
 
