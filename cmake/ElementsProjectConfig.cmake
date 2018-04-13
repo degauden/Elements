@@ -26,10 +26,6 @@ endif()
 # please run "cmake --help-policy CMP0063" for more details
 if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
   cmake_policy(SET CMP0063 NEW)
-else()
-  if(CMAKE_VERSION VERSION_GREATER 3.0.2)
-    cmake_policy(SET CMP0063 OLD)
-  endif()
 endif()
 
 if (NOT HAS_ELEMENTS_TOOLCHAIN)
@@ -664,6 +660,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
   find_package\(ElementsProject\)
   message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
   set\(ELEMENTS_DEFAULT_SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH}\)
@@ -676,6 +673,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
   find_package\(ElementsProject\)
 message\(STATUS \"Installing: ${installed_env_xml}\"\)
 elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_environment}\)")
@@ -2845,9 +2843,18 @@ function(elements_add_unit_test name)
                           DEPENDS ${package}_tests_dir
                           COMMENT "Generating the ${package} ${${name}_UNIT_TEST_TYPE}TestMain.cpp" VERBATIM)
       endif()
-      set(srcs ${srcs} ${testmain_file})
+      
+      if (NOT TARGET ${package}${${name}_UNIT_TEST_TYPE}Test)
+        elements_add_library(${package}${${name}_UNIT_TEST_TYPE}Test ${testmain_file}
+                             LINK_LIBRARIES ${${name}_UNIT_TEST_TYPE}
+                             INCLUDE_DIRS ${${name}_UNIT_TEST_TYPE}
+                             NO_PUBLIC_HEADERS
+                             )
+        add_dependencies(${package}${${name}_UNIT_TEST_TYPE}Test ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
+      endif()
+      
       elements_add_executable(${executable} ${srcs}
-                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE} ${package}${${name}_UNIT_TEST_TYPE}Test
                               INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_UNIT_TEST_TYPE})
       add_dependencies(${executable} ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
 

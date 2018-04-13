@@ -203,3 +203,7 @@ elements_add_test(PatchVersionProject
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation)
                   
+elements_add_test(CMakeOverride 
+                  COMMAND cmakeOverride_test  
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  LABELS Creation Override)

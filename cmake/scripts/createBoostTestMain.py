@@ -27,9 +27,11 @@ def main():
 
     # Prepare data to be written
     outputdata = """ /* Automatically generated file: do not modify! */
+#pragma GCC visibility push(default)
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE %(pack)s Test Suite
 #include <boost/test/unit_test.hpp>
+#pragma GCC visibility pop
 """ % { 'pack': package }
 
     # Get the current content of the destination file (if any)
@@ -43,6 +45,7 @@ def main():
     # Overwrite the file only if there are changes
     if outputdata != olddata:
         open(outputfile, "w").write(outputdata)
+
 
 if __name__ == "__main__":
     main()
