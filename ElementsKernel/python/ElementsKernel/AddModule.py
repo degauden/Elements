@@ -77,7 +77,7 @@ def createModuleDirectories(mod_path, module_name):
     os.makedirs(mod_path)
     os.makedirs(os.path.join(mod_path, module_name))
     os.makedirs(os.path.join(mod_path, 'doc'))
-    os.makedirs(os.path.join(mod_path, 'conf', module_name))
+    os.makedirs(os.path.join(mod_path, 'conf'))
     os.makedirs(os.path.join(mod_path, 'tests', 'src'))
 
     epcr.copyAuxFile(os.path.join(mod_path, 'doc'), AUX_MOD_RST_IN)
