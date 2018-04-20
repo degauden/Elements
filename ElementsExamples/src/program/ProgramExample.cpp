@@ -24,14 +24,14 @@
 #include <utility>                          // for move
 #include <memory>                           // for unique_ptr
 
+#include <boost/current_function.hpp>       // for BOOST_CURRENT_FUNCTION
+
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/ThisModule.h"      // for getThisExecutableInfo
 
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsExamples/functionExample.h"
 
-//namespace po = boost::program_options;
-//namespace fs = boost::filesystem;
 
 using std::map;
 using std::string;
@@ -43,6 +43,26 @@ using boost::program_options::bool_switch;
 
 namespace Elements {
 namespace Examples {
+
+/**
+ * @brief
+ *    test function to demonstrate the logger
+ * @details
+ *    test function to demonstrate the logger
+ */
+
+void myLocalLogTestFunc() {
+
+  Logging logger = Logging::getLogger();
+  logger.info("Test of Message");
+
+  Logging logger2 = Logging::getLogger(__func__);
+  logger2.info("Test2 of Message");
+
+  Logging logger3 = Logging::getLogger(BOOST_CURRENT_FUNCTION);
+  logger3.info("Test3 of Message");
+
+}
 
 
 /**
@@ -195,6 +215,8 @@ public:
 
     logger.info() << "This executable name: " << Elements::System::getThisExecutableInfo().name();
 
+    myLocalLogTestFunc();
+
     logger.info("#");
     logger.info("Exiting mainMethod()");
     return ExitCode::OK;
@@ -202,7 +224,7 @@ public:
 
 };
 
-} // namespace ElementsExamples
+} // namespace Examples
 } // namespace Elements
 
 
