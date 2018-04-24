@@ -370,6 +370,7 @@ macro(elements_project project version)
         endif()
       endif()
     endif()
+    set(PYFRMK_TEST ${PYTHON_EXECUTABLE} ${PYFRMK_TEST})
   endif()
 
 
