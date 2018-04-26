@@ -1,7 +1,3 @@
-import os
-import sys
-import xml.etree.ElementTree as ET
-
 """Merge multiple JUnit XML files into a single results file.
 
 Output dumps to sdtdout.
@@ -10,8 +6,13 @@ example usage:
     $ python merge_junit_results.py results1.xml results2.xml > results.xml
 """
 
+import os
+import sys
+import xml.etree.ElementTree as ET
+
 
 def main():
+    """ main wrapper function """
     args = sys.argv[1:]
     if not args:
         usage()
@@ -23,6 +24,7 @@ def main():
 
 
 def merge_results(xml_files):
+    """ Workhorse function that merges JUnit XML files """
     failures = 0
     tests = 0
     errors = 0
@@ -50,6 +52,7 @@ def merge_results(xml_files):
 
 
 def usage():
+    """ Usage message for the script """
     this_file = os.path.basename(__file__)
     print('Usage:  %s results1.xml results2.xml' % this_file)
 

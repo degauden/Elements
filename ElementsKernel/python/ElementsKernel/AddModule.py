@@ -46,6 +46,7 @@ AUX_MOD_RST_IN = 'doc_module.rst.in'
 
 ################################################################################
 
+
 def checkCmakelistFileExist(project_directory):
     """
     Checks if a <CMakeLists.txt> file exists and is really an Elements
@@ -68,6 +69,7 @@ def checkCmakelistFileExist(project_directory):
 
 ################################################################################
 
+
 def createModuleDirectories(mod_path, module_name):
     """
     Create the directory structure for the module
@@ -87,8 +89,8 @@ def createModuleDirectories(mod_path, module_name):
     os.rename(mod_rst_file, file_no_dot_in)
     epcr.addItemToCreationList(file_no_dot_in)
 
-
 ################################################################################
+
 
 def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=False):
     """
@@ -138,6 +140,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=Fal
 
 ################################################################################
 
+
 def createModule(project_dir, module_name, dependency_list, standalone=False, answer_yes=False):
     """
     Create a module, copy auxiliary files and substitute variables in the
@@ -163,6 +166,7 @@ def createModule(project_dir, module_name, dependency_list, standalone=False, an
 
 ################################################################################
 
+
 def checkDependencyListValid(str_list):
     """
     Check if the dependency name(s) is(are) valid
@@ -172,6 +176,7 @@ def checkDependencyListValid(str_list):
             epcr.checkNameAndVersionValid(elt, '1.0')
 
 ################################################################################
+
 
 def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
     """
@@ -184,6 +189,7 @@ def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
     epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0], answer_yes)
 
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -211,10 +217,10 @@ This script creates an <Elements> module at your current directory
                         help='Answer <yes> by default to any question, useful when the script is called by another'\
                          'script')
 
-
     return parser
 
 ################################################################################
+
 
 def mainMethod(args):
     """
