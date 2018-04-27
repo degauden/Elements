@@ -19,14 +19,18 @@
  *
  */
 
+#include "ElementsKernel/ProgramManager.h"
+
 #include <cstdlib>                         // for the exit function
 #include <fstream>
 #include <iostream>
 #include <typeinfo>                        // for the typid operator
 #include <algorithm>                       // for transform
 #include <vector>                          // for vector
+#include <string>                          // for string
 
-#include "ElementsKernel/ProgramManager.h"
+#include <boost/algorithm/string/predicate.hpp>  // for boost::starts_with
+
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
@@ -36,6 +40,8 @@
 #include "ElementsKernel/ModuleInfo.h"     // for getExecutablePath
 #include "ElementsKernel/Unused.h"         // for ELEMENTS_UNUSED
 #include "ElementsKernel/Configuration.h"  // for getConfigurationPath
+
+#include "OptionException.h"               // local exception for unrecognized options
 
 using std::vector;
 using std::string;
@@ -62,7 +68,8 @@ const path& ProgramManager::getProgramName() const {
  * @todo check whether priotities are correct if more than one
  * config file is found in pathSearchInEnvVariable
  * */
-const path ProgramManager::getDefaultConfigFile(const path & program_name, const string& module_name) {
+const path ProgramManager::getDefaultConfigFile(const path & program_name,
+                                                const string& module_name) {
 
   Logging logger = Logging::getLogger("ElementsProgram");
 
@@ -133,7 +140,8 @@ const variables_map ProgramManager::getProgramOptions(
   string default_log_level = "INFO";
 
   // Get defaults
-  path default_config_file = getDefaultConfigFile(getProgramName(), m_parent_module_name);
+  path default_config_file = getDefaultConfigFile(getProgramName(),
+                                                  m_parent_module_name);
 
   // Define the options which can be given only at the command line
   options_description cmd_only_generic_options {};
@@ -152,8 +160,8 @@ const variables_map ProgramManager::getProgramOptions(
       ("log-file",
          value<path>(), "Name of a log file");
 
-  // Group all the generic options, for help output. Note that we add the options
-  // one by one to avoid having empty lines between the groups
+  // Group all the generic options, for help output. Note that we add the
+  // options one by one to avoid having empty lines between the groups
   options_description all_generic_options {"Generic options"};
   for (auto o : cmd_only_generic_options.options()) {
     all_generic_options.add(o);
@@ -162,8 +170,8 @@ const variables_map ProgramManager::getProgramOptions(
     all_generic_options.add(o);
   }
 
-  // Get the definition of the specific options and arguments(positional options)
-  // from the derived class
+  // Get the definition of the specific options and arguments (positional
+  // options) from the derived class
   auto specific_options = m_program_ptr->defineSpecificProgramOptions();
   auto program_arguments = m_program_ptr->defineProgramArguments();
   options_description all_specific_options {};
@@ -197,27 +205,43 @@ const variables_map ProgramManager::getProgramOptions(
     exit(0);
   }
 
-  // Get the configuration file. It is guaranteed to exist, because it has default value
+  // Get the configuration file. It is guaranteed to exist, because it has
+  // default value
   auto config_file = var_map.at("config-file").as<path>();
 
   // Parse from the command line the rest of the options. Here we also handle
   // the positional arguments.
   auto leftover_cmd_options = collect_unrecognized(cmd_parsed_options.options,
-                                                    include_positional);
-  store(command_line_parser(leftover_cmd_options)
-                      .options(all_cmd_and_file_options)
-                      .positional(program_arguments.second)
-                      .run(),
-            var_map);
+                                                   include_positional);
+
+
+  try {
+
+  auto parsed_cmdline_options = command_line_parser(leftover_cmd_options)
+                         .options(all_cmd_and_file_options)
+                         .positional(program_arguments.second)
+                         .run();
+
+  store(parsed_cmdline_options, var_map);
 
   // Parse from the configuration file if it exists
-  if (not config_file.empty() && boost::filesystem::exists(config_file)) {
+  if (not config_file.empty() and boost::filesystem::exists(config_file)) {
     std::ifstream ifs {config_file.string()};
     if (ifs) {
-      store(parse_config_file(ifs, all_cmd_and_file_options), var_map);
+      auto parsed_cfgfile_options = parse_config_file(ifs,
+                                                      all_cmd_and_file_options);
+      store(parsed_cfgfile_options, var_map);
     }
   }
 
+  } catch (const std::exception& e) {
+    if (boost::starts_with(e.what(), "unrecognised option") or
+        boost::starts_with(e.what(), "too many positional options")) {
+      throw OptionException(e.what());
+    } else {
+      throw;
+    }
+  }
   // After parsing both the command line and the conf file notify the variables
   // map, so we can get any messages for missing parameters
   notify(var_map);
@@ -343,7 +367,7 @@ void ProgramManager::logTheEnvironment() const {
   logger.debug() << "#";
 }
 
-void ProgramManager::bootstrapEnvironment(char* arg0){
+void ProgramManager::bootstrapEnvironment(char* arg0) {
 
   m_program_name = setProgramName(arg0);
   m_program_path = setProgramPath(arg0);
@@ -385,15 +409,24 @@ void ProgramManager::setup(int argc, char* argv[]) {
   // and retrieve the local environment
   bootstrapEnvironment(argv[0]);
 
+  Logging logger = Logging::getLogger("ElementsProgram");
+
   // get all program options into the varaiable_map
-  m_variables_map = getProgramOptions(argc, argv);
+  try {
+    m_variables_map = getProgramOptions(argc, argv);
+  } catch (const OptionException& e) {
+    auto exit_code = e.exitCode();
+    logger.fatal() << "# Elements Exception : " << e.what();
+    std::_Exit(static_cast<int>(exit_code));
+  }
 
   // get the program options related to the logging
   string logging_level;
   if (m_variables_map.count("log-level")) {
     logging_level = m_variables_map["log-level"].as<string>();
   } else {
-     throw Exception("Required option log-level is not provided!", ExitCode::CONFIG);
+     throw Exception("Required option log-level is not provided!",
+                     ExitCode::CONFIG);
   }
   path log_file_name;
 
