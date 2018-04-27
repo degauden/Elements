@@ -265,5 +265,8 @@ elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError_test F
 elements_add_test(CppProgramExample COMMAND CppProgramExample)
 elements_add_test(SimpleProgramExample COMMAND ElementsSimpleProgramExample)
 
+elements_add_test(UnrecognizedOption COMMAND UnrecognizedOption_test)
+
+
 elements_install_conf_files()
 
