@@ -1,9 +1,22 @@
 """ Small example for a python based script """
 
 import argparse
-import ElementsKernel.Logging as log
+from ElementsKernel import Logging
 from ElementsKernel.Program import str_to_bool
 from ElementsExamples.PythonModuleExample import ClassExample
+
+def myLocalLogTestFunc() :
+
+    logger = Logging.getLogger()
+    logger.info("Test of Message");
+
+    logger2 = Logging.getLogger("TestLogger");
+    logger2.info("Test2 of Message");
+
+    logger3 = Logging.getLogger(__name__);
+    logger3.info("Test3 of Message");
+
+
 
 def defineSpecificProgramOptions():
     """
@@ -38,8 +51,13 @@ def mainMethod(args):
 
         See the ElementsProgram documentation for more details.
     """
-    logger = log.getLogger('ProgramExample')
+    logger = Logging.getLogger('ProgramExample')
     logger.info('Entering ProgramExample mainMethod()')
+
+    #
+    #  function with log messages
+    #
+    myLocalLogTestFunc()
 
     #
     #  Log some of the arguments
