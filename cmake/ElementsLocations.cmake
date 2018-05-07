@@ -181,6 +181,14 @@ get_arch_lib_dir(that_arch)
 set(ELEMENTS_DEFAULT_SEARCH_PATH ${CMAKE_INSTALL_PREFIX}/${that_arch}/cmake/ElementsProject)
 set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/ElementsProject)
 
+file(TO_CMAKE_PATH "$ENV{XDG_DATA_HOME}" data_home)
+file(TO_CMAKE_PATH "$ENV{XDG_DATA_DIRS}" data_dirs)
+list(INSERT data_paths 0 ${data_home})
+list(APPEND data_paths /usr/share)
+list(REMOVE_DUPLICATES data_paths)
+
+set(DATA_PACKAGE_PATH ${data_paths} CACHE STRING "List of base directories where to look for data packages.")
+
 set(SPEC_LIBDIR "%{_prefix}/${CMAKE_LIB_INSTALL_SUFFIX}")
 set(SPEC_PYDIR "%{_prefix}/${PYTHON_INSTALL_SUFFIX}")
 set(SPEC_PYDYNDIR "%{_prefix}/${PYTHON_DYNLIB_INSTALL_SUFFIX}")
