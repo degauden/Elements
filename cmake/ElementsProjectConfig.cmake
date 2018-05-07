@@ -1480,7 +1480,7 @@ function(elements_find_data_package name)
     set(candidate_path)
     foreach(prefix ${projects_search_path} ${CMAKE_PREFIX_PATH} ${env_prefix_path} ${DATA_PACKAGE_PATH})
       foreach(suffix "" ${ARGN})
-        message(STATUS "elements_find_data_package: check ${prefix}/${suffix}/${name}")
+        #message(STATUS "elements_find_data_package: check ${prefix}/${suffix}/${name}")
         if(IS_DIRECTORY ${prefix}/${suffix}/${name})
           #message(STATUS "elements_find_data_package: scanning ${prefix}/${suffix}/${name}")
           # Look for env files with the matching version.
