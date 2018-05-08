@@ -187,7 +187,7 @@ list(INSERT data_paths 0 ${data_home})
 list(APPEND data_paths /usr/share)
 list(REMOVE_DUPLICATES data_paths)
 
-set(DATA_PACKAGE_PATH ${data_paths} CACHE STRING "List of base directories where to look for data packages.")
+set(DATA_MODULE_PATH ${data_paths} CACHE STRING "List of base directories where to look for data packages.")
 
 set(SPEC_LIBDIR "%{_prefix}/${CMAKE_LIB_INSTALL_SUFFIX}")
 set(SPEC_PYDIR "%{_prefix}/${PYTHON_INSTALL_SUFFIX}")
