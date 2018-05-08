@@ -1515,7 +1515,7 @@ function(elements_find_data_package name)
 endfunction()
 
 #-------------------------------------------------------------------------------
-# _elements_handle_data_pacakges([package [VERSION version] [project version [VERSION version]]...])
+# _elements_handle_data_packages([package [VERSION version] [project version [VERSION version]]...])
 #
 # Internal macro implementing the handling of the "USE" option.
 # (improve readability)
