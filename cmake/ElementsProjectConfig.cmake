@@ -211,7 +211,14 @@ macro(elements_project project version)
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
 
   # Find the required data packages and add them to the environment.
-  _elements_handle_data_packages(${PROJECT_DATA})
+  set(data_packages)
+  if(PROJECT_DATA)
+    _elements_handle_data_packages(${PROJECT_DATA})
+  endif()
+  if(data_packages)
+    list(REMOVE_DUPLICATES data_packages)
+  endif()
+
 
   #--- commands required to build cached variable
   # (python scripts are located as such but run through python)
@@ -510,6 +517,11 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         SEARCH_PATH ${${other_project}_DIR})
   endforeach()
 
+  foreach(_pck ${data_packages})
+    set(project_environment ${project_environment}
+        SEARCH_PATH ${${_pck}_DIR})
+  endforeach()
+
   if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
       set(project_environment ${project_environment}
         SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH})
@@ -520,10 +532,14 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         SEARCH_PATH ${ELEMENTS_USR_SEARCH_PATH})
   endif()
 
-
   foreach(other_project ${used_elements_projects})
     set(project_environment ${project_environment}
         INCLUDE ${other_project}Environment.xml)
+  endforeach()
+
+  foreach(_pck ${data_packages})
+    set(project_environment ${project_environment}
+        INCLUDE ${_pck}Environment.xml)
   endforeach()
 
 
@@ -560,6 +576,19 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         INCLUDE ${other_project}BuildEnvironment.xml)
   endforeach()
 
+
+
+  foreach(_pck ${data_packages})
+    if(EXISTS ${${_pck}_DIR})
+      set(project_build_environment ${project_build_environment}
+          SEARCH_PATH ${${_pck}_DIR})
+    endif()
+  endforeach()
+
+  foreach(_pck ${data_packages})
+    set(project_build_environment ${project_build_environment}
+        INCLUDE ${_pck}Environment.xml)
+  endforeach()
 
   if(NOT SQUEEZED_INSTALL)
     set(project_build_environment ${project_build_environment}
@@ -668,6 +697,10 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   set\(used_elements_projects ${used_elements_projects}\)
   foreach\(other_project ${used_elements_projects}\)
   set\(\${other_project}_DIR ${${other_project}_DIR}\)
+  endforeach\(\)
+  set\(data_packages ${data_packages}\)
+  foreach\(_pck ${data_packages}\)
+  set\(\${_pck}_DIR ${${_pck}_DIR}\)
   endforeach\(\)
   elements_generate_env_conf\(${installed_env_release_xml} ${installed_project_environment}\)")
   #   build-time version
@@ -1223,7 +1256,7 @@ macro(_elements_use_other_projects)
         endif()
       endif()
     else()
-      # "HEAD" is a special version id (mapped to v999r999).
+      # "HEAD" is a special version id (mapped to 999.999).
       set(other_project_cmake_version 999.999)
     endif()
     set(other_project_original_version ${other_project_version})
@@ -1422,7 +1455,6 @@ endfunction()
 # The root of the data package will be stored in <variable>.
 #-------------------------------------------------------------------------------
 function(elements_find_data_package name)
-  #message(STATUS "elements_find_data_package(${ARGV})")
   if(NOT ${name}_FOUND)
     # Note: it works even if the env. var. is not set.
     file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" projects_search_path)
@@ -1446,7 +1478,7 @@ function(elements_find_data_package name)
 
     set(candidate_version)
     set(candidate_path)
-    foreach(prefix ${projects_search_path} ${CMAKE_PREFIX_PATH} ${env_prefix_path})
+    foreach(prefix ${projects_search_path} ${CMAKE_PREFIX_PATH} ${env_prefix_path} ${DATA_MODULE_PATH})
       foreach(suffix "" ${ARGN})
         #message(STATUS "elements_find_data_package: check ${prefix}/${suffix}/${name}")
         if(IS_DIRECTORY ${prefix}/${suffix}/${name})
@@ -1477,46 +1509,40 @@ function(elements_find_data_package name)
       mark_as_advanced(${name}_FOUND ${name}_DIR)
       message(STATUS "Found ${name} ${candidate_version}: ${${name}_DIR}")
     else()
-      message(FATAL_ERROR "Cannot find ${name} ${version}")
+      message(FATAL_ERROR "Cannot find ${name} ${version} in ${projects_search_path} ${CMAKE_PREFIX_PATH} ${env_prefix_path} ${DATA_MODULE_PATH} with the ${ARGN} suffixes" )
     endif()
   endif()
 endfunction()
 
 #-------------------------------------------------------------------------------
-# _elements_handle_data_pacakges([package [VERSION version] [project version [VERSION version]]...])
+# _elements_handle_data_packages([package [VERSION version] [project version [VERSION version]]...])
 #
-# Internal macro implementing the handline of the "USE" option.
+# Internal macro implementing the handling of the "USE" option.
 # (improve readability)
 #-------------------------------------------------------------------------------
 macro(_elements_handle_data_packages)
-  # this is neede because of the way variable expansion works in macros
+  # this is needed because of the way variable expansion works in macros
   set(ARGN_ ${ARGN})
   if(ARGN_)
     message(STATUS "Looking for data packages")
   endif()
   while(ARGN_)
+    list(LENGTH ARGN_ len)
+    if(len LESS 2)
+      message(FATAL_ERROR "Wrong number of arguments to DATA option")
+    endif()  
     # extract data package name and (optional) version from the list
     list(GET ARGN_ 0 _data_package)
-    list(REMOVE_AT ARGN_ 0)
-    if(ARGN_) # we can look for the version only if we still have data)
-      list(GET ARGN_ 0 _data_pkg_vers)
-      if(_data_pkg_vers STREQUAL VERSION)
-        list(GET ARGN_ 1 _data_pkg_vers)
-        list(REMOVE_AT ARGN_ 0 1)
-      else()
-        set(_data_pkg_vers *) # default version value
-      endif()
-    else()
-      set(_data_pkg_vers *) # default version value
-    endif()
+    list(GET ARGN_ 1 _data_pkg_vers)
+    list(REMOVE_AT ARGN_ 0 1)
     if(NOT ${_data_package}_FOUND)
       elements_find_data_package(${_data_package} ${_data_pkg_vers} PATH_SUFFIXES ${ELEMENTS_DATA_SUFFIXES})
     else()
       message(STATUS "Using ${_data_package}: ${${_data_package}_DIR}")
     endif()
     if(${_data_package}_FOUND)
+      set(data_packages ${_data_package} ${data_packages})
       string(REPLACE / _ _data_pkg_env ${_data_package}Environment.xml)
-      set(project_environment ${project_environment} INCLUDE ${${_data_package}_DIR}/${_data_pkg_env})
     endif()
   endwhile()
 endmacro()
@@ -3636,6 +3662,18 @@ function(elements_generate_env_conf filename)
   foreach(other_project ${used_elements_projects})
     if(${${other_project}_DIR})
       set(data "${data}  <env:include>${other_project}Environment.xml</env:include>\n")
+    endif()
+  endforeach()
+
+  foreach(_pck ${data_packages})
+    if(${${_pck}_DIR})
+      set(data "${data}  <env:search_path>${${_pck}_DIR}</env:search_path>\n")
+    endif()
+  endforeach()
+
+  foreach(_pck ${data_packages})
+    if(${${_pck}_DIR})
+      set(data "${data}  <env:include>${_pck}Environment.xml</env:include>\n")
     endif()
   endforeach()
 
