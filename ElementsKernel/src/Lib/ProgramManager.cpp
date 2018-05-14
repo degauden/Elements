@@ -57,7 +57,6 @@ namespace Elements {
 
 using System::getExecutablePath;
 
-
 const path& ProgramManager::getProgramPath() const {
   return m_program_path;
 }
@@ -496,7 +495,7 @@ void ProgramManager::onTerminate() noexcept {
 
     // we have an exception
     try {
-      std::rethrow_exception(exc);  // throw to recognize the type
+      std::rethrow_exception(exc);  // throw to recognise the type
     } catch (const Exception & exc) {
       logger.fatal() << "# ";
       logger.fatal() << "# Elements Exception : " << exc.what();
