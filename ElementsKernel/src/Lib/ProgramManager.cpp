@@ -30,6 +30,7 @@
 #include <string>                                // for string
 #include <typeinfo>                              // for the typid operator
 #include <vector>                                // for vector
+#include <fstream>                               // for ifstream
 
 #include <boost/algorithm/string/predicate.hpp>  // for starts_with
 #include <boost/filesystem/operations.hpp>       // for filesystem::complete, exists
