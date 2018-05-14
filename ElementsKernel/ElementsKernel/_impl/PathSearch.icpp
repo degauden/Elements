@@ -84,6 +84,6 @@ std::vector<T> pathSearch(const std::string& searched_name,
 }
 
 
-} // Elements namespace
+}  // namespace Elements
 
-#endif // ELEMENTSKERNEL__IMPL_PATH_ICPP_
+#endif  // ELEMENTSKERNEL__IMPL_PATH_ICPP_

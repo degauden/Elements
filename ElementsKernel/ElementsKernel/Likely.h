@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_LIKELY_H_
-#define ELEMENTSKERNEL_LIKELY_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_LIKELY_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_LIKELY_H_
 
 /** @def LIKELY(x)
  * Macro for compiler branch optimisation. To be used when is \a x
@@ -42,6 +42,6 @@
 #  define UNLIKELY(x)     x
 #endif
 
-#endif /* ELEMENTSKERNEL_LIKELY_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_LIKELY_H_
 
 /**@}*/

@@ -24,8 +24,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_MODULEINFO_H
-#define ELEMENTSKERNEL_MODULEINFO_H
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_MODULEINFO_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_MODULEINFO_H_
 
 // STL include files
 #include <string>
@@ -84,8 +84,9 @@ ELEMENTS_API void setModuleHandle(ImageHandle handle);
 /// Get the full executable path
 ELEMENTS_API boost::filesystem::path getExecutablePath();
 
-}
-}
-#endif // ELEMENTSKERNEL_MODULEINFO_H
+}  // namespace System
+}  // namespace Elements
+
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_MODULEINFO_H_
 
 /**@}*/

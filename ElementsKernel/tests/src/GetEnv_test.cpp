@@ -19,15 +19,14 @@
  *
  */
 
-#include <iostream>                     // for cout, endl
-#include <cstdlib>                      // for std::getenv
-
 #include "ElementsKernel/System.h"      // getEnv, isEnvSet
 
+#include <iostream>                     // for cout, endl
+#include <cstdlib>                      // for std::getenv
 #include <string>                       // for string
 #include <vector>
-#include <boost/test/unit_test.hpp>
 
+#include <boost/test/unit_test.hpp>
 
 using std::string;
 using std::getenv;                      // standard
@@ -62,12 +61,12 @@ BOOST_AUTO_TEST_CASE(Raw_test) {
 
 }
 
-BOOST_AUTO_TEST_CASE(RawEmpty_test){
+BOOST_AUTO_TEST_CASE(RawEmpty_test) {
 
   string var_name {"Dldoed7dja7c"};
 
   // create empty test env variable
-  setenv(var_name.c_str(), "",1);
+  setenv(var_name.c_str(), "", 1);
 
   string path_var {};
   char* tmp = getenv(var_name.c_str());
@@ -83,7 +82,7 @@ BOOST_AUTO_TEST_CASE(RawEmpty_test){
   unsetenv(var_name.c_str());
 
   // the env variable has ceased to be
-  BOOST_CHECK(getenv(var_name.c_str())==NULL);
+  BOOST_CHECK(getenv(var_name.c_str()) == NULL);
 }
 
 
@@ -125,12 +124,12 @@ BOOST_AUTO_TEST_CASE(EmptyEnv_test) {
   BOOST_CHECK(value_var.empty());
 
   // create empty test env variable
-  setenv(rnd_name.c_str(), "",1);
+  setenv(rnd_name.c_str(), "", 1);
   // the variable exists
   BOOST_CHECK(getEnv(rnd_name, value_var));
   // and its value is empty
   BOOST_CHECK(value_var.empty());
-  //destroy the empty test env variable
+  // destroy the empty test env variable
   unsetenv(rnd_name.c_str());
 
 }
@@ -145,19 +144,19 @@ BOOST_AUTO_TEST_CASE(Set_test) {
 
   BOOST_CHECK(not isEnvSet(rnd_name));
 
-  int r = setEnv(rnd_name,"");
+  int r = setEnv(rnd_name, "");
 
   BOOST_CHECK(r == 0);
   BOOST_CHECK(isEnvSet(rnd_name));
   BOOST_CHECK(getEnv(rnd_name) == "");
 
-  int r2 = setEnv(rnd_name,"toto", false);
+  int r2 = setEnv(rnd_name, "toto", false);
 
   BOOST_CHECK(r2 == 0);
   BOOST_CHECK(isEnvSet(rnd_name));
   BOOST_CHECK(getEnv(rnd_name) == "");
 
-  int r3 = setEnv(rnd_name,"titi");
+  int r3 = setEnv(rnd_name, "titi");
 
   BOOST_CHECK(r3 == 0);
   BOOST_CHECK(isEnvSet(rnd_name));
@@ -174,7 +173,7 @@ BOOST_AUTO_TEST_CASE(UnSet_test) {
 
   string rnd_name {"Dldoed7dja7c"};
 
-  int r = setEnv(rnd_name,"");
+  int r = setEnv(rnd_name, "");
 
   BOOST_CHECK(r == 0);
   BOOST_CHECK(isEnvSet(rnd_name));

@@ -18,14 +18,16 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
+
+#include "ElementsKernel/Temporary.h"  // for Elements::TempDir
+
 #include <string>                          // for string
 #include <vector>
 #include <cstdlib>
+
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-
-#include "ElementsKernel/Temporary.h"  // for Elements::TempDir
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/System.h"     // for getEnv, setEnv, unSetEnv

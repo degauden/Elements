@@ -39,6 +39,6 @@
  */
 #define _str(s) #s
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_STRINGIFY_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_STRINGIFY_H_
 
 /**@}*/

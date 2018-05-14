@@ -22,11 +22,13 @@
  * @{
  */
 
-#ifndef VERSION_H_
-#define VERSION_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_VERSION_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_VERSION_H_
 
+#include <string>                   // for string
 #include <cstdint>
-#include "ElementsKernel/Export.h" // ELEMENTS_API
+
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 constexpr std::uint_least64_t CALC_PROJECT_VERSION(const std::uint_least64_t maj,
                                                    const std::uint_least64_t min,
@@ -78,10 +80,10 @@ ELEMENTS_API std::string getVersionFromSvnKeywords(const std::string& svnUrl, co
  */
 ELEMENTS_API std::string getVersionString(const unsigned short major,
                                           const unsigned short minor,
-                                          const unsigned short patch=0);
+                                          const unsigned short patch = 0);
 
-} // Elements namespace
+}  // namespace Elements
 
-#endif /* VERSION_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_VERSION_H_
 
 /**@}*/

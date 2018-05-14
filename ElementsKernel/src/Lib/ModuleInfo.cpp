@@ -38,6 +38,8 @@
 #include <iostream>
 #include <cerrno>
 #include <cstdio>
+#include <string>
+#include <vector>
 
 #ifdef __APPLE__
 #include <climits>            // for PATH_MAX
@@ -191,7 +193,7 @@ const string& exeName() {
   return module;
 }
 
-path getSelfProc(){
+path getSelfProc() {
 
   path self_proc {"/proc/self"};
 

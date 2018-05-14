@@ -61,8 +61,8 @@ public:
 
 };
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 
 /**

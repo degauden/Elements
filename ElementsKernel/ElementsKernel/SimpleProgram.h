@@ -25,8 +25,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_SIMPLEPROGRAM_H_
-#define ELEMENTSKERNEL_SIMPLEPROGRAM_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_SIMPLEPROGRAM_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 
 #include <boost/filesystem/path.hpp>
 
@@ -66,9 +66,9 @@ private:
 
 };
 
-} // namespace Elements
+}  // namespace Elements
 
 
-#endif // ELEMENTSKERNEL_SIMPLEPROGRAM_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 
 /**@}*/

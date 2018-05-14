@@ -24,13 +24,13 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_PHYSCONSTANTS_H_
-#define ELEMENTSKERNEL_PHYSCONSTANTS_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PHYSCONSTANTS_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PHYSCONSTANTS_H_
 
 #include "ElementsKernel/SystemOfUnits.h"
 
 namespace Elements {
-  namespace Units {
+namespace Units {
 
     /// @brief \f$N_A\f$
     constexpr double Avogadro = 6.0221367e+23/mole;
@@ -50,7 +50,7 @@ namespace Elements {
     constexpr double hbarc_squared = hbarc * hbarc;
 
     /// @brief \f$ -e \f$
-    constexpr double electron_charge = - eplus; // see SystemOfUnits.h
+    constexpr double electron_charge = - eplus;  // see SystemOfUnits.h
     /// @brief \f$ e^2 \f$
     constexpr double e_squared = eplus * eplus;
 
@@ -79,9 +79,9 @@ namespace Elements {
 
     constexpr double universe_mean_density = 1.e-25*g/cm3;
 
-  }  // namespace Units
-} // namespace Elements
+}  // namespace Units
+}  // namespace Elements
 
-#endif /* ELEMENTSKERNEL_PHYSCONSTANTS_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PHYSCONSTANTS_H_
 
 /**@}*/

@@ -25,7 +25,6 @@
 #include <string>                       // for string, char_traits
 #include <vector>                       // for vector
 
-
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
@@ -72,7 +71,6 @@ template vector<string> pathSearch(const string& searched_name, string directory
 vector<path> pathSearchInEnvVariable(const std::string& file_name,
                                         const std::string& path_like_env_variable,
                                             SearchType search_type) {
-
   // Placeholder for the to-be-returned search result
   vector<path> search_results { };
 

@@ -38,13 +38,13 @@ boost::filesystem::path getAuxiliaryPath(const T& file_name, bool raise_exceptio
 
   auto result = Path::getPathFromLocations(file_name, location_list);
 
-  if(result.empty() and raise_exception) {
+  if (result.empty() and raise_exception) {
     throw Exception() << "The auxiliary file \"" << file_name << "\" cannot be found!";
   }
 
   return result;
 }
 
-} // Elements namespace
+}  // namespace Elements
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_AUXILIARY_ICPP_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_AUXILIARY_ICPP_
