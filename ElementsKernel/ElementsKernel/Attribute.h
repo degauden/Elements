@@ -3,7 +3,7 @@
  * @brief define the __attribute__ macro if it doesn't exist for
  * some version of GCC
  * @date Dec 1, 2014
- * @author hubert
+ * @author Hubert Degaudenzi
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
  *

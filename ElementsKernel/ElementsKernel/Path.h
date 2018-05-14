@@ -1,7 +1,7 @@
 /**
  * @file ElementsKernel/Path.h
  *
- * @brief provide functions to retrieve ressources
+ * @brief provide functions to retrieve resources
  *   pointed by environment variables
  * @date May 13, 2016
  * @author Hubert Degaudenzi

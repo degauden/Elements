@@ -36,7 +36,7 @@
 
 #include <string>                   // for string
 #include <vector>                   // for vector
-#include <boost/filesystem.hpp>     // for boost::filesystem
+#include <boost/filesystem.hpp>     // for filesystem
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
