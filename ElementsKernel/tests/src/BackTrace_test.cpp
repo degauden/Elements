@@ -28,7 +28,7 @@
 // Temporary includes for dev
 #include <iostream>
 
-void second(){
+void second() {
 
 }
 
@@ -50,14 +50,12 @@ BOOST_AUTO_TEST_CASE(Raw_test) {
 
   std::vector<string> trace = Elements::System::backTrace(depth);
 
-  if(!trace.empty()) {
+  if (not trace.empty()) {
     size_t found = trace[0].find("BackTrace_test");
     BOOST_CHECK_NE(found, string::npos);
   }
 
 }
-
-
 
 
 //-----------------------------------------------------------------------------

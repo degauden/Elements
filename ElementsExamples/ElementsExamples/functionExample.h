@@ -24,8 +24,8 @@
  * @{
  */
 
-#ifndef ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_
-#define ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_
+#ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_
+#define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_
 
 #include "ElementsKernel/Export.h"
 
@@ -34,9 +34,9 @@ namespace Examples {
 
 ELEMENTS_API int functionExample(const int j);
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
-#endif // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_
+#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_FUNCTIONEXAMPLE_H_
 
 /**@}*/

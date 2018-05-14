@@ -24,10 +24,10 @@
  * @{
  */
 
-#ifndef EXAMPLEMODULE_EXAMPLEMODULE_TEMPLATEDDATASOURCEUSER_H_
-#define EXAMPLEMODULE_EXAMPLEMODULE_TEMPLATEDDATASOURCEUSER_H_
+#ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_TEMPLATEDDATASOURCEUSER_H_
+#define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_TEMPLATEDDATASOURCEUSER_H_
 
-namespace Elements{
+namespace Elements {
 namespace Examples {
 
 /**
@@ -56,11 +56,11 @@ public:
   double sumRecords(const T& data_source);
 };
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 #include "ElementsExamples/_impl/TemplatedDataSourceUser.icpp"
 
-#endif /* EXAMPLEMODULE_EXAMPLEMODULE_TEMPLATEDDATASOURCEUSER_H_ */
+#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_TEMPLATEDDATASOURCEUSER_H_
 
 /**@}*/

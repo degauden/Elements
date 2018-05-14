@@ -24,8 +24,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_ENVIRONMENT_H_
-#define ELEMENTSKERNEL_ENVIRONMENT_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_ENVIRONMENT_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_ENVIRONMENT_H_
 
 #include <iostream>                              // for ostream
 #include <map>                                   // for map
@@ -80,7 +80,7 @@ public:
     std::string m_index;
   };
 
-  Environment(bool keep_same=true);
+  explicit Environment(bool keep_same = true);
   virtual ~Environment();
 
   Variable operator[](const std::string&);
@@ -90,7 +90,7 @@ public:
   Environment& unSet(const std::string&);
   Environment& append(const std::string&, const std::string&);
   Environment& prepend(const std::string&, const std::string&);
-  std::string get(const std::string& index, const std::string& default_value="") const;
+  std::string get(const std::string& index, const std::string& default_value = "") const;
   static bool hasKey(const std::string&);
   void commit();
 
@@ -119,8 +119,8 @@ ELEMENTS_API std::ostream& operator<<(std::ostream&, const Environment::Variable
 
 ELEMENTS_API Environment::Variable operator+(const std::string&, const Environment::Variable&);
 
-} // Elements namespace
+}  // namespace Elements
 
-#endif // ELEMENTSKERNEL_ENVIRONMENT_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_ENVIRONMENT_H_
 
 /**@}*/

@@ -23,11 +23,12 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_STORAGE_H_
-#define ELEMENTSKERNEL_STORAGE_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_
 
-#include <map>      // for std::map
-#include <cstdint>  // for std::int64_t
+#include <string>   // for string
+#include <map>      // for map
+#include <cstdint>  // for int64_t
 
 #include "ElementsKernel/Export.h"
 
@@ -60,11 +61,11 @@ ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageTyp
 template<typename T>
 ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageType target_unit);
 
-} // end of namespace Units
-} // end of namespace Elements
+}  // namespace Units
+}  // namespace Elements
 
 #include "ElementsKernel/_impl/Storage.icpp"
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_
 
 /**@}*/

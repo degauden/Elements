@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_SEARCHPATH_H_
-#define ELEMENTSKERNEL_SEARCHPATH_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_H_
 
 #include <string>
 #include <vector>
@@ -82,13 +82,13 @@ ELEMENTS_API
 std::vector<boost::filesystem::path> pathSearchInEnvVariable(
     const std::string& file_name,
     const std::string& path_like_env_variable,
-    SearchType search_type=SearchType::Recursive);
+    SearchType search_type = SearchType::Recursive);
 
-}  // Elements namespace
+}  // namespace Elements
 
 #include "ElementsKernel/_impl/PathSearch.icpp"
 
 
-#endif  // ELEMENTSKERNEL_SEARCHPATH_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_H_
 
 /**@}*/

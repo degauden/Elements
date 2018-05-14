@@ -1,18 +1,10 @@
 /**
  *  @file Real.h
+ *
  *  @brief Floating point comparison implementations
+ *
  *  @author Hubert Degaudenzi
  *  @date Jun 13, 2013
- *  @details Due to the finite representation of the real numbers in the computing
- *    architecture, the comparison between 2 floating point numbers needs to be
- *    done carefully. In details, even if the representation bit-wise of 2
- *    numbers is different, the real numbers they represent might be the same.
- *
- *    In essence, this is equivalent to compare the 2 numbers \f$x\f$ and \f$y\f$ with a
- *    relative tolerance number \f$\epsilon\f$:
- *    \f[
- *    |x-y| \leq \epsilon |x+y|
- *    \f]
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
  *
@@ -27,13 +19,23 @@
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
+ *  @details Due to the finite representation of the real numbers in the computing
+ *    architecture, the comparison between 2 floating point numbers needs to be
+ *    done carefully. In details, even if the representation bit-wise of 2
+ *    numbers is different, the real numbers they represent might be the same.
+ *
+ *    In essence, this is equivalent to compare the 2 numbers \f$x\f$ and \f$y\f$ with a
+ *    relative tolerance number \f$\epsilon\f$:
+ *    \f[
+ *    |x-y| \leq \epsilon |x+y|
+ *    \f]
+ *
  */
 
 /**
  * @addtogroup ElementsKernel ElementsKernel
  * @{
  */
-
 
 // Copyright 2005, Google Inc.
 // All rights reserved.
@@ -67,15 +69,14 @@
 // Authors: wan@google.com (Zhanyong Wan), eefacm@gmail.com (Sean Mcafee)
 //
 // The Google C++ Testing Framework (Google Test)
-#ifndef REAL_H_
-#define REAL_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_REAL_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_REAL_H_
 
-//#include <cstddef>
-#include <limits>                  // for numeric_limits
-#include <type_traits>             // for is_floating_point
-#include <cmath>                   // for round
+#include <limits>                   // for numeric_limits
+#include <type_traits>              // for is_floating_point
+#include <cmath>                    // for round
 
-#include "ElementsKernel/Export.h" // ELEMENTS_API
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 
 using std::numeric_limits;
@@ -104,7 +105,7 @@ public:
   using UInt = void;
 };
 
-// The specialization for size 4.
+// The specialisation for size 4.
 template<>
 class ELEMENTS_API TypeWithSize<4> {
 public:
@@ -116,7 +117,7 @@ public:
   using UInt = unsigned int;
 };
 
-// The specialization for size 8.
+// The specialisation for size 8.
 template<>
 class ELEMENTS_API TypeWithSize<8> {
 public:
@@ -125,20 +126,17 @@ public:
 };
 
 template <typename RawType>
-constexpr std::size_t defaultMaxUlps()
-{
+constexpr std::size_t defaultMaxUlps() {
   return FLT_DEFAULT_MAX_ULPS;
 }
 
 template <>
-constexpr std::size_t defaultMaxUlps<float>()
-{
+constexpr std::size_t defaultMaxUlps<float>() {
   return FLT_DEFAULT_MAX_ULPS;
 }
 
 template <>
-constexpr std::size_t defaultMaxUlps<double>()
-{
+constexpr std::size_t defaultMaxUlps<double>() {
   return DBL_DEFAULT_MAX_ULPS;
 }
 
@@ -330,15 +328,16 @@ private:
 // Usable AlmostEqual function
 
 template <typename FloatType>
-bool almostEqual2sComplement(const FloatType& a, const FloatType& b, const std::size_t& max_ulps=0)
-{
+bool almostEqual2sComplement(const FloatType& a,
+                             const FloatType& b,
+                             const std::size_t& max_ulps = 0) {
   return false;
 }
 
 
 template <typename RawType>
-bool isNan(const RawType& x)
-{
+bool isNan(const RawType& x) {
+
   using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
   Bits x_bits = *reinterpret_cast<const Bits *>(&x);
 
@@ -349,12 +348,12 @@ bool isNan(const RawType& x)
 
 }
 
-template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
-bool isEqual(const RawType& left, const RawType& right)
-{
+template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
+bool isEqual(const RawType& left, const RawType& right) {
+
   bool is_equal{false};
 
-  if ( not (isNan<RawType>(left) || isNan<RawType>(right)) ) {
+  if (not(isNan<RawType>(left) or isNan<RawType>(right))) {
     using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
     Bits l_bits = *reinterpret_cast<const Bits *>(&left);
     Bits r_bits = *reinterpret_cast<const Bits *>(&right);
@@ -365,40 +364,33 @@ bool isEqual(const RawType& left, const RawType& right)
 }
 
 template <std::size_t max_ulps>
-inline bool isEqual(const float& left, const float& right)
-{
+inline bool isEqual(const float& left, const float& right) {
   return (isEqual<float, max_ulps>(left, right));
 }
 
 template <std::size_t max_ulps>
-inline bool isEqual(const double& left, const double& right)
-{
+inline bool isEqual(const double& left, const double& right) {
   return (isEqual<double, max_ulps>(left, right));
 }
 
-
-template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
-inline bool isNotEqual(const RawType& left, const RawType& right)
-{
+template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
+inline bool isNotEqual(const RawType& left, const RawType& right) {
   return (not isEqual<RawType, max_ulps>(left, right) );
 }
 
 template <std::size_t max_ulps>
-inline bool isNotEqual(const float& left, const float& right)
-{
+inline bool isNotEqual(const float& left, const float& right) {
   return (isNotEqual<float, max_ulps>(left, right));
 }
 
 template <std::size_t max_ulps>
-inline bool isNotEqual(const double& left, const double& right)
-{
+inline bool isNotEqual(const double& left, const double& right) {
   return (isNotEqual<double, max_ulps>(left, right));
 }
 
 
-template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
-bool isLess(const RawType& left, const RawType& right)
-{
+template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
+bool isLess(const RawType& left, const RawType& right) {
   bool is_less{false};
 
   if ( left < right && (not isEqual<RawType, max_ulps>(left, right)) ) {
@@ -409,20 +401,17 @@ bool isLess(const RawType& left, const RawType& right)
 }
 
 template<std::size_t max_ulps>
-inline bool isLess(const float& left, const float& right)
-{
+inline bool isLess(const float& left, const float& right) {
   return (isLess<float, max_ulps>(left, right));
 }
 
 template<std::size_t max_ulps>
-inline bool isLess(const double& left, const double& right)
-{
+inline bool isLess(const double& left, const double& right) {
   return (isLess<double, max_ulps>(left, right));
 }
 
-template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
-bool isGreater(const RawType& left, const RawType& right)
-{
+template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
+bool isGreater(const RawType& left, const RawType& right) {
   bool is_greater{false};
 
   if ( left > right && (not isEqual<RawType, max_ulps>(left, right)) ) {
@@ -433,20 +422,17 @@ bool isGreater(const RawType& left, const RawType& right)
 }
 
 template<std::size_t max_ulps>
-inline bool isGreater(const float& left, const float& right)
-{
+inline bool isGreater(const float& left, const float& right) {
   return (isGreater<float, max_ulps>(left, right));
 }
 
 template<std::size_t max_ulps>
-inline bool isGreater(const double& left, const double& right)
-{
+inline bool isGreater(const double& left, const double& right) {
   return (isGreater<double, max_ulps>(left, right));
 }
 
-template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
-bool isLessOrEqual(const RawType& left, const RawType& right)
-{
+template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
+bool isLessOrEqual(const RawType& left, const RawType& right) {
   bool is_loe{false};
 
   if (not isGreater<RawType, max_ulps>(left, right))  {
@@ -457,20 +443,17 @@ bool isLessOrEqual(const RawType& left, const RawType& right)
 }
 
 template<std::size_t max_ulps>
-inline bool isLessOrEqual(const float& left, const float& right)
-{
+inline bool isLessOrEqual(const float& left, const float& right) {
   return (isLessOrEqual<float, max_ulps>(left, right));
 }
 
 template<std::size_t max_ulps>
-inline bool isLessOrEqual(const double& left, const double& right)
-{
+inline bool isLessOrEqual(const double& left, const double& right) {
   return (isLessOrEqual<double, max_ulps>(left, right));
 }
 
-template <typename RawType, std::size_t max_ulps=defaultMaxUlps<RawType>()>
-bool isGreaterOrEqual(const RawType& left, const RawType& right)
-{
+template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
+bool isGreaterOrEqual(const RawType& left, const RawType& right) {
   bool is_goe{false};
 
   if (not isLess<RawType, max_ulps>(left, right))  {
@@ -481,14 +464,12 @@ bool isGreaterOrEqual(const RawType& left, const RawType& right)
 }
 
 template<std::size_t max_ulps>
-inline bool isGreaterOrEqual(const float& left, const float& right)
-{
+inline bool isGreaterOrEqual(const float& left, const float& right) {
   return (isGreaterOrEqual<float, max_ulps>(left, right));
 }
 
 template<std::size_t max_ulps>
-inline bool isGreaterOrEqual(const double& left, const double& right)
-{
+inline bool isGreaterOrEqual(const double& left, const double& right) {
   return (isGreaterOrEqual<double, max_ulps>(left, right));
 }
 
@@ -509,7 +490,7 @@ inline bool isGreaterOrEqual(const double& left, const double& right)
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
 ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
-                                             const int& max_ulps=FLT_DEFAULT_MAX_ULPS);
+                                             const int& max_ulps = FLT_DEFAULT_MAX_ULPS);
 /**
  * @brief
  *   This function compare 2 doubles with a relative tolerance
@@ -527,7 +508,7 @@ ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
 ELEMENTS_API bool almostEqual2sComplement(const double& left, const double& right,
-                                             const int& max_ulps=DBL_DEFAULT_MAX_ULPS);
+                                             const int& max_ulps = DBL_DEFAULT_MAX_ULPS);
 
 /**
  * @brief
@@ -550,9 +531,9 @@ ELEMENTS_API bool realBitWiseEqual(const RawType& left, const RawType& right) {
 #pragma GCC diagnostic pop
 }
 
-} // Elements namespace
+}  // namespace Elements
 
 
-#endif /* REAL_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_REAL_H_
 
 /**@}*/

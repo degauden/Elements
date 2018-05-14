@@ -22,22 +22,28 @@
 
 #include "ElementsKernel/Auxiliary.h"
 
+#include <algorithm>                   // for remove_if
+#include <iterator>
+#include <map>
 #include <string>                      // for string
 #include <vector>                      // for vector
-#include <algorithm>                   // for remove_if
-#include <boost/filesystem.hpp>        // for boost::filesystem
 
-#include "ElementsKernel/System.h"     // for DEFAULT_INSTALL_PREFIX
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+
 #include "ElementsKernel/Path.h"       // for Type and VARIABLE
+#include "ElementsKernel/System.h"     // for DEFAULT_INSTALL_PREFIX
 
 using std::string;
 using std::vector;
 using boost::filesystem::path;
+using Elements::Path::Type;
+using Elements::Path::VARIABLE;
 
 namespace Elements {
 
 string getAuxiliaryVariableName() {
-  return Path::VARIABLE.at(Path::Type::auxiliary);
+  return VARIABLE.at(Type::auxiliary);
 }
 
 // instantiation of the most expected types
@@ -48,7 +54,8 @@ vector<path> getAuxiliaryLocations(bool exist_only) {
 
   using System::DEFAULT_INSTALL_PREFIX;
 
-  auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::auxiliary), exist_only);
+  auto location_list = Path::getLocationsFromEnv(VARIABLE.at(Type::auxiliary),
+                                                 exist_only);
 
   // extended to /usr/share/aux{dir,}
   location_list.push_back(path(DEFAULT_INSTALL_PREFIX) / "share" / "auxdir");

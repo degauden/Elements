@@ -19,23 +19,22 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
-#include <cassert>
-#include <cstdlib>
-#include <cstdint>                  // for std::int64_t, std::int32_t
 #include "ElementsKernel/Real.h"
 
+#include <cstdlib>                  // for abs
+#include <limits>                   // for numeric_limits
+#include <cstdint>                  // for std::int64_t, std::int32_t
+
+using std::abs;
 
 namespace Elements {
 
 extern const double FLT_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<float>::digits10);
 extern const double DBL_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<double>::digits10);
 
-
 // Usable AlmostEqual function
 bool almostEqual2sComplement(const float& left, const float& right, const int& max_ulps) {
 
-    using std::abs;
     using std::int32_t;
 
     // int a_int = *(int*)&a;

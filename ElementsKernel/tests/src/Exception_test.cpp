@@ -21,23 +21,25 @@
  * @author nikoapos
  */
 
+#include "ElementsKernel/Exception.h"
+
 #include <string>
+
 #include <boost/test/unit_test.hpp>       // for boost unit test macros
 
-#include "ElementsKernel/Exception.h"
 
 using std::string;
 
 struct TestException : public Elements::Exception {
-    
-  explicit TestException(const string& message="") : Exception(message, Elements::ExitCode::NOT_OK) {
+
+  explicit TestException(const string& message = "") : Exception(message, Elements::ExitCode::NOT_OK) {
     m_number = -1;
   }
-  
+
   explicit TestException(const int number) : Exception("", Elements::ExitCode::NOT_OK) {
     m_number = number;
   }
-  
+
   int m_number;
 };
 
@@ -46,15 +48,15 @@ BOOST_AUTO_TEST_SUITE(Exception_test)
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
-  
+
   // Given
   string message_part_1 = "Part 1";
   string message_part_2 = "Part 2";
-  
+
   // When
   try {
     throw TestException(message_part_1);
-    
+
   // Then
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1);
@@ -64,11 +66,11 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   } catch (...) {
     BOOST_FAIL("Unknown type of exception instead of TestException");
   }
-  
+
   // When
   try {
     throw TestException(5) << message_part_1 << message_part_2;
-    
+
   // Then
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1 + message_part_2);
@@ -78,12 +80,12 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   } catch (...) {
     BOOST_FAIL("Unknown type of exception instead of TestException");
   }
-  
+
   // When
   try {
     TestException e {6};
     throw e << message_part_1 << message_part_2;
-    
+
   // Then
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1 + message_part_2);
@@ -93,13 +95,13 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   } catch (...) {
     BOOST_FAIL("Unknown type of exception instead of TestException");
   }
-  
+
   // When
   try {
     TestException e {7};
     e << message_part_1 << message_part_2;
     throw e;
-    
+
   // Then
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1 + message_part_2);
@@ -109,7 +111,7 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   } catch (...) {
     BOOST_FAIL("Unknown type of exception instead of TestException");
   }
-  
+
 }
 
 //-----------------------------------------------------------------------------

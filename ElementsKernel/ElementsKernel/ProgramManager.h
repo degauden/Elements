@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSPROGRAMMANAGER_H_
-#define ELEMENTSPROGRAMMANAGER_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
 
 #include <map>                           // for map
 #include <string>                        // for string
@@ -267,6 +267,6 @@ private:
 
 }  // namespace Elements
 
-#endif  // ELEMENTSPROGRAMMANAGER_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
 
 /**@}*/

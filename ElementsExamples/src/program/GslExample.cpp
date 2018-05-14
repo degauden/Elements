@@ -49,7 +49,7 @@ public:
 
 
     double x = 5.0;
-    double y = gsl_sf_bessel_J0 (x);
+    double y = gsl_sf_bessel_J0(x);
 
 
     logger.info() << boost::format("J0(%g) = %.18e\n") % x % y;
@@ -60,8 +60,8 @@ public:
 
 };
 
-} // namespace ElementsExamples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 
 /**

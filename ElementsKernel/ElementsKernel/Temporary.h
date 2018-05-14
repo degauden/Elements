@@ -23,10 +23,10 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_TEMPORARY_H_
-#define ELEMENTSKERNEL_TEMPORARY_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_TEMPORARY_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_TEMPORARY_H_
 
-
+#include <string>
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/Export.h"                 // ELEMENTS_API
@@ -48,21 +48,21 @@ private:
 
 class ELEMENTS_API TempDir : public TempPath {
 public:
-  explicit TempDir(const std::string& motif="");
+  explicit TempDir(const std::string& motif = "");
   virtual ~TempDir();
 };
 
 
 class ELEMENTS_API TempFile : public TempPath {
 public:
-  explicit TempFile(const std::string&  motif="");
+  explicit TempFile(const std::string&  motif = "");
   virtual ~TempFile();
 };
 
 using TempEnv = Environment;
 
-} // namespace Elements
+}  // namespace Elements
 
-#endif // ELEMENTSKERNEL_TEMPORARY_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_TEMPORARY_H_
 
 /**@}*/

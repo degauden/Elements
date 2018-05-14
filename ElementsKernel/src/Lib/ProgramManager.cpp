@@ -21,27 +21,31 @@
 
 #include "ElementsKernel/ProgramManager.h"
 
-#include <cstdlib>                         // for the exit function
-#include <fstream>
-#include <iostream>
-#include <typeinfo>                        // for the typid operator
-#include <algorithm>                       // for transform
-#include <vector>                          // for vector
-#include <string>                          // for string
+#include <algorithm>                             // for transform
+#include <cstdint>                               // for int64_t
+#include <cstdlib>                               // for the exit function
+#include <exception>                             // for exception
+#include <iostream>                              // for cout
+#include <sstream>                               // for stringstream
+#include <string>                                // for string
+#include <typeinfo>                              // for the typid operator
+#include <vector>                                // for vector
 
-#include <boost/algorithm/string/predicate.hpp>  // for boost::starts_with
+#include <boost/algorithm/string/predicate.hpp>  // for starts_with
+#include <boost/filesystem/operations.hpp>       // for filesystem::complete, exists
+#include <boost/filesystem/path.hpp>             // for filesystem::path
+#include <boost/program_options.hpp>             // for program_options
 
+#include "ElementsKernel/Configuration.h"        // for getConfigurationPath
+#include "ElementsKernel/Path.h"                 // for Path::VARIABLE, multiPathAppend, PATH_SEP
+#include "ElementsKernel/Exception.h"            // for Exception
+#include "ElementsKernel/Exit.h"                 // for ExitCode
+#include "ElementsKernel/Logging.h"              // for Logging
+#include "ElementsKernel/ModuleInfo.h"           // for getExecutablePath
+#include "ElementsKernel/System.h"               // for backTrace
+#include "ElementsKernel/Unused.h"               // for ELEMENTS_UNUSED
 
-#include "ElementsKernel/Exception.h"
-#include "ElementsKernel/Logging.h"
-#include "ElementsKernel/System.h"
-
-#include "ElementsKernel/Path.h"           // for Path::VARIABLE, multiPathAppend, PATH_SEP
-#include "ElementsKernel/ModuleInfo.h"     // for getExecutablePath
-#include "ElementsKernel/Unused.h"         // for ELEMENTS_UNUSED
-#include "ElementsKernel/Configuration.h"  // for getConfigurationPath
-
-#include "OptionException.h"               // local exception for unrecognized options
+#include "OptionException.h"                     // local exception for unrecognized options
 
 using std::vector;
 using std::string;
@@ -70,7 +74,6 @@ const path& ProgramManager::getProgramName() const {
  * */
 const path ProgramManager::getDefaultConfigFile(const path & program_name,
                                                 const string& module_name) {
-
   Logging logger = Logging::getLogger("ElementsProgram");
 
   path default_config_file{};
@@ -87,7 +90,7 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name,
       logger.warn() << " " << loc;
     }
     if (not module_name.empty()) {
-      conf_name = path{module_name} / conf_name;
+      conf_name = path {module_name} / conf_name;
       logger.warn() << "Trying \"" << conf_name.string() << "\".";
       default_config_file = getConfigurationPath(conf_name.string(), false);
     }
@@ -104,14 +107,14 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name,
 
 const path ProgramManager::setProgramName(ELEMENTS_UNUSED char* arg0) {
 
-  path full_path = Elements::System::getExecutablePath();
+  path full_path = getExecutablePath();
 
   return full_path.filename();
 }
 
 const path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
 
-  path full_path = Elements::System::getExecutablePath();
+  path full_path = getExecutablePath();
 
   return full_path.parent_path();
 }
@@ -125,6 +128,7 @@ const variables_map ProgramManager::getProgramOptions(
 
   using std::cout;
   using std::endl;
+  using std::exit;
   using boost::program_options::options_description;
   using boost::program_options::value;
   using boost::program_options::store;
@@ -196,13 +200,13 @@ const variables_map ProgramManager::getProgramOptions(
   // Deal with the "help" option
   if (var_map.count("help")) {
     cout << help_options << endl;
-    exit(0);
+    exit(static_cast<int>(ExitCode::OK));
   }
 
   // Deal with the "version" option
   if (var_map.count("version")) {
     cout << getVersion() << endl;
-    exit(0);
+    exit(static_cast<int>(ExitCode::OK));
   }
 
   // Get the configuration file. It is guaranteed to exist, because it has
@@ -280,6 +284,7 @@ void ProgramManager::logFooter(string program_name) const {
 void ProgramManager::logAllOptions() const {
 
   using std::stringstream;
+  using std::int64_t;
 
   Logging logger = Logging::getLogger("ElementsProgram");
 
@@ -345,7 +350,6 @@ void ProgramManager::logAllOptions() const {
     log_message.str("");
   }
   logger.info("#");
-
 
 }
 
@@ -506,7 +510,7 @@ void ProgramManager::onTerminate() noexcept {
       logger.fatal() << "# ";
     } catch (...) {
       logger.fatal() << "# ";
-      logger.fatal() << "# An exception of unknown type occured, "
+      logger.fatal() << "# An exception of unknown type occurred, "
                      << "i.e., an exception not deriving from std::exception ";
       logger.fatal() << "# ";
     }

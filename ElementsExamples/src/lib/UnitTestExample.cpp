@@ -19,25 +19,26 @@
  *
  */
 
+#include "ElementsExamples/UnitTestExample.h"
+
 #include <numeric>                              // accumulate
 #include <algorithm>                            // sort
 #include <vector>                               // vector
 
 #include "ElementsKernel/Exception.h"
-#include "ElementsExamples/UnitTestExample.h"
 
 using std::vector;
 
 namespace Elements {
 namespace Examples {
 
-double UnitTestExample::average (const vector<int>& v) {
+double UnitTestExample::average(const vector<int>& v) {
 
   double result = 0.0;
   auto size = v.size();
   // Throw an exception if the number of vector elements is null!
   if (size == 0) {
-    throw Exception() << "Input vector has no element!"; // can be removed to feed a unit test exercise
+    throw Exception() << "Input vector has no element!";  // can be removed to feed a unit test exercise
   }
 
   // We check if we have enough numbers to compute the median
@@ -54,8 +55,8 @@ double UnitTestExample::average (const vector<int>& v) {
 
   } else {
     // If we have less than 5 numbers we compute the mean
-    //auto sum = std::accumulate(v.begin(), v.end(), 0); // example mistake to feed a unit test exercise
-    auto sum = std::accumulate(v.begin(), v.end(), 0.); // example mistake to feed a unit test exercise
+    // auto sum = std::accumulate(v.begin(), v.end(), 0);  // example mistake to feed a unit test exercise
+    auto sum = std::accumulate(v.begin(), v.end(), 0.);  // example mistake to feed a unit test exercise
 
     result = sum / size;
   }
@@ -63,5 +64,5 @@ double UnitTestExample::average (const vector<int>& v) {
   return result;
 }
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements

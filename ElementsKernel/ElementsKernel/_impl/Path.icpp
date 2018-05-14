@@ -23,12 +23,13 @@
 #ifndef ELEMENTSKERNEL__IMPL_PATH_ICPP_
 #define ELEMENTSKERNEL__IMPL_PATH_ICPP_
 
-#include <string>                          // for string
-#include <vector>                          // for vector
-#include <set>                             // for set
-#include <algorithm>                       // for find_if, transform, for_each
-#include <boost/filesystem.hpp>            // for boost::filesystem
-#include <boost/algorithm/string/join.hpp> // for join
+#include <string>                           // for string
+#include <vector>                           // for vector
+#include <set>                              // for set
+#include <algorithm>                        // for find_if, transform, for_each
+
+#include <boost/filesystem.hpp>             // for boost::filesystem
+#include <boost/algorithm/string/join.hpp>  // for join
 
 
 namespace Elements {
@@ -44,11 +45,11 @@ boost::filesystem::path getPathFromLocations(const T& file_name, const std::vect
 
   auto found_pos = std::find_if(locations.cbegin(), locations.cend(),
       [file_path](U l) {
-    return boost::filesystem::exists(path{l} / file_path);
+    return boost::filesystem::exists(path {l} / file_path);
   });
 
   if (found_pos != locations.cend()) {
-    found_path = path{*found_pos} / file_path;
+    found_path = path {*found_pos} / file_path;
   }
 
   return found_path;
@@ -66,7 +67,7 @@ std::vector<boost::filesystem::path> getAllPathFromLocations(const T& file_name,
   std::transform(locations.cbegin(), locations.cend(),
                  file_list.begin(),
                  [file_path](U l){
-    return path{l}/file_path;
+    return path {l} / file_path;
   });
 
   auto found_pos = std::remove_if(file_list.begin(), file_list.end(),
@@ -138,7 +139,7 @@ std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initi
   return result;
 }
 
-} // Path namespace
-} // Elements namespace
+}  // namespace Path
+}  // namespace Elements
 
-#endif // ELEMENTSKERNEL__IMPL_PATH_ICPP_
+#endif  // ELEMENTSKERNEL__IMPL_PATH_ICPP_

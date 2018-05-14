@@ -55,8 +55,8 @@ public:
 
 };
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 /**
  * Implementation of a main using a base class macro

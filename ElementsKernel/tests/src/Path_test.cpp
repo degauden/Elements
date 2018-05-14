@@ -3,6 +3,20 @@
  *
  * Created on: Dec 4, 2013
  *     Author: Pierre Dubath
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
 #include "ElementsKernel/Path.h"          // header to test
@@ -227,7 +241,7 @@ BOOST_AUTO_TEST_CASE(MultiPathAppend_test) {
 
   using Elements::Path::multiPathAppend;
 
-  const vector<string> locations {"loc1","/loc2","./loc3"};
+  const vector<string> locations {"loc1", "/loc2", "./loc3"};
   const vector<string> suffixes {"bin", "scripts"};
 
   const vector<string> ref_paths {"loc1/bin", "loc1/scripts",
@@ -249,7 +263,6 @@ BOOST_AUTO_TEST_CASE(MultiPathAppend_test) {
   BOOST_CHECK(ref_paths == full_path_strings);
 
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()
 
