@@ -27,8 +27,6 @@
 #include <boost/program_options.hpp>
 #include "ElementsKernel/ProgramHeaders.h"
 
-namespace po = boost::program_options;
-
 using boost::program_options::options_description;
 using boost::program_options::variable_value;
 

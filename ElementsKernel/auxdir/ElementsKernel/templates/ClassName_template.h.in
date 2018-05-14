@@ -43,9 +43,9 @@ public:
 
 private:
 
-}; /* End of %(CLASSNAME)s class */
+};  // End of %(CLASSNAME)s class
 
-} /* namespace %(MODULENAME)s */
+}  // namespace %(MODULENAME)s
 
 
 #endif

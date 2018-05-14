@@ -26,7 +26,7 @@
 namespace %(MODULENAME)s {
 
 
-} // %(MODULENAME)s namespace
+}  // namespace %(MODULENAME)s
 
 
 

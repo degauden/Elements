@@ -135,7 +135,7 @@ private:
   template<typename... Args>
   struct ExitCodeHelper{};
 
-  // Specialization which handles the last argument
+  // Specialisation which handles the last argument
   template<typename Last>
   struct ExitCodeHelper<Last> {
     explicit ExitCodeHelper(const Last& last) : code{getCode(last)} {}
