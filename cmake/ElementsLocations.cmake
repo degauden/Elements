@@ -181,9 +181,16 @@ get_arch_lib_dir(that_arch)
 set(ELEMENTS_DEFAULT_SEARCH_PATH ${CMAKE_INSTALL_PREFIX}/${that_arch}/cmake/ElementsProject)
 set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/ElementsProject)
 
-file(TO_CMAKE_PATH "$ENV{XDG_DATA_HOME}" data_home)
 file(TO_CMAKE_PATH "$ENV{XDG_DATA_DIRS}" data_dirs)
-list(INSERT data_paths 0 ${data_home})
+if(data_dirs)
+  list(INSERT data_paths 0 ${data_dirs})
+endif()
+
+file(TO_CMAKE_PATH "$ENV{XDG_DATA_HOME}" data_home)
+if(data_home)
+  list(INSERT data_paths 0 ${data_home})
+endif()
+
 list(APPEND data_paths /usr/share)
 list(REMOVE_DUPLICATES data_paths)
 
