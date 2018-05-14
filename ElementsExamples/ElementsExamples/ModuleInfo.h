@@ -35,10 +35,10 @@ namespace Examples {
 
 ELEMENTS_API const System::ModuleInfo& getModuleInfo();
 
-} // namespace ElementsExamples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 
-#endif // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_MODULEINFO_H_
+#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_MODULEINFO_H_
 
 /**@}*/

@@ -23,13 +23,13 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_SYSTEMOFUNITS_H_
-#define ELEMENTSKERNEL_SYSTEMOFUNITS_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEMOFUNITS_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEMOFUNITS_H_
 
 #include "ElementsKernel/MathConstants.h"
 
 namespace Elements {
-  namespace Units {
+namespace Units {
 
     //
     // Length [L]
@@ -135,7 +135,7 @@ namespace Elements {
     //
     constexpr double coulomb = ampere * second;
     constexpr double eplus = 1.;    // positron charge
-    constexpr double e_SI  = 1.602176565e-19 * coulomb; // positron charge in coulomb
+    constexpr double e_SI  = 1.602176565e-19 * coulomb;  // positron charge in coulomb
 
 
     //
@@ -270,10 +270,10 @@ namespace Elements {
     constexpr double perThousand = 0.001;
     constexpr double perMillion  = 0.000001;
 
-  }  // namespace Units
-} // namespace Elements
+}  // namespace Units
+}  // namespace Elements
 
 
-#endif /* ELEMENTSKERNEL_SYSTEMOFUNITS_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEMOFUNITS_H_
 
 /**@}*/

@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSEXCEPTION_H_
-#define ELEMENTSEXCEPTION_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_EXCEPTION_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_EXCEPTION_H_
 
 #include <string>
 #include <sstream>
@@ -45,7 +45,7 @@ public:
    * @param e: this is an optional exit code. By default is is set
    *           to NOT_OK.
    */
-  explicit Exception(ExitCode e=ExitCode::NOT_OK) :
+  explicit Exception(ExitCode e = ExitCode::NOT_OK) :
     m_exit_code{e} {
   }
 
@@ -57,7 +57,7 @@ public:
    *  @param e: this is an optional exit code. By default is is set
    *            to NOT_OK.
    */
-  explicit Exception(const char* message, ExitCode e=ExitCode::NOT_OK) :
+  explicit Exception(const char* message, ExitCode e = ExitCode::NOT_OK) :
       m_error_msg(message),  m_exit_code{e} {
   }
 
@@ -66,7 +66,7 @@ public:
    *  @param e: this is an optional exit code. By default is is set
    *            to NOT_OK.
    */
-  explicit Exception(const std::string& message, ExitCode e=ExitCode::NOT_OK) :
+  explicit Exception(const std::string& message, ExitCode e = ExitCode::NOT_OK) :
       m_error_msg(message), m_exit_code{e} {
   }
 
@@ -120,7 +120,7 @@ public:
     new_message << m_error_msg << message;
     m_error_msg = new_message.str();
   }
-  
+
 protected:
   /** Error message.
    */
@@ -162,15 +162,15 @@ private:
 };
 
 template <typename Ex, typename T,
-           typename=typename std::enable_if<std::is_base_of<Exception,
+           typename = typename std::enable_if<std::is_base_of<Exception,
            typename std::remove_reference<Ex>::type>::value>::type>
 auto operator<<(Ex&& ex, const T& message) -> decltype(std::forward<Ex>(ex)) {
   ex.appendMessage(message);
   return std::forward<Ex>(ex);
 }
 
-} // namespace Elements
+}  // namespace Elements
 
-#endif /* ELEMENTSEXCEPTION_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_EXCEPTION_H_
 
 /**@}*/

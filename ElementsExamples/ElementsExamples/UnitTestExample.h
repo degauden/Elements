@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_
-#define ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_
+#ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_
+#define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_
 
 #include <vector>
 #include "ElementsKernel/Export.h"
@@ -62,9 +62,9 @@ public:
 
 };
 
-} // namespace ElementsExamples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
-#endif /* ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_ */
+#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_
 
 /**@}*/

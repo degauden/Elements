@@ -24,8 +24,8 @@
  * @{
  */
 
-#ifndef ELEMENTSPROGRAM_H_
-#define ELEMENTSPROGRAM_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAM_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAM_H_
 
 #include <string>                       // for string
 #include <utility>                      // for pair
@@ -106,8 +106,8 @@ public:
  * @example ElementsExamples/src/program/SimpleProgramExample.cpp
  * @include ElementsExamples/src/program/ProgramExample.cpp
  */
-}
+}  // namespace Elements
 
-#endif /* ELEMENTSPROGRAM_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAM_H_
 
 /**@}*/

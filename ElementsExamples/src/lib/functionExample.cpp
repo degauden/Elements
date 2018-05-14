@@ -19,7 +19,7 @@
  *
  */
 
-#include <ElementsExamples/functionExample.h>
+#include "ElementsExamples/functionExample.h"
 
 namespace Elements {
 namespace Examples {
@@ -28,5 +28,5 @@ int functionExample(const int j) {
   return j*j;
 }
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements

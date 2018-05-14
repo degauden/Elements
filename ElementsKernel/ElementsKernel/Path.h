@@ -91,7 +91,7 @@ ELEMENTS_API extern const std::map<Type, const bool> HAS_SUBLEVELS;
  *    return a list of boost filesystem paths
  */
 ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std::string& path_variable,
-                                                                         bool exist_only=false);
+                                                                      bool exist_only = false);
 
 /**
  * @brief retrieve path from a file name and a set of location to look into
@@ -152,11 +152,11 @@ template <typename T, typename U>
 ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations,
                                                                     const std::vector<U>& suffixes);
 
-}  // Path namespace
-}  // Elements namespace
+}  // namespace Path
+}  // namespace Elements
 
 #include "ElementsKernel/_impl/Path.icpp"
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
 
 /**@}*/

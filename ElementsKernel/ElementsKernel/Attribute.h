@@ -38,6 +38,6 @@
 #  define __attribute__(x)
 #endif
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_ATTRIBUTE_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_ATTRIBUTE_H_
 
 /**@}*/

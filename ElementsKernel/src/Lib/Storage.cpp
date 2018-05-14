@@ -20,10 +20,10 @@
 
 #include "ElementsKernel/Storage.h"
 
-#include <map>      // for std::map
-#include <cstdint>  // for std::int64_t
-#include <cmath>    // for std::pow, std::round, std::log10
-#include <string>   // for std::string
+#include <map>      // for map
+#include <cstdint>  // for int64_t
+#include <cmath>    // for pow, round, log10
+#include <string>   // for string
 
 using std::pow;
 using std::map;

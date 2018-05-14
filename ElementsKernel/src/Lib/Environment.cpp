@@ -26,6 +26,7 @@
 #include <stdexcept>                         // for out_of_range
 #include <algorithm>                         // for find
 #include <utility>                           // for move
+#include <map>                               // for map
 
 #include <boost/format.hpp>                  // for format
 
@@ -209,7 +210,7 @@ Environment& Environment::set(const string& index, const string& value) {
 
   if (m_old_values.find(index) == m_old_values.end()) {
     if (hasKey(index)) {
-      if ((not m_keep_same) or (getEnv(index) != value)) {
+      if ((not m_keep_same) || (getEnv(index) != value)) {
         m_old_values[index] = getEnv(index);
       }
     } else {
@@ -270,7 +271,7 @@ string Environment::get(const string& index, const string& default_value) const 
   return value;
 }
 
-bool Environment::hasKey(const string& index){
+bool Environment::hasKey(const string& index) {
 
   return isEnvSet(index);
 

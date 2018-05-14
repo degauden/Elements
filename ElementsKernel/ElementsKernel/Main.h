@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_MAIN_H_
-#define ELEMENTSKERNEL_MAIN_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_MAIN_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_MAIN_H_
 
 #include <exception>                               // for set_terminate
 #include <memory>                                  // for unique_ptr
@@ -56,7 +56,7 @@
  * the class Elements::Program class.
  */
 #define MAIN_FOR(ELEMENTS_PROGRAM_NAME)         \
-  ELEMENTS_UNUSED const auto installed={std::set_terminate(&Elements::ProgramManager::onTerminate)}; \
+  ELEMENTS_UNUSED const auto installed = {std::set_terminate(&Elements::ProgramManager::onTerminate)}; \
   ELEMENTS_API int main(int argc, char* argv[])              \
   {                                             \
     Elements::ProgramManager manager {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
@@ -67,7 +67,7 @@
     return static_cast<Elements::ExitCodeType>(exit_code);    \
   }
 
-#endif // ELEMENTSKERNEL_MAIN_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_MAIN_H_
 
 /** \example ElementsExamples/src/program/ProgramExample.cpp
  * Example that shows the usage of the MAIN_FOR macro

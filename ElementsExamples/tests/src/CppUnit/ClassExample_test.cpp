@@ -3,17 +3,34 @@
  *
  * Created on: Aug 12, 2013 Jun 20, 2013
  *     Author: Pierre Dubath
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
+#include "ElementsExamples/ClassExample.h"
+
 #include <iostream>
+#include <string>                                // for string
+
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "ElementsKernel/Exception.h"
-#include "ElementsKernel/Real.h" // Provides isEqual
+#include "ElementsKernel/Real.h"                 // Provides isEqual
 
-#include "ElementsExamples/ClassExample.h"
 
 
 using std::string;
@@ -48,7 +65,7 @@ protected:
 
 private:
 
-  //Elements::ClassExample m_class_example {};
+  // Elements::ClassExample m_class_example {};
 
   // expected static string (hard coded in .cpp file!)
   string m_expected_static_string {"This is a static field example"};
@@ -67,42 +84,43 @@ private:
 
 //-----------------------------------------------------------------------------
 
-void ClassExampleSuite::setUp () {
+void ClassExampleSuite::setUp() {
 }
 
-void ClassExampleSuite::tearDown () {
+void ClassExampleSuite::tearDown() {
 }
 
 //-----------------------------------------------------------------------------
 
 
 
-void ClassExampleSuite::gettersTest () {
+void ClassExampleSuite::gettersTest() {
 
   CPPUNIT_ASSERT(m_source_id == m_class_example.getSourceId());
 
 }
 
-void ClassExampleSuite::fundamentalTypeMethodTest () {
+void ClassExampleSuite::fundamentalTypeMethodTest() {
 
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable), Elements::DBL_DEFAULT_TEST_TOLERANCE);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable),
+                               Elements::DBL_DEFAULT_TEST_TOLERANCE);
 
 }
 
-void ClassExampleSuite::fundamentalTypeMethodSecondTest () {
+void ClassExampleSuite::fundamentalTypeMethodSecondTest() {
 
   CPPUNIT_ASSERT(Elements::isEqual(m_expected_result, m_class_example.fundamentalTypeMethod(m_input_variable)));
 
 }
 
 
-void ClassExampleSuite::exceptionInDivideNumbersTest () {
+void ClassExampleSuite::exceptionInDivideNumbersTest() {
 
   bool exception = false;
   try {
     m_class_example.divideNumbers(1.0, 0.0);
   } catch (const Elements::Exception & e) {
-    //exception = true;
+    // exception = true;
     string exception_str = e.what();
     exception = (exception_str.find("exception in ClassExample::divideNumbers") != string::npos);
   }
@@ -113,4 +131,4 @@ void ClassExampleSuite::exceptionInDivideNumbersTest () {
 
 //-----------------------------------------------------------------------------
 
-CPPUNIT_TEST_SUITE_REGISTRATION (ClassExampleSuite);
+CPPUNIT_TEST_SUITE_REGISTRATION(ClassExampleSuite);

@@ -24,9 +24,8 @@
  * @{
  */
 
-
-#ifndef CLASSEXAMPLE_H_
-#define CLASSEXAMPLE_H_
+#ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE_H_
+#define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE_H_
 
 #include <string>                   // for std::string
 #include <vector>                   // for std::vector
@@ -61,12 +60,12 @@ public:
    *    Right Ascension coordinate
    *
    */
-  static ClassExample factoryMethod (const std::int64_t source_id, const double ra);
+  static ClassExample factoryMethod(const std::int64_t source_id, const double ra);
 
   /*
    * Getter to access the static private string
    */
-  static const std::string& getStaticString () {
+  static const std::string& getStaticString() {
     return s_static_string;
   }
 
@@ -100,7 +99,7 @@ public:
    * @return
    *    The output of the method
    */
-  double fundamentalTypeMethod (const double input_variable) const;
+  double fundamentalTypeMethod(const double input_variable) const;
 
   /**
    * @brief
@@ -118,7 +117,7 @@ public:
    * @throws
    *   EuclidException, if the second number is (close to) zero
    */
-  double divideNumbers (const double first, const double second) const;
+  double divideNumbers(const double first, const double second) const;
 
   /**
    * @brief
@@ -134,7 +133,7 @@ public:
    * @param vector_unique_ptr
    *    Unique pointer to a vector object
    */
-  void passingUniquePointer (std::unique_ptr<std::vector<double>> vector_unique_ptr) const;
+  void passingUniquePointer(std::unique_ptr<std::vector<double>> vector_unique_ptr) const;
 
   /**
    * @brief
@@ -149,12 +148,12 @@ public:
    * @param input_object
    *    a vector of double
    */
-  void passingObjectInGeneral (const std::vector<double>& input_object) const;
+  void passingObjectInGeneral(const std::vector<double>& input_object) const;
 
   /**
    * Getter to access private sourceId
    */
-  std::int64_t getSourceId () const {
+  std::int64_t getSourceId() const {
     return m_source_id;
   }
 
@@ -162,7 +161,7 @@ public:
    * Getter to access private m_ra
    *
    */
-  double getRa () const {
+  double getRa() const {
     return m_ra;
   }
 
@@ -180,7 +179,7 @@ private:
    * can be chosen via the factory.
    *
    */
-  ClassExample (const std::int64_t source_id, const double ra) :
+  ClassExample(const std::int64_t source_id, const double ra) :
       m_source_id(source_id), m_ra(ra) {
   }
 
@@ -195,9 +194,9 @@ private:
 
 };
 
-} // namespace ElementsExamples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
-#endif /* CLASSEXAMPLE_H_ */
+#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE_H_
 
 /**@}*/

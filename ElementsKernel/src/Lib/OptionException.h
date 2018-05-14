@@ -32,7 +32,7 @@ namespace Elements {
 class OptionException : public Exception {
 
 public:
-  explicit OptionException(const std::string& message="") : Exception(message, Elements::ExitCode::USAGE) {
+  explicit OptionException(const std::string& message = "") : Exception(message, Elements::ExitCode::USAGE) {
   }
 
 };

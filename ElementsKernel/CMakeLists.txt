@@ -10,9 +10,6 @@ elements_add_library(ElementsKernel src/Lib/*.cpp
                     PUBLIC_HEADERS ElementsKernel)
 
 #---Tests-------------------------------------------------------------------
-elements_add_unit_test(Time tests/src/ElementsTime_test.cpp
-                       EXECUTABLE ElementsTime_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(Real tests/src/Real_test.cpp
                        EXECUTABLE Real_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost
@@ -24,7 +21,7 @@ elements_add_unit_test(Number tests/src/Number_test.cpp
 elements_add_unit_test(Version tests/src/Version_test.cpp
                        EXECUTABLE Version_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(Logging tests/src/ElementsLogging_test.cpp
+elements_add_unit_test(Logging tests/src/Logging_test.cpp
                        EXECUTABLE ElementsLogging_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 #-----------------------

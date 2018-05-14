@@ -18,15 +18,15 @@
  *
  */
 
-#include <map>                                 // for map
-#include <string>                              // for string
-#include <boost/program_options.hpp>           // for program options from configuration file of command line arguments
-#include <stdexcept>                           // for standard exceptions
+#include <map>                                  // for map
+#include <string>                               // for string
+#include <boost/program_options.hpp>            // for program options from configuration file of command line arguments
+#include <stdexcept>                            // for standard exceptions
 
-#include "ElementsExamples/crashingFunction.h" // for crashingFunction
+#include "ElementsExamples/crashingFunction.h"  // for crashingFunction
 
-#include "ElementsKernel/ProgramHeaders.h"     // for including all Program/related headers
-#include "ElementsKernel/Unused.h"             // for ELEMENTS_UNUSED
+#include "ElementsKernel/ProgramHeaders.h"      // for including all Program/related headers
+#include "ElementsKernel/Unused.h"              // for ELEMENTS_UNUSED
 
 using std::map;
 using std::string;
@@ -67,8 +67,8 @@ public:
 
 };
 
-} // namespace ElementsExamples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 
 /**

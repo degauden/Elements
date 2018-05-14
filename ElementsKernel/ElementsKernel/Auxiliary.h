@@ -45,14 +45,14 @@ namespace Elements {
 ELEMENTS_API std::string getAuxiliaryVariableName();
 
 template <typename T>
-ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const T& file_name, bool raise_exception=true);
+ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const T& file_name, bool raise_exception = true);
 
-ELEMENTS_API std::vector<boost::filesystem::path> getAuxiliaryLocations(bool exist_only=false);
+ELEMENTS_API std::vector<boost::filesystem::path> getAuxiliaryLocations(bool exist_only = false);
 
-}  // Elements namespace
+}  // namespace Elements
 
 #include "ElementsKernel/_impl/Auxiliary.icpp"
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 
 /**@}*/

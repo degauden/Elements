@@ -19,6 +19,8 @@
  *
  */
 
+#include "ElementsKernel/Temporary.h"
+
 #include <string>
 #include <iostream>
 
@@ -26,7 +28,6 @@
 #include <boost/filesystem/fstream.hpp>
 
 #include "ElementsKernel/Logging.h"
-#include "ElementsKernel/Temporary.h"
 
 using std::string;
 using boost::filesystem::path;

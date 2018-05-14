@@ -24,10 +24,10 @@
  * @{
  */
 
-#ifndef DATASOURCEUSER_H_
-#define DATASOURCEUSER_H_
+#ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_DATASOURCEUSER_H_
+#define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_DATASOURCEUSER_H_
 
-#include  <cstdlib> // for std::size_t
+#include  <cstdlib>                 // for std::size_t
 
 #include "ElementsKernel/Export.h"  // For ELEMENTS_API
 
@@ -51,7 +51,7 @@ public:
    * @return
    * A unsigned integer containing the number of records in the DataSource.
    */
-  virtual std::size_t countRecords () const = 0;
+  virtual std::size_t countRecords() const = 0;
 
   /**
    * @brief Fetch the value of the n-th record of the DataSource.
@@ -64,7 +64,7 @@ public:
    * @throw Elements::Exception
    * If no record exists at the specified index.
    */
-  virtual double getRecordValue (std::size_t index) const = 0;
+  virtual double getRecordValue(std::size_t index) const = 0;
 
   virtual ~DataSourceInterface() = default;
 };
@@ -86,13 +86,13 @@ public:
    *
    * @return The sum of the values of the records into the DataSource object
    */
-  double sumRecords (const DataSourceInterface& data_source);
+  double sumRecords(const DataSourceInterface& data_source);
 
 };
 
-} // namespace ElementsExamples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
-#endif /* DATASOURCEUSER_H_ */
+#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_DATASOURCEUSER_H_
 
 /**@}*/
