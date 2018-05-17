@@ -54,8 +54,7 @@ vector<path> getAuxiliaryLocations(bool exist_only) {
 
   using System::DEFAULT_INSTALL_PREFIX;
 
-  auto location_list = Path::getLocationsFromEnv(VARIABLE.at(Type::auxiliary),
-                                                 exist_only);
+  auto location_list = Path::getLocationsFromEnv(VARIABLE.at(Type::auxiliary), exist_only);
 
   // extended to /usr/share/aux{dir,}
   location_list.push_back(path(DEFAULT_INSTALL_PREFIX) / "share" / "auxdir");
@@ -71,9 +70,7 @@ vector<path> getAuxiliaryLocations(bool exist_only) {
     location_list.erase(new_end, location_list.end());
   }
 
-
   return location_list;
 }
-
 
 }  // namespace Elements

@@ -67,7 +67,6 @@ vector<path> getConfigurationLocations(bool exist_only) {
     location_list.erase(new_end, location_list.end());
   }
 
-
   return location_list;
 }
 
