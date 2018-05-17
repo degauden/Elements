@@ -117,6 +117,13 @@ elements_add_unit_test(BackTrace tests/src/BackTrace_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #-----------------------
+# System_test
+elements_add_unit_test(System tests/src/System_test.cpp
+                       EXECUTABLE System_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
+#-----------------------
 # GetEnv_test
 elements_add_unit_test(GetEnv tests/src/GetEnv_test.cpp
                        EXECUTABLE GetEnv_test
