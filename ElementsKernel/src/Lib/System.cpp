@@ -34,7 +34,8 @@
 #include <vector>                       // for vector
 
 #include <cerrno>                       // for errno
-#include <cstring>                      // for strnlen
+#include <cstring>                      // for strnlen, strerror
+#include <climits>                      // for HOST_NAME_MAX
 
 #include "ElementsKernel/FuncPtrCast.h"
 #include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
@@ -54,8 +55,7 @@ namespace System {
 namespace {
 
 unsigned long doLoad(const string& name, ImageHandle* handle) {
-  const char* path = name.c_str();
-  void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
+  void *mh = ::dlopen(name.length() == 0 ? 0 : name.c_str(), RTLD_LAZY | RTLD_GLOBAL);
   *handle = mh;
   if (0 == *handle) {
     return getLastError();
@@ -171,7 +171,7 @@ const string getErrorString(unsigned long error) {
   if (error == 0xAFFEDEAD) {
     cerrString = reinterpret_cast<char*>(::dlerror());
     if (0 == cerrString) {
-      cerrString = strerror(error);
+      cerrString = std::strerror(error);
     }
     if (0 == cerrString) {
       cerrString =
@@ -181,7 +181,7 @@ const string getErrorString(unsigned long error) {
     }
     errno = 0;
   } else {
-    cerrString = strerror(error);
+    cerrString = std::strerror(error);
     errString = string(cerrString);
   }
   return errString;
@@ -282,12 +282,11 @@ const string typeinfoName(const char* class_name) {
 
 /// Host name
 const string& hostName() {
-  static string host = "";
-  if (host == "") {
-    string buffer;
-    buffer.resize(512);
-    ::gethostname(const_cast<char *>(buffer.c_str()), sizeof(buffer));
-    host = buffer;
+  static string host {};
+  if (host.empty()) {
+    std::unique_ptr<char> buffer(new char[HOST_NAME_MAX+1]);
+    ::gethostname(buffer.get(), HOST_NAME_MAX);
+    host = buffer.get();
   }
   return host;
 }

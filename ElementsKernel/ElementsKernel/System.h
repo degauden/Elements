@@ -36,6 +36,7 @@
 #include <typeinfo>
 #include <string>
 #include <memory>
+#include <climits>
 
 // Framework include files
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
@@ -91,6 +92,16 @@ const std::string DEFAULT_INSTALL_PREFIX { "/usr" };
 
 #if defined(__linux) || defined(__APPLE__)
 #define TEMPLATE_SPECIALIZATION
+#endif
+
+#ifndef HOST_NAME_MAX
+
+#ifdef _POSIX_HOST_NAME_MAX
+#define HOST_NAME_MAX _POSIX_HOST_NAME_MAX
+#else
+#define HOST_NAME_MAX 255
+#endif
+
 #endif
 
 
