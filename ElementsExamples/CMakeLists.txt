@@ -251,7 +251,11 @@ if(SWIG_FOUND AND PYTHONLIBS_FOUND)
 elements_add_test(SwigProgramExampleRun COMMAND SwigProgramExample LABELS Swig Build)
 endif()
 
+elements_add_python_program(PythonTestProgramExample ElementsExamples.PythonTestProgramExample)
+
 elements_install_scripts()
+
+elements_add_test(PythonTestProgram COMMAND PythonTestProgramExample)
 
 
 elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test LABELS CustomLabel)
