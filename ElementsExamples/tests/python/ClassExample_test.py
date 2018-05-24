@@ -8,6 +8,7 @@ class ClassExampleTestCase(unittest.TestCase):
     """
     Simple test case for the ClassExample class
     """
+
     def setUp(self):
         unittest.TestCase.setUp(self)
         self.tol = 1e-6
@@ -27,10 +28,7 @@ class ClassExampleTestCase(unittest.TestCase):
     def testDestruction(self):
         assert abs(self.expected_result - self.example_object.sumListValues()) < self.tol
 
+
 if __name__ == '__main__':
     unittest.main()
-
-
-
-
 

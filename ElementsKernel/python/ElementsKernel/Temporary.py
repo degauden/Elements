@@ -21,7 +21,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 '''
 
-
 from shutil import rmtree
 
 import os
@@ -34,16 +33,17 @@ if not 'mkdtemp' in dir(tempfile):
         action='ignore', message='.*tmpnam.*', category=RuntimeWarning)
 
     def mkdtemp():
-        """Remplacement for the missing function in the tempfile module"""
+        """Replacement for the missing function in the tempfile module"""
         name = os.tmpnam()  # @UndefinedVariable
         os.mkdir(name, 0o700)
         return name
 
     def mkstemp():
-        """Remplacement for the missing function in the tempfile module"""
+        """Replacement for the missing function in the tempfile module"""
         name = os.tmpnam()  # @UndefinedVariable
         return (os.open(name, os.O_CREAT | os.O_RDWR | os.O_EXCL, 0o600),
                 name)
+
 else:
     # use the real mkdtemp
     from tempfile import mkdtemp, mkstemp
@@ -54,7 +54,6 @@ from ElementsKernel import Logging
 class TempResource(object):
 
     """ Base class for the temporary file and temporary directory"""
-
 
     def __init__(self):
         """ Constructor """
@@ -127,7 +126,6 @@ class TempDir(TempResource):
                 self._name = None
 
 
-
 class TempFile(TempResource):
 
     """ class to create a temporary file """
@@ -136,7 +134,6 @@ class TempFile(TempResource):
         """ Constructor """
         self._file = None
         super(TempFile, self).__init__()
-
 
     def _get_resource(self):
         """ Internal function to get the resource"""
@@ -151,7 +148,6 @@ class TempFile(TempResource):
             self._file = None
             os.remove(self._name)
             self._name = ''
-
 
 
 class Environment(object):
