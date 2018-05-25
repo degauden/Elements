@@ -64,6 +64,12 @@ def defineSpecificProgramOptions():
     )
 
     parser.add_argument(
+        '--int-option-with-no-defaults-anywhere',
+        type=int,
+        help='A string example option'
+    )
+
+    parser.add_argument(
         '--float-option',
         type=float,
         default=99999.0,
