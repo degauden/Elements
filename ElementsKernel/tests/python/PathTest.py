@@ -27,14 +27,13 @@ from ElementsKernel.Temporary import TempDir
 from ElementsKernel.Path import joinPath, multiPathAppend, getLocationsFromEnv
 from ElementsKernel.Path import which
 
-class PathTest(unittest.TestCase):
 
+class PathTest(unittest.TestCase):
 
     def setUp(self):
         unittest.TestCase.setUp(self)
         self._tmpdir_1 = TempDir(suffix="tempdir")
         self._tmpdir_2 = TempDir(suffix="tempdir")
-
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)
@@ -74,6 +73,7 @@ class PathTest(unittest.TestCase):
     def testWhich(self):
         sys_ls = subprocess.check_output(["which", "ls"]).strip()
         self.assertEqual(sys_ls, which(sys_ls))
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
