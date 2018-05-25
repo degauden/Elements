@@ -29,11 +29,11 @@ def defineSpecificProgramOptions():
         An  ArgumentParser.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--string-option', type=str,
+    parser.add_argument('--string-option', type=str, default='aaa',
                         help='A string example option')
-    parser.add_argument('--int-option', type=int,
+    parser.add_argument('--int-option', type=int, default=4,
                         help='An int example option')
-    parser.add_argument('--float-option', type=float,
+    parser.add_argument('--float-option', type=float, default=4.0,
                         help='A float option')
     parser.add_argument('--int-list-option', nargs='+', type=int,
                         help='A integer list option')
