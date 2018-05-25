@@ -65,11 +65,7 @@ class Program(object):
 
         conf_name = os.path.splitext(program_name)[0] + '.conf'
 
-        # We check if the configuration file is directly under the conf file and
-        # if it is under a directory named as the module
         default_config_file = getConfigurationPath(conf_name, False)
-        if not default_config_file:
-            default_config_file = getConfigurationPath(os.path.join(module_name, conf_name), False)
 
         if not default_config_file:
             self._logger.warn('The "%s" configuration file cannot be found in:', conf_name)
