@@ -36,4 +36,25 @@ if [ $? -ne 64 ]; then
   local_clean_exit 1
 fi
 
+# regular run
+PythonProgramExample
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed" 1>&2
+  local_clean_exit 1
+fi
+
+# regular run with known option
+PythonProgramExample --overwrite
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample --overwrite> failed" 1>&2
+  local_clean_exit 1
+fi
+
+# regular run with unknown option
+PythonProgramExample --toto
+if [ $? -eq 0 ]; then
+  echo "Error: <PythonProgramExample --toto> succeeded" 1>&2
+  local_clean_exit 1
+fi
+
 local_clean_exit 0
