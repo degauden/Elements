@@ -55,6 +55,9 @@
 /*.sublime-workspace
 /*.sublime-project
 
+## gnome builder
+/.buildconfig
+
 
 #####=== Python ===#####
 __pycache__/
