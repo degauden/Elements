@@ -144,9 +144,9 @@ class Program(object):
         # configuration file will be set at the last call of parse_args()
         for name in vars(cmd_options):
             # Get the action that maps to the name
-            action = next(a for a in arg_parser._actions if a.dest == name)
+            actions = [a for a in arg_parser._actions if a.dest == name]
             # Check if the user gave as argument any of the option strings
-            if not any([s in sys.argv for s in action.option_strings]):
+            if not any([any([ar is s or ar.startswith(s + "=") for ar in sys.argv]) for action in actions for s in action.option_strings]):
                 cmd_options.__setattr__(name, None)
         # Now redo the parsing including the configuration file
         options = sys.argv[1:]
