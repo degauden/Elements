@@ -94,6 +94,12 @@ def defineSpecificProgramOptions():
         help='Overwrite the output files'
     )
 
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=0.5,
+        help="signal threshold")
+
     return parser
 
 
@@ -121,6 +127,9 @@ def mainMethod(args):
     logger.info('Example string : ' + string_from_configuration)
     second_element = args.int_list_option[1]
     logger.info('Second elements from the list : ' + str(second_element))
+
+    logger.info("the int_option value %d" % args.int_option)
+    logger.info("the threshold value %.1f" % args.threshold)
 
     #
     #  Calling a static method

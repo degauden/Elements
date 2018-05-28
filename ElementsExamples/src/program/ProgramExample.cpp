@@ -94,6 +94,8 @@ public:
 
     // Add the specific program options
     config_options.add_options()
+        ("int-option", value<int>()->default_value(int { }),
+         "An example int option")
         ("string-option", value<string>()->default_value(string { }),
         "An example string option")
         ("boolean-option", value<bool>()->default_value(false),
@@ -108,7 +110,9 @@ public:
         "An example double option")
         ("int-vector-option",
          value<vector<int>>()->multitoken()->default_value(vector<int> { }, "Empty"),
-        "An example vector option");
+        "An example vector option")
+        ("threshold", value<double>()->default_value(double {0.5}),
+        "An example double option");
 
     return config_options;
   }
@@ -157,6 +161,10 @@ public:
      */
     string string_example { args["string-option"].as<string>() };
     logger.info() << "String option value: " << string_example;
+
+    logger.info() << "The int-option value is " << args["int-option"].as<int>();
+    logger.info() << "The threshold value is " << args["threshold"].as<double>();
+
 
     // Some initialization
     double input_variable = 3.4756;
