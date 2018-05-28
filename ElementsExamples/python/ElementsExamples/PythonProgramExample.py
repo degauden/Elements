@@ -5,17 +5,17 @@ from ElementsKernel import Logging
 from ElementsKernel.Program import str_to_bool
 from ElementsExamples.PythonModuleExample import ClassExample
 
-def myLocalLogTestFunc() :
+
+def myLocalLogTestFunc():
 
     logger = Logging.getLogger()
-    logger.info("Test of Message");
+    logger.info("Test of Message")
 
-    logger2 = Logging.getLogger("TestLogger");
-    logger2.info("Test2 of Message");
+    logger2 = Logging.getLogger("TestLogger")
+    logger2.info("Test2 of Message")
 
-    logger3 = Logging.getLogger(__name__);
-    logger3.info("Test3 of Message");
-
+    logger3 = Logging.getLogger(__name__)
+    logger3.info("Test3 of Message")
 
 
 def defineSpecificProgramOptions():
@@ -29,18 +29,73 @@ def defineSpecificProgramOptions():
         An  ArgumentParser.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--string-option', type=str,
-                        help='A string example option')
-    parser.add_argument('--int-option', type=int,
-                        help='An int example option')
-    parser.add_argument('--float-option', type=float,
-                        help='A float option')
-    parser.add_argument('--int-list-option', nargs='+', type=int,
-                        help='A integer list option')
-    parser.add_argument('--overwrite', nargs='?', dest='overwrite',
-                        default=False, const=True, type=str_to_bool,
-                        help='Overwrite the output files')
+
+    parser.add_argument(
+        '--string-option',
+        type=str,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--int-option',
+        type=int,
+        default=111,
+        help='An int example option'
+    )
+
+    parser.add_argument(
+        '--int-option-with-default-and-default-in-conf',
+        type=int,
+        default=222,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--int-option-with-default-no-default-in-conf',
+        type=int,
+        default=444,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--int-option-no-default-not-defined-in-conf',
+        type=int,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--int-option-with-no-defaults-anywhere',
+        type=int,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--float-option',
+        type=float,
+        default=99999.0,
+        help='A float option'
+    )
+
+    parser.add_argument(
+        '--int-list-option',
+        nargs='+',
+        type=int,
+        default=[-1, -2, 9],
+        help='A integer list option'
+    )
+
+    parser.add_argument(
+        '--overwrite',
+        nargs='?',
+        dest='overwrite',
+        default=False,
+        const=True,
+        type=str_to_bool,
+        help='Overwrite the output files'
+    )
+
     return parser
+
 
 def mainMethod(args):
     """
