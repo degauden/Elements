@@ -18,6 +18,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
+
+#include "ElementsKernel/PathSearch.h"
+
 #include <string>                         // for std::string
 #include <vector>                         // for std::vector
 #include <cstdlib>
@@ -25,11 +28,9 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "ElementsKernel/PathSearch.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/System.h"        // for getEnv
 #include "ElementsKernel/Temporary.h"     // For the TempDir class
-
 
 using std::string;
 using std::vector;
@@ -39,17 +40,7 @@ using boost::filesystem::path;
 using Elements::System::getEnv;
 using Elements::System::setEnv;
 
-
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-//
-// Begin of the Boost tests
-//
-//-----------------------------------------------------------------------------
-
 struct PathSearch_Fixture {
-
 
   string m_env_variable_name = "ELEMENTS_CONF_PATH";
   // store the original value of the environment variable to set it again correctly after the test
@@ -277,9 +268,3 @@ BOOST_AUTO_TEST_CASE(Recursion_test) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
-//-----------------------------------------------------------------------------
-//
-// End of the Boost tests
-//
-//-----------------------------------------------------------------------------
