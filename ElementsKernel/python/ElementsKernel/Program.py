@@ -86,7 +86,7 @@ class Program(object):
 
         return default_config_file;
 
-    def _parseConfigFile(self, arg_parser, cmd_options):
+    def _parseConfigFile(self, arg_parser):
         # First we check if the user gave the --config-file option
         config_file = arg_parser.parse_known_args()[0].config_file
         if not config_file:
@@ -101,15 +101,10 @@ class Program(object):
                         continue
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    # Get the action of the arg_parser for the given key and check if
-                    # we already have it from the command line
-                    try:
-                        action = next(act for act in arg_parser._actions if ('--' + key) in act.option_strings)
-                        if action.dest in [k for (k, v) in vars(cmd_options).items() if v]:
-                            continue
-                    except StopIteration:
-                        # There is no action for this key
-                        self._logger.error('Unknown option "' + key + '" in configuration file ' + config_file)
+                    # If the key is not mapping to any of the actions defined in
+                    # the parser, fail with an error messsage
+                    if not [act for act in arg_parser._actions if ('--' + key) in act.option_strings]:
+                        self._logger.error('Unknown option "{}" in configuration file {}'.format(key, config_file))
                         exit(1)
                     value = value.strip()
                     if '#' in value:
@@ -133,11 +128,13 @@ class Program(object):
             '--version', action='version', version=self.getVersion())
         # Setup the logging
         self._setupLogging(arg_parser)
-        # First we get any options from the command line
-        cmd_options = arg_parser.parse_known_args()[0]
-        # Now redo the parsing including the configuration file
-        options = sys.argv[1:]
-        options.extend(self._parseConfigFile(arg_parser, cmd_options))
+        # Get the options from the config file
+        options = self._parseConfigFile(arg_parser)
+        # Append any options passed by the user in the command line. Because they
+        # are after the ones from the configuration file, they are going to
+        # override them (argparse behavior)
+        options.extend(sys.argv[1:])
+        # Now redo the parsing with all the options
         all_options = arg_parser.parse_args(options)
 
         # We create a map of the variable names to the option names to be used
