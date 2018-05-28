@@ -40,16 +40,20 @@ public:
   virtual ~TempPath();
   boost::filesystem::path path() const;
   std::string motif() const;
+protected:
+  boost::filesystem::path m_path;
 private:
   const std::string m_motif;
-  boost::filesystem::path m_path;
 };
 
 
 class ELEMENTS_API TempDir : public TempPath {
 public:
-  explicit TempDir(const std::string& motif = "");
+  explicit TempDir(const std::string& motif = "",
+                   const std::string& keep_var = "KEEPTEMPDIR");
   virtual ~TempDir();
+private:
+  const std::string m_keep_var;
 };
 
 

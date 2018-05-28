@@ -28,9 +28,11 @@
 #include <boost/filesystem/fstream.hpp>
 
 #include "ElementsKernel/Logging.h"
+#include "ElementsKernel/Environment.h"
 
 using std::string;
 using boost::filesystem::path;
+using boost::filesystem::remove_all;
 
 namespace Elements {
 
@@ -48,7 +50,6 @@ TempPath::TempPath(const string& motif) :
 }
 
 TempPath::~TempPath() {
-  boost::filesystem::remove_all(m_path);
 }
 
 path TempPath::path() const {
@@ -59,8 +60,8 @@ string TempPath::motif() const {
   return m_motif;
 }
 
-TempDir::TempDir(const string& motif) :
-    TempPath(motif) {
+TempDir::TempDir(const string& motif, const string& keep_var) :
+    TempPath(motif), m_keep_var(keep_var) {
 
   Logging logger = Logging::getLogger();
   logger.debug() << "Creation of the " << path() << " temporary directory";
@@ -72,8 +73,17 @@ TempDir::TempDir(const string& motif) :
 TempDir::~TempDir() {
 
   Logging logger = Logging::getLogger();
-  logger.debug() << "Automatic destruction of the " << path()
-                 << " temporary directory";
+
+  Environment current;
+
+  if (not current.hasKey(m_keep_var)) {
+    logger.debug() << "Automatic destruction of the " << path()
+                   << " temporary directory";
+    remove_all(m_path);
+  } else {
+    logger.info() << m_keep_var << " set: I do not remove the temporary directory "
+                  << m_path.string();
+  }
 
 }
 
@@ -92,6 +102,8 @@ TempFile::~TempFile() {
 
   Logging logger = Logging::getLogger();
   logger.debug() << "Automatic destruction of the " << path() << " file";
+
+  remove_all(m_path);
 
 }
 
