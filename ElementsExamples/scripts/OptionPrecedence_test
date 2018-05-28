@@ -1,0 +1,127 @@
+#!/bin/sh
+
+home_dir=${PWD}
+
+
+# Create unique directory
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+# Clean and exit
+local_clean_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+cd ${tmploc} || local_clean_exit 1
+
+##############################################################################
+# C++
+
+# regular run
+CppProgramExample
+if [ $? -ne 0 ]; then
+  echo "Error: <CppProgramExample> failed" 1>&2
+  local_clean_exit 1
+fi
+
+# there is no hardcoded default, thus the config file value has to be used
+CppProgramExample |& grep -i "The int-option value is 3$"
+if [ $? -ne 0 ]; then
+  echo "Error: <CppProgramExample> failed: the int-option value is not 3" 1>&2
+  local_clean_exit 1
+fi
+
+# cross-check that the grep is working
+CppProgramExample |& grep -i "The int-option value is 4$"
+if [ $? -eq 0 ]; then
+  echo "Error: <CppProgramExample> failed: the int-option value is 4" 1>&2
+  local_clean_exit 1
+fi
+
+# pass value on the command line
+CppProgramExample --int-option=5 |& grep -i "The int-option value is 5$"
+if [ $? -ne 0 ]; then
+  echo "Error: <CppProgramExample> failed: the int-option value is not 5" 1>&2
+  local_clean_exit 1
+fi
+
+# there is an hardcoded value set to 0.5 that should be overridden by the config
+# file that contains the 0.8 value.
+expected_threshold="0.8"
+CppProgramExample |& grep -i "The threshold value is ${expected_threshold}$"
+if [ $? -ne 0 ]; then
+  echo "Error: <CppProgramExample> failed: the threshold value is not ${expected_threshold}" 1>&2
+  local_clean_exit 1
+fi
+not_expected_threshold="0.5"
+CppProgramExample |& grep -i "The threshold value is ${not_expected_threshold}$"
+if [ $? -eq 0 ]; then
+  echo "Error: <CppProgramExample> failed: the threshold value is ${not_expected_threshold}" 1>&2
+  local_clean_exit 1
+fi
+
+# pass value on the command line. Must override both others.
+expected_threshold="0.9"
+CppProgramExample --threshold=${expected_threshold} |& grep -i "The threshold value is ${expected_threshold}$"
+if [ $? -ne 0 ]; then
+  echo "Error: <CppProgramExample> failed: the threshold value is not ${expected_threshold}" 1>&2
+  local_clean_exit 1
+fi
+
+##############################################################################
+# Python
+
+# regular run
+PythonProgramExample
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed" 1>&2
+  local_clean_exit 1
+fi
+
+# there is no hardcoded default, thus the config file value has to be used
+PythonProgramExample |& grep -i "the int_option value 3$"
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed: the int_option value is not 3" 1>&2
+  local_clean_exit 1
+fi
+
+# cross-check that the grep is working
+PythonProgramExample |& grep -i "the int_option value 4$"
+if [ $? -eq 0 ]; then
+  echo "Error: <PythonProgramExample> failed: the int_option value is 4" 1>&2
+  local_clean_exit 1
+fi
+
+# pass value on the command line
+PythonProgramExample --int-option=5 |& grep -i "the int_option value 5$"
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed: the int_option value is not 5" 1>&2
+  local_clean_exit 1
+fi
+
+# there is an hardcoded value set to 0.5 that should be overridden by the config
+# file that contains the 0.8 value.
+expected_threshold="0.8"
+PythonProgramExample |& grep -i "the threshold value ${expected_threshold}$"
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed: the threshold value is not ${expected_threshold}" 1>&2
+  local_clean_exit 1
+fi
+not_expected_threshold="0.5"
+PythonProgramExample |& grep -i "the threshold value ${not_expected_threshold}$"
+if [ $? -eq 0 ]; then
+  echo "Error: <PythonProgramExample> failed: the threshold value is ${not_expected_threshold}" 1>&2
+  local_clean_exit 1
+fi
+
+# pass value on the command line. Must override both others.
+expected_threshold="0.9"
+PythonProgramExample --threshold=${expected_threshold} |& grep -i "the threshold value ${expected_threshold}$"
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed: the threshold value is not ${expected_threshold}" 1>&2
+  local_clean_exit 1
+fi
+
+
+local_clean_exit 0

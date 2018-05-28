@@ -270,6 +270,7 @@ elements_add_test(CppProgramExample COMMAND CppProgramExample)
 elements_add_test(SimpleProgramExample COMMAND ElementsSimpleProgramExample)
 
 elements_add_test(UnrecognizedOption COMMAND UnrecognizedOption_test)
+elements_add_test(OptionPrecedence COMMAND OptionPrecedence_test)
 
 
 elements_install_conf_files()

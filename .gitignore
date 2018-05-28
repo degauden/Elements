@@ -11,6 +11,7 @@
 /.sonar
 /PAQA
 /.scannerwork
+.pytest_cache
 
 #####=== System ===#####
 
