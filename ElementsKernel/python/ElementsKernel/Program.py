@@ -66,6 +66,7 @@ class Program(object):
         conf_name = os.path.splitext(program_name)[0] + '.conf'
 
         default_config_file = getConfigurationPath(conf_name, False)
+
         if not default_config_file:
             self._logger.warn('The "%s" configuration file cannot be found in:', conf_name)
             for l in getConfigurationLocations():
@@ -135,6 +136,18 @@ class Program(object):
         self._setupLogging(arg_parser)
         # First we get any options from the command line
         cmd_options = arg_parser.parse_known_args()[0]
+        # If there are any arguments with default values, argparse is going to
+        # set these values. At this step we want to ignore them (because we
+        # still want to parse the config file), so if the command line arguments
+        # do not contain a parameter we override any default value with None.
+        # This default values of the parameters missing both in command line and
+        # configuration file will be set at the last call of parse_args()
+        for name in vars(cmd_options):
+            # Get the action that maps to the name
+            action = next(a for a in arg_parser._actions if a.dest == name)
+            # Check if the user gave as argument any of the option strings
+            if not any([s in sys.argv for s in action.option_strings]):
+                cmd_options.__setattr__(name, None)
         # Now redo the parsing including the configuration file
         options = sys.argv[1:]
         options.extend(self._parseConfigFile(arg_parser, cmd_options))
