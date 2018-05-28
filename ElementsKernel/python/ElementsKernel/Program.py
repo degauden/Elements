@@ -87,7 +87,7 @@ class Program(object):
 
         return default_config_file
 
-    def _parseConfigFile(self, arg_parser, cmd_options):
+    def _parseConfigFile(self, arg_parser):
         # First we check if the user gave the --config-file option
         config_file = arg_parser.parse_known_args()[0].config_file
         if not config_file:
@@ -102,15 +102,10 @@ class Program(object):
                         continue
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    # Get the action of the arg_parser for the given key and check if
-                    # we already have it from the command line
-                    try:
-                        action = next(act for act in arg_parser._actions if ('--' + key) in act.option_strings)
-                        if action.dest in [k for (k, v) in vars(cmd_options).items() if v]:
-                            continue
-                    except StopIteration:
-                        # There is no action for this key
-                        self._logger.error('Unknown option "' + key + '" in configuration file ' + config_file)
+                    # If the key is not mapping to any of the actions defined in
+                    # the parser, fail with an error messsage
+                    if not [act for act in arg_parser._actions if ('--' + key) in act.option_strings]:
+                        self._logger.error('Unknown option "{}" in configuration file {}'.format(key, config_file))
                         exit(1)
                     value = value.strip()
                     if '#' in value:
@@ -134,23 +129,13 @@ class Program(object):
             '--version', action='version', version=self.getVersion())
         # Setup the logging
         self._setupLogging(arg_parser)
-        # First we get any options from the command line
-        cmd_options = arg_parser.parse_known_args()[0]
-        # If there are any arguments with default values, argparse is going to
-        # set these values. At this step we want to ignore them (because we
-        # still want to parse the config file), so if the command line arguments
-        # do not contain a parameter we override any default value with None.
-        # This default values of the parameters missing both in command line and
-        # configuration file will be set at the last call of parse_args()
-        for name in vars(cmd_options):
-            # Get the action that maps to the name
-            actions = [a for a in arg_parser._actions if a.dest == name]
-            # Check if the user gave as argument any of the option strings
-            if not any([any([ar is s or ar.startswith(s + "=") for ar in sys.argv]) for action in actions for s in action.option_strings]):
-                cmd_options.__setattr__(name, None)
-        # Now redo the parsing including the configuration file
-        options = sys.argv[1:]
-        options.extend(self._parseConfigFile(arg_parser, cmd_options))
+        # Get the options from the config file
+        options = self._parseConfigFile(arg_parser)
+        # Append any options passed by the user in the command line. Because they
+        # are after the ones from the configuration file, they are going to
+        # override them (argparse behavior)
+        options.extend(sys.argv[1:])
+        # Now redo the parsing with all the options
         all_options = arg_parser.parse_args(options)
 
         # We create a map of the variable names to the option names to be used
