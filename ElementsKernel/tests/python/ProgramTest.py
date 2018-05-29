@@ -21,7 +21,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 '''
 
-__updated__ = "2018-05-28"
+__updated__ = "2018-05-29"
 
 import os
 from subprocess import Popen, PIPE
@@ -43,28 +43,28 @@ class TestProgramTest(object):
     @pytest.mark.parametrize(
         "default, default_conf, cmd_line_conf, cmd_line_arg, arg_name, expected",
         [
-            ("default", None,           None,            None,      "int-option-with-default-no-default-in-conf",  444),
-            ("default", "default_conf", None,            None,      "int-option-with-default-and-default-in-conf", 333),
-            ("default", "default_conf", "cmd_line_conf", None,      "int-option-with-default-and-default-in-conf", 777),
-            ("default", "default_conf", "cmd_line_conf", "regular", "int-option-with-default-and-default-in-conf", 666),
+            ("default", None,           None,            None,         "int-option-with-default-no-default-in-conf",  444),
+            ("default", "default_conf", None,            None,         "int-option-with-default-and-default-in-conf", 333),
+            ("default", "default_conf", "cmd_line_conf", None,         "int-option-with-default-and-default-in-conf", 777),
+            ("default", "default_conf", "cmd_line_conf", "regular",    "int-option-with-default-and-default-in-conf", 666),
             ("default", "default_conf", "cmd_line_conf", "with_space", "int-option-with-default-and-default-in-conf", 666),
-            ("default", "default_conf", None,            "regular", "int-option-with-default-and-default-in-conf", 666),
+            ("default", "default_conf", None,            "regular",    "int-option-with-default-and-default-in-conf", 666),
             ("default", "default_conf", None,            "with_space", "int-option-with-default-and-default-in-conf", 666),
-            ("default", None,           "cmd_line_conf", None,      "int-option-with-default-no-default-in-conf",  888),
-            ("default", None,           "cmd_line_conf", "regular", "int-option-with-default-no-default-in-conf",  666),
+            ("default", None,           "cmd_line_conf", None,         "int-option-with-default-no-default-in-conf",  888),
+            ("default", None,           "cmd_line_conf", "regular",    "int-option-with-default-no-default-in-conf",  666),
             ("default", None,           "cmd_line_conf", "with_space", "int-option-with-default-no-default-in-conf",  666),
-            ("default", None,           None,            "regular", "int-option-with-default-no-default-in-conf",  666),
+            ("default", None,           None,            "regular",    "int-option-with-default-no-default-in-conf",  666),
             ("default", None,           None,            "with_space", "int-option-with-default-no-default-in-conf",  666),
-            (None,      "default_conf", None,            None,      "int-option",                                    3),
-            (None,      "default_conf", "cmd_line_conf", None,      "int-option",                                    4),
-            (None,      "default_conf", "cmd_line_conf", "regular", "int-option",                                  666),
+            (None,      "default_conf", None,            None,         "int-option",                                    3),
+            (None,      "default_conf", "cmd_line_conf", None,         "int-option",                                    4),
+            (None,      "default_conf", "cmd_line_conf", "regular",    "int-option",                                  666),
             (None,      "default_conf", "cmd_line_conf", "with_space", "int-option",                                  666),
-            (None,      "default_conf", None,            "regular", "int-option",                                  666),
+            (None,      "default_conf", None,            "regular",    "int-option",                                  666),
             (None,      "default_conf", None,            "with_space", "int-option",                                  666),
-            (None,      None,           "cmd_line_conf", None,      "int-option-no-default-not-defined-in-conf",   555),
-            (None,      None,           "cmd_line_conf", "regular", "int-option-no-default-not-defined-in-conf",   666),
+            (None,      None,           "cmd_line_conf", None,         "int-option-no-default-not-defined-in-conf",   555),
+            (None,      None,           "cmd_line_conf", "regular",    "int-option-no-default-not-defined-in-conf",   666),
             (None,      None,           "cmd_line_conf", "with_space", "int-option-no-default-not-defined-in-conf",   666),
-            (None,      None,           None,            "regular", "int-option-with-no-defaults-anywhere",        666),
+            (None,      None,           None,            "regular",    "int-option-with-no-defaults-anywhere",        666),
             (None,      None,           None,            "with_space", "int-option-with-no-defaults-anywhere",        666),
         ]
     )
@@ -116,7 +116,6 @@ class TestProgramTest(object):
             output_arg_value,
             expected
         )
-        # print(msg)
         assert output_arg_value == expected, msg
 
 
