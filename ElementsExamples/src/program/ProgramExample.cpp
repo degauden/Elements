@@ -111,7 +111,7 @@ public:
         ("int-vector-option",
          value<vector<int>>()->multitoken()->default_value(vector<int> { }, "Empty"),
         "An example vector option")
-        ("threshold", value<double>()->default_value(double {0.5}),
+        ("threshold,t", value<double>()->default_value(double {0.5}),
         "An example double option");
 
     return config_options;
@@ -232,8 +232,8 @@ public:
 
 };
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 
 /**

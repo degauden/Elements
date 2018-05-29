@@ -7,6 +7,9 @@ from ElementsExamples.PythonModuleExample import ClassExample
 
 
 def myLocalLogTestFunc():
+    """
+    @brief example of logging from a function
+    """
 
     logger = Logging.getLogger()
     logger.info("Test of Message")
@@ -95,7 +98,7 @@ def defineSpecificProgramOptions():
     )
 
     parser.add_argument(
-        "--threshold",
+        '--threshold', '-t',
         type=float,
         default=0.5,
         help="signal threshold")

@@ -46,6 +46,13 @@ if [ $? -ne 0 ]; then
   local_clean_exit 1
 fi
 
+# pass value on the command line with a space instead of an "="
+CppProgramExample --int-option 5 |& grep -i "The int-option value is 5$"
+if [ $? -ne 0 ]; then
+  echo "Error: <CppProgramExample> failed: the int-option value is not 5" 1>&2
+  local_clean_exit 1
+fi
+
 # there is an hardcoded value set to 0.5 that should be overridden by the config
 # file that contains the 0.8 value.
 expected_threshold="0.8"
@@ -64,6 +71,14 @@ fi
 # pass value on the command line. Must override both others.
 expected_threshold="0.9"
 CppProgramExample --threshold=${expected_threshold} |& grep -i "The threshold value is ${expected_threshold}$"
+if [ $? -ne 0 ]; then
+  echo "Error: <CppProgramExample> failed: the threshold value is not ${expected_threshold}" 1>&2
+  local_clean_exit 1
+fi
+
+# pass value on the command line. Must override both others. Use space instead of "="
+expected_threshold="0.9"
+CppProgramExample --threshold ${expected_threshold} |& grep -i "The threshold value is ${expected_threshold}$"
 if [ $? -ne 0 ]; then
   echo "Error: <CppProgramExample> failed: the threshold value is not ${expected_threshold}" 1>&2
   local_clean_exit 1
@@ -100,6 +115,13 @@ if [ $? -ne 0 ]; then
   local_clean_exit 1
 fi
 
+# pass value on the command line. Use space instead of "="
+PythonProgramExample --int-option 5 |& grep -i "the int_option value 5$"
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed: the int_option value is not 5" 1>&2
+  local_clean_exit 1
+fi
+
 # there is an hardcoded value set to 0.5 that should be overridden by the config
 # file that contains the 0.8 value.
 expected_threshold="0.8"
@@ -118,6 +140,22 @@ fi
 # pass value on the command line. Must override both others.
 expected_threshold="0.9"
 PythonProgramExample --threshold=${expected_threshold} |& grep -i "the threshold value ${expected_threshold}$"
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed: the threshold value is not ${expected_threshold}" 1>&2
+  local_clean_exit 1
+fi
+
+# pass value on the command line. Must override both others. Use space instead of "=".
+expected_threshold="0.9"
+PythonProgramExample --threshold ${expected_threshold} |& grep -i "the threshold value ${expected_threshold}$"
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed: the threshold value is not ${expected_threshold}" 1>&2
+  local_clean_exit 1
+fi
+
+# pass value on the command line. Must override both others. Use short option.
+expected_threshold="0.9"
+PythonProgramExample -t ${expected_threshold} |& grep -i "the threshold value ${expected_threshold}$"
 if [ $? -ne 0 ]; then
   echo "Error: <PythonProgramExample> failed: the threshold value is not ${expected_threshold}" 1>&2
   local_clean_exit 1
