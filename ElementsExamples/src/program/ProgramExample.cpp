@@ -94,7 +94,15 @@ public:
 
     // Add the specific program options
     config_options.add_options()
-        ("int-option", value<int>()->default_value(int { }),
+        ("int-option", value<int>()->default_value(int {111}),
+         "An example int option")
+        ("int-option-with-default-and-default-in-conf", value<int>()->default_value(int {222}),
+         "An example int option")
+        ("int-option-with-default-no-default-in-conf", value<int>()->default_value(int {444}),
+         "An example int option")
+        ("int-option-no-default-not-defined-in-conf", value<int>(),
+         "An example int option")
+        ("int-option-with-no-defaults-anywhere", value<int>(),
          "An example int option")
         ("string-option", value<string>()->default_value(string { }),
         "An example string option")
