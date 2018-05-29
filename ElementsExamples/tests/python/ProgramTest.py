@@ -1,5 +1,5 @@
 '''
-Created on May 29, 2018
+Created on May 10, 2017
 
 @author: Hubert Degaudenzi
 
@@ -29,7 +29,16 @@ import shlex
 import unittest
 import pytest
 
-class TestCppProgramTest(object):
+from ElementsKernel.Program import Program
+
+
+class TestProgramTest(object):
+
+    def test_that_instance_can_be_created_without_raising_exception(self):
+        _ = Program("ElementsExamples.PythonProgramExample")
+
+    def test_that_instance_can_be_created_without_raising_exception_for_a_blank_original_path(self):
+        _ = Program("ElementsExamples.PythonProgramExample", original_path="")
 
     @pytest.mark.parametrize(
         "default, default_conf, cmd_line_conf, cmd_line_arg, arg_name, expected",
@@ -67,13 +76,13 @@ class TestCppProgramTest(object):
                                                     arg_name,
                                                     expected):
 
-        test_program_script = 'CppProgramExample'
+        test_program_script = 'PythonProgramExample'
 
         cmd = test_program_script
 
         if cmd_line_conf is not None:
             cmd_line_conf_fpath = os.path.join(
-                os.environ['ELEMENTSKERNELROOT'], 'tests', 'data', 'conf',
+                os.environ['ELEMENTSEXAMPLESROOT'], 'tests', 'data', 'conf',
                 test_program_script + '.conf'
             )
             cmd = '{} --config-file={}'.format(cmd, cmd_line_conf_fpath)
