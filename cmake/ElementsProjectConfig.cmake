@@ -2532,6 +2532,12 @@ function(_generate_swig_files swig_module)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC}
                  PROPERTY COMPILE_FLAGS -Wno-suggest-override)
   endif()
+  
+  if(CXX_HAS_CAST_FUNCTION_TYPE)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC}
+                 PROPERTY COMPILE_FLAGS -Wno-cast-function-type)
+  endif()
+  
 
   install(FILES ${PY_MODULE_DIR}/${PY_MODULE}.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
   
@@ -2581,7 +2587,6 @@ function(elements_add_swig_binding binding)
                        ${i_srcs}
                        OUTFILE ${PY_MODULE_SWIG_SRC}
                        INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-
 
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
@@ -2701,7 +2706,11 @@ function(_generate_cython_cpp)
     COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${ARG_OUTFILE}  ${srcs}"
     )
   
-  set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
+  if(CXX_HAS_CAST_FUNCTION_TYPE)
+    set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS -Wno-cast-function-type")  
+  else()
+    set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
+  endif()
 
 endfunction()
 
