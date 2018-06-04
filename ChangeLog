@@ -1,3 +1,49 @@
+* Mon Jun 4 2018 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.4
+- Reduce the top level wrapper Makefile to a minimum. The main library
+  is located in the make/Elements.mk file of the framework. The lookup of
+  that file is done through the CMAKE_PREFIX_PATH environment variable and
+  thus the EuclidEnv package has to be installed on the machine.
+- Fix for the version detection of the GCC 7 series and above. The "-dumpversion"
+  option is not providing the full version anymore.
+- Add support for the numpy include dirs. This is located in the cmake/modules/FindNumPy.cmake
+  file.
+- Add example for the SWIG interface to numpy.
+- Use python3 executable explicitly when calling python scripts.
+- Add a new script called GetElementsFile to located any runtime Elements
+  resource. Run like:
+
+     E-Run <project_name> <project_version> GetElementsFile -t executable
+
+  in order to get the executable on the path. Please have a look at the
+  "--help" option.
+- Feature #5886: Add a gitignore template for the creation script that generates an
+  Elements-based project
+- Feature #5887: Add a --yes option to bypass the interactive part in the creation
+  scripts.
+- Adapt the CMake code for the new layout of the HealpixCpp distribution
+- add a new "cov" make target. This generates a local coverage for the C++ executables.
+  Notes:
+    - the commands to run it are: make; make test; make cov
+    - the BINARY_TAG has to be the cov one (e.g. x86_64-co7-gcc48-cov)
+    - the gcov, genhtml, gcovr, lcov tools have to be installed.
+- Implementation of the installation and packaging of the documentation
+  Notes:
+    - A separate RPM file is generated
+    - everything is controlled by the INSTALL_DOC CMake option. It is set to OFF by
+      default.
+    - If INSTALL_DOC ist set to ON, the documentation is automatically built
+      together with the default target (all)
+- Bug #6131 fixed: Now the configuration file is created under the <conf>
+  directory and not under <conf/module_name>
+- Add the CONCEPT_CHECKS CMake option. This add the -D_GLIBCXX_CONCEPT_CHECKS
+  compile macro. This activate some internal check from the std c++ library. See
+  https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_macros.html. It is OFF by
+  default.
+- Reenable the Elements data modules ad hoc support. Please have a look at the user
+  manual.
+- Bug #7881 (Nikos/Mher): the source hardcoded default values were overriding the
+  ones provides in the configuration files.
+
 * Wed Aug 9 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2.1
 - Fix the test on the version of sphinx.
 
