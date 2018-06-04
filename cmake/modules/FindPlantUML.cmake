@@ -1,6 +1,8 @@
 if (NOT PLANTUML_FOUND)
 
-    find_program(PLANTUML_EXECUTABLE plantuml)
+    find_program(PLANTUML_EXECUTABLE plantuml
+                 HINTS ENV PLANTUML_INSTALL_DIR
+                 PATH_SUFFIXES bin)
     set(PLANTUML_EXECUTABLE ${PLANTUML_EXECUTABLE} CACHE STRING "")
 
 

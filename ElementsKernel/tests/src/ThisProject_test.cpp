@@ -23,6 +23,7 @@
 
 #include <typeinfo>                  // for type_info
 #include <string>
+
 #include <boost/test/unit_test.hpp>
 
 using std::string;
@@ -41,10 +42,10 @@ BOOST_AUTO_TEST_CASE(ThisProjectName_test) {
 BOOST_AUTO_TEST_CASE(ThisProjectType_test) {
 
   // Get the present module. Here this must be the test executable
-  BOOST_CHECK(typeid(THIS_PROJECT_NAME_STRING)==typeid(string));
+  BOOST_CHECK(typeid(THIS_PROJECT_NAME_STRING) == typeid(string));
   string install_location {THIS_PROJECT_INSTALL_LOCATION_STRING};
-  BOOST_CHECK(typeid(install_location)==typeid(string));
-  BOOST_CHECK(typeid(THIS_PROJECT_INSTALL_LOCATION_STRING)==typeid(string));
+  BOOST_CHECK(typeid(install_location) == typeid(string));
+  BOOST_CHECK(typeid(THIS_PROJECT_INSTALL_LOCATION_STRING) == typeid(string));
 
 }
 

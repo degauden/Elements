@@ -18,9 +18,16 @@ local_clean_exit() {
   exit $1
 }
 
+if [ "$(basename ${ELEMENTS_PROJECT_ROOT})" = "Elements" ]; then
+  extra_proj_path=$(dirname ${ELEMENTS_PROJECT_ROOT})
+else
+  extra_proj_path=$(dirname $(dirname ${ELEMENTS_PROJECT_ROOT}))
+fi
+
+
 # Set to the User_area
 export User_area=${tmploc}
-export CMAKE_PROJECT_PATH=${User_area}
+export CMAKE_PROJECT_PATH=${User_area}:${extra_proj_path}:${CMAKE_PROJECT_PATH}
 
 echo "CMAKE_PROJECT_PATH: ${CMAKE_PROJECT_PATH}"
 echo "BINARY_TAG: ${BINARY_TAG}"
@@ -32,11 +39,9 @@ echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
 # not enough to have it built
 if [ -e ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}/manifest.xml ]; then
 
-cd ${User_area}
+cd ${User_area} || local_clean_exit 1
 
-CreateElementsProject $projectA_name $projectA_version << EOF
-y
-EOF
+CreateElementsProject $projectA_name $projectA_version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -44,7 +49,7 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
-cd $projectA_name/$projectA_version
+cd $projectA_name/$projectA_version || local_clean_exit 1
 #AddElementsModule $projectA_name
 
 
@@ -76,11 +81,9 @@ if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
 fi
 
 
-cd ${User_area}
+cd ${User_area} || local_clean_exit 1
 
-CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
-y
-EOF
+CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version --yes
 
 cd $projectB_name/$projectB_version
 #AddElementsModule $projectB_name

@@ -20,8 +20,8 @@
  * @{
  */
 
-#ifndef PROGRAM_HEADER_H
-#define PROGRAM_HEADER_H
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMHEADERS_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMHEADERS_H_
 
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/filesystem.hpp>             // for boost path type
@@ -35,6 +35,6 @@
 
 #include "ElementsKernel/Version.h"         // ??
 
-#endif
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMHEADERS_H_
 
 /**@}*/

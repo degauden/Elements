@@ -18,12 +18,14 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
+
+#include "ElementsKernel/Version.h"
+
 #include <string>
 #include <vector>
 #include <boost/utility.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "ElementsKernel/Version.h"
 
 using std::string;
 
@@ -79,4 +81,4 @@ string getVersionString(const unsigned short major, const unsigned short minor, 
   return version;
 }
 
-} // Elements namespace
+}  // namespace Elements

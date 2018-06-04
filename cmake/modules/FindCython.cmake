@@ -14,7 +14,10 @@ if (NOT CYTHON_FOUND)
                      NAMES ${explicit_cython} cython cython3
                      HINTS ${_python_path})
     else()
-	    find_program(CYTHON_EXECUTABLE NAMES ${explicit_cython} cython cython3)
+	    find_program(CYTHON_EXECUTABLE NAMES ${explicit_cython} cython cython3
+	                 HINTS ENV CYTHON_INSTALL_DIR
+                     PATH_SUFFIXES bin
+	                )
     endif()
 
 	set(CYTHON_EXECUTABLE ${CYTHON_EXECUTABLE} CACHE STRING "")

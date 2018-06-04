@@ -19,13 +19,15 @@
  *
  */
 
+#include "ElementsExamples/ClassExample.h"
+
 #include <cstdint>                           // for std::int64_t
 #include <cmath>                             // for std::abs
 #include <vector>                            // for vector
 #include <memory>                            // for unique_ptr
+#include <string>                            // for string
 
-#include "ElementsExamples/ClassExample.h"
-#include "ElementsKernel/Logging.h"
+#include "ElementsKernel/Logging.h"          // for Logging
 #include "ElementsKernel/Exception.h"
 
 using std::vector;
@@ -66,5 +68,5 @@ ClassExample ClassExample::factoryMethod(const std::int64_t source_id,
   return ClassExample { source_id, ra };
 }
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements

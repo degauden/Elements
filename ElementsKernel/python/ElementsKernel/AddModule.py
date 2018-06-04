@@ -32,6 +32,11 @@ import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
 
+try:
+    from builtins import input
+except:
+    from __builtin__ import input
+
 logger = log.getLogger('AddElementsModule')
 
 # Define constants
@@ -41,7 +46,8 @@ AUX_MOD_RST_IN = 'doc_module.rst.in'
 
 ################################################################################
 
-def CheckCmakelistFileExist(project_directory):
+
+def checkCmakelistFileExist(project_directory):
     """
     Checks if a <CMakeLists.txt> file exists and is really an Elements
     cmake file
@@ -63,6 +69,7 @@ def CheckCmakelistFileExist(project_directory):
 
 ################################################################################
 
+
 def createModuleDirectories(mod_path, module_name):
     """
     Create the directory structure for the module
@@ -72,18 +79,18 @@ def createModuleDirectories(mod_path, module_name):
     os.makedirs(mod_path)
     os.makedirs(os.path.join(mod_path, module_name))
     os.makedirs(os.path.join(mod_path, 'doc'))
-    os.makedirs(os.path.join(mod_path, 'conf', module_name))
+    os.makedirs(os.path.join(mod_path, 'conf'))
     os.makedirs(os.path.join(mod_path, 'tests', 'src'))
 
     epcr.copyAuxFile(os.path.join(mod_path, 'doc'), AUX_MOD_RST_IN)
     mod_rst_file = os.path.join(mod_path, 'doc', AUX_MOD_RST_IN)
 
-    file_no_dot_in=mod_rst_file.replace('.in', '')
+    file_no_dot_in = mod_rst_file.replace('.in', '')
     os.rename(mod_rst_file, file_no_dot_in)
     epcr.addItemToCreationList(file_no_dot_in)
 
-
 ################################################################################
+
 
 def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=False):
     """
@@ -133,7 +140,8 @@ def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=Fal
 
 ################################################################################
 
-def createModule(project_dir, module_name, dependency_list, standalone=False):
+
+def createModule(project_dir, module_name, dependency_list, standalone=False, answer_yes=False):
     """
     Create a module, copy auxiliary files and substitute variables in the
     CMakefile.txt file
@@ -144,9 +152,10 @@ def createModule(project_dir, module_name, dependency_list, standalone=False):
     if os.path.exists(mod_path):
         # Ask user
         logger.warning('<%s> module ALREADY exists on disk!!!', module_name)
-        response_key = raw_input(
+        if not answer_yes:
+            response_key = input(
             'Do you want to replace the existing module (y/n), default: n)?')
-        if response_key.lower() == "y":
+        if answer_yes or response_key.lower() == "y":
             logger.info('# Replacing the existing module: <%s>', module_name)
             epcr.eraseDirectory(mod_path)
         else:
@@ -156,6 +165,7 @@ def createModule(project_dir, module_name, dependency_list, standalone=False):
     createCmakeListFile(mod_path, module_name, dependency_list, standalone)
 
 ################################################################################
+
 
 def checkDependencyListValid(str_list):
     """
@@ -167,17 +177,19 @@ def checkDependencyListValid(str_list):
 
 ################################################################################
 
-def makeChecks(project_dir, module_name, dependency_list):
+
+def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
     """
     Make some checks
     """
-    # We absolutely need a Elements cmake file
-    CheckCmakelistFileExist(project_dir)
+    # We absolutely need an Elements cmake file
+    checkCmakelistFileExist(project_dir)
     epcr.checkNameAndVersionValid(module_name, '1.0')
     checkDependencyListValid(dependency_list)
-    epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0])
+    epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0], answer_yes)
 
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -201,11 +213,14 @@ This script creates an <Elements> module at your current directory
                         help='Dependency module name e.g "-md ElementsKernel"')
     parser.add_argument('-s', '--standalone', default=False, action="store_true",
                         help='Remove the implicit dependency onto the ElementsKernel module (expert only)')
-
+    parser.add_argument('-y', '--yes', default=False, action="store_true",
+                        help='Answer <yes> by default to any question, useful when the script is called by another'\
+                         'script')
 
     return parser
 
 ################################################################################
+
 
 def mainMethod(args):
     """
@@ -219,22 +234,19 @@ def mainMethod(args):
     module_name = args.module_name
     dependency_list = args.module_dependency
     standalone = args.standalone
+    answer_yes = args.yes
 
     # Default is the current directory
     project_dir = os.getcwd()
     logger.info('# Current directory : %s', project_dir)
 
     try:
-        makeChecks(project_dir, module_name, dependency_list)
-        createModule(project_dir, module_name, dependency_list, standalone)
+        makeChecks(project_dir, module_name, dependency_list, answer_yes)
+        createModule(project_dir, module_name, dependency_list, standalone, answer_yes)
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
         # Print all files created
         epcr.printCreationList()
-    except epcr.ErrorOccured as msg:
-        if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
-        return 1
+
     except Exception as msg:
         if str(msg):
             logger.error(msg)

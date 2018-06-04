@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
 
     def testWrite(self):
         """XML file write and load test"""
-        control = Control.Environment(useAsWriter=True)
+        control = Control.Environment(use_as_writer=True)
         control.unset('MY_PATH')
         control.set('MY_PATH', 'set:toDelete')
         control.append('MY_PATH', 'appended:toDelete')
@@ -129,7 +129,7 @@ class Test(unittest.TestCase):
 
     def testWriteWithList(self):
         """XML file write and load test"""
-        control = Control.Environment(useAsWriter=True)
+        control = Control.Environment(use_as_writer=True)
         control.unset('MY_PATH')
         control.set('MY_PATH', ['set', 'toDelete'])
         control.append('MY_PATH', ['appended', 'toDelete'])
@@ -196,8 +196,8 @@ class Test(unittest.TestCase):
 
         control.append('MY_PATH', 'newValue:mess:something new:aaaabbcc')
 
-        def count(val, regExp=False):
-            return len(control.search('MY_PATH', val, regExp))
+        def count(val, reg_exp=False):
+            return len(control.search('MY_PATH', val, reg_exp))
 
         self.assertEqual(count('new'), 0)
         self.assertEqual(count('newValue'), 1)
@@ -421,81 +421,80 @@ class Test(unittest.TestCase):
         saved_path = list(EnvConfig.path)
         EnvConfig.path[:] = ['.']
 
-        control = Control.Environment(searchPath=[])
+        control = Control.Environment(search_path=[])
 
-        #self.assertRaises(OSError, control.loadXML, tmp('first.xml'))
+        # self.assertRaises(OSError, control.loadXML, tmp('first.xml'))
         control.loadXML(tmp('first.xml'))
         self.assertEqual(str(control['main']), 'first')
         self.assertEqual(str(control['test_path']), 'data1:data2')
         self.assertEqual(str(control['derived']), 'another_first')
 
-        control = Control.Environment(searchPath=[tmp()])
+        control = Control.Environment(search_path=[tmp()])
         control.loadXML(tmp('first.xml'))
         self.assertEqual(str(control['main']), 'first')
         self.assertEqual(str(control['test_path']), 'data1:data2')
         self.assertEqual(str(control['derived']), 'another_first')
 
-        control = Control.Environment(searchPath=[tmp()])
+        control = Control.Environment(search_path=[tmp()])
         control.loadXML('first.xml')
         self.assertEqual(str(control['main']), 'first')
         self.assertEqual(str(control['test_path']), 'data1:data2')
         self.assertEqual(str(control['derived']), 'another_first')
 
-        control = Control.Environment(searchPath=[tmp()])
+        control = Control.Environment(search_path=[tmp()])
         self.assertRaises(OSError, control.loadXML, tmp('second.xml'))
 
-        control = Control.Environment(searchPath=[tmp(), tmp('subdir')])
+        control = Control.Environment(search_path=[tmp(), tmp('subdir')])
         control.loadXML(tmp('second.xml'))
         self.assertEqual(str(control['main']), 'second')
         self.assertEqual(str(control['test_path']), 'data0:data1')
         self.assertEqual(str(control['map']), 'this_is_second_inc')
 
-        control = Control.Environment(searchPath=[tmp(), tmp('subdir')])
+        control = Control.Environment(search_path=[tmp(), tmp('subdir')])
         control.loadXML(tmp('first.xml'))
         self.assertEqual(str(control['main']), 'first')
         self.assertEqual(str(control['test_path']), 'data1:data2')
         self.assertEqual(str(control['derived']), 'another_first')
 
-        control = Control.Environment(searchPath=[tmp('subdir'), tmp()])
+        control = Control.Environment(search_path=[tmp('subdir'), tmp()])
         control.loadXML(tmp('first.xml'))
         self.assertEqual(str(control['main']), 'first')
         self.assertEqual(str(control['test_path']), 'data1:data2')
         self.assertEqual(str(control['derived']), 'another_first')
 
-        control = Control.Environment(searchPath=[tmp('subdir'), tmp()])
+        control = Control.Environment(search_path=[tmp('subdir'), tmp()])
         control.loadXML('first.xml')
         self.assertEqual(str(control['main']), 'first')
         self.assertEqual(str(control['test_path']), 'data1:data2')
         self.assertEqual(str(control['derived']), 'another_first')
 
-        #os.environ['ENVXMLPATH'] = os.pathsep.join([tmp(), tmp('subdir')])
         EnvConfig.path[:] = ['.', tmp(), tmp('subdir')]
-        control = Control.Environment(searchPath=[])
+        control = Control.Environment(search_path=[])
         control.loadXML(tmp('second.xml'))
         self.assertEqual(str(control['main']), 'second')
         self.assertEqual(str(control['test_path']), 'data0:data1')
         self.assertEqual(str(control['map']), 'this_is_second_inc')
-        #del os.environ['ENVXMLPATH']
+
         EnvConfig.path[:] = ['.']
 
-        control = Control.Environment(searchPath=[])
+        control = Control.Environment(search_path=[])
         control.loadXML(tmp('third.xml'))
         self.assertEqual(str(control['main']), 'third')
         self.assertEqual(str(control['test_path']), 'data1')
         self.assertEqual(str(control['derived']), 'second_third')
 
-        control = Control.Environment(searchPath=[tmp('subdir')])
+        control = Control.Environment(search_path=[tmp('subdir')])
         control.loadXML(tmp('fourth.xml'))
         self.assertEqual(str(control['main']), 'fourth')
         self.assertEqual(str(control['included']), 'from subdir')
 
-        control = Control.Environment(searchPath=[])
+        control = Control.Environment(search_path=[])
         control.loadXML(tmp('fourth.xml'))
         self.assertEqual(str(control['main']), 'fourth')
         self.assertEqual(str(control['included']), 'from subdir2')
 
-        control = Control.Environment(searchPath=[])
-        #self.assertRaises(OSError, control.loadXML, tmp('first.xml'))
+        control = Control.Environment(search_path=[])
+        # self.assertRaises(OSError, control.loadXML, tmp('first.xml'))
         control.loadXML(tmp('recursion.xml'))
 
         # restore search path
@@ -551,34 +550,30 @@ class Test(unittest.TestCase):
         l = Variable.List('PATH')
 
         l.set("/usr/bin:/some//strange/../nice/./location")
-        assert l.value(asString=True) == "/usr/bin:/some/nice/location"
+        assert l.value(as_string=True) == "/usr/bin:/some/nice/location"
 
         l.append("/another/path")
         assert l.value(
-            asString=True) == "/usr/bin:/some/nice/location:/another/path"
+            as_string=True) == "/usr/bin:/some/nice/location:/another/path"
 
         # duplicates removal
         l.append("/usr/bin")
         assert l.value(
-            asString=True) == "/usr/bin:/some/nice/location:/another/path"
+            as_string=True) == "/usr/bin:/some/nice/location:/another/path"
         l.prepend("/another/path")
         assert l.value(
-            asString=True) == "/another/path:/usr/bin:/some/nice/location"
+            as_string=True) == "/another/path:/usr/bin:/some/nice/location"
 
         s = Variable.Scalar('VAR')
 
         s.set("/usr/bin")
-        assert s.value(asString=True) == "/usr/bin"
+        assert s.value(as_string=True) == "/usr/bin"
 
         s.set("/some//strange/../nice/./location")
-        assert s.value(asString=True) == "/some/nice/location"
-
-        # This is undefined
-        # l.set("http://cern.ch")
+        assert s.value(as_string=True) == "/some/nice/location"
 
         s.set("http://cern.ch")
-        assert s.value(asString=True) == "http://cern.ch"
+        assert s.value(as_string=True) == "http://cern.ch"
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

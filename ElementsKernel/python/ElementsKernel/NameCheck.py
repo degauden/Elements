@@ -38,24 +38,15 @@ except:
     from urllib.request import urlopen
     from urllib.error import URLError
 
-# import ssl
-
 logger = log.getLogger('NameCheck')
 
 TYPES = ["cmake", "library", "executable"]
 DEFAULT_TYPE = "cmake"
 
-# # version for a https server without the proper certificate
-# def _byPassSslUrlOpen(url):
-#     req = urllib2.Request(url, headers={'X-Mashape-Key': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'})
-#     gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-#     return urllib2.urlopen(req, context=gcontext)
-#
-# _localUrlOpen = _byPassSslUrlOpen
-
 _localUrlOpen = urlopen
 
 def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
+    """ Get the informations about a given entity of a specific type """
     full_url = db_url + "/NameCheck/exists?name=%s&type=%s" % (name, entity_type)
     logger.debug("The url for the name request: %s", full_url)
     info = json.loads(_localUrlOpen(full_url).read().decode("utf-8"))
@@ -65,6 +56,7 @@ def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
     return info
 
 def checkDataBaseUrl(db_url):
+    """ check if the DB URL exists """
     site_exists = True
     if db_url:
         try:
@@ -99,7 +91,7 @@ def defineSpecificProgramOptions():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('entity_name', metavar='entity-name',
                         type=str,
-                        help='Entitiy name')
+                        help='Entity name')
     parser.add_argument('-U', '--url', default=os.environ.get("ELEMENTS_NAMING_DB_URL", ""),
                         help='URL for the naming database')
     parser.add_argument('-t', '--type', default=DEFAULT_TYPE, choices=TYPES,

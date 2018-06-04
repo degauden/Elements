@@ -17,24 +17,24 @@ class Environment(object):
 
     '''object to hold settings of environment'''
 
-    def __init__(self, loadFromSystem=True, useAsWriter=False, searchPath=None):
+    def __init__(self, load_from_system=True, use_as_writer=False, search_path=None):
         '''Initial variables to be pushed and setup
 
         append switch between append and prepend for initial variables.
-        loadFromSystem causes variable`s system value to be loaded on first encounter.
-        If useAsWriter == True than every change to variables is recorded to XML file.
+        load_from_system causes variable`s system value to be loaded on first encounter.
+        If use_as_writer == True than every change to variables is recorded to XML file.
         reportLevel sets the level of messaging.
         '''
         self.log = logging.getLogger('Environment')
 
         self.separator = ':'
 
-        # Prepeare the internal search path for xml files (used by 'include'
+        # Prepare the internal search path for xml files (used by 'include'
         # elements)
-        if searchPath is None:
+        if search_path is None:
             self.searchPath = []
         else:
-            self.searchPath = list(searchPath)
+            self.searchPath = list(search_path)
 
         self.actions = {}
         self.actions['include'] = lambda n, c, h: self.loadXML(
@@ -53,9 +53,9 @@ class Environment(object):
 
         self.variables = {}
 
-        self.loadFromSystem = loadFromSystem
-        self.asWriter = useAsWriter
-        if useAsWriter:
+        self.loadFromSystem = load_from_system
+        self.asWriter = use_as_writer
+        if use_as_writer:
             self.writer = xmlModule.XMLFile()
             self.startXMLinput()
 
@@ -123,16 +123,17 @@ class Environment(object):
         else:
             return os.environ[name]
 
-    def search(self, varName, expr, regExp=False):
+    def search(self, var_name, expr, reg_exp=False):
         '''Searches in a variable for a value.'''
-        return self.variables[varName].search(expr, regExp)
+        return self.variables[var_name].search(expr, reg_exp)
 
     def _guessType(self, varname):
         '''
         Guess the type of the variable from its name: if the name contains
         'PATH' or 'DIRS', then the variable is a list, otherwise it is a scalar.
         '''
-        varname = varname.upper()  # make the comparison case insensitive
+        # make the comparison case insensitive
+        varname = varname.upper()
         if 'PATH' in varname or 'DIRS' in varname:
             return 'list'
         else:
@@ -246,25 +247,26 @@ class Environment(object):
     def remove_regexp(self, name, value):
         self.remove(name, value, True)
 
-    def searchFile(self, filename, varName):
+    def searchFile(self, filename, var_name):
         '''Searches for appearance of variable in a file.'''
-        XMLFile = xmlModule.XMLFile()
-        variable = XMLFile.variable(filename, name=varName)
+        xmlfile = xmlModule.XMLFile()
+        variable = xmlfile.variable(filename, name=var_name)
         return variable
 
-    def loadXML(self, fileName=None, namespace='EnvSchema'):
+    def loadXML(self, file_name=None, namespace='EnvSchema'):
         '''Loads XML file for input variables.'''
-        XMLfile = xmlModule.XMLFile()
-        fileName = self._locate(fileName)
-        if fileName in self.loadedFiles:
-            return  # ignore recursion
-        self.loadedFiles.add(fileName)
+        xmlfile = xmlModule.XMLFile()
+        file_name = self._locate(file_name)
+        if file_name in self.loadedFiles:
+            # ignore recursion
+            return
+        self.loadedFiles.add(file_name)
         dot = self.variables['.']
         # push the previous value of ${.} onto the stack...
         self._fileDirStack.append(dot.value())
         # ... and update the variable
-        dot.set(os.path.dirname(fileName))
-        variables = XMLfile.variable(fileName, namespace=namespace)
+        dot.set(os.path.dirname(file_name))
+        variables = xmlfile.variable(file_name, namespace=namespace)
         for i, (action, args) in enumerate(variables):
             if action not in self.actions:
                 self.log.error('Node {0}: No action taken with var "{1}". Probably wrong action argument: "{2}".'.format(
@@ -280,13 +282,13 @@ class Environment(object):
         '''Renew writer for new input.'''
         self.writer.resetWriter()
 
-    def finishXMLinput(self, outputFile=''):
+    def finishXMLinput(self, output_file=''):
         '''Finishes input of XML file and closes the file.'''
-        self.writer.writeToFile(outputFile)
+        self.writer.writeToFile(output_file)
 
-    def writeToFile(self, fileName, shell='sh'):
+    def writeToFile(self, file_name, shell='sh'):
         '''Creates an output file with a specified name to be used for setting variables by sourcing this file'''
-        f = open(fileName, 'w')
+        f = open(file_name, 'w')
         if shell == 'sh':
             f.write('#!/bin/bash' + os.linesep)
             for variable in self.variables:
@@ -310,18 +312,19 @@ class Environment(object):
 
         f.close()
 
-    def writeToXMLFile(self, fileName):
+    def writeToXMLFile(self, file_name):
         '''Writes the current state of environment to a XML file.
 
         NOTE: There is no trace of actions taken, variables are written with a set action only.
         '''
         writer = xmlModule.XMLFile()
-        for varName in self.variables:
-            if varName == '.':
-                continue  # this is an internal transient variable
+        for var_name in self.variables:
+            if var_name == '.':
+                # this is an internal transient variable
+                continue
             writer.writeVar(
-                varName, 'set', self.variables[varName].value(True, self.separator))
-        writer.writeToFile(fileName)
+                var_name, 'set', self.variables[var_name].value(True, self.separator))
+        writer.writeToFile(file_name)
 
     def presetFromSystem(self):
         '''Loads all variables from the current system settings.'''

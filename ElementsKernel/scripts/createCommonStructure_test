@@ -28,9 +28,7 @@ export User_area=${tmploc}
 cd ${tmploc}
 
 # We need to create first a project
-CreateElementsProject $project_name $version << EOF
-y
-EOF
+CreateElementsProject $project_name $version --yes
 
 # if error stop and clean up
 if [ $? -ne 0 ]; then
@@ -42,9 +40,7 @@ fi
 cd $User_area/$project_name/$version/
 
 # We need to create a module
-AddElementsModule $module_name << EOF
-y
-EOF
+AddElementsModule $module_name --yes
 
 # if error stop and clean up
 if [ $? -ne 0 ]; then

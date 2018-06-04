@@ -19,24 +19,34 @@
  *
  */
 
-#include <cstdlib>                         // for the exit function
-#include <fstream>
-#include <iostream>
-#include <typeinfo>                        // for the typid operator
-#include <algorithm>                       // for transform
-#include <vector>                          // for vector
-
 #include "ElementsKernel/ProgramManager.h"
 
-#include "ElementsKernel/Exception.h"
-#include "ElementsKernel/Logging.h"
-#include "ElementsKernel/System.h"
+#include <algorithm>                             // for transform
+#include <cstdint>                               // for int64_t
+#include <cstdlib>                               // for the exit function
+#include <exception>                             // for exception
+#include <iostream>                              // for cout
+#include <sstream>                               // for stringstream
+#include <string>                                // for string
+#include <typeinfo>                              // for the typid operator
+#include <vector>                                // for vector
+#include <fstream>                               // for ifstream
 
-#include "ElementsKernel/PathSearch.h"
-#include "ElementsKernel/Path.h"           // for Path::VARIABLE, multiPathAppend, PATH_SEP
-#include "ElementsKernel/ModuleInfo.h"     // for getExecutablePath
-#include "ElementsKernel/Unused.h"         // for ELEMENTS_UNUSED
-#include "ElementsKernel/Configuration.h"  // for getConfigurationPath
+#include <boost/algorithm/string/predicate.hpp>  // for starts_with
+#include <boost/filesystem/operations.hpp>       // for filesystem::complete, exists
+#include <boost/filesystem/path.hpp>             // for filesystem::path
+#include <boost/program_options.hpp>             // for program_options
+
+#include "ElementsKernel/Configuration.h"        // for getConfigurationPath
+#include "ElementsKernel/Path.h"                 // for Path::VARIABLE, multiPathAppend, PATH_SEP
+#include "ElementsKernel/Exception.h"            // for Exception
+#include "ElementsKernel/Exit.h"                 // for ExitCode
+#include "ElementsKernel/Logging.h"              // for Logging
+#include "ElementsKernel/ModuleInfo.h"           // for getExecutablePath
+#include "ElementsKernel/System.h"               // for backTrace
+#include "ElementsKernel/Unused.h"               // for ELEMENTS_UNUSED
+
+#include "OptionException.h"                     // local exception for unrecognized options
 
 using std::vector;
 using std::string;
@@ -47,7 +57,6 @@ using boost::program_options::variables_map;
 namespace Elements {
 
 using System::getExecutablePath;
-
 
 const path& ProgramManager::getProgramPath() const {
   return m_program_path;
@@ -63,8 +72,8 @@ const path& ProgramManager::getProgramName() const {
  * @todo check whether priotities are correct if more than one
  * config file is found in pathSearchInEnvVariable
  * */
-const path ProgramManager::getDefaultConfigFile(const path & program_name, const string& module_name) {
-
+const path ProgramManager::getDefaultConfigFile(const path & program_name,
+                                                const string& module_name) {
   Logging logger = Logging::getLogger("ElementsProgram");
 
   path default_config_file{};
@@ -77,11 +86,11 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name, const
   default_config_file = getConfigurationPath(conf_name.string(), false);
   if (default_config_file.empty()) {
     logger.warn() << "The \"" << conf_name.string() << "\" configuration file cannot be found in:";
-    for(auto l: getConfigurationLocations()) {
-      logger.warn() << " " << l;
+    for (auto loc : getConfigurationLocations()) {
+      logger.warn() << " " << loc;
     }
     if (not module_name.empty()) {
-      conf_name = path{module_name} / conf_name;
+      conf_name = path {module_name} / conf_name;
       logger.warn() << "Trying \"" << conf_name.string() << "\".";
       default_config_file = getConfigurationPath(conf_name.string(), false);
     }
@@ -98,14 +107,14 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name, const
 
 const path ProgramManager::setProgramName(ELEMENTS_UNUSED char* arg0) {
 
-  path full_path = Elements::System::getExecutablePath();
+  path full_path = getExecutablePath();
 
   return full_path.filename();
 }
 
 const path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
 
-  path full_path = Elements::System::getExecutablePath();
+  path full_path = getExecutablePath();
 
   return full_path.parent_path();
 }
@@ -119,6 +128,7 @@ const variables_map ProgramManager::getProgramOptions(
 
   using std::cout;
   using std::endl;
+  using std::exit;
   using boost::program_options::options_description;
   using boost::program_options::value;
   using boost::program_options::store;
@@ -134,7 +144,8 @@ const variables_map ProgramManager::getProgramOptions(
   string default_log_level = "INFO";
 
   // Get defaults
-  path default_config_file = getDefaultConfigFile(getProgramName(), m_parent_module_name);
+  path default_config_file = getDefaultConfigFile(getProgramName(),
+                                                  m_parent_module_name);
 
   // Define the options which can be given only at the command line
   options_description cmd_only_generic_options {};
@@ -153,8 +164,8 @@ const variables_map ProgramManager::getProgramOptions(
       ("log-file",
          value<path>(), "Name of a log file");
 
-  // Group all the generic options, for help output. Note that we add the options
-  // one by one to avoid having empty lines between the groups
+  // Group all the generic options, for help output. Note that we add the
+  // options one by one to avoid having empty lines between the groups
   options_description all_generic_options {"Generic options"};
   for (auto o : cmd_only_generic_options.options()) {
     all_generic_options.add(o);
@@ -163,8 +174,8 @@ const variables_map ProgramManager::getProgramOptions(
     all_generic_options.add(o);
   }
 
-  // Get the definition of the specific options and arguments(positional options)
-  // from the derived class
+  // Get the definition of the specific options and arguments (positional
+  // options) from the derived class
   auto specific_options = m_program_ptr->defineSpecificProgramOptions();
   auto program_arguments = m_program_ptr->defineProgramArguments();
   options_description all_specific_options {};
@@ -189,36 +200,52 @@ const variables_map ProgramManager::getProgramOptions(
   // Deal with the "help" option
   if (var_map.count("help")) {
     cout << help_options << endl;
-    exit(0);
+    exit(static_cast<int>(ExitCode::OK));
   }
 
   // Deal with the "version" option
   if (var_map.count("version")) {
     cout << getVersion() << endl;
-    exit(0);
+    exit(static_cast<int>(ExitCode::OK));
   }
 
-  // Get the configuration file. It is guaranteed to exist, because it has default value
+  // Get the configuration file. It is guaranteed to exist, because it has
+  // default value
   auto config_file = var_map.at("config-file").as<path>();
 
   // Parse from the command line the rest of the options. Here we also handle
   // the positional arguments.
   auto leftover_cmd_options = collect_unrecognized(cmd_parsed_options.options,
-                                                    include_positional);
-  store(command_line_parser(leftover_cmd_options)
-                      .options(all_cmd_and_file_options)
-                      .positional(program_arguments.second)
-                      .run(),
-            var_map);
+                                                   include_positional);
+
+
+  try {
+
+  auto parsed_cmdline_options = command_line_parser(leftover_cmd_options)
+                         .options(all_cmd_and_file_options)
+                         .positional(program_arguments.second)
+                         .run();
+
+  store(parsed_cmdline_options, var_map);
 
   // Parse from the configuration file if it exists
-  if (not config_file.empty() && boost::filesystem::exists(config_file)) {
+  if (not config_file.empty() and boost::filesystem::exists(config_file)) {
     std::ifstream ifs {config_file.string()};
     if (ifs) {
-      store(parse_config_file(ifs, all_cmd_and_file_options), var_map);
+      auto parsed_cfgfile_options = parse_config_file(ifs,
+                                                      all_cmd_and_file_options);
+      store(parsed_cfgfile_options, var_map);
     }
   }
 
+  } catch (const std::exception& e) {
+    if (boost::starts_with(e.what(), "unrecognised option") or
+        boost::starts_with(e.what(), "too many positional options")) {
+      throw OptionException(e.what());
+    } else {
+      throw;
+    }
+  }
   // After parsing both the command line and the conf file notify the variables
   // map, so we can get any messages for missing parameters
   notify(var_map);
@@ -257,6 +284,7 @@ void ProgramManager::logFooter(string program_name) const {
 void ProgramManager::logAllOptions() const {
 
   using std::stringstream;
+  using std::int64_t;
 
   Logging logger = Logging::getLogger("ElementsProgram");
 
@@ -270,7 +298,7 @@ void ProgramManager::logAllOptions() const {
   stringstream log_message {};
 
   // Loop over all options included in the variable_map
-  for (const auto& v: m_variables_map) {
+  for (const auto& v : m_variables_map) {
     // string option
     if (v.second.value().type() == typeid(string)) {
       log_message << v.first << " = " << v.second.as<string>();
@@ -291,7 +319,7 @@ void ProgramManager::logAllOptions() const {
     } else if (v.second.value().type() == typeid(vector<int>)) {
       vector<int> intVec = v.second.as<vector<int>>();
       stringstream vecContent {};
-      for (const auto& i: intVec) {
+      for (const auto& i : intVec) {
         vecContent << " " << i;
       }
       log_message << v.first << " = {" << vecContent.str() << " }";
@@ -299,7 +327,7 @@ void ProgramManager::logAllOptions() const {
     } else if (v.second.value().type() == typeid(vector<double>)) {
       vector<double> intVec = v.second.as<vector<double>>();
       stringstream vecContent {};
-      for (const auto& i: intVec) {
+      for (const auto& i : intVec) {
         vecContent << " " << i;
       }
       log_message << v.first << " = {" << vecContent.str() << " }";
@@ -307,7 +335,7 @@ void ProgramManager::logAllOptions() const {
     } else if (v.second.value().type() == typeid(vector<string> )) {
       vector<string> intVec = v.second.as<vector<string>>();
       stringstream vecContent {};
-      for (const auto& i: intVec) {
+      for (const auto& i : intVec) {
         vecContent << " " << i;
       }
       log_message << v.first << " = {" << vecContent.str() << " }";
@@ -323,7 +351,6 @@ void ProgramManager::logAllOptions() const {
   }
   logger.info("#");
 
-
 }
 
 // Log all options with a header
@@ -337,14 +364,14 @@ void ProgramManager::logTheEnvironment() const {
   logger.debug() << "# ---------------------------";
   logger.debug() << "#";
 
-  for (const auto& v: Path::VARIABLE) {
+  for (const auto& v : Path::VARIABLE) {
     logger.debug() << v.second << ": " << m_env[v.second];
   }
 
   logger.debug() << "#";
 }
 
-void ProgramManager::bootstrapEnvironment(char* arg0){
+void ProgramManager::bootstrapEnvironment(char* arg0) {
 
   m_program_name = setProgramName(arg0);
   m_program_path = setProgramPath(arg0);
@@ -369,7 +396,7 @@ void ProgramManager::bootstrapEnvironment(char* arg0){
   using Path::joinPath;
   using Path::Type;
 
-  for (const auto& v: Path::VARIABLE) {
+  for (const auto& v : Path::VARIABLE) {
     if (m_env[v.second].exists()) {
       m_env[v.second] += Path::PATH_SEP + joinPath(multiPathAppend(local_search_paths, Path::SUFFIXES.at(v.first)));
     } else {
@@ -386,15 +413,24 @@ void ProgramManager::setup(int argc, char* argv[]) {
   // and retrieve the local environment
   bootstrapEnvironment(argv[0]);
 
+  Logging logger = Logging::getLogger("ElementsProgram");
+
   // get all program options into the varaiable_map
-  m_variables_map = getProgramOptions(argc, argv);
+  try {
+    m_variables_map = getProgramOptions(argc, argv);
+  } catch (const OptionException& e) {
+    auto exit_code = e.exitCode();
+    logger.fatal() << "# Elements Exception : " << e.what();
+    std::_Exit(static_cast<int>(exit_code));
+  }
 
   // get the program options related to the logging
   string logging_level;
   if (m_variables_map.count("log-level")) {
     logging_level = m_variables_map["log-level"].as<string>();
   } else {
-     throw Exception("Required option log-level is not provided!", ExitCode::CONFIG);
+     throw Exception("Required option log-level is not provided!",
+                     ExitCode::CONFIG);
   }
   path log_file_name;
 
@@ -454,13 +490,13 @@ void ProgramManager::onTerminate() noexcept {
 
     logger.fatal() << "Crash detected";
     logger.fatal() << "This is the back trace:";
-    for (auto level: System::backTrace(21, 4)) {
+    for (auto level : System::backTrace(21, 4)) {
       logger.fatal() << level;
     }
 
     // we have an exception
     try {
-      std::rethrow_exception( exc ); // throw to recognize the type
+      std::rethrow_exception(exc);  // throw to recognise the type
     } catch (const Exception & exc) {
       logger.fatal() << "# ";
       logger.fatal() << "# Elements Exception : " << exc.what();
@@ -474,7 +510,7 @@ void ProgramManager::onTerminate() noexcept {
       logger.fatal() << "# ";
     } catch (...) {
       logger.fatal() << "# ";
-      logger.fatal() << "# An exception of unknown type occured, "
+      logger.fatal() << "# An exception of unknown type occurred, "
                      << "i.e., an exception not deriving from std::exception ";
       logger.fatal() << "# ";
     }
@@ -487,4 +523,4 @@ void ProgramManager::onTerminate() noexcept {
 
 }
 
-} // namespace Elements
+}  // namespace Elements

@@ -24,8 +24,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_MODULEINFO_H
-#define ELEMENTSKERNEL_MODULEINFO_H
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_MODULEINFO_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_MODULEINFO_H_
 
 // STL include files
 #include <string>
@@ -58,10 +58,7 @@ private:
 enum class ModuleType {
   UNKNOWN, SHAREDLIB, EXECUTABLE
 };
-/// Definition of an image handle
-using ImageHandle = void*;
-/// Definition of the process handle
-using ProcessHandle = void*;
+
 /// Get the name of the (executable/DLL) file without file-type
 ELEMENTS_API const std::string& moduleName();
 /// Get the full name of the (executable/DLL) file
@@ -78,13 +75,15 @@ ELEMENTS_API ImageHandle exeHandle();
 ELEMENTS_API const std::string& exeName();
 /// Vector of names of linked modules
 ELEMENTS_API const std::vector<std::string> linkedModules();
+ELEMENTS_API std::vector<boost::filesystem::path> linkedModulePaths();
 /// Attach module handle
 ELEMENTS_API void setModuleHandle(ImageHandle handle);
-
+/// Get the full executable path
 ELEMENTS_API boost::filesystem::path getExecutablePath();
 
-}
-}
-#endif // ELEMENTSKERNEL_MODULEINFO_H
+}  // namespace System
+}  // namespace Elements
+
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_MODULEINFO_H_
 
 /**@}*/

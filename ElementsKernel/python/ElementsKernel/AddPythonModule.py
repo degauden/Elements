@@ -157,7 +157,7 @@ def createPythonModule(current_dir, module_name, python_module_name):
 
 ################################################################################
 
-def makeChecks(module_file_path, python_module_name):
+def makeChecks(module_file_path, python_module_name, answer_yes=False):
     """
     Make some checks
     """
@@ -169,7 +169,7 @@ def makeChecks(module_file_path, python_module_name):
     epcr.checkAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
 
     # Check name in DB
-    epcr.checkNameInEuclidNamingDatabase(python_module_name, nc.TYPES[0])
+    epcr.checkNameInEuclidNamingDatabase(python_module_name, nc.TYPES[0], answer_yes)
 
 ################################################################################
 
@@ -185,6 +185,9 @@ This script creates an <Elements> python module at your current directory
     parser.add_argument('module_name', metavar='module-name',
                         type=str,
                         help='Module name')
+    parser.add_argument('-y', '--yes', default=False, action="store_true",
+                        help='Answer <yes> by default to any question, useful when the script is called by another'\
+                         'script')
 
     return parser
 
@@ -200,6 +203,7 @@ def mainMethod(args):
     logger.info('#')
 
     python_module_name = args.module_name
+    answer_yes = args.yes
 
     try:
         # Default is the current directory
@@ -213,7 +217,7 @@ def mainMethod(args):
 
         module_file_path = os.path.join(current_dir, 'python', module_name,
                                         python_module_name + '.py')
-        makeChecks(module_file_path, python_module_name)
+        makeChecks(module_file_path, python_module_name, answer_yes)
 
         # Create module
         createPythonModule(current_dir, module_name, python_module_name)
@@ -225,11 +229,6 @@ def mainMethod(args):
         # Print all files created
         epcr.printCreationList()
 
-    except epcr.ErrorOccured as msg:
-        if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
-        return 1
     except Exception as msg:
         if str(msg):
             logger.error(msg)

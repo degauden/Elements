@@ -18,37 +18,35 @@
  *
  */
 
-#include "ElementsKernel/Logging.h"     // for Logging, etc
+#include "ElementsKernel/Logging.h"              // for Logging, etc
 
+#include <iostream>                              // for operator<<, stringstream, etc
+#include <map>                                   // for map
+#include <memory>                                // for unique_ptr
+#include <sstream>                               // for stringstream
+#include <string>                                // for char_traits, string
 
-#include <cstddef>                      // for NULL
-#include <iostream>                     // for operator<<, stringstream, etc
-#include <boost/filesystem.hpp>
-#include <log4cpp/Category.hh>          // for Category
-#include <log4cpp/FileAppender.hh>      // for FileAppender
-#include <log4cpp/Layout.hh>            // for Layout
-#include <log4cpp/OstreamAppender.hh>   // for OstreamAppender
-#include <log4cpp/PatternLayout.hh>     // for PatternLayout
-#include <log4cpp/Priority.hh>          // for Priority, Priority::::INFO, etc
-#include <memory>                       // for unique_ptr
-#include <string>                       // for char_traits, string
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/case_conv.hpp>  // for to_upper
+#include <boost/filesystem/path.hpp>             // for path
+
+#include <log4cpp/Category.hh>                   // for Category
+#include <log4cpp/FileAppender.hh>               // for FileAppender
+#include <log4cpp/OstreamAppender.hh>            // for OstreamAppender
+#include <log4cpp/PatternLayout.hh>              // for PatternLayout
+#include <log4cpp/Priority.hh>                   // for Priority, Priority::::INFO, etc
 
 #include "ElementsKernel/Exception.h"   // for Exception
 
-
 using std::string;
-
 using log4cpp::Category;
-
 
 namespace Elements {
 
 static const std::map<string, const int> LOG_LEVEL {{"FATAL", log4cpp::Priority::FATAL},
-                                                       {"ERROR", log4cpp::Priority::ERROR},
-                                                       {"WARN", log4cpp::Priority::WARN},
-                                                       {"INFO", log4cpp::Priority::INFO},
-                                                       {"DEBUG", log4cpp::Priority::DEBUG}};
+                                                    {"ERROR", log4cpp::Priority::ERROR},
+                                                    {"WARN", log4cpp::Priority::WARN},
+                                                    {"INFO", log4cpp::Priority::INFO},
+                                                    {"DEBUG", log4cpp::Priority::DEBUG}};
 
 std::unique_ptr<log4cpp::Layout> getLogLayout() {
   log4cpp::PatternLayout* layout = new log4cpp::PatternLayout {};
@@ -106,4 +104,4 @@ Logging::LogMessageStream::~LogMessageStream() {
 }
 
 
-} // Elements namespace
+}  // namespace Elements

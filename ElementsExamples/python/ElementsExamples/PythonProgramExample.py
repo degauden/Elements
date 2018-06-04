@@ -1,9 +1,25 @@
 """ Small example for a python based script """
 
 import argparse
-import ElementsKernel.Logging as log
+from ElementsKernel import Logging
 from ElementsKernel.Program import str_to_bool
 from ElementsExamples.PythonModuleExample import ClassExample
+
+
+def myLocalLogTestFunc():
+    """
+    @brief example of logging from a function
+    """
+
+    logger = Logging.getLogger()
+    logger.info("Test of Message")
+
+    logger2 = Logging.getLogger("TestLogger")
+    logger2.info("Test2 of Message")
+
+    logger3 = Logging.getLogger(__name__)
+    logger3.info("Test3 of Message")
+
 
 def defineSpecificProgramOptions():
     """
@@ -16,18 +32,79 @@ def defineSpecificProgramOptions():
         An  ArgumentParser.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--string-option', type=str,
-                        help='A string example option')
-    parser.add_argument('--int-option', type=int,
-                        help='An int example option')
-    parser.add_argument('--float-option', type=float,
-                        help='A float option')
-    parser.add_argument('--int-list-option', nargs='+', type=int,
-                        help='A integer list option')
-    parser.add_argument('--overwrite', nargs='?', dest='overwrite',
-                        default=False, const=True, type=str_to_bool,
-                        help='Overwrite the output files')
+
+    parser.add_argument(
+        '--string-option',
+        type=str,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--int-option',
+        type=int,
+        default=111,
+        help='An int example option'
+    )
+
+    parser.add_argument(
+        '--int-option-with-default-and-default-in-conf',
+        type=int,
+        default=222,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--int-option-with-default-no-default-in-conf',
+        type=int,
+        default=444,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--int-option-no-default-not-defined-in-conf',
+        type=int,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--int-option-with-no-defaults-anywhere',
+        type=int,
+        help='A string example option'
+    )
+
+    parser.add_argument(
+        '--float-option',
+        type=float,
+        default=99999.0,
+        help='A float option'
+    )
+
+    parser.add_argument(
+        '--int-list-option',
+        nargs='+',
+        type=int,
+        default=[-1, -2, 9],
+        help='A integer list option'
+    )
+
+    parser.add_argument(
+        '--overwrite',
+        nargs='?',
+        dest='overwrite',
+        default=False,
+        const=True,
+        type=str_to_bool,
+        help='Overwrite the output files'
+    )
+
+    parser.add_argument(
+        '--threshold', '-t',
+        type=float,
+        default=0.5,
+        help="signal threshold")
+
     return parser
+
 
 def mainMethod(args):
     """
@@ -38,8 +115,13 @@ def mainMethod(args):
 
         See the ElementsProgram documentation for more details.
     """
-    logger = log.getLogger('ProgramExample')
+    logger = Logging.getLogger('ProgramExample')
     logger.info('Entering ProgramExample mainMethod()')
+
+    #
+    #  function with log messages
+    #
+    myLocalLogTestFunc()
 
     #
     #  Log some of the arguments
@@ -48,6 +130,9 @@ def mainMethod(args):
     logger.info('Example string : ' + string_from_configuration)
     second_element = args.int_list_option[1]
     logger.info('Second elements from the list : ' + str(second_element))
+
+    logger.info("the int_option value %d" % args.int_option)
+    logger.info("the threshold value %.1f" % args.threshold)
 
     #
     #  Calling a static method

@@ -39,7 +39,7 @@ if sphinx_major_version < 1 or (sphinx_major_version == 1 and sphinx_minor_versi
     napoleon_extension = 'sphinxcontrib.napoleon'
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', napoleon_extension,
-              'sphinx.ext.mathjax', 'sphinx.ext.autosummary', 'sphinx.ext.inheritance_diagram', 
+              'sphinx.ext.mathjax', 'sphinx.ext.autosummary', 'sphinx.ext.inheritance_diagram',
               'sphinx.ext.intersphinx']
 @APPEND_BREATHE_EXT@
 

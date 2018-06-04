@@ -67,6 +67,15 @@ const map<Type, const vector<string>> DEFAULT_LOCATIONS {
   {Type::auxiliary, {"/usr/share/auxiliary"}}
 };
 
+const std::map<Type, const bool> HAS_SUBLEVELS {
+  {Type::executable, false},
+  {Type::library, false},
+  {Type::python, true},
+  {Type::configuration, true},
+  {Type::auxiliary, true}
+};
+
+
 vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
   using System::getEnv;
@@ -102,6 +111,11 @@ template path getPathFromLocations(const path& file_name, const vector<string>& 
 template path getPathFromLocations(const string& file_name, const vector<path>& locations);
 template path getPathFromLocations(const string& file_name, const vector<string>& locations);
 
+template vector<path> getAllPathFromLocations(const path& file_name, const vector<path>& locations);
+template vector<path> getAllPathFromLocations(const path& file_name, const vector<string>& locations);
+template vector<path> getAllPathFromLocations(const string& file_name, const vector<path>& locations);
+template vector<path> getAllPathFromLocations(const string& file_name, const vector<string>& locations);
+
 template path getPathFromEnvVariable<path>(const path& file_name, const string& path_variable);
 template path getPathFromEnvVariable<string>(const string& file_name, const string& path_variable);
 
@@ -111,5 +125,5 @@ template vector<path> multiPathAppend(const vector<string>& initial_locations, c
 template vector<path> multiPathAppend(const vector<string>& initial_locations, const vector<string>& suffixes);
 
 
-} // Path namespace
-} // Elements namespace
+}  // namespace Path
+}  // namespace Elements

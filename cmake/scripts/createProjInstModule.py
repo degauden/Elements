@@ -1,9 +1,11 @@
+""" Script module to generate the project installation python module """
 import os
 import re
 from optparse import OptionParser
 
 
 def main():
+    """ main function of the script module """
     parser = OptionParser(
         usage="ERROR: Usage %prog <project> <location> <used_projects> <outputfile>")
     parser.add_option("-q", "--quiet", action="store_true",

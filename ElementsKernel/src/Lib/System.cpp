@@ -17,9 +17,13 @@
  *
  */
 
-
 #include "ElementsKernel/System.h"
-#include "ElementsKernel/FuncPtrCast.h"
+
+#include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
+#include <execinfo.h>                   // for backtrace
+#include <unistd.h>                     // for environ
+#include <cxxabi.h>
+#include <sys/utsname.h>
 
 #include <cstdlib>                      // for free, getenv, malloc, etc
 #include <typeinfo>                     // for type_info
@@ -29,14 +33,11 @@
 #include <string>                       // for string
 #include <vector>                       // for vector
 
-#include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
 #include <cerrno>                       // for errno
-#include <execinfo.h>                   // for backtrace
-#include <cstring>                      // for strlen
-#include <unistd.h>                     // for environ
-#include <cxxabi.h>
-#include <sys/utsname.h>
+#include <cstring>                      // for strnlen, strerror
+#include <climits>                      // for HOST_NAME_MAX
 
+#include "ElementsKernel/FuncPtrCast.h"
 #include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
 #include "ElementsKernel/Unused.h"      // for ELEMENTS_UNUSED
 
@@ -54,8 +55,7 @@ namespace System {
 namespace {
 
 unsigned long doLoad(const string& name, ImageHandle* handle) {
-  const char* path = name.c_str();
-  void *mh = ::dlopen(name.length() == 0 ? 0 : path, RTLD_LAZY | RTLD_GLOBAL);
+  void *mh = ::dlopen(name.length() == 0 ? 0 : name.c_str(), RTLD_LAZY | RTLD_GLOBAL);
   *handle = mh;
   if (0 == *handle) {
     return getLastError();
@@ -80,7 +80,7 @@ unsigned long loadWithoutEnvironment(const string& name,
   return doLoad(dll_name, handle);
 }
 
-} // anonymous namespace
+}  // anonymous namespace
 // --------------------------------------------------------------------------------------
 
 /// Load dynamic link library
@@ -131,7 +131,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
   return 1;
 #elif defined(__APPLE__)
   *pFunction = (EntryPoint)::dlsym(handle, name.c_str());
-  if (not (*pFunction)) {
+  if (not *pFunction) {
     // Try with an underscore :
     string sname = "_" + name;
     *pFunction = (EntryPoint)::dlsym(handle, sname.c_str());
@@ -148,7 +148,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
 /// Get a specific function defined in the DLL
 unsigned long getProcedureByName(ImageHandle handle, const string& name,
     Creator* pFunction) {
-  return getProcedureByName(handle, name, (EntryPoint*) pFunction);
+  return getProcedureByName(handle, name, reinterpret_cast<EntryPoint*>(pFunction));
 }
 
 /// Retrieve last error code
@@ -169,19 +169,19 @@ const string getErrorString(unsigned long error) {
   char *cerrString(0);
   // Remember: for linux dl* routines must be handled differently!
   if (error == 0xAFFEDEAD) {
-    cerrString = (char*) ::dlerror();
+    cerrString = reinterpret_cast<char*>(::dlerror());
     if (0 == cerrString) {
-      cerrString = strerror(error);
+      cerrString = std::strerror(error);
     }
     if (0 == cerrString) {
       cerrString =
-          (char *) "Unknown error. No information found in strerror()!";
+          const_cast<char *> ("Unknown error. No information found in strerror()!");
     } else {
       errString = string(cerrString);
     }
     errno = 0;
   } else {
-    cerrString = strerror(error);
+    cerrString = std::strerror(error);
     errString = string(cerrString);
   }
   return errString;
@@ -193,7 +193,7 @@ const string typeinfoName(const std::type_info& tinfo) {
 
 const string typeinfoName(const char* class_name) {
   string result;
-  if (strlen(class_name) == 1) {
+  if (strnlen(class_name, 1024) == 1) {
     // See http://www.realitydiluted.com/mirrors/reality.sgi.com/dehnert_engr/cxx/abi.pdf
     // for details
     switch (class_name[0]) {
@@ -282,12 +282,11 @@ const string typeinfoName(const char* class_name) {
 
 /// Host name
 const string& hostName() {
-  static string host = "";
-  if (host == "") {
-    char buffer[512];
-    std::memset(buffer, 0, sizeof(buffer));
-    ::gethostname(buffer, sizeof(buffer));
-    host = buffer;
+  static string host {};
+  if (host.empty()) {
+    std::unique_ptr<char> buffer(new char[HOST_NAME_MAX+1]);
+    ::gethostname(buffer.get(), HOST_NAME_MAX);
+    host = buffer.get();
   }
   return host;
 }
@@ -328,22 +327,6 @@ const string& machineType() {
   return mach;
 }
 
-/// User login name
-string accountName() {
-  string account = ::getlogin();
-    if (0 == account.size()) {
-      account = getEnv("LOGNAME");
-    }
-    if (0 == account.size()) {
-      account = getEnv("USER");
-    }
-    if (0 == account.size()) {
-      account = "Unknown";
-    }
-
-  return account;
-}
-
 string getEnv(const string& var) {
 
   string env_str {};
@@ -369,7 +352,8 @@ bool getEnv(const string& var, string& value) {
 
 
 bool isEnvSet(const string& var) {
-  return ::getenv(var.c_str()) != 0;
+  string result;
+  return getEnv(var, result);
 }
 
 /// get all defined environment vars
@@ -388,7 +372,7 @@ vector<string> getEnv() {
   return vars;
 }
 
-///set an environment variables. @return 0 if successful, -1 if not
+/// set an environment variables. @return 0 if successful, -1 if not
 int setEnv(const string& name, const string& value, bool overwrite) {
 
   int over = 1;
@@ -407,7 +391,6 @@ int unSetEnv(const string& name) {
 // -----------------------------------------------------------------------------
 // backtrace utilities
 // -----------------------------------------------------------------------------
-#include <execinfo.h>
 
 int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses,
               ELEMENTS_UNUSED const int depth) {
@@ -462,7 +445,7 @@ const vector<string> backTrace(const int depth, const int offset) {
 
     int count = backTrace(addresses, total_depth);
 
-    for (int i=total_offset; i<count; ++i) {
+    for (int i=total_offset; i < count; ++i) {
       void *addr = 0;
       string fnc, lib;
       if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
@@ -505,5 +488,5 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
 
 }
 
-} // namespace System
-} // namespace Elements
+}  // namespace System
+}  // namespace Elements

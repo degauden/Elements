@@ -1,7 +1,9 @@
 if (NOT TAR_FOUND)
 
-	find_program(TAR_EXECUTABLE tar)
-	set(TAR_EXECUTABLE ${TAR_EXECUTABLE} CACHE STRING "")
+    find_program(TAR_EXECUTABLE tar
+                 HINTS ENV TAR_INSTALL_DIR
+                 PATH_SUFFIXES bin)
+    set(TAR_EXECUTABLE ${TAR_EXECUTABLE} CACHE STRING "")
 
 # handle the QUIETLY and REQUIRED arguments and set TAR_FOUND to TRUE if
 # all listed variables are TRUE

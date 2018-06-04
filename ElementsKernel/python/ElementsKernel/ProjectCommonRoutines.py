@@ -33,6 +33,12 @@ import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
+import ElementsKernel.Auxiliary as aux
+
+try:
+    from builtins import input
+except:
+    from __builtin__ import input
 
 # Define a global list containing files created or modified
 # by the python scripts for the creation of a Elements project
@@ -70,7 +76,7 @@ def printCreationList():
     logger.info("#")
 
 ################################################################################
-def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
+def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=False):
     """
     Check if the entity_name (e.g. project name, module name, class name etc...)
     already exists in the Euclid Naming Database. This function displays warning messages
@@ -81,9 +87,8 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
     db_url = os.environ.get("ELEMENTS_NAMING_DB_URL", "")
     if not nc.checkDataBaseUrl(db_url):
         logger.info("#")
-        logger.warn("!!! The Elements Naming Database URL is not valid : %s !!!", db_url)
+        logger.warn("!!! The Elements Naming Database URL is not valid : <%s> !!!", db_url)
         logger.warn("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
-        script_goes_on = False
     else:
         info = nc.getInfo(entity_name, db_url, entity_type)
         if info["error"]:
@@ -99,14 +104,15 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type=""):
                 script_goes_on = False
             else:
                 logger.warn("")
-                logger.warn("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!", entity_name,
-                             entity_type)
+                logger.warn("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!",
+                            entity_name,
+                            entity_type)
                 logger.warn("Please think to add the \"%s\" name in the Element Naming Database below:", entity_name)
                 logger.warn("< %s/NameCheck/project1/ >", db_url)
                 logger.info("")
 
-    if not script_goes_on:
-        response_key = raw_input('Do you want to continue?(y/n, default: n)')
+    if not answer_yes and not script_goes_on :
+        response_key = input('Do you want to continue?(y/n, default: n)')
         if not response_key.lower() == "yes" and not response_key.lower() == "y":
                 raise ErrorOccured
 
@@ -183,39 +189,12 @@ def eraseDirectory(directory):
 
 ################################################################################
 
-def getAuxPathFile(file_name):
-    """
-    Look for the first <auxdir> path valid in the <ELEMENTS_AUX_PATH> environment
-    variable where is located the <auxdir/file_name> file. It returns the
-    filename with the path or an empty string if not found. We assume that the
-    file_name also contains any sub directory under the <ELEMENTS_AUX_PATH>
-    environment variable
-    """
-    found = False
-    aux_dir = os.environ.get('ELEMENTS_AUX_PATH')
-    file_name = file_name.replace("/", os.path.sep)
-    if aux_dir is not None:
-        for elt in aux_dir.split(os.pathsep):
-            full_filename = os.path.join(elt, file_name)
-            # look for the first valid path
-            if os.path.exists(full_filename):
-                found = True
-                break
-
-    if not found:
-        full_filename = ''
-        raise ErrorOccured("Auxiliary file not found : < %s >" % file_name)
-
-    return full_filename
-
-################################################################################
-
 def copyAuxFile(destination, aux_file_name):
     """
     Copy the <aux_file_name> file to the <destination> directory.
     <aux_file_name> is just the name without path
     """
-    aux_path_file = getAuxPathFile(os.path.join('ElementsKernel', 'templates', aux_file_name))
+    aux_path_file = aux.getAuxiliaryPath(os.path.join('ElementsKernel', 'templates', aux_file_name))
     if aux_path_file:
         shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
     else:
@@ -225,11 +204,12 @@ def copyAuxFile(destination, aux_file_name):
 
 def checkAuxFileExist(aux_file_name):
     """
-    Make sure the <aux_file> auxiliary file exists.
-    <aux_file> is just the name without the path.
+    Make sure the <aux_file> auxiliary file exists. Return an exception in case of
+    an error.
+    <aux_file_name> is just the name without the path.
     """
     auxpath = os.path.join('ElementsKernel', 'templates', aux_file_name)
-    getAuxPathFile(auxpath)
+    aux.getAuxiliaryPath(auxpath)
 
 ################################################################################
 

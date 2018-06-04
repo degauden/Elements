@@ -19,31 +19,39 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <cstring>
-#include <cstdlib>
-#include <sstream>                            // for stringstream
-
-#include <boost/filesystem/path.hpp>          // for filesystem::path
-#include <boost/filesystem/operations.hpp>    // for filesystem::exists
-
 #include "ElementsKernel/ModuleInfo.h"
-#include "ElementsKernel/FuncPtrCast.h"
 
-#include <cerrno>
 #include <sys/times.h>
 #include <sys/param.h>
 #include <unistd.h>
 #include <libgen.h>
-#include <cstdio>
 #include <dlfcn.h>
 
 #ifdef __APPLE__
-#include <climits>            // for PATH_MAX
 #include <mach-o/dyld.h>      // for _NSGetExecutablePath
 #endif
 
+#include <cstring>
+#include <cstdlib>
+#include <sstream>                            // for stringstream
+#include <fstream>                            // for ifstream
+#include <iostream>
+#include <cerrno>
+#include <cstdio>
+#include <string>                             // for string
+#include <vector>
 
-using namespace std;
+#ifdef __APPLE__
+#include <climits>            // for PATH_MAX
+#endif
+
+#include <boost/filesystem/path.hpp>          // for filesystem::path
+#include <boost/filesystem/operations.hpp>    // for filesystem::exists
+
+#include "ElementsKernel/FuncPtrCast.h"
+
+using std::string;
+using std::vector;
 using boost::filesystem::path;
 
 namespace {
@@ -82,14 +90,14 @@ ModuleInfo::operator const Dl_info&() const {
 }
 
 namespace {
-  ImageHandle      ModuleHandle = 0;
+  ImageHandle s_module_handle = 0;
 }
 /// Retrieve base name of module
 const string& moduleName()   {
   static string module("");
   if ( module == "" )   {
     if ( processHandle() && moduleHandle() )    {
-      string mod = ::basename((char*)((Dl_info*)moduleHandle())->dli_fname);
+      string mod = ::basename(const_cast<char *>((reinterpret_cast<Dl_info*>(moduleHandle()))->dli_fname));
       module = mod.substr(static_cast<string::size_type>(0), mod.rfind('.'));
     }
   }
@@ -104,7 +112,7 @@ const string& moduleNameFull()   {
       char name[PATH_MAX] = {"Unknown.module"};
       name[0] = 0;
       const char *path =
-          ((Dl_info*)moduleHandle())->dli_fname;
+          (reinterpret_cast<Dl_info*>(moduleHandle())->dli_fname);
       if (::realpath(path, name)) {
         module = name;
       }
@@ -116,14 +124,14 @@ const string& moduleNameFull()   {
 /// Get type of the module
 ModuleType moduleType()   {
   static ModuleType type = ModuleType::UNKNOWN;
-  if ( type == ModuleType::UNKNOWN )    {
+  if (type == ModuleType::UNKNOWN)    {
     const string& module = moduleNameFull();
     int loc = module.rfind('.')+1;
-    if ( loc == 0 ) {
+    if (loc == 0) {
       type = ModuleType::EXECUTABLE;
-    } else if ( module[loc] == 'e' || module[loc] == 'E' ) {
+    } else if (module[loc] == 'e' or module[loc] == 'E') {
       type = ModuleType::EXECUTABLE;
-    } else if ( module[loc] == 's' && module[loc+1] == 'o' ) {
+    } else if (module[loc] == 's' and module[loc+1] == 'o') {
       type = ModuleType::SHAREDLIB;
     } else {
       type = ModuleType::UNKNOWN;
@@ -132,39 +140,40 @@ ModuleType moduleType()   {
   return type;
 }
 
-/// Retrieve processhandle
+/// Retrieve process handle
 void* processHandle()   {
-  static long pid = ::getpid();
-  static void* hP = (void*)pid;
+  static std::int64_t pid = ::getpid();
+  static void* hP = reinterpret_cast<void*>(pid);
   return hP;
 }
 
 void setModuleHandle(ImageHandle handle)    {
-  ModuleHandle = handle;
+  s_module_handle = handle;
 }
 
-ImageHandle moduleHandle()    {
-  if ( 0 == ModuleHandle )    {
-    if ( processHandle() )    {
+ImageHandle moduleHandle() {
+  if (0 == s_module_handle) {
+    if (processHandle()) {
       static Dl_info info;
-      if ( 0 !=
-           ::dladdr(FuncPtrCast<void*>(moduleHandle), &info) ) {
+      if (0 != ::dladdr(FuncPtrCast<void*>(moduleHandle), &info)) {
         return &info;
       }
     }
   }
-  return ModuleHandle;
+  return s_module_handle;
 }
 
 ImageHandle exeHandle()    {
   // This does NOT work!
-  static Dl_info infoBuf, *info = &infoBuf;
-  if ( 0 == info ) {
+  static Dl_info infoBuf;
+  static Dl_info *info;
+
+  if (0 == info) {
     void* handle = ::dlopen(0, RTLD_LAZY);
-    if ( 0 != handle ) {
+    if (0 != handle) {
       void* func = ::dlsym(handle, "main");
-      if ( 0 != func ) {
-        if ( 0 != ::dladdr(func, &infoBuf) ) {
+      if (0 != func) {
+        if (0 != ::dladdr(func, &infoBuf)) {
           info = &infoBuf;
         }
       }
@@ -173,64 +182,85 @@ ImageHandle exeHandle()    {
   return info;
 }
 
-const string& exeName()    {
+
+const string& exeName() {
   static string module("");
-  if ( module.length() == 0 )    {
-    char name[PATH_MAX] = {"Unknown.module"};
-    name[0] = 0;
-    char cmd[512];
-    ::sprintf(cmd, "/proc/%d/exe", ::getpid());
-    module = "Unknown";
-    if (::readlink(cmd, name, sizeof(name)) >= 0) {
-      module = name;
-    }
+  if (module.length() == 0)    {
+    module = getExecutablePath().string();
   }
   return module;
 }
 
+path getSelfProc() {
 
-const vector<string> linkedModules()    {
-  if ( s_linkedModules.size() == 0 )    {
-    char ff[512], cmd[1024], fname[1024], buf1[64], buf2[64], buf3[64], buf4[64];
-    ::sprintf(ff, "/proc/%d/maps", ::getpid());
-    FILE* maps = ::fopen(ff, "r");
-    while (::fgets(cmd, sizeof(cmd), maps) ) {
-      int len;
-      ::sscanf(cmd, "%63s %63s %63s %63s %d %1023s", buf1, buf2, buf3, buf4, &len, fname);
-      if ( len > 0 && strncmp(buf2, "r-xp", strlen("r-xp")) == 0 ) {
-        s_linkedModules.push_back(fname);
-      }
+  path self_proc {"/proc/self"};
+
+  path exe = self_proc / "exe";
+
+  if (not boost::filesystem::exists(exe)) {
+    std::stringstream self_str {};
+    self_str << "/proc/" << ::getpid();
+    self_proc = path(self_str.str());
+  }
+
+  return self_proc;
+
+}
+
+vector<path> linkedModulePaths() {
+
+  vector<path> linked_modules;
+
+  path self_maps = getSelfProc() / "maps";
+  std::ifstream maps_str(self_maps.string());
+
+  string line;
+  while (std::getline(maps_str, line)) {
+    string address, perms, offset, dev, pathname;
+    unsigned inode;
+    std::istringstream iss(line);
+    if (not(iss >> address >> perms >> offset >> dev >> inode >> pathname)) {
+      continue;
     }
-    ::fclose(maps);
+    if (perms == "r-xp" and boost::filesystem::exists(pathname)) {
+      linked_modules.push_back(path(pathname));
+    }
+  }
+
+  maps_str.close();
+
+  return linked_modules;
+
+}
+
+const vector<string> linkedModules() {
+
+  if (s_linkedModules.size() == 0) {
+
+    for (auto m : linkedModulePaths()) {
+      s_linkedModules.push_back(m.string());
+    }
+
   }
   return s_linkedModules;
 }
 
 path getExecutablePath() {
 
-  path exe_path {};
-
 #ifdef __APPLE__
   path self_proc {};
   char pathbuf[PATH_MAX + 1];
   unsigned int  bufsize = sizeof(pathbuf);
-  _NSGetExecutablePath( pathbuf, &bufsize);
-  self_proc = path(string(pathbuf));
+  _NSGetExecutablePath(pathbuf, &bufsize);
+  path self_exe = path(string(pathbuf));
 #else
-  path self_proc {"/proc/self/exe"};
 
-  if (not boost::filesystem::exists(self_proc)) {
-    stringstream self_str {};
-    self_str << "/proc/" << ::getpid() << "/exe";
-    self_proc = path(self_str.str());
-  }
+  path self_exe = getSelfProc() / "exe";
+
 #endif
 
-  exe_path = boost::filesystem::canonical(self_proc);
-
-  return exe_path;
+  return boost::filesystem::canonical(self_exe);
 }
 
-
-} // namespace System
-} // namespace Elements
+}  // namespace System
+}  // namespace Elements

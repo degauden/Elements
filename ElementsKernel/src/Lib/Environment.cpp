@@ -19,16 +19,18 @@
  *
  */
 
+#include "ElementsKernel/Environment.h"
+
 #include <string>                            // for string
 #include <sstream>                           // for stringstream
 #include <stdexcept>                         // for out_of_range
 #include <algorithm>                         // for find
 #include <utility>                           // for move
+#include <map>                               // for map
 
 #include <boost/format.hpp>                  // for format
 
 #include "ElementsKernel/System.h"           // for getEnv, setEnv, isEnvSet
-#include "ElementsKernel/Environment.h"
 
 using std::string;
 using std::move;
@@ -174,11 +176,11 @@ Environment::Environment(bool keep_same)
 
 Environment& Environment::restore() {
 
-  for (const auto& v: m_added_variables) {
+  for (const auto& v : m_added_variables) {
     unSetEnv(v);
   }
 
-  for (const auto& v: m_old_values) {
+  for (const auto& v : m_old_values) {
     setEnv(v.first, v.second);
   }
 
@@ -208,7 +210,7 @@ Environment& Environment::set(const string& index, const string& value) {
 
   if (m_old_values.find(index) == m_old_values.end()) {
     if (hasKey(index)) {
-      if ((not m_keep_same) or (getEnv(index) != value) ) {
+      if ((not m_keep_same) || (getEnv(index) != value)) {
         m_old_values[index] = getEnv(index);
       }
     } else {
@@ -269,7 +271,7 @@ string Environment::get(const string& index, const string& default_value) const 
   return value;
 }
 
-bool Environment::hasKey(const string& index){
+bool Environment::hasKey(const string& index) {
 
   return isEnvSet(index);
 
@@ -294,7 +296,7 @@ string Environment::generateScript(Environment::ShellType type) const {
   map<ShellType, string> unset_cmd {{ShellType::sh, "unset %s"},
                                          {ShellType::csh, "unsetenv %s"}};
 
-  for (const auto& v: m_old_values) {
+  for (const auto& v : m_old_values) {
     if (hasKey(v.first)) {
       script_text << format(set_cmd[type]) % v.first % get(v.first) << endl;
     } else {
@@ -302,7 +304,7 @@ string Environment::generateScript(Environment::ShellType type) const {
     }
   }
 
-  for (const auto& v: m_added_variables) {
+  for (const auto& v : m_added_variables) {
     script_text << format(set_cmd[type]) % v % get(v) << endl;
   }
 
@@ -340,4 +342,4 @@ Environment::Variable operator+(const string& value, const Environment::Variable
 }
 
 
-} // Elements namespace
+}  // namespace Elements

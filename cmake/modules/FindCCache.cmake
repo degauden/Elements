@@ -1,7 +1,9 @@
 if (NOT CCACHE_FOUND)
 
-	find_program(CCACHE_EXECUTABLE NAMES ccache ccache-swig)
-	set(CCACHE_EXECUTABLE ${CCACHE_EXECUTABLE} CACHE STRING "")
+    find_program(CCACHE_EXECUTABLE NAMES ccache ccache-swig
+                 HINTS ENV CCACHE_INSTALL_DIR
+                 PATH_SUFFIXES bin)
+    set(CCACHE_EXECUTABLE ${CCACHE_EXECUTABLE} CACHE STRING "")
 
 # handle the QUIETLY and REQUIRED arguments and set CCACHE_FOUND to TRUE if
 # all listed variables are TRUE

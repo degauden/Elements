@@ -27,6 +27,7 @@ import shutil
 
 
 def main():
+    """ Main function for the install script """
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("-x", "--exclude", action="append",
@@ -37,7 +38,8 @@ def main():
                       help="where to store the informations about installed files [default: %default]")
     parser.add_option("-d", "--destname", action="store",
                       dest="destname", default=None,
-                      help="name to use when installing the source into the destination directory [default: source name]")
+                      help="name to use when installing the source into the destination directory"
+                           "[default: source name]")
     parser.add_option("-u", "--uninstall", action="store_true",
                       dest="uninstall", default=False,
                       help="do uninstall")
@@ -70,7 +72,8 @@ def main():
             except OSError as x:
                 if x.errno != 2:
                     raise
-    else:  # install mode
+    # install mode
+    else:
         if len(args) < 2:
             parser.error(
                 "Specify at least one source and (only) one destination")
@@ -90,10 +93,10 @@ def main():
         dump(log, open(opts.logfile, "wb"))
 
 
-class LogFile:
+class LogFile(object):
 
     """
-    Class to incapsulate the logfile functionalities.
+    Class to encapsulate the logfile functionalities.
     """
 
     def __init__(self):
@@ -178,7 +181,8 @@ def remove(filename, logdir):
             print("Remove empty dir '%s'", file_path)
             rmdir(file_path)
             file_path = split(file_path)[0]
-    except OSError as x:  # ignore file-not-found errors
+    # ignore file-not-found errors
+    except OSError as x:
         if x.errno in [2, 13]:
             print("Previous removal ignored")
         else:
@@ -250,7 +254,8 @@ def update(src, dest, old_dest=None, syml=False, logdir=realpath(".")):
                 # doing the copy (shutil.copystat fails if the destination file
                 # is not owned by the current user).
                 os.remove(realdest)
-            shutil.copy2(realsrc, realdest)  # do the copy (cp -p src dest)
+            # do the copy (cp -p src dest)
+            shutil.copy2(realsrc, realdest)
 
     # if old_dest != dest: # the file was installed somewhere else
     # remove the old destination
@@ -269,8 +274,10 @@ def install(sources, destination, logfile, exclusions=[],
     for s in sources:
         _, src_name = split(s)
         if not exists(s):
-            continue  # silently ignore missing sources
-        elif not isdir(s):  # copy the file, without logging (?)
+            # silently ignore missing sources
+            continue
+        # copy the file, without logging (?)
+        elif not isdir(s):
             if destname is None:
                 dest = join(destination, src_name)
             else:
@@ -279,8 +286,10 @@ def install(sources, destination, logfile, exclusions=[],
             dest = getRelativePath(logdir, dest)
             old_dest = logfile.get_dest(src)
             update(src, dest, old_dest, syml, logdir)
-            logfile.set_dest(src, dest)  # update log
-        else:  # for directories
+            # update log
+            logfile.set_dest(src, dest)
+        # for directories
+        else:
             # expand the content of the directory as a dictionary
             # mapping sources to destinations
             to_do = expand_source_dir(
@@ -299,7 +308,8 @@ def install(sources, destination, logfile, exclusions=[],
             # remove files that were copied but are not anymore in the list
             for old_dest in last_done.values():
                 remove(old_dest, logdir)
-            logfile.set_dest(src, to_do)  # update log
+            # update log
+            logfile.set_dest(src, to_do)
 
 
 def uninstall(logfile, destinations=[], logdir=realpath(".")):

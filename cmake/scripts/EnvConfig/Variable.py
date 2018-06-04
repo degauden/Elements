@@ -242,9 +242,9 @@ class List(VariableBase):
         '''Sets the value of the List to empty. Any previous value is overwritten.'''
         self.val = []
 
-    def value(self, asString=False, separator=':'):
+    def value(self, as_string=False, separator=':'):
         '''Returns values of the List. Either as a list or string with desired separator.'''
-        if asString:
+        if as_string:
             return separator.join(self.val)
         else:
             # clone the list
@@ -282,13 +282,13 @@ class List(VariableBase):
             value = value.split(separator)
         self.val = self.process(value + self.val, environment)
 
-    def search(self, expr, regExp):
+    def search(self, expr, reg_exp):
         '''Searches in List's values for a match
 
-        Use string value or set regExp to True.
+        Use string value or set reg_exp to True.
         In the first case search is done only for an exact match for one of List`s value ('^' and '$' added).
         '''
-        if not regExp:
+        if not reg_exp:
             expr = '^' + expr + '$'
         v = re.compile(expr)
         res = []
@@ -345,7 +345,7 @@ class Scalar(VariableBase):
         '''Sets the value of the variable to empty. Any previous value is overwritten.'''
         self.val = ''
 
-    def value(self, asString=False, separator=':'):  # pylint: disable=W0613
+    def value(self, as_string=False, separator=':'):  # pylint: disable=W0613
         '''Returns values of the scalar.'''
         return self.val
 

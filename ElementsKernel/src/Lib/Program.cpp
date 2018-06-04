@@ -19,11 +19,11 @@
  *
  */
 
+#include "ElementsKernel/Program.h"
+
 #include <utility>
 
-#include <boost/program_options.hpp>
-
-#include "ElementsKernel/Program.h"
+#include <boost/program_options/positional_options.hpp>
 
 using std::pair;
 using boost::program_options::options_description;
@@ -45,4 +45,4 @@ namespace Elements {
 
   Program::~Program() {}
 
-} // namespace Elements
+}  // namespace Elements

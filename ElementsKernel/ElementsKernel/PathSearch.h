@@ -23,10 +23,11 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_SEARCHPATH_H_
-#define ELEMENTSKERNEL_SEARCHPATH_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_H_
 
 #include <string>
+#include <vector>
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/Export.h"     // ELEMENTS_API
@@ -38,14 +39,38 @@ enum class SearchType {
 };
 
 /**
- * @brief search
+ * @brief
  *   Searches for a file or a directory in a directory. The search can be recursive (SearchType.Recursive)
  *   and in that case more than one results can be return
- *
  * @param searched_name
  *   Name of the searched file or directory
+ * @tparam T
+ *   input type string or Boost path of the directory in which the search is carried out
  * @param directory
- *   Boost path of the directory in which the search is carried out
+ *   The directory where the search is performed.
+ * @param search_type
+ *   Two options:
+ *    SearchType.Local search in directory only
+ *    SearchType.Recursive search in sub-directories too
+ * @return
+ *   A vector of paths of the files found or empty string, if nothing is found
+ */
+template <typename T>
+ELEMENTS_API std::vector<T> pathSearch(
+    const std::string& searched_name,
+    T directory,
+    SearchType search_type);
+
+/**
+ * @brief
+ *   Searches for a file or a directory in a path pointed by an environment variable.
+ *   It can contains collection of colon separated locations.
+ *   The search can be recursive (SearchType.Recursive)
+ *   and in that case more than one results can be return
+ * @param file_name
+ *   Name of the searched file or directory
+ * @param path_like_env_variable
+ *   The environment variable name that contains the list of directories
  * @param search_type
  *   Two options:
  *    SearchType.Local search in directory only
@@ -54,55 +79,16 @@ enum class SearchType {
  *   A vector of paths of the files found or empty string, if nothing is found
  */
 ELEMENTS_API
-std::vector<boost::filesystem::path> pathSearch(
-    const std::string& searched_name,
-    boost::filesystem::path directory,
-    SearchType search_type);
-
-ELEMENTS_API
-std::vector<std::string> pathSearch(
-    const std::string& searched_name,
-    std::string directory,
-    SearchType search_type);
-
-/**
- * Iterate over the different directories included in a path-like environment variable, i.e.,
- *
- * path1:path2:path3 ...
- *
- * and call pathSearch(...) for each of them
- */
-ELEMENTS_API
 std::vector<boost::filesystem::path> pathSearchInEnvVariable(
     const std::string& file_name,
     const std::string& path_like_env_variable,
-    SearchType search_type=SearchType::Recursive);
+    SearchType search_type = SearchType::Recursive);
 
-//  /**
-//   * @brief
-//   *    Split a path using the into segments
-//   * @details
-//   *    Extract the last segment of a file full path variable excluding the filename. E.g.,
-//   *    if path is
-//   *
-//   *    /Users/dubath/Elements/ElementsKernel/tests/conf/ElementsKernel/MockFileForTestingFileLocator.conf
-//   *
-//   *    it returns "ElementsKernel". Elements are split between "/". If the given path do not
-//   *    contain any "/" it return an empty path
-//   *
-//   * @param fileFullPath
-//   *    The path variable to be processed
-//   * @return
-//   *    The last segment of the path variable, or an empty path if there is no "/" in the variable.
-//   */
-//  static std::vector<boost::filesystem::path> tokenizer(
-//      boost::filesystem::path path);
-//
-//  static std::vector<boost::filesystem::path> tokenizePathLikeVariable(
-//      std::string path_like_env_variable);
+}  // namespace Elements
 
-}  // Elements namespace
+#include "ElementsKernel/_impl/PathSearch.icpp"
 
-#endif  // ELEMENTSKERNEL_SEARCHPATH_H_
+
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_H_
 
 /**@}*/

@@ -19,11 +19,12 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_SLEEP_H_
-#define ELEMENTSKERNEL_SLEEP_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_SLEEP_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_SLEEP_H_
 
 #include <cstdint>
-#include "ElementsKernel/Export.h" // ELEMENTS_API
+
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
 
@@ -35,8 +36,8 @@ ELEMENTS_API void normalSleep(int sec);
 /// @author Marco Clemencic
 ELEMENTS_API void nanoSleep(std::int64_t nsec);
 
-}
+}  // namespace Elements
 
-#endif /*ELEMENTSKERNEL_SLEEP_H_*/
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SLEEP_H_
 
 /**@}*/

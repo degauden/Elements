@@ -23,13 +23,13 @@
  * @addtogroup ElementsKernel ElementsKernel
  * @{
  */
-#ifndef ELEMENTSKERNEL_NUMBER_H_
-#define ELEMENTSKERNEL_NUMBER_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_NUMBER_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_NUMBER_H_
 
-#include <type_traits>             // for is_floating_point, is_integral
-#include <cmath>                   // for round
+#include <type_traits>              // for is_floating_point, is_integral
+#include <cmath>                    // for round
 
-#include "ElementsKernel/Export.h" // ELEMENTS_API
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
 
@@ -59,8 +59,8 @@ ELEMENTS_API TargetType numberCast(const SourceType& s) {
   return t;
 }
 
-}  // Elements Namespace
+}  // namespace Elements
 
-#endif // ELEMENTSKERNEL_NUMBER_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_NUMBER_H_
 
 /**@}*/

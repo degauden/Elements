@@ -10,7 +10,7 @@ try:
 except ImportError:
     # python 3 version
     from io import StringIO
-    
+
 from EnvConfig import Control  # @UnresolvedImport
 from EnvConfig import xmlModule  # @UnresolvedImport
 
@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
 
     def testFileLoad(self):
         '''Test loading of previously written file.'''
-        self.control = Control.Environment(useAsWriter=True)
+        self.control = Control.Environment(use_as_writer=True)
         self.control.unset('varToUnset')
 
         self.control.declare('myVar', 'list', True)
@@ -99,5 +99,5 @@ class Test(unittest.TestCase):
         self.assertEqual(variables, expected)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

@@ -153,7 +153,7 @@ def createPythonProgram(current_dir, module_name, program_name):
 
 ################################################################################
 
-def makeChecks(program_file_path, program_name):
+def makeChecks(program_file_path, program_name, answer_yes=False):
     """
     Make some checks
     """
@@ -164,7 +164,7 @@ def makeChecks(program_file_path, program_name):
     # Make sure the program does not already exist
     epcr.checkFileNotExist(program_file_path, program_name)
     # Check name in the Element Naming Database
-    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
+    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2], answer_yes)
 
 ################################################################################
 
@@ -180,6 +180,9 @@ def defineSpecificProgramOptions():
     parser.add_argument('program_name', metavar='program-name',
                         type=str,
                         help='Program name')
+    parser.add_argument('-y', '--yes', default=False, action="store_true",
+                        help='Answer <yes> by default to any question, useful when the script is called by another'\
+                         'script')
 
     return parser
 
@@ -195,6 +198,7 @@ def mainMethod(args):
     logger.info('#')
 
     program_name = args.program_name
+    answer_yes = args.yes
 
     try:
         # Default is the current directory
@@ -208,7 +212,7 @@ def mainMethod(args):
 
         program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
         # Make checks
-        makeChecks(program_file_path, program_name)
+        makeChecks(program_file_path, program_name, answer_yes)
 
         # Create program
         createPythonProgram(current_dir, module_name, program_name)
@@ -220,11 +224,6 @@ def mainMethod(args):
         # Print all files created
         epcr.printCreationList()
 
-    except epcr.ErrorOccured as msg:
-        if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
-        return 1
     except Exception as msg:
         if str(msg):
             logger.error(msg)

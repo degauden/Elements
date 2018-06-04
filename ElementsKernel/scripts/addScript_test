@@ -13,9 +13,7 @@ tmploc=${TEMPORARY_LOCATION}
 cd ${MODULE_NAME_PATH}
 
 # Create python program
-AddScript $script_name << EOF
-y
-EOF
+AddScript $script_name --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then

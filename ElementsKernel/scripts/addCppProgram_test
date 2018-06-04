@@ -1,7 +1,5 @@
 #!/bin/sh
 
-home_dir=${PWD}
-
 # Call common script
 . createCommonStructure_test
 
@@ -12,12 +10,11 @@ library_dep_name="Boost"
 # Create a unique directory
 tmploc=${TEMPORARY_LOCATION}
 
+cd ${tmploc}
 cd ${MODULE_NAME_PATH}
 
 # Create a CPP program
-AddCppProgram $cpp_program_name -md $module_dep_name -ld $library_dep_name << EOF
-y
-EOF
+AddCppProgram $cpp_program_name -md $module_dep_name -ld $library_dep_name --yes
 
 # if error stop and clean up
 if [ $? -ne 0 ]; then

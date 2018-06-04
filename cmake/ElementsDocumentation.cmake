@@ -1,9 +1,12 @@
 include_guard()
 
-
-  add_custom_target(doc
-                    COMMENT "Generating API documentation" VERBATIM)
-
+  if(INSTALL_DOC)
+    add_custom_target(doc ALL
+                      COMMENT "Generating API documentation" VERBATIM)
+  else()
+    add_custom_target(doc
+                      COMMENT "Generating API documentation" VERBATIM)  
+  endif()
 
 #===========================================================================================================
 
@@ -41,7 +44,6 @@ include_guard()
            "Link C++ standard library classes to http://cppreference.com documentation."
            TRUE)
 
-    set(DOXYGEN_TAGFILES)
     if(DOXYGEN_WITH_CPPREFERENCE_LINKS)
     
       find_file(GET_CPPREF_TAGS_SCRIPT
@@ -156,7 +158,6 @@ include_guard()
     add_dependencies(doc sphinx)
 
 
-
     # loop over all python packages found (can have many for each Elements module)
     foreach (_py_pack IN LISTS proj_python_package_list)
 
@@ -251,7 +252,7 @@ Python Package
         if(NOT TARGET sphinx_apidoc_${_py_pack_short})
           add_custom_target(sphinx_apidoc_${_py_pack_short}
                             COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}
-                            COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -e -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short} ${_py_pack_dir}
+                            COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short} ${_py_pack_dir}
                             COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
 
           add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
@@ -310,3 +311,29 @@ Python Package
     endif()
 
   endif()
+
+
+  if(INSTALL_DOC)
+
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/
+            DESTINATION ${DOC_INSTALL_SUFFIX}
+            PATTERN "CVS" EXCLUDE
+            PATTERN ".svn" EXCLUDE
+            PATTERN "*~" EXCLUDE)
+
+    foreach(_do ChangeLog README README.md)
+      find_file(_do_file
+                NAMES ${_do}
+                PATHS ${CMAKE_SOURCE_DIR}
+                PATH_SUFFIXES doc
+                NO_DEFAULT_PATH)
+
+      if(_do_file)
+          install(FILES ${_do_file}
+                  DESTINATION ${DOC_INSTALL_SUFFIX})
+      endif()
+    endforeach()
+
+  endif()
+  
+  

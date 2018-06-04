@@ -22,7 +22,8 @@ if os.name == 'nt':
         """
         Lock first 10 bytes of a filename.
         """
-        pos = filename.tell()  # remember current position
+        # remember current position
+        pos = filename.tell()
         filename.seek(0)
         # By default, python tries about 10 times, then throws an exception.
         # We want to wait forever.
@@ -35,16 +36,19 @@ if os.name == 'nt':
                 # 36, AKA 'Resource deadlock avoided', is normal
                 if x.errno != 36:
                     raise
-        filename.seek(pos)  # reset position
+        # reset position
+        filename.seek(pos)
 
     def unlock(filename):
         """
         Unlock first 10 bytes of a filename.
         """
-        pos = filename.tell()  # remember current position
+        # remember current position
+        pos = filename.tell()
         filename.seek(0)
         msvcrt.locking(filename.fileno(), msvcrt.LK_UNLCK, 10)
-        filename.seek(pos)  # reset position
+        # reset position
+        filename.seek(pos)
 
 elif os.name == 'posix':
     import socket
@@ -68,41 +72,38 @@ elif os.name == 'posix':
         try:
             fp = open(fileName)
             try:
-                readFileName = fp.read()
+                read_file_name = fp.read()
             finally:
                 fp.close()
-            return readFileName
+            return read_file_name
         except EnvironmentError as e:
             if e.errno != errno.ENOENT:
                 raise
             return None
 
-    def _sleep(): time.sleep(8)
+    def _sleep():
+        time.sleep(8)
 
     def lock(filename):
-        fileName = filename.name
-        tmpFileName = _tmpFileName(fileName)
-        fp = open(tmpFileName, "w")
-        fp.write(tmpFileName)
+        file_name = filename.name
+        tmp_file_name = _tmpFileName(file_name)
+        fp = open(tmp_file_name, "w")
+        fp.write(tmp_file_name)
         fp.close()
 
-        lockFileName = _lckFileName(fileName)
+        lock_file_name = _lckFileName(file_name)
         while True:
-            if _linkCount(lockFileName) != -1:
+            if _linkCount(lock_file_name) != -1:
                 _sleep()
             try:
-                os.link(tmpFileName, lockFileName)
+                os.link(tmp_file_name, lock_file_name)
                 # we acquired the lock
                 return
             except OSError as e:
-                if e.errno == errno.ENOENT:
-                    pass
-                elif e.errno != errno.EEXIST:
-                    os.unlink(tmpFileName)
+                if e.errno != errno.EEXIST:
+                    os.unlink(tmp_file_name)
                     raise
-                elif _linkCount(lockFileName) != 2:
-                    pass
-                elif _read(lockFileName) == tmpFileName:
+                elif _read(lock_file_name) == tmp_file_name:
                     raise
                 else:
                     # someone else owns that lock
@@ -111,22 +112,21 @@ elif os.name == 'posix':
             # say something ?
             # print _id_()," failed to acquire the lock ..."
             _sleep()
-            pass
         return
 
     def unlock(filename):
-        fileName = filename.name
-        tmpFileName = _tmpFileName(fileName)
-        lockFileName = _lckFileName(fileName)
+        file_name = filename.name
+        tmp_file_name = _tmpFileName(file_name)
+        lock_file_name = _lckFileName(file_name)
 
         try:
-            os.unlink(lockFileName)
+            os.unlink(lock_file_name)
         except OSError as e:
             if e.errno != errno.ENOENT:
                 raise
         # remove the tmp filename
         try:
-            os.unlink(tmpFileName)
+            os.unlink(tmp_file_name)
         except OSError as e:
             if e.errno != errno.ENOENT:
                 raise

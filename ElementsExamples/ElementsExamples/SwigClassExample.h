@@ -21,10 +21,10 @@
  * @{
  */
 
-#ifndef SWIG_CLASSEXAMPLE_H_
-#define SWIG_CLASSEXAMPLE_H_
+#ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_SWIGCLASSEXAMPLE_H_
+#define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_SWIGCLASSEXAMPLE_H_
 
-#include "ElementsKernel/Export.h" // for ELEMENTS_API
+#include "ElementsKernel/Export.h"  // for ELEMENTS_API
 
 namespace Elements {
 namespace Examples {
@@ -33,15 +33,15 @@ class ELEMENTS_API SwigClassExample {
 
 public:
 
-  SwigClassExample (const double ra=0.0, const double dec=0.0) :
+  explicit SwigClassExample(const double ra = 0.0, const double dec = 0.0) :
       m_ra(ra), m_dec(dec) {
   }
 
   virtual ~SwigClassExample() = default;
 
-  double getRa () const;
+  double getRa() const;
 
-  double getDec () const;
+  double getDec() const;
 
 private:
 
@@ -50,9 +50,9 @@ private:
 
 };
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
-#endif /* SWIG_CLASSEXAMPLE_H_ */
+#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_SWIGCLASSEXAMPLE_H_
 
 /**@}*/

@@ -19,6 +19,8 @@
  *
  */
 
+#include "ElementsKernel/Environment.h"        // for Environment
+
 #include <iostream>                            // for interactive testing
 #include <string>
 #include <stdexcept>                           // for out_of_range
@@ -27,7 +29,6 @@
 #include <boost/regex.hpp>                     // for regex, regex_match
 
 #include "ElementsKernel/System.h"             // for isEnvSet
-#include "ElementsKernel/Environment.h"        // for Environment
 
 using std::string;
 using Elements::Environment;
@@ -388,8 +389,8 @@ BOOST_AUTO_TEST_CASE(CheckCommit_test) {
   }
 
   BOOST_CHECK(getEnv("dkdd") == "beta");
-}
 
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

@@ -19,6 +19,8 @@
  *
  */
 
+#include "ElementsKernel/Temporary.h"
+
 #include <string>
 #include <iostream>
 
@@ -26,7 +28,6 @@
 #include <boost/filesystem/fstream.hpp>
 
 #include "ElementsKernel/Logging.h"
-#include "ElementsKernel/Temporary.h"
 
 using std::string;
 using boost::filesystem::path;
@@ -47,6 +48,7 @@ TempPath::TempPath(const string& motif) :
 }
 
 TempPath::~TempPath() {
+  boost::filesystem::remove_all(m_path);
 }
 
 path TempPath::path() const {
@@ -71,9 +73,7 @@ TempDir::~TempDir() {
 
   Logging logger = Logging::getLogger();
   logger.debug() << "Automatic destruction of the " << path()
-      << " temporary directory";
-
-  boost::filesystem::remove_all(path());
+                 << " temporary directory";
 
 }
 
@@ -92,8 +92,6 @@ TempFile::~TempFile() {
 
   Logging logger = Logging::getLogger();
   logger.debug() << "Automatic destruction of the " << path() << " file";
-
-  boost::filesystem::remove(path());
 
 }
 

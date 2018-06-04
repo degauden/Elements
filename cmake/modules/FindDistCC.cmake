@@ -1,7 +1,10 @@
 if (NOT DISTCC_FOUND)
 
-	find_program(DISTCC_EXECUTABLE distcc)
-	set(DISTCC_EXECUTABLE ${DISTCC_EXECUTABLE} CACHE STRING "")
+    find_program(DISTCC_EXECUTABLE distcc
+                 HINTS ENV DISTCC_INSTALL_DIR
+                 PATH_SUFFIXES bin
+                 )
+    set(DISTCC_EXECUTABLE ${DISTCC_EXECUTABLE} CACHE STRING "")
 
 # handle the QUIETLY and REQUIRED arguments and set DISTCC_FOUND to TRUE if
 # all listed variables are TRUE

@@ -45,20 +45,16 @@ echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
 
 cd ${User_area}
 
-CreateElementsProject -s $projectA_name $projectA_version << EOF
-y
-EOF
+CreateElementsProject --yes -s $projectA_name $projectA_version
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
-   echo "Error: <CreateElementsProject -s $projectA_name $projectA_version> command failed!" 1>&2
+   echo "Error: <CreateElementsProject --yes -s $projectA_name $projectA_version> command failed!" 1>&2
    local_clean_exit 1
 fi
 
 cd $projectA_name/$projectA_version
-#AddElementsModule $projectA_name
-
-
+#AddElementsModule --yes $projectA_name
 
 make configure
 
@@ -81,16 +77,16 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
-if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
-   echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
-   local_clean_exit 1
+if [ -n "${BINARY_TAG}" ]; then
+  if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
+    echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
+    local_clean_exit 1
+  fi
 fi
 
 cd ${User_area}
 
-CreateElementsProject -s $projectAp_name $projectAp_version << EOF
-y
-EOF
+CreateElementsProject -s $projectAp_name $projectAp_version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -122,18 +118,17 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
-if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
-   echo "Error: <Installation of $projectAp_name $projectAp_version> failed!" 1>&2
-   local_clean_exit 1
+if [ -n "${BINARY_TAG}" ]; then
+  if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
+     echo "Error: <Installation of $projectAp_name $projectAp_version> failed!" 1>&2
+     local_clean_exit 1
+  fi
 fi
-
 
 
 cd ${User_area}
 
-CreateElementsProject -s -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
-y
-EOF
+CreateElementsProject -s -d $projectA_name $projectA_version $projectB_name $projectB_version --yes
 
 cd $projectB_name/$projectB_version
 #AddElementsModule $projectB_name
@@ -162,9 +157,7 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -s -d $projectAp_name $projectAp_version $projectC_name $projectC_version << EOF
-y
-EOF
+CreateElementsProject -s -d $projectAp_name $projectAp_version $projectC_name $projectC_version --yes
 
 cd $projectC_name/$projectC_version
 #AddElementsModule $projectC_name
@@ -194,12 +187,10 @@ fi
 
 cd ${User_area}
 
-CreateElementsProject -s -d $projectB_name $projectB_version -d $projectC_name $projectC_version $projectD_name $projectD_version << EOF
-y
-EOF
+CreateElementsProject --yes -s -d $projectB_name $projectB_version -d $projectC_name $projectC_version $projectD_name $projectD_version
 
 cd $projectD_name/$projectD_version
-AddElementsModule -s $projectD_name
+AddElementsModule --yes -s $projectD_name
 
 # this one must fail because of the wrong dependency tree.
 make configure

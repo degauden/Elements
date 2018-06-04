@@ -1,8 +1,11 @@
+""" script module for the creation of the c++ boost test main function """
+
 import os
 from optparse import OptionParser
 
 
 def main():
+    """ main function of this script module """
     parser = OptionParser(
         usage="ERROR: Usage %prog <package> <outputfile>")
     parser.add_option("-q", "--quiet", action="store_true",
@@ -24,9 +27,11 @@ def main():
 
     # Prepare data to be written
     outputdata = """ /* Automatically generated file: do not modify! */
+#pragma GCC visibility push(default)
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE %(pack)s Test Suite
 #include <boost/test/unit_test.hpp>
+#pragma GCC visibility pop
 """ % { 'pack': package }
 
     # Get the current content of the destination file (if any)
@@ -40,6 +45,7 @@ def main():
     # Overwrite the file only if there are changes
     if outputdata != olddata:
         open(outputfile, "w").write(outputdata)
+
 
 if __name__ == "__main__":
     main()

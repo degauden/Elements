@@ -22,10 +22,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 '''
 
-from ElementsKernel.System import SHLIB_VAR_NAME
+from ElementsKernel.System import SHLIB_VAR_NAME, DEFAULT_INSTALL_PREFIX
 import os
 import sys
 import re
+from distutils.sysconfig import get_python_lib
 
 Type = ["executable", "library", "python", "configuration", "auxiliary"]
 
@@ -43,6 +44,51 @@ SUFFIXES = {"executable": ["scripts", "bin"],
             "python": ["python"],
             "configuration": ["conf"],
             "auxiliary": ["auxdir", "aux"]}
+
+DEFAULT_INSTALL_LOCATIONS = { "executable": [ os.path.join(DEFAULT_INSTALL_PREFIX, "bin")],
+                                 "library": [ os.path.join(DEFAULT_INSTALL_PREFIX, "lib64"),
+                                              os.path.join(DEFAULT_INSTALL_PREFIX, "lib"),
+                                              os.path.join(DEFAULT_INSTALL_PREFIX, "lib32")],
+                                  "python": [ get_python_lib(prefix=DEFAULT_INSTALL_PREFIX)],
+                           "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "conf") ],
+                               "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "auxdir"),
+                                             os.path.join(DEFAULT_INSTALL_PREFIX, "aux")]}
+
+HAS_SUBLEVELS = { "executable": False,
+                     "library": False,
+                      "python": True,
+               "configuration": True,
+                   "auxiliary": True}
+
+
+def getLocations(file_type="executable", exist_only=False, with_defaults=True):
+    """
+    Get the locations of a type of file -- including the default ones
+    """
+
+    location_list = getLocationsFromEnv(VARIABLE[file_type], exist_only)
+
+    if with_defaults:
+        location_list += DEFAULT_INSTALL_LOCATIONS[file_type]
+
+    if exist_only:
+        location_list = [p for p in location_list if os.path.exists(p)]
+
+    return location_list
+
+def getPath(file_name, file_type="executable", raise_exception=True):
+    """
+    Get full path to the file name searched in the file-type path
+    """
+
+    location_list = getLocations(file_type)
+
+    result = getPathFromLocations(file_name, location_list)
+
+    if not result and raise_exception:
+        raise Exception("The %s file \"%s\" cannot be found!" % (file_type, file_name))
+
+    return result
 
 
 def getLocationsFromEnv(path_variable, exist_only=False):
@@ -74,6 +120,22 @@ def getPathFromLocations(file_name, locations):
             return file_path
 
     return None
+
+def getAllPathFromLocations(file_name, locations):
+    """
+    Get all the paths to the searched  file name from the
+    provided locations.
+    """
+
+    file_list = []
+
+    for l in locations:
+        file_path = os.path.join(l, file_name)
+        if os.path.exists(file_path):
+            file_list.append(file_path)
+
+    return list(set(file_list))
+
 
 def getPathFromEnvVariable(file_name, path_variable):
     """
@@ -117,6 +179,7 @@ def which(program):
         @param program: program path, absolute or relative
     """
     def is_exe(fpath):
+        """ small function to check if the item is an executable """
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
     fpath, _ = os.path.split(program)

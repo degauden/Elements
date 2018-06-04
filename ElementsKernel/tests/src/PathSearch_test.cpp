@@ -3,7 +3,24 @@
  *
  * Created on: Dec 4, 2013
  *     Author: Pierre Dubath
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
+
+#include "ElementsKernel/PathSearch.h"
+
 #include <string>                         // for std::string
 #include <vector>                         // for std::vector
 #include <cstdlib>
@@ -11,11 +28,9 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "ElementsKernel/PathSearch.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/System.h"        // for getEnv
 #include "ElementsKernel/Temporary.h"     // For the TempDir class
-
 
 using std::string;
 using std::vector;
@@ -25,17 +40,7 @@ using boost::filesystem::path;
 using Elements::System::getEnv;
 using Elements::System::setEnv;
 
-
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-//
-// Begin of the Boost tests
-//
-//-----------------------------------------------------------------------------
-
 struct PathSearch_Fixture {
-
 
   string m_env_variable_name = "ELEMENTS_CONF_PATH";
   // store the original value of the environment variable to set it again correctly after the test
@@ -262,11 +267,4 @@ BOOST_AUTO_TEST_CASE(Recursion_test) {
   createTemporaryStructure(top_dir_path);
 }
 
-
 BOOST_AUTO_TEST_SUITE_END()
-
-//-----------------------------------------------------------------------------
-//
-// End of the Boost tests
-//
-//-----------------------------------------------------------------------------

@@ -4,6 +4,8 @@ home_dir=${PWD}
 
 project_name="ProjectTest"
 dep_project="DependentProject"
+module_name="ModuleTest"
+py_module_name="PyModuleTest"
 version="1.0"
 
 # Create unique directory
@@ -19,11 +21,18 @@ local_clean_exit() {
 # Set to the User_area
 export User_area=${tmploc}
 
-cd ${tmploc}
+cd ${tmploc} || local_clean_exit 1
 
-CreateElementsProject $project_name $version -d $dep_project $version<<EOF
-y
-EOF
+CreateElementsProject $project_name $version -d $dep_project $version --yes
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   echo "Error: <CreateElementsProject $project_name $version> command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+# Test --yes option
+CreateElementsProject $project_name $version -d $dep_project $version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -38,9 +47,16 @@ if [ ! -d $project_name ]; then
 fi
 
 # Make sure mandatory files has been created
-if [ ! -e $User_area/$project_name/$version/CMakeLists.txt ] ||
-   [ ! -e $User_area/$project_name/$version/Makefile ]; then
-   echo "Error: <$User_area/$project_name/$version/CMakeLists.txt (and/or Makefile)> file not found" 1>&2
+if [ ! -e $User_area/$project_name/$version/CMakeLists.txt ]; then
+   echo "Error: <$User_area/$project_name/$version/CMakeLists.txt> file not found" 1>&2
+   local_clean_exit 1
+fi
+if [ ! -e $User_area/$project_name/$version/.gitignore ]; then
+   echo "Error: <$User_area/$project_name/$version/.gitignore> file not found" 1>&2
+   local_clean_exit 1
+fi
+if [ ! -e $User_area/$project_name/$version/Makefile ]; then
+   echo "Error: <$User_area/$project_name/$version/Makefile> file not found" 1>&2
    local_clean_exit 1
 fi
 
@@ -58,39 +74,61 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
+cd ${User_area}/${project_name}/${version} || local_clean_exit 1
+
+AddElementsModule ${module_name} --yes
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   echo "Error: <AddElementsModule ${module_name} command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+cd ${module_name} || local_clean_exit 1
+
+AddPythonModule ${py_module_name} --yes
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   echo "Error: <AddPythonModule ${py_module_name} command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+
+cd ${tmploc} || local_clean_exit 1
+
 # Test a wrong project name
 project_name="WrongProjectTest]"
 version="1.0"
 
-CreateElementsProject $project_name $version <<EOF
-y
-EOF
+CreateElementsProject $project_name $version --yes
 
 if [ $? -eq 0 ]; then
    echo "Error: this <$project_name> project name should failed but it did not!" 1>&2
    local_clean_exit 1
 fi
 
+
+cd ${tmploc} || local_clean_exit 1
+
 # Test a wrong version number
 project_name="WrongProjectTest"
 version="1.0]"
 
-CreateElementsProject $project_name $version <<EOF
-y
-EOF
+CreateElementsProject $project_name $version --yes
 
 if [ $? -eq 0 ]; then
    echo "Error: this <$version> version number should failed but it did not!" 1>&2
    local_clean_exit 1
 fi
 
+cd ${tmploc} || local_clean_exit 1
+
 # Test the <HEAD> version number
 project_name="ProjectHeadTest"
 version="HEAD"
 
-CreateElementsProject $project_name $version <<EOF
-y
-EOF
+CreateElementsProject $project_name $version --yes
 
 if [ $? -ne 0 ]; then
    echo "Error: this <$version> version number should not failed!!!" 1>&2

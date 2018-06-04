@@ -78,6 +78,7 @@ if(SQUEEZED_INSTALL)
 endif()
 
 set(CMAKE_LIB_INSTALL_SUFFIX ${lib_install_suff} CACHE STRING "Suffix for the install directory of the libraries" FORCE)
+set(CMAKE_BIN_INSTALL_SUFFIX bin CACHE STRING "Suffix for the install directory of the binaries" FORCE)
 
 
 
@@ -93,6 +94,8 @@ endif()
 
 set(CONF_DIR_NAME "conf" CACHE STRING "Name of the configuration files directory")
 set(AUX_DIR_NAME "auxdir" CACHE STRING "Name of the auxiliary files directory")
+set(MAKE_DIR_NAME "make" CACHE STRING "Name of the make files directory")
+set(DOC_DIR_NAME "doc" CACHE STRING "Name of the documentation directory")
 
 set(INCLUDE_INSTALL_SUFFIX include)
 if(SQUEEZED_INSTALL)
@@ -103,6 +106,8 @@ if(SQUEEZED_INSTALL)
   set(CMAKE_INSTALL_SUFFIX ${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject)
   set(CMAKE_CONFIG_INSTALL_SUFFIX ${CMAKE_INSTALL_SUFFIX})
   set(XML_INSTALL_SUFFIX ${CMAKE_INSTALL_SUFFIX})
+  set(MAKE_INSTALL_SUFFIX share/Elements/${MAKE_DIR_NAME})
+  set(DOC_INSTALL_SUFFIX share/${DOC_DIR_NAME}/${CMAKE_PROJECT_NAME})
 else()
   set(BIN_INSTALL_SUFFIX bin)
   set(SCRIPT_INSTALL_SUFFIX scripts)
@@ -111,8 +116,9 @@ else()
   set(CMAKE_INSTALL_SUFFIX cmake)
   set(CMAKE_CONFIG_INSTALL_SUFFIX .)
   set(XML_INSTALL_SUFFIX .)
+  set(MAKE_INSTALL_SUFFIX ${MAKE_DIR_NAME})
+  set(DOC_INSTALL_SUFFIX ${DOC_DIR_NAME})
 endif()
-
 
 #------------------------------------------------------------------------------------------------
 # RPATH business
@@ -174,3 +180,35 @@ get_arch_lib_dir(that_arch)
 
 set(ELEMENTS_DEFAULT_SEARCH_PATH ${CMAKE_INSTALL_PREFIX}/${that_arch}/cmake/ElementsProject)
 set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/ElementsProject)
+
+file(TO_CMAKE_PATH "$ENV{XDG_DATA_DIRS}" data_dirs)
+if(data_dirs)
+  list(INSERT data_paths 0 ${data_dirs})
+endif()
+
+file(TO_CMAKE_PATH "$ENV{XDG_DATA_HOME}" data_home)
+if(data_home)
+  list(INSERT data_paths 0 ${data_home})
+endif()
+
+list(APPEND data_paths /usr/share)
+list(REMOVE_DUPLICATES data_paths)
+
+set(DATA_MODULE_PATH ${data_paths} CACHE STRING "List of base directories where to look for data packages.")
+
+set(SPEC_LIBDIR "%{_prefix}/${CMAKE_LIB_INSTALL_SUFFIX}")
+set(SPEC_PYDIR "%{_prefix}/${PYTHON_INSTALL_SUFFIX}")
+set(SPEC_PYDYNDIR "%{_prefix}/${PYTHON_DYNLIB_INSTALL_SUFFIX}")
+set(SPEC_SCRIPTSDIR "%{_prefix}/${SCRIPT_INSTALL_SUFFIX}")
+set(SPEC_CMAKEDIR "%{_prefix}/${CMAKE_INSTALL_SUFFIX}")
+set(SPEC_MAKEDIR "%{_prefix}/${MAKE_INSTALL_SUFFIX}")
+set(SPEC_CONFDIR "%{_prefix}/${CONF_INSTALL_SUFFIX}")
+set(SPEC_AUXDIR "%{_prefix}/${AUX_INSTALL_SUFFIX}")
+set(SPEC_DOCDIR "%{_prefix}/${DOC_INSTALL_SUFFIX}")
+set(SPEC_XMLDIR "%{_prefix}/${XML_INSTALL_SUFFIX}")
+
+# remove the trailing / or .
+foreach(_do LIB PY PYDYN SCRIPTS CMAKE MAKE CONF AUX DOC XML)
+  dir_strip_end(SPEC_${_do}DIR)
+endforeach()
+

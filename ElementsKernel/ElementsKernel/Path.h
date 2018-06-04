@@ -1,7 +1,7 @@
 /**
  * @file ElementsKernel/Path.h
  *
- * @brief provide functions to retrieve ressources
+ * @brief provide functions to retrieve resources
  *   pointed by environment variables
  * @date May 13, 2016
  * @author Hubert Degaudenzi
@@ -72,6 +72,11 @@ ELEMENTS_API extern const std::map<Type, const std::vector<std::string>> SUFFIXE
 ELEMENTS_API extern const std::map<Type, const std::vector<std::string>> DEFAULT_LOCATIONS;
 
 /**
+ * @brief map containing the sub-level property of the path components
+ */
+ELEMENTS_API extern const std::map<Type, const bool> HAS_SUBLEVELS;
+
+/**
  * @brief function to get the locations from an environment variable
  * @details
  *    This function return the raw locations pointed by the environment
@@ -86,7 +91,7 @@ ELEMENTS_API extern const std::map<Type, const std::vector<std::string>> DEFAULT
  *    return a list of boost filesystem paths
  */
 ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std::string& path_variable,
-                                                                         bool exist_only=false);
+                                                                      bool exist_only = false);
 
 /**
  * @brief retrieve path from a file name and a set of location to look into
@@ -105,6 +110,25 @@ ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std:
  */
 template <typename T, typename U>
 ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations);
+
+/**
+ * @brief retrieve all the paths from a file name and a set of location to look into
+ * @param file_name
+ *   file name to look for. Can be of the form "Some.txt" or "Place/Some.txt"
+ * @param locations
+ *   vector of locations to look into
+ * @tparam T
+ *   type of the file name. Can be anything that can be converted to a boost
+ *   filesystem path. In principle either std::string or path.
+ * @tparam U
+ *   type of the location. Can be anything that can be converted to a boost
+ *   filesystem path. In principle either std::string or path.
+ * @return
+ *   all the found paths
+ */
+template <typename T, typename U>
+ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const T& file_name,
+                                                                          const std::vector<U>& locations);
 
 /**
  * @brief retrieve path from a file name and an environment variable to look into
@@ -128,11 +152,11 @@ template <typename T, typename U>
 ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations,
                                                                     const std::vector<U>& suffixes);
 
-}  // Path namespace
-}  // Elements namespace
+}  // namespace Path
+}  // namespace Elements
 
 #include "ElementsKernel/_impl/Path.icpp"
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
 
 /**@}*/

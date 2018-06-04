@@ -13,9 +13,7 @@ tmploc=${TEMPORARY_LOCATION}
 cd ${MODULE_NAME_PATH}
 
 # Create python mondule
-AddPythonModule $python_mod_name << EOF
-y
-EOF
+AddPythonModule $python_mod_name --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then

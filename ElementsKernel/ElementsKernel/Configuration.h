@@ -36,7 +36,7 @@
 
 #include <string>                   // for string
 #include <vector>                   // for vector
-#include <boost/filesystem.hpp>     // for boost::filesystem
+#include <boost/filesystem.hpp>     // for filesystem
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
@@ -45,14 +45,14 @@ namespace Elements {
 ELEMENTS_API std::string getConfigurationVariableName();
 
 template <typename T>
-ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name, bool raise_exception=true);
+ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name, bool raise_exception = true);
 
-ELEMENTS_API std::vector<boost::filesystem::path> getConfigurationLocations(bool exist_only=false);
+ELEMENTS_API std::vector<boost::filesystem::path> getConfigurationLocations(bool exist_only = false);
 
-}  // Elements namespace
+}  // namespace Elements
 
 #include "ElementsKernel/_impl/Configuration.icpp"
 
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 /**@}*/

@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_DEPRECATED_H_
-#define ELEMENTSKERNEL_DEPRECATED_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_DEPRECATED_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_DEPRECATED_H_
 
 #include "ElementsKernel/Attribute.h"
 
@@ -44,6 +44,6 @@
 #  define ELEMENTS_DEPRECATED_MSG(msg)  __attribute__ ((__deprecated__(msg)))
 #endif
 
-#endif /* DEPRECATED_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_DEPRECATED_H_
 
 /**@}*/

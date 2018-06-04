@@ -22,9 +22,15 @@ local_clean_exit() {
   exit $1
 }
 
+if [ "$(basename ${ELEMENTS_PROJECT_ROOT})" = "Elements" ]; then
+  extra_proj_path=$(dirname ${ELEMENTS_PROJECT_ROOT})
+else
+  extra_proj_path=$(dirname $(dirname${ELEMENTS_PROJECT_ROOT}))
+fi
+
 # Set to the User_area
 export User_area=${tmploc}
-export CMAKE_PROJECT_PATH=${tmploc}
+export CMAKE_PROJECT_PATH=${tmploc}:${extra_proj_path}:${CMAKE_PROJECT_PATH}
 
 echo "CMAKE_PROJECT_PATH: ${CMAKE_PROJECT_PATH}"
 echo "BINARY_TAG: ${BINARY_TAG}"
@@ -35,9 +41,7 @@ echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
 
 cd ${tmploc}
 
-CreateElementsProject $projectA_name $projectA_version << EOF
-y
-EOF
+CreateElementsProject $projectA_name $projectA_version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
@@ -82,9 +86,7 @@ fi
 
 cd ${tmploc}
 
-CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version << EOF
-y
-EOF
+CreateElementsProject -d $projectA_name $projectA_version $projectB_name $projectB_version --yes
 
 cd $projectB_name/$projectB_version
 
@@ -114,9 +116,7 @@ fi
 
 cd ${tmploc}
 
-CreateElementsProject -d $projectA_name $projectA_version -d $projectB_name $projectB_version $projectC_name $projectC_version << EOF
-y
-EOF
+CreateElementsProject -d $projectA_name $projectA_version -d $projectB_name $projectB_version $projectC_name $projectC_version --yes
 
 cd $projectC_name/$projectC_version
 

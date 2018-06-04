@@ -19,14 +19,14 @@
  *
  */
 
-
-#include <iostream>
-
-#include <boost/filesystem/path.hpp>
-
-#include "ElementsKernel/Exit.h"
-#include "ElementsKernel/Unused.h"
 #include "ElementsKernel/SimpleProgram.h"
+
+#include <iostream>                             // for cerr
+
+#include <boost/filesystem/path.hpp>            // for path
+
+#include "ElementsKernel/Exit.h"                // for ExitCode
+#include "ElementsKernel/Unused.h"              // for ELEMENTS_UNUSED
 
 using boost::filesystem::path;
 

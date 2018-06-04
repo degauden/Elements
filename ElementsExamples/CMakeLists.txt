@@ -144,7 +144,7 @@ endif()
 
 
 find_package(HealpixCpp QUIET)
-if(HEALPIXCPP_FOUND)
+if(HEALPIXCPP_FOUND AND HEALPIXCPP_NEW_LAYOUT)
 elements_add_executable(HealpixExample src/program/HealpixExample.cpp
                         INCLUDE_DIRS HealpixCpp ElementsExamples
                         LINK_LIBRARIES HealpixCpp ElementsExamples)
@@ -209,6 +209,14 @@ elements_add_swig_binding(SwigExample ElementsExamples/SwigExample.i
                           LINK_LIBRARIES ElementsExamples
                           INCLUDE_DIRS ElementsExamples
                           PUBLIC_HEADERS ElementsExamples)
+                          
+find_package(NumPy)
+if(NUMPY_FOUND)
+elements_add_swig_binding(NumPyExample  ElementsExamples/NumPyExample.i
+                          INCLUDE_DIRS NumPy
+                          NO_PUBLIC_HEADERS)
+endif()
+
 endif()
 
 find_package(Cython QUIET)
@@ -243,7 +251,11 @@ if(SWIG_FOUND AND PYTHONLIBS_FOUND)
 elements_add_test(SwigProgramExampleRun COMMAND SwigProgramExample LABELS Swig Build)
 endif()
 
+elements_add_python_program(PythonTestProgramExample ElementsExamples.PythonTestProgramExample)
+
 elements_install_scripts()
+
+elements_add_test(PythonTestProgram COMMAND PythonTestProgramExample)
 
 
 elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test LABELS CustomLabel)
@@ -256,6 +268,10 @@ elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError_test F
 
 elements_add_test(CppProgramExample COMMAND CppProgramExample)
 elements_add_test(SimpleProgramExample COMMAND ElementsSimpleProgramExample)
+
+elements_add_test(UnrecognizedOption COMMAND UnrecognizedOption_test)
+elements_add_test(OptionPrecedence COMMAND OptionPrecedence_test)
+
 
 elements_install_conf_files()
 

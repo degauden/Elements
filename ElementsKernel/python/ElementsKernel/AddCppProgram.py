@@ -47,8 +47,7 @@ def createDirectories(module_dir, module_name):
     program_path = os.path.join(module_dir, 'src', 'program')
     epcr.makeDirectory(program_path)
     # Create the conf directory
-    conf_dir = os.path.join(module_dir, 'conf', module_name)
-    epcr.makeDirectory(conf_dir)
+    epcr.makeDirectory('conf')
 
 
 ################################################################################
@@ -57,7 +56,7 @@ def addConfFile(module_dir, module_name, program_name):
     """
     Create the configuration file by default
     """
-    conf_file = os.path.join(module_dir, 'conf', module_name, program_name + '.conf')
+    conf_file = os.path.join(module_dir, 'conf', program_name + '.conf')
     # check file does not exist
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
@@ -171,12 +170,12 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list, lib
 
 ################################################################################
 
-def makeChecks(current_dir, program_name):
+def makeChecks(current_dir, program_name, answer_yes=False):
     """
     Make some checks
     """
     # Check name in the Element Naming Database
-    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2])
+    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2], answer_yes)
     # Check if file exits
     program_file_path = os.path.join(current_dir, 'src', 'program', program_name + '.cpp')
     epcr.checkFileNotExist(program_file_path, program_name)
@@ -184,7 +183,6 @@ def makeChecks(current_dir, program_name):
     epcr.checkNameAndVersionValid(program_name, '1.0')
     # Check aux file exist
     epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
-
 
 ################################################################################
 
@@ -211,6 +209,9 @@ ically created for you if any but you have to be inside an <Elements> module.
     parser.add_argument('-ld', '--library-dependency', metavar='library_name',
                         action='append', type=str,
                         help='Dependency library name e.g."-ld ElementsKernel"')
+    parser.add_argument('-y', '--yes', default=False, action="store_true",
+                        help='Answer <yes> by default to any question, useful when the script is called by another'\
+                         'script')
 
     return parser
 
@@ -228,6 +229,7 @@ def mainMethod(args):
     program_name = args.program_name
     module_list = args.module_dependency
     library_list = args.library_dependency
+    answer_yes = args.yes
 
     try:
         # Default is the current directory
@@ -238,7 +240,7 @@ def mainMethod(args):
         # We absolutely need a Elements cmake file
         module_name = epcr.getElementsModuleName(current_dir)
         # make some checks
-        makeChecks(current_dir, program_name)
+        makeChecks(current_dir, program_name, answer_yes)
 
         # Create CPP program
         createCppProgram(current_dir, module_name, program_name, module_list, library_list)
@@ -252,11 +254,6 @@ def mainMethod(args):
         # Print all files created
         epcr.printCreationList()
 
-    except epcr.ErrorOccured as msg:
-        if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
-        return 1
     except Exception as msg:
         if str(msg):
             logger.error(msg)
