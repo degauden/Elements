@@ -41,7 +41,7 @@
   default.
 - Reenable the Elements data modules ad hoc support. Please have a look at the user
   manual.
-- Bug #7881 (Nikos/Mher): the source hardcoded default values were overriding the
+- Bug #7881 (Nikos/Mher/Hugo): the source hardcoded default values were overriding the
   ones provides in the configuration files.
 
 * Wed Aug 9 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2.1
