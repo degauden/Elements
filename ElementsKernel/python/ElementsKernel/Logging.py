@@ -49,7 +49,7 @@ if not [h for h in logging.getLogger().handlers if h.get_name() == 'console']:
     _console.setFormatter(_formatter)
     logging.getLogger().addHandler(_console)
 
-def getLogger(name):
+def getLogger(name=None):
     """ Forward call to logging.getLogger"""
     return logging.getLogger(name)
 

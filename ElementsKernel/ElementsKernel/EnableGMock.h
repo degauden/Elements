@@ -22,8 +22,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_ENABLEGMOCK_H
-#define ELEMENTSKERNEL_ENABLEGMOCK_H
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_ENABLEGMOCK_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_ENABLEGMOCK_H_
 
 #include <gmock/gmock.h>
 #include <boost/test/unit_test.hpp>
@@ -33,7 +33,7 @@
 
 class BoostTestAdapter: public testing::EmptyTestEventListener {
 
-  virtual void OnTestPartResult(const testing::TestPartResult& testPartResult) override {
+  void OnTestPartResult(const testing::TestPartResult& testPartResult) override {
     if (testPartResult.failed()) {
       BOOST_ERROR(testPartResult.summary());
     }
@@ -62,6 +62,6 @@ BOOST_GLOBAL_FIXTURE(GoogleMockSetupFixture);
 BOOST_GLOBAL_FIXTURE(GoogleMockSetupFixture)
 #endif
 
-#endif /* ELEMENTSKERNEL_ENABLEGMOCK_H */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_ENABLEGMOCK_H_
 
 /**@}*/

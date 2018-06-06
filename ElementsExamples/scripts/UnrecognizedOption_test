@@ -1,0 +1,60 @@
+#!/bin/sh
+
+home_dir=${PWD}
+
+
+# Create unique directory
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+# Clean and exit
+local_clean_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+cd ${tmploc} || local_clean_exit 1
+
+# regular run
+CppProgramExample
+if [ $? -ne 0 ]; then
+  echo "Error: <CppProgramExample> failed" 1>&2
+  local_clean_exit 1
+fi
+
+# regular run with known option
+CppProgramExample -f
+if [ $? -ne 0 ]; then
+  echo "Error: <CppProgramExample -f> failed" 1>&2
+  local_clean_exit 1
+fi
+
+# regular run with unknown option
+CppProgramExample --toto
+if [ $? -ne 64 ]; then
+  echo "Error: <CppProgramExample --toto> succeeded" 1>&2
+  local_clean_exit 1
+fi
+
+# regular run
+PythonProgramExample
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample> failed" 1>&2
+  local_clean_exit 1
+fi
+
+# regular run with known option
+PythonProgramExample --overwrite
+if [ $? -ne 0 ]; then
+  echo "Error: <PythonProgramExample --overwrite> failed" 1>&2
+  local_clean_exit 1
+fi
+
+# regular run with unknown option
+PythonProgramExample --toto
+if [ $? -eq 0 ]; then
+  echo "Error: <PythonProgramExample --toto> succeeded" 1>&2
+  local_clean_exit 1
+fi
+
+local_clean_exit 0

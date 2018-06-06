@@ -38,6 +38,6 @@
  */
 #define ELEMENTS_UNUSED __attribute__ ((unused))
 
-#endif // ELEMENTSKERNEL_ELEMENTSKERNEL_UNUSED_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_UNUSED_H_
 
 /**@}*/

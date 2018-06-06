@@ -1,48 +1,77 @@
-*~
-*.pyc
+#####=== Elements ===#####
 
-build.*.log
-NMake
-install.*.history
-setup.*
-cleanup.*
-version.cmt
-InstallArea/
-patches/
-test_results/
-
-*-slc[56]-*/
-i686-winxp-vc9-dbg/
-
-.*-slc[56]-*.d/
-.i686-winxp-vc9-dbg.d/
-
-DoxyWarnings.log
-.gdb_history
-*.new
-*.launch
-*.launch.py
-*.launch.opts
-
-.project
-.cproject
-.settings
-.pydevproject
-.coverage
-
-.build/
-build-dir/
-build.*/
-CMakeFiles/
-CTestTestfile.cmake
-CPackSourceConfig.cmake
-CPackConfig.cmake
-cmake_install.cmake
-ElementsConfig.cmake
-ElementsConfigVersion.cmake
-/gmon.out
-/perf.data
+# Building area
 /build
+/build.*
+
+# Install area
+/InstallArea
+
+# CT_CheckQuality artifacts
+/.sonar
+/PAQA
+/.scannerwork
+.pytest_cache
+
+#####=== System ===#####
+
+# SVN
+.svn/
+
+# Apple
+*.DS_Store
+
+*~
+#####=== Editors ===#####
+
+## Eclipse
+/.metadata
+/.settings
+/.loadpath
+/.recommenders
+
+# Eclipse Core
+/.project
+
+# External tool builders
+/.externalToolBuilders
+
+# PyDev specific (Python IDE for Eclipse)
+/.pydevproject
+
+# CDT-specific (C/C++ Development Tooling)
+/.cproject
+
+# PyCharm
+/.idea
+
+## VIM
+*.swp
+
+## Emacs 
+*~
+/.projectile
+
+## SublimeText
+/*.sublime-workspace
+/*.sublime-project
+
+## gnome builder
+/.buildconfig
+
+
+#####=== Python ===#####
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+.gdb_history
+
+
+/.coverage
+gmon.out
+/perf.data
 .ptp-sync
 .ptp-sync-folder
 .cache

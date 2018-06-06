@@ -19,15 +19,14 @@
  *
  */
 
-#include  <cstdlib> // for std::size_t
-
 #include "ElementsExamples/DataSourceUser.h"
 
+#include  <cstdlib>                           // for size_t
 
 namespace Elements {
 namespace Examples {
 
-double DataSourceUser::sumRecords (const DataSourceInterface& data_source) {
+double DataSourceUser::sumRecords(const DataSourceInterface& data_source) {
 
   using std::size_t;
 
@@ -41,5 +40,5 @@ double DataSourceUser::sumRecords (const DataSourceInterface& data_source) {
   return sum;
 }
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements

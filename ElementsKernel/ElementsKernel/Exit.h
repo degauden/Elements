@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_EXIT_H_
-#define ELEMENTSKERNEL_EXIT_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_EXIT_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_EXIT_H_
 
 
 #include <type_traits>
@@ -120,8 +120,8 @@ enum class ExitCode : int {
 /// Underlying type of the ExitCode class
 using ExitCodeType = std::underlying_type<ExitCode>::type;
 
-} // namespace Elements
+}  // namespace Elements
 
-#endif // ELEMENTSKERNEL_EXIT_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_EXIT_H_
 
 /**@}*/

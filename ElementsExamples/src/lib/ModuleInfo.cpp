@@ -18,8 +18,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "ElementsKernel/ThisModule.h"
 #include "ElementsExamples/ModuleInfo.h"
+
+#include "ElementsKernel/ThisModule.h"
 
 namespace Elements {
 namespace Examples {
@@ -30,5 +31,5 @@ const System::ModuleInfo& getModuleInfo() {
 
 }
 
-} // namespace Examples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements

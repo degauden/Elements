@@ -22,14 +22,16 @@
  * @{
  */
 
-#ifndef ELEMENTSLOGGING_H
-#define ELEMENTSLOGGING_H
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_LOGGING_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_LOGGING_H_
+
+#include <string>
+#include <map>
 
 #include <boost/filesystem.hpp>
 #include <log4cpp/Category.hh>
-#include <string>
-#include <map>
-#include "ElementsKernel/Export.h" // ELEMENTS_API
+
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
 
@@ -271,7 +273,7 @@ public:
 
 private:
 
-  Logging(log4cpp::Category& log4cppLogger);
+  explicit Logging(log4cpp::Category& log4cppLogger);
 
   log4cpp::Category& m_log4cppLogger;
 
@@ -305,10 +307,10 @@ private:
     std::stringstream m_message {};
   };
 
-}; /* Logging */
+};
 
-} // namespace Elements
+}  // namespace Elements
 
-#endif /* ELEMENTSLOGGING_H */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_LOGGING_H_
 
 /**@}*/

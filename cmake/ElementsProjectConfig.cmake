@@ -26,10 +26,6 @@ endif()
 # please run "cmake --help-policy CMP0063" for more details
 if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
   cmake_policy(SET CMP0063 NEW)
-else()
-  if(CMAKE_VERSION VERSION_GREATER 3.0.2)
-    cmake_policy(SET CMP0063 OLD)
-  endif()
 endif()
 
 if (NOT HAS_ELEMENTS_TOOLCHAIN)
@@ -215,7 +211,14 @@ macro(elements_project project version)
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
 
   # Find the required data packages and add them to the environment.
-  _elements_handle_data_packages(${PROJECT_DATA})
+  set(data_packages)
+  if(PROJECT_DATA)
+    _elements_handle_data_packages(${PROJECT_DATA})
+  endif()
+  if(data_packages)
+    list(REMOVE_DUPLICATES data_packages)
+  endif()
+
 
   #--- commands required to build cached variable
   # (python scripts are located as such but run through python)
@@ -374,6 +377,7 @@ macro(elements_project project version)
         endif()
       endif()
     endif()
+    set(PYFRMK_TEST ${PYTHON_EXECUTABLE} ${PYFRMK_TEST})
   endif()
 
 
@@ -513,6 +517,11 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         SEARCH_PATH ${${other_project}_DIR})
   endforeach()
 
+  foreach(_pck ${data_packages})
+    set(project_environment ${project_environment}
+        SEARCH_PATH ${${_pck}_DIR})
+  endforeach()
+
   if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
       set(project_environment ${project_environment}
         SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH})
@@ -523,10 +532,14 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         SEARCH_PATH ${ELEMENTS_USR_SEARCH_PATH})
   endif()
 
-
   foreach(other_project ${used_elements_projects})
     set(project_environment ${project_environment}
         INCLUDE ${other_project}Environment.xml)
+  endforeach()
+
+  foreach(_pck ${data_packages})
+    set(project_environment ${project_environment}
+        INCLUDE ${_pck}Environment.xml)
   endforeach()
 
 
@@ -540,14 +553,14 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
 
   if(NOT SQUEEZED_INSTALL)
     set(project_environment ${project_environment}
-        PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${SCRIPT_INSTALL_SUFFIX})
+        PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${SCRIPT_INSTALL_SUFFIX}
+        PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}bin
+        PREPEND LD_LIBRARY_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${CMAKE_LIB_INSTALL_SUFFIX}
+        PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${PYTHON_INSTALL_SUFFIX}
+        PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${PYTHON_DYNLIB_INSTALL_SUFFIX})
   endif()
 
   set(project_environment ${project_environment}
-      PREPEND PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}bin
-      PREPEND LD_LIBRARY_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${CMAKE_LIB_INSTALL_SUFFIX}
-      PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${PYTHON_INSTALL_SUFFIX}
-      PREPEND PYTHONPATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${PYTHON_DYNLIB_INSTALL_SUFFIX}
       PREPEND ELEMENTS_CONF_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${CONF_INSTALL_SUFFIX}
       PREPEND ELEMENTS_AUX_PATH LOCAL_ESCAPE_DOLLAR{.}/${_inst_offset}${AUX_INSTALL_SUFFIX})
 
@@ -564,16 +577,28 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   endforeach()
 
 
-  #     (installation dirs added to build env to be able to test pre-built bins)
+
+  foreach(_pck ${data_packages})
+    if(EXISTS ${${_pck}_DIR})
+      set(project_build_environment ${project_build_environment}
+          SEARCH_PATH ${${_pck}_DIR})
+    endif()
+  endforeach()
+
+  foreach(_pck ${data_packages})
+    set(project_build_environment ${project_build_environment}
+        INCLUDE ${_pck}Environment.xml)
+  endforeach()
+
   if(NOT SQUEEZED_INSTALL)
     set(project_build_environment ${project_build_environment}
-        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/${SCRIPT_INSTALL_SUFFIX})
+        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/${SCRIPT_INSTALL_SUFFIX}
+        PREPEND PATH ${CMAKE_INSTALL_PREFIX}/bin
+        PREPEND LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_LIB_INSTALL_SUFFIX}
+        PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}
+        PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/${PYTHON_DYNLIB_INSTALL_SUFFIX})
   endif()
   set(project_build_environment ${project_build_environment}
-      PREPEND PATH ${CMAKE_INSTALL_PREFIX}/bin
-      PREPEND LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_LIB_INSTALL_SUFFIX}
-      PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}
-      PREPEND PYTHONPATH ${CMAKE_INSTALL_PREFIX}/${PYTHON_DYNLIB_INSTALL_SUFFIX}
       PREPEND ELEMENTS_CONF_PATH ${CMAKE_INSTALL_PREFIX}/${CONF_INSTALL_SUFFIX}
       PREPEND ELEMENTS_AUX_PATH ${CMAKE_INSTALL_PREFIX}/${AUX_INSTALL_SUFFIX})
 
@@ -664,6 +689,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   #   release version
   elements_generate_env_conf(${env_release_xml} ${project_environment})
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
   find_package\(ElementsProject\)
   message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
   set\(ELEMENTS_DEFAULT_SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH}\)
@@ -672,10 +698,15 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   foreach\(other_project ${used_elements_projects}\)
   set\(\${other_project}_DIR ${${other_project}_DIR}\)
   endforeach\(\)
+  set\(data_packages ${data_packages}\)
+  foreach\(_pck ${data_packages}\)
+  set\(\${_pck}_DIR ${${_pck}_DIR}\)
+  endforeach\(\)
   elements_generate_env_conf\(${installed_env_release_xml} ${installed_project_environment}\)")
   #   build-time version
   elements_generate_env_conf(${env_xml} ${project_build_environment})
   install(CODE "set\(ElementsProject_DIR ${ElementsProject_DIR}\)
+  set\(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}\)
   find_package\(ElementsProject\)
 message\(STATUS \"Installing: ${installed_env_xml}\"\)
 elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_environment}\)")
@@ -744,9 +775,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   SET(CPACK_RPM_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
 
 
-  set(CPACK_RPM_REGULAR_FILES "%files")
-  set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%defattr(-,root,root,-)")
+  set(CPACK_RPM_REGULAR_FILES "%defattr(-,root,root,-)")
 
   set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
 %{xmldir}/${CPACK_PACKAGE_NAME}Environment.xml")
@@ -914,9 +943,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
 #===============================================================================
 
-  set(CPACK_RPM_DEVEL_FILES "%files devel")
-  set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%defattr(-,root,root,-)")
+  set(CPACK_RPM_DEVEL_FILES "%defattr(-,root,root,-)")
 
   set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{xmldir}/${CPACK_PACKAGE_NAME}BuildEnvironment.xml")
@@ -928,10 +955,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     list(SORT config_objects)
     list(REMOVE_DUPLICATES config_objects)
     foreach(_do ${config_objects})
-      if(SQUEEZED_INSTALL)
-        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%{cmakedir}/${_do}")
-      else()
+      if(NOT SQUEEZED_INSTALL)
         set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{_prefix}/${_do}")
       endif()
@@ -947,10 +971,16 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     get_property(regular_include_objects GLOBAL PROPERTY REGULAR_INCLUDE_OBJECTS)
 
     list(REMOVE_DUPLICATES regular_include_objects)
+    if(regular_include_objects)
+    if(NOT SQUEEZED_INSTALL)
+      set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{_includedir}")    
+    endif()
     foreach(_do ${regular_include_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{_includedir}/${_do}")
     endforeach()
+    endif()
 
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
   endif()
@@ -961,13 +991,21 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   if(proj_has_cmake)
 
    get_property(regular_cmake_objects GLOBAL PROPERTY REGULAR_CMAKE_OBJECTS)
-
+   if(SQUEEZED_INSTALL)
+     get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
+     foreach(_do ${config_objects})
+       list(APPEND regular_cmake_objects ${_do})
+     endforeach()
+   endif()
     list(REMOVE_DUPLICATES regular_cmake_objects)
+    if(regular_cmake_objects)
+    set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{cmakedir}")    
     foreach(_do ${regular_cmake_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{cmakedir}/${_do}")
     endforeach()
-
+    endif()
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
   endif()
 
@@ -979,11 +1017,15 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
    get_property(regular_make_objects GLOBAL PROPERTY REGULAR_MAKE_OBJECTS)
 
     list(REMOVE_DUPLICATES regular_make_objects)
-    foreach(_do ${regular_make_objects})
+    if(regular_make_objects)
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{makedir}")
+      foreach(_do ${regular_make_objects})
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
 %{makedir}/${_do}")
-    endforeach()
-
+      endforeach()
+    endif()
+    
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
   endif()
 
@@ -993,23 +1035,19 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   get_property(debinfo_objects GLOBAL PROPERTY DEBINFO_OBJECTS)
 
   if(debinfo_objects)
-    set(CPACK_RPM_DEBINFO_FILES "%files debuginfo")
-    set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
-%defattr(-,root,root,-)")
+    set(CPACK_RPM_DEBINFO_FILES "%defattr(-,root,root,-)")
 
     list(SORT debinfo_objects)
     foreach(_do ${debinfo_objects})
       set(CPACK_RPM_DEBINFO_FILES "${CPACK_RPM_DEBINFO_FILES}
 ${_do}")
     endforeach()
-    #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")
   endif()
+  #message(STATUS "The debuginfo objects: ${CPACK_RPM_DEBINFO_FILES}")
 
 #===============================================================================
 
-  set(CPACK_RPM_DOC_FILES "%files doc")
-  set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
-%defattr(-,root,root,-)")
+  set(CPACK_RPM_DOC_FILES "%defattr(-,root,root,-)")
   set(CPACK_RPM_DOC_FILES "${CPACK_RPM_DOC_FILES}
 %{docdir}")
 
@@ -1107,19 +1145,11 @@ ${MAIN_PROJECT_CHANGELOG}
         message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
       endif()
 
-     if(SQUEEZED_INSTALL)
-         find_file_to_configure(Elements_squeezed.spec.in
-                                FILETYPE "RPM SPEC"
-                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
-                                OUTPUTNAME "${project}.spec"
-                                PATHS ${CMAKE_MODULE_PATH})
-     else()
-         find_file_to_configure(Elements.spec.in
-                                FILETYPE "RPM SPEC"
-                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
-                                OUTPUTNAME "${project}.spec"
-                                PATHS ${CMAKE_MODULE_PATH})
-     endif()
+      find_file_to_configure(Elements.spec.in
+                             FILETYPE "RPM SPEC"
+                             OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
+                             OUTPUTNAME "${project}.spec"
+                             PATHS ${CMAKE_MODULE_PATH})
     
 
      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
@@ -1140,6 +1170,10 @@ ${MAIN_PROJECT_CHANGELOG}
       
       if(INSTALL_DOC)
          set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with doc")
+      endif()
+
+      if(debinfo_objects)
+         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with debinfo")      
       endif()
 
       
@@ -1222,7 +1256,7 @@ macro(_elements_use_other_projects)
         endif()
       endif()
     else()
-      # "HEAD" is a special version id (mapped to v999r999).
+      # "HEAD" is a special version id (mapped to 999.999).
       set(other_project_cmake_version 999.999)
     endif()
     set(other_project_original_version ${other_project_version})
@@ -1421,7 +1455,6 @@ endfunction()
 # The root of the data package will be stored in <variable>.
 #-------------------------------------------------------------------------------
 function(elements_find_data_package name)
-  #message(STATUS "elements_find_data_package(${ARGV})")
   if(NOT ${name}_FOUND)
     # Note: it works even if the env. var. is not set.
     file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" projects_search_path)
@@ -1445,7 +1478,7 @@ function(elements_find_data_package name)
 
     set(candidate_version)
     set(candidate_path)
-    foreach(prefix ${projects_search_path} ${CMAKE_PREFIX_PATH} ${env_prefix_path})
+    foreach(prefix ${projects_search_path} ${CMAKE_PREFIX_PATH} ${env_prefix_path} ${DATA_MODULE_PATH})
       foreach(suffix "" ${ARGN})
         #message(STATUS "elements_find_data_package: check ${prefix}/${suffix}/${name}")
         if(IS_DIRECTORY ${prefix}/${suffix}/${name})
@@ -1476,46 +1509,40 @@ function(elements_find_data_package name)
       mark_as_advanced(${name}_FOUND ${name}_DIR)
       message(STATUS "Found ${name} ${candidate_version}: ${${name}_DIR}")
     else()
-      message(FATAL_ERROR "Cannot find ${name} ${version}")
+      message(FATAL_ERROR "Cannot find ${name} ${version} in ${projects_search_path} ${CMAKE_PREFIX_PATH} ${env_prefix_path} ${DATA_MODULE_PATH} with the ${ARGN} suffixes" )
     endif()
   endif()
 endfunction()
 
 #-------------------------------------------------------------------------------
-# _elements_handle_data_pacakges([package [VERSION version] [project version [VERSION version]]...])
+# _elements_handle_data_packages([package [VERSION version] [project version [VERSION version]]...])
 #
-# Internal macro implementing the handline of the "USE" option.
+# Internal macro implementing the handling of the "USE" option.
 # (improve readability)
 #-------------------------------------------------------------------------------
 macro(_elements_handle_data_packages)
-  # this is neede because of the way variable expansion works in macros
+  # this is needed because of the way variable expansion works in macros
   set(ARGN_ ${ARGN})
   if(ARGN_)
     message(STATUS "Looking for data packages")
   endif()
   while(ARGN_)
+    list(LENGTH ARGN_ len)
+    if(len LESS 2)
+      message(FATAL_ERROR "Wrong number of arguments to DATA option")
+    endif()  
     # extract data package name and (optional) version from the list
     list(GET ARGN_ 0 _data_package)
-    list(REMOVE_AT ARGN_ 0)
-    if(ARGN_) # we can look for the version only if we still have data)
-      list(GET ARGN_ 0 _data_pkg_vers)
-      if(_data_pkg_vers STREQUAL VERSION)
-        list(GET ARGN_ 1 _data_pkg_vers)
-        list(REMOVE_AT ARGN_ 0 1)
-      else()
-        set(_data_pkg_vers *) # default version value
-      endif()
-    else()
-      set(_data_pkg_vers *) # default version value
-    endif()
+    list(GET ARGN_ 1 _data_pkg_vers)
+    list(REMOVE_AT ARGN_ 0 1)
     if(NOT ${_data_package}_FOUND)
       elements_find_data_package(${_data_package} ${_data_pkg_vers} PATH_SUFFIXES ${ELEMENTS_DATA_SUFFIXES})
     else()
       message(STATUS "Using ${_data_package}: ${${_data_package}_DIR}")
     endif()
     if(${_data_package}_FOUND)
+      set(data_packages ${_data_package} ${data_packages})
       string(REPLACE / _ _data_pkg_env ${_data_package}Environment.xml)
-      set(project_environment ${project_environment} INCLUDE ${${_data_package}_DIR}/${_data_pkg_env})
     endif()
   endwhile()
 endmacro()
@@ -2505,6 +2532,12 @@ function(_generate_swig_files swig_module)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC}
                  PROPERTY COMPILE_FLAGS -Wno-suggest-override)
   endif()
+  
+  if(CXX_HAS_CAST_FUNCTION_TYPE)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC}
+                 PROPERTY COMPILE_FLAGS -Wno-cast-function-type)
+  endif()
+  
 
   install(FILES ${PY_MODULE_DIR}/${PY_MODULE}.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
   
@@ -2554,7 +2587,6 @@ function(elements_add_swig_binding binding)
                        ${i_srcs}
                        OUTFILE ${PY_MODULE_SWIG_SRC}
                        INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-
 
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
@@ -2674,7 +2706,11 @@ function(_generate_cython_cpp)
     COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${ARG_OUTFILE}  ${srcs}"
     )
   
-  set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
+  if(CXX_HAS_CAST_FUNCTION_TYPE)
+    set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS -Wno-cast-function-type")  
+  else()
+    set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
+  endif()
 
 endfunction()
 
@@ -2842,9 +2878,18 @@ function(elements_add_unit_test name)
                           DEPENDS ${package}_tests_dir
                           COMMENT "Generating the ${package} ${${name}_UNIT_TEST_TYPE}TestMain.cpp" VERBATIM)
       endif()
-      set(srcs ${srcs} ${testmain_file})
+      
+      if (NOT TARGET ${package}${${name}_UNIT_TEST_TYPE}Test)
+        elements_add_library(${package}${${name}_UNIT_TEST_TYPE}Test ${testmain_file}
+                             LINK_LIBRARIES ${${name}_UNIT_TEST_TYPE}
+                             INCLUDE_DIRS ${${name}_UNIT_TEST_TYPE}
+                             NO_PUBLIC_HEADERS
+                             )
+        add_dependencies(${package}${${name}_UNIT_TEST_TYPE}Test ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
+      endif()
+      
       elements_add_executable(${executable} ${srcs}
-                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE}
+                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE} ${package}${${name}_UNIT_TEST_TYPE}Test
                               INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_UNIT_TEST_TYPE})
       add_dependencies(${executable} ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
 
@@ -2876,7 +2921,9 @@ function(elements_add_unit_test name)
              COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
              ${executable}${exec_suffix})
 
+    set_property(TEST ${package}.${name} PROPERTY CMDLINE "${executable}${exec_suffix}")
     set_property(TEST ${package}.${name} APPEND PROPERTY LABELS UnitTest ${package} Binary)
+    
     if(NOT ${${name}_UNIT_TEST_TYPE} STREQUAL "None")
       set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${${name}_UNIT_TEST_TYPE})
     endif()
@@ -2963,6 +3010,7 @@ function(elements_add_test name)
            ${cmdline})
 
   set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${package})
+  set_property(TEST ${package}.${name} PROPERTY CMDLINE "${cmdline}")
 
   foreach(t ${ARG_LABELS})
     set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${t})
@@ -3623,6 +3671,18 @@ function(elements_generate_env_conf filename)
   foreach(other_project ${used_elements_projects})
     if(${${other_project}_DIR})
       set(data "${data}  <env:include>${other_project}Environment.xml</env:include>\n")
+    endif()
+  endforeach()
+
+  foreach(_pck ${data_packages})
+    if(${${_pck}_DIR})
+      set(data "${data}  <env:search_path>${${_pck}_DIR}</env:search_path>\n")
+    endif()
+  endforeach()
+
+  foreach(_pck ${data_packages})
+    if(${${_pck}_DIR})
+      set(data "${data}  <env:include>${_pck}Environment.xml</env:include>\n")
     endif()
   endforeach()
 

@@ -93,9 +93,8 @@ def selfFilter(f_list, only_self):
 def mainMethod(args):
     """
     @brief The "main" method.
-    @details
-        This method is the entry point to the program. In this sense, it is
-        similar to a main (and it is why it is called mainMethod()).
+    @details This method is the entry point to the program. In this sense, it is
+    similar to a main (and it is why it is called mainMethod()).
     """
 
     logger = log.getLogger('GetElementsFiles')

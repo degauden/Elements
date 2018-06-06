@@ -241,6 +241,11 @@ option(INSTALL_DOC
        "Build and Install the API documentation by default"
        OFF)
 
+option(CONCEPT_CHECKS
+       "Enable the concept template checking by adding -D_GLIBCXX_CONCEPT_CHECKS"
+       OFF)
+
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   #message(STATUS "Setting cached build flags")
@@ -269,6 +274,10 @@ if(NOT ELEMENTS_FLAGS_SET)
 
   if(CXX_SUGGEST_OVERRIDE AND (SGS_COMP STREQUAL gcc))
     check_and_use_cxx_option(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)
+  endif()
+
+  if(SGS_COMP STREQUAL gcc)
+    check_and_use_cxx_option(-Wcast-function-type CXX_HAS_CAST_FUNCTION_TYPE)
   endif()
 
   # Build type compilation flags (if different from default or unknown to CMake)
@@ -416,6 +425,11 @@ if ((ELEMENTS_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND ( (NOT SGS_COMPVERS V
   set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
   add_definitions(-DELEMENTS_HIDE_SYMBOLS)
 endif()
+
+if ((CONCEPT_CHECKS) AND (SGS_COMP STREQUAL gcc))
+  add_definitions(-D_GLIBCXX_CONCEPT_CHECKS)
+endif()
+
 
 if(USE_ODB)
   set(ODB_CXX_EXTRA_FLAGS ""

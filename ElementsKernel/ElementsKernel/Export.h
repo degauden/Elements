@@ -3,19 +3,6 @@
  * @brief defines the macros to be used for explicit export of the symbols
  * @date Nov 4, 2013
  * @author: Hubert Degaudenzi - The Euclid Consortium
- * @details:
- *  The ELEMENTS_API macro has to be used to expose the part of the public interface
- *  of a library. It has typically to be used in the public header files. For the functions
- *  the syntax looks like:
- *  @code
- *  ELEMENTS_API void func() ;
- *  @endcode
- *  and for the classes:
- *  @code
- *  class ELEMENTS_API MyClasse { ...
- *  @endcode
- *  This macro will only have an effect if the global symbol hiding is active in the framework.
- *  This means that the ELEMENTS_HIDE_SYMBOLS macro has to be defined.
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
  *
@@ -29,6 +16,22 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ * @details:
+ *  The ELEMENTS_API macro has to be used to expose the part of the public interface
+ *  of a library. It has typically to be used in the public header files. For the functions
+ *  the syntax looks like:
+ *  @code
+ *  ELEMENTS_API void func() ;
+ *  @endcode
+ *  and for the classes:
+ *  @code
+ *  class ELEMENTS_API MyClasse { ...
+ *  @endcode
+ *  This macro will only have an effect if the global symbol hiding is active in the framework.
+ *  This means that the ELEMENTS_HIDE_SYMBOLS macro has to be defined.
+
+ *
  */
 
 /**
@@ -36,8 +39,8 @@
  * @{
  */
 
-#ifndef ELEMENTS_EXPORT_H_
-#define ELEMENTS_EXPORT_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_EXPORT_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_EXPORT_H_
 
 #include "ElementsKernel/Attribute.h"
 
@@ -72,10 +75,10 @@
 #define ELEMENTS_IMPORT
 #define ELEMENTS_EXPORT
 #define ELEMENTS_LOCAL
-#endif // defined(ELEMENTS_HIDE_SYMBOLS)
+#endif  // defined(ELEMENTS_HIDE_SYMBOLS)
 
 // ---------------------------------- Symbol visibility macros (end)
 
-#endif /* ELEMENTS_EXPORT_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_EXPORT_H_
 
 /**@}*/

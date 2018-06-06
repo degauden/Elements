@@ -19,9 +19,11 @@
  *
  */
 
-#include <cstddef>
-
 #include "ElementsKernel/ThisModule.h"
+
+#include <cstddef>
+#include <dlfcn.h>
+
 #include "ElementsKernel/FuncPtrCast.h"  // for FuncPtrCast
 #include "ElementsKernel/ModuleInfo.h"   // for ModuleInfo
 

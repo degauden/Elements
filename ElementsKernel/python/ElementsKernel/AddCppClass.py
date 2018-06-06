@@ -57,6 +57,7 @@ def getClassName(subdir_class):
 
 ################################################################################
 
+
 def createDirectories(module_dir, module_name, subdir):
     """
     Create directories needed for a module and a class
@@ -73,6 +74,7 @@ def createDirectories(module_dir, module_name, subdir):
         os.makedirs(test_path)
 
 ################################################################################
+
 
 def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     """
@@ -112,6 +114,7 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
 
 ################################################################################
 
+
 def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     """
     Substitute variables in the CPP template file and rename it
@@ -149,6 +152,7 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
 
 ################################################################################
 
+
 def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     """
     Substitute variables in the Unit Test template file and rename it
@@ -180,6 +184,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     epcr.addItemToCreationList(file_name)
 
 ################################################################################
+
 
 def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                          library_dep_list):
@@ -253,6 +258,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
 
 ################################################################################
 
+
 def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
     """
     Check if the class file does not already exist
@@ -266,6 +272,7 @@ def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
                                 "Header file found here : < %s >" % (full_name, file_name_path))
 
 ################################################################################
+
 
 def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
                    library_dep_list):
@@ -294,6 +301,7 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
 
 ################################################################################
 
+
 def makeChecks():
     """
     Make some checks
@@ -303,6 +311,7 @@ def makeChecks():
     epcr.checkAuxFileExist(CPP_TEMPLATE_FILE_IN)
 
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -334,6 +343,7 @@ e.g AddCppClass class_name or
     return parser
 
 ################################################################################
+
 
 def mainMethod(args):
     """ Main method of the AddCppClass Script"""

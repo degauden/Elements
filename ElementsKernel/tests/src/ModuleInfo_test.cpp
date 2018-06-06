@@ -19,6 +19,7 @@
  *
  */
 
+#include "ElementsKernel/ModuleInfo.h"       // header file to test
 
 #include <iostream>
 #include <string>
@@ -26,7 +27,6 @@
 #include <boost/test/unit_test.hpp>          // for the boost test macros
 #include <boost/filesystem.hpp>              // for boost/filesystem
 
-#include "ElementsKernel/ModuleInfo.h"       // header file to test
 
 BOOST_AUTO_TEST_SUITE(ModuleInfo_test)
 

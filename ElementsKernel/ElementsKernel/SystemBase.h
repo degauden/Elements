@@ -19,8 +19,8 @@
  * @{
  */
 
-#ifndef ELEMENTS_SYSTEM_SYSTEMBASE_H
-#define ELEMENTS_SYSTEM_SYSTEMBASE_H
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEMBASE_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEMBASE_H_
 
 namespace Elements {
 namespace System {
@@ -37,8 +37,10 @@ enum class InfoType {
   Modules,
   IO
 };
-}
-}
-#endif // ELEMENTS_SYSTEM_SYSTEMBASE_H
+
+}  // namespace System
+}  // namespace Elements
+
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEMBASE_H_
 
 /**@}*/

@@ -63,7 +63,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod (ELEMENTS_UNUSED map<string, variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     // Get logger and log the entry into the mainMethod
     Logging logger = Logging::getLogger();
@@ -85,7 +85,7 @@ public:
 
   }
 
-  std::pair<options_description, positional_options_description> defineProgramArguments () override {
+  std::pair<options_description, positional_options_description> defineProgramArguments() override {
     options_description desc("");
     desc.add_options()("input-files", value<vector<string>>(), "Input files");
 
@@ -97,7 +97,7 @@ public:
 
 };
 
-} // namespace ElementsExamples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 MAIN_FOR(Elements::Examples::ProgramExampleWithArguments)

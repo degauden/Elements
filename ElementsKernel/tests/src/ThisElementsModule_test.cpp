@@ -23,6 +23,7 @@
 
 #include <typeinfo>                  // for type_info
 #include <string>
+
 #include <boost/test/unit_test.hpp>
 
 using std::string;

@@ -10,9 +10,6 @@ elements_add_library(ElementsKernel src/Lib/*.cpp
                     PUBLIC_HEADERS ElementsKernel)
 
 #---Tests-------------------------------------------------------------------
-elements_add_unit_test(Time tests/src/ElementsTime_test.cpp
-                       EXECUTABLE ElementsTime_test
-                       LINK_LIBRARIES ElementsKernel TYPE Boost)
 elements_add_unit_test(Real tests/src/Real_test.cpp
                        EXECUTABLE Real_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost
@@ -24,7 +21,7 @@ elements_add_unit_test(Number tests/src/Number_test.cpp
 elements_add_unit_test(Version tests/src/Version_test.cpp
                        EXECUTABLE Version_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
-elements_add_unit_test(Logging tests/src/ElementsLogging_test.cpp
+elements_add_unit_test(Logging tests/src/Logging_test.cpp
                        EXECUTABLE ElementsLogging_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 #-----------------------
@@ -120,6 +117,13 @@ elements_add_unit_test(BackTrace tests/src/BackTrace_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #-----------------------
+# System_test
+elements_add_unit_test(System tests/src/System_test.cpp
+                       EXECUTABLE System_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
+#-----------------------
 # GetEnv_test
 elements_add_unit_test(GetEnv tests/src/GetEnv_test.cpp
                        EXECUTABLE GetEnv_test
@@ -203,3 +207,7 @@ elements_add_test(PatchVersionProject
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation)
                   
+elements_add_test(CMakeOverride 
+                  COMMAND cmakeOverride_test  
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  LABELS Creation Override)

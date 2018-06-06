@@ -38,6 +38,8 @@
 #include <iostream>
 #include <cerrno>
 #include <cstdio>
+#include <string>                             // for string
+#include <vector>
 
 #ifdef __APPLE__
 #include <climits>            // for PATH_MAX
@@ -48,9 +50,8 @@
 
 #include "ElementsKernel/FuncPtrCast.h"
 
-
-
-using namespace std;
+using std::string;
+using std::vector;
 using boost::filesystem::path;
 
 namespace {
@@ -123,14 +124,14 @@ const string& moduleNameFull()   {
 /// Get type of the module
 ModuleType moduleType()   {
   static ModuleType type = ModuleType::UNKNOWN;
-  if ( type == ModuleType::UNKNOWN )    {
+  if (type == ModuleType::UNKNOWN)    {
     const string& module = moduleNameFull();
     int loc = module.rfind('.')+1;
-    if ( loc == 0 ) {
+    if (loc == 0) {
       type = ModuleType::EXECUTABLE;
-    } else if ( module[loc] == 'e' || module[loc] == 'E' ) {
+    } else if (module[loc] == 'e' or module[loc] == 'E') {
       type = ModuleType::EXECUTABLE;
-    } else if ( module[loc] == 's' && module[loc+1] == 'o' ) {
+    } else if (module[loc] == 's' and module[loc+1] == 'o') {
       type = ModuleType::SHAREDLIB;
     } else {
       type = ModuleType::UNKNOWN;
@@ -139,7 +140,7 @@ ModuleType moduleType()   {
   return type;
 }
 
-/// Retrieve processhandle
+/// Retrieve process handle
 void* processHandle()   {
   static std::int64_t pid = ::getpid();
   static void* hP = reinterpret_cast<void*>(pid);
@@ -150,12 +151,11 @@ void setModuleHandle(ImageHandle handle)    {
   s_module_handle = handle;
 }
 
-ImageHandle moduleHandle()    {
-  if ( 0 == s_module_handle )    {
-    if ( processHandle() )    {
+ImageHandle moduleHandle() {
+  if (0 == s_module_handle) {
+    if (processHandle()) {
       static Dl_info info;
-      if ( 0 !=
-           ::dladdr(FuncPtrCast<void*>(moduleHandle), &info) ) {
+      if (0 != ::dladdr(FuncPtrCast<void*>(moduleHandle), &info)) {
         return &info;
       }
     }
@@ -168,12 +168,12 @@ ImageHandle exeHandle()    {
   static Dl_info infoBuf;
   static Dl_info *info;
 
-  if ( 0 == info ) {
+  if (0 == info) {
     void* handle = ::dlopen(0, RTLD_LAZY);
-    if ( 0 != handle ) {
+    if (0 != handle) {
       void* func = ::dlsym(handle, "main");
-      if ( 0 != func ) {
-        if ( 0 != ::dladdr(func, &infoBuf) ) {
+      if (0 != func) {
+        if (0 != ::dladdr(func, &infoBuf)) {
           info = &infoBuf;
         }
       }
@@ -185,20 +185,20 @@ ImageHandle exeHandle()    {
 
 const string& exeName() {
   static string module("");
-  if ( module.length() == 0 )    {
+  if (module.length() == 0)    {
     module = getExecutablePath().string();
   }
   return module;
 }
 
-path getSelfProc(){
+path getSelfProc() {
 
   path self_proc {"/proc/self"};
 
   path exe = self_proc / "exe";
 
   if (not boost::filesystem::exists(exe)) {
-    stringstream self_str {};
+    std::stringstream self_str {};
     self_str << "/proc/" << ::getpid();
     self_proc = path(self_str.str());
   }
@@ -216,7 +216,7 @@ vector<path> linkedModulePaths() {
 
   string line;
   while (std::getline(maps_str, line)) {
-    std::string address, perms, offset, dev, pathname;
+    string address, perms, offset, dev, pathname;
     unsigned inode;
     std::istringstream iss(line);
     if (not(iss >> address >> perms >> offset >> dev >> inode >> pathname)) {

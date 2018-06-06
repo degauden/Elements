@@ -4,10 +4,6 @@
  * @brief This file is intended to iron out all the
  *   differences between systems (currently Linux and MacOSX)
  *
- * @details All the compilation system dependent parts (\#if, \#ifdef etc)
- *   should be located in this file. This should clear the need of these
- *   entities in all other C++ files.
- *
  * @copyright 2012-2020 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -20,6 +16,11 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ * @details All the compilation system dependent parts (\#if, \#ifdef etc)
+ *   should be located in this file. This should clear the need of these
+ *   entities in all other C++ files.
+ *
  */
 
 /**
@@ -27,19 +28,19 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_SYSTEM_H
-#define ELEMENTSKERNEL_SYSTEM_H
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEM_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEM_H_
 
 // STL include files
 #include <vector>
 #include <typeinfo>
 #include <string>
-#include <vector>
 #include <memory>
+#include <climits>
 
 // Framework include files
-#include "ElementsKernel/Export.h" // ELEMENTS_API
-#include "ElementsKernel/Unused.h" // ELEMENTS_UNUSED
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Unused.h"  // ELEMENTS_UNUSED
 
 namespace Elements {
 namespace System {
@@ -93,6 +94,16 @@ const std::string DEFAULT_INSTALL_PREFIX { "/usr" };
 #define TEMPLATE_SPECIALIZATION
 #endif
 
+#ifndef HOST_NAME_MAX
+
+#ifdef _POSIX_HOST_NAME_MAX
+#define HOST_NAME_MAX _POSIX_HOST_NAME_MAX
+#else
+#define HOST_NAME_MAX 255
+#endif
+
+#endif
+
 
 /// Definition of an image handle
 using ImageHandle = void*;
@@ -132,18 +143,18 @@ ELEMENTS_API const std::string& osName();
 ELEMENTS_API const std::string& osVersion();
 /// Machine type
 ELEMENTS_API const std::string& machineType();
-///get a particular environment variable
+/// get a particular environment variable
 ELEMENTS_API std::string getEnv(const std::string& var);
 /// get a particular environment variable, storing the value in the passed string if the
 /// variable is set. Returns true if the variable is set, false otherwise.
 ELEMENTS_API bool getEnv(const std::string& var, std::string &value);
-///get all environment variables
+/// get all environment variables
 ELEMENTS_API std::vector<std::string> getEnv();
-///Set an environment variables.
-///If value is empty, the variable is removed from the environment.
-///When overwrite is 0, the variable is not set if already present.
-///Returns 0 on success, -1 on failure.
-///See man 3 setenv.
+/// Set an environment variables.
+/// If value is empty, the variable is removed from the environment.
+/// When overwrite is 0, the variable is not set if already present.
+/// Returns 0 on success, -1 on failure.
+/// See man 3 setenv.
 ELEMENTS_API int setEnv(const std::string &name, const std::string &value,
                          bool overwrite = true);
 /// Simple wrap around unsetenv for strings
@@ -158,8 +169,9 @@ ELEMENTS_API const std::vector<std::string> backTrace(const int depth, const int
 ELEMENTS_API bool getStackLevel(ELEMENTS_UNUSED void* addresses, ELEMENTS_UNUSED void*& addr,
                                 ELEMENTS_UNUSED std::string& fnc, ELEMENTS_UNUSED std::string& lib);
 
-} // end of namespace System
-} // end of namespace Elements
+}  // namespace System
+}  // namespace Elements
 
-#endif    // SYSTEM_SYSTEM_H
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEM_H_
+
 /**@}*/

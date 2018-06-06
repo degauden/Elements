@@ -83,7 +83,7 @@ def _zipChanges(directory, infolist):
         if filename not in all_files:
             removed.append(filename)
             log.info(" %s -> %s", "R", filename)
-    return (added, modified, untouched, removed)
+    return added, modified, untouched, removed
 
 
 def checkEncoding(file_obj):
@@ -218,6 +218,7 @@ def main(argv=None):
     # zip all the directories passed as arguments
     for d in args:
         zipdir(d, opts.no_pyc)
+
 
 if __name__ == '__main__':
     main()

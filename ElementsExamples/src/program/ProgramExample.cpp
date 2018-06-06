@@ -24,14 +24,14 @@
 #include <utility>                          // for move
 #include <memory>                           // for unique_ptr
 
+#include <boost/current_function.hpp>       // for BOOST_CURRENT_FUNCTION
+
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/ThisModule.h"      // for getThisExecutableInfo
 
 #include "ElementsExamples/ClassExample.h"
 #include "ElementsExamples/functionExample.h"
 
-//namespace po = boost::program_options;
-//namespace fs = boost::filesystem;
 
 using std::map;
 using std::string;
@@ -43,6 +43,26 @@ using boost::program_options::bool_switch;
 
 namespace Elements {
 namespace Examples {
+
+/**
+ * @brief
+ *    test function to demonstrate the logger
+ * @details
+ *    test function to demonstrate the logger
+ */
+
+void myLocalLogTestFunc() {
+
+  Logging logger = Logging::getLogger();
+  logger.info("Test of Message");
+
+  Logging logger2 = Logging::getLogger(__func__);
+  logger2.info("Test2 of Message");
+
+  Logging logger3 = Logging::getLogger(BOOST_CURRENT_FUNCTION);
+  logger3.info("Test3 of Message");
+
+}
 
 
 /**
@@ -70,15 +90,25 @@ public:
 
     options_description config_options { "Example program options" };
 
-    bool flag;
+    bool flag = false;
 
     // Add the specific program options
     config_options.add_options()
+        ("int-option", value<int>()->default_value(int {111}),
+         "An example int option")
+        ("int-option-with-default-and-default-in-conf", value<int>()->default_value(int {222}),
+         "An example int option")
+        ("int-option-with-default-no-default-in-conf", value<int>()->default_value(int {444}),
+         "An example int option")
+        ("int-option-no-default-not-defined-in-conf", value<int>(),
+         "An example int option")
+        ("int-option-with-no-defaults-anywhere", value<int>(),
+         "An example int option")
         ("string-option", value<string>()->default_value(string { }),
         "An example string option")
         ("boolean-option", value<bool>()->default_value(false),
          "An example boolean option")
-        ("flag,f", bool_switch(&flag)->default_value(false),
+        ("flag,f", bool_switch(&flag),
          "An option to set to true")
         ("string-option-no-default", value<string>(),
         "A string option without default value")
@@ -88,7 +118,9 @@ public:
         "An example double option")
         ("int-vector-option",
          value<vector<int>>()->multitoken()->default_value(vector<int> { }, "Empty"),
-        "An example vector option");
+        "An example vector option")
+        ("threshold,t", value<double>()->default_value(double {0.5}),
+        "An example double option");
 
     return config_options;
   }
@@ -137,6 +169,10 @@ public:
      */
     string string_example { args["string-option"].as<string>() };
     logger.info() << "String option value: " << string_example;
+
+    logger.info() << "The int-option value is " << args["int-option"].as<int>();
+    logger.info() << "The threshold value is " << args["threshold"].as<double>();
+
 
     // Some initialization
     double input_variable = 3.4756;
@@ -195,6 +231,8 @@ public:
 
     logger.info() << "This executable name: " << Elements::System::getThisExecutableInfo().name();
 
+    myLocalLogTestFunc();
+
     logger.info("#");
     logger.info("Exiting mainMethod()");
     return ExitCode::OK;
@@ -202,8 +240,8 @@ public:
 
 };
 
-} // namespace ElementsExamples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 
 /**

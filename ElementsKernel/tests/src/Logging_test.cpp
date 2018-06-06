@@ -1,8 +1,24 @@
 /**
- * @file ElementsLogging_test.cpp
+ * @file Logging_test.cpp
  * @date January 14, 2014
  * @author Nikolaos Apostolakos
+ *
+ * @copyright 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
+
+#include "ElementsKernel/Logging.h"
 
 #include <vector>                           // for std::vector
 #include <string>                           // for std::string
@@ -12,6 +28,7 @@
 #include <ctime>
 #include <fstream>
 #include <iomanip>                          // for setprecision
+#include <cstdlib>                          // for srand
 
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
@@ -19,7 +36,6 @@
 #include <boost/version.hpp>                // for the BOOST_VERSION define
 
 #include "ElementsKernel/Temporary.h"      // For TempDir
-#include "ElementsKernel/Logging.h"
 #include "ElementsKernel/MathConstants.h"  // For pi
 
 using Elements::Logging;
@@ -34,7 +50,7 @@ using std::ignore;
 using boost::filesystem::exists;
 
 // A map to translate strings to logging levels
-//std::map<string, Logging::Level> levelMap {
+// std::map<string, Logging::Level> levelMap {
 //  {"DEBUG", Logging::Level::DEBUG},
 //  {"INFO", Logging::Level::INFO},
 //  {"WARN", Logging::Level::WARN},

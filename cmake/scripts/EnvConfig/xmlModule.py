@@ -16,12 +16,14 @@ class XMLFile(object):
     '''Takes care of XML file operations such as reading and writing.'''
 
     def __init__(self):
-        self.xmlResult = '<?xml version="1.0" encoding="UTF-8"?><env:config xmlns:env="EnvSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="EnvSchema ./EnvSchema.xsd ">' + \
-            os.linesep
+        self.xml_result = '<?xml version="1.0" encoding="UTF-8"?>'
+        self.xml_result += '<env:config xmlns:env="EnvSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="EnvSchema ./EnvSchema.xsd ">'
+        self.xml_result += os.linesep
         self.declaredVars = []
         self.log = logging.getLogger('XMLFile')
 
-    def variable(self, path, namespace='EnvSchema', name=None):
+    @staticmethod
+    def variable(path, namespace='EnvSchema', name=None):
         '''Returns list containing name of variable, action and value.
 
         @param path: a file name or a file-like object
@@ -105,17 +107,18 @@ class XMLFile(object):
 
     def resetWriter(self):
         '''resets the buffer of writer'''
-        self.xmlResult = '<?xml version="1.0" encoding="UTF-8"?><env:config xmlns:env="EnvSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="EnvSchema ./EnvSchema.xsd ">' + \
-            os.linesep
+        self.xml_result = '<?xml version="1.0" encoding="UTF-8"?>'
+        self.xml_result += '<env:config xmlns:env="EnvSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="EnvSchema ./EnvSchema.xsd ">'
+        self.xml_result += os.linesep
         self.declaredVars = []
 
     def writeToFile(self, output_file=None):
         '''Finishes the XML input and writes XML to file.'''
         if output_file is None:
             raise IOError("No output file given")
-        self.xmlResult += '</env:config>'
+        self.xml_result += '</env:config>'
 
-        doc = minidom.parseString(self.xmlResult)
+        doc = minidom.parseString(self.xml_result)
         with open(output_file, "w") as f:
             f.write(doc.toxml())
 
@@ -124,16 +127,16 @@ class XMLFile(object):
     def writeVar(self, varName, action, value, vartype='list', local=False):
         '''Writes a action to a file. Declare undeclared elements (non-local list is default type).'''
         if action == 'declare':
-            self.xmlResult += '<env:declare variable="' + varName + '" type="' + \
+            self.xml_result += '<env:declare variable="' + varName + '" type="' + \
                 vartype.lower() + '" local="' + (str(local)).lower() + \
                 '" />' + os.linesep
             self.declaredVars.append(varName)
             return
 
         if varName not in self.declaredVars:
-            self.xmlResult += '<env:declare variable="' + varName + '" type="' + \
+            self.xml_result += '<env:declare variable="' + varName + '" type="' + \
                 vartype + '" local="' + \
                 (str(local)).lower() + '" />' + os.linesep
             self.declaredVars.append(varName)
-        self.xmlResult += '<env:' + action + ' variable="' + \
+        self.xml_result += '<env:' + action + ' variable="' + \
             varName + '">' + value + '</env:' + action + '>' + os.linesep

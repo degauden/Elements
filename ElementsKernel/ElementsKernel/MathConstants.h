@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSKERNEL_MATHCONSTANTS_H_
-#define ELEMENTSKERNEL_MATHCONSTANTS_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_MATHCONSTANTS_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_MATHCONSTANTS_H_
 
 namespace Elements {
 namespace Units {
@@ -52,6 +52,6 @@ constexpr double e              = 2.71828182845904523536;
 }  // namespace Units
 }  // namespace Elements
 
-#endif  // ELEMENTSKERNEL_MATHCONSTANTS_H_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_MATHCONSTANTS_H_
 
 /**@}*/

@@ -45,6 +45,7 @@ AUX_GITIGNORE_IN = "gitignore_template.in"
 
 ################################################################################
 
+
 def setPath():
     """
     Set the installation path either the current directory or
@@ -62,6 +63,7 @@ def setPath():
 
 ################################################################################
 
+
 def checkDependencyProjectValid(str_list):
     """
     Check if the dependency project name and version list is valid
@@ -70,6 +72,7 @@ def checkDependencyProjectValid(str_list):
         epcr.checkNameAndVersionValid(str_list[i][0], str_list[i][1])
 
 ################################################################################
+
 
 def duplicate_elements(duplicate_list):
     """
@@ -84,6 +87,7 @@ def duplicate_elements(duplicate_list):
 
 ################################################################################
 
+
 def getElementsVersion():
     """
     Get the Elements version number
@@ -96,6 +100,7 @@ def getElementsVersion():
     return str(elt_version)
 
 ################################################################################
+
 
 def substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects, standalone=False):
     """
@@ -126,7 +131,6 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     if str_dep_projects:
         str_dep_projects = "USE " + str_dep_projects
 
-
     new_data = data % {"PROJECT_NAME": proj_name,
                        "PROJECT_VERSION": proj_version,
                        "DEPENDANCE_LIST": str_dep_projects}
@@ -143,6 +147,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     epcr.addItemToCreationList(file_no_dot_in)
 
 ################################################################################
+
 
 def createProject(project_dir, proj_name, proj_version, dep_projects, standalone=False):
     """
@@ -184,6 +189,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
 
 ################################################################################
 
+
 def makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_yes=False):
     """
     Make some checks
@@ -201,8 +207,8 @@ def makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_y
     # Check name in the Element Naming Database
     epcr.checkNameInEuclidNamingDatabase(proj_name, nc.TYPES[0], answer_yes)
 
-
 ################################################################################
+
 
 def buildProjectDir(no_version_directory, destination_path, proj_name, proj_version):
     """
@@ -215,6 +221,7 @@ def buildProjectDir(no_version_directory, destination_path, proj_name, proj_vers
     return project_dir
 
 ################################################################################
+
 
 def lookForDirectories(project_dir):
     """
@@ -229,6 +236,7 @@ def lookForDirectories(project_dir):
     return match_list
 
 ################################################################################
+
 
 def checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes=False):
     """

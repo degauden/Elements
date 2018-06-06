@@ -78,7 +78,7 @@ public:
 
 };
 
-} // namespace ElementsExamples
-} // namespace Elements
+}  // namespace Examples
+}  // namespace Elements
 
 MAIN_FOR(Elements::Examples::SimpleProgramExample)

@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef ELEMENTSPROGRAMMANAGER_H_
-#define ELEMENTSPROGRAMMANAGER_H_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
 
 #include <map>                           // for map
 #include <string>                        // for string
@@ -58,17 +58,18 @@ public:
    * @brief Constructor
    */
   ProgramManager(std::unique_ptr<Program> program_ptr,
-                   std::string parent_project_version="",
-                   std::string parent_project_name="",
-                   std::string parent_module_version="",
-                   std::string parent_module_name="",
-                   std::vector<std::string> search_dirs={}): m_program_ptr(std::move(program_ptr)),
-                   m_parent_project_version(std::move(parent_project_version)),
-                   m_parent_project_name(std::move(parent_project_name)),
-                   m_parent_module_version(std::move(parent_module_version)),
-                   m_parent_module_name(std::move(parent_module_name)),
-                   m_search_dirs(std::move(search_dirs)),
-                   m_env{}{}
+                 std::string parent_project_version = "",
+                 std::string parent_project_name = "",
+                 std::string parent_module_version = "",
+                 std::string parent_module_name = "",
+                 std::vector<std::string> search_dirs = {}):
+                 m_program_ptr(std::move(program_ptr)),
+                 m_parent_project_version(std::move(parent_project_version)),
+                 m_parent_project_name(std::move(parent_project_name)),
+                 m_parent_module_version(std::move(parent_module_version)),
+                 m_parent_module_name(std::move(parent_module_name)),
+                 m_search_dirs(std::move(search_dirs)),
+                 m_env{} {}
 
   /**
    * @brief Destructor
@@ -127,7 +128,7 @@ private:
    */
   static const boost::filesystem::path getDefaultConfigFile(
       const boost::filesystem::path & program_name,
-      const std::string& module_name="");
+      const std::string& module_name = "");
 
   /**
    * @brief
@@ -240,7 +241,6 @@ private:
    */
   std::string m_parent_project_name;
 
-
   /**
    * Version of the parent Elements module
    */
@@ -263,11 +263,10 @@ private:
    * Local environment of the executable
    */
   Environment m_env;
-
 };
 
-}
+}  // namespace Elements
 
-#endif /* ELEMENTSPROGRAMMANAGER_H_ */
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
 
 /**@}*/
