@@ -129,7 +129,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
 
         # Update elements_add_executable macro
-        source = 'src' + os.sep + 'program' + os.sep + program_name + '.cpp'
+        source = os.path.join('src', 'program', program_name + '.cpp')
         existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name == program_name]
         existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
         link_libs = ['ElementsKernel']
@@ -245,7 +245,7 @@ def mainMethod(args):
         # Create CPP program
         createCppProgram(current_dir, module_name, program_name, module_list, library_list)
 
-        location = current_dir + os.sep + 'src' + os.sep + 'program'
+        location = os.path.join(current_dir, 'src', 'program')
         logger.info('< %s > program successfully created in < %s >.', program_name, location)
 
         # Remove backup file
