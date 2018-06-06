@@ -45,15 +45,11 @@ UNITTEST_TEMPLATE_FILE_IN = 'UnitTestFile_template.cpp.in'
 
 ################################################################################
 
-def getClassName(str_subdir_class):
+def getClassName(subdir_class):
     """
     Get the class name and sub directory if any
     """
-    name_list = str_subdir_class.split(os.path.sep)
-    class_name = name_list[-1]
-    subdir = str_subdir_class.replace(class_name, '')
-    # Remove end slash
-    subdir = subdir[:-1]
+    (subdir, class_name) = os.path.split(subdir_class)
     logger.info('Class name: %s', class_name)
     if subdir:
         logger.info('Sub directory: %s', subdir)
@@ -214,10 +210,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
 
         # Update elements_add_library macro
         if module_name:
-            if subdir:
-                source = 'src' + os.sep + 'lib' + os.sep + subdir + os.sep +'*.cpp'
-            else:
-                source = 'src' + os.sep + 'lib' + os.sep +'*.cpp'
+            source = os.path.join('src', 'lib', subdir, '*.cpp')
             existing = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
             link_libs = []
             if elements_dep_list:
@@ -240,12 +233,11 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                 cmake_object.elements_add_library_list.append(lib_object)
 
             # Add unit test
+            source_name = os.path.join('tests', 'src', subdir, class_name + '_test.cpp')
             if subdir:
-                source_name = 'tests' + os.sep + 'src' + os.sep + subdir + os.sep + class_name + '_test.cpp'
                 exec_test_name = module_name + "_" + subdir + "_" + class_name + '_test'
                 test_name = subdir + "_" + class_name
             else: 
-                source_name = 'tests' + os.sep + 'src' + os.sep + class_name + '_test.cpp'
                 exec_test_name = module_name + "_" + class_name + '_test'
                 test_name = class_name
 
@@ -269,10 +261,7 @@ def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
     file_name = class_name + '.h'
     file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
-        if subdir:
-            full_name = os.path.join(subdir, class_name)
-        else:
-            full_name =class_name
+        full_name = os.path.join(subdir, class_name)
         raise epcr.ErrorOccured("The <%s> class already exists! "
                                 "Header file found here : < %s >" % (full_name, file_name_path))
 
@@ -370,7 +359,7 @@ def mainMethod(args):
         # Create CPP class
         createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list, library_dep_list)
 
-        logger.info('<%s> class successfully created in <%s>.', class_name, module_dir + os.sep + subdir)
+        logger.info('<%s> class successfully created in <%s>.', class_name, os.path.join(module_dir, subdir))
 
         # Remove backup file
         epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
