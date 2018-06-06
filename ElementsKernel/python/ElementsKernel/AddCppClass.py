@@ -165,7 +165,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     data = f.read()
     author_str = epcr.getAuthor()
     date_str = time.strftime("%x")
-    file_name_str = os.path.join('tests', 'src', class_name + '_test.cpp')
+    file_name_str = os.path.join('tests', 'src', subdir, class_name + '_test.cpp')
     new_data = data % {"FILE": file_name_str,
                        "DATE": date_str,
                        "AUTHOR": author_str,
@@ -214,7 +214,10 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
 
         # Update elements_add_library macro
         if module_name:
-            source = 'src' + os.sep + 'lib' + os.sep + subdir + '*.cpp'
+            if subdir:
+                source = 'src' + os.sep + 'lib' + os.sep + subdir + os.sep +'*.cpp'
+            else:
+                source = 'src' + os.sep + 'lib' + os.sep +'*.cpp'
             existing = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
             link_libs = []
             if elements_dep_list:
@@ -237,10 +240,18 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                 cmake_object.elements_add_library_list.append(lib_object)
 
             # Add unit test
-            source_name = 'tests' + os.sep + 'src' + os.sep + subdir + class_name + '_test.cpp'
-            unittest_object = pclm.ElementsAddUnitTest(class_name,
+            if subdir:
+                source_name = 'tests' + os.sep + 'src' + os.sep + subdir + os.sep + class_name + '_test.cpp'
+                exec_test_name = module_name + "_" + subdir + "_" + class_name + '_test'
+                test_name = subdir + "_" + class_name
+            else: 
+                source_name = 'tests' + os.sep + 'src' + os.sep + class_name + '_test.cpp'
+                exec_test_name = module_name + "_" + class_name + '_test'
+                test_name = class_name
+
+            unittest_object = pclm.ElementsAddUnitTest(test_name,
                                                       [source_name], [module_name],
-                                                      [], 'Boost', module_name + "_" + class_name + '_test')
+                                                      [], 'Boost', exec_test_name)
             cmake_object.elements_add_unit_test_list.append(unittest_object)
 
     # Write new data
@@ -258,8 +269,12 @@ def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
     file_name = class_name + '.h'
     file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
+        if subdir:
+            full_name = os.path.join(subdir, class_name)
+        else:
+            full_name =class_name
         raise epcr.ErrorOccured("The <%s> class already exists! "
-                                "Header file found here : < %s >" % (class_name, file_name_path))
+                                "Header file found here : < %s >" % (full_name, file_name_path))
 
 ################################################################################
 
@@ -308,7 +323,9 @@ def defineSpecificProgramOptions():
 This script creates an <Elements> class at your current directory (default).
 All necessary structure (directory structure, makefiles etc...)
 will be automatically created for you if any but you have to be inside an
-<Elements> module.
+<Elements> module. You can specify a sub-directory where you want your class files (.h, .cpp).
+e.g AddCppClass class_name or
+    AddCppClass subdir/class_name
     """
     from argparse import RawTextHelpFormatter
 
@@ -317,7 +334,7 @@ will be automatically created for you if any but you have to be inside an
 
     parser.add_argument('class_name', metavar='class-name',
                         type=str,
-                        help='Class name')
+                        help='Class name without extention. e.g my_class_name or subdir/my_class_name')
     parser.add_argument('-ed', '--elements-dependency', metavar='module_name',
                         action='append', type=str,
                         help='Dependency module name e.g. "-ed ElementsKernel"')
