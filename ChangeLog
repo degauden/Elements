@@ -124,7 +124,7 @@
   - The toolchain is also not used if the main build is not using it.
 - Re-add the Napoleon Sphinx extension (Nikos Apostolakos)
   - the newest version is embedded in sphinx itself (since version 1.3)
-  - before it was an external contribution.	
+  - before it was an external contribution.
 - Add the usage of the cppreference doxygen tagfile 
 - Make the -Wfloat-equal warning optional (it is OFF by default)
 - Use SOFTWARE_BASE_VAR for the environment variable for base install
