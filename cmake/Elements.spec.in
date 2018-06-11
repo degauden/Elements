@@ -93,8 +93,6 @@ if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
 else
   export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
 fi
-%else
-%__mkdir -p $RPM_BUILD_DIR/$BINARY_TAG
 %endif
 @CPACK_CMAKE_PREFIX_PATH_LINE@
 %if %{without squeeze}
@@ -106,8 +104,8 @@ else
     toolchain_file=/usr/share/EuclidEnv/cmake/${toolchain_name}
   fi
 fi
-%__mkdir -p $RPM_BUILD_DIR/$BINARY_TAG
 %endif
+%__mkdir -p $RPM_BUILD_DIR/$BINARY_TAG
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %if %{without squeeze}
 if [[ -z "${toolchain_file}" ]]; then
