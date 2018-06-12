@@ -290,8 +290,12 @@ macro(elements_project project version)
   find_program(elementsrun_cmd elementsrun.py HINTS ${binary_paths})
   set(elementsrun_cmd ${PYTHON_EXECUTABLE} ${elementsrun_cmd})
 
-  find_program(rpmbuild_wrap_cmd rpmbuild_wrap.py HINTS ${binary_paths})
-  set(rpmbuild_wrap_cmd ${PYTHON_EXECUTABLE} ${rpmbuild_wrap_cmd})
+  find_package(RPMBuild)
+  if(RPMBUILD_FOUND)
+    find_program(rpmbuild_wrap_cmd rpmbuild_wrap.py HINTS ${binary_paths})
+    set(rpmbuild_wrap_cmd ${PYTHON_EXECUTABLE} ${rpmbuild_wrap_cmd})
+	mark_as_advanced(rpmbuild_wrap_cmd)
+  endif()
 
   find_program(pythonprogramscript_cmd createPythonProgramScript.py HINTS ${binary_paths})
   set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
@@ -305,7 +309,7 @@ macro(elements_project project version)
                    thismodheader_cmd
                    Boost_testmain_cmd CppUnit_testmain_cmd
                    zippythondir_cmd elementsrun_cmd
-                   rpmbuild_wrap_cmd pythonprogramscript_cmd ctest2junit_cmd)
+                   pythonprogramscript_cmd ctest2junit_cmd)
 
 #--- Global actions for the project
   #message(STATUS "CMAKE_MODULE_PATH -> ${CMAKE_MODULE_PATH}")
@@ -1063,8 +1067,6 @@ ${_do}")
   find_package(Tar QUIET)
   if(TAR_FOUND)
 
-    find_package(RPMBuild QUIET)
-
     if (RPMBUILD_FOUND)
       option(USE_DEFAULT_RPMBUILD_DIR "Use default RPM build directory (the value of the %_topdir variable)" OFF)
       if(USE_DEFAULT_RPMBUILD_DIR)
@@ -1145,11 +1147,27 @@ ${MAIN_PROJECT_CHANGELOG}
         message(STATUS "Using ${main_project_changelog_file} for the ChangeLog of the project")
       endif()
 
-      find_file_to_configure(Elements.spec.in
-                             FILETYPE "RPM SPEC"
-                             OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
-                             OUTPUTNAME "${project}.spec"
-                             PATHS ${CMAKE_MODULE_PATH})
+      set(RPM_DEBUG_PACKAGE_NIL "%define debug_package %{nil}")
+      if(SQUEEZED_INSTALL)
+        if(CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo OR CMAKE_BUILD_TYPE STREQUAL Debug)
+          set(RPM_DEBUG_PACKAGE_NIL)
+        endif()
+      endif()
+
+
+      if(NOT SQUEEZED_INSTALL)
+        find_file_to_configure(Elements.spec.in
+                               FILETYPE "RPM SPEC"
+                               OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
+                               OUTPUTNAME "${project}.spec"
+                               PATHS ${CMAKE_MODULE_PATH})
+      else()
+        find_file_to_configure(Elements-squeeze.spec.in
+                               FILETYPE "RPM SPEC"
+                               OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
+                               OUTPUTNAME "${project}.spec"
+                               PATHS ${CMAKE_MODULE_PATH})
+      endif()
     
 
      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
@@ -1163,11 +1181,7 @@ ${MAIN_PROJECT_CHANGELOG}
       if(RPM_NO_CHECK) 
          set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --nocheck")
       endif()
-      
-      if(NOT SQUEEZED_INSTALL)
-         set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --without squeeze")
-      endif()
-      
+            
       if(INSTALL_DOC)
          set(RPMBUILD_ARGS "${RPMBUILD_ARGS} --with doc")
       endif()
@@ -2180,7 +2194,8 @@ endmacro()
 # with the extension '.dbg', that is installed alongside the binary.
 #-------------------------------------------------------------------------------
 macro(_elements_detach_debinfo target)
-  if(CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo AND ELEMENTS_DETACHED_DEBINFO)
+  if(NOT RPMBUILD_HAS_AUTODEBUG)
+  if((CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo OR CMAKE_BUILD_TYPE STREQUAL Debug ) AND ELEMENTS_DETACHED_DEBINFO)
     # get the type of the target (MODULE_LIBRARY, SHARED_LIBRARY, EXECUTABLE)
     get_property(_type TARGET ${target} PROPERTY TYPE)
     #message(STATUS "_elements_detach_debinfo(${target}): target type -> ${_type}")
@@ -2233,6 +2248,7 @@ macro(_elements_detach_debinfo target)
     # ... and removed on 'make clean'.
     set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${_builddir}/${_tn}.dbg)
     set_property(GLOBAL APPEND PROPERTY DEBINFO_OBJECTS ${spec_prefix}/${_tn}.dbg)
+  endif()
   endif()
 endmacro()
 
