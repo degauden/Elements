@@ -2194,7 +2194,7 @@ endmacro()
 # with the extension '.dbg', that is installed alongside the binary.
 #-------------------------------------------------------------------------------
 macro(_elements_detach_debinfo target)
-  if(NOT RPMBUILD_HAS_AUTODEBUG)
+  if(NOT SQUEEZED_INSTALL)
   if((CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo OR CMAKE_BUILD_TYPE STREQUAL Debug ) AND ELEMENTS_DETACHED_DEBINFO)
     # get the type of the target (MODULE_LIBRARY, SHARED_LIBRARY, EXECUTABLE)
     get_property(_type TARGET ${target} PROPERTY TYPE)
