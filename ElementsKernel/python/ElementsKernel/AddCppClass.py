@@ -242,7 +242,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
             if subdir:
                 exec_test_name = module_name + "_" + subdir + "_" + class_name + '_test'
                 test_name = subdir + "_" + class_name
-            else: 
+            else:
                 exec_test_name = module_name + "_" + class_name + '_test'
                 test_name = class_name
 

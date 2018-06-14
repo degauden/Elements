@@ -83,7 +83,7 @@ class EnvExpander(VariableProcessor):
 
     def isTarget(self, variable):
         return (super(EnvExpander, self).isTarget(variable)
-                and variable.expandVars)
+                and variable.expand_vars)
 
     def _repl(self, value):
         m = self._exp.search(value)
@@ -119,7 +119,8 @@ class PathNormalizer(VariableProcessor):
 
     def process(self, variable, value):
         if isinstance(value, str):
-            if '://' not in value:  # this might be a URL
+            # this might be a URL
+            if '://' not in value:
                 value = normpath(value)
         else:
             value = [normpath(v) for v in value if v]
@@ -162,7 +163,7 @@ class UsePythonZip(ListProcessor):
 
     def isTarget(self, variable):
         return (super(UsePythonZip, self).isTarget(variable)
-                and variable.varName == 'PYTHONPATH')
+                and variable.var_name == 'PYTHONPATH')
 
     def process(self, variable, value):
         val = []
@@ -198,9 +199,9 @@ class VariableBase(object):
     '''
 
     def __init__(self, name, local=False):
-        self.varName = name
+        self.var_name = name
         self.local = local
-        self.expandVars = True
+        self.expand_vars = True
         self.log = logging.getLogger('Variable')
 
     def process(self, value, env):
@@ -230,7 +231,7 @@ class List(VariableBase):
 
     def name(self):
         '''Returns the name of the List.'''
-        return self.varName
+        return self.var_name
 
     def set(self, value, separator=':', environment=None):
         '''Sets the value of the List. Any previous value is overwritten.'''
@@ -238,7 +239,7 @@ class List(VariableBase):
             value = value.split(separator)
         self.val = self.process(value, environment)
 
-    def unset(self, value, separator=':', environment=None):  # pylint: disable=W0613
+    def unset(self, value, separator=':', environment=None):
         '''Sets the value of the List to empty. Any previous value is overwritten.'''
         self.val = []
 
@@ -265,7 +266,7 @@ class List(VariableBase):
             val = value[i]
             if val not in value:
                 self.log.info(
-                    'Value "%s" not found in List: "%s". Removal canceled.', val, self.varName)
+                    'Value "%s" not found in List: "%s". Removal canceled.', val, self.var_name)
             while val in self.val:
                 self.val.remove(val)
 
@@ -304,7 +305,7 @@ class List(VariableBase):
     def __setitem__(self, key, value):
         if value in self.val:
             self.log.info(
-                'Var: "%s" value: "%s". Addition canceled because of duplicate entry.', self.varName, value)
+                'Var: "%s" value: "%s". Addition canceled because of duplicate entry.', self.var_name, value)
         else:
             self.val.insert(key, value)
 
@@ -335,34 +336,34 @@ class Scalar(VariableBase):
 
     def name(self):
         '''Returns the name of the scalar.'''
-        return self.varName
+        return self.var_name
 
-    def set(self, value, separator=':', environment=None):  # pylint: disable=W0613
+    def set(self, value, separator=':', environment=None):
         '''Sets the value of the scalar. Any previous value is overwritten.'''
         self.val = self.process(value, environment)
 
-    def unset(self, value, separator=':', environment=None):  # pylint: disable=W0613
+    def unset(self, value, separator=':', environment=None):
         '''Sets the value of the variable to empty. Any previous value is overwritten.'''
         self.val = ''
 
-    def value(self, as_string=False, separator=':'):  # pylint: disable=W0613
+    def value(self, as_string=False, separator=':'):
         '''Returns values of the scalar.'''
         return self.val
 
     def remove_regexp(self, value, separator=':'):
         self.remove(value, separator, True)
 
-    def remove(self, value, separator=':', regexp=True):  # pylint: disable=W0613
+    def remove(self, value, separator=':', regexp=True):
         '''Removes value(s) from the scalar. If value is not found, removal is canceled.'''
         value = self.search(value)
         for val in value:
             self.val = self.val.replace(val, '')
 
-    def append(self, value, separator=':', environment=None):  # pylint: disable=W0613
+    def append(self, value, separator=':', environment=None):
         '''Adds value(s) at the end of the scalar.'''
         self.val += self.process(value, environment)
 
-    def prepend(self, value, separator=':', environment=None):  # pylint: disable=W0613
+    def prepend(self, value, separator=':', environment=None):
         '''Adds value(s) at the beginning of the scalar.'''
         self.val = self.process(value, environment) + self.val
 

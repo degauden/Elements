@@ -39,7 +39,8 @@ def main():
         os.makedirs(outdir)
 
     # Prepare data to be written
-    outputdata = """# Automatically generated file: do not modify!
+    outputdata = """''' %(project)s Python Version Module '''
+# Automatically generated file: do not modify!
 from ElementsKernel.Version import getVersionString
 %(proj)s_ORIGINAL_VERSION = "%(version)s"
 %(proj)s_MAJOR_VERSION = %(maj)d
@@ -48,7 +49,9 @@ from ElementsKernel.Version import getVersionString
 %(proj)s_VERSION = (%(maj)d << 32) + (%(min)d << 16 ) + (%(pat)d)
 %(proj)s_VERSION_STRING = getVersionString(%(proj)s_MAJOR_VERSION, %(proj)s_MINOR_VERSION, %(proj)s_PATCH_VERSION)
 
-""" % { 'proj': project.upper(), 'version': version, 'min': minver, 'maj': majver, 'pat': patver }
+""" % { 'proj': project.upper(), 'version': version,
+        'min': minver, 'maj': majver, 'pat': patver,
+        'project': project }
 
     # Get the current content of the destination file (if any)
     try:

@@ -14,6 +14,7 @@ if cython_exe:
     from Rect import Rectangle
 
     class RectangleTest(unittest.TestCase):
+        """ Rectangle class to test Cython """
 
         def setUp(self):
             self.rectangle = Rectangle(1, 2, 3, 4)
@@ -34,5 +35,4 @@ if cython_exe:
             self.test_getArea()
 
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

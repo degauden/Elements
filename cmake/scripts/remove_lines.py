@@ -7,6 +7,7 @@ import re
 
 
 def main():
+    """ main function for the remove lines script """
     if len(sys.argv) != 3:
         print("Usage: %s <filename> <>" + os.linesep + \
               "\tRemoves from <filename> the lines matching <reg.exp.>",

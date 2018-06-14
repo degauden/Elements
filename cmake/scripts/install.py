@@ -237,7 +237,7 @@ def update(src, dest, old_dest=None, syml=False, logdir=realpath(".")):
     # See:
     #   http://bugs.python.org/issue1671965
     #   http://bugs.python.org/issue1565150
-    if (not exists(realdest)) or (int(getmtime(realsrc)) > int(getmtime(realdest))):
+    if not exists(realdest) or int(getmtime(realsrc)) > int(getmtime(realdest)):
         if not isdir(dest_path):
             print("Create dir '%s'", dest_path)
             makedirs(dest_path)
