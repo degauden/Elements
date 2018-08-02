@@ -58,6 +58,22 @@ namespace Elements {
 
 using System::getExecutablePath;
 
+ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
+               const std::string& parent_project_version,
+               const std::string& parent_project_name,
+               const std::string& parent_module_version,
+               const std::string& parent_module_name,
+               const std::vector<std::string>& search_dirs):
+               m_program_ptr(std::move(program_ptr)),
+               m_parent_project_version(std::move(parent_project_version)),
+               m_parent_project_name(std::move(parent_project_name)),
+               m_parent_module_version(std::move(parent_module_version)),
+               m_parent_module_name(std::move(parent_module_name)),
+               m_search_dirs(std::move(search_dirs)),
+               m_env{} {
+
+}
+
 const path& ProgramManager::getProgramPath() const {
   return m_program_path;
 }
