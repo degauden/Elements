@@ -22,7 +22,8 @@ def main():
         print("Creating %s for %s %s" % (outputfile, project, version))
 
     if version.startswith('HEAD'):
-        majver, minver, patver = 999, 999, 0  # special handling
+        # special handling
+        majver, minver, patver = 999, 999, 0
     else:
         for style in [lhcb_ver_style, atlas_ver_style, plain_ver_style]:
             m = re.match(style, version)
