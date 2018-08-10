@@ -29,6 +29,7 @@
 /.settings
 /.loadpath
 /.recommenders
+/.launchers
 
 # Eclipse Core
 /.project
