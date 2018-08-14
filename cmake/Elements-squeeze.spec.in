@@ -10,7 +10,6 @@ Source:         @CPACK_RPM_PACKAGE_NAME@-@CPACK_RPM_PACKAGE_VERSION@.tar.gz
 Vendor:         @CPACK_PACKAGE_VENDOR@
 
 %bcond_with doc
-%bcond_with debinfo
 
 %global __brp_mangle_shebangs_exclude /usr/bin/env python@PYTHON_EXPLICIT_VERSION@
 %global __python @PYTHON_EXECUTABLE@ 
@@ -27,10 +26,6 @@ Requires(post):    /sbin/ldconfig
 Requires(postun):  /sbin/ldconfig
 
 %define bin_tag @CPACK_SYSTEM_NAME@
-%define _proj_base_dir @ELEMENTS_BASE_DIR@
-%define _proj_name_dir %{_proj_base_dir}/%{name}
-%define _proj_vers_dir %{_proj_name_dir}/%{version}
-%define _proj_ia_dir %{_proj_vers_dir}/InstallArea
 %define _prefix @CPACK_PACKAGING_INSTALL_PREFIX@
 %define build_dir_name @BUILD_SUBDIR@
 
@@ -60,14 +55,6 @@ Requires: %{name} = %{version}-%{release}
 %description devel
 The development part of the %{name} package.
 
-%package debuginfo
-Summary: Debug information for package %{name}
-Requires: %{name} = %{version}-%{release}
-@RPM_DEBUGINFO_DEP_LINES@
-
-%description debuginfo
-Debug information for package %{name}
-
 %package doc
 Summary: Documentation for package %{name}
 Requires: %{name}-devel = %{version}-%{release}
@@ -82,46 +69,15 @@ Documentation for package %{name}
 %build
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
-export HAS_ELEMENTS_TOOLCHAIN=@HAS_ELEMENTS_TOOLCHAIN@
-if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
-  if [[ ! -z "@ELEMENTS_BASE_DIR@" ]]; then
-    export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
-  fi
-else
-  export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
-fi
 @CPACK_CMAKE_PREFIX_PATH_LINE@
-toolchain_name=ElementsToolChain.cmake
-if [[ -f "${PWD}/cmake/${toolchain_name}" ]]; then
-  toolchain_file=${PWD}/cmake/${toolchain_name}
-else
-  if [[ -f "/usr/share/EuclidEnv/cmake/${toolchain_name}" ]]; then
-    toolchain_file=/usr/share/EuclidEnv/cmake/${toolchain_name}
-  fi
-fi
 %__mkdir -p $RPM_BUILD_DIR/$BINARY_TAG
 cd $RPM_BUILD_DIR/$BINARY_TAG
-if [[ -z "${toolchain_file}" ]]; then
-  %cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
-else
-  if [[ "${HAS_ELEMENTS_TOOLCHAIN}" = "ON" ]]; then
-    %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} $RPM_BUILD_DIR/%{name}-%{version}
-  else
-    %cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
-  fi
-fi
+%cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
 %__make VERBOSE=1 %{?_smp_mflags} all
 
 %install
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
-if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
-  if [[ ! -z "@ELEMENTS_BASE_DIR@" ]]; then
-    export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
-  fi
-else
-  export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
-fi
 @CPACK_CMAKE_PREFIX_PATH_LINE@
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make install VERBOSE=1 DESTDIR=$RPM_BUILD_ROOT
@@ -131,13 +87,6 @@ export CTEST_OUTPUT_ON_FAILURE=1
 export ELEMENTS_NAMING_DB_URL=https://pieclddj00.isdc.unige.ch/elementsnaming
 export BINARY_TAG=%{bin_tag}
 export VERBOSE=1
-if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
-  if [[ ! -z "@ELEMENTS_BASE_DIR@" ]]; then
-    export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
-  fi
-else
-  export CMAKE_PROJECT_PATH=$@ELEMENTS_BASE_VAR@
-fi
 @CPACK_CMAKE_PREFIX_PATH_LINE@
 cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make test
@@ -147,25 +96,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun
 /sbin/ldconfig
-for d in  %{_proj_ia_dir}  %{_proj_vers_dir} %{_proj_name_dir}; do
-  if [[ -d "${d}" ]]; then
-    if [[ ! "$(ls -A ${d})" ]]; then
-      echo "Removing the ${d} empty directory ..."
-      rmdir ${d}
-    fi
-  fi
-done
 
 %files
 @CPACK_RPM_REGULAR_FILES@
 
 %files devel
 @CPACK_RPM_DEVEL_FILES@
-
-%if %{with debinfo}
-%files debuginfo
-@CPACK_RPM_DEBINFO_FILES@
-%endif
 
 %if %{with doc}
 %files doc

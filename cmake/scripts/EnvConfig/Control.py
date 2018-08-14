@@ -97,6 +97,7 @@ class Environment(object):
         sp = EnvConfig.path + self.searchPath + hints
 
         def candidates():
+            """ find file candidates """
             for d in sp:
                 f = normpath(join(d, filename))
                 self.log.debug('trying %s', f)
@@ -227,7 +228,7 @@ class Environment(object):
                 if not v.val:
                     v.set(value, self.separator, environment=self.variables)
 
-    def unset(self, name, value=None):  # pylint: disable=W0613
+    def unset(self, name, value=None):
         '''Unsets a single variable to an empty value - overrides any previous value!'''
         if self.asWriter:
             self._writeVarToXML(name, 'unset', '')
@@ -272,7 +273,7 @@ class Environment(object):
                 self.log.error('Node {0}: No action taken with var "{1}". Probably wrong action argument: "{2}".'.format(
                     i, args[0], action))
             else:
-                self.actions[action](*args)  # pylint: disable=W0142
+                self.actions[action](*args)
         # restore the old value of ${.}
         dot.set(self._fileDirStack.pop())
         # ensure that a change of ${.} in the file is reverted when exiting it

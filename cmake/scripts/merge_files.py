@@ -42,7 +42,7 @@ def mergeFiles(frag_file_names, merged_file_name, comment_char,
             if line.startswith(start_mark) and line[name_offset:].strip() in basenames:
                 skip_block = end_mark + line[name_offset:].strip()
                 # remove all the empty lines occurring before the start mark
-                while (len(new_lines) > 0) and (new_lines[-1].strip() == ''):
+                while len(new_lines) > 0 and (new_lines[-1].strip() == ''):
                     new_lines.pop()
             if not skip_block:
                 new_lines.append(line)

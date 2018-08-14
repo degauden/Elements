@@ -79,4 +79,27 @@ if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
+# Create a class into a subdir and make sure the elements_add_unit_test macro
+# is correct and files are at the right place
+# Create a class with subdir
+
+subdir="subdir"
+AddCppClass $subdir/$class_name
+
+result=$( grep "elements_add_unit_test" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
+          grep $class_name | grep $subdir)
+if [ $? -ne 0 ]  ;then
+   echo "Error: in elements_add_unit_test macro, no <$subdir> not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Make sure the class files are created
+if [ ! -e "${MODULE_NAME}/${subdir}/${class_name}.h" ]; then
+   echo "Error: <${MODULE_NAME}/${class_name}.h> file not found!" 1>&2
+   clean_and_exit 1
+fi
+if [ ! -e "src/lib/${subdir}/${class_name}.cpp" ]; then
+   clean_and_exit 1
+fi
+
 clean_and_exit 0
