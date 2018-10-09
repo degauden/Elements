@@ -24,6 +24,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 from ElementsKernel.Temporary import TempDir, TempFile
 from ElementsKernel.Temporary import TempEnv
 import os
+from shutil import rmtree
 
 import unittest
 
@@ -101,6 +102,19 @@ class TestCase(unittest.TestCase):
             self.assert_(os.environ.get("TESTENVEK2") == "bla")
 
         self.assert_(os.environ.get("TESTENVEK2", None) == None)
+        
+    def testKeepTmpDir(self):
+        os.environ["KEEPTEMPDIR"] = "1"
+        
+        with TempDir() as td:
+            td_path = td.path()
+            self.assert_(os.path.exists(td_path))
+            
+        self.assert_(os.path.exists(td_path))
+        rmtree(td_path)
+        self.assert_(not os.path.exists(td_path))
+        del os.environ["KEEPTEMPDIR"]
 
+        
 if __name__ == '__main__':
     unittest.main()

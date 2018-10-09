@@ -19,9 +19,9 @@
  *
  */
 
-#include "ElementsKernel/Temporary.h"  // for Elements::TempDir
+#include "ElementsKernel/Temporary.h"    // for Elements::TempDir
 
-#include <string>                          // for string
+#include <string>                        // for string
 #include <vector>
 #include <cstdlib>
 
@@ -30,7 +30,8 @@
 #include <boost/filesystem/fstream.hpp>
 
 #include "ElementsKernel/Exception.h"
-#include "ElementsKernel/System.h"     // for getEnv, setEnv, unSetEnv
+#include "ElementsKernel/System.h"       // for getEnv, setEnv, unSetEnv
+#include "ElementsKernel/Environment.h"  // for Environment
 
 using std::string;
 using Elements::TempDir;
@@ -161,6 +162,27 @@ BOOST_FIXTURE_TEST_CASE(TempEnv2_test, Temporary_Fixture) {
 
   BOOST_CHECK(getEnv("TMPDIR") == "");
   BOOST_CHECK(exists(test_tmpdir));
+}
+
+BOOST_AUTO_TEST_CASE(KeepTmpDir_test) {
+
+  using Elements::Environment;
+  using boost::filesystem::remove_all;
+
+  Environment current;
+  current["KEEPTEMPDIR"] = "1";
+  path that_path;
+
+  {
+    TempDir that;
+    that_path = that.path();
+    BOOST_CHECK(exists(that_path));
+  }
+  BOOST_CHECK(exists(that_path));
+
+  remove_all(that_path);
+  BOOST_CHECK(not exists(that_path));
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
