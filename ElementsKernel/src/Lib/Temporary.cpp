@@ -31,13 +31,11 @@
 #include "ElementsKernel/Environment.h"
 
 using std::string;
-using boost::filesystem::path;
-using boost::filesystem::remove_all;
 
 namespace Elements {
 
-TempPath::TempPath(const string& motif) :
-    m_motif(motif) {
+TempPath::TempPath(const string& motif, const std::string& keep_var) :
+    m_motif(motif), m_keep_var(keep_var) {
 
   using boost::filesystem::temp_directory_path;
   using boost::filesystem::unique_path;
@@ -50,9 +48,23 @@ TempPath::TempPath(const string& motif) :
 }
 
 TempPath::~TempPath() {
+
+  Logging logger = Logging::getLogger();
+
+  Environment current;
+
+  if (not current.hasKey(m_keep_var)) {
+    logger.debug() << "Automatic destruction of the " << path()
+                   << " temporary path";
+    boost::filesystem::remove_all(m_path);
+  } else {
+    logger.info() << m_keep_var << " set: I do not remove the "
+                  << m_path.string() << " temporary path";
+  }
+
 }
 
-path TempPath::path() const {
+boost::filesystem::path TempPath::path() const {
   return m_path;
 }
 
@@ -61,7 +73,7 @@ string TempPath::motif() const {
 }
 
 TempDir::TempDir(const string& motif, const string& keep_var) :
-    TempPath(motif), m_keep_var(keep_var) {
+    TempPath(motif, keep_var) {
 
   Logging logger = Logging::getLogger();
   logger.debug() << "Creation of the " << path() << " temporary directory";
@@ -71,24 +83,10 @@ TempDir::TempDir(const string& motif, const string& keep_var) :
 }
 
 TempDir::~TempDir() {
-
-  Logging logger = Logging::getLogger();
-
-  Environment current;
-
-  if (not current.hasKey(m_keep_var)) {
-    logger.debug() << "Automatic destruction of the " << path()
-                   << " temporary directory";
-    remove_all(m_path);
-  } else {
-    logger.info() << m_keep_var << " set: I do not remove the temporary directory "
-                  << m_path.string();
-  }
-
 }
 
-TempFile::TempFile(const string& motif) :
-    TempPath(motif) {
+TempFile::TempFile(const string& motif, const string& keep_var) :
+    TempPath(motif, keep_var) {
 
   Logging logger = Logging::getLogger();
   logger.debug() << "Creation of the " << path() << " temporary file";
@@ -99,12 +97,6 @@ TempFile::TempFile(const string& motif) :
 }
 
 TempFile::~TempFile() {
-
-  Logging logger = Logging::getLogger();
-  logger.debug() << "Automatic destruction of the " << path() << " file";
-
-  remove_all(m_path);
-
 }
 
 }  // namespace Elements
