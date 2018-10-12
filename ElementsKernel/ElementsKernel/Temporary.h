@@ -38,12 +38,11 @@ const std::string DEFAULT_TMP_KEEP_VAR {"KEEPTEMPDIR"};
 
 class ELEMENTS_API TempPath {
 public:
-  boost::filesystem::path path() const;
-  std::string motif() const;
-protected:
   explicit TempPath(const std::string& motif,
                     const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempPath();
+  boost::filesystem::path path() const;
+  std::string motif() const;
 private:
   const std::string m_motif;
   boost::filesystem::path m_path;
