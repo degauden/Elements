@@ -35,6 +35,7 @@
 namespace Elements {
 
 const std::string DEFAULT_TMP_KEEP_VAR {"KEEPTEMPDIR"};
+const std::string DEFAULT_TMP_MOTIF {"%%%%-%%%%-%%%%-%%%%"};
 
 class ELEMENTS_API TempPath {
 public:
@@ -52,7 +53,7 @@ private:
 
 class ELEMENTS_API TempDir : public TempPath {
 public:
-  explicit TempDir(const std::string& motif = "",
+  explicit TempDir(const std::string& motif = "%%%%-%%%%-%%%%-%%%%",
                    const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempDir();
 };
@@ -60,7 +61,7 @@ public:
 
 class ELEMENTS_API TempFile : public TempPath {
 public:
-  explicit TempFile(const std::string&  motif = "",
+  explicit TempFile(const std::string&  motif = "%%%%-%%%%-%%%%-%%%%",
                     const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempFile();
 };

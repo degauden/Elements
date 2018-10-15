@@ -34,7 +34,7 @@ using std::string;
 
 namespace Elements {
 
-TempPath::TempPath(const string& motif, const std::string& keep_var) :
+TempPath::TempPath(const string& motif, const string& keep_var) :
     m_motif(motif), m_keep_var(keep_var) {
 
   using boost::filesystem::temp_directory_path;

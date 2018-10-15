@@ -73,7 +73,7 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
   {
     // block creation for local variables
     TempDir one;
-    BOOST_CHECK_EQUAL(one.motif(), "");
+    BOOST_CHECK_EQUAL(one.motif(), Elements::DEFAULT_TMP_MOTIF);
     test_path = one.path();
     BOOST_CHECK(exists(test_path));
 
