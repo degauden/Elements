@@ -45,15 +45,15 @@ public:
 
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
-    Logging logger = Logging::getLogger("XercesExample");
+    auto log = Logging::getLogger("XercesExample");
 
     Xerces::XMLPlatformUtils::Initialize();
 
-    logger.info() << "XercesC version:" << gXercesFullVersionStr;
+    log.info() << "XercesC version:" << gXercesFullVersionStr;
 
     Xerces::XMLPlatformUtils::Terminate();
 
-    logger.info() << "done with test program! ";
+    log.info() << "done with test program! ";
 
     return ExitCode::OK;
 

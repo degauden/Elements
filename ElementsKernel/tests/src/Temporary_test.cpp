@@ -24,6 +24,7 @@
 #include <string>                        // for string
 #include <vector>
 #include <cstdlib>
+#include <iostream>
 
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
@@ -184,6 +185,30 @@ BOOST_AUTO_TEST_CASE(KeepTmpDir_test) {
   BOOST_CHECK(not exists(that_path));
 
 }
+
+BOOST_AUTO_TEST_CASE(Fake_test) {
+  using boost::filesystem::temp_directory_path;
+  using boost::filesystem::unique_path;
+
+  const string motif1 = "";
+  const string motif2 = "toto-%%%";
+
+  auto path1 = temp_directory_path() / unique_path(motif1);
+  auto path1p = temp_directory_path() / unique_path();
+  auto path2 = temp_directory_path() / unique_path(motif2);
+
+  using std::cout;
+  using std::endl;
+
+  cout << "path1:" << path1 << endl;
+  cout << "path1p:" << path1p << endl;
+  cout << "path2:" << path2 << endl;
+
+  Elements::TempPath p1;
+  Elements::TempPath p2(motif1);
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

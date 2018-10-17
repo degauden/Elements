@@ -64,9 +64,9 @@ public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
     // Get logger and log the entry into the mainMethod
-    Logging logger = Logging::getLogger();
+    auto log = Logging::getLogger();
 
-    logger.info("This Works");
+    log.info("This Works");
 
     Elements::nanoSleep(4);
 

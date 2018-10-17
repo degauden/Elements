@@ -35,17 +35,15 @@ using boost::program_options::variable_value;
 namespace Elements {
 namespace Examples {
 
-void secondLevelFunction() {
-  Logging logger = Logging::getLogger("BackTraceExample");
-  logger.info() << "Entering Second Level Function";
+auto log = Logging::getLogger("BackTraceExample");
 
+void secondLevelFunction() {
+  log.info() << "Entering Second Level Function";
   crashingFunction();
 }
 
 void firstLevelFunction() {
-  Logging logger = Logging::getLogger("BackTraceExample");
-  logger.info() << "Entering First Level Function";
-
+  log.info() << "Entering First Level Function";
   secondLevelFunction();
 }
 
@@ -55,11 +53,9 @@ public:
 
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
-    Logging logger = Logging::getLogger("BackTraceExample");
-
     firstLevelFunction();
 
-    logger.info() << "done with test program! ";
+    log.info() << "done with test program! ";
 
     return ExitCode::OK;
 

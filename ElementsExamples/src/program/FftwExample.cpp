@@ -48,7 +48,7 @@ public:
 
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
-    Logging logger = Logging::getLogger("FftwExample");
+    auto log = Logging::getLogger("FftwExample");
 
     fftw_complex in[N], out[N], in2[N]; /* double [2] */
     fftw_plan p, q;
@@ -65,7 +65,7 @@ public:
     p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
     fftw_execute(p);
     for (size_t i = 0; i < N; i++) {
-      logger.info() << boost::format("freq: %3d %+9.5f %+9.5f I") % i % out[i][0] % out[i][1];
+      log.info() << boost::format("freq: %3d %+9.5f %+9.5f I") % i % out[i][0] % out[i][1];
     }
     fftw_destroy_plan(p);
 
@@ -79,14 +79,14 @@ public:
       in2[i][1] *= 1./N;
     }
     for (size_t i = 0; i < N; i++) {
-      logger.info() << boost::format("recover: %3d %+9.5f %+9.5f I vs. %+9.5f %+9.5f I")
+      log.info() << boost::format("recover: %3d %+9.5f %+9.5f I vs. %+9.5f %+9.5f I")
                                       % i % in[i][0] % in[i][1] % in2[i][0] % in2[i][1];
     }
     fftw_destroy_plan(q);
 
     fftw_cleanup();
 
-    logger.info() << "This is the end of the test";
+    log.info() << "This is the end of the test";
 
     return ExitCode::OK;
 

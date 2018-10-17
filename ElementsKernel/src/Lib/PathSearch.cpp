@@ -42,7 +42,7 @@ using boost::filesystem::recursive_directory_iterator;
 namespace Elements {
 
 namespace {
-  Logging logger = Logging::getLogger("PathSearch");
+  auto log = Logging::getLogger("PathSearch");
 }
 
 // template instanciations
@@ -77,7 +77,7 @@ vector<path> pathSearchInEnvVariable(const std::string& file_name,
   // get the multiple path from the environment variable
   string multiple_path {};
   if (not System::getEnv(path_like_env_variable.c_str(), multiple_path)) {
-    logger.warn() << "Environment variable \"" << path_like_env_variable
+    log.warn() << "Environment variable \"" << path_like_env_variable
                   << "\" is not defined !";
   }
 

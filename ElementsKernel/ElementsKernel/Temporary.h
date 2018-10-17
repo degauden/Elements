@@ -39,7 +39,7 @@ const std::string DEFAULT_TMP_MOTIF {"%%%%-%%%%-%%%%-%%%%"};
 
 class ELEMENTS_API TempPath {
 public:
-  explicit TempPath(const std::string& motif,
+  explicit TempPath(const std::string& motif = DEFAULT_TMP_MOTIF,
                     const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempPath();
   boost::filesystem::path path() const;
@@ -53,7 +53,7 @@ private:
 
 class ELEMENTS_API TempDir : public TempPath {
 public:
-  explicit TempDir(const std::string& motif = "%%%%-%%%%-%%%%-%%%%",
+  explicit TempDir(const std::string& motif = DEFAULT_TMP_MOTIF,
                    const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempDir();
 };
@@ -61,7 +61,7 @@ public:
 
 class ELEMENTS_API TempFile : public TempPath {
 public:
-  explicit TempFile(const std::string&  motif = "%%%%-%%%%-%%%%-%%%%",
+  explicit TempFile(const std::string&  motif = DEFAULT_TMP_MOTIF,
                     const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempFile();
 };

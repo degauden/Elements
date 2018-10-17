@@ -40,19 +40,16 @@ class GslExample: public Program {
 
 public:
 
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
-    Logging logger = Logging::getLogger("GslExample");
+    auto log = Logging::getLogger("GslExample");
 
-    logger.info() << "GSL version: " << gsl_version;
-
+    log.info() << "GSL version: " << gsl_version;
 
     double x = 5.0;
     double y = gsl_sf_bessel_J0(x);
 
-
-    logger.info() << boost::format("J0(%g) = %.18e\n") % x % y;
+    log.info() << boost::format("J0(%g) = %.18e\n") % x % y;
 
     return ExitCode::OK;
 

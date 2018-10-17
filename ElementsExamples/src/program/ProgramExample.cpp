@@ -53,13 +53,13 @@ namespace Examples {
 
 void myLocalLogTestFunc() {
 
-  Logging logger = Logging::getLogger();
+  auto logger = Logging::getLogger();
   logger.info("Test of Message");
 
-  Logging logger2 = Logging::getLogger(__func__);
+  auto logger2 = Logging::getLogger(__func__);
   logger2.info("Test2 of Message");
 
-  Logging logger3 = Logging::getLogger(BOOST_CURRENT_FUNCTION);
+  auto logger3 = Logging::getLogger(BOOST_CURRENT_FUNCTION);
   logger3.info("Test3 of Message");
 
 }
@@ -138,9 +138,9 @@ public:
    */
   ExitCode mainMethod(map<string, variable_value>& args) override {
 
-    Logging logger = Logging::getLogger("ProgramExample");
-    logger.info("Entering mainMethod()");
-    logger.info("#");
+    auto log = Logging::getLogger("ProgramExample");
+    log.info("Entering mainMethod()");
+    log.info("#");
     /*
      * Check availability of mandatory program arguments (or options)
      *
@@ -155,7 +155,7 @@ public:
      *  values.
      */
     if (args["string-option-no-default"].empty()) {
-      logger.info() << "No value are available for string-option-no-default";
+      log.info() << "No value are available for string-option-no-default";
       /*
        * An exception may be thrown her if the above option is mandatory and there
        * is no way to continue without value
@@ -168,10 +168,10 @@ public:
      * printed event as an empty string
      */
     string string_example { args["string-option"].as<string>() };
-    logger.info() << "String option value: " << string_example;
+    log.info() << "String option value: " << string_example;
 
-    logger.info() << "The int-option value is " << args["int-option"].as<int>();
-    logger.info() << "The threshold value is " << args["threshold"].as<double>();
+    log.info() << "The int-option value is " << args["int-option"].as<int>();
+    log.info() << "The threshold value is " << args["threshold"].as<double>();
 
 
     // Some initialization
@@ -189,26 +189,26 @@ public:
      */
     double method_result = example_class_object.fundamentalTypeMethod(
         input_variable);
-    logger.info() << "Some result: " << method_result;
+    log.info() << "Some result: " << method_result;
 
     double first = 1.0;
     double division_result{};
     try {
-       logger.info("#");
-       logger.info("#   Calling a method throwing an exception ");
-       logger.info("#");
+       log.info("#");
+       log.info("#   Calling a method throwing an exception ");
+       log.info("#");
        double second = 0.0;
        division_result = example_class_object.divideNumbers(first, second);
        //
      } catch (const Exception & e) {
-       logger.info("#");
-       logger.info() << e.what();
-       logger.info("#");
-       logger.info("#   In this silly example we continue with a fake fix ");
-       logger.info("#");
+       log.info("#");
+       log.info() << e.what();
+       log.info("#");
+       log.info("#   In this silly example we continue with a fake fix ");
+       log.info("#");
        division_result = example_class_object.divideNumbers(first, 0.000001);
      }
-     logger.info() << "Second result is: " << division_result;
+     log.info() << "Second result is: " << division_result;
 
     /*
      * Illustration on how best to use smart pointer (regular pointer should not
@@ -227,14 +227,14 @@ public:
     vector<double> object_example { vector<double> { 1.0, 2.3, 4.5 } };
     example_class_object.passingObjectInGeneral(object_example);
 
-    logger.info() << "Function Example: " << functionExample(3);
+    log.info() << "Function Example: " << functionExample(3);
 
-    logger.info() << "This executable name: " << Elements::System::getThisExecutableInfo().name();
+    log.info() << "This executable name: " << Elements::System::getThisExecutableInfo().name();
 
     myLocalLogTestFunc();
 
-    logger.info("#");
-    logger.info("Exiting mainMethod()");
+    log.info("#");
+    log.info("Exiting mainMethod()");
     return ExitCode::OK;
   }
 

@@ -34,11 +34,19 @@ using std::string;
 
 namespace Elements {
 
+namespace {
+  auto log = Logging::getLogger();
+}
+
 TempPath::TempPath(const string& motif, const string& keep_var) :
     m_motif(motif), m_keep_var(keep_var) {
 
   using boost::filesystem::temp_directory_path;
   using boost::filesystem::unique_path;
+
+  if (m_motif.find('%') == string::npos) {
+    log.warn() << "The '" << m_motif << "' motif is not random";
+  }
 
   if (m_motif != "") {
     m_path = temp_directory_path() / unique_path(m_motif);
@@ -49,16 +57,14 @@ TempPath::TempPath(const string& motif, const string& keep_var) :
 
 TempPath::~TempPath() {
 
-  Logging logger = Logging::getLogger();
-
   Environment current;
 
   if (not current.hasKey(m_keep_var)) {
-    logger.debug() << "Automatic destruction of the " << path()
+    log.debug() << "Automatic destruction of the " << path()
                    << " temporary path";
     boost::filesystem::remove_all(m_path);
   } else {
-    logger.info() << m_keep_var << " set: I do not remove the "
+    log.info() << m_keep_var << " set: I do not remove the "
                   << m_path.string() << " temporary path";
   }
 
@@ -75,8 +81,7 @@ string TempPath::motif() const {
 TempDir::TempDir(const string& motif, const string& keep_var) :
     TempPath(motif, keep_var) {
 
-  Logging logger = Logging::getLogger();
-  logger.debug() << "Creation of the " << path() << " temporary directory";
+  log.debug() << "Creation of the " << path() << " temporary directory";
 
   boost::filesystem::create_directory(path());
 
@@ -88,8 +93,7 @@ TempDir::~TempDir() {
 TempFile::TempFile(const string& motif, const string& keep_var) :
     TempPath(motif, keep_var) {
 
-  Logging logger = Logging::getLogger();
-  logger.debug() << "Creation of the " << path() << " temporary file";
+  log.debug() << "Creation of the " << path() << " temporary file";
 
   boost::filesystem::ofstream ofs(path());
   ofs.close();

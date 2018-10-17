@@ -56,6 +56,10 @@ using boost::program_options::variables_map;
 
 namespace Elements {
 
+namespace {
+  auto log = Logging::getLogger("ElementsProgram");
+}
+
 using System::getExecutablePath;
 
 ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
@@ -90,8 +94,6 @@ const path& ProgramManager::getProgramName() const {
  * */
 const path ProgramManager::getDefaultConfigFile(const path & program_name,
                                                 const string& module_name) {
-  Logging logger = Logging::getLogger("ElementsProgram");
-
   path default_config_file{};
 
   // .conf is the standard extension for configuration file
@@ -101,21 +103,21 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name,
   // Construct and return the full path
   default_config_file = getConfigurationPath(conf_name.string(), false);
   if (default_config_file.empty()) {
-    logger.warn() << "The \"" << conf_name.string() << "\" configuration file cannot be found in:";
+    log.warn() << "The \"" << conf_name.string() << "\" configuration file cannot be found in:";
     for (auto loc : getConfigurationLocations()) {
-      logger.warn() << " " << loc;
+      log.warn() << " " << loc;
     }
     if (not module_name.empty()) {
       conf_name = path {module_name} / conf_name;
-      logger.warn() << "Trying \"" << conf_name.string() << "\".";
+      log.warn() << "Trying \"" << conf_name.string() << "\".";
       default_config_file = getConfigurationPath(conf_name.string(), false);
     }
   }
 
   if (default_config_file.empty()) {
-    logger.debug() << "Couldn't find \"" << conf_name << "\" configuration file.";
+    log.debug() << "Couldn't find \"" << conf_name << "\" configuration file.";
   } else {
-    logger.debug() << "Found \"" << conf_name << "\" configuration file at " << default_config_file;
+    log.debug() << "Found \"" << conf_name << "\" configuration file at " << default_config_file;
   }
 
   return default_config_file;
@@ -271,28 +273,22 @@ const variables_map ProgramManager::getProgramOptions(
 }
 
 void ProgramManager::logHeader(string program_name) const {
-
-  Logging logger = Logging::getLogger("ElementsProgram");
-
-  logger.info() << "##########################################################";
-  logger.info() << "##########################################################";
-  logger.info() << "#";
-  logger.info() << "#  C++ program:  " <<  program_name << " starts ";
-  logger.info() << "#";
-  logger.debug() << "# The Program Name: " << m_program_name.string();
-  logger.debug() << "# The Program Path: " << m_program_path.string();
+  log.info() << "##########################################################";
+  log.info() << "##########################################################";
+  log.info() << "#";
+  log.info() << "#  C++ program:  " <<  program_name << " starts ";
+  log.info() << "#";
+  log.debug() << "# The Program Name: " << m_program_name.string();
+  log.debug() << "# The Program Path: " << m_program_path.string();
 }
 
 void ProgramManager::logFooter(string program_name) const {
-
-  Logging logger = Logging::getLogger("ElementsProgram");
-
-  logger.info() << "##########################################################";
-  logger.info() << "#";
-  logger.info() << "#  C++ program:  " << program_name << " stops ";
-  logger.info() << "#";
-  logger.info() << "##########################################################";
-  logger.info() << "##########################################################";
+  log.info() << "##########################################################";
+  log.info() << "#";
+  log.info() << "#  C++ program:  " << program_name << " stops ";
+  log.info() << "#";
+  log.info() << "##########################################################";
+  log.info() << "##########################################################";
 }
 
 
@@ -302,13 +298,11 @@ void ProgramManager::logAllOptions() const {
   using std::stringstream;
   using std::int64_t;
 
-  Logging logger = Logging::getLogger("ElementsProgram");
-
-  logger.info() << "##########################################################";
-  logger.info() << "#";
-  logger.info() << "# List of all program options";
-  logger.info() << "# ---------------------------";
-  logger.info() << "#";
+  log.info() << "##########################################################";
+  log.info() << "#";
+  log.info() << "# List of all program options";
+  log.info() << "# ---------------------------";
+  log.info() << "#";
 
   // Build a log message
   stringstream log_message {};
@@ -362,29 +356,27 @@ void ProgramManager::logAllOptions() const {
           << std::endl;
     }
     // write the log message
-    logger.info(log_message.str());
+    log.info(log_message.str());
     log_message.str("");
   }
-  logger.info("#");
+  log.info("#");
 
 }
 
 // Log all options with a header
 void ProgramManager::logTheEnvironment() const {
 
-  Logging logger = Logging::getLogger("ElementsProgram");
-
-  logger.debug() << "##########################################################";
-  logger.debug() << "#";
-  logger.debug() << "# Environment of the Run";
-  logger.debug() << "# ---------------------------";
-  logger.debug() << "#";
+  log.debug() << "##########################################################";
+  log.debug() << "#";
+  log.debug() << "# Environment of the Run";
+  log.debug() << "# ---------------------------";
+  log.debug() << "#";
 
   for (const auto& v : Path::VARIABLE) {
-    logger.debug() << v.second << ": " << m_env[v.second];
+    log.debug() << v.second << ": " << m_env[v.second];
   }
 
-  logger.debug() << "#";
+  log.debug() << "#";
 }
 
 void ProgramManager::bootstrapEnvironment(char* arg0) {
@@ -429,14 +421,12 @@ void ProgramManager::setup(int argc, char* argv[]) {
   // and retrieve the local environment
   bootstrapEnvironment(argv[0]);
 
-  Logging logger = Logging::getLogger("ElementsProgram");
-
   // get all program options into the varaiable_map
   try {
     m_variables_map = getProgramOptions(argc, argv);
   } catch (const OptionException& e) {
     auto exit_code = e.exitCode();
-    logger.fatal() << "# Elements Exception : " << e.what();
+    log.fatal() << "# Elements Exception : " << e.what();
     std::_Exit(static_cast<int>(exit_code));
   }
 
@@ -467,9 +457,7 @@ void ProgramManager::setup(int argc, char* argv[]) {
 
 void ProgramManager::tearDown(const ExitCode& c) {
 
-  Logging logger = Logging::getLogger("ElementsProgram");
-
-  logger.debug() << "# Exit Code: " << int(c);
+  log.debug() << "# Exit Code: " << int(c);
 
   logFooter(m_program_name.string());
 }
@@ -502,33 +490,31 @@ void ProgramManager::onTerminate() noexcept {
 
   if ( auto exc = std::current_exception() ) {
 
-    Logging logger = Logging::getLogger("ElementsProgram");
-
-    logger.fatal() << "Crash detected";
-    logger.fatal() << "This is the back trace:";
+    log.fatal() << "Crash detected";
+    log.fatal() << "This is the back trace:";
     for (auto level : System::backTrace(21, 4)) {
-      logger.fatal() << level;
+      log.fatal() << level;
     }
 
     // we have an exception
     try {
       std::rethrow_exception(exc);  // throw to recognise the type
     } catch (const Exception & exc) {
-      logger.fatal() << "# ";
-      logger.fatal() << "# Elements Exception : " << exc.what();
-      logger.fatal() << "# ";
+      log.fatal() << "# ";
+      log.fatal() << "# Elements Exception : " << exc.what();
+      log.fatal() << "# ";
       exit_code = exc.exitCode();
     } catch (const std::exception & exc) {
       /// @todo : set the exit code according to the type of exception
       ///         if a clear match is found.
-      logger.fatal() << "# ";
-      logger.fatal() << "# Standard Exception : " << exc.what();
-      logger.fatal() << "# ";
+      log.fatal() << "# ";
+      log.fatal() << "# Standard Exception : " << exc.what();
+      log.fatal() << "# ";
     } catch (...) {
-      logger.fatal() << "# ";
-      logger.fatal() << "# An exception of unknown type occurred, "
+      log.fatal() << "# ";
+      log.fatal() << "# An exception of unknown type occurred, "
                      << "i.e., an exception not deriving from std::exception ";
-      logger.fatal() << "# ";
+      log.fatal() << "# ";
     }
 
     abort();

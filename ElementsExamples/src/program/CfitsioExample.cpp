@@ -41,13 +41,13 @@ public:
 
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
-    Logging logger = Logging::getLogger("CfitsioExample");
+    auto log = Logging::getLogger("CfitsioExample");
 
     int a = fits_is_reentrant();
 
-    logger.info() << "Cfitsio is reentrant: " << a;
+    log.info() << "Cfitsio is reentrant: " << a;
 
-    logger.info() << "done with test program! ";
+    log.info() << "done with test program! ";
 
     return ExitCode::OK;
 
