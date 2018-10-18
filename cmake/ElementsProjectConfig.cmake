@@ -1373,7 +1373,7 @@ macro(_elements_use_other_projects)
         message(FATAL_ERROR "
 Cannot find project ${other_project} ${other_project_version}
 with the suffixes: ${suffixes}
-or with the suffixes: ${suffixes}
+or with the suffixes: ${suffixes2}
 in the paths: ${projects_search_path}
 ")
       endif()
