@@ -47,8 +47,13 @@ elements_add_test(CProgramExampleRun COMMAND CProgramExample)
 elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramExample)
 elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
 
+#====== Standalone Test with explicit environment passing ========================
 
-
+elements_add_unit_test(TestEnvironment tests/src/Boost/TestEnvironment_test.cpp
+                       EXECUTABLE TestEnvironment_test
+                       LINK_LIBRARIES ElementsExamples
+                       TYPE Boost
+                       ENVIRONMENT MYTESTENV=FooBar)
 
 #===== Boost tests =============================================================
 # Example with automatically generated TestMain.cpp. This is always the case if the TYPE of
@@ -80,7 +85,9 @@ elements_add_unit_test(ModuleInfo tests/src/Boost/ModuleInfo_test.cpp
 elements_add_unit_test(AllTests tests/src/Boost/*_test.cpp
                        EXECUTABLE BoostElementsExampleAllTests
                        INCLUDE_DIRS ElementsExamples
-                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+                       LINK_LIBRARIES ElementsExamples 
+                       ENVIRONMENT MYTESTENV=FooBar
+                       TYPE Boost)
 
 elements_add_unit_test(UnitTestExample_test tests/src/Boost/UnitTestExample_test.cpp
                        INCLUDE_DIRS ElementsExamples
