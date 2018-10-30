@@ -147,8 +147,6 @@ constexpr long double Ten<long double>() {
   return 10.0l;
 }
 
-
-
 template<typename T>
 void printFloatPrecision() {
 
@@ -165,7 +163,7 @@ void printFloatPrecision() {
   auto zero = Zero<T>();
   auto zeroplus = float_next(zero);
   auto nextafterzero = nextafter(zero, Two<T>());
-  auto nextzerotoward = nexttoward(zero, Two<long double>());
+  auto nextzerotoward = nexttoward(zero, Two<T>());
 
   cout << "zero: " << zero << endl;
   cout << "next to zero: " << zeroplus << endl;
@@ -175,7 +173,7 @@ void printFloatPrecision() {
   auto one = One<T>();
   auto oneplus = float_next(one);
   auto nextafterone = nextafter(one, Two<T>());
-  auto nextonetoward = nexttoward(one, Two<long double>());
+  auto nextonetoward = nexttoward(one, Two<T>());
   auto cospiover7 = cos(pi<T>()/Seven<T>());
   auto default_test_tolerance = pow(Ten<T>(), -numeric_limits<T>::digits10);
 
@@ -185,7 +183,7 @@ void printFloatPrecision() {
   cout << "next after one toward two: " << nextonetoward << endl;
 
   cout << "pi: " << pi<T>() << endl;
-  cout << "the Cosinus of pi/7: " << cospiover7 << endl;
+  cout << "the Cosine of pi/7: " << cospiover7 << endl;
   cout << "the default test tolerance: " << default_test_tolerance << endl;
 
   cout << "The mantissa digits: " << numeric_limits<T>::digits << endl;
@@ -210,17 +208,14 @@ public:
 
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
-    using std::setprecision;
-    using std::fixed;
-
-    cout << fixed << setprecision(PRINT_PRECISION);
+    cout << std::fixed
+         << std::setprecision(PRINT_PRECISION);
 
     printFloatPrecision<float>();
 
     printFloatPrecision<double>();
 
     printFloatPrecision<long double>();
-
 
     return ExitCode::OK;
 

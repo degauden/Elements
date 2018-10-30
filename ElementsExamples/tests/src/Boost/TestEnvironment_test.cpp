@@ -21,7 +21,7 @@
 
 #include <boost/test/unit_test.hpp>            // Gives access to the unit test framework.
 #include <string>
-#include <iostream>
+#include <iostream>                            // for cout, endl
 
 #include "ElementsKernel/Environment.h"        // for Environment
 
