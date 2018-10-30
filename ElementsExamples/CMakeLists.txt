@@ -141,6 +141,12 @@ elements_add_executable(BackTraceExample src/program/BackTraceExample.cpp
                         LINK_LIBRARIES ElementsExamples)
 elements_add_test(BackTraceFailure COMMAND BackTraceExample FAILS)
 
+elements_add_executable(FloatPrecisionExample src/program/FloatPrecisionExample.cpp
+                        INCLUDE_DIRS ElementsExamples
+                        LINK_LIBRARIES ElementsExamples)
+elements_add_test(FloatPrecsionExampleWorks COMMAND FloatPrecisionExample LABELS Float Build)
+
+
 find_package(GSL QUIET)
 if(GSL_FOUND)
 elements_add_executable(GslExample src/program/GslExample.cpp
