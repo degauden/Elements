@@ -1,6 +1,6 @@
 /**
  * @file Temporary.h
- *
+ * @brief Handling of temporary files, directories and environments
  * @date May 27, 2014
  * @author hubert degaudenzi
  *
@@ -34,7 +34,9 @@
 
 namespace Elements {
 
+/// The default environment variable name to keep the temporary object
 const std::string DEFAULT_TMP_KEEP_VAR {"KEEPTEMPDIR"};
+/// The default random creation motif
 const std::string DEFAULT_TMP_MOTIF {"%%%%-%%%%-%%%%-%%%%"};
 
 class ELEMENTS_API TempPath {

@@ -1,5 +1,6 @@
 /**
  * @file EnableGMock.h
+ * @brief Google Mock helper classes
  * @date December 16, 2014
  * @author Nikolaos Apostolakos
  *

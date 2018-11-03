@@ -1,6 +1,6 @@
 /**
  * @file ElementsKernel/Main.h
- *
+ * @brief Definition of the top macro to create an Elements program
  * @date Aug 27, 2014
  * @author Hubert Degaudenzi
  *

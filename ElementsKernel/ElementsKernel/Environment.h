@@ -1,6 +1,6 @@
 /**
  * @file ElementsKernel/Environment.h
- *
+ * @brief Defines a class to handle the Environment
  * @date Jun 17, 2016
  * @author Hubert Degaudenzi
  *
