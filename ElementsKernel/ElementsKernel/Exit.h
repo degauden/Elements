@@ -31,7 +31,8 @@
 
 namespace Elements {
 
-/** @enum ExitCode
+/**
+ * @enum ExitCode
  * @brief Strongly typed exit numbers
  * @details This has to be used with the MAIN_FOR macro
  * There is no clear universal specification for exit codes. Every system

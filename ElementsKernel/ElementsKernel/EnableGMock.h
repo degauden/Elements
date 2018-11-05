@@ -1,5 +1,5 @@
 /**
- * @file EnableGMock.h
+ * @file ElementsKernel/EnableGMock.h
  * @brief Google Mock helper classes
  * @date December 16, 2014
  * @author Nikolaos Apostolakos
@@ -64,5 +64,11 @@ BOOST_GLOBAL_FIXTURE(GoogleMockSetupFixture)
 #endif
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_ENABLEGMOCK_H_
+
+/**
+ * \example ElementsExamples/tests/src/GMock/TemplatedDataSourceUser_test.cpp
+ * Example that shows the usage of the EnableGMock.h file.
+ */
+
 
 /**@}*/

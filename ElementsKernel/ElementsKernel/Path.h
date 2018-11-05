@@ -53,6 +53,9 @@ enum class Type {
   auxiliary
 };
 
+/**
+ * @brief Separator of path entries. Usually ":" on Unix.
+ */
 ELEMENTS_API extern const std::string PATH_SEP;
 
 /**
@@ -145,6 +148,12 @@ ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const 
 template <typename T>
 ELEMENTS_API boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable);
 
+/**
+ * @brief collate a vector of path into a string using PATH_SEP
+ * @param path_list
+ *   list of path to be joined.
+ * @return collated string
+ */
 template <typename T>
 ELEMENTS_API std::string joinPath(const std::vector<T> path_list);
 
