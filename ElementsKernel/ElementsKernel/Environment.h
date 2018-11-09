@@ -49,7 +49,7 @@ public:
 
   public:
     Variable() = delete;
-    Variable(Environment& env, const std::string& index): m_env(env), m_index(index) {}
+    Variable(Environment& env, const std::string& index);
     Variable(const Variable& other);
     Variable(Variable&& other);
     Variable& operator=(const Variable& other);
