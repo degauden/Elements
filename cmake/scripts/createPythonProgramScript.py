@@ -82,8 +82,8 @@ _updateSysPath(update_list + [os.path.join(p, "python") for p in %(proj)s_SEARCH
 
 from ElementsKernel.Program import Program
 
-p = Program('%(MODULE_NAME)s', 
-             %(proj)s_VERSION_STRING, %(proj)s_NAME, 
+p = Program('%(MODULE_NAME)s',
+             %(proj)s_VERSION_STRING, %(proj)s_NAME,
              ELEMENTS_MODULE_NAME, ELEMENTS_MODULE_VERSION,
              %(proj)s_SEARCH_DIRS, os.path.realpath(__file__))
 

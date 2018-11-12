@@ -1,6 +1,6 @@
 /**
  * @file ElementsKernel/Main.h
- *
+ * @brief Definition of the top macro to create an Elements program
  * @date Aug 27, 2014
  * @author Hubert Degaudenzi
  *
@@ -37,6 +37,19 @@
 #include "ThisProject.h"
 #include "ThisElementsModule.h"
 
+/** @def CREATE_MANAGER(ELEMENTS_PROGRAM_NAME, MANAGER)
+ * Macro that declares a program manager with all the needed arguments. It is
+ * typically called from the #MAIN_FOR(ELEMENTS_PROGRAM_NAME, MANAGER) macro.
+ * @param ELEMENTS_PROGRAM_NAME name of the main program class, derived from
+ * the class Elements::Program class.
+ * @param MANAGER name of the manager variable to be created.
+ */
+#define CREATE_MANAGER(ELEMENTS_PROGRAM_NAME, MANAGER) \
+  Elements::ProgramManager MANAGER {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
+                                    THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
+                                    THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
+                                    THIS_PROJECT_SEARCH_DIRS}
+
 
 /** @def MAIN_FOR(ELEMENTS_PROGRAM_NAME)
  * Macro which must be used to create a main in classes
@@ -59,13 +72,11 @@
   ELEMENTS_UNUSED const auto installed = {std::set_terminate(&Elements::ProgramManager::onTerminate)}; \
   ELEMENTS_API int main(int argc, char* argv[])              \
   {                                             \
-    Elements::ProgramManager manager {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
-                                      THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
-                                      THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
-                                      THIS_PROJECT_SEARCH_DIRS}; \
+    CREATE_MANAGER(ELEMENTS_PROGRAM_NAME, manager); \
     Elements::ExitCode exit_code = manager.run(argc, argv);   \
     return static_cast<Elements::ExitCodeType>(exit_code);    \
   }
+
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_MAIN_H_
 

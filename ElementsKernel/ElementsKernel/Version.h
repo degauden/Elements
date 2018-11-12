@@ -1,5 +1,6 @@
 /**
  * @file ElementsKernel/Version.h
+ * @brief Software version handling
  * @date Jun 20, 2013
  * @author Pierre Dubath
  *
@@ -30,6 +31,7 @@
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
+/// Mange major, minor and patch version number into a single integer
 constexpr std::uint_least64_t CALC_PROJECT_VERSION(const std::uint_least64_t maj,
                                                    const std::uint_least64_t min,
                                                    const std::uint_least64_t pat) {
