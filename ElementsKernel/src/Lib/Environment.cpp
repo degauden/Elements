@@ -45,7 +45,7 @@ using System::setEnv;
 using System::getEnv;
 using System::isEnvSet;
 
-Environment::Variable::Variable(Environment& env, const std::string& index): m_env(env), m_index(index) {
+Environment::Variable::Variable(Environment& env, const std::string& index): m_env{env}, m_index{index} {
 }
 
 Environment::Variable::Variable(const Environment::Variable& other): m_env{other.m_env} {
@@ -343,6 +343,5 @@ Environment::Variable operator+(const string& value, const Environment::Variable
   return result;
 
 }
-
 
 }  // namespace Elements
