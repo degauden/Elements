@@ -24,13 +24,16 @@
 #include <cstdlib>                  // for abs
 #include <limits>                   // for numeric_limits
 #include <cstdint>                  // for std::int64_t, std::int32_t
+#include <cmath>                    // for pow
 
 using std::abs;
+using std::pow;
+using std::numeric_limits;
 
 namespace Elements {
 
-extern const double FLT_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<float>::digits10);
-extern const double DBL_DEFAULT_TEST_TOLERANCE = std::pow(10.0, -std::numeric_limits<double>::digits10);
+extern const double FLT_DEFAULT_TEST_TOLERANCE = pow(10.0, -numeric_limits<float>::digits10);
+extern const double DBL_DEFAULT_TEST_TOLERANCE = pow(10.0, -numeric_limits<double>::digits10);
 
 // Usable AlmostEqual function
 bool almostEqual2sComplement(const float& left, const float& right, const int& max_ulps) {
@@ -59,7 +62,6 @@ bool almostEqual2sComplement(const float& left, const float& right, const int& m
 
 bool almostEqual2sComplement(const double& left, const double& right, const int& max_ulps) {
 
-    using std::abs;
     using std::int64_t;
 
     // long long a_int = *(long long*)&a;
