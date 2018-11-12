@@ -1841,7 +1841,7 @@ macro(elements_subdir name)
 
   elements_get_package_name(_guessed_name)
   if (NOT _guessed_name STREQUAL "${name}")
-    message(WARNING "Declared subdir name (${name}) does not match the name of the directory (${_guessed_name})")
+    message(FATAL_ERROR "Declared subdir name (${name}) does not match the name of the directory (${_guessed_name})")
   endif()
 
   set (extra_macro_args ${ARGN})
