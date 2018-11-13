@@ -418,7 +418,7 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   endif()
 
   # Add generated headers to the include path.
-  include_directories(${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX})
+  elements_include_directories(${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX})
 
   if(versmodule_cmd)
     execute_process(COMMAND
@@ -1333,7 +1333,7 @@ macro(_elements_use_other_projects)
         endif()
         # include directories of other projects must be appended to the current
         # list to preserve the order of overriding
-        include_directories(AFTER ${${other_project}_INCLUDE_DIRS})
+        elements_include_directories(AFTER ${${other_project}_INCLUDE_DIRS})
         # but in the INCLUDE_PATHS property the order gets reversed afterwards
         # so we need to prepend instead of append
         get_property(_inc_dirs GLOBAL PROPERTY INCLUDE_PATHS)
@@ -1618,7 +1618,7 @@ function(include_package_directories)
       foreach(_i ${to_incl})
         starts_with_sys_include(_is_sys ${_i})
         if(${_is_sys} AND ${HIDE_SYSINC_WARNINGS})
-          include_directories(AFTER SYSTEM ${_i})    
+          elements_include_directories(AFTER ${_i})
         else()
           # recursion applies only to non-system dirs
           if(ARG_RECURSE_PATTERN)
@@ -1626,11 +1626,11 @@ function(include_package_directories)
             if(hsubdir)
               list(REMOVE_DUPLICATES hsubdir)
               foreach(hs ${hsubdir})
-                include_directories(AFTER ${hs})    
+                elements_include_directories(AFTER ${hs})
               endforeach()
             endif()
           else()
-            include_directories(AFTER ${_i})
+            elements_include_directories(AFTER ${_i})
           endif()    
         endif()
       endforeach()
@@ -1714,7 +1714,7 @@ function(elements_depends_on_subdirs)
       if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${subdir})
         get_property(has_local_headers DIRECTORY ${CMAKE_SOURCE_DIR}/${subdir} PROPERTY INSTALLS_LOCAL_HEADERS SET)
         if(has_local_headers)
-          include_directories(${CMAKE_SOURCE_DIR}/${subdir})
+          elements_include_directories(${CMAKE_SOURCE_DIR}/${subdir})
         endif()
       endif()
     endforeach()
@@ -2438,11 +2438,7 @@ function(elements_add_python_module module)
   # require Python libraries
   find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
 
-  if(HIDE_SYSINC_WARNINGS)
-    include_directories(AFTER SYSTEM ${PYTHON_INCLUDE_DIRS})
-  else()
-    include_directories(AFTER ${PYTHON_INCLUDE_DIRS})
-  endif()
+  elements_include_directories(AFTER ${PYTHON_INCLUDE_DIRS})
   add_library(${module} MODULE ${srcs})
   
   if(NOT ${ARG_PLAIN_MODULE})
@@ -2650,7 +2646,7 @@ function(_generate_cython_cpp)
   get_source_file_property(src_location ${src} LOCATION)
   get_filename_component(pyx_dir ${src_location} DIRECTORY)
 
-  include_directories(${pyx_dir})
+  elements_include_directories(${pyx_dir})
 
   get_property(cy_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
   if(cy_dirs)

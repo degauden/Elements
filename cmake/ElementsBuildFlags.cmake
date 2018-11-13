@@ -416,7 +416,7 @@ if(APPLE)
   # by default, CMake uses the option -bundle for modules, but we need -dynamiclib for them too
   string(REPLACE "-bundle" "-dynamiclib" CMAKE_SHARED_MODULE_CREATE_C_FLAGS "${CMAKE_SHARED_MODULE_CREATE_C_FLAGS}")
   string(REPLACE "-bundle" "-dynamiclib" CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS}")
-  include_directories(BEFORE SYSTEM /opt/local/include/${SGS_COMP}${SGS_COMPVERS}/c++)
+  elements_include_directories(BEFORE /opt/local/include/${SGS_COMP}${SGS_COMPVERS}/c++)
 endif()
 
 #--- Special build flags -------------------------------------------------------

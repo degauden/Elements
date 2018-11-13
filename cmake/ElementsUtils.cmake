@@ -38,6 +38,9 @@ macro(debug_message)
   endif()
 endmacro()
 
+macro(debug_print)
+  debug_message(STATUS ${ARGN})
+endmacro()
 
 set(FULL_MESSAGE_LIST "" CACHE INTERNAL "This is the full list of guarded messages")
 
@@ -118,15 +121,51 @@ function(is_sys_include is_sys dir)
 
 endfunction()
 
+## `(<str:<string>> <search:<string>>)-><bool>`
+##
+## Returns true if "str" starts with the string "search"
+##
+## **Examples**
+##  string_starts_with("substring" "sub") # => true
+##  string_starts_with("substring" "ub") # => false
+##
+##
+function(string_starts_with sws str search)
+  string(FIND "${str}" "${search}" out)
+  if("${out}" EQUAL 0)
+    set(${sws} TRUE PARENT_SCOPE)
+  endif()
+endfunction()
+
 function(starts_with_sys_include starts_with_sys dir)
 
     set(${starts_with_sys} FALSE PARENT_SCOPE)
     get_all_sys_includes(inc_list)
 
     foreach(_inc_dir ${inc_list})
-      if("${dir}" MATCHES "^${_inc_dir}/.*" ) 
+      string_starts_with(out ${dir} ${_inc_dir})
+      if(out)
         set(${starts_with_sys} TRUE PARENT_SCOPE)
-        break()   
+        break()
+      endif()
+#      if("${dir}" MATCHES "^${_inc_dir}/.*" OR "${dir}" STREQUAL "${_inc_dir}")
+#        set(${starts_with_sys} TRUE PARENT_SCOPE)
+#        break()
+#      endif()
+    endforeach()
+
+endfunction()
+
+function(starts_with_loc_include starts_with_loc dir)
+
+    set(${starts_with_sys} FALSE PARENT_SCOPE)
+    file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" inc_list)
+
+    foreach(_inc_dir ${inc_list})
+      string_starts_with(out ${dir} ${_inc_dir})
+      if(out)
+        set(${starts_with_loc} TRUE PARENT_SCOPE)
+        break()
       endif()
     endforeach()
 
@@ -798,4 +837,34 @@ function(find_python_module module)
 
 endfunction(find_python_module)
 
+function(elements_include_directories)
 
+  CMAKE_PARSE_ARGUMENTS(ELEMENTS_INC "AFTER;BEFORE" "" "" ${ARGN})
+
+  set(inc_pos "BEFORE")
+
+  if(ELEMENTS_INC_AFTER)
+    set(inc_pos "AFTER")
+  endif()
+
+  foreach(d ${ELEMENTS_INC_UNPARSED_ARGUMENTS})
+    set(is_loc "NO")
+    starts_with_loc_include(_is_loc ${d})
+    if(${_is_loc})
+      set(is_loc "YES")
+    endif()
+    if (is_loc STREQUAL "YES")
+        include_directories(${inc_pos} ${d})
+#        debug_print("Include dir ${d} ${inc_pos}")
+    else()
+      if(HIDE_SYSINC_WARNINGS)
+        include_directories(${inc_pos} SYSTEM ${d})
+#        debug_print("Include system dir ${d} ${inc_pos}")
+      else()
+         include_directories(${inc_pos} ${d})
+#        debug_print("Include dir ${d} ${inc_pos}")
+      endif()
+    endif()
+  endforeach()
+
+endfunction(elements_include_directories)
