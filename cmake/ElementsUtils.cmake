@@ -171,6 +171,18 @@ function(starts_with_loc_include starts_with_loc dir)
 
 endfunction()
 
+function(starts_with_this_project starts_with_this dir)
+
+    set(${starts_with_this} FALSE PARENT_SCOPE)
+
+    string_starts_with(out ${dir} ${PROJECT_SOURCE_DIR})
+    if(out)
+      set(${starts_with_this} TRUE PARENT_SCOPE)
+    endif()
+
+endfunction()
+
+
 #----------------------------------------------------------------
 # Filename utils
 #----------------------------------------------------------------------
@@ -848,23 +860,38 @@ function(elements_include_directories)
   endif()
 
   foreach(d ${ELEMENTS_INC_UNPARSED_ARGUMENTS})
-    set(is_loc "NO")
+    set(_is_loc FALSE)
     starts_with_loc_include(_is_loc ${d})
-    if(${_is_loc})
-      set(is_loc "YES")
-    endif()
-    if (is_loc STREQUAL "YES")
-        include_directories(${inc_pos} ${d})
-#        debug_print("Include dir ${d} ${inc_pos}")
-    else()
-      if(HIDE_SYSINC_WARNINGS)
-        include_directories(${inc_pos} SYSTEM ${d})
-#        debug_print("Include system dir ${d} ${inc_pos}")
+    set(_is_this FALSE)
+    starts_with_this_project(_is_this ${d})
+   
+    set(use_sys FALSE)
+    if(HIDE_SYSINC_WARNINGS)
+      if(_is_loc)
+        set(use_sys FALSE)
       else()
-         include_directories(${inc_pos} ${d})
-#        debug_print("Include dir ${d} ${inc_pos}")
+        set(use_sys TRUE)      
+      endif()
+    else()
+      set(use_sys FALSE)
+    endif()
+
+    if(HIDE_OTHERINC_WARNINGS)
+      if(_is_this)
+        set(use_sys FALSE)
+      else()
+        set(use_sys TRUE)      
       endif()
     endif()
+
+    if(use_sys)
+        include_directories(${inc_pos} SYSTEM ${d})
+#        debug_print("Include system dir ${d} ${inc_pos}")    
+    else()
+        include_directories(${inc_pos} ${d})
+#        debug_print("Include dir ${d} ${inc_pos}")    
+    endif()
+    
   endforeach()
 
 endfunction(elements_include_directories)
