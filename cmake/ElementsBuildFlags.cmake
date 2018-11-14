@@ -213,6 +213,11 @@ option(HIDE_SYSINC_WARNINGS
        "Hide System includes warnings by using -isystem instead of -I"
        OFF)
 
+option(HIDE_OTHERINC_WARNINGS
+       "Hide includes warnings issued by other projects by using -isystem instead of -I"
+       OFF)
+
+
 option(CXX_SUGGEST_OVERRIDE
        "Enable the -Wsuggest-override warning"
        OFF)
@@ -416,7 +421,7 @@ if(APPLE)
   # by default, CMake uses the option -bundle for modules, but we need -dynamiclib for them too
   string(REPLACE "-bundle" "-dynamiclib" CMAKE_SHARED_MODULE_CREATE_C_FLAGS "${CMAKE_SHARED_MODULE_CREATE_C_FLAGS}")
   string(REPLACE "-bundle" "-dynamiclib" CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS}")
-  include_directories(BEFORE SYSTEM /opt/local/include/${SGS_COMP}${SGS_COMPVERS}/c++)
+  elements_include_directories(BEFORE /opt/local/include/${SGS_COMP}${SGS_COMPVERS}/c++)
 endif()
 
 #--- Special build flags -------------------------------------------------------
