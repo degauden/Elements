@@ -437,6 +437,15 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyc)
       endif()
     endif()
+    
+    if ((NOT SQUEEZED_INSTALL) AND RPMBUILD_VERSION VERSION_LESS 4.14)
+      if("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3)
+        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyo)
+        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyc)
+      endif()
+    endif()
+    
+    
   endif()
 
   if(instmodule_cmd)
@@ -455,6 +464,14 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.pyc)
       endif()
     endif()
+    
+    if ((NOT SQUEEZED_INSTALL) AND RPMBUILD_VERSION VERSION_LESS 4.14)
+      if("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3)
+        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.pyo)
+        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.pyc)
+      endif()
+    endif()
+    
   endif()
 
 
@@ -932,11 +949,18 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
   if(proj_has_python)
 
-    if (SQUEEZED_INSTALL)
+    if (SQUEEZED_INSTALL AND (NOT RPMBUILD_VERSION VERSION_LESS 4.14))
       if(NOT ("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3))
         set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
       endif()
     endif()
+
+    if ((NOT SQUEEZED_INSTALL) AND RPMBUILD_VERSION VERSION_LESS 4.14)
+      if(NOT ("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3))
+        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
+      endif()
+    endif()
+
 
     get_property(regular_python_objects GLOBAL PROPERTY REGULAR_PYTHON_OBJECTS)
     foreach(_do ${regular_python_objects})
@@ -2616,7 +2640,7 @@ function(elements_add_swig_binding binding)
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.py)
   
-  if (SQUEEZED_INSTALL)
+  if (SQUEEZED_INSTALL AND (NOT RPMBUILD_VERSION VERSION_LESS 4.14))
     if("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3)
       set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyo)
       set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${binding}.pyc)
