@@ -27,6 +27,8 @@ import os
 import tempfile
 import sys
 
+from ElementsKernel import Logging
+
 if not 'mkdtemp' in dir(tempfile):
     # mkdtemp has been introduced in python 2.3, I simulate it
     import warnings
@@ -48,8 +50,6 @@ if not 'mkdtemp' in dir(tempfile):
 else:
     # use the real mkdtemp
     from tempfile import mkdtemp, mkstemp
-
-from ElementsKernel import Logging
 
 
 DEFAULT_TMP_KEEP_VAR = "KEEPTEMPDIR"
