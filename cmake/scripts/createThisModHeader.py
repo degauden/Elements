@@ -1,5 +1,4 @@
 import os
-import re
 from optparse import OptionParser
 
 
@@ -15,7 +14,7 @@ def main():
 
     module, outputfile = args
     if not opts.quiet:
-        print("Creating %s for %s %s" % (outputfile, module, version))
+        print("Creating %s for %s" % (outputfile, module))
 
     outdir = os.path.dirname(outputfile)
     if not os.path.exists(outdir):
@@ -38,7 +37,7 @@ constexpr std::uint_least64_t THIS_MODULE_VERSION = %(mod)s_VERSION;
 const std::string THIS_MODULE_VERSION_STRING {%(mod)s_VERSION_STRING};
 const std::string THIS_MODULE_NAME_STRING {"%(Mod)s"};
 #endif
-""" % { 'mod': module.upper(), 'Mod': module}
+""" % {'mod': module.upper(), 'Mod': module}
 
     # Get the current content of the destination file (if any)
     try:

@@ -88,13 +88,13 @@ p = Program('%(MODULE_NAME)s',
              %(proj)s_SEARCH_DIRS, os.path.realpath(__file__))
 
 exit(p.runProgram())
-""" % { 'MODULE_NAME' : args.module,
-        'proj' : args.project_name.upper(),
-        'Proj' : args.project_name,
-        'Mod_name' : args.elements_module_name,
-        'Mod_version' : args.elements_module_version,
-        'Python_version': args.python_explicit_version
-        }
+""" % {'MODULE_NAME' : args.module,
+       'proj' : args.project_name.upper(),
+       'Proj' : args.project_name,
+       'Mod_name' : args.elements_module_name,
+       'Mod_version' : args.elements_module_version,
+       'Python_version': args.python_explicit_version
+      }
 
 filename = os.path.join(args.outdir, args.execname)
 
