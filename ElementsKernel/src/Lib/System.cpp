@@ -176,9 +176,8 @@ const string getErrorString(unsigned long error) {
     if (0 == cerrString) {
       cerrString =
           const_cast<char *> ("Unknown error. No information found in strerror()!");
-    } else {
-      errString = string(cerrString);
     }
+    errString = string(cerrString);
     errno = 0;
   } else {
     cerrString = std::strerror(error);
