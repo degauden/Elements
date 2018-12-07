@@ -1,3 +1,8 @@
+* Fri Dec 7 2018 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2.3-1
+- Backport of the python configuration file reading from the f5a618b66f2
+  commit (Nikos Apostolakos). It was not correctly overriding the source 
+  hardcoded values.
+
 * Wed Sep 20 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2.2-1
 - Fix the import of future_builtins to work with python 3.
 - Add the lookup of the Xsd include directories.
