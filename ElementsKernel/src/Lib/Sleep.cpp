@@ -20,6 +20,7 @@
 
 #include <thread>                     // for this_thread
 #include <chrono>                     // for chrono
+#include <cstdint>                    // for int64_t
 
 using std::this_thread::sleep_for;
 

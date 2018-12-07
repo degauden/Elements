@@ -22,6 +22,7 @@
 
 #include <map>      // for map
 #include <cstdint>  // for int64_t
+#include <cstddef>  // for size_t
 #include <cmath>    // for pow, round, log10
 #include <string>   // for string
 

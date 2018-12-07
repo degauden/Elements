@@ -35,7 +35,6 @@
 #include "ElementsKernel/System.h"     // for DEFAULT_INSTALL_PREFIX
 
 using std::string;
-using std::vector;
 using boost::filesystem::path;
 using Elements::Path::Type;
 using Elements::Path::VARIABLE;
@@ -50,7 +49,7 @@ string getAuxiliaryVariableName() {
 template path getAuxiliaryPath(const path& file_name, bool raise_exception);
 template path getAuxiliaryPath(const string& file_name, bool raise_exception);
 
-vector<path> getAuxiliaryLocations(bool exist_only) {
+std::vector<path> getAuxiliaryLocations(bool exist_only) {
 
   using System::DEFAULT_INSTALL_PREFIX;
 
