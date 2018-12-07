@@ -35,7 +35,6 @@ try:
 except:
     from __builtin__ import input
 
-
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 logger = log.getLogger('RemoveCppProgram')

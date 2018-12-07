@@ -1,7 +1,15 @@
-* Wed Aug 9 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2.1
+* Wed Sep 20 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2.2-1
+- Fix the import of future_builtins to work with python 3.
+- Add the lookup of the Xsd include directories.
+- Add experimental support for the numpy include dirs
+- Add an example for the SWIG interface to numpy
+- Fix the explicit version of the python interpreter. This is 
+  needed to locate numpy if its install prefix is non-standard.
+
+* Wed Aug 9 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2.1-1
 - Fix the test on the version of sphinx.
 
-* Tue Aug 8 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2
+* Tue Aug 8 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.2-1
 - fix C++ include directories ordering.
 
 * Fri Jul 28 2017 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.1-1
