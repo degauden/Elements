@@ -53,9 +53,9 @@ template vector<string> pathSearch<string, recursive_directory_iterator>(const s
 template vector<path> pathSearch<path, recursive_directory_iterator>(const string& searched_name, path directory);
 
 template vector<path> pathSearch(const string& searched_name, path directory,
-                                   SearchType search_type);
+                                 SearchType search_type);
 template vector<string> pathSearch(const string& searched_name, string directory,
-                                     SearchType search_type);
+                                   SearchType search_type);
 
 
 /**
@@ -65,9 +65,9 @@ template vector<string> pathSearch(const string& searched_name, string directory
  *
  * and call pathSearch(...) for each of them
  */
-vector<path> pathSearchInEnvVariable(const std::string& file_name,
-                                        const std::string& path_like_env_variable,
-                                            SearchType search_type) {
+vector<path> pathSearchInEnvVariable(const string& file_name,
+                                     const string& path_like_env_variable,
+                                     SearchType search_type) {
   // Placeholder for the to-be-returned search result
   vector<path> search_results { };
 
