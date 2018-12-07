@@ -34,10 +34,10 @@ namespace System {
 const ModuleInfo& getThisExecutableInfo() {
   static ModuleInfo this_module;
   if (this_module.isEmpty()) {
-    void* handle = ::dlopen(0, RTLD_LAZY);
-    if (NULL != handle) {
+    void* handle = ::dlopen(nullptr, RTLD_LAZY);
+    if (nullptr != handle) {
       void* func = ::dlsym(handle, "main");
-      if (NULL != func) {
+      if (nullptr != func) {
         this_module = ModuleInfo(FuncPtrCast<void*>(func));
       }
     }
