@@ -143,6 +143,7 @@ endif
 test: $(BUILDDIR)/$(BUILD_CONF_FILE)
 	$(RM) -r $(BUILDDIR)/Testing $(BUILDDIR)/html
 	-cd $(BUILDDIR) && $(CTEST) -T test $(ARGS)
+	+$(BUILD_CMD) HTMLSummary
 
 
 # This target ensures that the "all" target is called before
@@ -150,6 +151,7 @@ test: $(BUILDDIR)/$(BUILD_CONF_FILE)
 tests: all
 	$(RM) -r $(BUILDDIR)/Testing $(BUILDDIR)/html
 	-cd $(BUILDDIR) && $(CTEST) -T test $(ARGS)
+	+$(BUILD_CMD) HTMLSummary
 
 ifeq ($(VERBOSE),)
 # less verbose install

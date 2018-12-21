@@ -250,6 +250,9 @@ option(CONCEPT_CHECKS
        "Enable the concept template checking by adding -D_GLIBCXX_CONCEPT_CHECKS"
        OFF)
 
+option(TEST_HTML_REPORT
+       "Enable the conversion of the CTest XML reports into HTML"
+       ON)
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)

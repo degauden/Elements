@@ -297,7 +297,9 @@ macro(elements_project project version)
   endif()
 
   find_program(elementsrun_cmd elementsrun.py HINTS ${binary_paths})
-  set(elementsrun_cmd ${PYTHON_EXECUTABLE} ${elementsrun_cmd})
+  if(elementsrun_cmd)
+    set(elementsrun_cmd ${PYTHON_EXECUTABLE} ${elementsrun_cmd})
+  endif()
 
   find_package(RPMBuild)
   if(RPMBUILD_FOUND)
@@ -307,18 +309,27 @@ macro(elements_project project version)
   endif()
 
   find_program(pythonprogramscript_cmd createPythonProgramScript.py HINTS ${binary_paths})
-  set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
+  if(pythonprogramscript_cmd)
+    set(pythonprogramscript_cmd ${PYTHON_EXECUTABLE} ${pythonprogramscript_cmd})
+  endif()
 
   find_program(ctest2junit_cmd ctest2JUnit.py HINTS ${binary_paths})
-  set(ctest2junit_cmd ${PYTHON_EXECUTABLE} ${ctest2junit_cmd})
+  if(ctest2junit_cmd)
+    set(ctest2junit_cmd ${PYTHON_EXECUTABLE} ${ctest2junit_cmd})
+  endif()
 
+  find_program(ctestxml2html_cmd CTestXML2HTML.py HINTS ${binary_paths})
+  if(ctestxml2html_cmd)
+#    set(ctestxml2html_cmd ${PYTHON_EXECUTABLE} ${ctestxml2html_cmd})
+    set(ctestxml2html_cmd python ${ctestxml2html_cmd})
+  endif()
 
   mark_as_advanced(env_cmd merge_cmd versheader_cmd instheader_cmd versmodule_cmd instmodule_cmd
                    thisheader_cmd thismodule_cmd
                    thismodheader_cmd
                    Boost_testmain_cmd CppUnit_testmain_cmd
                    zippythondir_cmd elementsrun_cmd
-                   pythonprogramscript_cmd ctest2junit_cmd)
+                   pythonprogramscript_cmd ctest2junit_cmd ctestxml2html_cmd)
 
 
   #--- Project Installations------------------------------------------------------------------------
@@ -732,6 +743,25 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
          "#!/bin/sh\nexec ${_env_cmd_line} --xml ${env_xml} \"$@\"\n")
     execute_process(COMMAND chmod a+x ${CMAKE_BINARY_DIR}/run)
   endif() # ignore other systems
+
+  if(ELEMENTS_BUILD_TESTS)
+    if(TEST_HTML_REPORT)
+    #--- Special target to generate HTML reports from CTest XML reports.
+    find_file(ctestxml2html_skel
+              NAMES HTMLTestReportSkel
+              PATHS ${CMAKE_MODULE_PATH}
+              PATH_SUFFIXES auxdir
+              NO_DEFAULT_PATH)
+    add_custom_target(HTMLSummary)
+    add_custom_command(TARGET HTMLSummary
+                       COMMAND ${env_cmd} --xml ${env_xml}
+                               ${ctestxml2html_cmd} -s ${ctestxml2html_skel} -o Testing/html)
+    else()
+      add_custom_target(HTMLSummary)
+      add_custom_command(TARGET HTMLSummary
+                         COMMAND echo "The HTML reports for the tests are not enabled.")
+    endif()
+  endif()
 
 
   #--- Generate config files to be imported by other projects.
