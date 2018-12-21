@@ -32,10 +32,12 @@
 #include <iostream>
 #include <string>                       // for string
 #include <vector>                       // for vector
+#include <new>                          // for new
 
 #include <cerrno>                       // for errno
 #include <cstring>                      // for strnlen, strerror
 #include <climits>                      // for HOST_NAME_MAX
+#include <cstddef>                      // for size_t
 
 #include "ElementsKernel/FuncPtrCast.h"
 #include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
@@ -410,7 +412,7 @@ bool backTrace(string& btrace, const int depth, const int offset) {
   bool result = false;
 
 
-  std::shared_ptr<void*> addresses {new void*[total_depth], std::default_delete<void*[]>()};
+  std::shared_ptr<void*> addresses {new (std::nothrow) void*[total_depth], std::default_delete<void*[]>()};
 
   if (addresses != nullptr) {
     int count = backTrace(addresses, total_depth);
@@ -438,7 +440,7 @@ const vector<string> backTrace(const int depth, const int offset) {
   const int total_depth = depth + total_offset;
   vector<string> trace {};
 
-  std::shared_ptr<void*> addresses {new void*[total_depth], std::default_delete<void*[]>()};
+  std::shared_ptr<void*> addresses {new (std::nothrow) void*[total_depth], std::default_delete<void*[]>()};
 
   if (addresses != nullptr) {
 

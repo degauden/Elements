@@ -90,7 +90,7 @@ ModuleInfo::operator const Dl_info&() const {
 }
 
 namespace {
-  ImageHandle s_module_handle = 0;
+  ImageHandle s_module_handle = nullptr;
 }
 /// Retrieve base name of module
 const string& moduleName()   {

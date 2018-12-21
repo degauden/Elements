@@ -36,7 +36,6 @@
 
                                           // for Path::getLocationsFromEnv
 using std::string;
-using std::vector;
 using boost::filesystem::path;
 using Elements::Path::Type;
 using Elements::Path::VARIABLE;
@@ -51,7 +50,7 @@ string getConfigurationVariableName() {
 template path getConfigurationPath(const path& file_name, bool raise_exception);
 template path getConfigurationPath(const string& file_name, bool raise_exception);
 
-vector<path> getConfigurationLocations(bool exist_only) {
+std::vector<path> getConfigurationLocations(bool exist_only) {
 
   auto location_list = Path::getLocationsFromEnv(VARIABLE.at(Type::configuration), exist_only);
 

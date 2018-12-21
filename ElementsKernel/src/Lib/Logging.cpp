@@ -38,20 +38,23 @@
 #include "ElementsKernel/Exception.h"   // for Exception
 
 using std::string;
+using std::unique_ptr;
 using log4cpp::Category;
+using log4cpp::Priority;
+using log4cpp::Layout;
 
 namespace Elements {
 
-static const std::map<string, const int> LOG_LEVEL {{"FATAL", log4cpp::Priority::FATAL},
-                                                    {"ERROR", log4cpp::Priority::ERROR},
-                                                    {"WARN", log4cpp::Priority::WARN},
-                                                    {"INFO", log4cpp::Priority::INFO},
-                                                    {"DEBUG", log4cpp::Priority::DEBUG}};
+static const std::map<string, const int> LOG_LEVEL {{"FATAL", Priority::FATAL},
+                                                    {"ERROR", Priority::ERROR},
+                                                    {"WARN", Priority::WARN},
+                                                    {"INFO", Priority::INFO},
+                                                    {"DEBUG", Priority::DEBUG}};
 
-std::unique_ptr<log4cpp::Layout> getLogLayout() {
+unique_ptr<Layout> getLogLayout() {
   log4cpp::PatternLayout* layout = new log4cpp::PatternLayout {};
   layout->setConversionPattern("%d{%FT%T%Z} %c %5p : %m%n");
-  return std::unique_ptr<log4cpp::Layout>(layout);
+  return unique_ptr<Layout>(layout);
 }
 
 Logging::Logging(Category& log4cppLogger)
@@ -62,8 +65,8 @@ Logging Logging::getLogger(const string& name) {
     log4cpp::OstreamAppender* consoleAppender = new log4cpp::OstreamAppender {"console", &std::cerr};
     consoleAppender->setLayout(getLogLayout().release());
     Category::getRoot().addAppender(consoleAppender);
-    if (Category::getRoot().getPriority() == log4cpp::Priority::NOTSET) {
-      Category::setRootPriority(log4cpp::Priority::INFO);
+    if (Category::getRoot().getPriority() == Priority::NOTSET) {
+      Category::setRootPriority(Priority::INFO);
     }
   }
   return Logging {Category::getInstance(name)};
@@ -93,7 +96,7 @@ void Logging::setLogFile(const boost::filesystem::path& fileName) {
   root.setPriority(root.getPriority());
 }
 
-Logging::LogMessageStream::LogMessageStream(log4cpp::Category& logger, P_log_func log_func)
+Logging::LogMessageStream::LogMessageStream(Category& logger, P_log_func log_func)
     : m_logger(logger), m_log_func{log_func} { }
 
 Logging::LogMessageStream::LogMessageStream(LogMessageStream&& other)

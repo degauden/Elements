@@ -33,7 +33,6 @@
 #include "ElementsKernel/System.h"           // for getEnv, setEnv, isEnvSet
 
 using std::string;
-using std::move;
 using std::stringstream;
 using std::ostream;
 using std::endl;
@@ -45,7 +44,7 @@ using System::setEnv;
 using System::getEnv;
 using System::isEnvSet;
 
-Environment::Variable::Variable(Environment& env, const std::string& index): m_env{env}, m_index{index} {
+Environment::Variable::Variable(Environment& env, const string& index): m_env{env}, m_index{index} {
 }
 
 Environment::Variable::Variable(const Environment::Variable& other): m_env{other.m_env} {
@@ -54,7 +53,7 @@ Environment::Variable::Variable(const Environment::Variable& other): m_env{other
 
 }
 
-Environment::Variable::Variable(Environment::Variable&& other): m_env{move(other.m_env)} {
+Environment::Variable::Variable(Environment::Variable&& other): m_env{std::move(other.m_env)} {
 
   checkCompatibility(other);
 
