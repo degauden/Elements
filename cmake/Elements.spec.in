@@ -60,6 +60,7 @@ Requires: %{name} = %{version}-%{release}
 %description devel
 The development part of the %{name} package.
 
+
 %package debuginfo
 Summary: Debug information for package %{name}
 Requires: %{name} = %{version}-%{release}
@@ -68,6 +69,7 @@ Requires: %{name} = %{version}-%{release}
 %description debuginfo
 Debug information for package %{name}
 
+
 %package doc
 Summary: Documentation for package %{name}
 Requires: %{name}-devel = %{version}-%{release}
@@ -75,6 +77,7 @@ Requires: %{name}-devel = %{version}-%{release}
 
 %description doc
 Documentation for package %{name}
+
 
 %prep
 %setup -q
