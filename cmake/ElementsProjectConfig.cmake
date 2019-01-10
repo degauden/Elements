@@ -965,10 +965,8 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
   if(proj_has_python)
 
-    if (SQUEEZED_INSTALL)
-      if(NOT ("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3))
-        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
-      endif()
+    if(NOT ("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3))
+      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
     endif()
 
     get_property(regular_python_objects GLOBAL PROPERTY REGULAR_PYTHON_OBJECTS)
