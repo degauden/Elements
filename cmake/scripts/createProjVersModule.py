@@ -50,9 +50,9 @@ from ElementsKernel.Version import getVersionString
 %(proj)s_VERSION = (%(maj)d << 32) + (%(min)d << 16 ) + (%(pat)d)
 %(proj)s_VERSION_STRING = getVersionString(%(proj)s_MAJOR_VERSION, %(proj)s_MINOR_VERSION, %(proj)s_PATCH_VERSION)
 
-""" % { 'proj': project.upper(), 'version': version,
-        'min': minver, 'maj': majver, 'pat': patver,
-        'project': project }
+""" % {'proj': project.upper(), 'version': version,
+       'min': minver, 'maj': majver, 'pat': patver,
+       'project': project}
 
     # Get the current content of the destination file (if any)
     try:

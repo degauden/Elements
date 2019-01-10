@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html"/>
+        <title>Test Report</title>
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.css"/>
+        <link rel="stylesheet" type="text/css" href="css/style.css"/>
+        <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.10.min.js"></script>
+        <script type="text/javascript" src="js/scripts.js"></script>
+        <script>
+            $(function(){
+                $('#menu').menu().hide();
+                $('#image_sommaire').hover(function(){
+                    $('#menu').show();
+                });
+                $('#menu').hover(function(){},function(){
+                    $(this).hide();
+                    $('#image_sommaire').show();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h1 id="title">Test Report
+            <span id="project-info"></span>
+            <span id="slot-info"></span>
+        </h1>
+        <img id="image_sommaire" align="middle" src="images/menu.png" alt="link"/>
+        <ul id="menu">
+            <li>Links:</li>
+            <li><a href="#summary_link">Statistics</a></li>
+            <li><a href="#results_link">Test that did not pass</a></li>
+            <li><a href="#all_results_link">Test Result</a></li>
+            <li><a href="#annotations_link">Annotations</a></li>
+            <li><a href="index.html">This page</a></li>
+        </ul>
+        <div id ="main">
+            <h2 class="titre" id="summary_link">Statistics</h2>
+            <div id="summary" class="loading"></div>
+            <h2 id ="results_link">Tests That Did Not Pass</h2>
+            <div id="results" class="results loading"></div>
+            <h2 id="all_results_link">Test Results</h2>
+            <div id="all_results" class="results loading"></div>
+            <h2 id="annotations_link">Annotations</h2>
+            <div id="annotations" class="loading"></div>
+        </div>
+    </body>
+</html>

@@ -127,24 +127,24 @@ def mainMethod(args):
     #  Log some of the arguments
     #
     string_from_configuration = args.string_option
-    logger.info('Example string : ' + string_from_configuration)
+    logger.info('Example string : %s', string_from_configuration)
     second_element = args.int_list_option[1]
-    logger.info('Second elements from the list : ' + str(second_element))
+    logger.info('Second elements from the list : %s', str(second_element))
 
-    logger.info("the int_option value %d" % args.int_option)
-    logger.info("the threshold value %.1f" % args.threshold)
+    logger.info("the int_option value %d", args.int_option)
+    logger.info("the threshold value %.1f", args.threshold)
 
     #
     #  Calling a static method
     #
     result = ClassExample.product(3, 4)
-    logger.info('Static method result : ' + str(result))
+    logger.info('Static method result : %s', str(result))
 
     #
     #  Calling the constructor and a method member
     #
     example_object = ClassExample(args.int_list_option)
-    logger.info('Sum of the list elements : ' + str(example_object.sumListValues()))
+    logger.info('Sum of the list elements : %s', str(example_object.sumListValues()))
 
     logger.info('Exiting ProgramExample mainMethod()')
 

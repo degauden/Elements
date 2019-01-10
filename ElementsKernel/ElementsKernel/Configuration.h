@@ -34,11 +34,11 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 
-#include <string>                   // for string
-#include <vector>                   // for vector
-#include <boost/filesystem.hpp>     // for filesystem
+#include <string>                     // for string
+#include <vector>                     // for vector
+#include <boost/filesystem/path.hpp>  // for path
 
-#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Export.h"    // ELEMENTS_API
 
 namespace Elements {
 
