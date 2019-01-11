@@ -71,7 +71,7 @@ include(CMakeParseArguments)
 
 find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION} QUIET)
 
-if(PYTHON_EXECUTABLE MATCHES "^/usr/bin/python")
+if(PYTHON_EXECUTABLE MATCHES "^(/usr)?/bin/python")
   set(PYTHON_HAS_STD_LOCATION TRUE)
 else()
   set(PYTHON_HAS_STD_LOCATION FALSE)
