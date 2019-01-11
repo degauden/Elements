@@ -71,6 +71,12 @@ include(CMakeParseArguments)
 
 find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION} QUIET)
 
+if(PYTHON_EXECUTABLE MATCHES "^/usr/bin/python")
+  set(PYTHON_HAS_STD_LOCATION TRUE)
+else()
+  set(PYTHON_HAS_STD_LOCATION FALSE)
+endif()
+
 #-------------------------------------------------------------------------------
 # elements_project(project version
 #               [USE proj1 vers1 [proj2 vers2 ...]]
@@ -446,8 +452,10 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.py)
     if("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3)
-      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyo)
-      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyc)
+      if(NOT (SQUEEZED_INSTALL AND NOT PYTHON_HAS_STD_LOCATION))
+        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyo)
+        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyc)
+      endif()
     endif()
   endif()
 
@@ -962,7 +970,9 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   if(proj_has_python)
 
     if(NOT ("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3))
-      set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
+      if(NOT (SQUEEZED_INSTALL AND NOT PYTHON_HAS_STD_LOCATION))
+        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
+      endif()
     endif()
 
     get_property(regular_python_objects GLOBAL PROPERTY REGULAR_PYTHON_OBJECTS)
@@ -1189,6 +1199,10 @@ ${MAIN_PROJECT_CHANGELOG}
         endif()
       endif()
 
+      set(BYTECOMPILE_ERRORS_TERMINATE_BUILD 1)
+      if(SQUEEZED_INSTALL AND NOT PYTHON_HAS_STD_LOCATION)
+        set(BYTECOMPILE_ERRORS_TERMINATE_BUILD 0)
+      endif()
 
       if(NOT SQUEEZED_INSTALL)
         find_file_to_configure(Elements.spec.in

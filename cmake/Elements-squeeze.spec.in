@@ -12,7 +12,8 @@ Vendor:         @CPACK_PACKAGE_VENDOR@
 %bcond_with doc
 
 %global __brp_mangle_shebangs_exclude /usr/bin/env python@PYTHON_EXPLICIT_VERSION@
-%global __python @PYTHON_EXECUTABLE@ 
+%global __python @PYTHON_EXECUTABLE@
+%global _python_bytecompile_errors_terminate_build @BYTECOMPILE_ERRORS_TERMINATE_BUILD@
 
 @CPACK_RPM_AUTOREQ_LINE@
 
