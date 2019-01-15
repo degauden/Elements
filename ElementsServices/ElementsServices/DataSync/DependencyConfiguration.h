@@ -16,13 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _ELEMENTSSERVICES_DATASYNC_DEPENDENCYCONFIGURATION_H
-#define _ELEMENTSSERVICES_DATASYNC_DEPENDENCYCONFIGURATION_H
+#ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DEPENDENCYCONFIGURATION_H_
+#define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DEPENDENCYCONFIGURATION_H_
 
 #include <map>
 #include <vector>
+#include <string>
 
-#include "DataSyncUtils.h"
+#include "ElementsServices/DataSync/DataSyncUtils.h"
 
 namespace ElementsServices {
 namespace DataSync {
@@ -34,40 +35,40 @@ namespace DataSync {
  * * the distant source path,
  * * the local destination path.
  */
-class DependencyConfiguration {
+class ELEMENTS_API DependencyConfiguration {
 
 public:
 
-  virtual ~DependencyConfiguration () = default;
+  virtual ~DependencyConfiguration() = default;
 
-  DependencyConfiguration (
+  DependencyConfiguration(
       path distantRoot,
       path localRoot,
       path configFile);
 
-  std::map<path, path> fileMap ();
+  std::map<path, path> fileMap();
 
-  path distantPathOf (path localFile) const;
+  path distantPathOf(path localFile) const;
 
-  size_t dependencyCount () const;
+  size_t dependencyCount() const;
 
-  std::vector<path> distantPaths () const;
+  std::vector<path> distantPaths() const;
 
-  std::vector<path> localPaths () const;
+  std::vector<path> localPaths() const;
 
 protected:
 
-  void parseConfigurationFile (path filename);
+  void parseConfigurationFile(path filename);
 
-  void parseConfigurationLine (std::string line);
+  void parseConfigurationLine(std::string line);
 
-  char aliasSeparator () const;
+  char aliasSeparator() const;
 
-  bool lineHasAlias (std::string line) const;
+  bool lineHasAlias(std::string line) const;
 
-  void parseLineWithAlias (std::string line);
+  void parseLineWithAlias(std::string line);
 
-  void parseLineWithoutAlias (std::string line);
+  void parseLineWithoutAlias(std::string line);
 
 private:
 
@@ -78,7 +79,7 @@ private:
 
 };
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices
 
-#endif
+#endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DEPENDENCYCONFIGURATION_H_

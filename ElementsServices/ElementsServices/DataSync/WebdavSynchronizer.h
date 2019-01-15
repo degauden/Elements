@@ -16,10 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _ELEMENTSSERVICES_DATASYNC_WEBDAVSYNCHRONIZER_H
-#define _ELEMENTSSERVICES_DATASYNC_WEBDAVSYNCHRONIZER_H
+#ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_WEBDAVSYNCHRONIZER_H_
+#define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_WEBDAVSYNCHRONIZER_H_
 
-#include "DataSynchronizer.h"
+#include <string>
+
+#include "ElementsKernel/Export.h"
+
+#include "ElementsServices/DataSync/DataSynchronizer.h"
 
 namespace ElementsServices {
 namespace DataSync {
@@ -29,23 +33,23 @@ namespace DataSync {
  * @brief A data synchronizer for WebDAV hosts.
  *
  */
-class WebdavSynchronizer: public DataSynchronizer {
+class ELEMENTS_API WebdavSynchronizer: public DataSynchronizer {
 
 public:
 
-  virtual ~WebdavSynchronizer () = default;
+  virtual ~WebdavSynchronizer() = default;
 
-  WebdavSynchronizer (
+  WebdavSynchronizer(
       ConnectionConfiguration connection,
       DependencyConfiguration dependency);
 
-  virtual std::string createDownloadCommand (
+  std::string createDownloadCommand(
       path distantFile,
       path localFile) const override;
 
 };
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices
 
-#endif
+#endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_WEBDAVSYNCHRONIZER_H_

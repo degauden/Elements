@@ -16,15 +16,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZER_H
-#define _ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZER_H
+#ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZER_H_
+#define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZER_H_
 
 #include <map>
 #include <stdexcept>
+#include <string>
 
-#include "ConnectionConfiguration.h"
-#include "DataSyncUtils.h"
-#include "DependencyConfiguration.h"
+#include "ElementsKernel/Export.h"
+
+#include "ElementsServices/DataSync/ConnectionConfiguration.h"
+#include "ElementsServices/DataSync/DataSyncUtils.h"
+#include "ElementsServices/DataSync/DependencyConfiguration.h"
 
 namespace ElementsServices {
 namespace DataSync {
@@ -33,10 +36,10 @@ namespace DataSync {
  * @class DownloadFailed
  * @brief An exception raised when downloading fails.
  */
-class DownloadFailed: public std::runtime_error {
+class ELEMENTS_API DownloadFailed: public std::runtime_error {
 public:
-  virtual ~DownloadFailed () = default;
-  DownloadFailed (path distantFile, path localFile) :
+  virtual ~DownloadFailed() = default;
+  DownloadFailed(path distantFile, path localFile) :
       std::runtime_error(
           "Unable to download file: '"
           + distantFile.string()
@@ -52,33 +55,33 @@ public:
  * @details
  * Child classes should provide their synchronization command line.
  */
-class DataSynchronizer {
+class ELEMENTS_API DataSynchronizer {
 
 public:
 
-  virtual ~DataSynchronizer () = default;
+  virtual ~DataSynchronizer() = default;
 
-  DataSynchronizer (
+  DataSynchronizer(
       ConnectionConfiguration connection,
       DependencyConfiguration dependency);
 
-  void downloadAllFiles () const;
+  void downloadAllFiles() const;
 
 protected:
 
-  bool fileShouldBeWritten (path localFile) const;
+  bool fileShouldBeWritten(path localFile) const;
 
-  bool fileAlreadyExists (path localFile) const;
+  bool fileAlreadyExists(path localFile) const;
 
-  void downloadOneFile (
+  void downloadOneFile(
       path distantFile,
       path localFile) const;
 
-  bool hasBeenDownloaded (
+  bool hasBeenDownloaded(
       path distantFile,
       path localFile) const;
 
-  virtual std::string createDownloadCommand (
+  virtual std::string createDownloadCommand(
       path distantFile,
       path localFile) const = 0;
 
@@ -89,7 +92,7 @@ protected:
 
 };
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices
 
-#endif
+#endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZER_H_

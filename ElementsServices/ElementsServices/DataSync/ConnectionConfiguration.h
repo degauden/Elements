@@ -16,12 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H
-#define _ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H
+#ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H_
+#define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H_
 
 #include <string>
 
-#include "DataSyncUtils.h"
+#include "ElementsKernel/Export.h"
+
+#include "ElementsServices/DataSync/DataSyncUtils.h"
 
 namespace ElementsServices {
 namespace DataSync {
@@ -45,13 +47,13 @@ enum OverwritingPolicy {
  * @class UnknownHost
  * @brief Exception raised when a hosting solution is not supported by the tool.
  */
-class UnknownHost: public std::runtime_error {
+class ELEMENTS_API UnknownHost: public std::runtime_error {
 public:
-  virtual ~UnknownHost () = default;
-  UnknownHost () :
+  virtual ~UnknownHost() = default;
+  UnknownHost() :
       std::runtime_error("I don't know this hosting solution!") {
   }
-  UnknownHost (std::string hostName) :
+  explicit UnknownHost(std::string hostName):
       std::runtime_error("I don't know this hosting solution: " + hostName) {
   }
 };
@@ -63,29 +65,29 @@ public:
  * * the user name and password,
  * * the overwriting policy.
  */
-class ConnectionConfiguration {
+class ELEMENTS_API ConnectionConfiguration {
 
 public:
 
-  virtual ~ConnectionConfiguration () = default;
+  virtual ~ConnectionConfiguration() = default;
 
   /**
    * @brief Create a dependency configuration by reading a configuration file.
    */
-  ConnectionConfiguration (path configFile);
+  explicit ConnectionConfiguration(path configFile);
 
   /**
    * @brief Check whether existing local files can be overwritten.
    */
-  bool overwritingAllowed () const;
+  bool overwritingAllowed() const;
 
 protected:
 
-  void parseConfigurationFile (path filename);
+  void parseConfigurationFile(path filename);
 
-  void parseHost (std::string name);
+  void parseHost(std::string name);
 
-  void parseOverwritingPolicy (std::string policy);
+  void parseOverwritingPolicy(std::string policy);
 
 public:
 
@@ -100,7 +102,7 @@ public:
 
 };
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices
 
-#endif
+#endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H_

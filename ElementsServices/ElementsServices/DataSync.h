@@ -16,8 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _ELEMENTSSERVICES_DATASYNC_H
-#define _ELEMENTSSERVICES_DATASYNC_H
+#ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_H_
+#define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_H_
+
+#include "ElementsKernel/Export.h"
 
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 #include "ElementsServices/DataSync/ConnectionConfiguration.h"
@@ -35,7 +37,7 @@ namespace DataSync {
  *
  * @see https://euclid.roe.ac.uk/projects/testdata/wiki
  */
-class DataSync {
+class ELEMENTS_API DataSync {
 
 public:
 
@@ -48,12 +50,12 @@ public:
    * @param dependencyFile Path to the dependency configuration file
    * relative to the configuration directory.
    */
-  DataSync (path connectionFile, path dependencyFile);
+  DataSync(path connectionFile, path dependencyFile);
 
   /**
    * @brief Download the test data.
    */
-  void download ();
+  void download();
 
   /**
    * @brief Download the test data and provide a fallback host
@@ -62,7 +64,7 @@ public:
    * @param connectionFile Path to the connection configuration file
    * of the fallback host relative to the configuration directory.
    */
-  void downloadWithFallback (path connectionFile);
+  void downloadWithFallback(path connectionFile);
 
   /**
    * @brief Get the absolute path to a local test file
@@ -80,7 +82,7 @@ public:
    * @warning This function must be used to access any data
    * downloaded by the DataSync tool.
    */
-  path absolutePath (path relativePath);
+  path absolutePath(path relativePath);
 
 private:
 
@@ -91,7 +93,7 @@ private:
 
 };
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices
 
-#endif
+#endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_H_

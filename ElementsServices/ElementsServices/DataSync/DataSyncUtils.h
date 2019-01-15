@@ -16,52 +16,55 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _ELEMENTSSERVICES_DATASYNC_DATASYNCUTILS_H
-#define _ELEMENTSSERVICES_DATASYNC_DATASYNCUTILS_H
+#ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCUTILS_H_
+#define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCUTILS_H_
 
-#include <boost/filesystem.hpp>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <boost/filesystem.hpp>
+
+#include "ElementsKernel/Export.h"
 
 namespace ElementsServices {
 namespace DataSync {
 
 using path = boost::filesystem::path;
 
-path confFilePath (path filename);
+ELEMENTS_API path confFilePath(path filename);
 
-bool checkCall (std::string command);
+ELEMENTS_API bool checkCall(std::string command);
 
-std::pair<std::string, std::string> runCommandAndCaptureOutErr (
+ELEMENTS_API std::pair<std::string, std::string> runCommandAndCaptureOutErr(
     std::string command);
 
-bool localDirExists (path localDir);
+ELEMENTS_API bool localDirExists(path localDir);
 
-void createLocalDirOf (path localFile);
+ELEMENTS_API void createLocalDirOf(path localFile);
 
 /**
  * @brief Get the value of an environment variable.
  * @return The value if the variable exists; "" otherwise.
  */
-std::string environmentVariable (std::string name);
+ELEMENTS_API std::string environmentVariable(std::string name);
 
-path localWorkspacePrefix ();
+ELEMENTS_API path localWorkspacePrefix();
 
-std::string lower (std::string text);
+ELEMENTS_API std::string lower(std::string text);
 
 template<typename T>
-bool valueIsListed (const T& value, const std::vector<T>& list) {
+ELEMENTS_API bool valueIsListed(const T& value, const std::vector<T>& list) {
   const auto& begin = list.begin();
   const auto& end = list.end();
   return std::find(begin, end, value) != end;
 }
 
-bool containsInThisOrder (
+ELEMENTS_API bool containsInThisOrder(
     std::string input,
     std::vector<std::string> substrings);
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices
 
-#endif
+#endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCUTILS_H_

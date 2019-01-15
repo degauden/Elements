@@ -16,26 +16,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H
-#define _ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H
+#ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H_
+#define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H_
 
 #include <memory>
 #include <stdexcept>
 
-#include "DataSynchronizer.h"
-#include "DataSyncUtils.h"
-#include "DssSynchronizer.h"
-#include "IrodsSynchronizer.h"
-#include "WebdavSynchronizer.h"
+#include "ElementsKernel/Export.h"
+
+#include "ElementsServices/DataSync/DataSynchronizer.h"
+#include "ElementsServices/DataSync/DataSyncUtils.h"
+#include "ElementsServices/DataSync/DssSynchronizer.h"
+#include "ElementsServices/DataSync/IrodsSynchronizer.h"
+#include "ElementsServices/DataSync/WebdavSynchronizer.h"
 
 namespace ElementsServices {
 namespace DataSync {
 
-std::shared_ptr<DataSynchronizer> createSynchronizer (
+ELEMENTS_API std::shared_ptr<DataSynchronizer> createSynchronizer(
     ConnectionConfiguration connection,
     DependencyConfiguration dependency);
 
 }
 }
 
-#endif
+#endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H_

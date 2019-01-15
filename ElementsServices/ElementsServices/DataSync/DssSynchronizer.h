@@ -16,10 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _ELEMENTSSERVICES_DATASYNC_DSSSYNCHRONIZER_H
-#define _ELEMENTSSERVICES_DATASYNC_DSSSYNCHRONIZER_H
+#ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DSSSYNCHRONIZER_H_
+#define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DSSSYNCHRONIZER_H_
 
-#include "DataSynchronizer.h"
+#include <string>
+#include "ElementsKernel/Export.h"
+
+#include "ElementsServices/DataSync/DataSynchronizer.h"
 
 namespace ElementsServices {
 namespace DataSync {
@@ -28,23 +31,23 @@ namespace DataSync {
  * @class DssSynchronizer
  * @brief A data synchronizer for DSS hosts.
  */
-class DssSynchronizer: public DataSynchronizer {
+class ELEMENTS_API DssSynchronizer: public DataSynchronizer {
 
 public:
 
-  virtual ~DssSynchronizer () = default;
+  virtual ~DssSynchronizer() = default;
 
-  DssSynchronizer (
+  DssSynchronizer(
       ConnectionConfiguration connection,
       DependencyConfiguration dependency);
 
-  virtual std::string createDownloadCommand (
+  std::string createDownloadCommand(
       path distantFile,
       path localFile) const override;
 
 };
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices
 
-#endif
+#endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DSSSYNCHRONIZER_H_
