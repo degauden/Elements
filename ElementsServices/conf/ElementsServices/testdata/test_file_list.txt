@@ -1,0 +1,5 @@
+file1.txt
+file2-V1.txt	file2.txt
+file3.txt	dir/file3.txt
+dir/file4.txt
+dir/file5-V2.txt	file5.txt
