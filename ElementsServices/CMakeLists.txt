@@ -51,45 +51,45 @@ elements_add_library(ElementsServices src/lib/DataSync/*.cpp src/lib/*.cpp
 #                       INCLUDE_DIRS ElementsExamples
 #                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 #===============================================================================
-elements_add_unit_test(DataSync tests/src/DataSync_test.cpp 
-                     EXECUTABLE ElementsServices_DataSync_test
-                     LINK_LIBRARIES ElementsServices
-                     ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
-                     TYPE Boost)
-elements_add_unit_test(ConnectionConfiguration tests/src/DataSync/ConnectionConfiguration_test.cpp 
-                     EXECUTABLE ElementsServices_ConnectionConfiguration_test
-                     LINK_LIBRARIES ElementsServices
-                     TYPE Boost)
-elements_add_unit_test(DataSynchronizer tests/src/DataSync/DataSynchronizer_test.cpp 
-                     EXECUTABLE ElementsServices_DataSynchronizer_test
-                     LINK_LIBRARIES ElementsServices
-                     TYPE Boost)
+elements_add_unit_test(DataSync tests/src/DataSync_test.cpp tests/src/DataSync/fixtures/*.cpp
+                       EXECUTABLE ElementsServices_DataSync_test
+                       LINK_LIBRARIES ElementsServices
+                       ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
+                       TYPE Boost)
+elements_add_unit_test(ConnectionConfiguration tests/src/DataSync/ConnectionConfiguration_test.cpp tests/src/DataSync/fixtures/*.cpp
+                       EXECUTABLE ElementsServices_ConnectionConfiguration_test
+                       LINK_LIBRARIES ElementsServices
+                       TYPE Boost)
+elements_add_unit_test(DataSynchronizer tests/src/DataSync/DataSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
+                       EXECUTABLE ElementsServices_DataSynchronizer_test
+                       LINK_LIBRARIES ElementsServices
+                       TYPE Boost)
 elements_add_unit_test(DataSynchronizerMaker tests/src/DataSync/DataSynchronizerMaker_test.cpp 
-                     EXECUTABLE ElementsServices_DataSynchronizerMaker_test
-                     LINK_LIBRARIES ElementsServices
-                     TYPE Boost)
+                       EXECUTABLE ElementsServices_DataSynchronizerMaker_test
+                       LINK_LIBRARIES ElementsServices
+                       TYPE Boost)
 elements_add_unit_test(DataSyncUtils tests/src/DataSync/DataSyncUtils_test.cpp 
-                     EXECUTABLE ElementsServices_DataSyncUtils_test
-                     LINK_LIBRARIES ElementsServices
-                     ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
-                     TYPE Boost)
-elements_add_unit_test(DependencyConfiguration tests/src/DataSync/DependencyConfiguration_test.cpp 
-                     EXECUTABLE ElementsServices_DependencyConfiguration_test
-                     LINK_LIBRARIES ElementsServices
-                     TYPE Boost)
-elements_add_unit_test(DssSynchronizer tests/src/DataSync/DssSynchronizer_test.cpp 
-                     EXECUTABLE ElementsServices_DssSynchronizer_test
-                     LINK_LIBRARIES ElementsServices
-                     TYPE Boost)
-elements_add_unit_test(IrodsSynchronizer tests/src/DataSync/IrodsSynchronizer_test.cpp 
-                     EXECUTABLE ElementsServices_IrodsSynchronizer_test
-                     LINK_LIBRARIES ElementsServices
-                     ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
-                     TYPE Boost)
-elements_add_unit_test(WebdavSynchronizer tests/src/DataSync/WebdavSynchronizer_test.cpp 
-                     EXECUTABLE ElementsServices_WebdavSynchronizer_test
-                     LINK_LIBRARIES ElementsServices
-                     TYPE Boost)
+                       EXECUTABLE ElementsServices_DataSyncUtils_test
+                       LINK_LIBRARIES ElementsServices
+                       ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
+                       TYPE Boost)
+elements_add_unit_test(DependencyConfiguration tests/src/DataSync/DependencyConfiguration_test.cpp tests/src/DataSync/fixtures/*.cpp
+                       EXECUTABLE ElementsServices_DependencyConfiguration_test
+                       LINK_LIBRARIES ElementsServices
+                       TYPE Boost)
+elements_add_unit_test(DssSynchronizer tests/src/DataSync/DssSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
+                       EXECUTABLE ElementsServices_DssSynchronizer_test
+                       LINK_LIBRARIES ElementsServices
+                       TYPE Boost)
+elements_add_unit_test(IrodsSynchronizer tests/src/DataSync/IrodsSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
+                       EXECUTABLE ElementsServices_IrodsSynchronizer_test
+                       LINK_LIBRARIES ElementsServices
+                       ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
+                       TYPE Boost)
+elements_add_unit_test(WebdavSynchronizer tests/src/DataSync/WebdavSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
+                       EXECUTABLE ElementsServices_WebdavSynchronizer_test
+                       LINK_LIBRARIES ElementsServices
+                       TYPE Boost)
 
 #===============================================================================
 # Use the following macro for python modules, scripts and aux files:

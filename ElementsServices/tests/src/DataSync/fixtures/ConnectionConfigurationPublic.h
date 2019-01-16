@@ -1,18 +1,23 @@
-#ifndef _ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATIONPUBLIC_H
-#define _ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATIONPUBLIC_H
+/**
+ * @file ConnectionConfigurationPublic.cpp
+ *
+ * @date Jan 16, 2019
+ * @author Hubert Degaudenzi
+ *
+ * @copyright 2019
+ *
+ */
+
+#ifndef ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_CONNECTIONCONFIGURATIONPUBLIC_H_
+#define ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_CONNECTIONCONFIGURATIONPUBLIC_H_
 
 #include "ElementsServices/DataSync/ConnectionConfiguration.h"
-#include "ConfigFilesFixture.h"
 
-using namespace ElementsServices::DataSync;
-
-class ConnectionConfigurationPublic: public ConnectionConfiguration {
+class ConnectionConfigurationPublic: public ElementsServices::DataSync::ConnectionConfiguration {
 public:
-  virtual ~ConnectionConfigurationPublic () = default;
-  ConnectionConfigurationPublic () :
-      ConnectionConfiguration(theWebdavFrConfig()) {
-  }
+  virtual ~ConnectionConfigurationPublic() = default;
+  ConnectionConfigurationPublic();
   using ConnectionConfiguration::parseHost;
 };
 
-#endif
+#endif  // ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_CONNECTIONCONFIGURATIONPUBLIC_H_

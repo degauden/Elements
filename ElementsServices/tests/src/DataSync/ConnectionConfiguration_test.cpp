@@ -18,6 +18,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "fixtures/ConfigFilesFixture.h"
 #include "fixtures/ConnectionConfigurationPublic.h"
 
 using namespace ElementsServices::DataSync;

@@ -1,62 +1,43 @@
-#ifndef _ELEMENTSSERVICES_DATASYNC_CONFIGFILESFIXTURE_H
-#define _ELEMENTSSERVICES_DATASYNC_CONFIGFILESFIXTURE_H
+/**
+ * @file ConfigFilesFixture.cpp
+ *
+ * @date Jan 16, 2019
+ * @author Hubert Degaudenzi
+ *
+ * @copyright 2019
+ *
+ */
+
+
+#ifndef ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_CONFIGFILESFIXTURE_H_
+#define ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_CONFIGFILESFIXTURE_H_
+
+#include <vector>
 
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 
-using namespace ElementsServices::DataSync;
+ElementsServices::DataSync::path theDependencyConfig();
 
-path theDependencyConfig () {
-  return path("ElementsServices/testdata/test_file_list.txt");
-}
+std::vector<ElementsServices::DataSync::path> theLocalFiles();
 
-std::vector<path> theLocalFiles () {
-  return std::vector<path>( {
-      path("file1.txt"),
-      path("file2.txt"),
-      path("dir/file3.txt"),
-      path("dir/file4.txt"),
-      path("file5.txt")
-  });
-}
+ElementsServices::DataSync::path theLocalWorkspace();
 
-path theLocalWorkspace () {
-  return path("/tmp");
-}
+ElementsServices::DataSync::path absPath(ElementsServices::DataSync::path relPath);
 
-path absPath(path relPath) {
-  return localWorkspacePrefix() / theLocalWorkspace() / relPath;
-}
+ElementsServices::DataSync::path thePrefixedLocalWorkspace();
 
-path thePrefixedLocalWorkspace () {
-  return localWorkspacePrefix() / theLocalWorkspace();
-}
+ElementsServices::DataSync::path theInvalidDependencyConfig();
 
-path theInvalidDependencyConfig () {
-  return path("ElementsServices/testdata/invalid_test_file_list.txt");
-}
+ElementsServices::DataSync::path theIrodsFrConfig();
 
-path theIrodsFrConfig () {
-  return path("ElementsServices/testdata/sync_fr_irods.conf");
-}
+ElementsServices::DataSync::path theWebdavFrConfig();
 
-path theWebdavFrConfig () {
-  return path("ElementsServices/testdata/sync_fr_webdav.conf");
-}
+ElementsServices::DataSync::path theWebdavFrDistantWorkspace();
 
-path theWebdavFrDistantWorkspace () {
-  return path("/euclid-fr/ct/mock_test_data");
-}
+ElementsServices::DataSync::path theWebdavEsConfig();
 
-path theWebdavEsConfig () {
-  return path("ElementsServices/testdata/sync_es_webdav.conf");
-}
+ElementsServices::DataSync::path theNoOverwriteConfig();
 
-path theNoOverwriteConfig () {
-  return path("ElementsServices/testdata/sync_fr_webdav_nooverwrite.conf");
-}
+ElementsServices::DataSync::path aBadConnectionConfig();
 
-path aBadConnectionConfig () {
-  return path("ElementsServices/testdata/sync_wrong.conf");
-}
-
-#endif
+#endif  // ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_CONFIGFILESFIXTURE_H_

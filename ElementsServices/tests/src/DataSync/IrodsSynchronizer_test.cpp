@@ -25,29 +25,34 @@
 #include <boost/test/unit_test.hpp>
 #include <exception>
 
-#include "fixtures/ConfigFilesFixture.h"
+#include "ElementsServices/DataSync/ConnectionConfiguration.h"
+#include "ElementsServices/DataSync/DependencyConfiguration.h"
 #include "ElementsServices/DataSync/IrodsSynchronizer.h"
 
+#include "fixtures/ConfigFilesFixture.h"
+
+
+namespace DataSync = ElementsServices::DataSync;
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (IrodsSynchronizer_test)
+BOOST_AUTO_TEST_SUITE(IrodsSynchronizer_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE( irodsIsNotInstalled_test ) {
-  if(irodsIsInstalled())
+BOOST_AUTO_TEST_CASE(irodsIsNotInstalled_test) {
+  if (DataSync::irodsIsInstalled())
       return;
-  const auto connection = ConnectionConfiguration(theIrodsFrConfig());
-  const auto dependency = DependencyConfiguration("", "", theDependencyConfig());
+  const auto connection = DataSync::ConnectionConfiguration(theIrodsFrConfig());
+  const auto dependency = DataSync::DependencyConfiguration("", "", theDependencyConfig());
   BOOST_CHECK_THROW(
-      IrodsSynchronizer(connection, dependency),
+      DataSync::IrodsSynchronizer(connection, dependency),
       std::exception);
 }
 
-//TODO test IrodsSynchronizer
+// @TODO test IrodsSynchronizer
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()
 
 
