@@ -2,7 +2,7 @@
  * @file MockDataSynchronizer.cpp
  *
  * @date Jan 16, 2019
- * @author Hubert Degaudenzi
+ * @author Antoine Basset
  *
  * @copyright 2019
  *

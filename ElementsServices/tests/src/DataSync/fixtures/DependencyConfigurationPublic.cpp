@@ -2,7 +2,7 @@
  * @file DependencyConfigurationPublic.cpp
  *
  * @date Jan 16, 2019
- * @author hubert
+ * @author Antoine Basset
  *
  * @copyright 2019
  *
