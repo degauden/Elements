@@ -21,20 +21,23 @@
 namespace ElementsServices {
 namespace DataSync {
 
-std::shared_ptr<DataSynchronizer> createSynchronizer (
+using std::make_shared;
+
+std::shared_ptr<DataSynchronizer> createSynchronizer(
     ConnectionConfiguration connection,
     DependencyConfiguration dependency) {
   switch (connection.host) {
     case DataHost::IRODS:
-      return std::make_shared < IrodsSynchronizer > (connection, dependency);
+      return make_shared<IrodsSynchronizer>(connection, dependency);
     case DataHost::WEBDAV:
-      return std::make_shared < WebdavSynchronizer > (connection, dependency);
+      return make_shared<WebdavSynchronizer>(connection, dependency);
     case DataHost::DSS:
-      return std::make_shared < DssSynchronizer > (connection, dependency);
+      return make_shared<DssSynchronizer>(connection, dependency);
     default:
       throw UnknownHost();
   }
 }
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices
+

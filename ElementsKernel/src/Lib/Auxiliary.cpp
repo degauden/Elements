@@ -36,13 +36,11 @@
 
 using std::string;
 using boost::filesystem::path;
-using Elements::Path::Type;
-using Elements::Path::VARIABLE;
 
 namespace Elements {
 
 string getAuxiliaryVariableName() {
-  return VARIABLE.at(Type::auxiliary);
+  return Path::VARIABLE.at(Path::Type::auxiliary);
 }
 
 // instantiation of the most expected types
@@ -53,7 +51,7 @@ std::vector<path> getAuxiliaryLocations(bool exist_only) {
 
   using System::DEFAULT_INSTALL_PREFIX;
 
-  auto location_list = Path::getLocationsFromEnv(VARIABLE.at(Type::auxiliary), exist_only);
+  auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::auxiliary), exist_only);
 
   // extended to /usr/share/aux{dir,}
   location_list.push_back(path(DEFAULT_INSTALL_PREFIX) / "share" / "auxdir");

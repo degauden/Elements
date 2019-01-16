@@ -16,6 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <string>
+#include <vector>
 #include <boost/program_options.hpp>
 
 #include "ElementsServices/DataSync/ConnectionConfiguration.h"
@@ -24,35 +26,37 @@
 namespace ElementsServices {
 namespace DataSync {
 
-ConnectionConfiguration::ConnectionConfiguration (path filename) {
+using std::string;
+
+ConnectionConfiguration::ConnectionConfiguration(path filename) {
   parseConfigurationFile(filename);
 }
 
-bool ConnectionConfiguration::overwritingAllowed () const {
+bool ConnectionConfiguration::overwritingAllowed() const {
   return overwritingPolicy == OverwritingPolicy::OVERWRITE;
 }
 
-void ConnectionConfiguration::parseConfigurationFile (path filename) {
-  //TODO clean function
+void ConnectionConfiguration::parseConfigurationFile(path filename) {
+  // @TODO clean function
 
   namespace po = boost::program_options;
 
   /* Declare options */
   po::options_description options { };
   options.add_options()
-      ("host", po::value<std::string>(),
+      ("host", po::value<string>(),
           "Hosting solution: iRODS or WebDAV (case insensitive)")
-      ("host-url", po::value<std::string>()->default_value(""),
+      ("host-url", po::value<string>()->default_value(""),
           "Host URL if needed")
-      ("user", po::value<std::string>()->default_value(""),
+      ("user", po::value<string>()->default_value(""),
           "User name if needed")
-      ("password", po::value<std::string>()->default_value(""),
+      ("password", po::value<string>()->default_value(""),
           "Password if needed")
-      ("overwrite", po::value<std::string>()->default_value("no"),
+      ("overwrite", po::value<string>()->default_value("no"),
           "Allow overwriting local files if they already exist")
-      ("distant-workspace", po::value<std::string>(),
+      ("distant-workspace", po::value<string>(),
           "Path to distant repository workspace")
-      ("local-workspace", po::value<std::string>(),
+      ("local-workspace", po::value<string>(),
           "Path to local repository workspace")
       ("tries", po::value<int>()->default_value(4),
           "Number of download tries");
@@ -70,19 +74,19 @@ void ConnectionConfiguration::parseConfigurationFile (path filename) {
   }
 
   /* Configure object */
-  parseHost(vm["host"].as<std::string>());
-  hostUrl = vm["host-url"].as<std::string>();
-  user = vm["user"].as<std::string>();
-  password = vm["password"].as<std::string>();
-  parseOverwritingPolicy(vm["overwrite"].as<std::string>());
-  distantRoot = vm["distant-workspace"].as<std::string>();
-  localRoot = localWorkspacePrefix() / vm["local-workspace"].as<std::string>();
+  parseHost(vm["host"].as<string>());
+  hostUrl = vm["host-url"].as<string>();
+  user = vm["user"].as<string>();
+  password = vm["password"].as<string>();
+  parseOverwritingPolicy(vm["overwrite"].as<string>());
+  distantRoot = vm["distant-workspace"].as<string>();
+  localRoot = localWorkspacePrefix() / vm["local-workspace"].as<string>();
   tries = vm["tries"].as<int>();
 
 }
 
-void ConnectionConfiguration::parseHost (std::string name) {
-  const std::string uncased = lower(name);
+void ConnectionConfiguration::parseHost(string name) {
+  const string uncased = lower(name);
   if (uncased == "irods")
     host = DataHost::IRODS;
   else if (uncased == "webdav")
@@ -93,10 +97,10 @@ void ConnectionConfiguration::parseHost (std::string name) {
     throw UnknownHost(name);
 }
 
-void ConnectionConfiguration::parseOverwritingPolicy (std::string policy) {
-  const std::vector<std::string> overwriteAllowedOptions = { "true", "yes", "y" };
-  const std::vector<std::string> overwriteForbiddenOptions = { "false", "no", "n" };
-  std::string uncased = lower(policy);
+void ConnectionConfiguration::parseOverwritingPolicy(string policy) {
+  const std::vector<string> overwriteAllowedOptions = { "true", "yes", "y" };
+  const std::vector<string> overwriteForbiddenOptions = { "false", "no", "n" };
+  string uncased = lower(policy);
   if (valueIsListed(uncased, overwriteAllowedOptions))
     overwritingPolicy = OverwritingPolicy::OVERWRITE;
   else if (valueIsListed(uncased, overwriteForbiddenOptions))
@@ -105,5 +109,5 @@ void ConnectionConfiguration::parseOverwritingPolicy (std::string policy) {
     throw std::runtime_error("I don't know this overwriting policy: " + policy);
 }
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices

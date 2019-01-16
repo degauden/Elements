@@ -23,16 +23,18 @@
 
 #include "DataSync/fixtures/ConfigFilesFixture.h"
 
-using namespace ElementsServices::DataSync;
+namespace DataSync = ElementsServices::DataSync;
+
+using DataSync::path;
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (DataSync_test)
+BOOST_AUTO_TEST_SUITE(DataSync_test)
 
 //-----------------------------------------------------------------------------
 
-void checkDownload (path connectionConfig) {
-  auto sync = DataSync(connectionConfig, theDependencyConfig());
+void checkDownload(path connectionConfig) {
+  auto sync = DataSync::DataSync(connectionConfig, theDependencyConfig());
   sync.download();
   for (const auto& file : theLocalFiles()) {
     const path absPath = sync.absolutePath(file);
@@ -41,8 +43,8 @@ void checkDownload (path connectionConfig) {
   }
 }
 
-void checkFallback (path fallbackConfig) {
-  auto sync = DataSync(aBadConnectionConfig(), theDependencyConfig());
+void checkFallback(path fallbackConfig) {
+  auto sync = DataSync::DataSync(aBadConnectionConfig(), theDependencyConfig());
   BOOST_CHECK_THROW(sync.download(), std::exception);
   sync.downloadWithFallback(fallbackConfig);
   for (const auto& file : theLocalFiles()) {
@@ -52,13 +54,13 @@ void checkFallback (path fallbackConfig) {
   }
 }
 
-BOOST_AUTO_TEST_CASE( dataSyncWebdavFr_test ) {
+BOOST_AUTO_TEST_CASE(dataSyncWebdavFr_test) {
   checkDownload(theWebdavFrConfig());
   checkFallback(theWebdavFrConfig());
 }
 
-BOOST_AUTO_TEST_CASE( dataSyncIrodsFr_test ) {
-  if(irodsIsInstalled()) {
+BOOST_AUTO_TEST_CASE(dataSyncIrodsFr_test) {
+  if (DataSync::irodsIsInstalled()) {
     checkDownload(theIrodsFrConfig());
     checkFallback(theIrodsFrConfig());
   }
@@ -66,4 +68,4 @@ BOOST_AUTO_TEST_CASE( dataSyncIrodsFr_test ) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

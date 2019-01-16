@@ -16,18 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <string>
+
 #include "ElementsServices/DataSync/WebdavSynchronizer.h"
 
 namespace ElementsServices {
 namespace DataSync {
 
-WebdavSynchronizer::WebdavSynchronizer (
+WebdavSynchronizer::WebdavSynchronizer(
     ConnectionConfiguration connection,
     DependencyConfiguration dependency) :
         DataSynchronizer(connection, dependency) {
 }
 
-std::string WebdavSynchronizer::createDownloadCommand (
+std::string WebdavSynchronizer::createDownloadCommand(
     path distantFile,
     path localFile) const {
   std::string cmd = "wget --no-check-certificate ";
@@ -39,5 +41,5 @@ std::string WebdavSynchronizer::createDownloadCommand (
   return cmd;
 }
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices

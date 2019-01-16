@@ -28,26 +28,29 @@
 
 #include "fixtures/ConfigFilesFixture.h"
 
-using namespace ElementsServices::DataSync;
+namespace DataSync = ElementsServices::DataSync;
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (DssSynchronizer_test)
+BOOST_AUTO_TEST_SUITE(DssSynchronizer_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE( notImplemented_test ) {
+BOOST_AUTO_TEST_CASE(notImplemented_test) {
+
+  using DataSync::path;
+
   const path dependency = theDependencyConfig();
-  const ConnectionConfiguration connectionConfig(theIrodsFrConfig());
+  const DataSync::ConnectionConfiguration connectionConfig(theIrodsFrConfig());
   const path distantRoot = connectionConfig.distantRoot;
   const path localRoot = connectionConfig.localRoot;
-  const DependencyConfiguration dependencyConfig(distantRoot, localRoot, dependency);
-  DssSynchronizer mock(connectionConfig, dependencyConfig);
-  BOOST_CHECK_THROW(mock.downloadAllFiles(), UnknownHost);
+  const DataSync::DependencyConfiguration dependencyConfig(distantRoot, localRoot, dependency);
+  DataSync::DssSynchronizer mock(connectionConfig, dependencyConfig);
+  BOOST_CHECK_THROW(mock.downloadAllFiles(), DataSync::UnknownHost);
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()
 
 

@@ -23,23 +23,23 @@
 #include "fixtures/ConfigFilesFixture.h"
 #include "fixtures/MockDataSynchronizer.h"
 
-using namespace ElementsServices::DataSync;
+namespace DataSync = ElementsServices::DataSync;
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_SUITE (DataSynchronizer_test, MockDataSynchronizer)
+BOOST_FIXTURE_TEST_SUITE(DataSynchronizer_test, DataSync::MockDataSynchronizer)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE( downloadFailure_test ) {
+BOOST_AUTO_TEST_CASE(downloadFailure_test) {
   BOOST_CHECK(not fileMap().empty());
-  BOOST_CHECK_THROW(downloadAllFiles(), DownloadFailed);
+  BOOST_CHECK_THROW(downloadAllFiles(), DataSync::DownloadFailed);
 }
 
-//TODO test overwriting policy
+// @TODO test overwriting policy
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()
 
 

@@ -16,16 +16,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <string>
+
 #include "ElementsServices/DataSync/IrodsSynchronizer.h"
 
 namespace ElementsServices {
 namespace DataSync {
 
-bool irodsIsInstalled () {
+bool irodsIsInstalled() {
   return checkCall ("iget --help");
 }
 
-IrodsSynchronizer::IrodsSynchronizer (
+IrodsSynchronizer::IrodsSynchronizer(
     ConnectionConfiguration connection,
     DependencyConfiguration dependency) :
         DataSynchronizer(connection, dependency) {
@@ -35,7 +37,7 @@ IrodsSynchronizer::IrodsSynchronizer (
         "but it does not seem to be installed.");
 }
 
-std::string IrodsSynchronizer::createDownloadCommand (
+std::string IrodsSynchronizer::createDownloadCommand(
     path distantFile,
     path localFile) const {
   std::string cmd = "irsync i:";
@@ -43,5 +45,5 @@ std::string IrodsSynchronizer::createDownloadCommand (
   return cmd;
 }
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices

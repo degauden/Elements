@@ -18,6 +18,10 @@
 
 #include <array>
 #include <cstdlib>
+#include <string>
+#include <vector>
+#include <utility>
+#include <algorithm>
 
 #include "ElementsKernel/Configuration.h"
 #include "ElementsKernel/System.h"
@@ -27,33 +31,35 @@
 namespace ElementsServices {
 namespace DataSync {
 
-path confFilePath (path filename) {
+using std::string;
+
+path confFilePath(path filename) {
   return Elements::getConfigurationPath(filename);
 }
 
-bool checkCall (std::string command) {
+bool checkCall(string command) {
   const int status = system(command.c_str());
   return status == 0;
 }
 
-std::pair<std::string, std::string> runCommandAndCaptureOutErr (
-    std::string command) {
-  std::string out, err;
+std::pair<string, string> runCommandAndCaptureOutErr(
+    string command) {
+  string out, err;
   std::array<char, BUFSIZ> buffer;
   std::shared_ptr<FILE> cmdpipe(popen(command.c_str(), "r"), pclose);
   if (not cmdpipe)
-    throw std::runtime_error(std::string("Unable to run command: ") + command);
+    throw std::runtime_error(string("Unable to run command: ") + command);
   if (fgets(buffer.data(), BUFSIZ, cmdpipe.get()) != NULL)
     out += buffer.data();
-  //TODO get standard error
+  // @TODO get standard error
   return std::make_pair(out, err);
 }
 
-bool localDirExists (path localDir) {
+bool localDirExists(path localDir) {
   return boost::filesystem::is_directory(localDir);
 }
 
-void createLocalDirOf (path localFile) {
+void createLocalDirOf(path localFile) {
   if (not localFile.has_parent_path())
     return;
   const path dir = localFile.parent_path();
@@ -61,33 +67,33 @@ void createLocalDirOf (path localFile) {
     boost::filesystem::create_directories(dir);
 }
 
-std::string environmentVariable (std::string name) {
-  return Elements::System::getEnv(name); // Already returns "" if not found
+string environmentVariable(string name) {
+  return Elements::System::getEnv(name);  // Already returns "" if not found
 }
 
-path localWorkspacePrefix () {
-  const std::string codeenPrefix("WORKSPACE");
-  const std::string prefixEnvVariable(codeenPrefix);
+path localWorkspacePrefix() {
+  const string codeenPrefix("WORKSPACE");
+  const string prefixEnvVariable(codeenPrefix);
   return path(environmentVariable(prefixEnvVariable));
 }
 
-std::string lower (std::string text) {
-  std::string uncased(text);
+string lower(string text) {
+  string uncased(text);
   std::transform(text.begin(), text.end(), uncased.begin(), ::tolower);
   return uncased;
 }
 
-bool containsInThisOrder (
-    std::string input,
-    std::vector<std::string> substrings) {
-  size_t offset(0);
+bool containsInThisOrder(
+    string input,
+    std::vector<string> substrings) {
+  string::size_type offset(0);
   for (auto substr : substrings) {
     offset = input.find(substr, offset);
-    if (offset == std::string::npos)
+    if (offset == string::npos)
       return false;
   }
   return true;
 }
 
-}
-}
+}  // namespace DataSync
+}  // namespace ElementsServices

@@ -31,7 +31,6 @@
 
 #include "fixtures/ConfigFilesFixture.h"
 
-
 namespace DataSync = ElementsServices::DataSync;
 //-----------------------------------------------------------------------------
 

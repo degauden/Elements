@@ -14,11 +14,10 @@
 
 namespace DataSync = ElementsServices::DataSync;
 using DataSync::path;
-using DataSync::DependencyConfiguration;
 
 DependencyConfigurationPublic::DependencyConfigurationPublic(
                 path distantRoot,
                 path localRoot,
                 path configFile) :
-                DependencyConfiguration(distantRoot, localRoot, configFile) {
+                DataSync::DependencyConfiguration(distantRoot, localRoot, configFile) {
 }

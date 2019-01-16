@@ -28,17 +28,17 @@
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (DataSynchronizerMaker_test)
+BOOST_AUTO_TEST_SUITE(DataSynchronizerMaker_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE( missing_test ) {
+BOOST_AUTO_TEST_CASE(missing_test) {
   BOOST_CHECK(true);
-  //TODO implement test
+  // @TODO implement test
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()
 
 
