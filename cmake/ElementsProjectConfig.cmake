@@ -2876,6 +2876,83 @@ function(elements_add_executable executable)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
+# elements_add_test_executable(<name>
+#                              source1 source2 ...
+#                              LINK_LIBRARIES library1 library2 ...
+#                              INCLUDE_DIRS dir1 package2 ...
+#                              [TYPE Boost|CppUnit])
+#
+# Special version of elements_add_executable which automatically adds the dependency
+# on CppUnit or Boost
+#---------------------------------------------------------------------------------------------------
+function(elements_add_test_executable name)
+
+  CMAKE_PARSE_ARGUMENTS(${name}_TEST_EXEC "" "TYPE" "" ${ARGN})
+
+  elements_common_add_build(${${name}_TEST_EXEC_UNPARSED_ARGUMENTS})
+
+  if(NOT ${name}_TEST_EXEC_TYPE)
+    set(${name}_TEST_EXEC_TYPE None)
+  endif()
+
+  set(${name}_TEST_EXEC_EXECUTABLE ${name})
+  set(executable ${${name}_TEST_EXEC_EXECUTABLE})
+
+  elements_get_package_name(package)
+
+
+  if(NOT ${${name}_TEST_EXEC_TYPE} STREQUAL "None")
+  
+    if (${${name}_TEST_EXEC_TYPE} STREQUAL "Boost")
+      find_package(Boost COMPONENTS unit_test_framework QUIET REQUIRED)
+    else()
+      find_package(${${name}_TEST_EXEC_TYPE} QUIET REQUIRED)
+    endif()
+    
+    if (NOT TARGET ${package}_tests_dir)
+      add_custom_target(${package}_tests_dir
+                        COMMAND  ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/tests
+                        COMMENT "Generating The ${package}/tests directory" VERBATIM)
+    endif()
+    
+    set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/${${name}_TEST_EXEC_TYPE}TestMain.cpp)
+    set_source_files_properties(${testmain_file} PROPERTIES GENERATED TRUE)
+    if(NOT TARGET ${package}_${${name}_TEST_EXEC_TYPE}TestMain)
+      add_custom_target(${package}_${${name}_TEST_EXEC_TYPE}TestMain
+                        COMMAND ${${${name}_TEST_EXEC_TYPE}_testmain_cmd} --quiet ${package} ${testmain_file}
+                        DEPENDS ${package}_tests_dir
+                        COMMENT "Generating the ${package} ${${name}_TEST_EXEC_TYPE}TestMain.cpp" VERBATIM)
+    endif()
+      
+    if (NOT TARGET ${package}${${name}_TEST_EXEC_TYPE}Test)
+      elements_add_library(${package}${${name}_TEST_EXEC_TYPE}Test ${testmain_file}
+                           LINK_LIBRARIES ${${name}_TEST_EXEC_TYPE}
+                           INCLUDE_DIRS ${${name}_TEST_EXEC_TYPE}
+                           NO_PUBLIC_HEADERS
+                           )
+      add_dependencies(${package}${${name}_TEST_EXEC_TYPE}Test ${package}_${${name}_TEST_EXEC_TYPE}TestMain)
+    endif()
+      
+    elements_add_executable(${executable} ${srcs}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_TEST_EXEC_TYPE} ${package}${${name}_TEST_EXEC_TYPE}Test
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_TEST_EXEC_TYPE})
+    add_dependencies(${executable} ${package}_${${name}_TEST_EXEC_TYPE}TestMain)
+
+  else()
+    elements_add_executable(${executable} ${srcs}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+  endif()
+
+
+  get_target_property(exec_suffix ${executable} SUFFIX)
+  if(NOT exec_suffix)
+    set(exec_suffix)
+  endif()
+
+endfunction()
+
+#---------------------------------------------------------------------------------------------------
 # elements_add_unit_test(<name>
 #                     source1 source2 ...
 #                      [EXECUTABLE exename]
@@ -2919,51 +2996,11 @@ function(elements_add_unit_test name)
     elements_get_package_name(package)
 
 
-    if(NOT ${${name}_UNIT_TEST_TYPE} STREQUAL "None")
-      if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
-        find_package(Boost COMPONENTS unit_test_framework QUIET REQUIRED)
-      else()
-        find_package(${${name}_UNIT_TEST_TYPE} QUIET REQUIRED)
-      endif()
-      if (NOT TARGET ${package}_tests_dir)
-        add_custom_target(${package}_tests_dir
-                          COMMAND  ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/tests
-                          COMMENT "Generating The ${package}/tests directory" VERBATIM)
-      endif()
-      set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/${${name}_UNIT_TEST_TYPE}TestMain.cpp)
-      set_source_files_properties(${testmain_file} PROPERTIES GENERATED TRUE)
-      if(NOT TARGET ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
-        add_custom_target(${package}_${${name}_UNIT_TEST_TYPE}TestMain
-                          COMMAND ${${${name}_UNIT_TEST_TYPE}_testmain_cmd} --quiet ${package} ${testmain_file}
-                          DEPENDS ${package}_tests_dir
-                          COMMENT "Generating the ${package} ${${name}_UNIT_TEST_TYPE}TestMain.cpp" VERBATIM)
-      endif()
-      
-      if (NOT TARGET ${package}${${name}_UNIT_TEST_TYPE}Test)
-        elements_add_library(${package}${${name}_UNIT_TEST_TYPE}Test ${testmain_file}
-                             LINK_LIBRARIES ${${name}_UNIT_TEST_TYPE}
-                             INCLUDE_DIRS ${${name}_UNIT_TEST_TYPE}
-                             NO_PUBLIC_HEADERS
-                             )
-        add_dependencies(${package}${${name}_UNIT_TEST_TYPE}Test ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
-      endif()
-      
-      elements_add_executable(${executable} ${srcs}
-                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_UNIT_TEST_TYPE} ${package}${${name}_UNIT_TEST_TYPE}Test
-                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_UNIT_TEST_TYPE})
-      add_dependencies(${executable} ${package}_${${name}_UNIT_TEST_TYPE}TestMain)
+    elements_add_test_executable(${executable} ${srcs}
+                                 LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                                 INCLUDE_DIRS ${ARG_INCLUDE_DIRS}
+                                 TYPE ${${name}_UNIT_TEST_TYPE})
 
-    else()
-      elements_add_executable(${executable} ${srcs}
-                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
-                              INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
-    endif()
-
-
-    get_target_property(exec_suffix ${executable} SUFFIX)
-    if(NOT exec_suffix)
-      set(exec_suffix)
-    endif()
 
     foreach(var ${${name}_UNIT_TEST_ENVIRONMENT})
       string(FIND ${var} "+=" is_prepend)
