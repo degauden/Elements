@@ -33,8 +33,11 @@ class TestDataSynchronizer (object):
     def checkSynchronization(self, connection):
         capture_manager = py.test.config.pluginmanager.getplugin(
             'capturemanager')
-        capture_manager.suspendcapture(in_=True)
-        # TODO why is this ugly thing needed with EDEN 2.0?
+        try:
+            capture_manager.suspendcapture(in_=True)
+            # TODO why is this ugly thing needed with EDEN 2.0?
+        except:
+            pass
 
         dependency = theDependencyConfig()
         connectionConfig = ConnectionConfiguration(connection)
