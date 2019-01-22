@@ -71,7 +71,7 @@ elements_add_unit_test(DataSynchronizerMaker tests/src/DataSync/DataSynchronizer
 elements_add_unit_test(DataSyncUtils tests/src/DataSync/DataSyncUtils_test.cpp 
                        EXECUTABLE ElementsServices_DataSyncUtils_test
                        LINK_LIBRARIES ElementsServices
-                       ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
+                       ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no WORKSPACE=/home/user/Work/Projects
                        TYPE Boost)
 elements_add_unit_test(DependencyConfiguration tests/src/DataSync/DependencyConfiguration_test.cpp tests/src/DataSync/fixtures/*.cpp
                        EXECUTABLE ElementsServices_DependencyConfiguration_test
