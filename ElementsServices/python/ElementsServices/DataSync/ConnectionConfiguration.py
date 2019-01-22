@@ -46,7 +46,7 @@ class ConnectionConfiguration (object):
     * the overwriting policy.
     """
 
-    def __init__ (self, filename:str=None):
+    def __init__ (self, filename=None):
         """Create a connection configuration,
         and optionally parse a connection configuration file.
         """
@@ -66,7 +66,7 @@ class ConnectionConfiguration (object):
         """
         return self.overwritingPolicy == OverwritingPolicy.OVERWRITE
 
-    def parseConfigurationFile (self, filename:str):
+    def parseConfigurationFile (self, filename):
         """Parse the connection configuration file.
         """
         assert isinstance(filename, str)
@@ -101,7 +101,7 @@ class ConnectionConfiguration (object):
         workspace = args.local_workspace
         self.localRoot = concatenatePaths([prefix, workspace])
 
-    def parseHost (self, name:str):
+    def parseHost (self, name):
         """Parse the name of a data hosting solution (case-insensitive).
         """
         for host in DataHost:
@@ -110,7 +110,7 @@ class ConnectionConfiguration (object):
                 return
         #TODO raise error
 
-    def parseOverwritingPolicy (self, policy:str):
+    def parseOverwritingPolicy (self, policy):
         overwriteAllowedOptions = ["true", "yes", "y"]
         overwriteForbiddenOptions = ["false", "no", "n"]
         if policy.lower() in overwriteAllowedOptions:
