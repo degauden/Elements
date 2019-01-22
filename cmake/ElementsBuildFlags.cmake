@@ -254,6 +254,11 @@ option(TEST_HTML_REPORT
        "Enable the conversion of the CTest XML reports into HTML"
        ON)
 
+option(WITH_DATASYNC_TEST
+       "Enable the test which require a specific DataSync connection"
+       OFF)
+
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   #message(STATUS "Setting cached build flags")
