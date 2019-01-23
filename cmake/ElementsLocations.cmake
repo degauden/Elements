@@ -3,6 +3,12 @@ include_guard()
 include(SGSPlatform)
 include(ElementsBuildFlags)
 
+if(HIDE_SYSINC_WARNINGS)
+  set(CMAKE_NO_SYSTEM_FROM_IMPORTED FALSE)  
+else()
+  set(CMAKE_NO_SYSTEM_FROM_IMPORTED TRUE)
+endif()
+
 if(NOT DEFINED SQUEEZED_INSTALL)
     set(SQUEEZED_INSTALL ON
         CACHE STRING "Enable the squizzing of the installation into a prefix directory"

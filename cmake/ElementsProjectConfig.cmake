@@ -94,15 +94,6 @@ endif()
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
   
-  include(ElementsBuildFlags)
-  
-  if(HIDE_SYSINC_WARNINGS)
-    set(CMAKE_NO_SYSTEM_FROM_IMPORTED FALSE)  
-  else()
-    set(CMAKE_NO_SYSTEM_FROM_IMPORTED TRUE)
-  endif()
-  
-  
   project(${project})
   #----For some reason this is not set by calling 'project()'
   set(CMAKE_PROJECT_NAME ${project})
