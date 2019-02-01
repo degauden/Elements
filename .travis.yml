@@ -1,7 +1,7 @@
 language: cpp
 
 before_install:
-  - sudo apt-get install -y libboost-all-dev
+  - sudo apt-get install -y libboost-all-dev python-pytest
 
 compiler:
   - gcc
