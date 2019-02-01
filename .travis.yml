@@ -4,7 +4,7 @@ env:
   - VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=1
 
 before_install:
-  - sudo apt-get install -y libboost-all-dev python-pytest liblog4cpp5-dev doxygen cmake-extras breathe libccfits-dev
+  - sudo apt-get install -y libboost-all-dev python-pytest liblog4cpp5-dev doxygen libccfits-dev
 
 compiler:
   - gcc
