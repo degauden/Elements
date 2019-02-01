@@ -1,5 +1,7 @@
 language: cpp
 
+dist: xenial
+
 env:
   - VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=1
 
