@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/degauden/Elements.svg?branch=develop)](https://travis-ci.org/degauden/Elements)
+
 # Introduction
 
 Elements is a C++/Python build framework. It helps to organize the software
