@@ -7,6 +7,7 @@ env:
 
 before_install:
   - sudo apt-get install -y libboost-all-dev python-pytest liblog4cpp5-dev doxygen libccfits-dev
+  - sudo apt-get install graphviz
 
 compiler:
   - gcc
@@ -19,6 +20,6 @@ before_script:
 
 script: 
   - make 
-  - make install 
+  - sudo make install 
   - make test 
   - make doc
