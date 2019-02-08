@@ -743,15 +743,15 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   if(ELEMENTS_BUILD_TESTS)
     if(TEST_HTML_REPORT)
     #--- Special target to generate HTML reports from CTest XML reports.
-    find_file(ctestxml2html_skel
-              NAMES HTMLTestReportSkel
-              PATHS ${CMAKE_MODULE_PATH}
-              PATH_SUFFIXES auxdir
-              NO_DEFAULT_PATH)
-    add_custom_target(HTMLSummary)
-    add_custom_command(TARGET HTMLSummary
-                       COMMAND ${env_cmd} --xml ${env_xml}
-                               ${ctestxml2html_cmd} -s ${ctestxml2html_skel} -o Testing/html)
+      find_file(ctestxml2html_skel
+                NAMES HTMLTestReportSkel
+                PATHS ${CMAKE_MODULE_PATH}
+                PATH_SUFFIXES auxdir
+                NO_DEFAULT_PATH)
+      add_custom_target(HTMLSummary)
+      add_custom_command(TARGET HTMLSummary
+                         COMMAND ${env_cmd} --xml ${env_xml}
+                                 ${ctestxml2html_cmd} -s ${ctestxml2html_skel} -o Testing/html)
     else()
       add_custom_target(HTMLSummary)
       add_custom_command(TARGET HTMLSummary
