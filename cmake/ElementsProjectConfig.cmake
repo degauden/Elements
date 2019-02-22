@@ -1205,12 +1205,10 @@ ${MAIN_PROJECT_CHANGELOG}
                                PATHS ${CMAKE_MODULE_PATH})
       endif()
     
-
-     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
-     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILDROOT)
-     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/RPMS)
-     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SRPMS)
-
+      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
+      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILDROOT)
+      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/RPMS)
+      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SRPMS)
 
       set(RPMBUILD_ARGS "--define=\"_topdir ${PROJECT_RPM_TOPDIR}\"")
       
@@ -1234,7 +1232,6 @@ ${MAIN_PROJECT_CHANGELOG}
                         COMMENT "Generating The RPM Files in ${PROJECT_RPM_TOPDIR}" VERBATIM
       )
       
-
       add_dependencies(rpm targz)
 
     endif()
