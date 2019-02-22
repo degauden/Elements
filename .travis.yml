@@ -1,0 +1,25 @@
+language: cpp
+
+dist: xenial
+
+env:
+  - VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=1
+
+before_install:
+  - sudo apt-get install -y libboost-all-dev python-pytest liblog4cpp5-dev doxygen libccfits-dev
+  - sudo apt-get install graphviz
+
+compiler:
+  - gcc
+#  - clang
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+
+script: 
+  - make 
+  - sudo make install 
+  - make test 
+  - make doc

@@ -146,7 +146,9 @@ cd $RPM_BUILD_DIR/$BINARY_TAG
 %__make test
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+%__rm -rf $RPM_BUILD_ROOT
+%__rm -rf $RPM_BUILD_DIR/%{bin_tag}
+%__rm -rf $RPM_BUILD_DIR/@CPACK_RPM_PACKAGE_NAME@-@CPACK_RPM_PACKAGE_VERSION@
 
 %postun
 /sbin/ldconfig

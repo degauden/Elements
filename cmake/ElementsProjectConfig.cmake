@@ -94,15 +94,6 @@ endif()
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
   
-  include(ElementsBuildFlags)
-  
-  if(HIDE_SYSINC_WARNINGS)
-    set(CMAKE_NO_SYSTEM_FROM_IMPORTED FALSE)  
-  else()
-    set(CMAKE_NO_SYSTEM_FROM_IMPORTED TRUE)
-  endif()
-  
-  
   project(${project})
   #----For some reason this is not set by calling 'project()'
   set(CMAKE_PROJECT_NAME ${project})
@@ -283,8 +274,6 @@ macro(elements_project project version)
     set(thismodheader_cmd ${PYTHON_EXECUTABLE} ${thismodheader_cmd})
   endif()
 
-
-
   find_program(Boost_testmain_cmd createBoostTestMain.py HINTS ${binary_paths})
   if(Boost_testmain_cmd)
     set(Boost_testmain_cmd ${PYTHON_EXECUTABLE} ${Boost_testmain_cmd})
@@ -294,8 +283,6 @@ macro(elements_project project version)
   if(CppUnit_testmain_cmd)
     set(CppUnit_testmain_cmd ${PYTHON_EXECUTABLE} ${CppUnit_testmain_cmd})
   endif()
-
-
 
   find_program(zippythondir_cmd ZipPythonDir.py HINTS ${binary_paths})
   if(zippythondir_cmd)
@@ -752,15 +739,15 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   if(ELEMENTS_BUILD_TESTS)
     if(TEST_HTML_REPORT)
     #--- Special target to generate HTML reports from CTest XML reports.
-    find_file(ctestxml2html_skel
-              NAMES HTMLTestReportSkel
-              PATHS ${CMAKE_MODULE_PATH}
-              PATH_SUFFIXES auxdir
-              NO_DEFAULT_PATH)
-    add_custom_target(HTMLSummary)
-    add_custom_command(TARGET HTMLSummary
-                       COMMAND ${env_cmd} --xml ${env_xml}
-                               ${ctestxml2html_cmd} -s ${ctestxml2html_skel} -o Testing/html)
+      find_file(ctestxml2html_skel
+                NAMES HTMLTestReportSkel
+                PATHS ${CMAKE_MODULE_PATH}
+                PATH_SUFFIXES auxdir
+                NO_DEFAULT_PATH)
+      add_custom_target(HTMLSummary)
+      add_custom_command(TARGET HTMLSummary
+                         COMMAND ${env_cmd} --xml ${env_xml}
+                                 ${ctestxml2html_cmd} -s ${ctestxml2html_skel} -o Testing/html)
     else()
       add_custom_target(HTMLSummary)
       add_custom_command(TARGET HTMLSummary
@@ -1128,6 +1115,8 @@ ${_do}")
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                       COMMENT "Generating The Source TarBall ${PROJECT_TARGZ_DIR}/${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}.tar.gz" VERBATIM
     )
+    set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${PROJECT_TARGZ_DIR}/${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}.tar.gz)
+
 
     if (RPMBUILD_FOUND)
 
@@ -1216,12 +1205,10 @@ ${MAIN_PROJECT_CHANGELOG}
                                PATHS ${CMAKE_MODULE_PATH})
       endif()
     
-
-     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
-     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILDROOT)
-     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/RPMS)
-     file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SRPMS)
-
+      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILD)
+      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/BUILDROOT)
+      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/RPMS)
+      file(MAKE_DIRECTORY ${PROJECT_RPM_TOPDIR}/SRPMS)
 
       set(RPMBUILD_ARGS "--define=\"_topdir ${PROJECT_RPM_TOPDIR}\"")
       
@@ -1245,7 +1232,6 @@ ${MAIN_PROJECT_CHANGELOG}
                         COMMENT "Generating The RPM Files in ${PROJECT_RPM_TOPDIR}" VERBATIM
       )
       
-
       add_dependencies(rpm targz)
 
     endif()
@@ -1868,7 +1854,7 @@ function(elements_get_packages var)
   file(GLOB_RECURSE cmakelist_files RELATIVE ${CMAKE_SOURCE_DIR} CMakeLists.txt)
   foreach(file ${cmakelist_files})
     # ignore the source directory itself and files in the build directory
-    if(NOT file STREQUAL CMakeLists.txt AND NOT (file MATCHES "^${rel_build_dir}" OR file MATCHES "^${BUILD_PREFIX_NAME}\\."))
+    if(NOT file STREQUAL CMakeLists.txt AND NOT (file MATCHES "^${rel_build_dir}" OR file MATCHES "^${BUILD_PREFIX_NAME}\\.|^build|/RPM/BUILD/"))
       get_filename_component(package ${file} PATH)
       list(APPEND packages ${package})
     endif()
@@ -2452,6 +2438,7 @@ function(elements_add_dictionary dictionary header selection)
     add_custom_command(OUTPUT ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname}
                        COMMAND ${CMAKE_COMMAND} -E copy ${pcmname} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname}
                        DEPENDS ${dictionary}Gen)
+    set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname})
     add_custom_target(${dictionary}PCM ALL
                       DEPENDS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${pcmname})
   endif()
@@ -2922,6 +2909,7 @@ function(elements_add_test_executable name)
                         COMMAND ${${${name}_TEST_EXEC_TYPE}_testmain_cmd} --quiet ${package} ${testmain_file}
                         DEPENDS ${package}_tests_dir
                         COMMENT "Generating the ${package} ${${name}_TEST_EXEC_TYPE}TestMain.cpp" VERBATIM)
+      set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${testmain_file})
     endif()
       
     if (NOT TARGET ${package}${${name}_TEST_EXEC_TYPE}Test)
@@ -4163,6 +4151,7 @@ function(elements_add_python_program executable module)
 
   string(REPLACE "." "_" python_program_target ${module})
   add_custom_target(${python_program_target} ALL DEPENDS ${executable_file})
+  set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${executable_file})
 
   install(PROGRAMS ${executable_file} DESTINATION ${SCRIPT_INSTALL_SUFFIX})
 
