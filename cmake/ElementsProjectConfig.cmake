@@ -111,8 +111,11 @@ macro(elements_project project version)
     cmake_policy(GET CMP0048 project_vers_format)
     debug_print_var(project_vers_format)
   endif()
+
+  debug_print_var(version)
+
   
-  if(${project_vers_format} STREQUAL NEW)
+  if(${project_vers_format} STREQUAL NEW AND (NOT ${version} MATCHES "^HEAD.*"))
     project(${project} VERSION ${version})
   else()
     project(${project})  
