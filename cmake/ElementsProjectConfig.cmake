@@ -28,6 +28,15 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
   cmake_policy(SET CMP0063 NEW)
 endif()
 
+# this policy is related to the behavior of the project() macro
+# please run "cmake --help-policy CMP0048" for more details
+if(NOT CMAKE_VERSION VERSION_LESS 3.12.1) # i.e CMAKE_VERSION >= 3.3
+  cmake_policy(SET CMP0048 NEW)
+else()
+  cmake_policy(SET CMP0048 OLD)
+endif()
+
+
 if (NOT HAS_ELEMENTS_TOOLCHAIN)
   # this is the call to the preload_local_module_path is the toolchain has not been called
   # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
@@ -94,7 +103,17 @@ endif()
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
   
-  project(${project})
+  set(project_vers_format OLD)
+  if(POLICY CMP0048)
+    cmake_policy(GET CMP0048 project_vers_format)
+    debug_print_var(project_vers_format)
+  endif()
+  
+  if(${project_vers_format} STREQUAL NEW)
+    project(${project} VERSION ${version})
+  else()
+    project(${project})  
+  endif()
   #----For some reason this is not set by calling 'project()'
   set(CMAKE_PROJECT_NAME ${project})
 
