@@ -22,20 +22,23 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
   endif()
 endif()
 
-# this policy is related to the symbol visibility
-# please run "cmake --help-policy CMP0063" for more details
-if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
-  cmake_policy(SET CMP0063 NEW)
+if(POLICY CMP0063)
+  # this policy is related to the symbol visibility
+  # please run "cmake --help-policy CMP0063" for more details
+  if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
+    cmake_policy(SET CMP0063 NEW)
+  endif()
 endif()
 
-# this policy is related to the behavior of the project() macro
-# please run "cmake --help-policy CMP0048" for more details
-if(NOT CMAKE_VERSION VERSION_LESS 3.12.1) # i.e CMAKE_VERSION >= 3.3
-  cmake_policy(SET CMP0048 NEW)
-else()
-  cmake_policy(SET CMP0048 OLD)
+if(POLICY CMP0048)
+  # this policy is related to the behavior of the project() macro
+  # please run "cmake --help-policy CMP0048" for more details
+  if(NOT CMAKE_VERSION VERSION_LESS 3.12.1) # i.e CMAKE_VERSION >= 3.3
+    cmake_policy(SET CMP0048 NEW)
+  else()
+    cmake_policy(SET CMP0048 OLD)
+  endif()
 endif()
-
 
 if (NOT HAS_ELEMENTS_TOOLCHAIN)
   # this is the call to the preload_local_module_path is the toolchain has not been called
