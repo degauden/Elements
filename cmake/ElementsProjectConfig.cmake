@@ -1269,7 +1269,7 @@ endmacro()
 #-------------------------------------------------------------------------------
 # _elements_use_other_projects([project version [project version]...])
 #
-# Internal macro implementing the handline of the "USE" option.
+# Internal macro implementing the handling of the "USE" option.
 # (improve readability)
 #-------------------------------------------------------------------------------
 macro(_elements_use_other_projects)
@@ -4000,12 +4000,18 @@ macro(elements_generate_exports)
 get_filename_component(_IMPORT_PREFIX \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)
 get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)
 
+elements_include_directories(AFTER \${_IMPORT_PREFIX}/include)
+link_directories(AFTER \${_IMPORT_PREFIX}/${lib_install_suff})
+
 ")
       else()
         file(WRITE ${pkg_exp_file}
 "# File automatically generated: DO NOT EDIT.
 
 set(_IMPORT_PREFIX \"${CMAKE_INSTALL_PREFIX}\")
+
+elements_include_directories(AFTER \${_IMPORT_PREFIX}/include)
+link_directories(AFTER \${_IMPORT_PREFIX}/${lib_install_suff})
 
 ")      
       endif()
