@@ -1745,7 +1745,7 @@ endfunction()
 # The presence of this function in a CMakeLists.txt is used by elements_sort_subdirectories
 # to get the dependencies from the subdirectories before actually adding them.
 #
-# The fuction performs those operations that are not needed if there is no
+# The function performs those operations that are not needed if there is no
 # dependency declared.
 #
 # The arguments are actually ignored, so there is a check to execute it only once.
