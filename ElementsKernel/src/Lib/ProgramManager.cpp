@@ -322,6 +322,9 @@ void ProgramManager::logAllOptions() const {
       // int option
     } else if (v.second.value().type() == typeid(int)) {
       log_message << v.first << " = " << v.second.as<int>();
+      // bool option
+    } else if (v.second.value().type() == typeid(bool)) {
+      log_message << v.first << " = " << v.second.as<bool>();
       // path option
     } else if (v.second.value().type() == typeid(path)) {
       log_message << v.first << " = "
