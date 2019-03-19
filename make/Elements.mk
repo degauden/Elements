@@ -68,18 +68,17 @@ else
   endif
 endif
 
-override CMAKEFLAGS += --no-warn-unused-cli
+override ALL_CMAKEFLAGS := --no-warn-unused-cli
 
 ifneq ($(TOOLCHAIN_FILE),)
   # A toolchain has been found. Lets use it.
-  override CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)
+  override ALL_CMAKEFLAGS += -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)
 endif
-
 
 
 BUILD_PREFIX_NAME := build
 
-override CMAKEFLAGS += -DUSE_LOCAL_INSTALLAREA=ON -DBUILD_PREFIX_NAME:STRING=$(BUILD_PREFIX_NAME)
+override ALL_CMAKEFLAGS += -DUSE_LOCAL_INSTALLAREA=ON -DBUILD_PREFIX_NAME:STRING=$(BUILD_PREFIX_NAME)
 
 ifndef BINARY_TAG
   ifdef CMAKECONFIG
@@ -102,7 +101,7 @@ BUILDDIR := $(CURDIR)/$(BUILD_SUBDIR)
 
 ifneq ($(USE_NINJA),)
   # enable Ninja
-  override CMAKEFLAGS += -GNinja
+  override ALL_CMAKEFLAGS += -GNinja
   BUILD_CONF_FILE := build.ninja
   BUILDFLAGS := $(NINJAFLAGS)
   ifneq ($(VERBOSE),)
@@ -112,6 +111,10 @@ else
   BUILD_CONF_FILE := Makefile
 endif
 BUILD_CMD := $(CMAKE) --build $(BUILD_SUBDIR) --target
+
+ifneq ($(CMAKEFLAGS),)
+  override ALL_CMAKEFLAGS += $(CMAKEFLAGS)
+endif
 
 # default target
 all:
@@ -172,7 +175,7 @@ $(MAKEFILE_LIST):
 
 # trigger CMake configuration
 $(BUILDDIR)/$(BUILD_CONF_FILE): | $(BUILDDIR)
-	cd $(BUILDDIR) && $(CMAKE) $(CMAKEFLAGS) $(CURDIR)
+	cd $(BUILDDIR) && $(CMAKE) $(ALL_CMAKEFLAGS) $(CURDIR)
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
