@@ -96,8 +96,10 @@ void Logging::setLogFile(const boost::filesystem::path& fileName) {
   root.setPriority(root.getPriority());
 }
 
+/// @cond Doxygen_Suppress
 Logging::LogMessageStream::LogMessageStream(Category& logger, P_log_func log_func)
     : m_logger(logger), m_log_func{log_func} { }
+/// @endcond Doxygen_Suppress
 
 Logging::LogMessageStream::LogMessageStream(LogMessageStream&& other)
     : m_logger(other.m_logger), m_log_func{other.m_log_func} { }
