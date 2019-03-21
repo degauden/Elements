@@ -98,7 +98,7 @@ include_guard()
 
   if(USE_SPHINX)
 
-  find_package(Sphinx QUIET)
+  find_package(Sphinx REQUIRED)
   if(SPHINX_FOUND)
 
     if(NOT SPHINX_BUILD_OPTIONS)
