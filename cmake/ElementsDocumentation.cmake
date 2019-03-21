@@ -184,6 +184,10 @@ include_guard()
 
     get_property(proj_package_list GLOBAL PROPERTY PROJ_PACKAGE_LIST)
 
+    set(_api_modules_line)
+    if(USE_SPHINX_APIDOC)
+      set(_api_modules_line modules)
+    endif()
 
     #loop over all Elements module
     # this will create an <module>_index.rst for each of them
