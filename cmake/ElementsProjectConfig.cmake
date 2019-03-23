@@ -2656,6 +2656,16 @@ function(elements_add_swig_binding binding)
                        OUTFILE ${PY_MODULE_SWIG_SRC}
                        INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
 
+  if(CXX_HAS_NO_MISSING_FIELD_INITIALIZERS)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC}
+                 PROPERTY COMPILE_FLAGS -Wno-missing-field-initializers)
+  endif()
+  if(CXX_HAS_NO_CAST_FUNCTION_TYPE)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
+  endif() 
+
+
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES}

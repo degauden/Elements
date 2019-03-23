@@ -288,6 +288,12 @@ if(NOT ELEMENTS_FLAGS_SET)
     check_and_use_cxx_option(-Wcast-function-type CXX_HAS_CAST_FUNCTION_TYPE)
   endif()
 
+  if(SGS_COMP STREQUAL gcc)
+    check_cxx_compiler_flag(-Wno-missing-field-initializers CXX_HAS_NO_MISSING_FIELD_INITIALIZERS)
+    check_cxx_compiler_flag(-Wno-cast-function-type CXX_HAS_NO_CAST_FUNCTION_TYPE)
+  endif()
+
+
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"
       CACHE STRING "Flags used by the compiler during release builds."
