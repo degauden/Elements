@@ -211,7 +211,7 @@ option(ELEMENTS_USE_RPATH
 
 option(HIDE_SYSINC_WARNINGS
        "Hide System includes warnings by using -isystem instead of -I"
-       OFF)
+       ON)
 
 option(HIDE_OTHERINC_WARNINGS
        "Hide includes warnings issued by other projects by using -isystem instead of -I"
