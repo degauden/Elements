@@ -2846,6 +2846,16 @@ function(elements_add_cython_module)
                        LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
                        INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
 
+  if(CXX_HAS_NO_MISSING_FIELD_INITIALIZERS)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC}
+                 PROPERTY COMPILE_FLAGS -Wno-missing-field-initializers)
+  endif()
+  if(CXX_HAS_NO_CAST_FUNCTION_TYPE)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
+  endif() 
+
+
   elements_add_python_module(${mod_name}
                              PLAIN_MODULE
                              ${PY_MODULE_CYTHON_SRC} ${other_module_sources}
