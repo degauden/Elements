@@ -289,8 +289,7 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
 
   if(SGS_COMP STREQUAL gcc)
-    check_cxx_compiler_flag(-Wno-missing-field-initializers CXX_HAS_NO_MISSING_FIELD_INITIALIZERS)
-    check_cxx_compiler_flag(-Wno-cast-function-type CXX_HAS_NO_CAST_FUNCTION_TYPE)
+    check_cxx_compiler_flag(-Wmissing-field-initializers CXX_HAS_MISSING_FIELD_INITIALIZERS)
   endif()
 
 

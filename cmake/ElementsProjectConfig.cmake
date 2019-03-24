@@ -2442,7 +2442,8 @@ function(elements_add_dictionary dictionary header selection)
     set(ARG_SPLIT_CLASSDEF)
   endif()
   reflex_dictionary(${dictionary} ${header} ${selection} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} OPTIONS ${ARG_OPTIONS} ${ARG_SPLIT_CLASSDEF})
-  set_target_properties(${dictionary}Dict PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual")
+  set_property(TARGET ${dictionary}Dict
+               APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-suggest-override")
   _elements_detach_debinfo(${dictionary}Dict)
 
   if(TARGET ${dictionary}GenDeps)
@@ -2597,13 +2598,13 @@ function(_generate_swig_files swig_module)
   set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${i_srcs} ${swig_deps})
  
   if(CXX_HAS_SUGGEST_OVERRIDE)
-    set_property(SOURCE ${PY_MODULE_SWIG_SRC}
-                 PROPERTY COMPILE_FLAGS -Wno-suggest-override)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-suggest-override")
   endif()
   
   if(CXX_HAS_CAST_FUNCTION_TYPE)
-    set_property(SOURCE ${PY_MODULE_SWIG_SRC}
-                 PROPERTY COMPILE_FLAGS -Wno-cast-function-type)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
   endif()
   
 
@@ -2656,11 +2657,11 @@ function(elements_add_swig_binding binding)
                        OUTFILE ${PY_MODULE_SWIG_SRC}
                        INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
 
-  if(CXX_HAS_NO_MISSING_FIELD_INITIALIZERS)
-    set_property(SOURCE ${PY_MODULE_SWIG_SRC}
-                 PROPERTY COMPILE_FLAGS -Wno-missing-field-initializers)
+  if(CXX_HAS_MISSING_FIELD_INITIALIZERS)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-missing-field-initializers")
   endif()
-  if(CXX_HAS_NO_CAST_FUNCTION_TYPE)
+  if(CXX_HAS_CAST_FUNCTION_TYPE)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
   endif() 
@@ -2785,10 +2786,14 @@ function(_generate_cython_cpp)
     COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${ARG_OUTFILE}  ${srcs}"
     )
   
+  set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE)
+  set_property(SOURCE ${ARG_OUTFILE} APPEND_STRING 
+               PROPERTY COMPILE_FLAGS " -fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
+
+  
   if(CXX_HAS_CAST_FUNCTION_TYPE)
-    set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS -Wno-cast-function-type")  
-  else()
-    set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
+    set_property(SOURCE ${ARG_OUTFILE} APPEND_STRING 
+                 PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")  
   endif()
 
 endfunction()
@@ -2846,15 +2851,10 @@ function(elements_add_cython_module)
                        LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
                        INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
 
-  if(CXX_HAS_NO_MISSING_FIELD_INITIALIZERS)
-    set_property(SOURCE ${PY_MODULE_CYTHON_SRC}
-                 PROPERTY COMPILE_FLAGS -Wno-missing-field-initializers)
-  endif()
-  if(CXX_HAS_NO_CAST_FUNCTION_TYPE)
+  if(CXX_HAS_MISSING_FIELD_INITIALIZERS)
     set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
-                 PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
-  endif() 
-
+                 PROPERTY COMPILE_FLAGS " -Wno-missing-field-initializers")
+  endif()
 
   elements_add_python_module(${mod_name}
                              PLAIN_MODULE

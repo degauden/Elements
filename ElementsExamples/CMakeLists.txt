@@ -127,7 +127,7 @@ elements_add_unit_test(TemplatedDataSourceUser_test_suite tests/src/GMock/Templa
 # inhibits the -Wsuggest-override that is not supported by gmock (yet)
 if(CXX_HAS_SUGGEST_OVERRIDE)
   set_property(SOURCE tests/src/GMock/DataSourceUser_test.cpp tests/src/GMock/TemplatedDataSourceUser_test.cpp
-               PROPERTY COMPILE_FLAGS -Wno-suggest-override)
+               APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-suggest-override")
 endif() 
                 
                        
