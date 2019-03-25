@@ -713,7 +713,7 @@ EXCLUDE_SYMLINKS = NO
 # for example use the pattern */test/*
 
 # EXCLUDE_PATTERNS = */tests/* */auxdir/* @PROJECT_SOURCE_DIR@/build.* */tinfo.cc @PROJECT_SOURCE_DIR@/InstallArea/*
-EXCLUDE_PATTERNS = */tests/* */auxdir/* @PROJECT_SOURCE_DIR@/build.*/Packages/* @PROJECT_SOURCE_DIR@/InstallArea/*
+EXCLUDE_PATTERNS = */tests/* */auxdir/* @PROJECT_SOURCE_DIR@/build.*/Packages/* @PROJECT_SOURCE_DIR@/InstallArea/* */include/boost/*
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
