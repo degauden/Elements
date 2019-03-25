@@ -90,9 +90,8 @@ vector<path> pathSearchInEnvVariable(const string& file_name,
       auto single_path_results = pathSearch(file_name,
                                             path { path_element },
                                             search_type);
-      for (const path& aPath : single_path_results) {
-        search_results.push_back(aPath);
-      }
+      search_results.insert(search_results.end(),
+                            single_path_results.cbegin(), single_path_results.cend());
     }
   }
   return search_results;
