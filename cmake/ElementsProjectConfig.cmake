@@ -22,10 +22,22 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
   endif()
 endif()
 
-# this policy is related to the symbol visibility
-# please run "cmake --help-policy CMP0063" for more details
-if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
-  cmake_policy(SET CMP0063 NEW)
+if(POLICY CMP0063)
+  # this policy is related to the symbol visibility
+  # please run "cmake --help-policy CMP0063" for more details
+  if(NOT CMAKE_VERSION VERSION_LESS 3.3) # i.e CMAKE_VERSION >= 3.3
+    cmake_policy(SET CMP0063 NEW)
+  endif()
+endif()
+
+if(POLICY CMP0048)
+  # this policy is related to the behavior of the project() macro
+  # please run "cmake --help-policy CMP0048" for more details
+  if(NOT CMAKE_VERSION VERSION_LESS 3.12.1) # i.e CMAKE_VERSION >= 3.3
+    cmake_policy(SET CMP0048 NEW)
+  else()
+    cmake_policy(SET CMP0048 OLD)
+  endif()
 endif()
 
 if (NOT HAS_ELEMENTS_TOOLCHAIN)
@@ -94,7 +106,16 @@ endif()
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
   
-  project(${project})
+  set(project_vers_format OLD)
+  if(POLICY CMP0048)
+    cmake_policy(GET CMP0048 project_vers_format)
+  endif()
+  
+  if(${project_vers_format} STREQUAL NEW AND (NOT ${version} MATCHES "^HEAD.*"))
+    project(${project} VERSION ${version})
+  else()
+    project(${project})  
+  endif()
   #----For some reason this is not set by calling 'project()'
   set(CMAKE_PROJECT_NAME ${project})
 
@@ -123,6 +144,7 @@ macro(elements_project project version)
 
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DINSTALL_DOC:BOOL=${INSTALL_DOC}")
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DUSE_SPHINX:BOOL=${USE_SPHINX}")
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "--no-warn-unused-cli")
   
 
@@ -1248,7 +1270,7 @@ endmacro()
 #-------------------------------------------------------------------------------
 # _elements_use_other_projects([project version [project version]...])
 #
-# Internal macro implementing the handline of the "USE" option.
+# Internal macro implementing the handling of the "USE" option.
 # (improve readability)
 #-------------------------------------------------------------------------------
 macro(_elements_use_other_projects)
@@ -1724,7 +1746,7 @@ endfunction()
 # The presence of this function in a CMakeLists.txt is used by elements_sort_subdirectories
 # to get the dependencies from the subdirectories before actually adding them.
 #
-# The fuction performs those operations that are not needed if there is no
+# The function performs those operations that are not needed if there is no
 # dependency declared.
 #
 # The arguments are actually ignored, so there is a check to execute it only once.
@@ -2420,7 +2442,8 @@ function(elements_add_dictionary dictionary header selection)
     set(ARG_SPLIT_CLASSDEF)
   endif()
   reflex_dictionary(${dictionary} ${header} ${selection} LINK_LIBRARIES ${ARG_LINK_LIBRARIES} OPTIONS ${ARG_OPTIONS} ${ARG_SPLIT_CLASSDEF})
-  set_target_properties(${dictionary}Dict PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual")
+  set_property(TARGET ${dictionary}Dict
+               APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-suggest-override")
   _elements_detach_debinfo(${dictionary}Dict)
 
   if(TARGET ${dictionary}GenDeps)
@@ -2575,13 +2598,13 @@ function(_generate_swig_files swig_module)
   set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${i_srcs} ${swig_deps})
  
   if(CXX_HAS_SUGGEST_OVERRIDE)
-    set_property(SOURCE ${PY_MODULE_SWIG_SRC}
-                 PROPERTY COMPILE_FLAGS -Wno-suggest-override)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-suggest-override")
   endif()
   
   if(CXX_HAS_CAST_FUNCTION_TYPE)
-    set_property(SOURCE ${PY_MODULE_SWIG_SRC}
-                 PROPERTY COMPILE_FLAGS -Wno-cast-function-type)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
   endif()
   
 
@@ -2633,6 +2656,16 @@ function(elements_add_swig_binding binding)
                        ${i_srcs}
                        OUTFILE ${PY_MODULE_SWIG_SRC}
                        INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+  if(CXX_HAS_MISSING_FIELD_INITIALIZERS)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-missing-field-initializers")
+  endif()
+  if(CXX_HAS_CAST_FUNCTION_TYPE)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
+  endif() 
+
 
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
@@ -2753,10 +2786,14 @@ function(_generate_cython_cpp)
     COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${ARG_OUTFILE}  ${srcs}"
     )
   
+  set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE)
+  set_property(SOURCE ${ARG_OUTFILE} APPEND_STRING 
+               PROPERTY COMPILE_FLAGS " -fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
+
+  
   if(CXX_HAS_CAST_FUNCTION_TYPE)
-    set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS -Wno-cast-function-type")  
-  else()
-    set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE COMPILE_FLAGS "-fvisibility=default -UELEMENTS_HIDE_SYMBOLS")  
+    set_property(SOURCE ${ARG_OUTFILE} APPEND_STRING 
+                 PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")  
   endif()
 
 endfunction()
@@ -2813,6 +2850,11 @@ function(elements_add_cython_module)
                        OUTFILE ${PY_MODULE_CYTHON_SRC}
                        LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
                        INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+  if(CXX_HAS_MISSING_FIELD_INITIALIZERS)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-missing-field-initializers")
+  endif()
 
   elements_add_python_module(${mod_name}
                              PLAIN_MODULE
@@ -3979,12 +4021,18 @@ macro(elements_generate_exports)
 get_filename_component(_IMPORT_PREFIX \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)
 get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)
 
+elements_include_directories(AFTER \${_IMPORT_PREFIX}/include)
+link_directories(AFTER \${_IMPORT_PREFIX}/${lib_install_suff})
+
 ")
       else()
         file(WRITE ${pkg_exp_file}
 "# File automatically generated: DO NOT EDIT.
 
 set(_IMPORT_PREFIX \"${CMAKE_INSTALL_PREFIX}\")
+
+elements_include_directories(AFTER \${_IMPORT_PREFIX}/include)
+link_directories(AFTER \${_IMPORT_PREFIX}/${lib_install_suff})
 
 ")      
       endif()

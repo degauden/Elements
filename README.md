@@ -1,4 +1,8 @@
+[//]: # (@cond Doxygen_Suppress)
+
 [![Build Status](https://travis-ci.org/degauden/Elements.svg?branch=develop)](https://travis-ci.org/degauden/Elements)
+
+[//]: # (@endcond Doxygen_Suppress)
 
 # Introduction
 

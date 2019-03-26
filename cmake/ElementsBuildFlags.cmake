@@ -211,7 +211,7 @@ option(ELEMENTS_USE_RPATH
 
 option(HIDE_SYSINC_WARNINGS
        "Hide System includes warnings by using -isystem instead of -I"
-       OFF)
+       ON)
 
 option(HIDE_OTHERINC_WARNINGS
        "Hide includes warnings issued by other projects by using -isystem instead of -I"
@@ -292,6 +292,11 @@ if(NOT ELEMENTS_FLAGS_SET)
   if(SGS_COMP STREQUAL gcc)
     check_and_use_cxx_option(-Wcast-function-type CXX_HAS_CAST_FUNCTION_TYPE)
   endif()
+
+  if(SGS_COMP STREQUAL gcc)
+    check_cxx_compiler_flag(-Wmissing-field-initializers CXX_HAS_MISSING_FIELD_INITIALIZERS)
+  endif()
+
 
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"
