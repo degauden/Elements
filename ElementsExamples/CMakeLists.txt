@@ -248,7 +248,7 @@ endif()
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
-elements_install_python_modules(TEST_TIMEOUT 30)
+elements_install_python_modules(TEST_TIMEOUT 60)
 
 #===== Python programs =========================================================
 # Instruction for creating a Python executable
