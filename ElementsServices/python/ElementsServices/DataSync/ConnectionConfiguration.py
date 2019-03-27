@@ -20,7 +20,6 @@ import argparse
 #TODO use configparse
 import enum
 
-from ElementsServices import DataSync
 from .DataSyncUtils import *
 
 

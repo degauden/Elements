@@ -31,7 +31,7 @@ class MockDataSynchronizer (DataSynchronizer):
         localRoot = connectionConfig.localRoot
         dependencyConfig = DependencyConfiguration(
             distantRoot, localRoot, dependency)
-        super().__init__(connectionConfig, dependencyConfig)
+        super(MockDataSynchronizer, self).__init__(connectionConfig, dependencyConfig)
 
     def createDownloadCommand(self,
                               distantFile,

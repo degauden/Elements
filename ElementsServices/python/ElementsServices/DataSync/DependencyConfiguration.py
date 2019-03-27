@@ -28,7 +28,7 @@ class DependencyConfiguration (object):
     * the local destination path.
     """
 
-    def __init__ (self, distantRoot:str, localRoot:str, configFile:str=None):
+    def __init__ (self, distantRoot, localRoot, configFile=None):
         """Create a dependency configuration,
         and optionally parse a dependency configuration file.
         """
@@ -41,7 +41,7 @@ class DependencyConfiguration (object):
         if configFile is not None:
             self.parseConfigurationFile(dataSyncConfFilePath(configFile))
 
-    def parseConfigurationFile (self, filename:str):
+    def parseConfigurationFile (self, filename):
         """Parse a dependency configuration file.
         """
         assert isinstance(filename, str)
@@ -51,7 +51,7 @@ class DependencyConfiguration (object):
                 if stripedLine:
                     self.parseConfigurationLine(stripedLine)
 
-    def parseConfigurationLine (self, line:str):
+    def parseConfigurationLine (self, line):
         """Parse a line of the dependency configuration file.
         """
         line = line.replace('\n', '')
@@ -66,14 +66,14 @@ class DependencyConfiguration (object):
         """
         return self._aliasSeparator
 
-    def lineHasAlias (self, line:str):
+    def lineHasAlias (self, line):
         """Check whether a line of the dependency configuration file
         contains an alias.
         """
         splitLine = line.split(self._aliasSeparator)
         return len(splitLine)>1
 
-    def parseLineWithAlias (self, line:str):
+    def parseLineWithAlias (self, line):
         """Parse a line of the dependency configuration file
         which contains an alias.
         """
@@ -82,7 +82,7 @@ class DependencyConfiguration (object):
         local = os.path.join(self._localRoot, local)
         self._fileMap[local] = distant
 
-    def parseLineWithoutAlias (self, line:str):
+    def parseLineWithoutAlias (self, line):
         """Parse a line of the dependency configuration file
         which does not contain an alias.
         """
@@ -95,7 +95,7 @@ class DependencyConfiguration (object):
         """
         return self._fileMap
 
-    def getDistantPathOf (self, localFile:str):
+    def getDistantPathOf (self, localFile):
         """Get the distant source path associated to a local destination path.
         """
         return self._fileMap[localFile]

@@ -35,17 +35,17 @@ class IrodsSynchronizer (DataSynchronizer):
     """
 
     def __init__ (self,
-            connection:ConnectionConfiguration,
-            dependencies:DependencyConfiguration):
-        super().__init__(connection, dependencies)
+            connection,
+            dependencies):
+        super(IrodsSynchronizer, self).__init__(connection, dependencies)
         if not irodsIsInstalled ():
             raise RuntimeError(
                 'You are trying to use iRODS, '
                 'but it does not seem to be installed.')
 
     def createDownloadCommand (self,
-            distantFile:str,
-            localFile:str):
+            distantFile,
+            localFile):
         if not irodsIsInstalled ():
             return ""
         cmd = "irsync i:"

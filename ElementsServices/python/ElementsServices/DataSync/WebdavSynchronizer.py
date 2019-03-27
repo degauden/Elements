@@ -25,13 +25,13 @@ class WebdavSynchronizer (DataSynchronizer):
     """
 
     def __init__ (self,
-            connection:ConnectionConfiguration,
-            dependencies:DependencyConfiguration):
-        super().__init__(connection, dependencies)
+            connection,
+            dependencies):
+        super(WebdavSynchronizer, self).__init__(connection, dependencies)
 
     def createDownloadCommand (self,
-            distantFile:str,
-            localFile:str):
+            distantFile,
+            localFile):
         user = self._connection.user
         password = self._connection.password
         hostURL = self._connection.hostURL

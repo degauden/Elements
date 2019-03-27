@@ -25,9 +25,9 @@ class DssSynchronizer (DataSynchronizer):
     """
 
     def __init__ (self,
-            connection:ConnectionConfiguration,
-            dependencies:DependencyConfiguration):
-        super().__init__(connection, dependencies)
+            connection,
+            dependencies):
+        super(DssSynchronizer, self).__init__(connection, dependencies)
 
     def createDownloadCommand (self, distantFile, localFile):
         raise NotImplementedError("DSS host is not supported yet...") #TODO

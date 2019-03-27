@@ -32,8 +32,8 @@ synchronizerRegister = {
 
 
 def createSynchronizer (
-        connectionConfig:ConnectionConfiguration,
-        dependencyConfig:DependencyConfiguration):
+        connectionConfig,
+        dependencyConfig):
     """Create the appropriate data synchronizer
     as specified in a given connection configuration.
     """

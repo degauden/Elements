@@ -28,7 +28,7 @@ from fixtures.ConfigFilesFixture import *
 
 class TestDataSynchronizerMaker(object):
 
-    def checkSynchronizerCreation(self, connectionConfig:str, expectedSynchronizer:object):
+    def checkSynchronizerCreation(self, connectionConfig, expectedSynchronizer):
         connection = ConnectionConfiguration(connectionConfig)
         dependency = DependencyConfiguration(theDependencyConfig(), connection.localRoot)
         synchronizer = createSynchronizer(connection, dependency)
@@ -45,6 +45,9 @@ class TestDataSynchronizerMaker(object):
             irodsConfigs = {}
             #TODO ugly...
         dssConfigs = {}
-        configs = {**webdavConfigs, **irodsConfigs, **dssConfigs}
+#         configs = {**webdavConfigs, **irodsConfigs, **dssConfigs}
+        configs = webdavConfigs.copy()
+        configs.update(irodsConfigs)
+        configs.update(dssConfigs)
         for config, expected in configs.items():
             self.checkSynchronizerCreation(config, expected)

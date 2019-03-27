@@ -16,8 +16,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
+from abc import abstractmethod, ABCMeta
+# try:
+#     from abc import ABC
+# except:
+#     from abc import ABCMeta as ABC
 
-from abc import ABC, abstractmethod
 import os.path
 
 from .ConnectionConfiguration import *
@@ -28,20 +32,21 @@ from .DataSyncUtils import *
 class DownloadFailed (Exception):
     """An exception raised when downloading fails.
     """
-    def __init__ (self, distantFile:str, localFile:str):
+    def __init__ (self, distantFile, localFile):
         self.message = "Unable to download file: '" + distantFile + "' as: '" + localFile + "'."
 
 
-class DataSynchronizer(ABC):
+class DataSynchronizer(object):
     """A data synchronizer class is able to download
     test data from a host.
 
     This is the abstract class to be extended for each data host.
     """
+    __metaclass__ = ABCMeta
 
     def __init__ (self,
-            connection:ConnectionConfiguration,
-            dependencies:DependencyConfiguration):
+            connection,
+            dependencies):
         self._connection = connection
         self._fileMap = dependencies.getFileMap()
 
@@ -52,19 +57,19 @@ class DataSynchronizer(ABC):
             if self.fileShouldBeWritten(localFile):
                 self.downloadOneFile(distantFile, localFile)
 
-    def fileShouldBeWritten (self, localFile:str):
+    def fileShouldBeWritten (self, localFile):
         """Check whether a file should be locally written.
         """
         if not self.fileAlreadyExists(localFile):
             return True
         return self._connection.overwritingAllowed()
 
-    def fileAlreadyExists (self, localFile:str):
+    def fileAlreadyExists (self, localFile):
         """Check whether a file to be downloaded already exists locally.
         """
         return os.path.isfile(localFile)
 
-    def downloadOneFile (self, distantFile:str, localFile:str):
+    def downloadOneFile (self, distantFile, localFile):
         """Download a given test file.
         """
         command = self.createDownloadCommand(distantFile, localFile)
@@ -74,7 +79,7 @@ class DataSynchronizer(ABC):
             raise DownloadFailed(distantFile, localFile)
             #TODO output out, err
 
-    def hasBeenDownloaded (self, distantFile:str, localFile:str):
+    def hasBeenDownloaded (self, distantFile, localFile):
         """Check whether a given test file has been downloaded,
         i.e., exists and is not empty.
         """
@@ -83,7 +88,7 @@ class DataSynchronizer(ABC):
         return os.path.getsize(localFile) > 0
 
     @abstractmethod
-    def createDownloadCommand (self, distantFile:str, localFile:str):
+    def createDownloadCommand (self, distantFile, localFile):
         """Create the command to download a file.
         """
         pass

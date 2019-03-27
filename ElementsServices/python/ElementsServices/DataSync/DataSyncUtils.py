@@ -23,13 +23,13 @@ import subprocess
 from ElementsKernel.Configuration import getConfigurationPath
 
 
-def dataSyncConfFilePath (filename:str):
+def dataSyncConfFilePath (filename):
     """Get the path of a configuration file for the data synchronization tool.
     """
     return getConfigurationPath(filename)
 
 
-def runCommandAndCaptureOutErr (cmd:str):
+def runCommandAndCaptureOutErr (cmd):
     """Execute a command and return its output and error messages.
     """
     p = subprocess.Popen(
@@ -37,10 +37,10 @@ def runCommandAndCaptureOutErr (cmd:str):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
     out, err = p.communicate()
-    return out.decode(), err.decode()
+    return out.decode("utf-8"), err.decode("utf-8")
 
 
-def localDirExists (localDir:str):
+def localDirExists (localDir):
     """Check whether a local directory exists.
     """
     if not localDir:
@@ -50,12 +50,12 @@ def localDirExists (localDir:str):
     return False
 
 
-def createLocalDirOf (localFile:str):
+def createLocalDirOf (localFile):
     """Create the parent directory for a local file.
     """
-    dir = os.path.dirname(localFile)
-    if not localDirExists(dir):
-        os.makedirs(dir)
+    dir_name = os.path.dirname(localFile)
+    if not localDirExists(dir_name):
+        os.makedirs(dir_name)
 
 
 def environmentVariable (name):
