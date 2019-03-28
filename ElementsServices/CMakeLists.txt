@@ -1,5 +1,4 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
-
 #===============================================================================
 # Load elements_subdir macro here
 # Examples:
@@ -7,6 +6,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #         elements_subdir(ElementsExamples)
 #===============================================================================
 elements_subdir(ElementsServices)
+
+find_package(Irods QUIET)
+find_package(Wget QUIET)
 
 #===============================================================================
 # Load elements_depends_on_subdirs macro here
@@ -81,16 +83,21 @@ elements_add_unit_test(DssSynchronizer tests/src/DataSync/DssSynchronizer_test.c
                        EXECUTABLE ElementsServices_DssSynchronizer_test
                        LINK_LIBRARIES ElementsServices
                        TYPE Boost)
-elements_add_unit_test(IrodsSynchronizer tests/src/DataSync/IrodsSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
-                       EXECUTABLE ElementsServices_IrodsSynchronizer_test
-                       LINK_LIBRARIES ElementsServices
-                       ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
-                       TYPE Boost)
-elements_add_unit_test(WebdavSynchronizer tests/src/DataSync/WebdavSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
-                       EXECUTABLE ElementsServices_WebdavSynchronizer_test
-                       LINK_LIBRARIES ElementsServices
-                       TYPE Boost)
+                       
+if(IRODS_FOUND)
+  elements_add_unit_test(IrodsSynchronizer tests/src/DataSync/IrodsSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
+                         EXECUTABLE ElementsServices_IrodsSynchronizer_test
+                         LINK_LIBRARIES ElementsServices
+                         ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
+                         TYPE Boost)
+endif()
 
+if(WGET_FOUND)
+  elements_add_unit_test(WebdavSynchronizer tests/src/DataSync/WebdavSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
+                         EXECUTABLE ElementsServices_WebdavSynchronizer_test
+                         LINK_LIBRARIES ElementsServices
+                         TYPE Boost)
+endif()
 #===============================================================================
 # Use the following macro for python modules, scripts and aux files:
 #  elements_install_python_modules()
