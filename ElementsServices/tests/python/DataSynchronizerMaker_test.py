@@ -43,11 +43,7 @@ class TestDataSynchronizerMaker(object):
         }
         if not IrodsSynchronizer.irodsIsInstalled():
             irodsConfigs = {}
-            #TODO ugly...
-        dssConfigs = {}
-#         configs = {**webdavConfigs, **irodsConfigs, **dssConfigs}
         configs = webdavConfigs.copy()
         configs.update(irodsConfigs)
-        configs.update(dssConfigs)
         for config, expected in configs.items():
             self.checkSynchronizerCreation(config, expected)

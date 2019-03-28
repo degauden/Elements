@@ -26,7 +26,6 @@
 
 #include "ElementsServices/DataSync/DataSynchronizer.h"
 #include "ElementsServices/DataSync/DataSyncUtils.h"
-#include "ElementsServices/DataSync/DssSynchronizer.h"
 #include "ElementsServices/DataSync/IrodsSynchronizer.h"
 #include "ElementsServices/DataSync/WebdavSynchronizer.h"
 

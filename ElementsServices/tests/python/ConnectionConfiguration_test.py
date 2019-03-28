@@ -35,7 +35,6 @@ class TestConnectionConfiguration(object):
     def test_hostParsing(self):
         self.checkHostParsing(DataHost.IRODS, ["irods", "iRODS", "IRODS"])
         self.checkHostParsing(DataHost.WEBDAV, ["webdav", "WebDAV", "WEBDAV"])
-        self.checkHostParsing(DataHost.DSS, ["dss", "Dss", "DSS"])
         self.checkHostParsing(None, ["blob", "Blob", "BLOB"])
 
     def test_overwritingPolicy(self):

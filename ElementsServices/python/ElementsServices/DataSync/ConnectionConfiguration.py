@@ -28,7 +28,6 @@ class DataHost (enum.Enum):
     """
     IRODS = "iRODS"
     WEBDAV = "WebDAV"
-    DSS = "DSS"
 
 
 class OverwritingPolicy (enum.IntEnum):

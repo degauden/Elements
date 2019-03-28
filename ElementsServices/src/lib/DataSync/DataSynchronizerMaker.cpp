@@ -31,8 +31,6 @@ std::shared_ptr<DataSynchronizer> createSynchronizer(
       return make_shared<IrodsSynchronizer>(connection, dependency);
     case DataHost::WEBDAV:
       return make_shared<WebdavSynchronizer>(connection, dependency);
-    case DataHost::DSS:
-      return make_shared<DssSynchronizer>(connection, dependency);
     default:
       throw UnknownHost();
   }

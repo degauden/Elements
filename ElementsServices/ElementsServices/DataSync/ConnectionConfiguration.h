@@ -33,7 +33,7 @@ namespace DataSync {
  * @brief The test data hosting solution.
  */
 enum DataHost {
-  IRODS, WEBDAV, DSS,
+  IRODS, WEBDAV,
 };
 
 /**

@@ -21,13 +21,11 @@ from .ConnectionConfiguration import *
 from .DependencyConfiguration import *
 from .IrodsSynchronizer import *
 from .WebdavSynchronizer import *
-from .DssSynchronizer import *
 
 
 synchronizerRegister = {
     DataHost.IRODS: IrodsSynchronizer,
     DataHost.WEBDAV: WebdavSynchronizer,
-    DataHost.DSS: DssSynchronizer
 }
 
 
@@ -42,8 +40,6 @@ def createSynchronizer (
         return IrodsSynchronizer(connectionConfig, dependencyConfig)
     elif host == DataHost.WEBDAV:
         return WebdavSynchronizer(connectionConfig, dependencyConfig)
-    elif host == DataHost.DSS:
-        return DssSynchronizer(connectionConfig, dependencyConfig)
     else:
         raise NotImplementedError("Unknown test data host.")
     #TODO use register: synchronizerRegister[host](connectionConfiguration, dependencyConfig)

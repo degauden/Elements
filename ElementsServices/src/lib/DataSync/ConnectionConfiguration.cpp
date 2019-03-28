@@ -91,8 +91,6 @@ void ConnectionConfiguration::parseHost(string name) {
     host = DataHost::IRODS;
   else if (uncased == "webdav")
     host = DataHost::WEBDAV;
-  else if (uncased == "dss")
-    host = DataHost::DSS;
   else
     throw UnknownHost(name);
 }
