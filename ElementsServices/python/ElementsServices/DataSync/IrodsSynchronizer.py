@@ -52,4 +52,4 @@ class IrodsSynchronizer (DataSynchronizer):
         cmd += distantFile + " " + localFile
         # Number of retries cannot be set with irsync
         # -s option allows comparing only file size (no checksum) to save time
-        return cmd;
+        return cmd

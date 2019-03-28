@@ -9,6 +9,7 @@ elements_subdir(ElementsServices)
 
 find_package(Irods QUIET)
 find_package(Wget QUIET)
+find_python_module(easdss)
 
 #===============================================================================
 # Load elements_depends_on_subdirs macro here
@@ -79,11 +80,12 @@ elements_add_unit_test(DependencyConfiguration tests/src/DataSync/DependencyConf
                        EXECUTABLE ElementsServices_DependencyConfiguration_test
                        LINK_LIBRARIES ElementsServices
                        TYPE Boost)
+if(PY_EASDSS_FOUND)
 elements_add_unit_test(DssSynchronizer tests/src/DataSync/DssSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
                        EXECUTABLE ElementsServices_DssSynchronizer_test
                        LINK_LIBRARIES ElementsServices
                        TYPE Boost)
-                       
+endif()     
 if(IRODS_FOUND)
   elements_add_unit_test(IrodsSynchronizer tests/src/DataSync/IrodsSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
                          EXECUTABLE ElementsServices_IrodsSynchronizer_test
