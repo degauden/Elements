@@ -3254,6 +3254,7 @@ endfunction()
 #                     NAME ""
 #                     PATTERN *.py
 #                     TIMEOUT ""
+#                     EXCLUDE ""
 #                     )
 #
 # Add the python files in the directory as test. It collects the python test files
@@ -3261,7 +3262,7 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(add_python_test_dir)
 
-  CMAKE_PARSE_ARGUMENTS(PYTEST_ARG "" "PREFIX;PATTERN;NAME;TIMEOUT" "" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(PYTEST_ARG "" "PREFIX;PATTERN;NAME;TIMEOUT" "EXCLUDE" ${ARGN})
 
   if(NOT PYTEST_ARG_UNPARSED_ARGUMENTS)
       set(PYTEST_ARG_UNPARSED_ARGUMENTS "tests/python")
@@ -3292,6 +3293,12 @@ function(add_python_test_dir)
     elements_expand_sources(tmp_pysrcs ${CMAKE_CURRENT_SOURCE_DIR}/${pytestsubdir}/${PYTEST_ARG_PATTERN})
     set(pysrcs ${pysrcs} ${tmp_pysrcs})
   endforeach()
+
+  if(PYTEST_ARG_EXCLUDE)
+    foreach(i_arg_ex ${PYTEST_ARG_EXCLUDE})
+      list(REMOVE_ITEM pysrcs ${CMAKE_CURRENT_SOURCE_DIR}/${i_arg_ex})
+    endforeach()
+  endif()
 
   elements_get_package_name(package)
 
@@ -3350,7 +3357,7 @@ endfunction()
 #-------------------------------------------------------------------------------
 function(elements_install_python_modules)
 
-  CMAKE_PARSE_ARGUMENTS(INSTALL_PY_MOD "" "TEST_TIMEOUT" "" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(INSTALL_PY_MOD "" "TEST_TIMEOUT" "TEST_EXCLUDE" ${ARGN})
 
   if(NOT INSTALL_PY_MOD_UNPARSED_ARGUMENTS)
       set(INSTALL_PY_MOD_UNPARSED_ARGUMENTS "python")
@@ -3392,9 +3399,9 @@ function(elements_install_python_modules)
       set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
       if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
         if(INSTALL_PY_MOD_TEST_TIMEOUT)
-          add_python_test_dir(tests/python TIMEOUT ${INSTALL_PY_MOD_TEST_TIMEOUT})
+          add_python_test_dir(tests/python TIMEOUT ${INSTALL_PY_MOD_TEST_TIMEOUT} EXCLUDE ${INSTALL_PY_MOD_TEST_EXCLUDE})
         else()
-          add_python_test_dir(tests/python)
+          add_python_test_dir(tests/python EXCLUDE ${INSTALL_PY_MOD_TEST_EXCLUDE})
         endif()
       endif()
     else()
