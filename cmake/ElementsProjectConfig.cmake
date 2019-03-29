@@ -417,14 +417,51 @@ macro(elements_project project version)
     set(PYFRMK_TEST ${PYTHON_EXECUTABLE} ${PYFRMK_TEST})
   endif()
 
+  # compute the VCS version
+
+  string(TIMESTAMP PROJECT_TIMESTAMP_VERSION "%Y%m%d" UTC)
+
+  find_package(Git)
+
+  set(CURRENT_GIT_TAG)
+
+  if (GIT_FOUND)
+    set(CURRENT_GIT_STAMP)
+    execute_process(COMMAND git log -n1 --pretty='%H'
+                    OUTPUT_VARIABLE CURRENT_GIT_STAMP
+                    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (CURRENT_GIT_STAMP)
+      string(REPLACE "'" "" CURRENT_GIT_STAMP ${CURRENT_GIT_STAMP})
+    endif()
+
+    if (CURRENT_GIT_STAMP)
+      execute_process(COMMAND git describe --exact-match --tags ${CURRENT_GIT_STAMP}
+                      OUTPUT_VARIABLE CURRENT_GIT_TAG
+                      ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+    endif()
+  endif()
+
+  if(CURRENT_GIT_STAMP)
+    if(CURRENT_GIT_TAG)
+      set(PROJECT_VCS_VERSION ${CURRENT_GIT_TAG})
+    else()
+      set(PROJECT_VCS_VERSION ${PROJECT_TIMESTAMP_VERSION})
+    endif()
+  else()
+    # we are not in git
+    set(PROJECT_VCS_VERSION ${CMAKE_PROJECT_VERSION})
+  endif()
+
+  debug_print_var(PROJECT_VCS_VERSION)
 
   # Generate the version header for the project.
   string(TOUPPER ${project} _proj)
 
   if(versheader_cmd)
+    debug_print_var(PROJECT_VCS_VERSION)
     execute_process(COMMAND
                     ${versheader_cmd} --quiet
-                    ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_VERSION.h)
+                    ${project} ${CMAKE_PROJECT_VERSION} ${PROJECT_VCS_VERSION} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_VERSION.h)
     install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_VERSION.h DESTINATION ${INCLUDE_INSTALL_SUFFIX})
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${_proj}_VERSION.h)
@@ -442,32 +479,6 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
     set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${_proj}_INSTALL.h)
   endif()
 
-  string(TIMESTAMP PROJECT_TIMESTAMP_VERSION "%Y%m%d" UTC)
-
-  find_package(Git)
-
-  set(CURRENT_GIT_TAG)
-
-  if (GIT_FOUND)
-    set(CURRENT_GIT_STAMP)
-    execute_process(COMMAND git log -n1 --pretty='%H'
-                    OUTPUT_VARIABLE CURRENT_GIT_STAMP
-                    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-    string(REPLACE "'" "" CURRENT_GIT_STAMP ${CURRENT_GIT_STAMP})
-
-    if (CURRENT_GIT_STAMP)
-      execute_process(COMMAND git describe --exact-match --tags ${CURRENT_GIT_STAMP}
-                      OUTPUT_VARIABLE CURRENT_GIT_TAG
-                      ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-    endif()
-  endif()
-
-  if(CURRENT_GIT_TAG)
-    set(PROJECT_VCS_VERSION ${CURRENT_GIT_TAG})
-  else()
-    set(PROJECT_VCS_VERSION ${PROJECT_TIMESTAMP_VERSION})
-  endif()
-
   if(thisheader_cmd)
     execute_process(COMMAND
                     ${thisheader_cmd} --quiet
@@ -481,7 +492,7 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   if(versmodule_cmd)
     execute_process(COMMAND
                     ${versmodule_cmd} --quiet
-                    ${project} ${CMAKE_PROJECT_VERSION} ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py)
+                    ${project} ${CMAKE_PROJECT_VERSION} ${PROJECT_VCS_VERSION} ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py)
     install(FILES ${CMAKE_BINARY_DIR}/python/${_proj}_VERSION.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.py)
@@ -1943,7 +1954,7 @@ macro(elements_subdir name)
   # Generate the version header for the package.
   execute_process(COMMAND
                   ${versheader_cmd} --quiet
-                  ${name} ${version} ${CMAKE_CURRENT_BINARY_DIR}/${name}Version.h)
+                  ${name} ${version} ${PROJECT_VCS_VERSION} ${CMAKE_CURRENT_BINARY_DIR}/${name}Version.h)
 
   execute_process(COMMAND
                   ${thismodheader_cmd} --quiet
