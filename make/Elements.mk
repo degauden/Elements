@@ -112,6 +112,14 @@ else
 endif
 BUILD_CMD := $(CMAKE) --build $(BUILD_SUBDIR) --target
 
+
+# Use environment variable for extra flags
+
+# Replace the ":" from eclipse variable list to spaces  
+ifneq ($(EXPAND_FLAGS),)
+  CMAKEFLAGS := $(subst :-, -,$(CMAKEFLAGS))
+endif
+
 ifneq ($(CMAKEFLAGS),)
   override ALL_CMAKEFLAGS += $(CMAKEFLAGS)
 endif
