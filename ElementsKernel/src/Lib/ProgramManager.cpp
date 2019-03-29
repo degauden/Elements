@@ -66,12 +66,14 @@ using System::getExecutablePath;
 ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
                const string& parent_project_version,
                const string& parent_project_name,
+               const string& parent_project_vcs_version,
                const string& parent_module_version,
                const string& parent_module_name,
                const vector<string>& search_dirs):
                m_program_ptr(move(program_ptr)),
                m_parent_project_version(move(parent_project_version)),
                m_parent_project_name(move(parent_project_name)),
+               m_parent_project_vcs_version(move(parent_project_vcs_version)),
                m_parent_module_version(move(parent_module_version)),
                m_parent_module_name(move(parent_module_name)),
                m_search_dirs(move(search_dirs)),
@@ -480,7 +482,7 @@ ExitCode ProgramManager::run(int argc, char* argv[]) {
 
 string ProgramManager::getVersion() const {
 
-  string version = m_parent_project_name + " " + m_parent_project_version;
+  string version = m_parent_project_name + " " + m_parent_project_vcs_version;
 
   return version;
 }

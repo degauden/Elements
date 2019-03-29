@@ -67,7 +67,7 @@ close_python_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath
 update_list.append(close_python_dir)
 _updateSysPath(update_list)
 
-from %(proj)s_VERSION import %(proj)s_VERSION_STRING
+from %(proj)s_VERSION import %(proj)s_VERSION_STRING, %(proj)s_VCS_VERSION
 from %(proj)s_INSTALL import %(proj)s_SEARCH_DIRS
 
 %(proj)s_NAME = "%(Proj)s"
@@ -84,6 +84,7 @@ from ElementsKernel.Program import Program
 
 p = Program('%(MODULE_NAME)s',
              %(proj)s_VERSION_STRING, %(proj)s_NAME,
+             %(proj)s_VCS_VERSION,
              ELEMENTS_MODULE_NAME, ELEMENTS_MODULE_VERSION,
              %(proj)s_SEARCH_DIRS, os.path.realpath(__file__))
 

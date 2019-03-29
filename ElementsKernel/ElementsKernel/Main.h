@@ -47,6 +47,7 @@
 #define CREATE_MANAGER(ELEMENTS_PROGRAM_NAME, MANAGER) \
   Elements::ProgramManager MANAGER {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
                                     THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
+                                    THIS_PROJECT_VCS_VERSION, \
                                     THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
                                     THIS_PROJECT_SEARCH_DIRS}
 
