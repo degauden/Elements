@@ -442,6 +442,31 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
     set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${_proj}_INSTALL.h)
   endif()
 
+  string(TIMESTAMP PROJECT_TIMESTAMP_VERSION "%Y%m%d" UTC)
+
+  find_package(Git)
+
+  set(CURRENT_GIT_TAG)
+
+  if (GIT_FOUND)
+    set(CURRENT_GIT_STAMP)
+    execute_process(COMMAND git log -n1 --pretty='%H'
+                    OUTPUT_VARIABLE CURRENT_GIT_STAMP
+                    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+    string(REPLACE "'" "" CURRENT_GIT_STAMP ${CURRENT_GIT_STAMP})
+
+    if (CURRENT_GIT_STAMP)
+      execute_process(COMMAND git describe --exact-match --tags ${CURRENT_GIT_STAMP}
+                      OUTPUT_VARIABLE CURRENT_GIT_TAG
+                      ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+    endif()
+  endif()
+
+  if(CURRENT_GIT_TAG)
+    set(PROJECT_VCS_VERSION ${CURRENT_GIT_TAG})
+  else()
+    set(PROJECT_VCS_VERSION ${PROJECT_TIMESTAMP_VERSION})
+  endif()
 
   if(thisheader_cmd)
     execute_process(COMMAND

@@ -8,6 +8,7 @@ env:
 before_install:
   - sudo apt-get install -y libboost-all-dev python-pytest liblog4cpp5-dev doxygen libccfits-dev
   - sudo apt-get install graphviz
+  - sudo apt-get install sphinx-common python-sphinx
 
 compiler:
   - gcc
