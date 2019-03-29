@@ -452,8 +452,6 @@ macro(elements_project project version)
     set(PROJECT_VCS_VERSION ${CMAKE_PROJECT_VERSION})
   endif()
 
-  debug_print_var(PROJECT_VCS_VERSION)
-
   # Generate the version header for the project.
   string(TOUPPER ${project} _proj)
 
