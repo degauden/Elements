@@ -456,7 +456,6 @@ macro(elements_project project version)
   string(TOUPPER ${project} _proj)
 
   if(versheader_cmd)
-    debug_print_var(PROJECT_VCS_VERSION)
     execute_process(COMMAND
                     ${versheader_cmd} --quiet
                     ${project} ${CMAKE_PROJECT_VERSION} ${PROJECT_VCS_VERSION} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_VERSION.h)
