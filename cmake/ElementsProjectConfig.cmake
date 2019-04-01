@@ -592,10 +592,12 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         SEARCH_PATH ${${_pck}_DIR})
   endforeach()
 
-  if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
+  foreach(_ds ${ELEMENTS_DEFAULT_SEARCH_PATH})  
+    if(EXISTS ${_ds})
       set(project_environment ${project_environment}
-        SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH})
-  endif()
+          SEARCH_PATH ${_ds})
+    endif()
+  endforeach()
 
   if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
       set(project_environment ${project_environment}
@@ -1310,13 +1312,26 @@ macro(_elements_use_other_projects)
   # Note: it works even if the env. var. is not set.
   file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" projects_search_path)
 
-  if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
-    set(projects_search_path ${projects_search_path} ${ELEMENTS_DEFAULT_SEARCH_PATH})
-  endif()
+  debug_print_var(projects_search_path)
+
+  debug_print_var(ELEMENTS_DEFAULT_SEARCH_PATH)
+
+  foreach(_ds ${ELEMENTS_DEFAULT_SEARCH_PATH})
+    debug_print_var(_ds)
+    if(EXISTS ${_ds})
+      set(projects_search_path ${projects_search_path} ${_ds})
+    endif()
+  endforeach()
+
+  debug_print_var(projects_search_path)
+
 
   if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
     set(projects_search_path ${projects_search_path} ${ELEMENTS_USR_SEARCH_PATH})
   endif()
+
+  debug_print_var(projects_search_path)
+
 
   if(projects_search_path)
     list(REMOVE_DUPLICATES projects_search_path)
@@ -1324,6 +1339,8 @@ macro(_elements_use_other_projects)
   else()
     message(STATUS "Looking for projects")
   endif()
+
+  debug_print_var(projects_search_path)
 
   # this is needed because of the way variable expansion works in macros
   set(ARGN_ ${ARGN})
