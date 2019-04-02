@@ -32,11 +32,20 @@ local_clean_exit() {
 export User_area=${tmploc}
 export CMAKE_PROJECT_PATH=${User_area}
 
+export Deploy_loc=${User_area}/Deploy
+if [ ! -d "${Deploy_loc}" ]; then
+  mkdir -p "${Deploy_loc}"
+fi
+
+
+export CMAKEFLAGS="${CMAKEFLAGS} -DCMAKE_INSTALL_PREFIX=${Deploy_loc}"
+export CMAKE_PREFIX_PATH="${Deploy_loc}:${CMAKE_PREFIX_PATH}"
+
 echo "CMAKE_PROJECT_PATH: ${CMAKE_PROJECT_PATH}"
 echo "BINARY_TAG: ${BINARY_TAG}"
 echo "User_area ${User_area}"
 echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
-
+echo "CMAKEFLAGS: ${CMAKEFLAGS}"
 
 
 # because the "-s" (standalone) option is used, this test script must work after the build only.
