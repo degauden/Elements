@@ -1299,6 +1299,7 @@ ${MAIN_PROJECT_CHANGELOG}
   include(ElementsDocumentation)
   include(ElementsCoverage)
   include(ElementsUninstall)
+  include(ElementsInfo)
 
 endmacro()
 

@@ -1,0 +1,9 @@
+
+message(STATUS "This is the informations for @PROJECT_NAME@ @PROJECT_VERSION@")
+message(STATUS "---------------------------------------------------------------------")
+
+message(STATUS "Name: @PROJECT_NAME@")
+message(STATUS "Version: @PROJECT_VERSION@")
+message(STATUS "Source Directory: @CMAKE_SOURCE_DIR@")
+message(STATUS "Module List: @module_list@")
+message(STATUS "Include List: @include_list@")
