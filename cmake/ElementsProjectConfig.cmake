@@ -1313,25 +1313,16 @@ macro(_elements_use_other_projects)
   # Note: it works even if the env. var. is not set.
   file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" projects_search_path)
 
-  debug_print_var(projects_search_path)
-
-  debug_print_var(ELEMENTS_DEFAULT_SEARCH_PATH)
-
   foreach(_ds ${ELEMENTS_DEFAULT_SEARCH_PATH})
-    debug_print_var(_ds)
     if(EXISTS ${_ds})
       set(projects_search_path ${projects_search_path} ${_ds})
     endif()
   endforeach()
 
-  debug_print_var(projects_search_path)
-
 
   if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
     set(projects_search_path ${projects_search_path} ${ELEMENTS_USR_SEARCH_PATH})
   endif()
-
-  debug_print_var(projects_search_path)
 
 
   if(projects_search_path)
@@ -1340,8 +1331,6 @@ macro(_elements_use_other_projects)
   else()
     message(STATUS "Looking for projects")
   endif()
-
-  debug_print_var(projects_search_path)
 
   # this is needed because of the way variable expansion works in macros
   set(ARGN_ ${ARGN})
@@ -3098,6 +3087,8 @@ function(elements_add_unit_test name)
              WORKING_DIRECTORY ${${name}_UNIT_TEST_WORKING_DIRECTORY}
              COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
              ${executable}${exec_suffix})
+
+    set_property(GLOBAL APPEND PROPERTY TEST_LIST ${package}.${name}:${executable}${exec_suffix})
 
     set_property(TEST ${package}.${name} PROPERTY CMDLINE "${executable}${exec_suffix}")
     set_property(TEST ${package}.${name} APPEND PROPERTY LABELS UnitTest ${package} Binary)

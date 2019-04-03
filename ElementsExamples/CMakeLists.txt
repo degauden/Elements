@@ -17,8 +17,8 @@ find_package(GMock)
 #    ElementsExamples is the library name
 #    src/Lib/*.cpp are the source files
 elements_add_library(ElementsExamples src/lib/*.cpp
-                    LINK_LIBRARIES Boost ElementsKernel
-                    PUBLIC_HEADERS ElementsExamples)
+                     LINK_LIBRARIES Boost ElementsKernel
+                     PUBLIC_HEADERS ElementsExamples)
 
 #===== Executables =============================================================
 # Instruction for creating a C++ executable
