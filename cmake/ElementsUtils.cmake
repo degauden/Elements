@@ -899,7 +899,9 @@ function(elements_include_directories)
         include_directories(${inc_pos} ${d})
 #        debug_print("Include dir ${d} ${inc_pos}")
     endif()
-    
+
+    set_property(GLOBAL APPEND PROPERTY PROJ_INCLUDE_LIST ${d})
+
   endforeach()
 
 endfunction(elements_include_directories)
