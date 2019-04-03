@@ -452,13 +452,10 @@ macro(elements_project project version)
     set(PROJECT_VCS_VERSION ${CMAKE_PROJECT_VERSION})
   endif()
 
-  debug_print_var(PROJECT_VCS_VERSION)
-
   # Generate the version header for the project.
   string(TOUPPER ${project} _proj)
 
   if(versheader_cmd)
-    debug_print_var(PROJECT_VCS_VERSION)
     execute_process(COMMAND
                     ${versheader_cmd} --quiet
                     ${project} ${CMAKE_PROJECT_VERSION} ${PROJECT_VCS_VERSION} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_VERSION.h)
@@ -595,10 +592,12 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
         SEARCH_PATH ${${_pck}_DIR})
   endforeach()
 
-  if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
+  foreach(_ds ${ELEMENTS_DEFAULT_SEARCH_PATH})  
+    if(EXISTS ${_ds})
       set(project_environment ${project_environment}
-        SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH})
-  endif()
+          SEARCH_PATH ${_ds})
+    endif()
+  endforeach()
 
   if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
       set(project_environment ${project_environment}
@@ -1300,6 +1299,7 @@ ${MAIN_PROJECT_CHANGELOG}
   include(ElementsDocumentation)
   include(ElementsCoverage)
   include(ElementsUninstall)
+  include(ElementsInfo)
 
 endmacro()
 
@@ -1313,13 +1313,17 @@ macro(_elements_use_other_projects)
   # Note: it works even if the env. var. is not set.
   file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" projects_search_path)
 
-  if(EXISTS ${ELEMENTS_DEFAULT_SEARCH_PATH})
-    set(projects_search_path ${projects_search_path} ${ELEMENTS_DEFAULT_SEARCH_PATH})
-  endif()
+  foreach(_ds ${ELEMENTS_DEFAULT_SEARCH_PATH})
+    if(EXISTS ${_ds})
+      set(projects_search_path ${projects_search_path} ${_ds})
+    endif()
+  endforeach()
+
 
   if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
     set(projects_search_path ${projects_search_path} ${ELEMENTS_USR_SEARCH_PATH})
   endif()
+
 
   if(projects_search_path)
     list(REMOVE_DUPLICATES projects_search_path)
@@ -3083,6 +3087,8 @@ function(elements_add_unit_test name)
              WORKING_DIRECTORY ${${name}_UNIT_TEST_WORKING_DIRECTORY}
              COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
              ${executable}${exec_suffix})
+
+    set_property(GLOBAL APPEND PROPERTY TEST_LIST ${package}.${name}:${executable}${exec_suffix})
 
     set_property(TEST ${package}.${name} PROPERTY CMDLINE "${executable}${exec_suffix}")
     set_property(TEST ${package}.${name} APPEND PROPERTY LABELS UnitTest ${package} Binary)
