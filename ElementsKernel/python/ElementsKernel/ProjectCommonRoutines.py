@@ -131,10 +131,7 @@ def makeDirectory(directory_path):
     Create a directory on disk if any
     """
     if not os.path.exists(directory_path):
-        try:
-            os.makedirs(directory_path)
-        except OSError as e:
-            raise e
+        os.makedirs(directory_path)
 
 ################################################################################
 
