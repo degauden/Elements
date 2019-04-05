@@ -134,8 +134,6 @@ def makeChecks(program_file_path, program_name, answer_yes=False):
     epcr.checkFileNotExist(program_file_path, program_name)
     # Check aux file exist
     epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
-    # Check name in DB
-    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2], answer_yes)
 
 ################################################################################
 

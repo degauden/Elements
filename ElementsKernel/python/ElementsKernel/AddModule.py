@@ -186,7 +186,6 @@ def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
     checkCmakelistFileExist(project_dir)
     epcr.checkNameAndVersionValid(module_name, '1.0')
     checkDependencyListValid(dependency_list)
-    epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0], answer_yes)
 
 ################################################################################
 

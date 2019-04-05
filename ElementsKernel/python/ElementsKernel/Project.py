@@ -204,8 +204,6 @@ def makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_y
     # Check AUX files exist
     epcr.checkAuxFileExist(AUX_CMAKE_LIST_IN)
     epcr.checkAuxFileExist(AUX_MAKE_FILE_IN)
-    # Check name in the Element Naming Database
-    epcr.checkNameInEuclidNamingDatabase(proj_name, nc.TYPES[0], answer_yes)
 
 ################################################################################
 

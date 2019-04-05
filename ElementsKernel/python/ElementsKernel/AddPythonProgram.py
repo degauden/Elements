@@ -163,8 +163,6 @@ def makeChecks(program_file_path, program_name, answer_yes=False):
     epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
     # Make sure the program does not already exist
     epcr.checkFileNotExist(program_file_path, program_name)
-    # Check name in the Element Naming Database
-    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2], answer_yes)
 
 ################################################################################
 

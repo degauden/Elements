@@ -168,9 +168,6 @@ def makeChecks(module_file_path, python_module_name, answer_yes=False):
     # Check aux file exist
     epcr.checkAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
 
-    # Check name in DB
-    epcr.checkNameInEuclidNamingDatabase(python_module_name, nc.TYPES[0], answer_yes)
-
 ################################################################################
 
 def defineSpecificProgramOptions():
