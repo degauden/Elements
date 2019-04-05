@@ -9,7 +9,7 @@ py_module_name="PyModuleTest"
 version="1.0"
 
 # Create unique directory
-tmploc=$(mktemp -dq -t temp.XXXXXX)
+tmploc=$(mktemp -dq -t temp.XXXXXXXX)
 
 # Clean and exit
 local_clean_exit() {

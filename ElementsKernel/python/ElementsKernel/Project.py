@@ -39,7 +39,7 @@ except:
 logger = log.getLogger('CreateElementsProject')
 
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
-AUX_CMAKE_FILE_IN = "Makefile.in"
+AUX_MAKE_FILE_IN = "Makefile.in"
 AUX_PROJ_RST_IN = "doc_project.rst.in"
 AUX_GITIGNORE_IN = "gitignore_template.in"
 
@@ -83,7 +83,7 @@ def duplicate_elements(duplicate_list):
         if not elt[0] in name_list:
             name_list.append(elt[0])
         else:
-            raise epcr.ErrorOccured("Found twice the following dependency : < %s >" % elt[0])
+            raise Exception("Found twice the following dependency : < %s >" % elt[0])
 
 ################################################################################
 
@@ -160,7 +160,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
         os.makedirs(project_dir)
 
     epcr.copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
-    epcr.copyAuxFile(project_dir, AUX_CMAKE_FILE_IN)
+    epcr.copyAuxFile(project_dir, AUX_MAKE_FILE_IN)
     epcr.copyAuxFile(project_dir, AUX_GITIGNORE_IN)
 
     # Rename the git file as ".gitignore"
@@ -170,7 +170,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
     epcr.addItemToCreationList(git_ignore_file_dot_name)
 
     # Remove '.in'
-    cmakefile = os.path.join(project_dir, AUX_CMAKE_FILE_IN)
+    cmakefile = os.path.join(project_dir, AUX_MAKE_FILE_IN)
     file_no_dot_in = cmakefile.replace('.in', '')
     os.rename(cmakefile, file_no_dot_in)
     epcr.addItemToCreationList(file_no_dot_in)
@@ -203,7 +203,7 @@ def makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_y
         duplicate_elements(dependant_projects)
     # Check AUX files exist
     epcr.checkAuxFileExist(AUX_CMAKE_LIST_IN)
-    epcr.checkAuxFileExist(AUX_CMAKE_FILE_IN)
+    epcr.checkAuxFileExist(AUX_MAKE_FILE_IN)
     # Check name in the Element Naming Database
     epcr.checkNameInEuclidNamingDatabase(proj_name, nc.TYPES[0], answer_yes)
 
@@ -253,6 +253,6 @@ def checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes
         if answer_yes or response_key.lower() == "yes" or response_key == "y":
             logger.info('# Overwriting the existing project: <%s>', project_dir)
         else:
-            raise epcr.ErrorOccured
+            raise Exception()
     elif force_erase:
         epcr.eraseDirectory(project_dir)

@@ -54,7 +54,7 @@ def checkCmakelistFileExist(project_directory):
     """
     cmake_file = os.path.join(project_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
-        raise epcr.ErrorOccured("<%s> cmake project file is missing! Are you inside "
+        raise Exception("<%s> cmake project file is missing! Are you inside "
                                 "a project directory?" % cmake_file)
     else:
         # Check the make file is an Elements cmake file
@@ -63,8 +63,8 @@ def checkCmakelistFileExist(project_directory):
         data = f.read()
         if not 'elements_project' in data:
             f.close()
-            raise epcr.ErrorOccured("<%s> is not an Elements project cmake file!"
-                                    "Can not find the <elements_project> directive." % cmake_file)
+            raise Exception("<%s> is not an Elements project cmake file!"
+                            "Can not find the <elements_project> directive." % cmake_file)
         f.close()
 
 ################################################################################
@@ -159,7 +159,7 @@ def createModule(project_dir, module_name, dependency_list, standalone=False, an
             logger.info('# Replacing the existing module: <%s>', module_name)
             epcr.eraseDirectory(mod_path)
         else:
-            raise epcr.ErrorOccured
+            raise Exception()
 
     createModuleDirectories(mod_path, module_name)
     createCmakeListFile(mod_path, module_name, dependency_list, standalone)

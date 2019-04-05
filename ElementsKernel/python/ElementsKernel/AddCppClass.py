@@ -268,8 +268,8 @@ def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
     file_name_path = os.path.join(module_path, file_name)
     if os.path.exists(file_name_path):
         full_name = os.path.join(subdir, class_name)
-        raise epcr.ErrorOccured("The <%s> class already exists! "
-                                "Header file found here : < %s >" % (full_name, file_name_path))
+        raise Exception("The <%s> class already exists! "
+                        "Header file found here : < %s >" % (full_name, file_name_path))
 
 ################################################################################
 
