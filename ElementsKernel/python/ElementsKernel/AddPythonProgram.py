@@ -81,7 +81,7 @@ def subStringsInPythonProgramFile(file_path, program_name, module_name):
     os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in h_template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
@@ -120,7 +120,7 @@ def updateCmakeListsFile(module_dir, program_name):
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
-        f = open(cmake_filename, 'r')
+        f = open(cmake_filename)
         data = f.read()
         f.close()
         cmake_object = pcl.CMakeLists(data)

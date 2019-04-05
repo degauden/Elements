@@ -111,7 +111,7 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     cmake_list_file = os.path.join(project_dir, AUX_CMAKE_LIST_IN)
 
     # Substitute
-    f = open(cmake_list_file, 'r')
+    f = open(cmake_list_file)
     data = f.read()
 
     # Format all dependent projects

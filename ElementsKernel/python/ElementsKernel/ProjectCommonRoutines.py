@@ -233,7 +233,7 @@ def getElementsModuleName(module_directory):
     else:
         # Check the make file is an Elements cmake file
         # it should contain the string : "elements_project"
-        f = open(cmake_file, 'r')
+        f = open(cmake_file)
         for line in f.readlines():
             if 'elements_subdir' in line:
                 pos_start = line.find('(')
@@ -284,7 +284,7 @@ def updateCmakeCommonPart(cmake_filename, library_dep_list):
     # Backup the file
     makeACopy(cmake_filename)
 
-    f = open(cmake_filename, 'r')
+    f = open(cmake_filename)
     data = f.read()
     f.close()
     cmake_object = pcl.CMakeLists(data)

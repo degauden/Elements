@@ -84,7 +84,7 @@ def substituteStringsInDotH(file_path, class_name, module_name, subdir):
     os.rename(os.path.join(file_path, H_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in h_template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
@@ -123,7 +123,7 @@ def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
     os.rename(os.path.join(file_path, CPP_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     author_str = epcr.getAuthor()
     date_str = time.strftime("%x")
@@ -161,7 +161,7 @@ def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
     os.rename(os.path.join(file_path, UNITTEST_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     author_str = epcr.getAuthor()
     date_str = time.strftime("%x")

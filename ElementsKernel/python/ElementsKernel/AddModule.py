@@ -59,7 +59,7 @@ def checkCmakelistFileExist(project_directory):
     else:
         # Check the make file is an Elements cmake file
         # it should contain the string : "elements_project"
-        f = open(cmake_file, 'r')
+        f = open(cmake_file)
         data = f.read()
         if not 'elements_project' in data:
             f.close()
@@ -108,7 +108,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=Fal
     epcr.addItemToCreationList(file_template)
 
     # Read the template file
-    fo = open(file_template, 'r')
+    fo = open(file_template)
     template_data = fo.read()
     fo.close()
 

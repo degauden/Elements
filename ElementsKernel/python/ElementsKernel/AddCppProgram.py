@@ -81,7 +81,7 @@ def substituteStringsInProgramFile(file_path, program_name):
     os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in h_template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
