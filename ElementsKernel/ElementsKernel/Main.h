@@ -75,7 +75,7 @@
  * @endcode
  * That handler will do a smooth catching of any exception raised in the run part of the program and
  * call std::abort(). This version allows the passing of the Elements::Program constructor arguments
- * @param ELEMENTS_PROGRAM_NAME name of the main program class, derived from
+ * @param ELEMENTS_PROGRAM name of the main program class, derived from
  * the class Elements::Program class.
  */
 #define MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM, ...)         \
