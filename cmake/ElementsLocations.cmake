@@ -184,12 +184,11 @@ endif()
 
 get_arch_lib_dir(that_arch)
 
+file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" current_cmake_prefix_path)
 
 set(ELEMENTS_DEFAULT_SEARCH_PATH)
-foreach(_ds $ENV{CMAKE_PREFIX_PATH})  
-  if(EXISTS ${_ds})
-	list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${_ds}/${that_arch}/cmake/ElementsProject)
-  endif()
+foreach(_ds ${current_cmake_prefix_path})  
+  list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${_ds}/${that_arch}/cmake/ElementsProject)
 endforeach()
 list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${CMAKE_INSTALL_PREFIX}/${that_arch}/cmake/ElementsProject)
 set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/ElementsProject)
