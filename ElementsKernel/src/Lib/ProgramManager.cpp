@@ -239,25 +239,24 @@ const variables_map ProgramManager::getProgramOptions(
   auto leftover_cmd_options = collect_unrecognized(cmd_parsed_options.options,
                                                    include_positional);
 
-
   try {
 
-  auto parsed_cmdline_options = command_line_parser(leftover_cmd_options)
-                         .options(all_cmd_and_file_options)
-                         .positional(program_arguments.second)
-                         .run();
+    auto parsed_cmdline_options = command_line_parser(leftover_cmd_options)
+                           .options(all_cmd_and_file_options)
+                           .positional(program_arguments.second)
+                           .run();
 
-  store(parsed_cmdline_options, var_map);
+    store(parsed_cmdline_options, var_map);
 
-  // Parse from the configuration file if it exists
-  if (not config_file.empty() and boost::filesystem::exists(config_file)) {
-    std::ifstream ifs {config_file.string()};
-    if (ifs) {
-      auto parsed_cfgfile_options = parse_config_file(ifs,
-                                                      all_cmd_and_file_options);
-      store(parsed_cfgfile_options, var_map);
+    // Parse from the configuration file if it exists
+    if (not config_file.empty() and boost::filesystem::exists(config_file)) {
+      std::ifstream ifs {config_file.string()};
+      if (ifs) {
+        auto parsed_cfgfile_options = parse_config_file(ifs,
+                                                        all_cmd_and_file_options);
+        store(parsed_cfgfile_options, var_map);
+      }
     }
-  }
 
   } catch (const std::exception& e) {
     if (boost::starts_with(e.what(), "unrecognised option") or
