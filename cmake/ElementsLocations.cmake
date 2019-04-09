@@ -159,9 +159,6 @@ endif()
 
 #python business
 
-#execute_process(COMMAND "python -c \"from distutils.sysconfig import get_python_lib; print(get_python_lib(prefix='${CMAKE_INSTALL_PREFIX}'))\"" OUTPUT_VARIABLE py_lib_fullpath)
-#execute_process(COMMAND "python -c \"from distutils.sysconfig import get_python_lib; print(get_python_lib())\"" OUTPUT_VARIABLE py_lib_fullpath)
-
 set(PYTHON_INSTALL_SUFFIX python)
 set(PYTHON_DYNLIB_INSTALL_SUFFIX python/lib-dynload)
 
@@ -190,7 +187,6 @@ set(ELEMENTS_DEFAULT_SEARCH_PATH)
 foreach(_ds ${current_cmake_prefix_path})  
   list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${_ds}/${that_arch}/cmake/ElementsProject)
 endforeach()
-list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${CMAKE_INSTALL_PREFIX}/${that_arch}/cmake/ElementsProject)
 set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/ElementsProject)
 
 file(TO_CMAKE_PATH "$ENV{XDG_DATA_DIRS}" data_dirs)
