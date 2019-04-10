@@ -63,7 +63,7 @@ ifneq ($(wildcard $(CURDIR)/cmake/$(TOOLCHAIN_NAME)),)
 else
   ifneq ($(CMAKE_PREFIX_PATH),)
     PREFIX_LIST := $(subst :, ,$(CMAKE_PREFIX_PATH))
-    TOOLCHAIN_LIST := $(foreach dir,$(PREFIX_LIST),$(wildcard $(dir)/$(TOOLCHAIN_NAME)))
+    TOOLCHAIN_LIST := $(foreach dir,$(PREFIX_LIST),$(wildcard $(dir)/lib*/cmake/ElementsProject/$(TOOLCHAIN_NAME) $(dir)/$(TOOLCHAIN_NAME)))
     TOOLCHAIN_FILE := $(firstword $(TOOLCHAIN_LIST))
   endif
 endif
