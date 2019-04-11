@@ -23,10 +23,18 @@
 namespace ElementsServices {
 namespace DataSync {
 
+bool webdavIsInstalled() {
+  return checkCall ("wget -h");
+}
+
 WebdavSynchronizer::WebdavSynchronizer(
     ConnectionConfiguration connection,
     DependencyConfiguration dependency) :
         DataSynchronizer(connection, dependency) {
+  if (not webdavIsInstalled())
+    throw std::runtime_error(
+        "You are trying to use WebDAV, "
+        "but it does not seem to be installed.");
 }
 
 std::string WebdavSynchronizer::createDownloadCommand(

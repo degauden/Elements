@@ -79,20 +79,43 @@ elements_add_unit_test(DependencyConfiguration tests/src/DataSync/DependencyConf
                        EXECUTABLE ElementsServices_DependencyConfiguration_test
                        LINK_LIBRARIES ElementsServices
                        TYPE Boost)
+elements_add_unit_test(IrodsSynchronizer tests/src/DataSync/IrodsSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
+                       EXECUTABLE ElementsServices_IrodsSynchronizer_test
+                       LINK_LIBRARIES ElementsServices
+                       ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
+                       TYPE Boost)
+elements_add_unit_test(WebdavSynchronizer tests/src/DataSync/WebdavSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
+                       EXECUTABLE ElementsServices_WebdavSynchronizer_test
+                       LINK_LIBRARIES ElementsServices
+                       TYPE Boost)
 if(IRODS_FOUND)
-  elements_add_unit_test(IrodsSynchronizer tests/src/DataSync/IrodsSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
-                         EXECUTABLE ElementsServices_IrodsSynchronizer_test
+  elements_add_unit_test(irodsIsInstalled tests/src/DataSync/irodsIsInstalled_test.cpp
+                         EXECUTABLE ElementsServices_irodsIsInstalled_test
+                         LINK_LIBRARIES ElementsServices
+                         ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
+                         TYPE Boost)
+else()
+  elements_add_unit_test(irodsIsNotInstalled tests/src/DataSync/irodsIsNotInstalled_test.cpp
+                         EXECUTABLE ElementsServices_irodsIsNotInstalled_test
                          LINK_LIBRARIES ElementsServices
                          ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
                          TYPE Boost)
 endif()
 
 if(WGET_FOUND)
-  elements_add_unit_test(WebdavSynchronizer tests/src/DataSync/WebdavSynchronizer_test.cpp tests/src/DataSync/fixtures/*.cpp
-                         EXECUTABLE ElementsServices_WebdavSynchronizer_test
+  elements_add_unit_test(webdavIsInstalled tests/src/DataSync/webdavIsInstalled_test.cpp
+                         EXECUTABLE ElementsServices_webdavIsInstalled_test
                          LINK_LIBRARIES ElementsServices
+                         ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
+                         TYPE Boost)
+else()
+  elements_add_unit_test(webdavIsNotInstalled tests/src/DataSync/webdavIsNotInstalled_test.cpp
+                         EXECUTABLE ElementsServices_webdavIsNotInstalled_test
+                         LINK_LIBRARIES ElementsServices
+                         ENVIRONMENT BOOST_TEST_CATCH_SYSTEM_ERRORS=no
                          TYPE Boost)
 endif()
+
 #===============================================================================
 # Use the following macro for python modules, scripts and aux files:
 #  elements_install_python_modules()

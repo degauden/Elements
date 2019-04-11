@@ -55,8 +55,10 @@ void checkFallback(path fallbackConfig) {
 }
 
 BOOST_AUTO_TEST_CASE(dataSyncWebdavFr_test) {
-  checkDownload(theWebdavFrConfig());
-  checkFallback(theWebdavFrConfig());
+  if (DataSync::webdavIsInstalled()) {
+    checkDownload(theWebdavFrConfig());
+    checkFallback(theWebdavFrConfig());
+  }
 }
 
 BOOST_AUTO_TEST_CASE(dataSyncIrodsFr_test) {

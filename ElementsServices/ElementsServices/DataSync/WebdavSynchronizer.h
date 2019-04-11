@@ -29,6 +29,11 @@ namespace ElementsServices {
 namespace DataSync {
 
 /**
+ * @brief Check whether the WebDAV client is installed.
+ */
+ELEMENTS_API bool webdavIsInstalled();
+
+/**
  * @class WebdavSynchronizer
  * @brief A data synchronizer for WebDAV hosts.
  *
