@@ -36,8 +36,9 @@ BOOST_AUTO_TEST_SUITE(DataSyncUtils_test)
 //-----------------------------------------------------------------------------
 
 void checkLower(vector<string> casedList, string uncased) {
-  for (const auto& cased : casedList)
+  for (const auto& cased : casedList) {
     BOOST_CHECK_EQUAL(DataSync::lower(cased), uncased);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(lower_test) {
@@ -55,17 +56,19 @@ BOOST_AUTO_TEST_CASE(runCommand_out_test) {
   const auto outerr = DataSync::runCommandAndCaptureOutErr("echo " + msg);
   auto output = outerr.first;
   const string::size_type size = output.size();
-  if (output[size - 1] == '\n')
+  if (output[size - 1] == '\n') {
     output.resize(size - 1);
+  }
   BOOST_CHECK_EQUAL(output, msg);
 }
 
 BOOST_AUTO_TEST_CASE(localWorkspacePrefix_test) {
   const string localEv = DataSync::environmentVariable("NOPREFIX");
-  if (localEv == "")
+  if (localEv == "") {
     BOOST_CHECK_NE(DataSync::localWorkspacePrefix(), "");
-  else
+  } else {
     BOOST_CHECK_EQUAL(DataSync::localWorkspacePrefix(), "");
+  }
 }
 
 // @TODO runCommand_err_test

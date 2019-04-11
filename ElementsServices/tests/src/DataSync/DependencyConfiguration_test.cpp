@@ -67,10 +67,12 @@ BOOST_AUTO_TEST_CASE(conf_dependencies_test) {
   DataSync::DependencyConfiguration config("", "", theDependencyConfig());
   const auto foundFiles = config.localPaths();
   BOOST_CHECK_EQUAL(foundFiles.size(), theLocalFiles().size());
-  for (const auto& expected : theLocalFiles())
+  for (const auto& expected : theLocalFiles()) {
     BOOST_CHECK(DataSync::valueIsListed(expected, foundFiles));
-  for (const auto& found : foundFiles)
+  }
+  for (const auto& found : foundFiles) {
     BOOST_CHECK(DataSync::valueIsListed(found, theLocalFiles()));
+  }
 }
 
 //-----------------------------------------------------------------------------

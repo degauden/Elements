@@ -39,8 +39,9 @@ BOOST_AUTO_TEST_SUITE(IrodsSynchronizer_test)
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(irodsIsNotInstalled_test) {
-  if (DataSync::irodsIsInstalled())
+  if (DataSync::irodsIsInstalled()) {
       return;
+  }
   const auto connection = DataSync::ConnectionConfiguration(theIrodsFrConfig());
   const auto dependency = DataSync::DependencyConfiguration("", "", theDependencyConfig());
   BOOST_CHECK_THROW(
