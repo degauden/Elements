@@ -36,7 +36,7 @@ def cleanXml(xmlFileName):
 
     print(" Trying to repair the xml file")
     print(" Replacing invalid char")
-    xmlFile = open(xmlFileName, 'r')
+    xmlFile = open(xmlFileName)
     data = xmlFile.read()
     xmlFile.close()
     xmlFile = open(xmlFileName + "temp", 'w')
@@ -368,7 +368,7 @@ class TestOrganizer:
             """
             _illegal_xml_chars_Re = re.compile(
                 u'[\x00-\x08\x0b\x0c\x0e-\x1F\uD800-\uDFFF\uFFFE\uFFFF]')
-            xmlFile = open(xmlFileName, 'r')
+            xmlFile = open(xmlFileName)
             data = xmlFile.read()
             xmlFile.close()
             xmlFile = open(xmlFileName, 'w')

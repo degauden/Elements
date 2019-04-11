@@ -71,7 +71,7 @@ def updateCmakeListsFile(module_dir, class_name):
     if os.path.isfile(cmake_filename):
         # Backup the file
         epcr.makeACopy(cmake_filename)
-        f = open(cmake_filename, 'r')
+        f = open(cmake_filename)
         data = f.read()
         f.close()
         # Add the class to be removed

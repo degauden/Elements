@@ -62,7 +62,7 @@ def mergeFiles(frag_file_names, merged_file_name, comment_char,
                 bf = os.path.basename(f)
                 new_lines.append(start_mark + bf + os.linesep)
                 new_lines.append(time_mark + os.linesep)
-                file_data = open(f, 'r').read()
+                file_data = open(f).read()
                 new_lines.append(file_data)
                 if file_data and file_data[-1] != os.linesep:
                     new_lines.append(os.linesep)

@@ -69,7 +69,7 @@ def updateCmakeListsFile(module_dir):
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
-        f = open(cmake_filename, 'r')
+        f = open(cmake_filename)
         data = f.read()
         f.close()
         cmake_object = pcl.CMakeLists(data)
@@ -91,7 +91,7 @@ def substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_na
     os.rename(os.path.join(pymodule_path, PYMODULE_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     author_str = epcr.getAuthor()
     date_str = time.strftime("%x")
@@ -118,7 +118,7 @@ def substituteStringsInPyTestFile(pytest_path, module_name, python_module_name):
     os.rename(os.path.join(pytest_path, PYTEST_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     author_str = epcr.getAuthor()
     date_str = time.strftime("%x")
@@ -167,9 +167,6 @@ def makeChecks(module_file_path, python_module_name, answer_yes=False):
     epcr.checkFileNotExist(module_file_path, python_module_name)
     # Check aux file exist
     epcr.checkAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
-
-    # Check name in DB
-    epcr.checkNameInEuclidNamingDatabase(python_module_name, nc.TYPES[0], answer_yes)
 
 ################################################################################
 
