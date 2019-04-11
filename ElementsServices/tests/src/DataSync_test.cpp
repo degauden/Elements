@@ -20,6 +20,7 @@
 
 #include "ElementsServices/DataSync.h"
 #include "ElementsServices/DataSync/IrodsSynchronizer.h"
+#include "ElementsServices/DataSync/WebdavSynchronizer.h"
 
 #include "DataSync/fixtures/ConfigFilesFixture.h"
 
