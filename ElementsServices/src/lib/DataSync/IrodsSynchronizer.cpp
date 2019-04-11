@@ -31,10 +31,11 @@ IrodsSynchronizer::IrodsSynchronizer(
     ConnectionConfiguration connection,
     DependencyConfiguration dependency) :
         DataSynchronizer(connection, dependency) {
-  if (not irodsIsInstalled())
+  if (not irodsIsInstalled()) {
     throw std::runtime_error(
         "You are trying to use iRODS, "
         "but it does not seem to be installed.");
+  }
 }
 
 std::string IrodsSynchronizer::createDownloadCommand(

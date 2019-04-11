@@ -87,24 +87,26 @@ void ConnectionConfiguration::parseConfigurationFile(path filename) {
 
 void ConnectionConfiguration::parseHost(string name) {
   const string uncased = lower(name);
-  if (uncased == "irods")
+  if (uncased == "irods") {
     host = DataHost::IRODS;
-  else if (uncased == "webdav")
+  } else if (uncased == "webdav") {
     host = DataHost::WEBDAV;
-  else
+  } else {
     throw UnknownHost(name);
+  }
 }
 
 void ConnectionConfiguration::parseOverwritingPolicy(string policy) {
   const std::vector<string> overwriteAllowedOptions = { "true", "yes", "y" };
   const std::vector<string> overwriteForbiddenOptions = { "false", "no", "n" };
   string uncased = lower(policy);
-  if (valueIsListed(uncased, overwriteAllowedOptions))
+  if (valueIsListed(uncased, overwriteAllowedOptions)) {
     overwritingPolicy = OverwritingPolicy::OVERWRITE;
-  else if (valueIsListed(uncased, overwriteForbiddenOptions))
+  } else if (valueIsListed(uncased, overwriteForbiddenOptions)) {
     overwritingPolicy = OverwritingPolicy::ABORT;
-  else
+  } else {
     throw std::runtime_error("I don't know this overwriting policy: " + policy);
+  }
 }
 
 }  // namespace DataSync

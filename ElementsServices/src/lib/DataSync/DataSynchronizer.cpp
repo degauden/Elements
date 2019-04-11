@@ -42,8 +42,9 @@ void DataSynchronizer::downloadAllFiles() const {
 }
 
 bool DataSynchronizer::fileShouldBeWritten(path localFile) const {
-  if (not fileAlreadyExists(localFile))
+  if (not fileAlreadyExists(localFile)) {
     return true;
+  }
   return m_connection.overwritingAllowed();
 }
 
@@ -57,15 +58,17 @@ void DataSynchronizer::downloadOneFile(
   std::string command = createDownloadCommand(distantFile, localFile);
   createLocalDirOf(localFile);
   const auto outErr = runCommandAndCaptureOutErr(command);
-  if (not hasBeenDownloaded(distantFile, localFile))
+  if (not hasBeenDownloaded(distantFile, localFile)) {
     throw DownloadFailed(distantFile, localFile);
+  }
 }
 
 bool DataSynchronizer::hasBeenDownloaded(
     ELEMENTS_UNUSED path distantFile,
     path localFile) const {
-  if (not boost::filesystem::is_regular_file(localFile))
+  if (not boost::filesystem::is_regular_file(localFile)) {
     return false;
+  }
   return boost::filesystem::file_size(localFile) > 0;
 }
 

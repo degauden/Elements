@@ -54,15 +54,17 @@ size_t DependencyConfiguration::dependencyCount() const {
 
 vector<path> DependencyConfiguration::distantPaths() const {
   vector<path> distantPaths;
-  for (const auto& item : m_fileMap)
+  for (const auto& item : m_fileMap) {
     distantPaths.push_back(item.second);
+  }
   return distantPaths;
 }
 
 vector<path> DependencyConfiguration::localPaths() const {
   vector<path> localPaths;
-  for (const auto& item : m_fileMap)
+  for (const auto& item : m_fileMap) {
     localPaths.push_back(item.first);
+  }
   return localPaths;
 }
 
@@ -70,15 +72,17 @@ void DependencyConfiguration::parseConfigurationFile(path filename) {
   path absPath = confFilePath(filename);
   std::ifstream inputStream(absPath.c_str());
   string line;
-  while (std::getline(inputStream, line))
+  while (std::getline(inputStream, line)) {
     parseConfigurationLine(line);
+  }
 }
 
 void DependencyConfiguration::parseConfigurationLine(string line) {
-  if (lineHasAlias(line))
+  if (lineHasAlias(line)) {
     parseLineWithAlias(line);
-  else
+  } else {
     parseLineWithoutAlias(line);
+  }
 }
 
 char DependencyConfiguration::aliasSeparator() const {

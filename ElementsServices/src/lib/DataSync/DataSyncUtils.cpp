@@ -47,10 +47,12 @@ std::pair<string, string> runCommandAndCaptureOutErr(
   string out, err;
   std::array<char, BUFSIZ> buffer;
   std::shared_ptr<FILE> cmdpipe(popen(command.c_str(), "r"), pclose);
-  if (not cmdpipe)
+  if (not cmdpipe) {
     throw std::runtime_error(string("Unable to run command: ") + command);
-  if (fgets(buffer.data(), BUFSIZ, cmdpipe.get()) != NULL)
+  }
+  if (fgets(buffer.data(), BUFSIZ, cmdpipe.get()) != NULL) {
     out += buffer.data();
+  }
   // @TODO get standard error
   return std::make_pair(out, err);
 }
@@ -60,11 +62,13 @@ bool localDirExists(path localDir) {
 }
 
 void createLocalDirOf(path localFile) {
-  if (not localFile.has_parent_path())
+  if (not localFile.has_parent_path()) {
     return;
+  }
   const path dir = localFile.parent_path();
-  if (not localDirExists(dir))
+  if (not localDirExists(dir)) {
     boost::filesystem::create_directories(dir);
+  }
 }
 
 string environmentVariable(string name) {
@@ -89,8 +93,9 @@ bool containsInThisOrder(
   string::size_type offset(0);
   for (auto substr : substrings) {
     offset = input.find(substr, offset);
-    if (offset == string::npos)
+    if (offset == string::npos) {
       return false;
+    }
   }
   return true;
 }
