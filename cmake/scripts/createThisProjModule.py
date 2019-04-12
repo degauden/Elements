@@ -1,5 +1,4 @@
 import os
-import re
 from optparse import OptionParser
 
 
@@ -15,7 +14,7 @@ def main():
 
     project, outputfile = args
     if not opts.quiet:
-        print("Creating %s for %s %s" % (outputfile, project, version))
+        print("Creating %s for %s" % (outputfile, project))
 
     outdir = os.path.dirname(outputfile)
     if not os.path.exists(outdir):
@@ -31,6 +30,7 @@ from %(proj)s_VERSION import %(proj)s_VERSION, %(proj)s_VERSION_STRING, %(proj)s
 from %(proj)s_INSTALL import %(proj)s_INSTALL_LOCATION, %(proj)s_SEARCH_DIRS
 
 THIS_PROJECT_ORIGINAL_VERSION = %(proj)s_ORIGINAL_VERSION
+THIS_PROJECT_VCS_VERSION = %(proj)s_VCS_VERSION
 THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION
 THIS_PROJECT_MINOR_VERSION = %(proj)s_MINOR_VERSION
 THIS_PROJECT_PATCH_VERSION = %(proj)s_PATCH_VERSION
@@ -39,7 +39,7 @@ THIS_PROJECT_VERSION_STRING = %(proj)s_VERSION_STRING
 THIS_PROJECT_NAME = "%(Proj)s"
 THIS_PROJECT_INSTALL_LOCATION = %(proj)s_INSTALL_LOCATION
 THIS_PROJECT_SEARCH_DIRS = %(proj)s_SEARCH_DIRS
-""" % { 'proj': project.upper(), 'Proj': project}
+""" % {'proj': project.upper(), 'Proj': project}
 
     # Get the current content of the destination file (if any)
     try:

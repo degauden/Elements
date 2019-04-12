@@ -34,11 +34,11 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 
-#include <string>                   // for string
-#include <vector>                   // for vector
-#include <boost/filesystem.hpp>     // for filesystem
+#include <string>                     // for string
+#include <vector>                     // for vector
+#include <boost/filesystem/path.hpp>  // for path
 
-#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Export.h"    // ELEMENTS_API
 
 namespace Elements {
 
@@ -46,6 +46,14 @@ ELEMENTS_API std::string getConfigurationVariableName();
 
 template <typename T>
 ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name, bool raise_exception = true);
+
+// Instantiation of the most expected types
+extern template
+ELEMENTS_API boost::filesystem::path getConfigurationPath(const boost::filesystem::path& file_name,
+                                                          bool raise_exception);
+extern template
+ELEMENTS_API boost::filesystem::path getConfigurationPath(const std::string& file_name,
+                                                          bool raise_exception);
 
 ELEMENTS_API std::vector<boost::filesystem::path> getConfigurationLocations(bool exist_only = false);
 

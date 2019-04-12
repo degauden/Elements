@@ -31,6 +31,7 @@ using std::string;
 
 namespace Elements {
 
+/// @todo remove the any reference to SVN for the next major release
 string getVersionFromSvnKeywords(const string& svnUrl, const string& svnId) {
 
     using std::vector;
@@ -63,6 +64,7 @@ string getVersionFromSvnKeywords(const string& svnUrl, const string& svnId) {
     return version;
   }
 
+/// @TODO use the unsigned uint16_t instead of short for the next major release
 string getVersionString(const unsigned short major, const unsigned short minor, const unsigned short patch) {
 
   using std::to_string;

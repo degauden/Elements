@@ -34,11 +34,11 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 
-#include <string>                   // for string
-#include <vector>                   // for vector
-#include <boost/filesystem.hpp>     // for filesystem
+#include <string>                     // for string
+#include <vector>                     // for vector
+#include <boost/filesystem/path.hpp>  // for path
 
-#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Export.h"   // ELEMENTS_API
 
 namespace Elements {
 
@@ -47,9 +47,18 @@ ELEMENTS_API std::string getAuxiliaryVariableName();
 template <typename T>
 ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const T& file_name, bool raise_exception = true);
 
+// instantiation of the most expected types
+extern template
+ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const boost::filesystem::path& file_name,
+                                                      bool raise_exception);
+extern template
+ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const std::string& file_name,
+                                                      bool raise_exception);
+
 ELEMENTS_API std::vector<boost::filesystem::path> getAuxiliaryLocations(bool exist_only = false);
 
 }  // namespace Elements
+
 
 #include "ElementsKernel/_impl/Auxiliary.icpp"
 

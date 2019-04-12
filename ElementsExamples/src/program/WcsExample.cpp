@@ -40,9 +40,9 @@ public:
 
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
-    Logging logger = Logging::getLogger("WcsExample");
+    auto log = Logging::getLogger("WcsExample");
 
-    logger.info() << "done with test program! ";
+    log.info() << "done with test program! ";
 
     return ExitCode::OK;
 

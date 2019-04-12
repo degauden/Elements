@@ -45,7 +45,7 @@ public:
 
     using Eigen::MatrixXd;
 
-    Logging logger = Logging::getLogger("EigenExample");
+    auto log = Logging::getLogger("EigenExample");
 
     MatrixXd m(2, 2);
     m(0, 0) = 3;
@@ -54,7 +54,7 @@ public:
     m(1, 1) = m(1, 0) + m(0, 1);
     std::cout << m << std::endl;
 
-    logger.info() << "This is the end of the test";
+    log.info() << "This is the end of the test";
 
     return ExitCode::OK;
 

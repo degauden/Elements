@@ -1,6 +1,6 @@
 /**
  * @file ElementsKernel/Main.h
- *
+ * @brief Definition of the top macro to create an Elements program
  * @date Aug 27, 2014
  * @author Hubert Degaudenzi
  *
@@ -37,6 +37,55 @@
 #include "ThisProject.h"
 #include "ThisElementsModule.h"
 
+/** @def CREATE_MANAGER_WITH_ARGS(ELEMENTS_PROGRAM, MANAGER)
+ * Macro that declares a program manager with custom constructor arguments. It is
+ * typically called from the #MAIN_FOR(ELEMENTS_PROGRAM_NAME, MANAGER) macro.
+ * @param ELEMENTS_PROGRAM call of the main program constructor, derived from
+ * the class Elements::Program class.
+ * @param MANAGER name of the manager variable to be created.
+ */
+#define CREATE_MANAGER_WITH_ARGS(MANAGER, ELEMENTS_PROGRAM, ...) \
+  Elements::ProgramManager MANAGER {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM{__VA_ARGS__}}, \
+                                    THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
+                                    THIS_PROJECT_VCS_VERSION, \
+                                    THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
+                                    THIS_PROJECT_SEARCH_DIRS}
+
+/** @def CREATE_MANAGER(ELEMENTS_PROGRAM_NAME, MANAGER)
+ * Macro that declares a program manager with all the needed arguments. It is
+ * typically called from the #MAIN_FOR(ELEMENTS_PROGRAM_NAME, MANAGER) macro.
+ * @param ELEMENTS_PROGRAM_NAME name of the main program class, derived from
+ * the class Elements::Program class.
+ * @param MANAGER name of the manager variable to be created.
+ */
+#define CREATE_MANAGER(ELEMENTS_PROGRAM_NAME, MANAGER) \
+  CREATE_MANAGER_WITH_ARGS(MANAGER, ELEMENTS_PROGRAM_NAME,)
+
+/** @def MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM, ...)
+ * Macro which must be used to create a main in classes
+ * that derived from Elements::Program, i.e., these derived classes
+ * must end with the following line:
+ * @code
+ *    MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM, ...)
+ * @endcode.
+ * * The macro is equiped with a set_terminate placed just before
+ * the main function definition:
+ * @code
+ * ELEMENTS_UNUSED const auto installed{std::set_terminate(&Elements::ProgramManager::onTerminate)};
+ * @endcode
+ * That handler will do a smooth catching of any exception raised in the run part of the program and
+ * call std::abort(). This version allows the passing of the Elements::Program constructor arguments
+ * @param ELEMENTS_PROGRAM name of the main program class, derived from
+ * the class Elements::Program class.
+ */
+#define MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM, ...)         \
+  ELEMENTS_UNUSED const auto installed = {std::set_terminate(&Elements::ProgramManager::onTerminate)}; \
+  ELEMENTS_API int main(int argc, char* argv[])              \
+  {                                             \
+    CREATE_MANAGER_WITH_ARGS(manager, ELEMENTS_PROGRAM, __VA_ARGS__); \
+    Elements::ExitCode exit_code = manager.run(argc, argv);   \
+    return static_cast<Elements::ExitCodeType>(exit_code);    \
+  }
 
 /** @def MAIN_FOR(ELEMENTS_PROGRAM_NAME)
  * Macro which must be used to create a main in classes
@@ -56,16 +105,7 @@
  * the class Elements::Program class.
  */
 #define MAIN_FOR(ELEMENTS_PROGRAM_NAME)         \
-  ELEMENTS_UNUSED const auto installed = {std::set_terminate(&Elements::ProgramManager::onTerminate)}; \
-  ELEMENTS_API int main(int argc, char* argv[])              \
-  {                                             \
-    Elements::ProgramManager manager {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM_NAME{}}, \
-                                      THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
-                                      THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
-                                      THIS_PROJECT_SEARCH_DIRS}; \
-    Elements::ExitCode exit_code = manager.run(argc, argv);   \
-    return static_cast<Elements::ExitCodeType>(exit_code);    \
-  }
+  MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM_NAME,)
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_MAIN_H_
 

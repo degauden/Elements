@@ -26,6 +26,9 @@ from shutil import rmtree
 import os
 import tempfile
 import sys
+
+from ElementsKernel import Logging
+
 if not 'mkdtemp' in dir(tempfile):
     # mkdtemp has been introduced in python 2.3, I simulate it
     import warnings
@@ -48,16 +51,18 @@ else:
     # use the real mkdtemp
     from tempfile import mkdtemp, mkstemp
 
-from ElementsKernel import Logging
+
+DEFAULT_TMP_KEEP_VAR = "KEEPTEMPDIR"
 
 
 class TempResource(object):
 
     """ Base class for the temporary file and temporary directory"""
 
-    def __init__(self):
+    def __init__(self, keep_var=DEFAULT_TMP_KEEP_VAR):
         """ Constructor """
         self._name = None
+        self._keep_var = keep_var
         self._get_resource()
 
     def getName(self):
@@ -71,12 +76,23 @@ class TempResource(object):
         """Convert to string."""
         return self.getName()
 
+    def _destruct(self):
+        """Internal function to remove the resource"""
+        if self._name:
+            if self._keep_var in os.environ:
+                log = Logging.getLogger(None)
+                log.info("%s set: I do not remove the '%s' temporary path",
+                         self._keep_var, self._name)
+            else:
+                self._del_resource()
+                self._name = None
+
     def __del__(self):
         """Destructor.
 
         Remove the temporary directory.
         """
-        self._del_resource()
+        self._destruct()
 
     def __enter__(self):
         """ To work with the context"""
@@ -85,7 +101,7 @@ class TempResource(object):
 
     def __exit__(self, *_):
         """ function called at the end of a context """
-        self._del_resource()
+        self._destruct()
 
     def __getattr__(self, attr):
         return getattr(self._file, attr)
@@ -95,7 +111,7 @@ class TempDir(TempResource):
 
     """Class to create a temporary directory."""
 
-    def __init__(self, suffix="", prefix="tmp", base_dir=None, keep_var="KEEPTEMPDIR"):
+    def __init__(self, suffix="", prefix="tmp", base_dir=None, keep_var=DEFAULT_TMP_KEEP_VAR):
         """Constructor.
 
         'keep_var' is used to define which environment variable will prevent the
@@ -103,11 +119,10 @@ class TempDir(TempResource):
 
         The other arguments are the same as tempfile.mkdtemp.
         """
-        self._keep_var = keep_var
         self._suffix = suffix
         self._prefix = prefix
         self._base_dir = base_dir
-        super(TempDir, self).__init__()
+        super(TempDir, self).__init__(keep_var)
 
     def _get_resource(self):
         """ Internal function to get the resource"""
@@ -116,24 +131,17 @@ class TempDir(TempResource):
 
     def _del_resource(self):
         """Internal function to remove the resource"""
-        if self._name:
-            if self._keep_var in os.environ:
-                log = Logging.getLogger(None)
-                log.info("%s set: I do not remove the temporary directory '%s'",
-                         self._keep_var, self._name)
-            else:
-                rmtree(self._name)
-                self._name = None
+        rmtree(self._name)
 
 
 class TempFile(TempResource):
 
     """ class to create a temporary file """
 
-    def __init__(self):
+    def __init__(self, keep_var=DEFAULT_TMP_KEEP_VAR):
         """ Constructor """
         self._file = None
-        super(TempFile, self).__init__()
+        super(TempFile, self).__init__(keep_var)
 
     def _get_resource(self):
         """ Internal function to get the resource"""
@@ -143,11 +151,9 @@ class TempFile(TempResource):
 
     def _del_resource(self):
         """ Internal function to remove the resource """
-        if self._name:
-            self._file.close()
-            self._file = None
-            os.remove(self._name)
-            self._name = ''
+        self._file.close()
+        self._file = None
+        os.remove(self._name)
 
 
 class Environment(object):

@@ -1,6 +1,6 @@
 /**
  * @file Attribute.h
- * @brief define the __attribute__ macro if it doesn't exist for
+ * @brief define the \__attribute\__ macro if it doesn't exist for
  * some version of GCC
  * @date Dec 1, 2014
  * @author Hubert Degaudenzi

@@ -1,23 +1,19 @@
-Project Overview <----------------- TO BE WRITTEN ------------------------>
-===========================================================================
+Project Overview
+================
 
 .. sectionauthor:: Hubert Degaudenzi <Hubert.Degauden[AT]unige.ch>
-
-.. important:: Please modify ./doc/doc_project.rst to complete this section.
-   Adjust title when done.
-
-.. The following sections can be replaced or updated. 
-   Consider using a toctree directive to split larger documents. 
 
 Introduction
 ------------
 
 The Elements project is a build framework for both C++ and Python. It consists
-of a CMake, C++ and Python software. It provides:
+of a CMake, C++ and Python software. 
 
+It provides:
 - the build functionality for the build of C++ libraries and executables,
-- bla
+- the packaging for the binary libraries, executables and python files
 
+Please find the original Wiki documentation `here <https://euclid.roe.ac.uk/projects/elements/wiki>`_.
 
 Architecture overview
 ---------------------

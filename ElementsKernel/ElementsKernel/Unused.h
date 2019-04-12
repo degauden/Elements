@@ -1,6 +1,6 @@
 /**
  * @file ElementsKernel/Unused.h
- *
+ * @brief Macro to silence unused variables warnings from the compiler
  * @date Dec 1, 2014
  * @author Hubert Degaudenzi
  *

@@ -81,7 +81,7 @@ def substituteStringsInProgramFile(file_path, program_name):
     os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in h_template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
@@ -174,8 +174,6 @@ def makeChecks(current_dir, program_name, answer_yes=False):
     """
     Make some checks
     """
-    # Check name in the Element Naming Database
-    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2], answer_yes)
     # Check if file exits
     program_file_path = os.path.join(current_dir, 'src', 'program', program_name + '.cpp')
     epcr.checkFileNotExist(program_file_path, program_name)

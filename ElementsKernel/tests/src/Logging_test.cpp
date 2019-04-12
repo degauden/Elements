@@ -144,7 +144,7 @@ BOOST_FIXTURE_TEST_CASE(loggerNames_test, ElementsLogging_Fixture) {
   using std::tie;
 
   // Given
-  Logging logger2 = Logging::getLogger("TestLogger2");
+  auto logger2 = Logging::getLogger("TestLogger2");
 
   // When
   m_logger.info("From logger 1");

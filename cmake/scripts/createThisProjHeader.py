@@ -1,5 +1,4 @@
 import os
-import re
 from optparse import OptionParser
 
 
@@ -10,7 +9,7 @@ def main():
                       help="Do not print messages.")
     parser.set_defaults(install_prefix="")
     parser.add_option("-i", "--install-prefix", action="store",
-                     help="set the CMAKE_INSTALL_PREFIX")
+                      help="set the CMAKE_INSTALL_PREFIX")
     opts, args = parser.parse_args()
 
     if len(args) != 2:
@@ -18,7 +17,7 @@ def main():
 
     project, outputfile = args
     if not opts.quiet:
-        print("Creating %s for %s %s" % (outputfile, project, version))
+        print("Creating %s for %s" % (outputfile, project))
 
     outdir = os.path.dirname(outputfile)
     if not os.path.exists(outdir):
@@ -36,6 +35,7 @@ def main():
 #include "%(proj)s_VERSION.h"
 #include "%(proj)s_INSTALL.h"
 const std::string THIS_PROJECT_ORIGINAL_VERSION = %(proj)s_ORIGINAL_VERSION;
+const std::string THIS_PROJECT_VCS_VERSION = %(proj)s_VCS_VERSION;
 constexpr std::uint_least64_t THIS_PROJECT_MAJOR_VERSION = %(proj)s_MAJOR_VERSION;
 constexpr std::uint_least64_t THIS_PROJECT_MINOR_VERSION = %(proj)s_MINOR_VERSION;
 constexpr std::uint_least64_t THIS_PROJECT_PATCH_VERSION = %(proj)s_PATCH_VERSION;
@@ -46,7 +46,7 @@ const std::string THIS_PROJECT_INSTALL_LOCATION_STRING {%(proj)s_INSTALL_LOCATIO
 const std::vector<std::string> THIS_PROJECT_SEARCH_DIRS {%(proj)s_SEARCH_DIRS};
 const std::string CMAKE_INSTALL_PREFIX_STRING {"%(prefix)s"};
 #endif
-""" % { 'proj': project.upper(), 'Proj': project, 'prefix': opts.install_prefix}
+""" % {'proj': project.upper(), 'Proj': project, 'prefix': opts.install_prefix}
 
     # Get the current content of the destination file (if any)
     try:

@@ -42,23 +42,20 @@ using boost::filesystem::recursive_directory_iterator;
 namespace Elements {
 
 namespace {
-  Logging logger = Logging::getLogger("PathSearch");
+  auto log = Logging::getLogger("PathSearch");
 }
 
-// template instanciations
+// template instantiations
 
 template vector<string> pathSearch<string, directory_iterator>(const string& searched_name, string directory);
 template vector<path> pathSearch<path, directory_iterator>(const string& searched_name, path directory);
 template vector<string> pathSearch<string, recursive_directory_iterator>(const string& searched_name, string directory);
 template vector<path> pathSearch<path, recursive_directory_iterator>(const string& searched_name, path directory);
 
-template vector<string> searchOption(string searched_name, string directory, SearchType search_type);
-template vector<path> searchOption(string searched_name, path directory, SearchType search_type);
-
 template vector<path> pathSearch(const string& searched_name, path directory,
-                                   SearchType search_type);
+                                 SearchType search_type);
 template vector<string> pathSearch(const string& searched_name, string directory,
-                                     SearchType search_type);
+                                   SearchType search_type);
 
 
 /**
@@ -68,16 +65,16 @@ template vector<string> pathSearch(const string& searched_name, string directory
  *
  * and call pathSearch(...) for each of them
  */
-vector<path> pathSearchInEnvVariable(const std::string& file_name,
-                                        const std::string& path_like_env_variable,
-                                            SearchType search_type) {
+vector<path> pathSearchInEnvVariable(const string& file_name,
+                                     const string& path_like_env_variable,
+                                     SearchType search_type) {
   // Placeholder for the to-be-returned search result
   vector<path> search_results { };
 
   // get the multiple path from the environment variable
   string multiple_path {};
   if (not System::getEnv(path_like_env_variable.c_str(), multiple_path)) {
-    logger.warn() << "Environment variable \"" << path_like_env_variable
+    log.warn() << "Environment variable \"" << path_like_env_variable
                   << "\" is not defined !";
   }
 
@@ -93,9 +90,8 @@ vector<path> pathSearchInEnvVariable(const std::string& file_name,
       auto single_path_results = pathSearch(file_name,
                                             path { path_element },
                                             search_type);
-      for (path aPath : single_path_results) {
-        search_results.push_back(aPath);
-      }
+      search_results.insert(search_results.end(),
+                            single_path_results.cbegin(), single_path_results.cend());
     }
   }
   return search_results;

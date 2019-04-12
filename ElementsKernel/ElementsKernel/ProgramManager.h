@@ -58,18 +58,12 @@ public:
    * @brief Constructor
    */
   ProgramManager(std::unique_ptr<Program> program_ptr,
-                 std::string parent_project_version = "",
-                 std::string parent_project_name = "",
-                 std::string parent_module_version = "",
-                 std::string parent_module_name = "",
-                 std::vector<std::string> search_dirs = {}):
-                 m_program_ptr(std::move(program_ptr)),
-                 m_parent_project_version(std::move(parent_project_version)),
-                 m_parent_project_name(std::move(parent_project_name)),
-                 m_parent_module_version(std::move(parent_module_version)),
-                 m_parent_module_name(std::move(parent_module_name)),
-                 m_search_dirs(std::move(search_dirs)),
-                 m_env{} {}
+                 const std::string& parent_project_version = "",
+                 const std::string& parent_project_name = "",
+                 const std::string& parent_project_vcs_version = "",
+                 const std::string& parent_module_version = "",
+                 const std::string& parent_module_name = "",
+                 const std::vector<std::string>& search_dirs = {});
 
   /**
    * @brief Destructor
@@ -227,8 +221,7 @@ private:
   std::unique_ptr<Program> m_program_ptr;
 
   /**
-   * Internal version of the program. By convention, it is the same
-   * as the version of the parent project
+   * Internal version of the project
    */
   std::string m_parent_project_version;
 
@@ -240,6 +233,12 @@ private:
    *     m_parent_project_version [m_parent_project_name]
    */
   std::string m_parent_project_name;
+
+  /**
+   * Internal version of the program. By convention, it is the same
+   * as the VCS version of the parent project
+   */
+  std::string m_parent_project_vcs_version;
 
   /**
    * Version of the parent Elements module

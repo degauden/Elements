@@ -19,18 +19,20 @@
  *
  */
 
-#include "ElementsKernel/Temporary.h"  // for Elements::TempDir
+#include "ElementsKernel/Temporary.h"    // for Elements::TempDir
 
-#include <string>                          // for string
+#include <string>                        // for string
 #include <vector>
 #include <cstdlib>
+#include <iostream>
 
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 #include "ElementsKernel/Exception.h"
-#include "ElementsKernel/System.h"     // for getEnv, setEnv, unSetEnv
+#include "ElementsKernel/System.h"       // for getEnv, setEnv, unSetEnv
+#include "ElementsKernel/Environment.h"  // for Environment
 
 using std::string;
 using Elements::TempDir;
@@ -72,7 +74,7 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
   {
     // block creation for local variables
     TempDir one;
-    BOOST_CHECK_EQUAL(one.motif(), "");
+    BOOST_CHECK_EQUAL(one.motif(), Elements::DEFAULT_TMP_MOTIF);
     test_path = one.path();
     BOOST_CHECK(exists(test_path));
 
@@ -162,6 +164,51 @@ BOOST_FIXTURE_TEST_CASE(TempEnv2_test, Temporary_Fixture) {
   BOOST_CHECK(getEnv("TMPDIR") == "");
   BOOST_CHECK(exists(test_tmpdir));
 }
+
+BOOST_AUTO_TEST_CASE(KeepTmpDir_test) {
+
+  using Elements::Environment;
+  using boost::filesystem::remove_all;
+
+  Environment current;
+  current["KEEPTEMPDIR"] = "1";
+  path that_path;
+
+  {
+    TempDir that;
+    that_path = that.path();
+    BOOST_CHECK(exists(that_path));
+  }
+  BOOST_CHECK(exists(that_path));
+
+  remove_all(that_path);
+  BOOST_CHECK(not exists(that_path));
+
+}
+
+BOOST_AUTO_TEST_CASE(Fake_test) {
+  using boost::filesystem::temp_directory_path;
+  using boost::filesystem::unique_path;
+
+  const string motif1 = "";
+  const string motif2 = "toto-%%%";
+
+  auto path1 = temp_directory_path() / unique_path(motif1);
+  auto path1p = temp_directory_path() / unique_path();
+  auto path2 = temp_directory_path() / unique_path(motif2);
+
+  using std::cout;
+  using std::endl;
+
+  cout << "path1:" << path1 << endl;
+  cout << "path1p:" << path1p << endl;
+  cout << "path2:" << path2 << endl;
+
+  Elements::TempPath p1;
+  Elements::TempPath p2(motif1);
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

@@ -25,6 +25,7 @@ import subprocess
 
 from ElementsKernel.Temporary import TempDir
 from ElementsKernel.Path import joinPath, multiPathAppend, getLocationsFromEnv
+from ElementsKernel.Path import getLocations
 from ElementsKernel.Path import which
 
 
@@ -61,6 +62,11 @@ class PathTest(unittest.TestCase):
                      "./loc3/bin", "./loc3/scripts"]
 
         self.assert_(multiPathAppend(locations, suffixes) == ref_paths)
+        
+    def testGetLoctions(self):
+
+        # by construction the PATH variable is never empty
+        self.assert_(getLocations() != [])
 
     def testGetLocationsFromEnv(self):
 

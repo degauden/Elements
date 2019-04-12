@@ -17,8 +17,8 @@ find_package(GMock)
 #    ElementsExamples is the library name
 #    src/Lib/*.cpp are the source files
 elements_add_library(ElementsExamples src/lib/*.cpp
-                    LINK_LIBRARIES Boost ElementsKernel
-                    PUBLIC_HEADERS ElementsExamples)
+                     LINK_LIBRARIES Boost ElementsKernel
+                     PUBLIC_HEADERS ElementsExamples)
 
 #===== Executables =============================================================
 # Instruction for creating a C++ executable
@@ -47,8 +47,13 @@ elements_add_test(CProgramExampleRun COMMAND CProgramExample)
 elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramExample)
 elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
 
+#====== Standalone Test with explicit environment passing ========================
 
-
+elements_add_unit_test(TestEnvironment tests/src/Boost/TestEnvironment_test.cpp
+                       EXECUTABLE TestEnvironment_test
+                       LINK_LIBRARIES ElementsExamples
+                       TYPE Boost
+                       ENVIRONMENT MYTESTENV=FooBar)
 
 #===== Boost tests =============================================================
 # Example with automatically generated TestMain.cpp. This is always the case if the TYPE of
@@ -80,7 +85,9 @@ elements_add_unit_test(ModuleInfo tests/src/Boost/ModuleInfo_test.cpp
 elements_add_unit_test(AllTests tests/src/Boost/*_test.cpp
                        EXECUTABLE BoostElementsExampleAllTests
                        INCLUDE_DIRS ElementsExamples
-                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+                       LINK_LIBRARIES ElementsExamples 
+                       ENVIRONMENT MYTESTENV=FooBar
+                       TYPE Boost)
 
 elements_add_unit_test(UnitTestExample_test tests/src/Boost/UnitTestExample_test.cpp
                        INCLUDE_DIRS ElementsExamples
@@ -120,7 +127,7 @@ elements_add_unit_test(TemplatedDataSourceUser_test_suite tests/src/GMock/Templa
 # inhibits the -Wsuggest-override that is not supported by gmock (yet)
 if(CXX_HAS_SUGGEST_OVERRIDE)
   set_property(SOURCE tests/src/GMock/DataSourceUser_test.cpp tests/src/GMock/TemplatedDataSourceUser_test.cpp
-               PROPERTY COMPILE_FLAGS -Wno-suggest-override)
+               APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-suggest-override")
 endif() 
                 
                        
@@ -133,6 +140,12 @@ elements_add_executable(BackTraceExample src/program/BackTraceExample.cpp
                         INCLUDE_DIRS ElementsExamples
                         LINK_LIBRARIES ElementsExamples)
 elements_add_test(BackTraceFailure COMMAND BackTraceExample FAILS)
+
+elements_add_executable(FloatPrecisionExample src/program/FloatPrecisionExample.cpp
+                        INCLUDE_DIRS ElementsExamples
+                        LINK_LIBRARIES ElementsExamples)
+elements_add_test(FloatPrecsionExampleWorks COMMAND FloatPrecisionExample LABELS Float Build)
+
 
 find_package(GSL QUIET)
 if(GSL_FOUND)
@@ -235,7 +248,7 @@ endif()
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
-elements_install_python_modules(TEST_TIMEOUT 30)
+elements_install_python_modules(TEST_TIMEOUT 60)
 
 #===== Python programs =========================================================
 # Instruction for creating a Python executable

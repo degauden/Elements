@@ -1,6 +1,6 @@
 /**
  * @file ElementsKernel/Number.h
- *
+ * @brief Casting with the correct (closest) rounding
  * @date Aug 10, 2015
  * @author Hubert Degaudenzi
  *

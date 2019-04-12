@@ -40,16 +40,16 @@ public:
 
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
-    Logging logger = Logging::getLogger("CCfitsExample");
+    auto log = Logging::getLogger("CCfitsExample");
 
     string test_upper_string {"THATSTRING"};
-    logger.info() << "This is the test upper string: " << test_upper_string;
+    log.info() << "This is the test upper string: " << test_upper_string;
 
 
     string test_lower_string = CCfits::FITSUtil::lowerCase(test_upper_string);
-    logger.info() << "This is the test lower string: " << test_lower_string;
+    log.info() << "This is the test lower string: " << test_lower_string;
 
-    logger.info() << "done with test program! ";
+    log.info() << "done with test program! ";
 
     return ExitCode::OK;
 

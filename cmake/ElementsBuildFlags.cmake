@@ -211,7 +211,12 @@ option(ELEMENTS_USE_RPATH
 
 option(HIDE_SYSINC_WARNINGS
        "Hide System includes warnings by using -isystem instead of -I"
+       ON)
+
+option(HIDE_OTHERINC_WARNINGS
+       "Hide includes warnings issued by other projects by using -isystem instead of -I"
        OFF)
+
 
 option(CXX_SUGGEST_OVERRIDE
        "Enable the -Wsuggest-override warning"
@@ -245,6 +250,9 @@ option(CONCEPT_CHECKS
        "Enable the concept template checking by adding -D_GLIBCXX_CONCEPT_CHECKS"
        OFF)
 
+option(TEST_HTML_REPORT
+       "Enable the conversion of the CTest XML reports into HTML"
+       ON)
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
@@ -279,6 +287,11 @@ if(NOT ELEMENTS_FLAGS_SET)
   if(SGS_COMP STREQUAL gcc)
     check_and_use_cxx_option(-Wcast-function-type CXX_HAS_CAST_FUNCTION_TYPE)
   endif()
+
+  if(SGS_COMP STREQUAL gcc)
+    check_cxx_compiler_flag(-Wmissing-field-initializers CXX_HAS_MISSING_FIELD_INITIALIZERS)
+  endif()
+
 
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"
@@ -416,7 +429,7 @@ if(APPLE)
   # by default, CMake uses the option -bundle for modules, but we need -dynamiclib for them too
   string(REPLACE "-bundle" "-dynamiclib" CMAKE_SHARED_MODULE_CREATE_C_FLAGS "${CMAKE_SHARED_MODULE_CREATE_C_FLAGS}")
   string(REPLACE "-bundle" "-dynamiclib" CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS}")
-  include_directories(BEFORE SYSTEM /opt/local/include/${SGS_COMP}${SGS_COMPVERS}/c++)
+  elements_include_directories(BEFORE /opt/local/include/${SGS_COMP}${SGS_COMPVERS}/c++)
 endif()
 
 #--- Special build flags -------------------------------------------------------

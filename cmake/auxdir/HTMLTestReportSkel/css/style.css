@@ -1,0 +1,96 @@
+/* Coloring of results */
+.PASS {
+	color: green;
+}
+.FAIL, .ERROR {
+	color: red;
+}
+.UNTESTED, .SKIPPED {
+	color: orange;
+}
+
+.testid {
+	color: blue;
+}
+.testid:hover {
+	color: red;
+}
+
+.results .cause {
+	color: gray;
+	font-size: small;
+}
+
+/* ** Cursor feedback ** */
+/* Tooltip feedback */
+.with_tooltip {
+	cursor: help;
+}
+/* clickable feedback */
+li.test>.clickable {
+	cursor: pointer;
+	color: blue;
+}
+li.test>.clickable:hover {
+	color: red;
+}
+li.test.highlighted {
+	border-style: solid;
+	border-color: gray;
+}
+
+/* foldable list bullets */
+li.group {
+	list-style: none;
+	cursor: pointer;
+}
+li.group>span{
+	color:black;
+}
+/* foldable list bullets */
+li.test {
+	list-style: none;
+	margin-left: 0px;
+}
+/* foldable list bullets */
+ul.fieldid > li.foldable{
+	list-style: none;
+	margin-left: 0px;
+}
+
+ul.topGroup {
+	padding: 0px;
+}
+
+#main{
+	padding-left: 31px;
+	margin-left: 31px;
+}
+
+section#content{
+	width: 25px;
+	min-height: 20px;
+}
+
+
+.display{
+	color: blue;
+	cursor: pointer;
+}
+.display:hover{
+	color: red;
+}
+
+.ui-menu {
+	width: 150px;
+	position: fixed;
+}
+
+#image_sommaire {
+	display: run-in;
+	position: fixed;
+}
+
+#slot-info {
+	font-size: 80%;
+}

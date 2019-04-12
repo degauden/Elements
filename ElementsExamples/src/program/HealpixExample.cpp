@@ -39,14 +39,13 @@ class HealpixExample: public Program {
 
 public:
 
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
 
-    Logging logger = Logging::getLogger("HealpixExample");
+    auto log = Logging::getLogger("HealpixExample");
 
     Healpix_Map<double> map;
 
-    logger.info() << "done with test program! ";
+    log.info() << "done with test program! ";
 
     return ExitCode::OK;
 

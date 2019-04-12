@@ -53,6 +53,9 @@ enum class Type {
   auxiliary
 };
 
+/**
+ * @brief Separator of path entries. Usually ":" on Unix.
+ */
 ELEMENTS_API extern const std::string PATH_SEP;
 
 /**
@@ -110,6 +113,20 @@ ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std:
  */
 template <typename T, typename U>
 ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, const std::vector<U>& locations);
+// Template instantiation for the most common types
+extern template
+ELEMENTS_API boost::filesystem::path getPathFromLocations(const boost::filesystem::path& file_name,
+                                                          const std::vector<boost::filesystem::path>& locations);
+extern template
+ELEMENTS_API boost::filesystem::path getPathFromLocations(const boost::filesystem::path& file_name,
+                                                          const std::vector<std::string>& locations);
+extern template
+ELEMENTS_API boost::filesystem::path getPathFromLocations(const std::string& file_name,
+                                                          const std::vector<boost::filesystem::path>& locations);
+extern template
+ELEMENTS_API boost::filesystem::path getPathFromLocations(const std::string& file_name,
+                                                          const std::vector<std::string>& locations);
+
 
 /**
  * @brief retrieve all the paths from a file name and a set of location to look into
@@ -129,6 +146,19 @@ ELEMENTS_API boost::filesystem::path getPathFromLocations(const T& file_name, co
 template <typename T, typename U>
 ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const T& file_name,
                                                                           const std::vector<U>& locations);
+// Template instantiation for the most common types
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const boost::filesystem::path& file_name,
+                                                                          const std::vector<boost::filesystem::path>& locations);
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const boost::filesystem::path& file_name,
+                                                                          const std::vector<std::string>& locations);
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const std::string& file_name,
+                                                                          const std::vector<boost::filesystem::path>& locations);
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const std::string& file_name,
+                                                                          const std::vector<std::string>& locations);
 
 /**
  * @brief retrieve path from a file name and an environment variable to look into
@@ -144,13 +174,39 @@ ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const 
  */
 template <typename T>
 ELEMENTS_API boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::string& path_variable);
+// Template instantiation for the most common types
+extern template
+ELEMENTS_API boost::filesystem::path getPathFromEnvVariable<boost::filesystem::path>(const boost::filesystem::path& file_name,
+                                                                                     const std::string& path_variable);
+extern template
+ELEMENTS_API boost::filesystem::path getPathFromEnvVariable<std::string>(const std::string& file_name,
+                                                                         const std::string& path_variable);
 
+/**
+ * @brief collate a vector of path into a string using PATH_SEP
+ * @param path_list
+ *   list of path to be joined.
+ * @return collated string
+ */
 template <typename T>
 ELEMENTS_API std::string joinPath(const std::vector<T> path_list);
 
 template <typename T, typename U>
 ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations,
                                                                     const std::vector<U>& suffixes);
+// Template instantiation for the most common types
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<boost::filesystem::path>& initial_locations,
+                                                             const std::vector<boost::filesystem::path>& suffixes);
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<boost::filesystem::path>& initial_locations,
+                                                             const std::vector<std::string>& suffixes);
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<std::string>& initial_locations,
+                                                             const std::vector<boost::filesystem::path>& suffixes);
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<std::string>& initial_locations,
+                                                             const std::vector<std::string>& suffixes);
 
 }  // namespace Path
 }  // namespace Elements

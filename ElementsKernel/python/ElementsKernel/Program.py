@@ -19,12 +19,14 @@ class Program(object):
     """Main Program Class"""
     def __init__(self, app_module,
                  parent_project_version=None, parent_project_name=None,
+                 parent_project_vcs_version=None,
                  elements_module_name=None, elements_module_version=None,
                  search_dirs=None, original_path=""):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
+        self._parent_project_vcs_version = parent_project_vcs_version
         self._elements_module_name = elements_module_name
         self._elements_module_version = elements_module_version
         self._search_dirs = search_dirs
@@ -195,8 +197,6 @@ class Program(object):
         self._logger.info("# List of all program options")
         self._logger.info("# ---------------------------")
         self._logger.info("#")
-        # for (name,value) in [opt for opt in vars(args).items() if
-        # opt[1]]:
         for name, value in [opt for opt in vars(args).items()]:
             self._logger.info(names[name] + ' = ' + str(value))
         self._logger.info("#")
@@ -208,10 +208,6 @@ class Program(object):
         self._logger.debug("# ---------------------------")
         self._logger.debug("#")
 
-#   for(const auto& v: Path::VARIABLE) {
-#     logger.debug() << v.second << ": " << m_env[v.second];
-#   }
-
         for v in VARIABLE:
             self._logger.debug("%s: %s", VARIABLE[v], self._env[VARIABLE[v]])
 
@@ -221,8 +217,8 @@ class Program(object):
         version = ""
         if self._parent_project_name:
             version += self._parent_project_name + " "
-        if self._parent_project_version:
-            version += self._parent_project_version
+        if self._parent_project_vcs_version:
+            version += self._parent_project_vcs_version
         return version
 
 

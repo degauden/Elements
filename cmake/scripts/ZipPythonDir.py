@@ -55,7 +55,8 @@ def _zipChanges(directory, infolist):
         arcdir = root[dirlen:]
         for f in files:
             ext = os.path.splitext(f)[1]
-            if ext == ".py":  # extensions that can enter the zip file
+            # extensions that can enter the zip file
+            if ext == ".py":
                 filename = os.path.join(arcdir, f)
                 all_files.add(filename)
                 if filename not in infos:

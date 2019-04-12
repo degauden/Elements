@@ -77,6 +77,7 @@
 #include <cmath>                    // for round
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Unused.h"  // ELEMENTS_UNUSED
 
 using std::numeric_limits;
 
@@ -326,9 +327,9 @@ private:
 // Usable AlmostEqual function
 
 template <typename FloatType>
-bool almostEqual2sComplement(const FloatType& a,
-                             const FloatType& b,
-                             const std::size_t& max_ulps = 0) {
+bool almostEqual2sComplement(ELEMENTS_UNUSED const FloatType& a,
+                             ELEMENTS_UNUSED const FloatType& b,
+                             ELEMENTS_UNUSED const std::size_t& max_ulps = 0) {
   return false;
 }
 

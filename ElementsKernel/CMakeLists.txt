@@ -148,7 +148,7 @@ elements_add_unit_test(Exception tests/src/Exception_test.cpp
     # This hides warnings from a broken header file in CppUnit, but may
     # hide problems in the actual test source
 #    set_property(SOURCE tests/src/ElementsTime_test.cpp
-#                 PROPERTY COMPILE_FLAGS -Wno-unused-parameter)
+#                 APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-unused-parameter")
 #  endif()
 #endif()
 
@@ -192,10 +192,12 @@ elements_add_test(CheckElementsProjectsTree
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation)
 
-elements_add_test(CheckProjectDependencyFailure
-                  COMMAND checkProjectDependencyFailure_test  
-                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
-                  LABELS Creation)
+if (NOT SQUEEZED_INSTALL)
+  elements_add_test(CheckProjectDependencyFailure
+                    COMMAND checkProjectDependencyFailure_test  
+                    ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                    LABELS Creation)
+endif()
 
 elements_add_test(HEADVersionProject
                   COMMAND HEADVersionProject_test

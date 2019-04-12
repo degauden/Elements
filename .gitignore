@@ -29,6 +29,7 @@
 /.settings
 /.loadpath
 /.recommenders
+/.launchers
 
 # Eclipse Core
 /.project
@@ -41,6 +42,9 @@
 
 # CDT-specific (C/C++ Development Tooling)
 /.cproject
+
+# generated lauch configurations
+/.launchers
 
 # PyCharm
 /.idea

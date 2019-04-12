@@ -11,7 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys, os, imp
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -38,9 +38,19 @@ else:
 if sphinx_major_version < 1 or (sphinx_major_version == 1 and sphinx_minor_version < 3):
     napoleon_extension = 'sphinxcontrib.napoleon'
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', napoleon_extension,
+try:
+    imp.find_module(napoleon_extension)
+    found_napo = True
+except ImportError:
+    found_napo = False
+
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode',
               'sphinx.ext.mathjax', 'sphinx.ext.autosummary', 'sphinx.ext.inheritance_diagram',
               'sphinx.ext.intersphinx']
+
+if found_napo:
+    extensions.append(napoleon_extension)
+
 @APPEND_BREATHE_EXT@
 
 # Add any paths that contain templates here, relative to this directory.

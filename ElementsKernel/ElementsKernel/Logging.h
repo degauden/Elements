@@ -1,5 +1,6 @@
 /**
  * @file ElementsKernel/Logging.h
+ * @brief Logging facility
  * @date January 13, 2014
  * @author Nikolaos Apostolakos
  *

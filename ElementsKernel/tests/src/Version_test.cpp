@@ -32,15 +32,14 @@ using Elements::getVersionString;
 
 //-----------------------------------------------------------------------------
 
-
 // input string to test the generation of an appropriate version in case of a trunk or tags
-string SVN_ID {"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
-string SVN_URL_TRUNK {"SVN $HeadURL: http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/trunk/ElementsExamples/src/Program/ElementsProgramExample.cpp $"};
-string SVN_URL_TAGS {"SVN $HeadURL: http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/tags/1.2/ElementsExamples/src/Program/ElementsProgramExample.cpp $"};
+const string SVN_ID {"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
+const string SVN_URL_TRUNK {"SVN $HeadURL: http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/trunk/ElementsExamples/src/Program/ElementsProgramExample.cpp $"};
+const string SVN_URL_TAGS {"SVN $HeadURL: http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/tags/1.2/ElementsExamples/src/Program/ElementsProgramExample.cpp $"};
 
 // expected result
-string EXPECTED_TRUNK_VERSION {"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
-string EXPECTED_TAGS_VERSION {"Elements 1.2"};
+const string EXPECTED_TRUNK_VERSION {"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
+const string EXPECTED_TAGS_VERSION {"Elements 1.2"};
 
 //-----------------------------------------------------------------------------
 
