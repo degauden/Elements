@@ -42,7 +42,7 @@ set(USE_PYTHON_DOXYGEN OFF
     CACHE STRING "Use Doxygen for the Python Documentation"
     FORCE)
 
-elements_project(Elements 5.6 DESCRIPTION "A C++ base framework for the Euclid Software.")
+elements_project(Elements 5.7 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
 # This test does not really fit in a subdirectory.
 
