@@ -21,7 +21,7 @@ import py.test
 
 from ElementsServices.DataSync import ConnectionConfiguration
 from ElementsServices.DataSync import DependencyConfiguration
-from ElementsServices.DataSync.WebdavSynchronizer import WebdavSynchronizer
+from ElementsServices.DataSync import WebdavSynchronizer
 
 from fixtures.ConfigFilesFixture import *
 from fixtures.TestDataSynchronizer import TestDataSynchronizer
@@ -35,7 +35,7 @@ class TestWebdavSynchronizer(TestDataSynchronizer):
         localRoot = connection.localRoot
         dependencies = DependencyConfiguration(
             distantRoot, localRoot, theDependencyConfig())
-        return WebdavSynchronizer(connection, dependencies)
+        return WebdavSynchronizer.WebdavSynchronizer(connection, dependencies)
 
     def test_webdavGetCmd(self):
         distantFile = "src/distant_file.fits"
@@ -49,6 +49,8 @@ class TestWebdavSynchronizer(TestDataSynchronizer):
         assert "8" in cmd, "Retries not found in WebDAV command: " + cmd
 
     def test_webdavFixture(self):
+        if not WebdavSynchronizer.webdavIsInstalled():
+            return
         webdavFR = theWebdavFrConfig()
         self.checkSynchronization(webdavFR)
         self.checkDownloadTestData(webdavFR)
@@ -59,5 +61,7 @@ class TestWebdavSynchronizer(TestDataSynchronizer):
 #         self.checkDownloadTestData(webdavES)
 
     def test_downloadErrorReport(self):
+        if not WebdavSynchronizer.webdavIsInstalled():
+            return
         webdavFR = theWebdavFrConfig()
         self.checkDownloadErrorReport(webdavFR)

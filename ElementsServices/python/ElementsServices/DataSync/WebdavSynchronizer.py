@@ -20,6 +20,16 @@
 from .DataSynchronizer import *
 
 
+def webdavIsInstalled ():
+    """Check whether an iRODS client is installed.
+    """
+    try:
+        subprocess.check_call(shlex.split("wget -h"))
+        return True
+    except OSError:
+        return False
+
+
 class WebdavSynchronizer (DataSynchronizer):
     """A data synchronizer for WebDAV hosts.
     """

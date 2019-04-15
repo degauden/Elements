@@ -22,6 +22,7 @@ import py.test
 
 from ElementsServices.DataSync import DataSync
 from ElementsServices.DataSync.IrodsSynchronizer import irodsIsInstalled
+from ElementsServices.DataSync.WebdavSynchronizer import webdavIsInstalled
 
 from fixtures.ConfigFilesFixture import *
 
@@ -47,8 +48,9 @@ class TestDataSync(object):
             os.remove(absPath)
 
     def test_DataSyncWebdavFr(self):
-        self.checkDownload(theWebdavFrConfig())
-        self.checkFallback(theWebdavFrConfig())
+        if webdavIsInstalled():
+            self.checkDownload(theWebdavFrConfig())
+            self.checkFallback(theWebdavFrConfig())
 
     def test_DataSyncIrodsFr(self):
         if irodsIsInstalled():

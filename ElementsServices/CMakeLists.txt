@@ -121,7 +121,22 @@ endif()
 #  elements_install_python_modules()
 #  elements_install_scripts()
 #===============================================================================
-elements_install_python_modules()
+
+set(EXCLUDED_PYTHON_TESTS "")
+
+if(IRODS_FOUND)
+  list(APPEND EXCLUDED_PYTHON_TESTS tests/python/irodsIsNotInstalled_test.py)
+else()
+  list(APPEND EXCLUDED_PYTHON_TESTS tests/python/irodsIsInstalled_test.py)
+endif()
+
+if(WGET_FOUND)
+  list(APPEND EXCLUDED_PYTHON_TESTS tests/python/webdavIsNotInstalled_test.py)
+else()
+  list(APPEND EXCLUDED_PYTHON_TESTS tests/python/webdavIsInstalled_test.py)
+endif()
+
+elements_install_python_modules(TEST_EXCLUDE EXCLUDED_PYTHON_TESTS)
 
 #===============================================================================
 # Declare the Python programs here
