@@ -8,7 +8,7 @@ macro(preset_module_path_from_env)
 
   # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
   if(NOT CMAKE_MODULE_PATH)
-    # Note: this works even if the envirnoment variable is not set.
+    # Note: this works even if the environment variable is not set.
     file(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" CMAKE_MODULE_PATH)
   endif()
 
