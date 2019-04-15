@@ -43,10 +43,13 @@ class TestDataSyncUtils(object):
     def test_createLocalDirOf(self):
         theDir = "/tmp/somewhere/some_temporary_test_data"
         theFilename = "some_test_file.txt"
-        thePath = os.path.join(theDir, theFilename)
+        thePath = DataSyncUtils.concatenatePaths([DataSyncUtils.localWorkspacePrefix(), 
+                                                  theDir, theFilename])
         DataSyncUtils.createLocalDirOf(thePath)
-        assert os.path.isdir(theDir)
-        os.rmdir(theDir)
+        assert os.path.isdir(DataSyncUtils.concatenatePaths([DataSyncUtils.localWorkspacePrefix(), 
+                                                            theDir]))
+        os.rmdir(DataSyncUtils.concatenatePaths([DataSyncUtils.localWorkspacePrefix(), 
+                                                theDir]))
 
     def test_localWorkspacePrefix(self):
         prefixEv = DataSyncUtils.environmentVariable('NOPREFIX')
