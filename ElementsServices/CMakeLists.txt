@@ -142,7 +142,7 @@ else()
 endif()
 
 elements_install_python_modules(TEST_ENVIRONMENT WORKSPACE=${CMAKE_BINARY_DIR}/Testing/Temporary
-                                TEST_EXCLUDE EXCLUDED_PYTHON_TESTS)
+                                TEST_EXCLUDE ${EXCLUDED_PYTHON_TESTS})
 
 #===============================================================================
 # Declare the Python programs here
