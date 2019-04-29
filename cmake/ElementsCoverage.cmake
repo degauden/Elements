@@ -7,7 +7,7 @@ include_guard()
 
 if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
-  find_package(GenHTML)
+  find_package(GenHTML QUIET)
 
   if(GENHTML_EXECUTABLE AND LCOV_EXECUTABLE)
 
@@ -46,7 +46,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
                       COMMENT "===================================================================================================\nOpen ./${BUILD_SUBDIR}/cov/lcov/html/index.html in your browser to view the coverage report.\n===================================================================================================\n"
                       )
 
-    find_package(GCovr)
+    find_package(GCovr QUIET)
 
     if(GCOVR_EXECUTABLE)
 

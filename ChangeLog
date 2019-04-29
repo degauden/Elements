@@ -1,3 +1,66 @@
+* Fri Apr 12 2019 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.6
+- Many bug fixes.
+- LICENSE.md: add LGPL license file
+- cmake/modules/FindRPM.cmake: add the CMake module for the RPM executable
+- Add support for the KEEPTEMPDIR env variable for C++. Like for python, the 
+  presence of this environment variable will avoid the self-destruction 
+  of the temporary files and directories.
+- Generalize the usage of the KEEPTEMPDIR variable. It can also be used for
+  temporary files and the name of the variable can be chosen in the constructor
+- improve the messages in the CMake configure step (Alejandro Álvarez Ayllón).
+- ElementsExamples/src/program/FloatPrecisionExample.cpp: Add example to exhibit 
+  the floating points characteristics. The float, double and long double properties 
+  are printed.
+- ElementsKernel/ElementsKernel/Main.h: Factor out the creation of the program 
+  manager into a separate macro.
+- Add the elements_include_directories CMake macro.    
+  Dependending on the HIDE_SYSINC_WARNINGS cmake option (OFF by default), the 
+  include directories which are not starting with one of the CMAKE_PROJECT_PATH 
+  entries are added with the SYSTEM option. In that case, the "-isystem" gcc command
+  line is used instead of the traditional "-I". The warnings coming from these 
+  directories are thenignored.
+- Add the HIDE_OTHERINC_WARNINGS CMake option. It prevent any compilation warnings 
+  coming not only from the system (or third party) libraries, but also from other 
+  Elements-based project as well.
+- Add fix for the version of rpmbuild >= 4.14. Fix the handling of the byte-compiled 
+  files in the rpm creation process.
+- Test the existence of sphinxcontrib.napoleon before enabling it.
+- Inhibit the python byte-compilation for CVMFS in squeezed install mode. The script 
+  that is called by rpmbuild cannot handle a python executable which is not installed 
+  in /usr/bin.
+- Factor out the creation of the compiled test executable. It allows to create 
+  a unit executable of CppUnit or Boost type without adding it to the list of 
+  tests. This is useful to delay the usage of the executable in an other project 
+  that runs some integration tests.
+- ElementsKernel/ElementsKernel/Off64Type.h: Add header file to define off64_t on 
+  both Linux and MacOSX.
+- Add Travis build configuration file.
+- Add the extern declaration for the instantiated templates.
+- cmake/modules/FindLibM.cmake: Add CMake module to locate the "m" library. Especially 
+  usefully for C code
+- Add support for bool on logging of options (Alejandro Álvarez Ayllón).
+- make/Elements.mk: Append the CMAKEFLAGS instead of prepending it. It allows 
+  to override some of the hardcoded CMake flags from the make library.
+- Make the finding of Sphinx REQUIRED if USE_SPHINX is set to ON.
+- Use SVG instead of PNG for the dot graphs in doxygen.
+- Add the VCS version of the project. This is the number that is produced 
+  by the "--version" of the executables. It boils down to the git tag if it exists. 
+  Otherwise use a timestamp like 20190329. If git is not present, it falls back
+  to the CMake version of the project.
+- Add info make target. It is generating a cmake script called cmake_info.cmake 
+  that has to be called like "cmake -P cmake_info.cmake". for the moment the following
+  CMake informations are provided:
+  - the project name
+  - the project version
+  - the source directory
+  - the module list
+  - the include directory list
+  - the project dependencies
+  - the C++ test list with their respective executables.
+- ElementsKernel/ElementsKernel/Main.h: Add new macros that allows the passing of 
+  arguments to the constructor of the program manager.
+- Remove the DB name check.
+
 * Mon Jun 4 2018 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.4
 - Reduce the top level wrapper Makefile to a minimum. The main library
   is located in the make/Elements.mk file of the framework. The lookup of
