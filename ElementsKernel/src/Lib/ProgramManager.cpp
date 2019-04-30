@@ -51,6 +51,8 @@
 using std::vector;
 using std::string;
 using std::move;
+using std::endl;
+using std::cerr;
 
 using boost::filesystem::path;
 using boost::program_options::variables_map;
@@ -106,21 +108,21 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name,
   // Construct and return the full path
   default_config_file = getConfigurationPath(conf_name.string(), false);
   if (default_config_file.empty()) {
-    log.warn() << "The \"" << conf_name.string() << "\" configuration file cannot be found in:";
+    log.warn() << "The " << conf_name << " default configuration file cannot be found in:";
     for (auto loc : getConfigurationLocations()) {
       log.warn() << " " << loc;
     }
     if (not module_name.empty()) {
       conf_name = path {module_name} / conf_name;
-      log.warn() << "Trying \"" << conf_name.string() << "\".";
+      log.warn() << "Trying " << conf_name << ".";
       default_config_file = getConfigurationPath(conf_name.string(), false);
     }
   }
 
   if (default_config_file.empty()) {
-    log.debug() << "Couldn't find \"" << conf_name << "\" configuration file.";
+    log.debug() << "Couldn't find " << conf_name << " default configuration file.";
   } else {
-    log.debug() << "Found \"" << conf_name << "\" configuration file at " << default_config_file;
+    log.debug() << "Found " << conf_name << " default configuration file at " << default_config_file;
   }
 
   return default_config_file;
@@ -140,6 +142,27 @@ const path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
   return full_path.parent_path();
 }
 
+template<class charT>
+void ProgramManager::checkCommandLineOptions(
+        const boost::program_options::basic_parsed_options<charT>& cmd_parsed_options) {
+
+  for (auto o : cmd_parsed_options.options) {
+    if (o.string_key == "config-file") {
+      if (o.value.size() != 1) {
+        cerr << "Wrong usage of the --config-file option" << endl;
+        exit(static_cast<int>(ExitCode::USAGE));
+      } else {
+        auto conf_file = path { o.value[0] };
+        if (!boost::filesystem::exists(conf_file)) {
+          cerr << "The " << conf_file
+               << " configuration file doesn't exist!" << endl;
+          exit(static_cast<int>(ExitCode::CONFIG));
+        }
+      }
+    }
+  }
+}
+
 /*
  * Get program options
  */
@@ -148,7 +171,6 @@ const variables_map ProgramManager::getProgramOptions(
 
 
   using std::cout;
-  using std::endl;
   using std::exit;
   using boost::program_options::options_description;
   using boost::program_options::value;
@@ -216,16 +238,19 @@ const variables_map ProgramManager::getProgramOptions(
   auto cmd_parsed_options = command_line_parser(argc, argv)
                                     .options(cmd_only_generic_options)
                                     .allow_unregistered().run();
+
+  checkCommandLineOptions(cmd_parsed_options);
+
   store(cmd_parsed_options, var_map);
 
   // Deal with the "help" option
-  if (var_map.count("help")) {
+  if (var_map.count("help") > 0) {
     cout << help_options << endl;
     exit(static_cast<int>(ExitCode::OK));
   }
 
   // Deal with the "version" option
-  if (var_map.count("version")) {
+  if (var_map.count("version") > 0) {
     cout << getVersion() << endl;
     exit(static_cast<int>(ExitCode::OK));
   }
@@ -358,7 +383,7 @@ void ProgramManager::logAllOptions() const {
     } else {
       log_message << "Option " << v.first << " of type "
           << v.second.value().type().name() << " not supported in logging !"
-          << std::endl;
+          << endl;
     }
     // write the log message
     log.info(log_message.str());

@@ -192,6 +192,16 @@ private:
    */
   void bootstrapEnvironment(char* arg0);
 
+  /**
+   * @brief check the explicit command line arguments.
+   *   For the moment, it only checks if the configuration
+   *   file being passed does exist. It exits with ExitCode::CONFIG
+   *   if the file cannot be found.
+   */
+  template<class charT>
+  void checkCommandLineOptions(const boost::program_options::basic_parsed_options<charT>& cmd_line_options);
+
+
 private:
 
   /**
