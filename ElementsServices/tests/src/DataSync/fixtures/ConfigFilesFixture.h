@@ -8,13 +8,23 @@
  *
  */
 
-
 #ifndef ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_CONFIGFILESFIXTURE_H_
 #define ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_CONFIGFILESFIXTURE_H_
 
 #include <vector>
 
+#include "ElementsKernel/Temporary.h"
 #include "ElementsServices/DataSync/DataSyncUtils.h"
+
+struct WorkspaceFixture {
+
+  Elements::TempDir m_top_dir { "DataSync_test-%%%%%%%" };
+  Elements::TempEnv m_env;
+
+  WorkspaceFixture();
+  ~WorkspaceFixture() = default;
+};
+
 
 ElementsServices::DataSync::path theDependencyConfig();
 

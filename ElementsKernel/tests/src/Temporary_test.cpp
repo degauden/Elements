@@ -52,9 +52,11 @@ using boost::filesystem::create_directory;
 struct Temporary_Fixture {
 
   TempDir m_top_dir { "Temporary_test-%%%%%%%" };
+  TempEnv m_env;
 
   Temporary_Fixture() {
     // setup
+    m_env["WORKSPACE"] = (m_top_dir.path() / "work").string();
   }
   ~Temporary_Fixture() {
     // teardown
@@ -146,6 +148,8 @@ BOOST_FIXTURE_TEST_CASE(TempEnv2_test, Temporary_Fixture) {
 
   using Elements::System::getEnv;
 
+  BOOST_CHECK(m_env["WORKSPACE"].value() == (m_top_dir.path() / "work").string());
+
   // test if the global temporary directory exists.
   BOOST_CHECK(exists(m_top_dir.path()));
   path test_tmpdir = m_top_dir.path() / "tmpdir2";
@@ -154,12 +158,20 @@ BOOST_FIXTURE_TEST_CASE(TempEnv2_test, Temporary_Fixture) {
   {
     TempEnv local;
     local["TMPDIR"] = test_tmpdir.c_str();
+    BOOST_CHECK(local["WORKSPACE"].value() == (m_top_dir.path() / "work").string());
+    BOOST_CHECK(m_env["WORKSPACE"].value() == (m_top_dir.path() / "work").string());
+    local["WORKSPACE"] = "that_work";
+    BOOST_CHECK(local["WORKSPACE"].value() == "that_work");
+    BOOST_CHECK(m_env["WORKSPACE"].value() == "that_work");
     string tmp_env_val = getEnv("TMPDIR");
     // test that the variable is actually set in the environment
     // of the process
     BOOST_CHECK(tmp_env_val == test_tmpdir.string());
     BOOST_CHECK(local["TMPDIR"].value() == test_tmpdir.string());
   }
+
+  BOOST_CHECK(m_env["WORKSPACE"].value() == (m_top_dir.path() / "work").string());
+
 
   BOOST_CHECK(getEnv("TMPDIR") == "");
   BOOST_CHECK(exists(test_tmpdir));

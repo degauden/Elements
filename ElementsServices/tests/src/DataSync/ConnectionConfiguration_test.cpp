@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(overwriting_policy_test) {
   BOOST_CHECK(not configNoOverwrite.overwritingAllowed());
 }
 
-BOOST_AUTO_TEST_CASE(webdav_fr_config_test) {
+BOOST_FIXTURE_TEST_CASE(webdav_fr_config_test, WorkspaceFixture) {
   ConnectionConfiguration config(theWebdavFrConfig());
   BOOST_CHECK(config.host == DataHost::WEBDAV);
   BOOST_CHECK(config.overwritingPolicy == DataSync::OverwritingPolicy::OVERWRITE);

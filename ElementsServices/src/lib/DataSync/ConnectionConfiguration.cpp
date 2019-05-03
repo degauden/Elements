@@ -62,12 +62,12 @@ void ConnectionConfiguration::parseConfigurationFile(path filename) {
           "Number of download tries");
 
   /* Get config file path */
-  path absPath = confFilePath(filename);
+  path abs_path = confFilePath(filename);
 
   /* Read config file */
   po::variables_map vm;
   try {
-    po::store(po::parse_config_file<char>(absPath.c_str(), options), vm);
+    po::store(po::parse_config_file<char>(abs_path.c_str(), options), vm);
     po::notify(vm);
   } catch (std::exception &e) {
     throw e.what();

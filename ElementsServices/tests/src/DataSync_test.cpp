@@ -38,9 +38,9 @@ void checkDownload(path connectionConfig) {
   auto sync = DataSync::DataSync(connectionConfig, theDependencyConfig());
   sync.download();
   for (const auto& file : theLocalFiles()) {
-    const path absPath = sync.absolutePath(file);
-    BOOST_CHECK(boost::filesystem::is_regular_file(absPath));
-    boost::filesystem::remove(absPath);
+    const path abs_path = sync.absolutePath(file);
+    BOOST_CHECK(boost::filesystem::is_regular_file(abs_path));
+    boost::filesystem::remove(abs_path);
   }
 }
 
@@ -49,9 +49,9 @@ void checkFallback(path fallbackConfig) {
   BOOST_CHECK_THROW(sync.download(), std::exception);
   sync.downloadWithFallback(fallbackConfig);
   for (const auto& file : theLocalFiles()) {
-    const path absPath = sync.absolutePath(file);
-    BOOST_CHECK(boost::filesystem::is_regular_file(absPath));
-    boost::filesystem::remove(absPath);
+    const path abs_path = sync.absolutePath(file);
+    BOOST_CHECK(boost::filesystem::is_regular_file(abs_path));
+    boost::filesystem::remove(abs_path);
   }
 }
 

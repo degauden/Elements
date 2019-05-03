@@ -69,8 +69,8 @@ vector<path> DependencyConfiguration::localPaths() const {
 }
 
 void DependencyConfiguration::parseConfigurationFile(path filename) {
-  path absPath = confFilePath(filename);
-  std::ifstream inputStream(absPath.c_str());
+  path abs_path = confFilePath(filename);
+  std::ifstream inputStream(abs_path.c_str());
   string line;
   while (std::getline(inputStream, line)) {
     parseConfigurationLine(line);

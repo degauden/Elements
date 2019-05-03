@@ -61,10 +61,7 @@ def createLocalDirOf (localFile):
 def environmentVariable (name):
     """Get the value of an environment variable or '' if it does not exist.
     """
-    try:
-        return os.environ[name]
-    except KeyError:
-        return ''
+    return os.environ.get(name, "")
 
 def localWorkspacePrefix ():
     """Get the prefix of the local workspace.

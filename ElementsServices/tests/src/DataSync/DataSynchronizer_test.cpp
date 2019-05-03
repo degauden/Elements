@@ -27,7 +27,7 @@ namespace DataSync = ElementsServices::DataSync;
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_SUITE(DataSynchronizer_test, DataSync::MockDataSynchronizer)
+BOOST_FIXTURE_TEST_SUITE(DataSynchronizer_test, MockDataSynchronizer)
 
 //-----------------------------------------------------------------------------
 
@@ -41,5 +41,3 @@ BOOST_AUTO_TEST_CASE(downloadFailure_test) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
-
-

@@ -34,29 +34,27 @@ namespace DataSync = ElementsServices::DataSync;
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE(WebdavSynchronizer_test)
+BOOST_FIXTURE_TEST_SUITE(WebdavSynchronizer_test, WorkspaceFixture)
 
 //-----------------------------------------------------------------------------
 
 DataSync::WebdavSynchronizer createTestSynchronizer() {
   DataSync::ConnectionConfiguration connection(theWebdavFrConfig());
-  auto distantRoot = connection.distantRoot;
-  auto localRoot = connection.localRoot;
+  auto distant_root = connection.distantRoot;
+  auto local_root = connection.localRoot;
   DataSync::DependencyConfiguration dependencies(
-      distantRoot, localRoot, theDependencyConfig());
+      distant_root, local_root, theDependencyConfig());
   return DataSync::WebdavSynchronizer(connection, dependencies);
 }
 
 BOOST_AUTO_TEST_CASE(webdavGetCmd_test) {
-  if (not DataSync::webdavIsInstalled())
-      return;
-  string distantFile = "src/distant_file.fits";
-  string localFile = "dst/local_file.fits";
+  string distant_file = "src/distant_file.fits";
+  string local_file = "dst/local_file.fits";
   auto synchronizer = createTestSynchronizer();
-  string cmd = synchronizer.createDownloadCommand(distantFile, localFile);
+  string cmd = synchronizer.createDownloadCommand(distant_file, local_file);
   std::vector<string> chunks = {
       "wget ", "-O",
-      localFile, distantFile,
+      local_file, distant_file,
       "8" };
   BOOST_CHECK(DataSync::containsInThisOrder(cmd, chunks));
 }

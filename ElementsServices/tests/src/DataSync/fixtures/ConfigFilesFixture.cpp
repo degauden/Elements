@@ -8,14 +8,21 @@
  *
  */
 
+#include "ConfigFilesFixture.h"
+
 #include <vector>
 
+#include "ElementsKernel/Temporary.h"
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 
-#include "ConfigFilesFixture.h"
 
 using ElementsServices::DataSync::path;
 using ElementsServices::DataSync::localWorkspacePrefix;
+
+
+WorkspaceFixture::WorkspaceFixture() {
+  m_env["WORKSPACE"] = (m_top_dir.path() / "workspace").string();
+}
 
 path theDependencyConfig() {
   return path("ElementsServices/testdata/test_file_list.txt");
@@ -35,12 +42,12 @@ path theLocalWorkspace() {
   return path("/tmp");
 }
 
-path absPath(path relPath) {
-  return localWorkspacePrefix() / theLocalWorkspace() / relPath;
-}
-
 path thePrefixedLocalWorkspace() {
   return localWorkspacePrefix() / theLocalWorkspace();
+}
+
+path absPath(path relPath) {
+  return thePrefixedLocalWorkspace() / relPath;
 }
 
 path theInvalidDependencyConfig() {

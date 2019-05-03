@@ -18,29 +18,23 @@
 
 #include "ConfigFilesFixture.h"
 
-namespace ElementsServices {
-namespace DataSync {
-
-class MockDataSynchronizer : public DataSynchronizer {
-
-public:
+struct MockDataSynchronizer : public ElementsServices::DataSync::DataSynchronizer, WorkspaceFixture {
 
   virtual ~MockDataSynchronizer() = default;
 
   MockDataSynchronizer(
-      path connection = theWebdavFrConfig(),
-      path dependency = theDependencyConfig());
+      ElementsServices::DataSync::path connection = theWebdavFrConfig(),
+      ElementsServices::DataSync::path dependency = theDependencyConfig());
 
   std::string createDownloadCommand(
-      path distantFile,
-      path localFile) const override;
+      ElementsServices::DataSync::path distantFile,
+      ElementsServices::DataSync::path localFile) const override;
 
-  std::map<path, path> fileMap();
+  std::map<ElementsServices::DataSync::path, ElementsServices::DataSync::path> fileMap();
+
 
 };
 
-}  // namespace DataSync
-}  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_MOCKDATASYNCHRONIZER_H_
 

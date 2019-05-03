@@ -15,30 +15,30 @@
 
 #include "MockDataSynchronizer.h"
 
-namespace ElementsServices {
-namespace DataSync {
+namespace DataSync = ElementsServices::DataSync;
 
+using std::string;
+using DataSync::path;
 
 MockDataSynchronizer::MockDataSynchronizer(
-      path connection,
-      path dependency) :
-        DataSynchronizer(
-            ConnectionConfiguration(connection),
-            DependencyConfiguration(theWebdavFrDistantWorkspace(), theLocalWorkspace(), dependency)
+      DataSync::path connection,
+      path dependency) : DataSync::DataSynchronizer(
+                         DataSync::ConnectionConfiguration(connection),
+                         DataSync::DependencyConfiguration(theWebdavFrDistantWorkspace(),
+                                                           theLocalWorkspace(),
+                                                           dependency)
         ) {}
 
-std::string MockDataSynchronizer::createDownloadCommand(
+string MockDataSynchronizer::createDownloadCommand(
       path distantFile,
       path localFile) const {
-    std::string cmd = std::string("echo ") + distantFile.string() + "\t" + localFile.string();
-    return cmd;
-  }
+  string cmd = string("echo ") + distantFile.string() + "\t" + localFile.string();
+  return cmd;
+}
 
-  std::map<path, path> MockDataSynchronizer::fileMap() {
-    return m_fileMap;
-  }
+std::map<path, path> MockDataSynchronizer::fileMap() {
+  return m_fileMap;
+}
 
 
-}  // namespace DataSync
-}  // namespace ElementsServices
 

@@ -16,6 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "fixtures/ConfigFilesFixture.h"
+
 #include <string>
 #include <vector>
 
@@ -62,7 +64,7 @@ BOOST_AUTO_TEST_CASE(runCommand_out_test) {
   BOOST_CHECK_EQUAL(output, msg);
 }
 
-BOOST_AUTO_TEST_CASE(localWorkspacePrefix_test) {
+BOOST_FIXTURE_TEST_CASE(localWorkspacePrefix_test, WorkspaceFixture) {
   const string localEv = DataSync::environmentVariable("NOPREFIX");
   if (localEv == "") {
     BOOST_CHECK_NE(DataSync::localWorkspacePrefix(), "");
