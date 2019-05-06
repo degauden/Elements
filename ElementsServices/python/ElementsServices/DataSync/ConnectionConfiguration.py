@@ -20,7 +20,7 @@ import argparse
 #TODO use configparse
 import enum
 
-from .DataSyncUtils import *
+from .DataSyncUtils import dataSyncConfFilePath, localWorkspacePrefix, concatenatePaths
 
 
 class DataHost (enum.Enum):
