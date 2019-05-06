@@ -136,8 +136,7 @@ else()
   list(APPEND EXCLUDED_PYTHON_TESTS tests/python/webdavIsInstalled_test.py)
 endif()
 
-elements_install_python_modules(TEST_ENVIRONMENT WORKSPACE=${CMAKE_BINARY_DIR}/Testing/Temporary
-                                TEST_EXCLUDE ${EXCLUDED_PYTHON_TESTS})
+elements_install_python_modules(TEST_EXCLUDE ${EXCLUDED_PYTHON_TESTS})
 
 #===============================================================================
 # Declare the Python programs here

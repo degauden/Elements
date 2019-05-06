@@ -23,7 +23,7 @@ from ElementsKernel.Temporary import TempDir, TempEnv
 
 class WorkspaceFixture(object):
     def __init__(self):
-        m_top_dir = TempDir("DataSync_test-%%%%%%%")
+        m_top_dir = TempDir("DataSync_test")
         m_env = TempEnv()
         m_env["WORKSPACE"] = os.path.join(m_top_dir.path(), "workspace")
 
@@ -43,8 +43,8 @@ def theLocalWorkspace():
     return "/tmp"
 
 
-def absPath(relPath):
-    return concatenatePaths([localWorkspacePrefix(), theLocalWorkspace(), relPath])
+def absPath(rel_path):
+    return concatenatePaths([localWorkspacePrefix(), theLocalWorkspace(), rel_path])
 
 def thePrefixedLocalWorkspace():
     return concatenatePaths([localWorkspacePrefix(), theLocalWorkspace()])

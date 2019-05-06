@@ -17,7 +17,9 @@
 #
 
 
-import py.test
+import unittest
+
+from ElementsKernel.Temporary import TempDir, TempEnv
 
 from ElementsServices.DataSync import \
     DataHost, ConnectionConfiguration, DependencyConfiguration, \
@@ -26,7 +28,17 @@ import ElementsServices.DataSync.DataSynchronizerMaker
 
 from fixtures.ConfigFilesFixture import *
 
-class TestDataSynchronizerMaker(object):
+class TestDataSynchronizerMaker(unittest.TestCase):
+    
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        self.m_top_dir = TempDir(prefix="DataSync_test")
+        self.m_env = TempEnv()
+        self.m_env["WORKSPACE"] = os.path.join(self.m_top_dir.path(), "workspace")
+        
+    def tearDown(self):
+        unittest.TestCase.tearDown(self)
+        del self.m_top_dir
 
     def checkSynchronizerCreation(self, connectionConfig, expectedSynchronizer):
         connection = ConnectionConfiguration(connectionConfig)

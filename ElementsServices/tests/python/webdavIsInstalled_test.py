@@ -17,8 +17,6 @@
 #
 
 
-import py.test
-
 from ElementsServices.DataSync import WebdavSynchronizer
 
 

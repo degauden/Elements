@@ -16,9 +16,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
-import py.test
-
 from ElementsServices.DataSync import ConnectionConfiguration
 from ElementsServices.DataSync import DependencyConfiguration
 from ElementsServices.DataSync import WebdavSynchronizer

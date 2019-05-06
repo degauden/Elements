@@ -16,13 +16,25 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
+import os
+import unittest
 
-import py.test
+from ElementsKernel.Temporary import TempDir, TempEnv
 
 from ElementsServices.DataSync import IrodsSynchronizer
 
 
-class TestIrodsIsInstalled(object):
+class TestIrodsIsInstalled(unittest.TestCase):
+
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        self.m_top_dir = TempDir(prefix="DataSync_test")
+        self.m_env = TempEnv()
+        self.m_env["WORKSPACE"] = os.path.join(self.m_top_dir.path(), "workspace")
+        
+    def tearDown(self):
+        unittest.TestCase.tearDown(self)
+        del self.m_top_dir
 
     def test_irodsIsNotInstalled(self):
         assert not IrodsSynchronizer.irodsIsInstalled()

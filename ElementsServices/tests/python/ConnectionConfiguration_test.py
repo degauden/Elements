@@ -16,15 +16,27 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
+import os
+import unittest
 
-import py.test
-
+from ElementsKernel.Temporary import TempDir, TempEnv
 from ElementsServices.DataSync import DataHost, ConnectionConfiguration
 
-from fixtures.ConfigFilesFixture import *
+from fixtures.ConfigFilesFixture import theWebdavFrConfig, theNoOverwriteConfig, thePrefixedLocalWorkspace
 
 
-class TestConnectionConfiguration(object):
+class TestConnectionConfiguration(unittest.TestCase):
+
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        self.m_top_dir = TempDir(prefix="DataSync_test")
+        self.m_env = TempEnv()
+        self.m_env["WORKSPACE"] = os.path.join(self.m_top_dir.path(), "workspace")
+        
+    def tearDown(self):
+        unittest.TestCase.tearDown(self)
+        del self.m_top_dir
+
 
     def checkHostParsing(self, host, names):
         config = ConnectionConfiguration()

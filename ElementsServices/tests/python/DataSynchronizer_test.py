@@ -17,14 +17,27 @@
 #
 
 
+import unittest
 import py.test
+
+from ElementsKernel.Temporary import TempDir, TempEnv
 from ElementsServices.DataSync import DataSynchronizer
 
 from fixtures.ConfigFilesFixture import *
 from fixtures.MockDataSynchronizer import *
 
 
-class TestDataSynchronizer(object):
+class TestDataSynchronizer(unittest.TestCase):
+
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        self.m_top_dir = TempDir(prefix="DataSync_test")
+        self.m_env = TempEnv()
+        self.m_env["WORKSPACE"] = os.path.join(self.m_top_dir.path(), "workspace")
+        
+    def tearDown(self):
+        unittest.TestCase.tearDown(self)
+        del self.m_top_dir
 
     def testDownloadFailure(self):
         mock = MockDataSynchronizer()

@@ -19,6 +19,9 @@
 
 import os.path
 import py.test
+import unittest
+
+from ElementsKernel.Temporary import TempDir, TempEnv
 
 from ElementsServices.DataSync import DataSync
 from ElementsServices.DataSync.IrodsSynchronizer import irodsIsInstalled
@@ -27,15 +30,25 @@ from ElementsServices.DataSync.WebdavSynchronizer import webdavIsInstalled
 from fixtures.ConfigFilesFixture import *
 
 
-class TestDataSync(object):
+class TestDataSync(unittest.TestCase):
+
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        self.m_top_dir = TempDir(prefix="DataSync_test")
+        self.m_env = TempEnv()
+        self.m_env["WORKSPACE"] = os.path.join(self.m_top_dir.path(), "workspace")
+        
+    def tearDown(self):
+        unittest.TestCase.tearDown(self)
+        del self.m_top_dir
 
     def checkDownload(self, connectionConfig):
         sync = DataSync(connectionConfig, theDependencyConfig())
         sync.download()
         for file in theLocalFiles():
-            absPath = sync.absolutePath(file)
-            assert os.path.isfile(absPath)
-            os.remove(absPath)
+            abs_path = sync.absolutePath(file)
+            assert os.path.isfile(abs_path)
+            os.remove(abs_path)
 
     def checkFallback(self, fallbackConfig):
         sync = DataSync(aBadConnectionConfig(), theDependencyConfig())
@@ -43,9 +56,9 @@ class TestDataSync(object):
             sync.download()
         sync.downloadWithFallback(fallbackConfig)
         for file in theLocalFiles():
-            absPath = sync.absolutePath(file)
-            assert os.path.isfile(absPath)
-            os.remove(absPath)
+            abs_path = sync.absolutePath(file)
+            assert os.path.isfile(abs_path)
+            os.remove(abs_path)
 
     def test_DataSyncWebdavFr(self):
         if webdavIsInstalled():
