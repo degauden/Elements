@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_SUITE(DataSyncUtils_test)
 
 //-----------------------------------------------------------------------------
 
-void checkLower(vector<string> casedList, string uncased) {
+void checkLower(const vector<string>& casedList, const string& uncased) {
   for (const auto& cased : casedList) {
     BOOST_CHECK_EQUAL(DataSync::lower(cased), uncased);
   }
