@@ -36,3 +36,16 @@ def getAuxiliaryPath(file_name, raise_exception=True):
     Get full path to the file name searched in the auxiliary path
     """
     return getPath(file_name, "auxiliary", raise_exception)
+
+
+def configureAuxiliaryFile(destination_path, source_name, substitution={}):
+    """ 
+    Read an input auxiliary file, interpolate it with a dictionary and write
+    the output.
+    """
+    source_path = getAuxiliaryPath(source_name)
+    
+    data = open(source_path).read() % substitution
+    
+    with open(destination_path, "w") as f:
+        f.write(data)

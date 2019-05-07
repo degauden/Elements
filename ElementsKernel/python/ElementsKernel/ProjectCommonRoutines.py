@@ -195,17 +195,6 @@ def copyAuxFile(destination, aux_file_name):
 
 ################################################################################
 
-def copyAndConfigureAuxFile(destination_path, source_name, substitution={}):
-    """ Read an input file, interpolate it with a dictionary and write
-    the output.
-    """
-    source_path = aux.getAuxiliaryPath(source_name)
-    
-    data = open(source_path).read() % substitution
-    
-    with open(destination_path, "w") as f:
-        f.write(data)
-
 def checkAuxFileExist(aux_file_name):
     """
     Make sure the <aux_file> auxiliary file exists. Return an exception in case of
