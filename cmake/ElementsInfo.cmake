@@ -12,6 +12,7 @@ get_property(test_list GLOBAL PROPERTY TEST_LIST)
 
 find_file_to_configure(cmake_info.cmake.in
                        FILETYPE "CMake"
+                       PATH_SUFFIXES "auxdir/command"
                        OUTPUTDIR "${CMAKE_CURRENT_BINARY_DIR}"
                        OUTPUTNAME cmake_info.cmake
                        PATHS ${CMAKE_MODULE_PATH})
