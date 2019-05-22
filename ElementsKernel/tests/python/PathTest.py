@@ -27,6 +27,7 @@ from ElementsKernel.Temporary import TempDir
 from ElementsKernel.Path import joinPath, multiPathAppend, getLocationsFromEnv
 from ElementsKernel.Path import getLocations
 from ElementsKernel.Path import which
+from ElementsKernel.Path import getTargetPath
 
 
 class PathTest(unittest.TestCase):
@@ -79,6 +80,30 @@ class PathTest(unittest.TestCase):
     def testWhich(self):
         sys_ls = subprocess.check_output(["which", "ls"]).strip()
         self.assertEqual(sys_ls, which(sys_ls))
+
+    def testGetTargetPath(self):
+        
+        file_name = "toto"
+        target_dir = "/blab/blo"
+        self.assert_(getTargetPath(file_name, target_dir) == "/blab/blo/toto")
+        
+        file_name = "tata/toto"
+        target_dir = "/blab/blo"
+        self.assert_(getTargetPath(file_name, target_dir) == "/blab/blo/toto")
+
+        file_name = "tata/toto"
+        target_dir = "/blab/blo"
+        self.assert_(getTargetPath(file_name, target_dir, use_stem=True) == "/blab/blo/tata/toto")
+
+        file_name = "tata/toto"
+        target_dir = "/blab/blo"
+        target_name = "tutu"
+        self.assert_(getTargetPath(file_name, target_dir, target_name) == "/blab/blo/tutu")
+
+        file_name = "tata/toto"
+        target_dir = "/blab/blo"
+        target_name = "foo/tutu"
+        self.assert_(getTargetPath(file_name, target_dir, target_name) == "/blab/blo/foo/tutu")
 
 
 if __name__ == "__main__":

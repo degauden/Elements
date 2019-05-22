@@ -218,3 +218,20 @@ def pyVersionWhich(program, program3_prefix=None):
         executable_name = program
 
     return which(executable_name)
+
+def getTargetPath(file_name, target_dir, target_name=None, use_stem=False):
+    """ Compute the target path for a copy/configuration of a file
+        @param file_name: the original file name with or without a stem
+        @param target_dir: the target directory
+        @param target_name: the target name if any
+        @param use_stem: choose if the stem of the file_name will be used or only
+                         the last component of the file_name path.
+        @return: the final target path for the copy/configuration.
+    """
+    if target_name:
+        target_path = os.path.join(target_dir, target_name)
+    elif use_stem:
+        target_path = os.path.join(target_dir, file_name)
+    else:
+        target_path = os.path.join(target_dir, os.path.basename(file_name))
+    return target_path
