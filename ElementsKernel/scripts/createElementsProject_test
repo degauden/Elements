@@ -27,8 +27,8 @@ CreateElementsProject $project_name $version -d $dep_project $version --yes
 
 # Error? stop and clean up
 if [ $? -ne 0 ]; then
-   echo "Error: <CreateElementsProject $project_name $version> command failed!" 1>&2
-   local_clean_exit 1
+  echo "Error: <CreateElementsProject $project_name $version> command failed!" 1>&2
+  local_clean_exit 1
 fi
 
 # Test --yes option
@@ -54,6 +54,10 @@ fi
 if [ ! -e $User_area/$project_name/$version/.gitignore ]; then
    echo "Error: <$User_area/$project_name/$version/.gitignore> file not found" 1>&2
    local_clean_exit 1
+fi
+if [ ! -e $User_area/$project_name/$version/.editorconfig ]; then
+  echo "Error: <$User_area/$project_name/$version/.editorconfig> file not found" 1>&2
+  local_clean_exit 1
 fi
 if [ ! -e $User_area/$project_name/$version/Makefile ]; then
    echo "Error: <$User_area/$project_name/$version/Makefile> file not found" 1>&2
