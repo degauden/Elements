@@ -26,9 +26,12 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import os
 import re
+
 import ELEMENTS_VERSION  # @UnresolvedImport
-import ElementsKernel.ProjectCommonRoutines as epcr
+
 import ElementsKernel.Logging as log
+from ElementsKernel import Auxiliary
+from ElementsKernel import ProjectCommonRoutines
 
 try:
     from builtins import input
@@ -42,6 +45,13 @@ AUX_MAKE_FILE_IN = "Makefile.in"
 AUX_PROJ_RST_IN = "doc_project.rst.in"
 AUX_GITIGNORE_IN = "gitignore_template.in"
 AUX_EDITOR_CONFIG = "editorconfig"
+
+target_locations = { AUX_CMAKE_LIST_IN: "CMakeLists.txt",
+                     AUX_MAKE_FILE_IN: "Makefile",
+                     AUX_PROJ_RST_IN: "doc/doc_project.rst",
+                     AUX_GITIGNORE_IN: ".gitignore",
+                     AUX_EDITOR_CONFIG: ".editorconfig"
+                   }
 
 ################################################################################
 
@@ -69,7 +79,7 @@ def checkDependencyProjectValid(str_list):
     Check if the dependency project name and version list is valid
     """
     for i in range(len(str_list)):
-        epcr.checkNameAndVersionValid(str_list[i][0], str_list[i][1])
+        ProjectCommonRoutines.checkNameAndVersionValid(str_list[i][0], str_list[i][1])
 
 ################################################################################
 
@@ -126,30 +136,6 @@ def getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone
     
     return configuration
 
-def substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects, standalone=False):
-    """
-    Substitute variables in <CMakeList.txt.in> file and rename the file to
-    <CMakeLists.txt>.
-    """
-    logger.debug('# Substitute variables in <%s> file', AUX_CMAKE_LIST_IN)
-    cmake_list_file = os.path.join(project_dir, AUX_CMAKE_LIST_IN)
-
-    # Substitute
-    data = open(cmake_list_file).read()
-
-    configuration = getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone)
-
-    new_data = data % configuration
-
-    # Save new data
-    with open(cmake_list_file, 'w') as f:
-        f.write(new_data)
-
-    # Remove '.in'
-    file_no_dot_in = cmake_list_file.replace('.in', '')
-    os.rename(cmake_list_file, file_no_dot_in)
-    epcr.addItemToCreationList(file_no_dot_in)
-
 ################################################################################
 
 
@@ -159,46 +145,14 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
     """
     logger.info('# Creating the project')
 
-    # Create project
-    if not os.path.exists(project_dir):
-        os.makedirs(project_dir)
+    configuration = getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone)
 
-    epcr.copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
-    epcr.copyAuxFile(project_dir, AUX_MAKE_FILE_IN)
-    epcr.copyAuxFile(project_dir, AUX_GITIGNORE_IN)
-    epcr.copyAuxFile(project_dir, AUX_EDITOR_CONFIG)
+    for src in target_locations:
+        file_name = os.path.join("ElementsKernel", "templates", src)
+        Auxiliary.configure(file_name, project_dir, target_locations[src],
+                            configuration=configuration,
+                            create_missing_dir=True)
 
-    # Rename the git file as ".gitignore"
-    gitfile = os.path.join(project_dir, AUX_GITIGNORE_IN)
-    git_ignore_file_dot_name = os.path.join(project_dir, '.' + AUX_GITIGNORE_IN.replace('_template.in', ''))
-    os.rename(gitfile, git_ignore_file_dot_name)
-    epcr.addItemToCreationList(git_ignore_file_dot_name)
-
-    # Rename the editorconfig file as ".editorconfig"
-    editorconfig_file = os.path.join(project_dir, AUX_EDITOR_CONFIG)
-    editorconfig_file_dot_name = os.path.join(project_dir, '.' + AUX_EDITOR_CONFIG)
-    os.rename(editorconfig_file, editorconfig_file_dot_name)
-    epcr.addItemToCreationList(editorconfig_file_dot_name)
-
-    # Remove '.in'
-    cmakefile = os.path.join(project_dir, AUX_MAKE_FILE_IN)
-    file_no_dot_in = cmakefile.replace('.in', '')
-    os.rename(cmakefile, file_no_dot_in)
-    epcr.addItemToCreationList(file_no_dot_in)
-
-    project_doc_dir = os.path.join(project_dir, "doc")
-    if not os.path.exists(project_doc_dir):
-        os.makedirs(project_doc_dir)
-    epcr.copyAuxFile(project_doc_dir, AUX_PROJ_RST_IN)
-    project_rst_file = os.path.join(project_doc_dir, AUX_PROJ_RST_IN)
-
-    file_no_dot_in = project_rst_file.replace('.in', '')
-    os.rename(project_rst_file, file_no_dot_in)
-    epcr.addItemToCreationList(file_no_dot_in)
-
-    substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects, standalone)
-
-################################################################################
 
 
 def makeChecks(proj_name, proj_version, dependency, dependant_projects):
@@ -206,15 +160,15 @@ def makeChecks(proj_name, proj_version, dependency, dependant_projects):
     Make some checks
     """
     # Check project name and version
-    epcr.checkNameAndVersionValid(proj_name, proj_version)
+    ProjectCommonRoutines.checkNameAndVersionValid(proj_name, proj_version)
     if not dependency is None:
         checkDependencyProjectValid(dependant_projects)
     # Check for duplicate dependencies
     if not dependency is None:
         duplicate_elements(dependant_projects)
     # Check AUX files exist
-    epcr.checkAuxFileExist(AUX_CMAKE_LIST_IN)
-    epcr.checkAuxFileExist(AUX_MAKE_FILE_IN)
+    ProjectCommonRoutines.checkAuxFileExist(AUX_CMAKE_LIST_IN)
+    ProjectCommonRoutines.checkAuxFileExist(AUX_MAKE_FILE_IN)
 
 ################################################################################
 
@@ -239,7 +193,7 @@ def lookForDirectories(project_dir):
     match_list = []
     dirlist = [elt for elt in os.listdir(project_dir) if os.path.isdir(os.path.join(project_dir, elt)) ]
     for elt in dirlist:
-        match = re.match(epcr.version_regex, elt)
+        match = re.match(ProjectCommonRoutines.version_regex, elt)
         if match:
             match_list.append(match.group(0))
     return match_list
@@ -264,4 +218,4 @@ def checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes
         else:
             raise Exception()
     elif force_erase:
-        epcr.eraseDirectory(project_dir)
+        ProjectCommonRoutines.eraseDirectory(project_dir)
