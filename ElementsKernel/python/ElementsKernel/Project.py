@@ -101,6 +101,30 @@ def getElementsVersion():
 
 ################################################################################
 
+def getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone=False):
+    """
+    Format all dependent projects
+    We put by default Elements dependency if no one is given
+    """
+    if standalone:
+        str_dep_projects = ""
+    else:
+        str_dep_projects = 'Elements ' + getElementsVersion()
+    if dep_projects:
+        for dep in dep_projects:
+            if not dep[0] in str_dep_projects:
+                str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
+            else:
+                logger.warning('<%s> dependency already exists. It is skipped!', dep[0])
+    
+    if str_dep_projects:
+        str_dep_projects = "USE " + str_dep_projects
+        
+    configuration = {"PROJECT_NAME":proj_name, 
+                     "PROJECT_VERSION":proj_version, 
+                     "DEPENDANCE_LIST":str_dep_projects}
+    
+    return configuration
 
 def substituteProjectVariables(project_dir, proj_name, proj_version, dep_projects, standalone=False):
     """
@@ -111,36 +135,16 @@ def substituteProjectVariables(project_dir, proj_name, proj_version, dep_project
     cmake_list_file = os.path.join(project_dir, AUX_CMAKE_LIST_IN)
 
     # Substitute
-    f = open(cmake_list_file)
-    data = f.read()
+    data = open(cmake_list_file).read()
 
-    # Format all dependent projects
-    # We put by default Elements dependency if no one is given
-    if standalone:
-        str_dep_projects = ""
-    else:
-        str_dep_projects = 'Elements ' + getElementsVersion()
+    configuration = getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone)
 
-    if not dep_projects is None:
-        for dep in dep_projects:
-            if not dep[0] in str_dep_projects:
-                str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
-            else:
-                logger.warning('<%s> dependency already exists. It is skipped!', dep[0])
-
-    if str_dep_projects:
-        str_dep_projects = "USE " + str_dep_projects
-
-    new_data = data % {"PROJECT_NAME": proj_name,
-                       "PROJECT_VERSION": proj_version,
-                       "DEPENDANCE_LIST": str_dep_projects}
-
-    f.close()
+    new_data = data % configuration
 
     # Save new data
-    f = open(cmake_list_file, 'w')
-    f.write(new_data)
-    f.close()
+    with open(cmake_list_file, 'w') as f:
+        f.write(new_data)
+
     # Remove '.in'
     file_no_dot_in = cmake_list_file.replace('.in', '')
     os.rename(cmake_list_file, file_no_dot_in)
