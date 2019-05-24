@@ -170,7 +170,7 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list, lib
 
 ################################################################################
 
-def makeChecks(current_dir, program_name, answer_yes=False):
+def makeChecks(current_dir, program_name):
     """
     Make some checks
     """
@@ -227,7 +227,6 @@ def mainMethod(args):
     program_name = args.program_name
     module_list = args.module_dependency
     library_list = args.library_dependency
-    answer_yes = args.yes
 
     try:
         # Default is the current directory
@@ -238,7 +237,7 @@ def mainMethod(args):
         # We absolutely need a Elements cmake file
         module_name = epcr.getElementsModuleName(current_dir)
         # make some checks
-        makeChecks(current_dir, program_name, answer_yes)
+        makeChecks(current_dir, program_name)
 
         # Create CPP program
         createCppProgram(current_dir, module_name, program_name, module_list, library_list)

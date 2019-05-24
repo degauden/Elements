@@ -119,8 +119,8 @@ def mainMethod(args):
 
     try:
         # Set the project directory
-        project_dir = Project.buildProjectDir(no_version_directory, destination_path, proj_name, proj_version)
-        Project.makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_yes)
+        project_dir = Project.getProjectDirectory(no_version_directory, destination_path, proj_name, proj_version)
+        Project.makeChecks(proj_name, proj_version, dependency, dependant_projects)
 
         Project.checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes)
 

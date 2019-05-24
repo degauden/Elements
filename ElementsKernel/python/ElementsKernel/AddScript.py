@@ -124,7 +124,7 @@ def createScript(current_dir, module_name, program_name):
 
 ################################################################################
 
-def makeChecks(program_file_path, program_name, answer_yes=False):
+def makeChecks(program_file_path, program_name):
     """
     Make some checks
     """
@@ -165,7 +165,6 @@ def mainMethod(args):
     logger.info('#')
 
     program_name = args.program_name
-    answer_yes = args.yes
 
     # Default is the current directory
     current_dir = os.getcwd()
@@ -179,7 +178,7 @@ def mainMethod(args):
         # Check name in the Element Naming Database
         program_file_path = os.path.join(current_dir, 'scripts', program_name)
         # Make checks
-        makeChecks(program_file_path, program_name, answer_yes)
+        makeChecks(program_file_path, program_name)
 
         createScript(current_dir, module_name, program_name)
         logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)

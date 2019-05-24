@@ -178,7 +178,7 @@ def checkDependencyListValid(str_list):
 ################################################################################
 
 
-def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
+def makeChecks(project_dir, module_name, dependency_list):
     """
     Make some checks
     """
@@ -240,7 +240,7 @@ def mainMethod(args):
     logger.info('# Current directory : %s', project_dir)
 
     try:
-        makeChecks(project_dir, module_name, dependency_list, answer_yes)
+        makeChecks(project_dir, module_name, dependency_list)
         createModule(project_dir, module_name, dependency_list, standalone, answer_yes)
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
         # Print all files created

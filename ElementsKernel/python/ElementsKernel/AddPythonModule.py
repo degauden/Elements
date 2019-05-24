@@ -157,7 +157,7 @@ def createPythonModule(current_dir, module_name, python_module_name):
 
 ################################################################################
 
-def makeChecks(module_file_path, python_module_name, answer_yes=False):
+def makeChecks(module_file_path, python_module_name):
     """
     Make some checks
     """
@@ -200,7 +200,6 @@ def mainMethod(args):
     logger.info('#')
 
     python_module_name = args.module_name
-    answer_yes = args.yes
 
     try:
         # Default is the current directory
@@ -214,7 +213,7 @@ def mainMethod(args):
 
         module_file_path = os.path.join(current_dir, 'python', module_name,
                                         python_module_name + '.py')
-        makeChecks(module_file_path, python_module_name, answer_yes)
+        makeChecks(module_file_path, python_module_name)
 
         # Create module
         createPythonModule(current_dir, module_name, python_module_name)

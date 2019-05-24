@@ -197,7 +197,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
 ################################################################################
 
 
-def makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_yes=False):
+def makeChecks(proj_name, proj_version, dependency, dependant_projects):
     """
     Make some checks
     """
@@ -215,7 +215,7 @@ def makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_y
 ################################################################################
 
 
-def buildProjectDir(no_version_directory, destination_path, proj_name, proj_version):
+def getProjectDirectory(no_version_directory, destination_path, proj_name, proj_version):
     """
     Build project directory path
     """
