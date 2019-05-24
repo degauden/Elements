@@ -48,8 +48,8 @@ def configure(file_name, target_dir, target_name=None, use_stem=False,
         @param target_dir: the target directory
         @param target_name: the target name if any
         @param use_stem: choose if the stem (dirname) of the file_name will 
-                         be used or only
-                         the last component (basename) of the file_name path.
+                         be used or only the last component (basename) of 
+                         the file_name path.
         @param configuration: dictionary of item to replace in the text
         @param create_missing_dir: 
         @return: the final target path for the copy/configuration.
