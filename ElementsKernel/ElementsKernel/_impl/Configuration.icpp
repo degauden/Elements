@@ -36,7 +36,7 @@ boost::filesystem::path getConfigurationPath(const T& file_name, bool raise_exce
   auto result = Path::getPathFromLocations(file_name, location_list);
 
   if (result.empty() and raise_exception) {
-    throw Exception() << "The configuration file \"" << file_name << "\" cannot be found!";
+    throw Exception() << "The configuration path \"" << file_name << "\" cannot be found!";
   }
 
   return result;

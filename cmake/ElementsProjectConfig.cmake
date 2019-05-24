@@ -799,7 +799,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
       find_file(ctestxml2html_skel
                 NAMES HTMLTestReportSkel
                 PATHS ${CMAKE_MODULE_PATH}
-                PATH_SUFFIXES auxdir
+                PATH_SUFFIXES auxdir/test auxdir
                 NO_DEFAULT_PATH)
       add_custom_target(HTMLSummary)
       add_custom_command(TARGET HTMLSummary
@@ -1251,12 +1251,14 @@ ${MAIN_PROJECT_CHANGELOG}
       if(NOT SQUEEZED_INSTALL)
         find_file_to_configure(Elements.spec.in
                                FILETYPE "RPM SPEC"
+                               PATH_SUFFIXES "auxdir/package"
                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
                                OUTPUTNAME "${project}.spec"
                                PATHS ${CMAKE_MODULE_PATH})
       else()
         find_file_to_configure(Elements-squeeze.spec.in
                                FILETYPE "RPM SPEC"
+                               PATH_SUFFIXES "auxdir/package"
                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
                                OUTPUTNAME "${project}.spec"
                                PATHS ${CMAKE_MODULE_PATH})

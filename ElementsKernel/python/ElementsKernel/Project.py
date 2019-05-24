@@ -28,7 +28,6 @@ import os
 import re
 import ELEMENTS_VERSION  # @UnresolvedImport
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
 try:
@@ -42,6 +41,7 @@ AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
 AUX_MAKE_FILE_IN = "Makefile.in"
 AUX_PROJ_RST_IN = "doc_project.rst.in"
 AUX_GITIGNORE_IN = "gitignore_template.in"
+AUX_EDITOR_CONFIG = "editorconfig"
 
 ################################################################################
 
@@ -162,12 +162,19 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
     epcr.copyAuxFile(project_dir, AUX_CMAKE_LIST_IN)
     epcr.copyAuxFile(project_dir, AUX_MAKE_FILE_IN)
     epcr.copyAuxFile(project_dir, AUX_GITIGNORE_IN)
+    epcr.copyAuxFile(project_dir, AUX_EDITOR_CONFIG)
 
     # Rename the git file as ".gitignore"
     gitfile = os.path.join(project_dir, AUX_GITIGNORE_IN)
-    git_ignore_file_dot_name = os.path.join(project_dir, ('.' + AUX_GITIGNORE_IN.replace('_template.in', '')))
+    git_ignore_file_dot_name = os.path.join(project_dir, '.' + AUX_GITIGNORE_IN.replace('_template.in', ''))
     os.rename(gitfile, git_ignore_file_dot_name)
     epcr.addItemToCreationList(git_ignore_file_dot_name)
+
+    # Rename the editorconfig file as ".editorconfig"
+    editorconfig_file = os.path.join(project_dir, AUX_EDITOR_CONFIG)
+    editorconfig_file_dot_name = os.path.join(project_dir, '.' + AUX_EDITOR_CONFIG)
+    os.rename(editorconfig_file, editorconfig_file_dot_name)
+    epcr.addItemToCreationList(editorconfig_file_dot_name)
 
     # Remove '.in'
     cmakefile = os.path.join(project_dir, AUX_MAKE_FILE_IN)
