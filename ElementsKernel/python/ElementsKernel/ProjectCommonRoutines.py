@@ -188,10 +188,8 @@ def copyAuxFile(destination, aux_file_name):
     <aux_file_name> is just the name without path
     """
     aux_path_file = aux.getAuxiliaryPath(os.path.join('ElementsKernel', 'templates', aux_file_name))
-    if aux_path_file:
-        shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
-    else:
-        raise Exception("Auxiliary file not found : < %s >" % aux_path_file)
+    shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
+
 
 ################################################################################
 
