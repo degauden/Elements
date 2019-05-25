@@ -118,6 +118,8 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the RemoveCppClass script ')
     logger.info('#')
 
+    exit_code = 0
+
     class_name = args.class_name
 
     # Default is the current directory
@@ -156,6 +158,9 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = 1
     else:
         logger.info('# Script over.')
+
+    return exit_code
+    

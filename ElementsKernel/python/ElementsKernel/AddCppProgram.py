@@ -29,7 +29,6 @@ import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeListsMacros as pclm
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 
 logger = log.getLogger('AddCppProgram')
@@ -224,6 +223,8 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddCppProgram script')
     logger.info('#')
 
+    exit_code = 0
+
     program_name = args.program_name
     module_list = args.module_dependency
     library_list = args.library_dependency
@@ -255,6 +256,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = 1
     else:
         logger.info('# Script over.')
+
+    return exit_code

@@ -28,7 +28,6 @@ import os
 import argparse
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
@@ -199,6 +198,8 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddPythonModule script')
     logger.info('#')
 
+    exit_code = 0
+
     python_module_name = args.module_name
 
     try:
@@ -229,6 +230,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = 1
     else:
         logger.info('# Script over.')
+
+    return exit_code

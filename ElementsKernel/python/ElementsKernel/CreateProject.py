@@ -99,6 +99,9 @@ def mainMethod(args):
     """
     Main
     """
+    
+    exit_code = 0
+    
     logger = log.getLogger('CreateElementsProject')
 
     logger.info('#')
@@ -136,6 +139,9 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = 1
     else:
         logger.info('# Script over.')
+
+
+    return exit_code

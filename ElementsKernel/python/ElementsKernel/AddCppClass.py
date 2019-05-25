@@ -347,9 +347,12 @@ e.g AddCppClass class_name or
 
 def mainMethod(args):
     """ Main method of the AddCppClass Script"""
+    
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddCppClass script ')
     logger.info('#')
+
+    exit_code = 0
 
     elements_dep_list = args.elements_dependency
     library_dep_list = args.external_dependency
@@ -381,6 +384,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = 1
     else:
         logger.info('# Script over.')
+
+    return exit_code
