@@ -2,6 +2,7 @@
 
 import argparse
 import ElementsKernel.Logging as log
+from ElementsKernel import Exit
 
 from SwigExample import functionExample
 
@@ -47,4 +48,4 @@ def mainMethod(args):
 
     logger.info('Exiting SwigProgramExample mainMethod()')
 
-    return 0
+    return Exit.Code.OK

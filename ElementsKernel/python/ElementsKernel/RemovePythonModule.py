@@ -29,6 +29,7 @@ import os
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.Logging as log
 import ElementsKernel.ParseCmakeLists as pcl
+from ElementsKernel import Exit
 
 try:
     from builtins import input
@@ -114,7 +115,7 @@ def mainMethod(args):
     script ')
     logger.info('#')
     
-    exit_code = 0
+    exit_code = Exit.Code.OK
 
     pymodule_name = args.pymodule_name
 
@@ -147,7 +148,7 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        exit_code = 1
+        exit_code = Exit.Code.NOT_OK
     else:
         logger.info('# Script over.')
 

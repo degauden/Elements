@@ -31,6 +31,8 @@ import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
 
+from ElementsKernel import Exit
+
 logger = log.getLogger('AddPythonModule')
 
 # Define constants
@@ -198,7 +200,7 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddPythonModule script')
     logger.info('#')
 
-    exit_code = 0
+    exit_code = Exit.Code.OK
 
     python_module_name = args.module_name
 
@@ -230,7 +232,7 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        exit_code = 1
+        exit_code = Exit.Code.NOT_OK
     else:
         logger.info('# Script over.')
 

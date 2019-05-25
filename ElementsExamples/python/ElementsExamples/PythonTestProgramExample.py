@@ -1,7 +1,7 @@
 """ Small example for a python based script """
 
 import argparse
-from ElementsKernel import Logging
+from ElementsKernel import Logging, Exit
 
 
 def defineSpecificProgramOptions():
@@ -33,4 +33,4 @@ def mainMethod(args):
 
     logger.info('Exiting TestProgramExample mainMethod()')
 
-    return 0
+    return Exit.Code.OK

@@ -5,6 +5,8 @@ from ElementsKernel import Logging
 from ElementsKernel.Program import str_to_bool
 from ElementsExamples.PythonModuleExample import ClassExample
 
+from ElementsKernel import Exit
+
 
 def myLocalLogTestFunc():
     """
@@ -148,4 +150,4 @@ def mainMethod(args):
 
     logger.info('Exiting ProgramExample mainMethod()')
 
-    return 0
+    return Exit.Code.OK

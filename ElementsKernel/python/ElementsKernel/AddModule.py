@@ -26,10 +26,13 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import argparse
 import os
+
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Exit
 
 try:
     from builtins import input
@@ -225,7 +228,7 @@ def mainMethod(args):
     Main
     """
     
-    exit_code = 0
+    exit_code = Exit.Code.OK
 
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddModule script ')
@@ -251,7 +254,7 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        exit_code = 1
+        exit_code = Exit.Code.NOT_OK
     else:
         logger.info('# Script over.')
 
