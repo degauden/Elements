@@ -149,9 +149,11 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
 
     for src in target_locations:
         file_name = os.path.join("ElementsKernel", "templates", src)
-        Auxiliary.configure(file_name, project_dir, target_locations[src],
+        tgt = target_locations[src]
+        Auxiliary.configure(file_name, project_dir, tgt,
                             configuration=configuration,
                             create_missing_dir=True)
+        ProjectCommonRoutines.addItemToCreationList(os.path.join(project_dir, tgt))
 
 
 
