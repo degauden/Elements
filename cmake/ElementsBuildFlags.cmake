@@ -266,6 +266,8 @@ if(NOT ELEMENTS_FLAGS_SET)
     # Common compilation flags
   if(USE_ENV_FLAGS)
     set(CMAKE_CXX_FLAGS $ENV{CXXFLAGS})
+  else()
+    set(CMAKE_CXX_FLAGS)
   endif()
 
   set(CMAKE_CXX_FLAGS
@@ -275,6 +277,8 @@ if(NOT ELEMENTS_FLAGS_SET)
 
   if(USE_ENV_FLAGS)
     set(CMAKE_C_FLAGS $ENV{CFLAGS})
+  else()
+    set(CMAKE_C_FLAGS)
   endif()
       
   set(CMAKE_C_FLAGS
@@ -399,6 +403,10 @@ if(NOT ELEMENTS_FLAGS_SET)
     set(CMAKE_SHARED_LINKER_FLAGS $ENV{LDFLAGS})
     set(CMAKE_MODULE_LINKER_FLAGS $ENV{LDFLAGS})
     set(CMAKE_EXE_LINKER_FLAGS $ENV{LDFLAGS})
+  else()
+    set(CMAKE_SHARED_LINKER_FLAGS $ENV{LDFLAGS})
+    set(CMAKE_MODULE_LINKER_FLAGS $ENV{LDFLAGS})
+    set(CMAKE_EXE_LINKER_FLAGS $ENV{LDFLAGS})
   endif()
 
   if (CMAKE_SYSTEM_NAME MATCHES Linux)
@@ -409,11 +417,11 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the linker during the creation of modules."
         FORCE)
     if(CMAKE_BUILD_TYPE STREQUAL "Profile" AND SGS_COMPVERS VERSION_LESS "50")
-      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}"
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed"
           CACHE STRING "Flags used by the linker during the creation of exe's."
           FORCE)
     else()
-      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed -pie ${CMAKE_EXE_LINKER_FLAGS}"
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed -pie"
           CACHE STRING "Flags used by the linker during the creation of exe's."
           FORCE)    
     endif()
