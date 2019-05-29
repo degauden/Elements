@@ -105,12 +105,12 @@ fi
 %__mkdir -p $RPM_BUILD_DIR/$BINARY_TAG
 cd $RPM_BUILD_DIR/$BINARY_TAG
 if [[ -z "${toolchain_file}" ]]; then
-  %cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
+  @CPACK_CMAKE_MACRO@ @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
 else
   if [[ "${HAS_ELEMENTS_TOOLCHAIN}" = "ON" ]]; then
-    %cmake @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} $RPM_BUILD_DIR/%{name}-%{version}
+    @CPACK_CMAKE_MACRO@ @CPACK_EXTRA_CMAKEFLAGS@ -DCMAKE_TOOLCHAIN_FILE=${toolchain_file} $RPM_BUILD_DIR/%{name}-%{version}
   else
-    %cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
+    @CPACK_CMAKE_MACRO@ @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
   fi
 fi
 %__make VERBOSE=1 %{?_smp_mflags} all

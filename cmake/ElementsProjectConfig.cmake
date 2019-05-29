@@ -915,6 +915,12 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     set(CPACK_CMAKE_PREFIX_PATH_LINE "#")  
   endif()
 
+  if(USE_RPM_CMAKE_MACRO)
+    set(CPACK_CMAKE_MACRO "%cmake")
+  else()
+    set(CPACK_CMAKE_MACRO "%__cmake")
+  endif()
+
 
   if(RPM_FORWARD_PREFIX_PATH)
   

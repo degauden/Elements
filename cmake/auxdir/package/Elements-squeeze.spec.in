@@ -73,7 +73,7 @@ export VERBOSE=1
 @CPACK_CMAKE_PREFIX_PATH_LINE@
 %__mkdir -p $RPM_BUILD_DIR/$BINARY_TAG
 cd $RPM_BUILD_DIR/$BINARY_TAG
-%cmake @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
+@CPACK_CMAKE_MACRO@ @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
 %__make VERBOSE=1 %{?_smp_mflags} all
 
 %install

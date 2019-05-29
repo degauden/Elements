@@ -258,10 +258,23 @@ option(USE_ENV_FLAGS
        "Use the environment CFLAGS, CXXFLAGS and LDFLAGS"
        OFF)
 
+option(USE_RPM_CMAKE_MACRO
+       "Use the system RPM macro for the rpm command"
+       OFF)
+
+
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   #message(STATUS "Setting cached build flags")
+
+
+  if(USE_RPM_CMAKE_MACRO)
+    set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DUSE_ENV_FLAGS:BOOL=ON")
+  else()
+    set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DUSE_ENV_FLAGS:BOOL=${USE_ENV_FLAGS}")
+  endif()
+
 
     # Common compilation flags
   if(USE_ENV_FLAGS)
