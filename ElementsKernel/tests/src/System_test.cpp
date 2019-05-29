@@ -27,6 +27,8 @@
 
 #include "ElementsKernel/Environment.h"
 
+using std::string;
+
 BOOST_AUTO_TEST_SUITE(System_test)
 
 //-----------------------------------------------------------------------------
@@ -37,7 +39,7 @@ BOOST_AUTO_TEST_CASE(HostName_test) {
 
   Elements::Environment current;
 
-  if (current["HOSTNAME"].exists()) {
+  if (current["HOSTNAME"].exists() and string(current["HOSTNAME"]) != ".") {
     BOOST_CHECK_EQUAL(string(current["HOSTNAME"]), Elements::System::hostName());
   }
 
