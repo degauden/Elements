@@ -919,7 +919,9 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     set(CPACK_CMAKE_MACRO "%cmake")
   else()
     set(CPACK_CMAKE_MACRO "%__cmake")
-    set(CPACK_EXTRA_CMAKEFLAGS "${CPACK_EXTRA_CMAKEFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
+    if(SQUEEZED_INSTALL)
+      set(CPACK_EXTRA_CMAKEFLAGS "${CPACK_EXTRA_CMAKEFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
+    endif()
   endif()
 
 
