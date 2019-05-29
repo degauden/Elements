@@ -254,18 +254,31 @@ option(TEST_HTML_REPORT
        "Enable the conversion of the CTest XML reports into HTML"
        ON)
 
+option(USE_ENV_FLAGS
+       "Use the environment CFLAGS, CXXFLAGS and LDFLAGS"
+       OFF)
+
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   #message(STATUS "Setting cached build flags")
 
     # Common compilation flags
+  if(USE_ENV_FLAGS)
+    set(CMAKE_CXX_FLAGS $ENV{CXXFLAGS})
+  endif()
+
   set(CMAKE_CXX_FLAGS
-      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -fPIC"
+      "${CMAKE_CXX_FLAGS} -fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
+
+  if(USE_ENV_FLAGS)
+    set(CMAKE_C_FLAGS $ENV{CFLAGS})
+  endif()
       
   set(CMAKE_C_FLAGS
-      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wno-unused-parameter -fPIC"
+      "${CMAKE_C_FLAGS} -fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wno-unused-parameter -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
@@ -381,19 +394,26 @@ if(NOT ELEMENTS_FLAGS_SET)
 
 
   #--- Link shared flags -------------------------------------------------------
+
+  if(USE_ENV_FLAGS)
+    set(CMAKE_SHARED_LINKER_FLAGS $ENV{LDFLAGS})
+    set(CMAKE_MODULE_LINKER_FLAGS $ENV{LDFLAGS})
+    set(CMAKE_EXE_LINKER_FLAGS $ENV{LDFLAGS})
+  endif()
+
   if (CMAKE_SYSTEM_NAME MATCHES Linux)
-    set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
         CACHE STRING "Flags used by the linker during the creation of dll's."
         FORCE)
-    set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
         CACHE STRING "Flags used by the linker during the creation of modules."
         FORCE)
     if(CMAKE_BUILD_TYPE STREQUAL "Profile" AND SGS_COMPVERS VERSION_LESS "50")
-      set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}"
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}"
           CACHE STRING "Flags used by the linker during the creation of exe's."
           FORCE)
     else()
-      set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -pie ${CMAKE_EXE_LINKER_FLAGS}"
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed -pie ${CMAKE_EXE_LINKER_FLAGS}"
           CACHE STRING "Flags used by the linker during the creation of exe's."
           FORCE)    
     endif()
