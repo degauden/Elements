@@ -101,7 +101,7 @@ def mainMethod(args):
     Main
     """
     
-    exit_code = Exit.Code.OK
+    exit_code = Exit.Code["OK"]
     
     logger = log.getLogger('CreateElementsProject')
 
@@ -140,7 +140,7 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        exit_code = Exit.Code.NOT_OK
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
 

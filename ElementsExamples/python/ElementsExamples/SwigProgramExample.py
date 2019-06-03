@@ -48,4 +48,4 @@ def mainMethod(args):
 
     logger.info('Exiting SwigProgramExample mainMethod()')
 
-    return Exit.Code.OK
+    return Exit.Code["OK"]

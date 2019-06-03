@@ -29,7 +29,6 @@ import os
 import argparse
 import ElementsKernel.Logging as log
 from ElementsKernel import Exit
-from enum import IntEnum
 
 import json
 
@@ -103,32 +102,27 @@ def defineSpecificProgramOptions():
 
 ################################################################################
 
-class ExitCode(IntEnum):
-    
-    OK          = Exit.Code.OK
-    NOT_OK      = Exit.Code.NOT_OK
-    INVALID_URL = 2
-    DB_ERROR    = 3
 
+Exit.Code.update({"INVALID_URL":2, "DB_ERROR":3})
 
 def mainMethod(args):
     """
     Main
     """
 
-    exit_code = ExitCode.NOT_OK
+    exit_code = Exit.Code["NOT_OK"]
 
     entity_name = args.entity_name
 
     if not checkDataBaseUrl(args.url):
         logger.critical("The Elements Naming DB URL is not valid")
-        exit_code = ExitCode.INVALID_URL
+        exit_code = Exit.Code["INVALID_URL"]
     else:
         info = getInfo(entity_name, args.url, args.type)
 
         if info["error"]:
             logger.error("There was an error querying the DB: %s", info["message"])
-            exit_code = ExitCode.DB_ERROR
+            exit_code = Exit.Code["DB_ERROR"]
         else:
             if info["exists"]:
                 logger.warn("The \"%s\" name for the %s type already exists", entity_name, args.type)
@@ -136,10 +130,10 @@ def mainMethod(args):
                             entity_name, info["url"])
                 logger.info("The full information for the \"%s\" name of type %s: %s", entity_name,
                             args.type, info["private_url"])
-                exit_code = ExitCode.OK
+                exit_code = Exit.Code["OK"]
             else:
                 logger.warn("The \"%s\" name of type %s doesn't exist", entity_name, args.type)
-                exit_code = ExitCode.NOT_OK
+                exit_code = Exit.Code["NOT_OK"]
 
     return exit_code
 

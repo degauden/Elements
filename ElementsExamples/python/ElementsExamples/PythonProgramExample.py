@@ -150,4 +150,4 @@ def mainMethod(args):
 
     logger.info('Exiting ProgramExample mainMethod()')
 
-    return Exit.Code.OK
+    return Exit.Code["OK"]

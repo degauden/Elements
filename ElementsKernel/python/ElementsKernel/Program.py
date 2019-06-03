@@ -109,7 +109,7 @@ class Program(object):
                     # the parser, fail with an error messsage
                     if not [act for act in arg_parser._actions if ('--' + key) in act.option_strings]:
                         self._logger.error('Unknown option "{}" in configuration file {}'.format(key, config_file))
-                        exit(Exit.Code.NOT_OK)
+                        exit(Exit.Code["NOT_OK"])
                     value = value.strip()
                     if '#' in value:
                         value = value[:value.find('#')]
@@ -262,7 +262,7 @@ class Program(object):
 
         args, _ = self._setup()
 
-        exit_code = Exit.Code.NOT_OK
+        exit_code = Exit.Code["NOT_OK"]
         try:
             exit_code = self._app_module.mainMethod(args)
         except:

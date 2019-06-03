@@ -115,7 +115,7 @@ def mainMethod(args):
     script ')
     logger.info('#')
     
-    exit_code = Exit.Code.OK
+    exit_code = Exit.Code["OK"]
 
     pymodule_name = args.pymodule_name
 
@@ -148,7 +148,7 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        exit_code = Exit.Code.NOT_OK
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
 

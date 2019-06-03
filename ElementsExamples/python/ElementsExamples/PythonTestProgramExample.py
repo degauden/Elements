@@ -33,4 +33,4 @@ def mainMethod(args):
 
     logger.info('Exiting TestProgramExample mainMethod()')
 
-    return Exit.Code.OK
+    return Exit.Code["OK"]

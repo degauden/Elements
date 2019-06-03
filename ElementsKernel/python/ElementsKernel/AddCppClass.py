@@ -355,7 +355,7 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddCppClass script ')
     logger.info('#')
 
-    exit_code = Exit.Code.OK
+    exit_code = Exit.Code["OK"]
 
     elements_dep_list = args.elements_dependency
     library_dep_list = args.external_dependency
@@ -387,7 +387,7 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        exit_code = Exit.Code.NOT_OK
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
 

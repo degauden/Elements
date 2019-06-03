@@ -20,30 +20,26 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 '''
-from enum import IntEnum
 
-class Code(IntEnum):
-    '''
-    Standard Exit Codes
-    '''
-    OK          =  0    #  Everything is OK
+Code = {
+    "OK"          :  0,    #  Everything is OK
 
-    NOT_OK      =  1    #  Generic unknown failure
+    "NOT_OK"      :  1,    #  Generic unknown failure
 
-    USAGE       = 64    #  command line usage error
-    DATAERR     = 65    #  data format error
-    NOINPUT     = 66    #  cannot open input
-    NOUSER      = 67    #  addressee unknown
-    NOHOST      = 68    #  host name unknown
-    UNAVAILABLE = 69    #  service unavailable
-    SOFTWARE    = 70    #  internal software error
-    OSERR       = 71    #  system error (e.g., can't fork)
-    OSFILE      = 72    #  critical OS file missing
-    CANTCREAT   = 73    #  can't create (user) output file
-    IOERR       = 74    #  input/output error
-    TEMPFAIL    = 75    #  temp failure; user is invited to retry
-    PROTOCOL    = 76    #  remote error in protocol
-    NOPERM      = 77    #  permission denied
-    CONFIG      = 78    #  configuration error
+    "USAGE"       : 64,    #  command line usage error
+    "DATAERR"     : 65,    #  data format error
+    "NOINPUT"     : 66,    #  cannot open input
+    "NOUSER"      : 67,    #  addressee unknown
+    "NOHOST"      : 68,    #  host name unknown
+    "UNAVAILABLE" : 69,    #  service unavailable
+    "SOFTWARE"    : 70,    #  internal software error
+    "OSERR"       : 71,    #  system error (e.g., can't fork)
+    "OSFILE"      : 72,    #  critical OS file missing
+    "CANTCREAT"   : 73,    #  can't create (user) output file
+    "IOERR"       : 74,    #  input/output error
+    "TEMPFAIL"    : 75,    #  temp failure; user is invited to retry
+    "PROTOCOL"    : 76,    #  remote error in protocol
+    "NOPERM"      : 77,    #  permission denied
+    "CONFIG"      : 78,    #  configuration error
     
-    
+    }

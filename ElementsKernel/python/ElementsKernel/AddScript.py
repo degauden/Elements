@@ -165,7 +165,7 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddScript script')
     logger.info('#')
 
-    exit_code = Exit.Code.OK
+    exit_code = Exit.Code["OK"]
 
     program_name = args.program_name
 
@@ -196,7 +196,7 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        exit_code = Exit.Code.NOT_OK
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
 
