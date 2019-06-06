@@ -383,6 +383,8 @@ macro(elements_project project version)
   # get the python test framework
 
   if(PYTHONINTERP_FOUND)
+    set(PYFRMK_TEST)
+    set(PYFRMK_NAME)
     if(USE_PYTHON_NOSE)
       find_package(Nose QUIET)
       if(NOSE_FOUND)
@@ -414,7 +416,9 @@ macro(elements_project project version)
         endif()
       endif()
     endif()
-    set(PYFRMK_TEST ${PYTHON_EXECUTABLE} ${PYFRMK_TEST})
+    if(PYFRMK_TEST)
+      set(PYFRMK_TEST ${PYTHON_EXECUTABLE} ${PYFRMK_TEST})
+    endif()
   endif()
 
   # compute the VCS version
