@@ -808,7 +808,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
       add_custom_target(HTMLSummary)
       add_custom_command(TARGET HTMLSummary
                          COMMAND ${env_cmd} --xml ${env_xml}
-                                 ${ctestxml2html_cmd} -s ${ctestxml2html_skel} -o Testing/html)
+                                 ${ctestxml2html_cmd} -q -s ${ctestxml2html_skel} -o Testing/html)
     else()
       add_custom_target(HTMLSummary)
       add_custom_command(TARGET HTMLSummary
