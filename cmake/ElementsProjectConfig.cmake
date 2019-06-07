@@ -2716,10 +2716,21 @@ function(elements_add_swig_binding binding)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-missing-field-initializers")
   endif()
+
   if(CXX_HAS_CAST_FUNCTION_TYPE)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
   endif() 
+
+  if(CXX_HAS_NO_PARENTHESES_EQUALITY)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-parentheses-equality")  
+  endif()
+
+  if(CXX_HAS_NO_SELF_ASSIGN)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-self-assign")    
+  endif()
 
 
   elements_add_python_module(${binding}
@@ -2916,9 +2927,14 @@ function(elements_add_cython_module)
                  PROPERTY COMPILE_FLAGS " -Wno-unused-function")
   endif()
 
-  if(CXX_HAS_UNNEEDED_INTERNAL_DECLARATION)
+  if(CXX_HAS_NO_UNNEEDED_INTERNAL_DECLARATION)
     set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-unneeded-internal-declaration")
+  endif()
+
+  if(CXX_HAS_NO_CXX17_EXTENSIONS)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-c++17-extensions")  
   endif()
 
   elements_add_python_module(${mod_name}

@@ -295,10 +295,16 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
       
   set(CMAKE_C_FLAGS
-      "${CMAKE_C_FLAGS} -fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wno-unused-parameter -fPIC"
+      "${CMAKE_C_FLAGS} -fmessage-length=0 -pipe -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wno-unused-parameter -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
+  if(NOT SGS_COMP STREQUAL clang)
+    set(CMAKE_C_FLAGS
+        "${CMAKE_C_FLAGS} -ansi"
+        CACHE STRING "Flags used by the compiler during all build types."
+        FORCE)
+  endif()
 
   if(SANITIZE_OPTIONS AND (SGS_COMP STREQUAL gcc))
     check_and_use_cxx_option(-fsanitize=${SANITIZE_STYLE} CXX_HAS_SANITIZE)
@@ -327,9 +333,20 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
 
   if(SGS_COMP STREQUAL clang)
-    check_cxx_compiler_flag(-Wunneeded-internal-declaration CXX_HAS_UNNEEDED_INTERNAL_DECLARATION)
+    check_cxx_compiler_flag(-Wno-unneeded-internal-declaration CXX_HAS_NO_UNNEEDED_INTERNAL_DECLARATION)
   endif()
 
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wno-c++17-extensions CXX_HAS_NO_CXX17_EXTENSIONS)
+  endif()
+
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wno-parentheses-equality CXX_HAS_NO_PARENTHESES_EQUALITY)
+  endif()
+
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wno-self-assign CXX_HAS_NO_SELF_ASSIGN)
+  endif()
 
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"
