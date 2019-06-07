@@ -2911,6 +2911,16 @@ function(elements_add_cython_module)
                  PROPERTY COMPILE_FLAGS " -Wno-missing-field-initializers")
   endif()
 
+  if(CXX_HAS_UNUSED_FUNCTION)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-unused-function")
+  endif()
+
+  if(CXX_HAS_UNNEEDED_INTERNAL_DECLARATION)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-unneeded-internal-declaration")
+  endif()
+
   elements_add_python_module(${mod_name}
                              PLAIN_MODULE
                              ${PY_MODULE_CYTHON_SRC} ${other_module_sources}

@@ -322,6 +322,14 @@ if(NOT ELEMENTS_FLAGS_SET)
     check_cxx_compiler_flag(-Wmissing-field-initializers CXX_HAS_MISSING_FIELD_INITIALIZERS)
   endif()
 
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wunused-function CXX_HAS_UNUSED_FUNCTION)
+  endif()
+
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wunneeded-internal-declaration CXX_HAS_UNNEEDED_INTERNAL_DECLARATION)
+  endif()
+
 
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"
