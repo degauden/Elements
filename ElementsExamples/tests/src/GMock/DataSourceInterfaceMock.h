@@ -19,7 +19,9 @@
 #ifndef ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEINTERFACEMOCK_H_
 #define ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEINTERFACEMOCK_H_
 
-#include "ElementsKernel/EnableGMock.h"
+#include <gmock/gmock.h>
+#include <cstddef>
+
 #include "ElementsExamples/DataSourceUser.h"
 
 namespace Elements {
@@ -36,7 +38,6 @@ public:
   MOCK_CONST_METHOD0(countRecords, std::size_t());
 
   MOCK_CONST_METHOD1(getRecordValue, double(std::size_t));
-
 
 };
 
