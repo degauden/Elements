@@ -92,7 +92,11 @@ const std::string DEFAULT_INSTALL_PREFIX { "/usr" };
 #if defined(__OPTIMIZE__) && defined(__clang__)
   const int STACK_OFFSET {1};
 #else
-  const int STACK_OFFSET {2};
+# ifdef __APPLE__
+    const int STACK_OFFSET {4};
+# else
+    const int STACK_OFFSET {2};
+# endif
 #endif
 
 #if defined(__linux) || defined(__APPLE__)
