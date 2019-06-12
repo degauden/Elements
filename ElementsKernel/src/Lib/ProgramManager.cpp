@@ -542,7 +542,7 @@ void ProgramManager::onTerminate() noexcept {
     } catch (...) {
       log.fatal() << "# ";
       log.fatal() << "# An exception of unknown type occurred, "
-                     << "i.e., an exception not deriving from std::exception ";
+                  << "i.e., an exception not deriving from std::exception ";
       log.fatal() << "# ";
     }
 
