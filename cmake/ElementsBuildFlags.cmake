@@ -348,6 +348,11 @@ if(NOT ELEMENTS_FLAGS_SET)
     check_cxx_compiler_flag(-Wno-self-assign CXX_HAS_NO_SELF_ASSIGN)
   endif()
 
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wno-constant-logical-operand CXX_HAS_NO_CONSTANT_LOGICAL_OPERAND)
+  endif()
+
+
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"
       CACHE STRING "Flags used by the compiler during release builds."

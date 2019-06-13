@@ -2722,11 +2722,6 @@ function(elements_add_swig_binding binding)
                  PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
   endif() 
 
-  if(CXX_HAS_NO_PARENTHESES_EQUALITY)
-    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
-                 PROPERTY COMPILE_FLAGS " -Wno-parentheses-equality")  
-  endif()
-
   if(CXX_HAS_NO_SELF_ASSIGN)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-self-assign")    
@@ -2936,6 +2931,17 @@ function(elements_add_cython_module)
     set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-c++17-extensions")  
   endif()
+
+  if(CXX_HAS_NO_PARENTHESES_EQUALITY)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-parentheses-equality")  
+  endif()
+
+  if(CXX_HAS_NO_CONSTANT_LOGICAL_OPERAND)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-constant-logical-operand")    
+  endif()
+
 
   elements_add_python_module(${mod_name}
                              PLAIN_MODULE
