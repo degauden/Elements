@@ -284,7 +284,7 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
 
   set(CMAKE_CXX_FLAGS
-      "${CMAKE_CXX_FLAGS} -fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -fPIC"
+      "${CMAKE_CXX_FLAGS} -fmessage-length=0 -pipe -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
@@ -299,12 +299,8 @@ if(NOT ELEMENTS_FLAGS_SET)
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
-  if(NOT SGS_COMP STREQUAL clang)
-    set(CMAKE_C_FLAGS
-        "${CMAKE_C_FLAGS} -ansi"
-        CACHE STRING "Flags used by the compiler during all build types."
-        FORCE)
-  endif()
+  check_and_use_cxx_option(-ansi CXX_HAS_ANSI)
+  check_and_use_c_option(-ansi C_HAS_ANSI)
 
   if(SANITIZE_OPTIONS AND (SGS_COMP STREQUAL gcc))
     check_and_use_cxx_option(-fsanitize=${SANITIZE_STYLE} CXX_HAS_SANITIZE)
