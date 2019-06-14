@@ -299,8 +299,10 @@ if(NOT ELEMENTS_FLAGS_SET)
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
-  check_and_use_cxx_option(-ansi CXX_HAS_ANSI)
-  check_and_use_c_option(-ansi C_HAS_ANSI)
+  if((NOT SGS_COMP STREQUAL clang) OR (SGS_COMPVERS VERSION_GREATER "40") )
+    check_and_use_cxx_option(-ansi CXX_HAS_ANSI)
+    check_and_use_c_option(-ansi C_HAS_ANSI)
+  endif()
 
   if(SANITIZE_OPTIONS AND (SGS_COMP STREQUAL gcc))
     check_and_use_cxx_option(-fsanitize=${SANITIZE_STYLE} CXX_HAS_SANITIZE)
