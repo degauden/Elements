@@ -2727,6 +2727,10 @@ function(elements_add_swig_binding binding)
                  PROPERTY COMPILE_FLAGS " -Wno-self-assign")    
   endif()
 
+  if(CXX_HAS_NO_PARENTHESES_EQUALITY)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-parentheses-equality")
+  endif()
 
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
