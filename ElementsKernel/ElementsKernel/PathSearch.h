@@ -64,9 +64,12 @@ ELEMENTS_API std::vector<T> pathSearch(
 // template instantiations of the most common types
 extern template
 ELEMENTS_API std::vector<boost::filesystem::path> pathSearch(const std::string& searched_name,
-                                                             boost::filesystem::path directory, SearchType search_type);
+                                                             boost::filesystem::path directory,
+                                                             SearchType search_type);
 extern template
-ELEMENTS_API std::vector<std::string> pathSearch(const std::string& searched_name, std::string directory, SearchType search_type);
+ELEMENTS_API std::vector<std::string> pathSearch(const std::string& searched_name,
+                                                 std::string directory,
+                                                 SearchType search_type);
 
 
 /**

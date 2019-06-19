@@ -4,12 +4,14 @@ Created on Jul 15, 2011
 @author: mplajner
 '''
 import unittest
-import os
+import os, sys
 try:
     from StringIO import StringIO
 except ImportError:
     # python 3 version
     from io import StringIO
+    
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from EnvConfig import Control  # @UnresolvedImport
 from EnvConfig import xmlModule  # @UnresolvedImport

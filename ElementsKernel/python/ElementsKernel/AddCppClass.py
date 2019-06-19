@@ -27,9 +27,12 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import argparse
 import os
 import time
+
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Exit
 
 logger = log.getLogger('AddCppClass')
 
@@ -347,9 +350,12 @@ e.g AddCppClass class_name or
 
 def mainMethod(args):
     """ Main method of the AddCppClass Script"""
+    
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddCppClass script ')
     logger.info('#')
+
+    exit_code = Exit.Code["OK"]
 
     elements_dep_list = args.elements_dependency
     library_dep_list = args.external_dependency
@@ -381,6 +387,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+    return exit_code

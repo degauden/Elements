@@ -29,8 +29,9 @@ import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeListsMacros as pclm
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Exit
 
 logger = log.getLogger('AddCppProgram')
 
@@ -170,7 +171,7 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list, lib
 
 ################################################################################
 
-def makeChecks(current_dir, program_name, answer_yes=False):
+def makeChecks(current_dir, program_name):
     """
     Make some checks
     """
@@ -224,10 +225,11 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddCppProgram script')
     logger.info('#')
 
+    exit_code = Exit.Code["OK"]
+
     program_name = args.program_name
     module_list = args.module_dependency
     library_list = args.library_dependency
-    answer_yes = args.yes
 
     try:
         # Default is the current directory
@@ -238,7 +240,7 @@ def mainMethod(args):
         # We absolutely need a Elements cmake file
         module_name = epcr.getElementsModuleName(current_dir)
         # make some checks
-        makeChecks(current_dir, program_name, answer_yes)
+        makeChecks(current_dir, program_name)
 
         # Create CPP program
         createCppProgram(current_dir, module_name, program_name, module_list, library_list)
@@ -256,6 +258,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+    return exit_code

@@ -153,7 +153,7 @@ void ProgramManager::checkCommandLineOptions(
         exit(static_cast<int>(ExitCode::USAGE));
       } else {
         auto conf_file = path { o.value[0] };
-        if (!boost::filesystem::exists(conf_file)) {
+        if (not boost::filesystem::exists(conf_file)) {
           cerr << "The " << conf_file
                << " configuration file doesn't exist!" << endl;
           exit(static_cast<int>(ExitCode::CONFIG));
@@ -542,7 +542,7 @@ void ProgramManager::onTerminate() noexcept {
     } catch (...) {
       log.fatal() << "# ";
       log.fatal() << "# An exception of unknown type occurred, "
-                     << "i.e., an exception not deriving from std::exception ";
+                  << "i.e., an exception not deriving from std::exception ";
       log.fatal() << "# ";
     }
 

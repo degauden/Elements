@@ -26,11 +26,13 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import argparse
 import os
+
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Exit
 
 try:
     from builtins import input
@@ -178,7 +180,7 @@ def checkDependencyListValid(str_list):
 ################################################################################
 
 
-def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
+def makeChecks(project_dir, module_name, dependency_list):
     """
     Make some checks
     """
@@ -225,6 +227,8 @@ def mainMethod(args):
     """
     Main
     """
+    
+    exit_code = Exit.Code["OK"]
 
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddModule script ')
@@ -240,7 +244,7 @@ def mainMethod(args):
     logger.info('# Current directory : %s', project_dir)
 
     try:
-        makeChecks(project_dir, module_name, dependency_list, answer_yes)
+        makeChecks(project_dir, module_name, dependency_list)
         createModule(project_dir, module_name, dependency_list, standalone, answer_yes)
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
         # Print all files created
@@ -250,6 +254,9 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+
+    return exit_code

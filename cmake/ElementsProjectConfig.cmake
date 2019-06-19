@@ -383,6 +383,8 @@ macro(elements_project project version)
   # get the python test framework
 
   if(PYTHONINTERP_FOUND)
+    set(PYFRMK_TEST)
+    set(PYFRMK_NAME)
     if(USE_PYTHON_NOSE)
       find_package(Nose QUIET)
       if(NOSE_FOUND)
@@ -414,7 +416,9 @@ macro(elements_project project version)
         endif()
       endif()
     endif()
-    set(PYFRMK_TEST ${PYTHON_EXECUTABLE} ${PYFRMK_TEST})
+    if(PYFRMK_TEST)
+      set(PYFRMK_TEST ${PYTHON_EXECUTABLE} ${PYFRMK_TEST})
+    endif()
   endif()
 
   # compute the VCS version
@@ -799,12 +803,12 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
       find_file(ctestxml2html_skel
                 NAMES HTMLTestReportSkel
                 PATHS ${CMAKE_MODULE_PATH}
-                PATH_SUFFIXES auxdir
+                PATH_SUFFIXES auxdir/test auxdir
                 NO_DEFAULT_PATH)
       add_custom_target(HTMLSummary)
       add_custom_command(TARGET HTMLSummary
                          COMMAND ${env_cmd} --xml ${env_xml}
-                                 ${ctestxml2html_cmd} -s ${ctestxml2html_skel} -o Testing/html)
+                                 ${ctestxml2html_cmd} -q -s ${ctestxml2html_skel} -o Testing/html)
     else()
       add_custom_target(HTMLSummary)
       add_custom_command(TARGET HTMLSummary
@@ -913,6 +917,15 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     set(CPACK_CMAKE_PREFIX_PATH_LINE "export CMAKE_PREFIX_PATH=\$PWD/cmake:/usr/share/EuclidEnv/cmake")
   else()
     set(CPACK_CMAKE_PREFIX_PATH_LINE "#")  
+  endif()
+
+  if(USE_RPM_CMAKE_MACRO)
+    set(CPACK_CMAKE_MACRO "%cmake")
+  else()
+    set(CPACK_CMAKE_MACRO "%__cmake")
+    if(SQUEEZED_INSTALL)
+      set(CPACK_EXTRA_CMAKEFLAGS "${CPACK_EXTRA_CMAKEFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
+    endif()
   endif()
 
 
@@ -1168,7 +1181,7 @@ ${_do}")
 
     add_custom_target(targz
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_TARGZ_DIR}
-                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}.tar.gz --exclude "${BUILD_PREFIX_NAME}.*" --exclude "./${BUILD_SUBDIR}" --exclude "./.*" --exclude "./InstallArea" --transform "s/./${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}/"  .
+                      COMMAND ${TAR_EXECUTABLE} zcf ${PROJECT_TARGZ_DIR}/${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}.tar.gz --exclude "${BUILD_PREFIX_NAME}.*" --exclude "./${BUILD_SUBDIR}" --exclude "./.*" --exclude "./InstallArea" --exclude "__pycache__" --exclude "*.py[co]" --transform "s/./${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}/"  .
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                       COMMENT "Generating The Source TarBall ${PROJECT_TARGZ_DIR}/${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}.tar.gz" VERBATIM
     )
@@ -1251,12 +1264,14 @@ ${MAIN_PROJECT_CHANGELOG}
       if(NOT SQUEEZED_INSTALL)
         find_file_to_configure(Elements.spec.in
                                FILETYPE "RPM SPEC"
+                               PATH_SUFFIXES "auxdir/package"
                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
                                OUTPUTNAME "${project}.spec"
                                PATHS ${CMAKE_MODULE_PATH})
       else()
         find_file_to_configure(Elements-squeeze.spec.in
                                FILETYPE "RPM SPEC"
+                               PATH_SUFFIXES "auxdir/package"
                                OUTPUTDIR "${PROJECT_RPM_TOPDIR}/SPECS"
                                OUTPUTNAME "${project}.spec"
                                PATHS ${CMAKE_MODULE_PATH})
@@ -2701,11 +2716,21 @@ function(elements_add_swig_binding binding)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-missing-field-initializers")
   endif()
+
   if(CXX_HAS_CAST_FUNCTION_TYPE)
     set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
   endif() 
 
+  if(CXX_HAS_NO_SELF_ASSIGN)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-self-assign")    
+  endif()
+
+  if(CXX_HAS_NO_PARENTHESES_EQUALITY)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-parentheses-equality")
+  endif()
 
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
@@ -2895,6 +2920,32 @@ function(elements_add_cython_module)
     set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-missing-field-initializers")
   endif()
+
+  if(CXX_HAS_UNUSED_FUNCTION)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-unused-function")
+  endif()
+
+  if(CXX_HAS_NO_UNNEEDED_INTERNAL_DECLARATION)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-unneeded-internal-declaration")
+  endif()
+
+  if(CXX_HAS_NO_CXX17_EXTENSIONS)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-c++17-extensions")  
+  endif()
+
+  if(CXX_HAS_NO_PARENTHESES_EQUALITY)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-parentheses-equality")  
+  endif()
+
+  if(CXX_HAS_NO_CONSTANT_LOGICAL_OPERAND)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-constant-logical-operand")    
+  endif()
+
 
   elements_add_python_module(${mod_name}
                              PLAIN_MODULE

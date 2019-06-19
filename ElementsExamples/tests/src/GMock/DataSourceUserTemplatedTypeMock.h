@@ -16,11 +16,11 @@
  *
  */
 
-
 #ifndef ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEUSERTEMPLATEDTYPEMOCK_H_
 #define ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEUSERTEMPLATEDTYPEMOCK_H_
 
-#include "ElementsKernel/EnableGMock.h"
+#include <gmock/gmock.h>
+#include <cstddef>
 
 namespace Elements {
 namespace Examples {
@@ -46,4 +46,3 @@ public:
 }  // namespace Elements
 
 #endif  // ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEUSERTEMPLATEDTYPEMOCK_H_
-

@@ -28,9 +28,10 @@ import os
 import argparse
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Exit
 
 logger = log.getLogger('AddPythonModule')
 
@@ -157,7 +158,7 @@ def createPythonModule(current_dir, module_name, python_module_name):
 
 ################################################################################
 
-def makeChecks(module_file_path, python_module_name, answer_yes=False):
+def makeChecks(module_file_path, python_module_name):
     """
     Make some checks
     """
@@ -199,8 +200,9 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddPythonModule script')
     logger.info('#')
 
+    exit_code = Exit.Code["OK"]
+
     python_module_name = args.module_name
-    answer_yes = args.yes
 
     try:
         # Default is the current directory
@@ -214,7 +216,7 @@ def mainMethod(args):
 
         module_file_path = os.path.join(current_dir, 'python', module_name,
                                         python_module_name + '.py')
-        makeChecks(module_file_path, python_module_name, answer_yes)
+        makeChecks(module_file_path, python_module_name)
 
         # Create module
         createPythonModule(current_dir, module_name, python_module_name)
@@ -230,6 +232,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+    return exit_code

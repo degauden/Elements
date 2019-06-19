@@ -4,9 +4,11 @@ Created on Jul 12, 2011
 @author: mplajner
 '''
 import unittest
-import os
+import os, sys
 import shutil
 from tempfile import mkdtemp
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from EnvConfig import Variable  # @UnresolvedImport
 from EnvConfig import Control  # @UnresolvedImport

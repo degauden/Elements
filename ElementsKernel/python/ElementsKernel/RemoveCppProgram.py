@@ -29,6 +29,7 @@ import os
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
+from ElementsKernel import Exit
 
 try:
     from builtins import input
@@ -115,6 +116,8 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the RemoveCppProgram script ')
     logger.info('#')
 
+    exit_code = Exit.Code["OK"]
+
     program_name = args.program_name
 
     # Default is the current directory
@@ -154,6 +157,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+    return exit_code

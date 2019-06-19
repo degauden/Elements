@@ -28,9 +28,10 @@ import argparse
 import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Exit
 
 logger = log.getLogger('AddScript')
 
@@ -124,7 +125,7 @@ def createScript(current_dir, module_name, program_name):
 
 ################################################################################
 
-def makeChecks(program_file_path, program_name, answer_yes=False):
+def makeChecks(program_file_path, program_name):
     """
     Make some checks
     """
@@ -164,8 +165,9 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddScript script')
     logger.info('#')
 
+    exit_code = Exit.Code["OK"]
+
     program_name = args.program_name
-    answer_yes = args.yes
 
     # Default is the current directory
     current_dir = os.getcwd()
@@ -179,7 +181,7 @@ def mainMethod(args):
         # Check name in the Element Naming Database
         program_file_path = os.path.join(current_dir, 'scripts', program_name)
         # Make checks
-        makeChecks(program_file_path, program_name, answer_yes)
+        makeChecks(program_file_path, program_name)
 
         createScript(current_dir, module_name, program_name)
         logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
@@ -194,6 +196,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+    return exit_code

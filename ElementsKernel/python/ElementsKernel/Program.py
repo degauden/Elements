@@ -8,6 +8,7 @@ import ElementsKernel.Logging as log
 from ElementsKernel.Path import VARIABLE, SUFFIXES, joinPath, multiPathAppend
 from ElementsKernel.Environment import Environment
 from ElementsKernel.Configuration import getConfigurationPath, getConfigurationLocations
+from ElementsKernel import Exit
 
 def str_to_bool(s):
     """Convert string to bool (in argparse context)."""
@@ -108,7 +109,7 @@ class Program(object):
                     # the parser, fail with an error messsage
                     if not [act for act in arg_parser._actions if ('--' + key) in act.option_strings]:
                         self._logger.error('Unknown option "{}" in configuration file {}'.format(key, config_file))
-                        exit(1)
+                        exit(Exit.Code["NOT_OK"])
                     value = value.strip()
                     if '#' in value:
                         value = value[:value.find('#')]
@@ -261,7 +262,7 @@ class Program(object):
 
         args, _ = self._setup()
 
-        exit_code = 1
+        exit_code = Exit.Code["NOT_OK"]
         try:
             exit_code = self._app_module.mainMethod(args)
         except:

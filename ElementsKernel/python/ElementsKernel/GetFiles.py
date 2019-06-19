@@ -32,7 +32,7 @@ import os
 import argparse
 import ElementsKernel.Logging as log
 
-from ElementsKernel import Path
+from ElementsKernel import Path, Exit
 
 
 DEFAULT_TYPE = "executable"
@@ -99,12 +99,14 @@ def mainMethod(args):
 
     logger = log.getLogger('GetElementsFiles')
 
+    exit_code = Exit.Code["OK"]
+
     stem = args.file_stem
     file_type = args.type
 
     if stem.find(os.path.sep) != -1 and (not Path.HAS_SUBLEVELS[file_type]):
         logger.error("The search stem cannot contain \"%s\" for the %s type", os.path.sep, file_type)
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
 
     locations = Path.getLocations(file_type, exist_only=True, with_defaults=args.with_defaults)
 
@@ -124,5 +126,5 @@ def mainMethod(args):
     for f in found_list:
         print(f)
 
-
+    return exit_code
 
