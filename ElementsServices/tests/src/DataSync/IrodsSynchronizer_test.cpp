@@ -16,34 +16,45 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/**
- * @file tests/src/IrodsSynchronizer_test.cpp
- * @date 04/13/18
- * @author user
- */
+#include <string>
+#include <vector>
 
 #include <boost/test/unit_test.hpp>
-#include <exception>
 
-#include "ElementsServices/DataSync/ConnectionConfiguration.h"
-#include "ElementsServices/DataSync/DependencyConfiguration.h"
+#include "ElementsServices/DataSync/DataSyncUtils.h"
 #include "ElementsServices/DataSync/IrodsSynchronizer.h"
 
 #include "fixtures/ConfigFilesFixture.h"
 
+using std::string;
+
 namespace DataSync = ElementsServices::DataSync;
+
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_SUITE(IrodsSynchronizer_test, WorkspaceFixture)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(irodsIsNotInstalled_test) {
-  const auto connection = DataSync::ConnectionConfiguration(theIrodsFrConfig());
-  const auto dependency = DataSync::DependencyConfiguration("", "", theDependencyConfig());
-  BOOST_CHECK_THROW(
-      DataSync::IrodsSynchronizer(connection, dependency),
-      std::exception);
+DataSync::IrodsSynchronizer createTestSynchronizer() {
+  DataSync::ConnectionConfiguration connection(theIrodsFrConfig());
+  auto distant_root = connection.distantRoot;
+  auto local_root = connection.localRoot;
+  DataSync::DependencyConfiguration dependencies(
+      distant_root, local_root, theDependencyConfig());
+  return DataSync::IrodsSynchronizer(connection, dependencies);
+}
+
+BOOST_AUTO_TEST_CASE(webdavGetCmd_test) {
+  string distant_file = "src/distant_file.fits";
+  string local_file = "dst/local_file.fits";
+  auto synchronizer = createTestSynchronizer();
+  string cmd = synchronizer.createDownloadCommand(distant_file, local_file);
+  std::vector<string> chunks = {
+      "irsync ",
+      "i:", distant_file,
+      local_file };
+  BOOST_CHECK(DataSync::containsInThisOrder(cmd, chunks));
 }
 
 // @TODO test IrodsSynchronizer

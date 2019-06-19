@@ -31,14 +31,6 @@ from fixtures.TestDataSynchronizer import TestDataSynchronizer
 
 class TestIrodsSynchronizer(TestDataSynchronizer):
 
-    def test_irodsIsNotInstall(self):
-        if IrodsSynchronizer.irodsIsInstalled():
-            return
-        connection = ConnectionConfiguration(theIrodsFrConfig())
-        dependency = DependencyConfiguration('', '', theDependencyConfig())
-        with py.test.raises(Exception):
-            IrodsSynchronizer.IrodsSynchronizer(connection, dependency)
-
     # TODO test_irodsGetCmd
 
     def test_irodsFixture(self):

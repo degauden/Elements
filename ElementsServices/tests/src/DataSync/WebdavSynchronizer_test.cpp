@@ -26,8 +26,6 @@
 
 #include "fixtures/ConfigFilesFixture.h"
 
-// using namespace ElementsServices::DataSync;
-
 using std::string;
 
 namespace DataSync = ElementsServices::DataSync;

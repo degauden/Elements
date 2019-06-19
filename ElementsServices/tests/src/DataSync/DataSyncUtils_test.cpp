@@ -85,9 +85,11 @@ BOOST_AUTO_TEST_CASE(containsInThisOrder_test) {
   const vector<string> empty;
   const vector<string> unordered = { "0", "Two", "one", "THREE" };
   const vector<string> random = { "R", "and", "OM" };
+  const vector<string> wordcut = { "0 one T", "wo THREE" };
   BOOST_CHECK(containsInThisOrder(input, perfect));
   BOOST_CHECK(containsInThisOrder(input, partial));
   BOOST_CHECK(containsInThisOrder(input, empty));
+  BOOST_CHECK(containsInThisOrder(input, wordcut));
   BOOST_CHECK(not containsInThisOrder(input, unordered));
   BOOST_CHECK(not containsInThisOrder(input, random));
 }
