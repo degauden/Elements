@@ -146,7 +146,7 @@ template<class charT>
 void ProgramManager::checkCommandLineOptions(
         const boost::program_options::basic_parsed_options<charT>& cmd_parsed_options) {
 
-  for (auto o : cmd_parsed_options.options) {
+  for (const auto& o : cmd_parsed_options.options) {
     if (o.string_key == "config-file") {
       if (o.value.size() != 1) {
         cerr << "Wrong usage of the --config-file option" << endl;

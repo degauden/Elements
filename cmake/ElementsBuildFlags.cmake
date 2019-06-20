@@ -254,6 +254,10 @@ option(TEST_HTML_REPORT
        "Enable the conversion of the CTest XML reports into HTML"
        ON)
 
+option(WITH_DATASYNC_TEST
+       "Enable the test which require a specific DataSync connection"
+       OFF)
+
 option(USE_ENV_FLAGS
        "Use the environment CFLAGS, CXXFLAGS and LDFLAGS"
        OFF)
@@ -261,8 +265,6 @@ option(USE_ENV_FLAGS
 option(USE_RPM_CMAKE_MACRO
        "Use the system RPM macro for the rpm command"
        OFF)
-
-
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)

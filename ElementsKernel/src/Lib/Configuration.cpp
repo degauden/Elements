@@ -37,13 +37,11 @@
                                           // for Path::getLocationsFromEnv
 using std::string;
 using boost::filesystem::path;
-using Elements::Path::Type;
-using Elements::Path::VARIABLE;
 
 namespace Elements {
 
 string getConfigurationVariableName() {
-  return VARIABLE.at(Type::configuration);
+  return Path::VARIABLE.at(Path::Type::configuration);
 }
 
 // Instantiation of the most expected types
@@ -52,7 +50,7 @@ template path getConfigurationPath(const string& file_name, bool raise_exception
 
 std::vector<path> getConfigurationLocations(bool exist_only) {
 
-  auto location_list = Path::getLocationsFromEnv(VARIABLE.at(Type::configuration), exist_only);
+  auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::configuration), exist_only);
 
   // the search is extended to the default system /usr/share/conf
   location_list.push_back(path(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");

@@ -3311,6 +3311,8 @@ endfunction()
 #                     NAME ""
 #                     PATTERN *.py
 #                     TIMEOUT ""
+#                     EXCLUDE ""
+#                     ENVIRONMENT ""
 #                     )
 #
 # Add the python files in the directory as test. It collects the python test files
@@ -3318,7 +3320,7 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(add_python_test_dir)
 
-  CMAKE_PARSE_ARGUMENTS(PYTEST_ARG "" "PREFIX;PATTERN;NAME;TIMEOUT" "" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(PYTEST_ARG "" "PREFIX;PATTERN;NAME;TIMEOUT" "EXCLUDE;ENVIRONMENT" ${ARGN})
 
   if(NOT PYTEST_ARG_UNPARSED_ARGUMENTS)
       set(PYTEST_ARG_UNPARSED_ARGUMENTS "tests/python")
@@ -3350,6 +3352,12 @@ function(add_python_test_dir)
     set(pysrcs ${pysrcs} ${tmp_pysrcs})
   endforeach()
 
+  if(PYTEST_ARG_EXCLUDE)
+    foreach(i_arg_ex ${PYTEST_ARG_EXCLUDE})
+      list(REMOVE_ITEM pysrcs ${CMAKE_CURRENT_SOURCE_DIR}/${i_arg_ex})
+    endforeach()
+  endif()
+
   elements_get_package_name(package)
 
   if(PYFRMK_TEST)
@@ -3359,7 +3367,8 @@ function(add_python_test_dir)
         set(PYFRMK_JUNIT_FILE_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.xml")
     endif()
     elements_add_test(${pytest_name}
-                      COMMAND ${PYFRMK_TEST} ${PYFRMK_JUNIT_FILE_OPT} ${PYFRMK_JUNIT_PREFIX_OPT} ${pysrcs})
+                      COMMAND ${PYFRMK_TEST} ${PYFRMK_JUNIT_FILE_OPT} ${PYFRMK_JUNIT_PREFIX_OPT} ${pysrcs}
+                      ENVIRONMENT ${PYTEST_ARG_ENVIRONMENT})
     set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest ${PYFRMK_NAME})
     if(PYTEST_ARG_TIMEOUT)
       set_property(TEST ${package}.${pytest_name} PROPERTY TIMEOUT ${PYTEST_ARG_TIMEOUT})
@@ -3369,7 +3378,8 @@ function(add_python_test_dir)
       foreach(pytestsubdir ${PYTEST_ARG_UNPARSED_ARGUMENTS})
         set(pytest_name "${pytest_name}:${pytestsubdir}")
         elements_add_test(${pytest_name}
-                          COMMAND ${PYTHON_EXECUTABLE} -m unittest discover -s ${CMAKE_CURRENT_SOURCE_DIR}/${pytestsubdir} -p "${PYTEST_ARG_PATTERN}" )
+                          COMMAND ${PYTHON_EXECUTABLE} -m unittest discover -s ${CMAKE_CURRENT_SOURCE_DIR}/${pytestsubdir} -p "${PYTEST_ARG_PATTERN}" 
+                          ENVIRONMENT ${PYTEST_ARG_ENVIRONMENT})
         set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest)
         if(PYTEST_ARG_TIMEOUT)
           set_property(TEST ${package}.${pytest_name} PROPERTY TIMEOUT ${PYTEST_ARG_TIMEOUT})
@@ -3407,7 +3417,7 @@ endfunction()
 #-------------------------------------------------------------------------------
 function(elements_install_python_modules)
 
-  CMAKE_PARSE_ARGUMENTS(INSTALL_PY_MOD "" "TEST_TIMEOUT" "" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(INSTALL_PY_MOD "" "TEST_TIMEOUT" "TEST_EXCLUDE;TEST_ENVIRONMENT" ${ARGN})
 
   if(NOT INSTALL_PY_MOD_UNPARSED_ARGUMENTS)
       set(INSTALL_PY_MOD_UNPARSED_ARGUMENTS "python")
@@ -3449,9 +3459,14 @@ function(elements_install_python_modules)
       set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
       if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/python)
         if(INSTALL_PY_MOD_TEST_TIMEOUT)
-          add_python_test_dir(tests/python TIMEOUT ${INSTALL_PY_MOD_TEST_TIMEOUT})
+          add_python_test_dir(tests/python 
+                              TIMEOUT ${INSTALL_PY_MOD_TEST_TIMEOUT} 
+                              EXCLUDE ${INSTALL_PY_MOD_TEST_EXCLUDE}
+                              ENVIRONMENT ${INSTALL_PY_MOD_TEST_ENVIRONMENT})
         else()
-          add_python_test_dir(tests/python)
+          add_python_test_dir(tests/python 
+                              EXCLUDE ${INSTALL_PY_MOD_TEST_EXCLUDE}
+                              ENVIRONMENT ${INSTALL_PY_MOD_TEST_ENVIRONMENT})
         endif()
       endif()
     else()
