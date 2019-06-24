@@ -76,7 +76,7 @@ class TestProgramTest(object):
                                                     arg_name,
                                                     expected):
 
-        test_program_script = 'PythonProgramExample'
+        test_program_script = 'PythonProgramExample --log-level=DEBUG'
 
         cmd = test_program_script
 
