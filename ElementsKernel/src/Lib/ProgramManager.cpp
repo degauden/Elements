@@ -53,6 +53,7 @@ using std::string;
 using std::move;
 using std::endl;
 using std::cerr;
+using log4cpp::Priority;
 
 using boost::filesystem::path;
 using boost::program_options::variables_map;
@@ -71,7 +72,8 @@ ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
                const string& parent_project_vcs_version,
                const string& parent_module_version,
                const string& parent_module_name,
-               const vector<string>& search_dirs):
+               const vector<string>& search_dirs,
+               const Priority::Value& elements_loglevel):
                m_program_ptr(move(program_ptr)),
                m_parent_project_version(move(parent_project_version)),
                m_parent_project_name(move(parent_project_name)),
@@ -79,7 +81,8 @@ ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
                m_parent_module_version(move(parent_module_version)),
                m_parent_module_name(move(parent_module_name)),
                m_search_dirs(move(search_dirs)),
-               m_env{} {
+               m_env{},
+               m_elements_loglevel(move(elements_loglevel)) {
 
 }
 
@@ -300,22 +303,22 @@ const variables_map ProgramManager::getProgramOptions(
 }
 
 void ProgramManager::logHeader(string program_name) const {
-  log.info() << "##########################################################";
-  log.info() << "##########################################################";
-  log.info() << "#";
-  log.info() << "#  C++ program:  " <<  program_name << " starts ";
-  log.info() << "#";
-  log.debug() << "# The Program Name: " << m_program_name.string();
-  log.debug() << "# The Program Path: " << m_program_path.string();
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "#");
+  log.log(m_elements_loglevel, "#  C++ program:  " + program_name + " starts ");
+  log.log(m_elements_loglevel, "#");
+  log.debug("# The Program Name: " + m_program_name.string());
+  log.debug("# The Program Path: " + m_program_path.string());
 }
 
 void ProgramManager::logFooter(string program_name) const {
-  log.info() << "##########################################################";
-  log.info() << "#";
-  log.info() << "#  C++ program:  " << program_name << " stops ";
-  log.info() << "#";
-  log.info() << "##########################################################";
-  log.info() << "##########################################################";
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "#");
+  log.log(m_elements_loglevel, "#  C++ program:  " + program_name + " stops ");
+  log.log(m_elements_loglevel, "#");
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "##########################################################");
 }
 
 
@@ -325,11 +328,11 @@ void ProgramManager::logAllOptions() const {
   using std::stringstream;
   using std::int64_t;
 
-  log.info() << "##########################################################";
-  log.info() << "#";
-  log.info() << "# List of all program options";
-  log.info() << "# ---------------------------";
-  log.info() << "#";
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "#");
+  log.log(m_elements_loglevel, "# List of all program options");
+  log.log(m_elements_loglevel, "# ---------------------------");
+  log.log(m_elements_loglevel, "#");
 
   // Build a log message
   stringstream log_message {};
@@ -386,10 +389,10 @@ void ProgramManager::logAllOptions() const {
           << endl;
     }
     // write the log message
-    log.info(log_message.str());
+    log.log(m_elements_loglevel, log_message.str());
     log_message.str("");
   }
-  log.info("#");
+  log.log(m_elements_loglevel, "#");
 
 }
 

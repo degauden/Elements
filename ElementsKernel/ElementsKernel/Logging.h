@@ -28,6 +28,7 @@
 
 #include <string>
 #include <map>
+#include <utility>
 
 #include <boost/filesystem.hpp>
 #include <log4cpp/Category.hh>
@@ -270,6 +271,25 @@ public:
    */
   LogMessageStream fatal() {
     return LogMessageStream {m_log4cppLogger, &log4cpp::Category::fatal};
+  }
+
+
+  /**
+   * Logs a message.
+   * @param logMessage The message to log
+   */
+  void log(log4cpp::Priority::Value level, const std::string& logMessage) {
+    m_log4cppLogger.log(level, logMessage);
+  }
+
+  /**
+   * Logs an log message using a level and format specifiers.
+   * @param stringFormat The message containing the format specifiers
+   * @param args The values to replace the format specifiers with
+   */
+  template<typename ...Args>
+  void log(log4cpp::Priority::Value level, const char *stringFormat, Args &&...args) {
+    m_log4cppLogger.log(level, stringFormat, std::forward<Args>(args)...);
   }
 
 private:
