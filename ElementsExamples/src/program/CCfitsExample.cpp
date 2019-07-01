@@ -26,6 +26,7 @@
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
+#include "ElementsKernel/Auxiliary.h"
 
 using std::string;
 using std::map;
@@ -50,6 +51,16 @@ public:
     log.info() << "This is the test lower string: " << test_lower_string;
 
     log.info() << "done with test program! ";
+
+    auto fits_file_path = getAuxiliaryPath("ElementsExamples/phz_cat.fits");
+    CCfits::FITS fits_file(fits_file_path.string());
+
+
+    CCfits::ExtHDU& extension = fits_file.extension(1);
+
+
+    log.info() << "Extension content: " << extension.getComments();
+
 
     return ExitCode::OK;
 
