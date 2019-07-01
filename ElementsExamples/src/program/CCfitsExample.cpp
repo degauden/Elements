@@ -53,13 +53,14 @@ public:
     log.info() << "done with test program! ";
 
     auto fits_file_path = getAuxiliaryPath("ElementsExamples/phz_cat.fits");
+    log.info() << "Opening the file " << fits_file_path.string();
     CCfits::FITS fits_file(fits_file_path.string());
 
 
     CCfits::ExtHDU& extension = fits_file.extension(1);
 
 
-    log.info() << "Extension content: " << extension.getComments();
+    log.info() << "Extension comments: " << extension.getComments();
 
 
     return ExitCode::OK;
