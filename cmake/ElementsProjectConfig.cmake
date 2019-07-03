@@ -1036,7 +1036,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
         endif()
       endif()
     else()
-      if(SQUEEZED_INSTALL)
+      if(SQUEEZED_INSTALL AND NOT ("${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3))
         set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)      
       endif()
     endif()
