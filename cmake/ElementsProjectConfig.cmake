@@ -506,7 +506,7 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
       if(SQUEEZED_INSTALL AND "${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3)
         set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyo)
         set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_VERSION.pyc)      
-      end()
+      endif()
     endif()
   endif()
 
@@ -530,7 +530,7 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_P
       if(SQUEEZED_INSTALL AND "${PYTHON_EXPLICIT_VERSION}" STREQUAL "" OR PYTHON_EXPLICIT_VERSION VERSION_LESS 3)
         set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.pyo)
         set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.pyc)      
-      endif()    
+      endif()
     endif()
   endif()
 
