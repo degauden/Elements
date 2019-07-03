@@ -1035,6 +1035,10 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
           set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)
         endif()
       endif()
+    else()
+      if(SQUEEZED_INSTALL)
+        set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS __pycache__)      
+      endif()
     endif()
 
     get_property(regular_python_objects GLOBAL PROPERTY REGULAR_PYTHON_OBJECTS)
