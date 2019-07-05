@@ -289,4 +289,5 @@ elements_add_test(OptionPrecedence COMMAND OptionPrecedence_test)
 
 
 elements_install_conf_files()
+elements_install_aux_files()
 

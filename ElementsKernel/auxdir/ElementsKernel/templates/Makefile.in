@@ -58,5 +58,6 @@ else
   ELEMENTS_MAKE_LIB_FILE := $(firstword $(ELEMENTS_MAKE_LIB_LIST))
 endif
 
+$(info Using the $(ELEMENTS_MAKE_LIB_FILE) make library)
 include $(ELEMENTS_MAKE_LIB_FILE)
 
