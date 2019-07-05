@@ -38,8 +38,8 @@
 #include "ThisProject.h"
 #include "ThisElementsModule.h"
 
-#ifndef ELEMENTS_DEFAULT_LOG_LEVEL
-#define ELEMENTS_DEFAULT_LOG_LEVEL DEBUG
+#ifndef ELEMENTS_DEFAULT_LOGLEVEL
+#  define ELEMENTS_DEFAULT_LOGLEVEL DEBUG
 #endif
 
 /** @def CREATE_MANAGER_WITH_ARGS(ELEMENTS_PROGRAM, MANAGER)
@@ -55,7 +55,7 @@
                                     THIS_PROJECT_VCS_VERSION, \
                                     THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
                                     THIS_PROJECT_SEARCH_DIRS, \
-                                    log4cpp::Priority::ELEMENTS_DEFAULT_LOG_LEVEL}
+                                    log4cpp::Priority::ELEMENTS_DEFAULT_LOGLEVEL}
 
 /** @def CREATE_MANAGER(ELEMENTS_PROGRAM_NAME, MANAGER)
  * Macro that declares a program manager with all the needed arguments. It is
