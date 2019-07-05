@@ -70,8 +70,8 @@ class TestCppProgramTest(object):
                                                     expected):
 
         test_program_script = 'CppProgramExample'
-
-        cmd = test_program_script
+        
+        cmd = '{} --log-level=DEBUG'.format(test_program_script)
 
         if cmd_line_conf is not None:
             cmd_line_conf_fpath = getAuxiliaryPath("ElementsExamples/tests/conf/%s.conf" % test_program_script)

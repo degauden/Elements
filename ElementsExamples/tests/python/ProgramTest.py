@@ -77,9 +77,9 @@ class TestProgramTest(object):
                                                     arg_name,
                                                     expected):
 
-        test_program_script = 'PythonProgramExample --log-level=DEBUG'
+        test_program_script = 'PythonProgramExample'
 
-        cmd = test_program_script
+        cmd = '{} --log-level=DEBUG'.format(test_program_script)
 
         if cmd_line_conf is not None:
             cmd_line_conf_fpath = getAuxiliaryPath("ElementsExamples/tests/conf/%s.conf" % test_program_script)
