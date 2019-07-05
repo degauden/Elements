@@ -276,6 +276,7 @@ public:
 
   /**
    * Logs a message.
+   * @param level The logging level of the message
    * @param logMessage The message to log
    */
   void log(log4cpp::Priority::Value level, const std::string& logMessage) {
@@ -284,6 +285,7 @@ public:
 
   /**
    * Logs an log message using a level and format specifiers.
+   * @param level The logging level of the message
    * @param stringFormat The message containing the format specifiers
    * @param args The values to replace the format specifiers with
    */
