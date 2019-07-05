@@ -28,7 +28,7 @@
 
 #include <string>
 #include <map>
-#include <utility>
+#include <utility>                  // for forward
 
 #include <boost/filesystem.hpp>
 #include <log4cpp/Category.hh>
