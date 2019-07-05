@@ -27,7 +27,7 @@ parser.add_argument('--elements-module-version',
 parser.add_argument('--python-explicit-version', default="",
                     help='the version of python used in the shebang line')
 
-parser.add_argument('--elements-loglevel', default="DEBUG",
+parser.add_argument('--elements-default-loglevel', default="DEBUG",
                     help='default log level for the Elements framework')
 
 args = parser.parse_args()
@@ -99,7 +99,7 @@ exit(p.runProgram())
        'Mod_name' : args.elements_module_name,
        'Mod_version' : args.elements_module_version,
        'Python_version': args.python_explicit_version,
-       'LogLevel': args.elements_loglevel
+       'LogLevel': args.elements_default_loglevel
       }
 
 filename = os.path.join(args.outdir, args.execname)
