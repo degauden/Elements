@@ -70,7 +70,7 @@ class TestCppProgramTest(object):
                                                     expected):
 
         test_program_script = 'CppProgramExample'
-        
+
         cmd = '{} --log-level=DEBUG'.format(test_program_script)
 
         if cmd_line_conf is not None:
