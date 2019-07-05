@@ -29,6 +29,8 @@ import shlex
 import unittest
 import pytest
 
+from ElementsKernel.Auxiliary import getAuxiliaryPath
+
 class TestCppProgramTest(object):
 
     @pytest.mark.parametrize(
@@ -72,10 +74,7 @@ class TestCppProgramTest(object):
         cmd = test_program_script
 
         if cmd_line_conf is not None:
-            cmd_line_conf_fpath = os.path.join(
-                os.environ['ELEMENTSEXAMPLESROOT'], 'tests', 'data', 'conf',
-                test_program_script + '.conf'
-            )
+            cmd_line_conf_fpath = getAuxiliaryPath("ElementsExamples/tests/conf/%s.conf" % test_program_script)
             cmd = '{} --config-file={}'.format(cmd, cmd_line_conf_fpath)
 
         if cmd_line_arg is not None:
