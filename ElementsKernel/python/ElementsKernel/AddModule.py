@@ -227,7 +227,7 @@ def mainMethod(args):
     """
     Main
     """
-    
+
     exit_code = Exit.Code["OK"]
 
     logger.info('#')

@@ -38,4 +38,3 @@ std::shared_ptr<DataSynchronizer> createSynchronizer(
 
 }  // namespace DataSync
 }  // namespace ElementsServices
-

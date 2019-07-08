@@ -350,7 +350,7 @@ e.g AddCppClass class_name or
 
 def mainMethod(args):
     """ Main method of the AddCppClass Script"""
-    
+
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddCppClass script ')
     logger.info('#')
