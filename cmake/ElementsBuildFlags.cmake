@@ -266,6 +266,16 @@ option(USE_RPM_CMAKE_MACRO
        "Use the system RPM macro for the rpm command"
        OFF)
 
+if(NOT ELEMENTS_DEFAULT_LOGLEVEL)
+  if(USE_LOCAL_INSTALLAREA)
+    set(ELEMENTS_DEFAULT_LOGLEVEL "INFO" CACHE STRING "Set the default loglevel for the framework messages" FORCE)
+  else()
+    set(ELEMENTS_DEFAULT_LOGLEVEL "DEBUG" CACHE STRING "Set the default loglevel for the framework messages" FORCE)  
+  endif()
+endif()
+add_definitions(-DELEMENTS_DEFAULT_LOGLEVEL=${ELEMENTS_DEFAULT_LOGLEVEL})
+
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   #message(STATUS "Setting cached build flags")

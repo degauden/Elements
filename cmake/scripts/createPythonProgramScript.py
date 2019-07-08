@@ -27,6 +27,8 @@ parser.add_argument('--elements-module-version',
 parser.add_argument('--python-explicit-version', default="",
                     help='the version of python used in the shebang line')
 
+parser.add_argument('--elements-default-loglevel', default="DEBUG",
+                    help='default log level for the Elements framework')
 
 args = parser.parse_args()
 
@@ -43,6 +45,7 @@ template = """\
 is_installed = False
 
 import sys, os
+import logging
 
 # This function is embedded to allow standalone execution.
 def _updateSysPath(extra_list):
@@ -86,7 +89,8 @@ p = Program('%(MODULE_NAME)s',
              %(proj)s_VERSION_STRING, %(proj)s_NAME,
              %(proj)s_VCS_VERSION,
              ELEMENTS_MODULE_NAME, ELEMENTS_MODULE_VERSION,
-             %(proj)s_SEARCH_DIRS, os.path.realpath(__file__))
+             %(proj)s_SEARCH_DIRS, os.path.realpath(__file__),
+             logging.%(LogLevel)s)
 
 exit(p.runProgram())
 """ % {'MODULE_NAME' : args.module,
@@ -94,7 +98,8 @@ exit(p.runProgram())
        'Proj' : args.project_name,
        'Mod_name' : args.elements_module_name,
        'Mod_version' : args.elements_module_version,
-       'Python_version': args.python_explicit_version
+       'Python_version': args.python_explicit_version,
+       'LogLevel': args.elements_default_loglevel
       }
 
 filename = os.path.join(args.outdir, args.execname)

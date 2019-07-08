@@ -5,6 +5,7 @@ import os
 import sys
 import re
 import ElementsKernel.Logging as log
+import logging
 from ElementsKernel.Path import VARIABLE, SUFFIXES, joinPath, multiPathAppend
 from ElementsKernel.Environment import Environment
 from ElementsKernel.Configuration import getConfigurationPath, getConfigurationLocations
@@ -22,9 +23,11 @@ class Program(object):
                  parent_project_version=None, parent_project_name=None,
                  parent_project_vcs_version=None,
                  elements_module_name=None, elements_module_version=None,
-                 search_dirs=None, original_path=""):
+                 search_dirs=None, original_path="",
+                 elements_loglevel=logging.DEBUG):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
+        self._elements_loglevel = elements_loglevel
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
         self._parent_project_vcs_version = parent_project_vcs_version
@@ -165,42 +168,46 @@ class Program(object):
         return all_options, variable_to_option_name
 
     def _logHeader(self):
-        self._logger.info(
-            "##########################################################")
-        self._logger.info(
-            "##########################################################")
-        self._logger.info("#")
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
+                         "##########################################################")
+        self._logger.log(self._elements_loglevel,
+                         "##########################################################")
+        self._logger.log(self._elements_loglevel,
+                         "#")
+        self._logger.log(self._elements_loglevel,
             "#    Python program: %s starts ", self._app_module.__name__)
-        self._logger.info("#")
+        self._logger.log(self._elements_loglevel,
+                         "#")
         self._logger.debug("# Program Name: %s", self._program_name)
         self._logger.debug("# Program Path: %s", self._program_path)
         self._logger.debug("#")
 
     def _logFooter(self):
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
             "##########################################################")
-        self._logger.info("#")
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
+                         "#")
+        self._logger.log(self._elements_loglevel,
             "#    Python program: %s stops ", self._app_module.__name__)
-        self._logger.info("#")
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
+                         "#")
+        self._logger.log(self._elements_loglevel,
             "##########################################################")
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
             "##########################################################")
-
 
     def _logAllOptions(self, args, names):
 
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
             "##########################################################")
-        self._logger.info("#")
-        self._logger.info("# List of all program options")
-        self._logger.info("# ---------------------------")
-        self._logger.info("#")
+        self._logger.log(self._elements_loglevel, "#")
+        self._logger.log(self._elements_loglevel, "# List of all program options")
+        self._logger.log(self._elements_loglevel, "# ---------------------------")
+        self._logger.log(self._elements_loglevel, "#")
         for name, value in [opt for opt in vars(args).items()]:
-            self._logger.info(names[name] + ' = ' + str(value))
-        self._logger.info("#")
+            self._logger.log(self._elements_loglevel, names[name] + ' = ' + str(value))
+        self._logger.log(self._elements_loglevel, "#")
+
 
     def _logTheEnvironment(self):
         self._logger.debug("##########################################################")

@@ -28,6 +28,7 @@
 
 #include <exception>                               // for set_terminate
 #include <memory>                                  // for unique_ptr
+#include <log4cpp/Priority.hh>
 
 #include "ElementsKernel/Exit.h"                   // for ExitCode
 #include "ElementsKernel/ProgramManager.h"         // for ProgramManager
@@ -36,6 +37,10 @@
 
 #include "ThisProject.h"
 #include "ThisElementsModule.h"
+
+#ifndef ELEMENTS_DEFAULT_LOGLEVEL
+#  define ELEMENTS_DEFAULT_LOGLEVEL DEBUG
+#endif
 
 /** @def CREATE_MANAGER_WITH_ARGS(ELEMENTS_PROGRAM, MANAGER)
  * Macro that declares a program manager with custom constructor arguments. It is
@@ -49,7 +54,8 @@
                                     THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
                                     THIS_PROJECT_VCS_VERSION, \
                                     THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
-                                    THIS_PROJECT_SEARCH_DIRS}
+                                    THIS_PROJECT_SEARCH_DIRS, \
+                                    log4cpp::Priority::ELEMENTS_DEFAULT_LOGLEVEL}
 
 /** @def CREATE_MANAGER(ELEMENTS_PROGRAM_NAME, MANAGER)
  * Macro that declares a program manager with all the needed arguments. It is
@@ -59,7 +65,7 @@
  * @param MANAGER name of the manager variable to be created.
  */
 #define CREATE_MANAGER(ELEMENTS_PROGRAM_NAME, MANAGER) \
-  CREATE_MANAGER_WITH_ARGS(MANAGER, ELEMENTS_PROGRAM_NAME,)
+  CREATE_MANAGER_WITH_ARGS(MANAGER, ELEMENTS_PROGRAM_NAME, )
 
 /** @def MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM, ...)
  * Macro which must be used to create a main in classes
@@ -105,7 +111,7 @@
  * the class Elements::Program class.
  */
 #define MAIN_FOR(ELEMENTS_PROGRAM_NAME)         \
-  MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM_NAME,)
+  MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM_NAME, )
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_MAIN_H_
 

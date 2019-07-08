@@ -33,6 +33,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
+#include <log4cpp/Priority.hh>
 
 #include "ElementsKernel/Export.h"       // ELEMENTS_API
 #include "ElementsKernel/Exit.h"         // For ExitCode
@@ -63,7 +64,8 @@ public:
                  const std::string& parent_project_vcs_version = "",
                  const std::string& parent_module_version = "",
                  const std::string& parent_module_name = "",
-                 const std::vector<std::string>& search_dirs = {});
+                 const std::vector<std::string>& search_dirs = {},
+                 const log4cpp::Priority::Value& elements_loglevel = log4cpp::Priority::DEBUG);
 
   /**
    * @brief Destructor
@@ -272,6 +274,11 @@ private:
    * Local environment of the executable
    */
   Environment m_env;
+
+  /**
+   * default info level for the Elements internal logging messages
+   */
+  log4cpp::Priority::Value m_elements_loglevel;
 };
 
 }  // namespace Elements
