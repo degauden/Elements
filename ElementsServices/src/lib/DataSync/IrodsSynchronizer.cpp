@@ -28,8 +28,8 @@ bool irodsIsInstalled() {
 }
 
 IrodsSynchronizer::IrodsSynchronizer(
-    ConnectionConfiguration connection,
-    DependencyConfiguration dependency) :
+    const ConnectionConfiguration& connection,
+    const DependencyConfiguration& dependency) :
         DataSynchronizer(connection, dependency) {
   if (not irodsIsInstalled()) {
     throw std::runtime_error(

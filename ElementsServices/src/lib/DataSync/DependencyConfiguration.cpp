@@ -40,7 +40,7 @@ DependencyConfiguration::DependencyConfiguration(
   parseConfigurationFile(configFile);
 }
 
-std::map<path, path> DependencyConfiguration::fileMap() {
+std::map<path, path> DependencyConfiguration::fileMap() const {
   return m_fileMap;
 }
 

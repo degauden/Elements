@@ -28,13 +28,14 @@ bool webdavIsInstalled() {
 }
 
 WebdavSynchronizer::WebdavSynchronizer(
-    ConnectionConfiguration connection,
-    DependencyConfiguration dependency) :
+    const ConnectionConfiguration& connection,
+    const DependencyConfiguration& dependency) :
         DataSynchronizer(connection, dependency) {
-  if (not webdavIsInstalled())
+  if (not webdavIsInstalled()) {
     throw std::runtime_error(
         "You are trying to use WebDAV, "
         "but it does not seem to be installed.");
+  }
 }
 
 std::string WebdavSynchronizer::createDownloadCommand(

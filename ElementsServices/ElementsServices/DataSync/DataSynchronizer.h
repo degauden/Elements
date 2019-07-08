@@ -62,8 +62,8 @@ public:
   virtual ~DataSynchronizer() = default;
 
   DataSynchronizer(
-      ConnectionConfiguration connection,
-      DependencyConfiguration dependency);
+      const ConnectionConfiguration& connection,
+      const DependencyConfiguration& dependency);
 
   void downloadAllFiles() const;
 

@@ -44,8 +44,8 @@ public:
   virtual ~IrodsSynchronizer() = default;
 
   IrodsSynchronizer(
-      ConnectionConfiguration connection,
-      DependencyConfiguration dependency);
+      const ConnectionConfiguration& connection,
+      const DependencyConfiguration& dependency);
 
   std::string createDownloadCommand(
       path distantFile,

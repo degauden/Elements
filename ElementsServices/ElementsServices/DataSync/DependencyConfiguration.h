@@ -46,7 +46,7 @@ public:
       path localRoot,
       path configFile);
 
-  std::map<path, path> fileMap();
+  std::map<path, path> fileMap() const;
 
   path distantPathOf(path localFile) const;
 

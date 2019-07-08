@@ -26,18 +26,18 @@ namespace ElementsServices {
 namespace DataSync {
 
 DataSynchronizer::DataSynchronizer(
-    ConnectionConfiguration connection,
-    DependencyConfiguration dependency) :
-        m_connection(connection),
-        m_fileMap(dependency.fileMap()) {
+    const ConnectionConfiguration& connection,
+    const DependencyConfiguration& dependency) :
+        m_connection(connection), m_fileMap(dependency.fileMap()) {
 }
 
 void DataSynchronizer::downloadAllFiles() const {
   for (const auto& item : m_fileMap) {
     const auto& localFile = item.first;
     const auto& distantFile = item.second;
-    if (fileShouldBeWritten(localFile))
+    if (fileShouldBeWritten(localFile)) {
       downloadOneFile(distantFile, localFile);
+    }
   }
 }
 
