@@ -26,11 +26,13 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import argparse
 import os
+
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Exit
 
 try:
     from builtins import input
@@ -54,17 +56,17 @@ def checkCmakelistFileExist(project_directory):
     """
     cmake_file = os.path.join(project_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
-        raise epcr.ErrorOccured("<%s> cmake project file is missing! Are you inside "
+        raise Exception("<%s> cmake project file is missing! Are you inside "
                                 "a project directory?" % cmake_file)
     else:
         # Check the make file is an Elements cmake file
         # it should contain the string : "elements_project"
-        f = open(cmake_file, 'r')
+        f = open(cmake_file)
         data = f.read()
         if not 'elements_project' in data:
             f.close()
-            raise epcr.ErrorOccured("<%s> is not an Elements project cmake file!"
-                                    "Can not find the <elements_project> directive." % cmake_file)
+            raise Exception("<%s> is not an Elements project cmake file!"
+                            "Can not find the <elements_project> directive." % cmake_file)
         f.close()
 
 ################################################################################
@@ -108,7 +110,7 @@ def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=Fal
     epcr.addItemToCreationList(file_template)
 
     # Read the template file
-    fo = open(file_template, 'r')
+    fo = open(file_template)
     template_data = fo.read()
     fo.close()
 
@@ -159,7 +161,7 @@ def createModule(project_dir, module_name, dependency_list, standalone=False, an
             logger.info('# Replacing the existing module: <%s>', module_name)
             epcr.eraseDirectory(mod_path)
         else:
-            raise epcr.ErrorOccured
+            raise Exception()
 
     createModuleDirectories(mod_path, module_name)
     createCmakeListFile(mod_path, module_name, dependency_list, standalone)
@@ -178,7 +180,7 @@ def checkDependencyListValid(str_list):
 ################################################################################
 
 
-def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
+def makeChecks(project_dir, module_name, dependency_list):
     """
     Make some checks
     """
@@ -186,7 +188,6 @@ def makeChecks(project_dir, module_name, dependency_list, answer_yes=False):
     checkCmakelistFileExist(project_dir)
     epcr.checkNameAndVersionValid(module_name, '1.0')
     checkDependencyListValid(dependency_list)
-    epcr.checkNameInEuclidNamingDatabase(module_name, nc.TYPES[0], answer_yes)
 
 ################################################################################
 
@@ -227,6 +228,8 @@ def mainMethod(args):
     Main
     """
 
+    exit_code = Exit.Code["OK"]
+
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the AddModule script ')
     logger.info('#')
@@ -241,7 +244,7 @@ def mainMethod(args):
     logger.info('# Current directory : %s', project_dir)
 
     try:
-        makeChecks(project_dir, module_name, dependency_list, answer_yes)
+        makeChecks(project_dir, module_name, dependency_list)
         createModule(project_dir, module_name, dependency_list, standalone, answer_yes)
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
         # Print all files created
@@ -251,6 +254,9 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+
+    return exit_code

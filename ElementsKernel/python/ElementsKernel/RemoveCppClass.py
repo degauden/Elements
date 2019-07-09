@@ -29,6 +29,7 @@ import os
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
+from ElementsKernel import Exit
 
 try:
     from builtins import input
@@ -71,7 +72,7 @@ def updateCmakeListsFile(module_dir, class_name):
     if os.path.isfile(cmake_filename):
         # Backup the file
         epcr.makeACopy(cmake_filename)
-        f = open(cmake_filename, 'r')
+        f = open(cmake_filename)
         data = f.read()
         f.close()
         # Add the class to be removed
@@ -118,6 +119,8 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the RemoveCppClass script ')
     logger.info('#')
 
+    exit_code = Exit.Code["OK"]
+
     class_name = args.class_name
 
     # Default is the current directory
@@ -156,6 +159,9 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+    return exit_code
+    

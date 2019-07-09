@@ -5,9 +5,11 @@ import os
 import sys
 import re
 import ElementsKernel.Logging as log
+import logging
 from ElementsKernel.Path import VARIABLE, SUFFIXES, joinPath, multiPathAppend
 from ElementsKernel.Environment import Environment
 from ElementsKernel.Configuration import getConfigurationPath, getConfigurationLocations
+from ElementsKernel import Exit
 
 def str_to_bool(s):
     """Convert string to bool (in argparse context)."""
@@ -19,12 +21,16 @@ class Program(object):
     """Main Program Class"""
     def __init__(self, app_module,
                  parent_project_version=None, parent_project_name=None,
+                 parent_project_vcs_version=None,
                  elements_module_name=None, elements_module_version=None,
-                 search_dirs=None, original_path=""):
+                 search_dirs=None, original_path="",
+                 elements_loglevel=logging.DEBUG):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
+        self._elements_loglevel = elements_loglevel
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
+        self._parent_project_vcs_version = parent_project_vcs_version
         self._elements_module_name = elements_module_name
         self._elements_module_version = elements_module_version
         self._search_dirs = search_dirs
@@ -106,7 +112,7 @@ class Program(object):
                     # the parser, fail with an error messsage
                     if not [act for act in arg_parser._actions if ('--' + key) in act.option_strings]:
                         self._logger.error('Unknown option "{}" in configuration file {}'.format(key, config_file))
-                        exit(1)
+                        exit(Exit.Code["NOT_OK"])
                     value = value.strip()
                     if '#' in value:
                         value = value[:value.find('#')]
@@ -162,44 +168,46 @@ class Program(object):
         return all_options, variable_to_option_name
 
     def _logHeader(self):
-        self._logger.info(
-            "##########################################################")
-        self._logger.info(
-            "##########################################################")
-        self._logger.info("#")
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
+                         "##########################################################")
+        self._logger.log(self._elements_loglevel,
+                         "##########################################################")
+        self._logger.log(self._elements_loglevel,
+                         "#")
+        self._logger.log(self._elements_loglevel,
             "#    Python program: %s starts ", self._app_module.__name__)
-        self._logger.info("#")
+        self._logger.log(self._elements_loglevel,
+                         "#")
         self._logger.debug("# Program Name: %s", self._program_name)
         self._logger.debug("# Program Path: %s", self._program_path)
         self._logger.debug("#")
 
     def _logFooter(self):
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
             "##########################################################")
-        self._logger.info("#")
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
+                         "#")
+        self._logger.log(self._elements_loglevel,
             "#    Python program: %s stops ", self._app_module.__name__)
-        self._logger.info("#")
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
+                         "#")
+        self._logger.log(self._elements_loglevel,
             "##########################################################")
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
             "##########################################################")
-
 
     def _logAllOptions(self, args, names):
 
-        self._logger.info(
+        self._logger.log(self._elements_loglevel,
             "##########################################################")
-        self._logger.info("#")
-        self._logger.info("# List of all program options")
-        self._logger.info("# ---------------------------")
-        self._logger.info("#")
-        # for (name,value) in [opt for opt in vars(args).items() if
-        # opt[1]]:
+        self._logger.log(self._elements_loglevel, "#")
+        self._logger.log(self._elements_loglevel, "# List of all program options")
+        self._logger.log(self._elements_loglevel, "# ---------------------------")
+        self._logger.log(self._elements_loglevel, "#")
         for name, value in [opt for opt in vars(args).items()]:
-            self._logger.info(names[name] + ' = ' + str(value))
-        self._logger.info("#")
+            self._logger.log(self._elements_loglevel, names[name] + ' = ' + str(value))
+        self._logger.log(self._elements_loglevel, "#")
+
 
     def _logTheEnvironment(self):
         self._logger.debug("##########################################################")
@@ -207,10 +215,6 @@ class Program(object):
         self._logger.debug("# Environment of the Run")
         self._logger.debug("# ---------------------------")
         self._logger.debug("#")
-
-#   for(const auto& v: Path::VARIABLE) {
-#     logger.debug() << v.second << ": " << m_env[v.second];
-#   }
 
         for v in VARIABLE:
             self._logger.debug("%s: %s", VARIABLE[v], self._env[VARIABLE[v]])
@@ -221,8 +225,8 @@ class Program(object):
         version = ""
         if self._parent_project_name:
             version += self._parent_project_name + " "
-        if self._parent_project_version:
-            version += self._parent_project_version
+        if self._parent_project_vcs_version:
+            version += self._parent_project_vcs_version
         return version
 
 
@@ -265,7 +269,7 @@ class Program(object):
 
         args, _ = self._setup()
 
-        exit_code = 1
+        exit_code = Exit.Code["NOT_OK"]
         try:
             exit_code = self._app_module.mainMethod(args)
         except:

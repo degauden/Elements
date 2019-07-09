@@ -37,10 +37,14 @@ class TestCase(unittest.TestCase):
         unittest.TestCase.setUp(self)
         self.samplebasename = "toto"
         self.tmpdir = TempDir(suffix="tempdir", prefix=self.samplebasename)
-
+        self.m_top_dir = TempDir()
+        self.m_env = TempEnv()
+        self.m_env["WORKSPACE"] = os.path.join(self.m_top_dir.path(), "work")
+        
     def tearDown(self):
         unittest.TestCase.tearDown(self)
         del self.tmpdir
+        del self.m_top_dir
 
     def testName(self):
         name1 = str(self.tmpdir)
@@ -104,6 +108,7 @@ class TestCase(unittest.TestCase):
         self.assert_(os.environ.get("TESTENVEK2", None) == None)
         
     def testKeepTmpDir(self):
+        
         os.environ["KEEPTEMPDIR"] = "1"
         
         with TempDir() as td:
@@ -115,6 +120,19 @@ class TestCase(unittest.TestCase):
         self.assert_(not os.path.exists(td_path))
         del os.environ["KEEPTEMPDIR"]
 
+    def testTempEnv2(self):
+        
+        self.assertEqual(self.m_env["WORKSPACE"], os.path.join(self.m_top_dir.path(), "work"))
+        
+        with TempEnv() as local:
+            self.assertEqual(self.m_env["WORKSPACE"], os.path.join(self.m_top_dir.path(), "work"))
+            self.assertEqual(local["WORKSPACE"], os.path.join(self.m_top_dir.path(), "work"))
+            local["WORKSPACE"] = "that_work";
+            self.assertEqual(self.m_env["WORKSPACE"], "that_work")
+            self.assertEqual(local["WORKSPACE"], "that_work")
+        
+        self.assertEqual(self.m_env["WORKSPACE"], os.path.join(self.m_top_dir.path(), "work"))
+            
         
 if __name__ == '__main__':
     unittest.main()

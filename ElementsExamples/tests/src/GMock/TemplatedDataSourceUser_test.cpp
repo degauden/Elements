@@ -18,8 +18,8 @@
 
 #include "ElementsExamples/TemplatedDataSourceUser.h"  // Access the objects you want to test
 
-#include "ElementsKernel/EnableGMock.h"
 #include "ElementsKernel/Real.h"                       // isEqual
+#include "ElementsKernel/EnableGMock.h"                // initialize the gmock framework
 
 #include "DataSourceUserTemplatedTypeMock.h"           // Access the needed mock objects.
 
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_SUITE(TemplatedDataSourceUser_test_suite)
 BOOST_AUTO_TEST_CASE(sumRecords_test) {
   // Setup mock
   DataSourceUserTemplatedTypeMock data_source_mock;
-  EXPECT_CALL(data_source_mock, countRecords()).Times(1).WillOnce(testing::Return(5));
+  EXPECT_CALL(data_source_mock, countRecords()).Times(1).WillOnce(Return(5));
   for (size_t index = 0; index < 5; ++index) {
     EXPECT_CALL(data_source_mock, getRecordValue(index)).Times(1).WillOnce(Return(index+1.));
   }

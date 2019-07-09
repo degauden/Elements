@@ -28,9 +28,10 @@ import argparse
 import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.ParseCmakeLists as pcl
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Exit
 
 logger = log.getLogger('AddScript')
 
@@ -60,7 +61,7 @@ def subStringsInScriptFile(file_path, program_name, module_name):
     os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in h_template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
@@ -98,7 +99,7 @@ def updateCmakeListsFile(module_dir, program_name):
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
-        f = open(cmake_filename, 'r')
+        f = open(cmake_filename)
         data = f.read()
         f.close()
         cmake_object = pcl.CMakeLists(data)
@@ -124,7 +125,7 @@ def createScript(current_dir, module_name, program_name):
 
 ################################################################################
 
-def makeChecks(program_file_path, program_name, answer_yes=False):
+def makeChecks(program_file_path, program_name):
     """
     Make some checks
     """
@@ -134,8 +135,6 @@ def makeChecks(program_file_path, program_name, answer_yes=False):
     epcr.checkFileNotExist(program_file_path, program_name)
     # Check aux file exist
     epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
-    # Check name in DB
-    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2], answer_yes)
 
 ################################################################################
 
@@ -166,8 +165,9 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddScript script')
     logger.info('#')
 
+    exit_code = Exit.Code["OK"]
+
     program_name = args.program_name
-    answer_yes = args.yes
 
     # Default is the current directory
     current_dir = os.getcwd()
@@ -181,7 +181,7 @@ def mainMethod(args):
         # Check name in the Element Naming Database
         program_file_path = os.path.join(current_dir, 'scripts', program_name)
         # Make checks
-        makeChecks(program_file_path, program_name, answer_yes)
+        makeChecks(program_file_path, program_name)
 
         createScript(current_dir, module_name, program_name)
         logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
@@ -196,6 +196,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+    return exit_code

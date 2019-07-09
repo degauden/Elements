@@ -36,7 +36,7 @@ def cleanXml(xmlFileName):
 
     print(" Trying to repair the xml file")
     print(" Replacing invalid char")
-    xmlFile = open(xmlFileName, 'r')
+    xmlFile = open(xmlFileName)
     data = xmlFile.read()
     xmlFile.close()
     xmlFile = open(xmlFileName + "temp", 'w')
@@ -368,7 +368,7 @@ class TestOrganizer:
             """
             _illegal_xml_chars_Re = re.compile(
                 u'[\x00-\x08\x0b\x0c\x0e-\x1F\uD800-\uDFFF\uFFFE\uFFFF]')
-            xmlFile = open(xmlFileName, 'r')
+            xmlFile = open(xmlFileName)
             data = xmlFile.read()
             xmlFile.close()
             xmlFile = open(xmlFileName, 'w')
@@ -588,9 +588,12 @@ def main():
     parser.add_option("-s", "--skeleton", action="store",
                       metavar="SKELETON",
                       help="HTML report skeleton")
+    parser.add_option("-q", "--quiet", action="store_true",
+                      metavar="QUIET",
+                      help="don't print warnings")
 
 
-    parser.set_defaults(inputDirectory='.', outputDirectory='html')
+    parser.set_defaults(inputDirectory='.', outputDirectory='html', quiet=False)
     (options, args) = parser.parse_args()
 
     # verify the input file
@@ -785,12 +788,14 @@ def main():
                     text = formatMeasurementText(text, escape=True)
                     # no "Measurement" or no "Value" or no text
                 except AttributeError as x:
-                    print('WARNING: {0[id]}: AttributeError: {1}'.format(
-                        summary, x))
+                    if not options.quiet:
+                        print('WARNING: {0[id]}: AttributeError: {1}'.format(
+                            summary, x))
                     text = '<i>no stdout</i>'
                 except KeyError as x:
-                    print('WARNING: {0[id]}: KeyError: {1}'.format(
-                        summary, x))
+                    if not options.quiet:
+                        print('WARNING: {0[id]}: KeyError: {1}'.format(
+                            summary, x))
                     # encoding or compressions unknown, keep original text
                     text = formatMeasurementText(value=text, escape=True)
                 with open(os.path.join(testCaseDir, "stdout"), "w") as stdout:

@@ -3,6 +3,12 @@ include_guard()
 include(SGSPlatform)
 include(ElementsBuildFlags)
 
+if(HIDE_SYSINC_WARNINGS)
+  set(CMAKE_NO_SYSTEM_FROM_IMPORTED FALSE)  
+else()
+  set(CMAKE_NO_SYSTEM_FROM_IMPORTED TRUE)
+endif()
+
 if(NOT DEFINED SQUEEZED_INSTALL)
     set(SQUEEZED_INSTALL ON
         CACHE STRING "Enable the squizzing of the installation into a prefix directory"
@@ -153,9 +159,6 @@ endif()
 
 #python business
 
-#execute_process(COMMAND "python -c \"from distutils.sysconfig import get_python_lib; print(get_python_lib(prefix='${CMAKE_INSTALL_PREFIX}'))\"" OUTPUT_VARIABLE py_lib_fullpath)
-#execute_process(COMMAND "python -c \"from distutils.sysconfig import get_python_lib; print(get_python_lib())\"" OUTPUT_VARIABLE py_lib_fullpath)
-
 set(PYTHON_INSTALL_SUFFIX python)
 set(PYTHON_DYNLIB_INSTALL_SUFFIX python/lib-dynload)
 
@@ -178,7 +181,12 @@ endif()
 
 get_arch_lib_dir(that_arch)
 
-set(ELEMENTS_DEFAULT_SEARCH_PATH ${CMAKE_INSTALL_PREFIX}/${that_arch}/cmake/ElementsProject)
+file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" current_cmake_prefix_path)
+
+set(ELEMENTS_DEFAULT_SEARCH_PATH)
+foreach(_ds ${current_cmake_prefix_path})  
+  list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${_ds}/${that_arch}/cmake/ElementsProject)
+endforeach()
 set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/ElementsProject)
 
 file(TO_CMAKE_PATH "$ENV{XDG_DATA_DIRS}" data_dirs)

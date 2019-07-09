@@ -98,7 +98,7 @@ include_guard()
 
   if(USE_SPHINX)
 
-  find_package(Sphinx QUIET)
+  find_package(Sphinx REQUIRED)
   if(SPHINX_FOUND)
 
     if(NOT SPHINX_BUILD_OPTIONS)
@@ -184,6 +184,10 @@ include_guard()
 
     get_property(proj_package_list GLOBAL PROPERTY PROJ_PACKAGE_LIST)
 
+    set(_api_modules_line)
+    if(USE_SPHINX_APIDOC)
+      set(_api_modules_line modules)
+    endif()
 
     #loop over all Elements module
     # this will create an <module>_index.rst for each of them

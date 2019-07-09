@@ -1,3 +1,9 @@
+[//]: # (@cond Doxygen_Suppress)
+
+[![Build Status](https://travis-ci.org/degauden/Elements.svg?branch=develop)](https://travis-ci.org/degauden/Elements)
+
+[//]: # (@endcond Doxygen_Suppress)
+
 # Introduction
 
 Elements is a C++/Python build framework. It helps to organize the software

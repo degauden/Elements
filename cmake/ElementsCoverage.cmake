@@ -7,7 +7,7 @@ include_guard()
 
 if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
-  find_package(GenHTML)
+  find_package(GenHTML QUIET)
 
   if(GENHTML_EXECUTABLE AND LCOV_EXECUTABLE)
 
@@ -46,7 +46,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
                       COMMENT "===================================================================================================\nOpen ./${BUILD_SUBDIR}/cov/lcov/html/index.html in your browser to view the coverage report.\n===================================================================================================\n"
                       )
 
-    find_package(GCovr)
+    find_package(GCovr QUIET)
 
     if(GCOVR_EXECUTABLE)
 
@@ -96,7 +96,7 @@ if(PY_LXML)
 find_file(ctest2junit_xsl_file
           NAMES CTest2JUnit.xsl
           PATHS ${CMAKE_MODULE_PATH}
-          PATH_SUFFIXES auxdir
+          PATH_SUFFIXES auxdir/test auxdir
           NO_DEFAULT_PATH)
           
 add_custom_command(TARGET cov POST_BUILD

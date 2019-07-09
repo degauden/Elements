@@ -33,6 +33,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
+#include <log4cpp/Priority.hh>
 
 #include "ElementsKernel/Export.h"       // ELEMENTS_API
 #include "ElementsKernel/Exit.h"         // For ExitCode
@@ -60,9 +61,12 @@ public:
   ProgramManager(std::unique_ptr<Program> program_ptr,
                  const std::string& parent_project_version = "",
                  const std::string& parent_project_name = "",
+                 const std::string& parent_project_vcs_version = "",
                  const std::string& parent_module_version = "",
                  const std::string& parent_module_name = "",
-                 const std::vector<std::string>& search_dirs = {});
+                 const std::vector<std::string>& search_dirs = {},
+                 const log4cpp::Priority::Value& elements_loglevel = log4cpp::Priority::DEBUG);
+
   /**
    * @brief Destructor
    */
@@ -190,6 +194,16 @@ private:
    */
   void bootstrapEnvironment(char* arg0);
 
+  /**
+   * @brief check the explicit command line arguments.
+   *   For the moment, it only checks if the configuration
+   *   file being passed does exist. It exits with ExitCode::CONFIG
+   *   if the file cannot be found.
+   */
+  template<class charT>
+  void checkCommandLineOptions(const boost::program_options::basic_parsed_options<charT>& cmd_line_options);
+
+
 private:
 
   /**
@@ -219,8 +233,7 @@ private:
   std::unique_ptr<Program> m_program_ptr;
 
   /**
-   * Internal version of the program. By convention, it is the same
-   * as the version of the parent project
+   * Internal version of the project
    */
   std::string m_parent_project_version;
 
@@ -232,6 +245,12 @@ private:
    *     m_parent_project_version [m_parent_project_name]
    */
   std::string m_parent_project_name;
+
+  /**
+   * Internal version of the program. By convention, it is the same
+   * as the VCS version of the parent project
+   */
+  std::string m_parent_project_vcs_version;
 
   /**
    * Version of the parent Elements module
@@ -255,6 +274,11 @@ private:
    * Local environment of the executable
    */
   Environment m_env;
+
+  /**
+   * default info level for the Elements internal logging messages
+   */
+  log4cpp::Priority::Value m_elements_loglevel;
 };
 
 }  // namespace Elements

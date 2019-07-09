@@ -9,17 +9,17 @@ plain_ver_style = "(?P<maj_ver>[0-9]+)\.(?P<min_ver>[0-9]+)(?:\.(?P<pat_ver>[0-9
 
 def main():
     parser = OptionParser(
-        usage="ERROR: Usage %prog <project> <version> <outputfile>")
+        usage="ERROR: Usage %prog <project> <version> <vcs_version> <outputfile>")
     parser.add_option("-q", "--quiet", action="store_true",
                       help="Do not print messages.")
     opts, args = parser.parse_args()
 
-    if len(args) != 3:
-        parser.error("wrong number of arguments")
+    if len(args) != 4:
+        parser.error("wrong number of arguments: %d: %s" % (len(args), " ".join(args)))
 
-    project, version, outputfile = args
+    project, version, vcs_version, outputfile = args
     if not opts.quiet:
-        print("Creating %s for %s %s" % (outputfile, project, version))
+        print("Creating %s for %s %s (VCS: %s)" % (outputfile, project, version, vcs_version))
 
     if version.startswith('HEAD'):
         # special handling
@@ -47,13 +47,14 @@ def main():
 #include <string>
 #include "ElementsKernel/Version.h"
 const std::string %(proj)s_ORIGINAL_VERSION {"%(version)s"};
+const std::string %(proj)s_VCS_VERSION {"%(vcs_version)s"};
 constexpr std::uint_least64_t %(proj)s_MAJOR_VERSION = %(maj)d;
 constexpr std::uint_least64_t %(proj)s_MINOR_VERSION = %(min)d;
 constexpr std::uint_least64_t %(proj)s_PATCH_VERSION = %(pat)d;
 constexpr std::uint_least64_t %(proj)s_VERSION = CALC_PROJECT_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION);
 const std::string %(proj)s_VERSION_STRING {Elements::getVersionString(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)};
 #endif
-""" % { 'proj': project.upper(), 'version': version, 'min': minver, 'maj': majver, 'pat': patver }
+""" % { 'proj': project.upper(), 'version': version, 'vcs_version':vcs_version ,'min': minver, 'maj': majver, 'pat': patver }
 
     # Get the current content of the destination file (if any)
     try:

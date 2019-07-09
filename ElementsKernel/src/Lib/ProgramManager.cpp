@@ -51,6 +51,9 @@
 using std::vector;
 using std::string;
 using std::move;
+using std::endl;
+using std::cerr;
+using log4cpp::Priority;
 
 using boost::filesystem::path;
 using boost::program_options::variables_map;
@@ -66,16 +69,20 @@ using System::getExecutablePath;
 ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
                const string& parent_project_version,
                const string& parent_project_name,
+               const string& parent_project_vcs_version,
                const string& parent_module_version,
                const string& parent_module_name,
-               const vector<string>& search_dirs):
+               const vector<string>& search_dirs,
+               const Priority::Value& elements_loglevel):
                m_program_ptr(move(program_ptr)),
                m_parent_project_version(move(parent_project_version)),
                m_parent_project_name(move(parent_project_name)),
+               m_parent_project_vcs_version(move(parent_project_vcs_version)),
                m_parent_module_version(move(parent_module_version)),
                m_parent_module_name(move(parent_module_name)),
                m_search_dirs(move(search_dirs)),
-               m_env{} {
+               m_env{},
+               m_elements_loglevel(move(elements_loglevel)) {
 
 }
 
@@ -104,21 +111,21 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name,
   // Construct and return the full path
   default_config_file = getConfigurationPath(conf_name.string(), false);
   if (default_config_file.empty()) {
-    log.warn() << "The \"" << conf_name.string() << "\" configuration file cannot be found in:";
+    log.warn() << "The " << conf_name << " default configuration file cannot be found in:";
     for (auto loc : getConfigurationLocations()) {
       log.warn() << " " << loc;
     }
     if (not module_name.empty()) {
       conf_name = path {module_name} / conf_name;
-      log.warn() << "Trying \"" << conf_name.string() << "\".";
+      log.warn() << "Trying " << conf_name << ".";
       default_config_file = getConfigurationPath(conf_name.string(), false);
     }
   }
 
   if (default_config_file.empty()) {
-    log.debug() << "Couldn't find \"" << conf_name << "\" configuration file.";
+    log.debug() << "Couldn't find " << conf_name << " default configuration file.";
   } else {
-    log.debug() << "Found \"" << conf_name << "\" configuration file at " << default_config_file;
+    log.debug() << "Found " << conf_name << " default configuration file at " << default_config_file;
   }
 
   return default_config_file;
@@ -138,6 +145,27 @@ const path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
   return full_path.parent_path();
 }
 
+template<class charT>
+void ProgramManager::checkCommandLineOptions(
+        const boost::program_options::basic_parsed_options<charT>& cmd_parsed_options) {
+
+  for (const auto& o : cmd_parsed_options.options) {
+    if (o.string_key == "config-file") {
+      if (o.value.size() != 1) {
+        cerr << "Wrong usage of the --config-file option" << endl;
+        exit(static_cast<int>(ExitCode::USAGE));
+      } else {
+        auto conf_file = path { o.value[0] };
+        if (not boost::filesystem::exists(conf_file)) {
+          cerr << "The " << conf_file
+               << " configuration file doesn't exist!" << endl;
+          exit(static_cast<int>(ExitCode::CONFIG));
+        }
+      }
+    }
+  }
+}
+
 /*
  * Get program options
  */
@@ -146,7 +174,6 @@ const variables_map ProgramManager::getProgramOptions(
 
 
   using std::cout;
-  using std::endl;
   using std::exit;
   using boost::program_options::options_description;
   using boost::program_options::value;
@@ -214,16 +241,19 @@ const variables_map ProgramManager::getProgramOptions(
   auto cmd_parsed_options = command_line_parser(argc, argv)
                                     .options(cmd_only_generic_options)
                                     .allow_unregistered().run();
+
+  checkCommandLineOptions(cmd_parsed_options);
+
   store(cmd_parsed_options, var_map);
 
   // Deal with the "help" option
-  if (var_map.count("help")) {
+  if (var_map.count("help") > 0) {
     cout << help_options << endl;
     exit(static_cast<int>(ExitCode::OK));
   }
 
   // Deal with the "version" option
-  if (var_map.count("version")) {
+  if (var_map.count("version") > 0) {
     cout << getVersion() << endl;
     exit(static_cast<int>(ExitCode::OK));
   }
@@ -237,25 +267,24 @@ const variables_map ProgramManager::getProgramOptions(
   auto leftover_cmd_options = collect_unrecognized(cmd_parsed_options.options,
                                                    include_positional);
 
-
   try {
 
-  auto parsed_cmdline_options = command_line_parser(leftover_cmd_options)
-                         .options(all_cmd_and_file_options)
-                         .positional(program_arguments.second)
-                         .run();
+    auto parsed_cmdline_options = command_line_parser(leftover_cmd_options)
+                           .options(all_cmd_and_file_options)
+                           .positional(program_arguments.second)
+                           .run();
 
-  store(parsed_cmdline_options, var_map);
+    store(parsed_cmdline_options, var_map);
 
-  // Parse from the configuration file if it exists
-  if (not config_file.empty() and boost::filesystem::exists(config_file)) {
-    std::ifstream ifs {config_file.string()};
-    if (ifs) {
-      auto parsed_cfgfile_options = parse_config_file(ifs,
-                                                      all_cmd_and_file_options);
-      store(parsed_cfgfile_options, var_map);
+    // Parse from the configuration file if it exists
+    if (not config_file.empty() and boost::filesystem::exists(config_file)) {
+      std::ifstream ifs {config_file.string()};
+      if (ifs) {
+        auto parsed_cfgfile_options = parse_config_file(ifs,
+                                                        all_cmd_and_file_options);
+        store(parsed_cfgfile_options, var_map);
+      }
     }
-  }
 
   } catch (const std::exception& e) {
     if (boost::starts_with(e.what(), "unrecognised option") or
@@ -274,22 +303,22 @@ const variables_map ProgramManager::getProgramOptions(
 }
 
 void ProgramManager::logHeader(string program_name) const {
-  log.info() << "##########################################################";
-  log.info() << "##########################################################";
-  log.info() << "#";
-  log.info() << "#  C++ program:  " <<  program_name << " starts ";
-  log.info() << "#";
-  log.debug() << "# The Program Name: " << m_program_name.string();
-  log.debug() << "# The Program Path: " << m_program_path.string();
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "#");
+  log.log(m_elements_loglevel, "#  C++ program:  " + program_name + " starts ");
+  log.log(m_elements_loglevel, "#");
+  log.debug("# The Program Name: " + m_program_name.string());
+  log.debug("# The Program Path: " + m_program_path.string());
 }
 
 void ProgramManager::logFooter(string program_name) const {
-  log.info() << "##########################################################";
-  log.info() << "#";
-  log.info() << "#  C++ program:  " << program_name << " stops ";
-  log.info() << "#";
-  log.info() << "##########################################################";
-  log.info() << "##########################################################";
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "#");
+  log.log(m_elements_loglevel, "#  C++ program:  " + program_name + " stops ");
+  log.log(m_elements_loglevel, "#");
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "##########################################################");
 }
 
 
@@ -299,11 +328,11 @@ void ProgramManager::logAllOptions() const {
   using std::stringstream;
   using std::int64_t;
 
-  log.info() << "##########################################################";
-  log.info() << "#";
-  log.info() << "# List of all program options";
-  log.info() << "# ---------------------------";
-  log.info() << "#";
+  log.log(m_elements_loglevel, "##########################################################");
+  log.log(m_elements_loglevel, "#");
+  log.log(m_elements_loglevel, "# List of all program options");
+  log.log(m_elements_loglevel, "# ---------------------------");
+  log.log(m_elements_loglevel, "#");
 
   // Build a log message
   stringstream log_message {};
@@ -322,6 +351,9 @@ void ProgramManager::logAllOptions() const {
       // int option
     } else if (v.second.value().type() == typeid(int)) {
       log_message << v.first << " = " << v.second.as<int>();
+      // bool option
+    } else if (v.second.value().type() == typeid(bool)) {
+      log_message << v.first << " = " << v.second.as<bool>();
       // path option
     } else if (v.second.value().type() == typeid(path)) {
       log_message << v.first << " = "
@@ -354,13 +386,13 @@ void ProgramManager::logAllOptions() const {
     } else {
       log_message << "Option " << v.first << " of type "
           << v.second.value().type().name() << " not supported in logging !"
-          << std::endl;
+          << endl;
     }
     // write the log message
-    log.info(log_message.str());
+    log.log(m_elements_loglevel, log_message.str());
     log_message.str("");
   }
-  log.info("#");
+  log.log(m_elements_loglevel, "#");
 
 }
 
@@ -477,7 +509,7 @@ ExitCode ProgramManager::run(int argc, char* argv[]) {
 
 string ProgramManager::getVersion() const {
 
-  string version = m_parent_project_name + " " + m_parent_project_version;
+  string version = m_parent_project_name + " " + m_parent_project_vcs_version;
 
   return version;
 }
@@ -513,7 +545,7 @@ void ProgramManager::onTerminate() noexcept {
     } catch (...) {
       log.fatal() << "# ";
       log.fatal() << "# An exception of unknown type occurred, "
-                     << "i.e., an exception not deriving from std::exception ";
+                  << "i.e., an exception not deriving from std::exception ";
       log.fatal() << "# ";
     }
 

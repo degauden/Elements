@@ -29,8 +29,9 @@ import os
 import time
 import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.ParseCmakeListsMacros as pclm
-import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
+
+from ElementsKernel import Exit
 
 logger = log.getLogger('AddCppProgram')
 
@@ -81,7 +82,7 @@ def substituteStringsInProgramFile(file_path, program_name):
     os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
 
     # Substitute strings in h_template_file
-    f = open(template_file, 'r')
+    f = open(template_file)
     data = f.read()
     # Format all dependent projects
     # We put by default Elements dependency if no one is given
@@ -170,12 +171,10 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list, lib
 
 ################################################################################
 
-def makeChecks(current_dir, program_name, answer_yes=False):
+def makeChecks(current_dir, program_name):
     """
     Make some checks
     """
-    # Check name in the Element Naming Database
-    epcr.checkNameInEuclidNamingDatabase(program_name, nc.TYPES[2], answer_yes)
     # Check if file exits
     program_file_path = os.path.join(current_dir, 'src', 'program', program_name + '.cpp')
     epcr.checkFileNotExist(program_file_path, program_name)
@@ -226,10 +225,11 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the AddCppProgram script')
     logger.info('#')
 
+    exit_code = Exit.Code["OK"]
+
     program_name = args.program_name
     module_list = args.module_dependency
     library_list = args.library_dependency
-    answer_yes = args.yes
 
     try:
         # Default is the current directory
@@ -240,7 +240,7 @@ def mainMethod(args):
         # We absolutely need a Elements cmake file
         module_name = epcr.getElementsModuleName(current_dir)
         # make some checks
-        makeChecks(current_dir, program_name, answer_yes)
+        makeChecks(current_dir, program_name)
 
         # Create CPP program
         createCppProgram(current_dir, module_name, program_name, module_list, library_list)
@@ -258,6 +258,8 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+    return exit_code

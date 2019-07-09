@@ -25,9 +25,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 """
 
 import argparse
-import ElementsKernel.ProjectCommonRoutines as epcr
 import ElementsKernel.Logging as log
-import ElementsKernel.Project as cep
+from ElementsKernel import Project, ProjectCommonRoutines
+from ElementsKernel import Exit
 
 def defineSpecificProgramOptions():
     """
@@ -100,6 +100,9 @@ def mainMethod(args):
     """
     Main
     """
+    
+    exit_code = Exit.Code["OK"]
+    
     logger = log.getLogger('CreateElementsProject')
 
     logger.info('#')
@@ -109,7 +112,7 @@ def mainMethod(args):
     proj_name = args.project_name
     proj_version = args.project_version
     dependant_projects = args.dependency
-    destination_path = cep.setPath()
+    destination_path = Project.setPath()
     dependency = args.dependency
     no_version_directory = args.no_version_directory
     standalone = args.standalone
@@ -120,16 +123,16 @@ def mainMethod(args):
 
     try:
         # Set the project directory
-        project_dir = cep.buildProjectDir(no_version_directory, destination_path, proj_name, proj_version)
-        cep.makeChecks(proj_name, proj_version, dependency, dependant_projects, answer_yes)
+        project_dir = Project.getProjectDirectory(no_version_directory, destination_path, proj_name, proj_version)
+        Project.makeChecks(proj_name, proj_version, dependency, dependant_projects)
 
-        cep.checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes)
+        Project.checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes)
 
         # Create the project
-        cep.createProject(project_dir, proj_name, proj_version, dependant_projects, standalone)
+        Project.createProject(project_dir, proj_name, proj_version, dependant_projects, standalone)
 
         # Print all files created
-        epcr.printCreationList()
+        ProjectCommonRoutines.printCreationList()
 
         logger.info('# <%s> project successfully created.', project_dir)
 
@@ -137,6 +140,9 @@ def mainMethod(args):
         if str(msg):
             logger.error(msg)
         logger.error('# Script aborted.')
-        return 1
+        exit_code = Exit.Code["NOT_OK"]
     else:
         logger.info('# Script over.')
+
+
+    return exit_code

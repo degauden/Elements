@@ -211,7 +211,7 @@ option(ELEMENTS_USE_RPATH
 
 option(HIDE_SYSINC_WARNINGS
        "Hide System includes warnings by using -isystem instead of -I"
-       OFF)
+       ON)
 
 option(HIDE_OTHERINC_WARNINGS
        "Hide includes warnings issued by other projects by using -isystem instead of -I"
@@ -254,21 +254,65 @@ option(TEST_HTML_REPORT
        "Enable the conversion of the CTest XML reports into HTML"
        ON)
 
+option(WITH_DATASYNC_TEST
+       "Enable the test which require a specific DataSync connection"
+       OFF)
+
+option(USE_ENV_FLAGS
+       "Use the environment CFLAGS, CXXFLAGS and LDFLAGS"
+       OFF)
+
+option(USE_RPM_CMAKE_MACRO
+       "Use the system RPM macro for the rpm command"
+       OFF)
+
+if(NOT ELEMENTS_DEFAULT_LOGLEVEL)
+  if(USE_LOCAL_INSTALLAREA)
+    set(ELEMENTS_DEFAULT_LOGLEVEL "INFO" CACHE STRING "Set the default loglevel for the framework messages" FORCE)
+  else()
+    set(ELEMENTS_DEFAULT_LOGLEVEL "DEBUG" CACHE STRING "Set the default loglevel for the framework messages" FORCE)  
+  endif()
+endif()
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
-  #message(STATUS "Setting cached build flags")
+  message(STATUS "Setting cached build flags")
+
+
+  if(USE_RPM_CMAKE_MACRO)
+    set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DUSE_ENV_FLAGS:BOOL=ON")
+  else()
+    set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DUSE_ENV_FLAGS:BOOL=${USE_ENV_FLAGS}")
+  endif()
+
 
     # Common compilation flags
+  if(USE_ENV_FLAGS)
+    set(CMAKE_CXX_FLAGS $ENV{CXXFLAGS})
+  else()
+    set(CMAKE_CXX_FLAGS)
+  endif()
+
   set(CMAKE_CXX_FLAGS
-      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -fPIC"
-      CACHE STRING "Flags used by the compiler during all build types."
-      FORCE)
-      
-  set(CMAKE_C_FLAGS
-      "-fmessage-length=0 -pipe -ansi -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wno-unused-parameter -fPIC"
+      "${CMAKE_CXX_FLAGS} -fmessage-length=0 -pipe -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
 
+  if(USE_ENV_FLAGS)
+    set(CMAKE_C_FLAGS $ENV{CFLAGS})
+  else()
+    set(CMAKE_C_FLAGS)
+  endif()
+      
+  set(CMAKE_C_FLAGS
+      "${CMAKE_C_FLAGS} -fmessage-length=0 -pipe -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wno-unused-parameter -fPIC"
+      CACHE STRING "Flags used by the compiler during all build types."
+      FORCE)
+
+  if((NOT SGS_COMP STREQUAL clang) OR (SGS_COMPVERS VERSION_GREATER "40") )
+    check_and_use_cxx_option(-ansi CXX_HAS_ANSI)
+    check_and_use_c_option(-ansi C_HAS_ANSI)
+  endif()
 
   if(SANITIZE_OPTIONS AND (SGS_COMP STREQUAL gcc))
     check_and_use_cxx_option(-fsanitize=${SANITIZE_STYLE} CXX_HAS_SANITIZE)
@@ -287,6 +331,35 @@ if(NOT ELEMENTS_FLAGS_SET)
   if(SGS_COMP STREQUAL gcc)
     check_and_use_cxx_option(-Wcast-function-type CXX_HAS_CAST_FUNCTION_TYPE)
   endif()
+
+  if(SGS_COMP STREQUAL gcc)
+    check_cxx_compiler_flag(-Wmissing-field-initializers CXX_HAS_MISSING_FIELD_INITIALIZERS)
+  endif()
+
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wunused-function CXX_HAS_UNUSED_FUNCTION)
+  endif()
+
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wno-unneeded-internal-declaration CXX_HAS_NO_UNNEEDED_INTERNAL_DECLARATION)
+  endif()
+
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wno-c++17-extensions CXX_HAS_NO_CXX17_EXTENSIONS)
+  endif()
+
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wno-parentheses-equality CXX_HAS_NO_PARENTHESES_EQUALITY)
+  endif()
+
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wno-self-assign CXX_HAS_NO_SELF_ASSIGN)
+  endif()
+
+  if(SGS_COMP STREQUAL clang)
+    check_cxx_compiler_flag(-Wno-constant-logical-operand CXX_HAS_NO_CONSTANT_LOGICAL_OPERAND)
+  endif()
+
 
   # Build type compilation flags (if different from default or unknown to CMake)
   set(CMAKE_CXX_FLAGS_RELEASE "-O2"
@@ -349,9 +422,6 @@ if(NOT ELEMENTS_FLAGS_SET)
 
 
 
-  if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release")
-      add_definitions(-DNDEBUG)
-  endif()
 
 
 
@@ -376,19 +446,30 @@ if(NOT ELEMENTS_FLAGS_SET)
 
 
   #--- Link shared flags -------------------------------------------------------
+
+  if(USE_ENV_FLAGS)
+    set(CMAKE_SHARED_LINKER_FLAGS $ENV{LDFLAGS})
+    set(CMAKE_MODULE_LINKER_FLAGS $ENV{LDFLAGS})
+    set(CMAKE_EXE_LINKER_FLAGS $ENV{LDFLAGS})
+  else()
+    set(CMAKE_SHARED_LINKER_FLAGS $ENV{LDFLAGS})
+    set(CMAKE_MODULE_LINKER_FLAGS $ENV{LDFLAGS})
+    set(CMAKE_EXE_LINKER_FLAGS $ENV{LDFLAGS})
+  endif()
+
   if (CMAKE_SYSTEM_NAME MATCHES Linux)
-    set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
         CACHE STRING "Flags used by the linker during the creation of dll's."
         FORCE)
-    set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined  -Wl,-z,max-page-size=0x1000"
         CACHE STRING "Flags used by the linker during the creation of modules."
         FORCE)
     if(CMAKE_BUILD_TYPE STREQUAL "Profile" AND SGS_COMPVERS VERSION_LESS "50")
-      set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}"
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed"
           CACHE STRING "Flags used by the linker during the creation of exe's."
           FORCE)
     else()
-      set(CMAKE_EXE_LINKER_FLAGS "-Wl,--enable-new-dtags -Wl,--as-needed -pie ${CMAKE_EXE_LINKER_FLAGS}"
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed -pie"
           CACHE STRING "Flags used by the linker during the creation of exe's."
           FORCE)    
     endif()
@@ -415,6 +496,11 @@ if(NOT ELEMENTS_FLAGS_SET)
       CACHE INTERNAL "flag to check if the compilation flags have already been set")
 endif()
 
+add_definitions(-DELEMENTS_DEFAULT_LOGLEVEL=${ELEMENTS_DEFAULT_LOGLEVEL})
+
+if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DNDEBUG)
+endif()
 
 if(UNIX)
   add_definitions(-D_GNU_SOURCE -Df2cFortran)

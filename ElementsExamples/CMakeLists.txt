@@ -17,8 +17,8 @@ find_package(GMock)
 #    ElementsExamples is the library name
 #    src/Lib/*.cpp are the source files
 elements_add_library(ElementsExamples src/lib/*.cpp
-                    LINK_LIBRARIES Boost ElementsKernel
-                    PUBLIC_HEADERS ElementsExamples)
+                     LINK_LIBRARIES Boost ElementsKernel
+                     PUBLIC_HEADERS ElementsExamples)
 
 #===== Executables =============================================================
 # Instruction for creating a C++ executable
@@ -43,6 +43,7 @@ elements_add_executable(CProgramExample src/CProgram/*.c)
 #===== Test that the executables do run ========================================
 
 elements_add_test(CppProgramExampleRun COMMAND CppProgramExample)
+elements_add_test(CppProgramExampleNoConfigFile COMMAND CppProgramExample --config-file=toto.conf FAILS)
 elements_add_test(CProgramExampleRun COMMAND CProgramExample)
 elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramExample)
 elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
@@ -127,7 +128,7 @@ elements_add_unit_test(TemplatedDataSourceUser_test_suite tests/src/GMock/Templa
 # inhibits the -Wsuggest-override that is not supported by gmock (yet)
 if(CXX_HAS_SUGGEST_OVERRIDE)
   set_property(SOURCE tests/src/GMock/DataSourceUser_test.cpp tests/src/GMock/TemplatedDataSourceUser_test.cpp
-               PROPERTY COMPILE_FLAGS -Wno-suggest-override)
+               APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-suggest-override")
 endif() 
                 
                        
@@ -248,7 +249,7 @@ endif()
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
-elements_install_python_modules(TEST_TIMEOUT 30)
+elements_install_python_modules(TEST_TIMEOUT 60)
 
 #===== Python programs =========================================================
 # Instruction for creating a Python executable
@@ -260,6 +261,7 @@ if(SWIG_FOUND AND PYTHONLIBS_FOUND)
 endif()
 #===== Test that the python program does run ========================================
 elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
+elements_add_test(PythonProgramExampleNoConfigFile COMMAND PythonProgramExample --config-file=toto.conf FAILS)
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
 elements_add_test(SwigProgramExampleRun COMMAND SwigProgramExample LABELS Swig Build)
 endif()
@@ -287,4 +289,5 @@ elements_add_test(OptionPrecedence COMMAND OptionPrecedence_test)
 
 
 elements_install_conf_files()
+elements_install_aux_files()
 

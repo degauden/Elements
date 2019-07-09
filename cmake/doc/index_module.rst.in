@@ -1,11 +1,11 @@
 .. @PROJECT_NAME@ @CMAKE_PROJECT_VERSION@ - @_el_pack_short@ documentation master file
 
-================
+=======================================================================================
 @_el_pack_short@
-================
+=======================================================================================
 
 .. toctree::
    :maxdepth: 5
 
    doc_module
-   modules   
+   @_api_modules_line@
