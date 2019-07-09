@@ -1,3 +1,35 @@
+* Mon Jul 8 2019 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.8
+- Bug fixes
+- Add the New DataSync service. (Antoine Basset)
+- Make the `--config-file` option crash if the file is not present
+  It was already the case for the python executables. Now a non-existing
+  configuration file passed explicitly on the command line will crash and
+  burn.
+- Add function to copy and configure an aux file 
+  (ElementsKernel.Auxiliary.configure)
+- Install a .editorconfig file when creating a new project.
+- Add new common exit codes for python (ElementsKernel.Exit)
+- Add the USE_ENV_FLAGS cmake switch. It allows the environment variables CXXFLAGS
+  and CFLAGS to be used by the builder. The default is OFF and these are 
+  ignored.
+- Add the USE_RPM_CMAKE_MACRO cmake switch. It forces the RPM spec file to use the 
+  %__cmake RPM macro for the build. 
+  - By default it is OFF.
+  - If is ON, it implies that USE_ENV_FLAGS=ON for consistency with some platform
+    RPM build scripts.
+- Fix warnings from the compilation of SWIG and Cython generated sources with
+  the clang++ compiler 
+- Add a CMake option (ELEMENTS_DEFAULT_LOGLEVEL) to set the default log level for 
+  Elements proper messages at compile time. The possible values are
+  - INFO: this keeps the same behavior and this is the default for the unsqueeded 
+    (Euclid-like) installation.
+  - DEBUG: this hides the internal Elements messages when running the built executables.
+    This is the default for the squeezed installation and the original message can be
+    recovered by using the --log-level=DEBUG option of the executable.
+- Add an example that opens explicitly a FITS file
+- Implement an EXCLUDE option for the Automatic Python Testing.
+- Move all the test data from the source tree to the auxdir.
+
 * Fri Apr 12 2019 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.6
 - Many bug fixes.
 - LICENSE.md: add LGPL license file
