@@ -273,12 +273,10 @@ if(NOT ELEMENTS_DEFAULT_LOGLEVEL)
     set(ELEMENTS_DEFAULT_LOGLEVEL "DEBUG" CACHE STRING "Set the default loglevel for the framework messages" FORCE)  
   endif()
 endif()
-add_definitions(-DELEMENTS_DEFAULT_LOGLEVEL=${ELEMENTS_DEFAULT_LOGLEVEL})
-
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
-  #message(STATUS "Setting cached build flags")
+  message(STATUS "Setting cached build flags")
 
 
   if(USE_RPM_CMAKE_MACRO)
@@ -424,9 +422,6 @@ if(NOT ELEMENTS_FLAGS_SET)
 
 
 
-  if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release")
-      add_definitions(-DNDEBUG)
-  endif()
 
 
 
@@ -501,6 +496,11 @@ if(NOT ELEMENTS_FLAGS_SET)
       CACHE INTERNAL "flag to check if the compilation flags have already been set")
 endif()
 
+add_definitions(-DELEMENTS_DEFAULT_LOGLEVEL=${ELEMENTS_DEFAULT_LOGLEVEL})
+
+if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DNDEBUG)
+endif()
 
 if(UNIX)
   add_definitions(-D_GNU_SOURCE -Df2cFortran)
