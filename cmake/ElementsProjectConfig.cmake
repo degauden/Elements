@@ -151,15 +151,26 @@ macro(elements_project project version)
   set(env_xml ${CMAKE_BINARY_DIR}/${project}BuildEnvironment.xml
      CACHE STRING "path to the XML file for the environment to be used in building and testing")
 
-  set(installed_env_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}BuildEnvironment.xml
-     CACHE STRING "path to the XML file for the environment to be used for installation")
+  if(SQUEEZED_INSTALL)
+    set(installed_env_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}BuildEnvironment.xml
+       CACHE STRING "path to the XML file for the environment to be used for installation")
+  else()
+    set(installed_env_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${project}BuildEnvironment.xml
+       CACHE STRING "path to the XML file for the environment to be used for installation")  
+  endif()
 
 
   set(env_release_xml ${CMAKE_BINARY_DIR}/${project}Environment.xml
      CACHE STRING "path to the XML file for the environment to be used once the project is installed")
 
-  set(installed_env_release_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}Environment.xml
-     CACHE STRING "path to the XML file for the environment to be used once the project is installed")
+  if(SQUEEZED_INSTALL)
+    set(installed_env_release_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${XML_INSTALL_SUFFIX}/${project}Environment.xml
+       CACHE STRING "path to the XML file for the environment to be used once the project is installed")
+  else()
+    set(installed_env_release_xml \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${project}Environment.xml
+       CACHE STRING "path to the XML file for the environment to be used once the project is installed")  
+  endif()
+
 
 
   mark_as_advanced(CMAKE_RUNTIME_OUTPUT_DIRECTORY CMAKE_LIBRARY_OUTPUT_DIRECTORY
@@ -841,7 +852,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   #--- Generate the manifest.xml file.
   if(NOT SQUEEZED_INSTALL)
     elements_generate_project_manifest(${CMAKE_BINARY_DIR}/manifest.xml ${ARGV})
-    install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION .)
+    install(FILES ${CMAKE_BINARY_DIR}/manifest.xml DESTINATION ${CMAKE_INSTALL_PREFIX})
   endif()
 
 
@@ -3687,7 +3698,7 @@ if(PACKAGE_NAME STREQUAL PACKAGE_FIND_NAME)
   endif()
 endif()
 ")
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION ${CMAKE_CONFIG_INSTALL_SUFFIX})
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}ConfigVersion.cmake DESTINATION ${CMAKE_CONFIG_INSTALL_PREFIX})
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}ConfigVersion.cmake)
 endmacro()
 
@@ -3728,7 +3739,7 @@ list(INSERT CMAKE_MODULE_PATH 0 \${${CMAKE_PROJECT_NAME}_DIR}/cmake)
 include(${CMAKE_PROJECT_NAME}PlatformConfig)
 ")
 
-  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION ${CMAKE_CONFIG_INSTALL_SUFFIX})
+  install(FILES ${CMAKE_BINARY_DIR}/config/${CMAKE_PROJECT_NAME}Config.cmake DESTINATION ${CMAKE_CONFIG_INSTALL_PREFIX})
   set_property(GLOBAL APPEND PROPERTY CONFIG_OBJECTS ${CMAKE_PROJECT_NAME}Config.cmake)
 endmacro()
 
