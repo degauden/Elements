@@ -2436,6 +2436,15 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
   elements_expand_source_dirs(h_srcs ${ARG_PUBLIC_HEADERS})
 
   add_library(${library} ${srcs} ${h_srcs})
+  if(ELEMENTS_HIDE_SYMBOLS)
+    include(GenerateExportHeader)
+    generate_export_header(${library} BASE_NAME ${library} EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${library}_export.h)
+    install(FILES ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${library}_export.h DESTINATION ${INCLUDE_INSTALL_SUFFIX})
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${library}_export.h)
+  else()
+    set_target_properties(${library} PROPERTIES DEFINE_SYMBOL "")
+  endif()
 
   set_target_properties(${library} PROPERTIES BASENAME "${CMAKE_SHARED_LIBRARY_PREFIX}${library}${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
@@ -2464,6 +2473,7 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
   set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${CMAKE_PROJECT_NAME}Exports.cmake)
   string(TOLOWER ${CMAKE_BUILD_TYPE} lower_cmake_build_type)
   set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${CMAKE_PROJECT_NAME}Exports-${lower_cmake_build_type}.cmake)
+
 endfunction()
 
 # Backward compatibility macro
