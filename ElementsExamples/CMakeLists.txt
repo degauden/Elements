@@ -216,6 +216,15 @@ elements_add_executable(CfitsioExample src/program/CfitsioExample.cpp
 elements_add_test(CfitsioWorks COMMAND CfitsioExample LABELS Cfitsio Build)
 endif()
 
+find_package(GnuAstro QUIET)
+if(GNUASTRO_FOUND)
+elements_add_executable(GnuAstroExample src/program/GnuAstroExample.cpp
+                        LINK_LIBRARIES GnuAstro ElementsExamples
+                        INCLUDE_DIRS GnuAstro ElementsExamples)
+elements_add_test(GnuAstroWorks COMMAND GnuAstroExample LABELS GnuAstro Build)
+endif()
+
+
 find_package(SWIG QUIET)
 find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET)
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
