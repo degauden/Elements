@@ -47,6 +47,12 @@ public:
     string test_upper_string {"THATSTRING"};
     log.info() << "This is the test upper string: " << test_upper_string;
 
+    double z {2.5};
+    double H0 {67.66};
+
+    auto age = gal_cosmology_age(z, H0, 0.0, 0.0, 0.0);
+
+    log.info() << "Age of the Universe @ z = " << z << " : " << age << " GA";
 
 
     return ExitCode::OK;
