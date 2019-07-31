@@ -347,7 +347,8 @@ macro(elements_project project version)
 
   find_program(ctest2junit_cmd ctest2JUnit.py HINTS ${binary_paths})
   if(ctest2junit_cmd)
-    set(ctest2junit_cmd ${PYTHON_EXECUTABLE} ${ctest2junit_cmd})
+#    set(ctest2junit_cmd ${PYTHON_EXECUTABLE} ${ctest2junit_cmd})
+    set(ctest2junit_cmd python ${ctest2junit_cmd})
   endif()
 
   find_program(ctestxml2html_cmd CTestXML2HTML.py HINTS ${binary_paths})
@@ -856,6 +857,26 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
       add_custom_target(HTMLSummary)
       add_custom_command(TARGET HTMLSummary
                          COMMAND echo "The HTML reports for the tests are not enabled.")
+    endif()
+
+    if(TEST_JUNIT_REPORT)
+      find_python_module(lxml)
+      if(PY_LXML)
+        find_file(ctest2junit_xsl_file
+                  NAMES CTest2JUnit.xsl
+                  PATHS ${CMAKE_MODULE_PATH}
+                  PATH_SUFFIXES auxdir/test auxdir
+                  NO_DEFAULT_PATH)
+        add_custom_target(JUnitSummary)
+        add_custom_command(TARGET JUnitSummary
+                           COMMAND ${env_cmd} --xml ${env_xml} 
+                                   ${ctest2junit_cmd} ${PROJECT_BINARY_DIR} ${ctest2junit_xsl_file})
+
+      endif()
+    else()
+      add_custom_target(JUnitSummary)
+      add_custom_command(TARGET JUnitSummary
+                         COMMAND echo "The JUnit reports for the tests are not enabled.")
     endif()
   endif()
 
