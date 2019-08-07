@@ -104,6 +104,10 @@ Logging::LogMessageStream::LogMessageStream(Category& logger, P_log_func log_fun
 Logging::LogMessageStream::LogMessageStream(LogMessageStream&& other)
     : m_logger(other.m_logger), m_log_func{other.m_log_func} { }
 
+Logging::LogMessageStream::LogMessageStream(const LogMessageStream& other)
+    : m_logger(other.m_logger), m_log_func{other.m_log_func} { }
+
+
 Logging::LogMessageStream::~LogMessageStream() {
   (m_logger.*m_log_func) (m_message.str());
 }
