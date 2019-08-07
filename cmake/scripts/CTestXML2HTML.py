@@ -1,5 +1,6 @@
-#!/usr/bin/env python
 # -*- coding:utf-8 -*-
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import os
 import sys
 import json
@@ -63,9 +64,6 @@ def formatMeasurementText(txt, escape=False, preformat=True):
     '''
     from xml.sax.saxutils import escape as escape_xml
     from codecs import encode
-    if hasattr(txt, 'decode'):
-        txt = txt.decode(errors='ignore')
-    txt = encode(txt, 'utf-8', 'xmlcharrefreplace')
     if escape:
         txt = escape_xml(txt)
     if preformat:
@@ -83,13 +81,13 @@ def dropCustomMeasurements(s):
     '<DartMeasurement ...></DartMeasurement>' tags) from the input string and
     return the new value.
     '''
-    pos = s.find(b'<DartMeasurement')
+    pos = s.find('<DartMeasurement')
     while pos >= 0:
-        end_pos = s.find(b'</DartMeasurement>', pos)
+        end_pos = s.find('</DartMeasurement>', pos)
         if end_pos < 0:
             break  # no end tag, better not to drop the section
         s = s[:pos] + s[end_pos + 18:]  # 18 is the size of the end tag
-        pos = s.find(b'<DartMeasurement')
+        pos = s.find('<DartMeasurement')
     return s
 
 
@@ -325,7 +323,7 @@ class TestOrganizer:
 
     def _addStatistics(self):  # ,groupContainer,fatherAdresses):
         """ add statistics to the html structure."""
-        for group in self._groups.iteritems():
+        for group in self._groups.items():
             if group[0] not in self.fieldToAvoidList:
                 self._addStatistic(group[1])
 
@@ -348,12 +346,12 @@ class TestOrganizer:
                 stats.clear()
                 stats.set("class", "statistics")
 
-        for stat in group["Statistics"].iteritems():
+        for stat in group["Statistics"].items():
             ET.SubElement(stats, "span", {
                           "class": stat[0]}).text = '  ' + stat[0] + ' = ' + str(stat[1])
 
         # process all the subgroups
-        for grp in group.iteritems():
+        for grp in group.items():
             if grp[0] not in self.fieldToAvoidList:
                 self._addStatistic(grp[1])
 
@@ -421,7 +419,7 @@ class TestOrganizer:
             @param depthMax: The maximum depth to search in. A negative value
                 correspond to no limit.
             """
-            iterator = master.getchildren()
+            iterator = list(master)
             if len(iterator) == 0 or depthMax == 0:
                 return None
             found = False
@@ -458,7 +456,7 @@ def get_cpuinfo():
         current = {}
         for l in open('/proc/cpuinfo'):
             try:
-                k, v = map(str.strip, l.split(':', 1))
+                k, v = map(lambda s: s.strip(), l.split(':', 1))
                 if k == 'processor':
                     current = {k: v}
                     cpuinfo.append(current)
@@ -784,6 +782,9 @@ def main():
                         text = VALUE_DECODE[value.attrib['encoding']](text)
                     if 'compression' in value.attrib:
                         text = VALUE_DECOMP[value.attrib['compression']](text)
+                    # In Python3 the methods in VALUE_DECOMP return a bytes object, which has to be decoded
+                    if hasattr(text, 'decode'):
+                        text = text.decode('utf-8')
                     text = dropCustomMeasurements(text)
                     text = formatMeasurementText(text, escape=True)
                     # no "Measurement" or no "Value" or no text
@@ -798,8 +799,8 @@ def main():
                             summary, x))
                     # encoding or compressions unknown, keep original text
                     text = formatMeasurementText(value=text, escape=True)
-                with open(os.path.join(testCaseDir, "stdout"), "w") as stdout:
-                    stdout.write(text)
+                with open(os.path.join(testCaseDir, "stdout"), "wb") as stdout:
+                    stdout.write(text.encode('utf-8'))
 
                 if "ctest" not in site.get("Generator"):
                     # write the other files
