@@ -349,8 +349,7 @@ macro(elements_project project version)
 
   find_program(ctestxml2html_cmd CTestXML2HTML.py HINTS ${binary_paths})
   if(ctestxml2html_cmd)
-#    set(ctestxml2html_cmd ${PYTHON_EXECUTABLE} ${ctestxml2html_cmd})
-    set(ctestxml2html_cmd python ${ctestxml2html_cmd})
+    set(ctestxml2html_cmd ${PYTHON_EXECUTABLE} ${ctestxml2html_cmd})
   endif()
 
   mark_as_advanced(env_cmd merge_cmd versheader_cmd instheader_cmd versmodule_cmd instmodule_cmd
