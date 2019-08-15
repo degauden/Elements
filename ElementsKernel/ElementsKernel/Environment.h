@@ -42,43 +42,8 @@ namespace Elements {
  */
 class ELEMENTS_API Environment {
 public:
-  /**
-   * @brief proxy class to overload the assignment
-   */
-  class Variable {
 
-  public:
-    Variable() = delete;
-    Variable(Environment& env, const std::string& index);
-    Variable(const Variable& other);
-    Variable(Variable&& other);
-    Variable& operator=(const Variable& other);
-    Variable& operator=(Variable&& other);
-    Variable& operator=(const std::string&);
-    Variable& set(const std::string&);
-    Variable& unSet();
-    Variable& append(const std::string&);
-    Variable& operator+=(const std::string&);
-    Variable& prepend(const std::string&);
-    Variable operator+(const std::string&);
-    const std::string& index() const;
-    Environment& env() const;
-    std::string value() const;
-    /// to string converter
-    operator std::string() const;
-    bool empty() const;
-    bool exists() const;
-
-  private:
-
-    void checkCompatibility(const Variable&);
-
-    /// a copiable and movable reference
-    std::reference_wrapper<Environment> m_env;
-
-    /// The Name of the variable
-    std::string m_index;
-  };
+  class Variable;
 
   explicit Environment(bool keep_same = true);
   virtual ~Environment();
@@ -113,6 +78,45 @@ private:
   /// variable added to the environment
   std::vector<std::string> m_added_variables;
 
+};
+
+/**
+ * @brief proxy class to overload the assignment
+ */
+
+class ELEMENTS_API Environment::Variable {
+
+public:
+  Variable() = delete;
+  Variable(Environment& env, const std::string& index);
+  Variable(const Variable& other);
+  Variable(Variable&& other);
+  Variable& operator=(const Variable& other);
+  Variable& operator=(Variable&& other);
+  Variable& operator=(const std::string&);
+  Variable& set(const std::string&);
+  Variable& unSet();
+  Variable& append(const std::string&);
+  Variable& operator+=(const std::string&);
+  Variable& prepend(const std::string&);
+  Variable operator+(const std::string&);
+  const std::string& index() const;
+  Environment& env() const;
+  std::string value() const;
+  /// to string converter
+  operator std::string() const;
+  bool empty() const;
+  bool exists() const;
+
+private:
+
+  void checkCompatibility(const Variable&);
+
+  /// a copiable and movable reference
+  std::reference_wrapper<Environment> m_env;
+
+  /// The Name of the variable
+  std::string m_index;
 };
 
 ELEMENTS_API std::ostream& operator<<(std::ostream&, const Environment::Variable&);
