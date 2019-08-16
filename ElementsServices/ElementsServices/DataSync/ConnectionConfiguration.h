@@ -53,7 +53,7 @@ public:
   UnknownHost() :
       std::runtime_error("I don't know this hosting solution!") {
   }
-  explicit UnknownHost(std::string hostName):
+  explicit UnknownHost(const std::string& hostName):
       std::runtime_error("I don't know this hosting solution: " + hostName) {
   }
 };
@@ -74,7 +74,7 @@ public:
   /**
    * @brief Create a dependency configuration by reading a configuration file.
    */
-  explicit ConnectionConfiguration(path configFile);
+  explicit ConnectionConfiguration(const path& configFile);
 
   /**
    * @brief Check whether existing local files can be overwritten.
@@ -83,11 +83,11 @@ public:
 
 protected:
 
-  void parseConfigurationFile(path filename);
+  void parseConfigurationFile(const path& filename);
 
-  void parseHost(std::string name);
+  void parseHost(const std::string& name);
 
-  void parseOverwritingPolicy(std::string policy);
+  void parseOverwritingPolicy(const std::string& policy);
 
 public:
 

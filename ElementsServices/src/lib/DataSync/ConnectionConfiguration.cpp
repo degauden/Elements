@@ -28,7 +28,7 @@ namespace DataSync {
 
 using std::string;
 
-ConnectionConfiguration::ConnectionConfiguration(path filename) {
+ConnectionConfiguration::ConnectionConfiguration(const path& filename) {
   parseConfigurationFile(filename);
 }
 
@@ -36,7 +36,7 @@ bool ConnectionConfiguration::overwritingAllowed() const {
   return overwritingPolicy == OverwritingPolicy::OVERWRITE;
 }
 
-void ConnectionConfiguration::parseConfigurationFile(path filename) {
+void ConnectionConfiguration::parseConfigurationFile(const path& filename) {
   // @TODO clean function
 
   namespace po = boost::program_options;
@@ -85,7 +85,7 @@ void ConnectionConfiguration::parseConfigurationFile(path filename) {
 
 }
 
-void ConnectionConfiguration::parseHost(string name) {
+void ConnectionConfiguration::parseHost(const string& name) {
   const string uncased = lower(name);
   if (uncased == "irods") {
     host = DataHost::IRODS;
@@ -96,7 +96,7 @@ void ConnectionConfiguration::parseHost(string name) {
   }
 }
 
-void ConnectionConfiguration::parseOverwritingPolicy(string policy) {
+void ConnectionConfiguration::parseOverwritingPolicy(const string& policy) {
   const std::vector<string> overwriteAllowedOptions = { "true", "yes", "y" };
   const std::vector<string> overwriteForbiddenOptions = { "false", "no", "n" };
   string uncased = lower(policy);
