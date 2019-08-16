@@ -30,7 +30,7 @@
 #include <map>
 #include <utility>                  // for forward
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>     // for path
 #include <log4cpp/Category.hh>
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
