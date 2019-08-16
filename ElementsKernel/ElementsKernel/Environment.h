@@ -45,6 +45,8 @@ public:
 
   class Variable;
 
+public:
+
   explicit Environment(bool keep_same = true);
   virtual ~Environment();
 
@@ -83,8 +85,7 @@ private:
 /**
  * @brief proxy class to overload the assignment
  */
-
-class ELEMENTS_API Environment::Variable {
+class Environment::Variable {
 
 public:
   Variable() = delete;

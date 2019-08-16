@@ -18,6 +18,9 @@ include_guard()
 
   if(DOXYGEN_FOUND)
 
+    message(STATUS "Doxygen executable: ${DOXYGEN_EXECUTABLE}")
+    message(STATUS "Doxygen version: ${DOXYGEN_VERSION}")
+
     find_package(PlantUML)
     
     set(DOXYGEN_EXTRA_FILE_PATTERNS) 
