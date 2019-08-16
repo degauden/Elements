@@ -28,8 +28,8 @@
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_ATTRIBUTE_H_
 
 /**
-* @def __attribute__(x)
-* define the __attribute__ macro to nothing if the gcc compiler
+* @def \_\_attribute\_\_(x)
+* define the \_\_attribute\_\_ macro to nothing if the gcc compiler
 * is earlier than GCC 3.4.
 */
 
