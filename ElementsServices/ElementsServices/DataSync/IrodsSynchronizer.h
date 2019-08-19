@@ -16,6 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsServices ElementsServices
+ * @{
+ */
+
 #ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_IRODSSYNCHRONIZER_H_
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_IRODSSYNCHRONIZER_H_
 
@@ -30,11 +35,13 @@ namespace DataSync {
 
 /**
  * @brief Check whether the iRODS client is installed.
+ * @ingroup ElementsServices
  */
 ELEMENTS_API bool irodsIsInstalled();
 
 /**
  * @class IrodsSynchronizer
+ * @ingroup ElementsServices
  * @brief A data synchronizer for iRODS hosts.
  */
 class ELEMENTS_API IrodsSynchronizer: public DataSynchronizer {
@@ -57,3 +64,5 @@ public:
 }  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_IRODSSYNCHRONIZER_H_
+
+/**@}*/

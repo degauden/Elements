@@ -16,6 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsServices ElementsServices
+ * @{
+ */
+
 #ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H_
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H_
 
@@ -45,6 +50,7 @@ enum OverwritingPolicy {
 
 /**
  * @class UnknownHost
+ * @ingroup ElementsServices
  * @brief Exception raised when a hosting solution is not supported by the tool.
  */
 class ELEMENTS_API UnknownHost: public std::runtime_error {
@@ -60,6 +66,7 @@ public:
 
 /**
  * @class ConnectionConfiguration
+ * @ingroup ElementsServices
  * @brief The connection configuration mainly holds:
  * * the host type and URL,
  * * the user name and password,
@@ -106,3 +113,5 @@ public:
 }  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H_
+
+/**@}*/

@@ -42,6 +42,7 @@ enum class SearchType {
  * @brief
  *   Searches for a file or a directory in a directory. The search can be recursive (SearchType.Recursive)
  *   and in that case more than one results can be return
+ * @ingroup ElementsKernel
  * @param searched_name
  *   Name of the searched file or directory
  * @tparam T

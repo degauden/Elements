@@ -61,6 +61,6 @@ ELEMENTS_API std::vector<boost::filesystem::path> getConfigurationLocations(bool
 
 #include "ElementsKernel/_impl/Configuration.icpp"
 
-
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
+
 /**@}*/

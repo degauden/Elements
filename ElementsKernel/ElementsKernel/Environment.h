@@ -39,6 +39,7 @@ namespace Elements {
 
 /*
  * @brief Python dictionary-like Environment interface
+ * @ingroup ElementsKernel
  */
 class ELEMENTS_API Environment {
 public:
@@ -69,6 +70,7 @@ private:
 
   /**
    * @brief check that the variable is in the environment
+   * @ingroup ElementsKernel
    */
   static void checkOutOfRange(const std::string&);
 
@@ -84,6 +86,7 @@ private:
 
 /**
  * @brief proxy class to overload the assignment
+ * @ingroup ElementsKernel
  */
 class Environment::Variable {
 

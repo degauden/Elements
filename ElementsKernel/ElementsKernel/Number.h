@@ -38,6 +38,7 @@ namespace Elements {
  *   this function is a number cast. It behaves exactly as a static_cast except
  *   when casting from a floating point number to an integral one. This one is
  *   doing the correct rounding.
+ * @ingroup ElementsKernel
  * @param s
  *   number to cast
  * @return

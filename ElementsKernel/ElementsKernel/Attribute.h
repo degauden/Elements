@@ -27,12 +27,6 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_ATTRIBUTE_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_ATTRIBUTE_H_
 
-/**
-* @def __attribute__(x)
-* define the \_\_attribute\_\_ macro to nothing if the gcc compiler
-* is earlier than GCC 3.4.
-*/
-
 // Note: __attribute__ is a GCC keyword available since GCC 3.4
 #ifndef __GNUC__
 #  define __attribute__(x)

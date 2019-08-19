@@ -34,7 +34,7 @@ namespace System {
 
 /**
  * @brief Cast from void * to function pointer
- *
+ * @ingroup ElementsKernel
  * @details
  *   Small helper function that allows the cast from void * to function pointer
  *   and vice versa without the message

@@ -38,6 +38,11 @@
 
 namespace Elements {
 
+/**
+ * @class Exception
+ * @brief Elements base exception class
+ * @ingroup ElementsKernel
+ */
 class ELEMENTS_API Exception: public std::exception {
 public:
   /**

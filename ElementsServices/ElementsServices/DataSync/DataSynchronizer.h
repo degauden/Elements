@@ -16,6 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsServices ElementsServices
+ * @{
+ */
+
 #ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZER_H_
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZER_H_
 
@@ -34,6 +39,7 @@ namespace DataSync {
 
 /**
  * @class DownloadFailed
+ * @ingroup ElementsServices
  * @brief An exception raised when downloading fails.
  */
 class ELEMENTS_API DownloadFailed: public std::runtime_error {
@@ -51,6 +57,7 @@ public:
 
 /**
  * @class DataSynchronizer
+ * @ingroup ElementsServices
  * @brief Base class to synchronize test data.
  * @details
  * Child classes should provide their synchronization command line.
@@ -96,3 +103,5 @@ protected:
 }  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZER_H_
+
+/**@}*/

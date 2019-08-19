@@ -16,6 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsServices ElementsServices
+ * @{
+ */
+
 #ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_WEBDAVSYNCHRONIZER_H_
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_WEBDAVSYNCHRONIZER_H_
 
@@ -30,11 +35,13 @@ namespace DataSync {
 
 /**
  * @brief Check whether the WebDAV client is installed.
+ * @ingroup ElementsServices
  */
 ELEMENTS_API bool webdavIsInstalled();
 
 /**
  * @class WebdavSynchronizer
+ * @ingroup ElementsServices
  * @brief A data synchronizer for WebDAV hosts.
  *
  */
@@ -58,3 +65,5 @@ public:
 }  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_WEBDAVSYNCHRONIZER_H_
+
+/**@}*/

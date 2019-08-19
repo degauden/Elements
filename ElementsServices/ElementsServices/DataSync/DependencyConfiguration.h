@@ -16,6 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsServices ElementsServices
+ * @{
+ */
+
 #ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DEPENDENCYCONFIGURATION_H_
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DEPENDENCYCONFIGURATION_H_
 
@@ -30,6 +35,7 @@ namespace DataSync {
 
 /**
  * @class DependencyConfiguration
+ * @ingroup ElementsServices
  * @brief The dependency configurations holds,
  * for each test file to be retrieved:
  * * the distant source path,
@@ -83,3 +89,5 @@ private:
 }  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DEPENDENCYCONFIGURATION_H_
+
+/**@}*/

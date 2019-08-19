@@ -55,32 +55,38 @@ enum class Type {
 
 /**
  * @brief Separator of path entries. Usually ":" on Unix.
+ * @ingroup ElementsKernel
  */
 ELEMENTS_API extern const std::string PATH_SEP;
 
 /**
  * @brief map containing the name of the path variable for each type
+ * @ingroup ElementsKernel
  */
 ELEMENTS_API extern const std::map<Type, const std::string> VARIABLE;
 
 /**
  * @brief map containing the default project installation
  * suffixes for each variable
+ * @ingroup ElementsKernel
  */
 ELEMENTS_API extern const std::map<Type, const std::vector<std::string>> SUFFIXES;
 
 /**
  * @brief map containing the default external locations for each variable
+ * @ingroup ElementsKernel
  */
 ELEMENTS_API extern const std::map<Type, const std::vector<std::string>> DEFAULT_LOCATIONS;
 
 /**
  * @brief map containing the sub-level property of the path components
+ * @ingroup ElementsKernel
  */
 ELEMENTS_API extern const std::map<Type, const bool> HAS_SUBLEVELS;
 
 /**
  * @brief function to get the locations from an environment variable
+ * @ingroup ElementsKernel
  * @details
  *    This function return the raw locations pointed by the environment
  *    variable. It doesn't add the internal locations which are not in
@@ -98,6 +104,7 @@ ELEMENTS_API std::vector<boost::filesystem::path> getLocationsFromEnv(const std:
 
 /**
  * @brief retrieve path from a file name and a set of location to look into
+ * @ingroup ElementsKernel
  * @param file_name
  *   file name to look for. Can be of the form "Some.txt" or "Place/Some.txt"
  * @param locations
@@ -130,6 +137,7 @@ ELEMENTS_API boost::filesystem::path getPathFromLocations(const std::string& fil
 
 /**
  * @brief retrieve all the paths from a file name and a set of location to look into
+ * @ingroup ElementsKernel
  * @param file_name
  *   file name to look for. Can be of the form "Some.txt" or "Place/Some.txt"
  * @param locations
@@ -162,6 +170,7 @@ ELEMENTS_API std::vector<boost::filesystem::path> getAllPathFromLocations(const 
 
 /**
  * @brief retrieve path from a file name and an environment variable to look into
+ * @ingroup ElementsKernel
  * @param file_name
  *   file name to look for. Can be of the form "Some.txt" or "Place/Some.txt"
  * @param path_variable
@@ -184,6 +193,7 @@ ELEMENTS_API boost::filesystem::path getPathFromEnvVariable<std::string>(const s
 
 /**
  * @brief collate a vector of path into a string using PATH_SEP
+ * @ingroup ElementsKernel
  * @param path_list
  *   list of path to be joined.
  * @return collated string

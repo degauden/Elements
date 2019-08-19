@@ -16,6 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsServices ElementsServices
+ * @{
+ */
+
 #ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCUTILS_H_
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCUTILS_H_
 
@@ -45,6 +50,7 @@ ELEMENTS_API void createLocalDirOf(path localFile);
 
 /**
  * @brief Get the value of an environment variable.
+ * @ingroup ElementsServices
  * @return The value if the variable exists; "" otherwise.
  */
 ELEMENTS_API std::string environmentVariable(std::string name);
@@ -68,3 +74,5 @@ ELEMENTS_API bool containsInThisOrder(
 }  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCUTILS_H_
+
+/**@}*/

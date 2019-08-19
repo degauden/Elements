@@ -39,7 +39,7 @@ namespace Elements {
 
 /**
  * @class Logging
- *
+ * @ingroup ElementsKernel
  * @brief Logging API of the Elements framework
  *
  *
@@ -73,8 +73,8 @@ namespace Elements {
  * 2014-03-17T16:20:20CET name ERROR : A value 15 in a steam style error message
  * \endcode
  *
- * By default the logging level is set to INFO and the default behavior is to
- * forward all the messages to the standard error stream. This behavior can be
+ * By default the logging level is set to INFO and the default behaviour is to
+ * forward all the messages to the standard error stream. This behaviour can be
  * modified by using the method Elements::Logging::setLevel, which can be used
  * to set the level to show, and the method Elements::Logging::setLogFile, which
  * can be used to redirect the messages in a file (in addition to the standard
@@ -85,7 +85,7 @@ namespace Elements {
  * <b>--log-file</b> and no direct use of the Elements::Logging::setLevel and
  * Elements::Logging::setLogFile should be performed. Exception of this rule is
  * any log messages which are sent before the command line parameters are handled
- * (like global or static variable initializations, or any other action before
+ * (like global or static variable initialisations, or any other action before
  * the call of the main method). These messages (without an explicit call to the
  * Elements::Logging::setLogFile method) will only appear in the standard error
  * stream.

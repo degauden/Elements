@@ -16,6 +16,10 @@
  *
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
 
 #ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_RECTANGLE_H_
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_RECTANGLE_H_
@@ -41,3 +45,5 @@ public:
 }  // namespace Elements
 
 #endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_RECTANGLE_H_
+
+/**@}*/

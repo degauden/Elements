@@ -32,6 +32,7 @@ namespace Examples {
 
 /**
  * @class TemplatedDataSourceUser
+ * @ingroup ElementsExamples
  * @brief This class has been created to demonstrate unit testing. It manipulate
  * an object representing a DataSource using template to achieve polymorphism.
  */
