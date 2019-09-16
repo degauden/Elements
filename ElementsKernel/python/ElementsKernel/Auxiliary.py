@@ -69,6 +69,6 @@ def configure(file_name, target_dir, target_name=None, use_stem=False,
         file_txt = open(file_path).read()
         with open(target_path, "w") as tf:
             tf.write(file_txt % configuration)
-            
+
     return target_path
 
