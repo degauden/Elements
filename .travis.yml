@@ -19,12 +19,13 @@ script:
   - docker cp "builder:/build/Packages/RPM/RPMS/x86_64" "./packages"
 
 after_success: |
+  version=$(grep elements_project CMakeLists.txt | sed 's/.*(//' | sed 's/[^ ]* //' | sed 's/ .*//')
   cd packages
   if [ -z "${TRAVIS_PULL_REQUEST_BRANCH}" ] && [ ! -z "${BINTRAY_REPO}" ]; then
     case "${TRAVIS_BRANCH}" in
       develop|master)
         for p in *.rpm; do
-          curl -T "${p}" "-u${BINTRAY_USER}:${BINTRAY_TOKEN}" "${BINTRAY_REPO}/${OS_TYPE}/${TRAVIS_BRANCH}/${OS_VERSION}/${OS_ARCH}/rpms/${p};bt_package=Elements?override=1&publish=1"
+          curl -T "${p}" "-u${BINTRAY_USER}:${BINTRAY_TOKEN}" "${BINTRAY_REPO}/${OS_TYPE}/${TRAVIS_BRANCH}/${OS_VERSION}/${OS_ARCH}/rpms/${p};bt_package=Elements;bt_version=${version}?override=1&publish=1"
         done;;
     esac
   fi
