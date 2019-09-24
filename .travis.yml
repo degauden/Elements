@@ -7,7 +7,7 @@ env:
     - OS_TYPE=fedora OS_VERSION=29
     - OS_TYPE=fedora OS_VERSION=30
     - OS_TYPE=fedora OS_VERSION=31
-    - OS_TYPE=fedora OS_VERSION=rawhide
+    - OS_TYPE=fedora OS_VERSION=32
 
 services:
   - docker
