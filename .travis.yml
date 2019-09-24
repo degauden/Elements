@@ -2,7 +2,6 @@ language: minimal
 
 env:
   global:
-    - BINTRAY_REPO="https://api.bintray.com/content/astrorama/"
     - OS_ARCH=x86_64
   matrix:
     - OS_TYPE=fedora OS_VERSION=29
@@ -21,7 +20,7 @@ script:
 
 after_success: |
   cd packages
-  if [ -z "${TRAVIS_PULL_REQUEST_BRANCH}" ]; then
+  if [ -z "${TRAVIS_PULL_REQUEST_BRANCH}" ] && [ ! -z "${BINTRAY_REPO}" ]; then
     case "${TRAVIS_BRANCH}" in
       develop|master)
         for p in *.rpm; do
