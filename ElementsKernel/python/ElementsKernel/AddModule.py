@@ -94,7 +94,6 @@ def createCmakeListFile(project_dir, module_name, module_dep_list, standalone=Fa
     for src in target_locations:
         file_name = os.path.join("ElementsKernel", "templates", src)
         tgt = target_locations[src]
-        print ('tgt: ',tgt,' src: ',src)
         module_dir = os.path.join(project_dir, module_name)
         Auxiliary.configure(file_name, module_dir, tgt,
                             configuration="",
