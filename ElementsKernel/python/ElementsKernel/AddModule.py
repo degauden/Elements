@@ -27,24 +27,28 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import argparse
 import os
 
-import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.ParseCmakeLists as pcl
-import ElementsKernel.ParseCmakeListsMacros as pclm
-import ElementsKernel.Logging as log
-
 from ElementsKernel import Exit
+from ElementsKernel import Auxiliary
+from ElementsKernel import ProjectCommonRoutines
+from ElementsKernel import ParseCmakeLists
+from ElementsKernel import ParseCmakeListsMacros
+from ElementsKernel import Logging
 
 try:
     from builtins import input
 except:
     from __builtin__ import input
 
-logger = log.getLogger('AddElementsModule')
+logger = Logging.getLogger('AddElementsModule')
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 CMAKE_LISTS_FILE_IN = 'CMakeLists.txt.mod.in'
 AUX_MOD_RST_IN = 'doc_module.rst.in'
+
+target_locations = { CMAKE_LISTS_FILE_IN: "CMakeLists.txt",
+                     AUX_MOD_RST_IN: "doc/doc_module.rst"
+                   }
 
 ################################################################################
 
@@ -72,52 +76,41 @@ def checkCmakelistFileExist(project_directory):
 ################################################################################
 
 
-def createModuleDirectories(mod_path, module_name):
+def createModuleDirectories(project_dir, module_name):
     """
     Create the directory structure for the module
     """
-    # Create module directories
-    logger.info('# Creating the module directories')
-    os.makedirs(mod_path)
-    os.makedirs(os.path.join(mod_path, module_name))
-    os.makedirs(os.path.join(mod_path, 'doc'))
-    os.makedirs(os.path.join(mod_path, 'conf'))
-    os.makedirs(os.path.join(mod_path, 'tests', 'src'))
+    # Create standalone directories
+    standalone_directories = [module_name, "doc", "conf", "tests/src"]
+    for d in standalone_directories:
+        target_dir = os.path.join(project_dir, module_name, d)
+        os.makedirs(target_dir)
+        ProjectCommonRoutines.addItemToCreationList(target_dir)
 
-    epcr.copyAuxFile(os.path.join(mod_path, 'doc'), AUX_MOD_RST_IN)
-    mod_rst_file = os.path.join(mod_path, 'doc', AUX_MOD_RST_IN)
-
-    file_no_dot_in = mod_rst_file.replace('.in', '')
-    os.rename(mod_rst_file, file_no_dot_in)
-    epcr.addItemToCreationList(file_no_dot_in)
-
-################################################################################
-
-
-def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=False):
+def createCmakeListFile(project_dir, module_name, module_dep_list, standalone=False):
     """
     Create the <CMakeList.txt> file and add dependencies to it
     """
-    logger.info('# Create the <%s> File', CMAKE_LISTS_FILE)
-    cmake_list_file_final = os.path.join(module_dir, CMAKE_LISTS_FILE)
-
-    # Copy aux file to destination
-    epcr.copyAuxFile(module_dir, CMAKE_LISTS_FILE_IN)
-    # Rename it
-    file_template = os.path.join(module_dir, CMAKE_LISTS_FILE)
-    os.rename(os.path.join(module_dir, CMAKE_LISTS_FILE_IN),
-              file_template)
-    epcr.addItemToCreationList(file_template)
+    for src in target_locations:
+        file_name = os.path.join("ElementsKernel", "templates", src)
+        tgt = target_locations[src]
+        print ('tgt: ',tgt,' src: ',src)
+        module_dir = os.path.join(project_dir, module_name)
+        Auxiliary.configure(file_name, module_dir, tgt,
+                            configuration="",
+                            create_missing_dir=True)
+        ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, tgt))
 
     # Read the template file
-    fo = open(file_template)
+    cmake_list_file = os.path.join(module_dir, CMAKE_LISTS_FILE)
+    fo = open(cmake_list_file)
     template_data = fo.read()
     fo.close()
 
-    cmake_object = pcl.CMakeLists(template_data)
+    cmake_object = ParseCmakeLists.CMakeLists(template_data)
 
     # Add elements_subdir macro
-    subdir_obj = pclm.ElementsSubdir(module_name)
+    subdir_obj = ParseCmakeListsMacros.ElementsSubdir(module_name)
     cmake_object.elements_subdir_list.append(subdir_obj)
 
     # Set <ElementsKernel> as a default
@@ -132,16 +125,15 @@ def createCmakeListFile(module_dir, module_name, module_dep_list, standalone=Fal
     # Update ElementsDependsOnSubdirs macro
     if module_dep_list:
         for mod_dep in module_dep_list:
-            dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
+            dep_object = ParseCmakeListsMacros.ElementsDependsOnSubdirs([mod_dep])
             cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
     # Write new data
-    f = open(cmake_list_file_final, 'w')
+    f = open(cmake_list_file, 'w')
     f.write(str(cmake_object))
     f.close()
 
 ################################################################################
-
 
 def createModule(project_dir, module_name, dependency_list, standalone=False, answer_yes=False):
     """
@@ -159,12 +151,12 @@ def createModule(project_dir, module_name, dependency_list, standalone=False, an
             'Do you want to replace the existing module (y/n), default: n)?')
         if answer_yes or response_key.lower() == "y":
             logger.info('# Replacing the existing module: <%s>', module_name)
-            epcr.eraseDirectory(mod_path)
+            ProjectCommonRoutines.eraseDirectory(mod_path)
         else:
             raise Exception()
-
-    createModuleDirectories(mod_path, module_name)
-    createCmakeListFile(mod_path, module_name, dependency_list, standalone)
+    
+    createModuleDirectories(project_dir, module_name)
+    createCmakeListFile(project_dir, module_name, dependency_list, standalone)
 
 ################################################################################
 
@@ -175,7 +167,7 @@ def checkDependencyListValid(str_list):
     """
     if str_list:
         for elt in str_list:
-            epcr.checkNameAndVersionValid(elt, '1.0')
+            ProjectCommonRoutines.checkNameAndVersionValid(elt, '1.0')
 
 ################################################################################
 
@@ -186,7 +178,7 @@ def makeChecks(project_dir, module_name, dependency_list):
     """
     # We absolutely need an Elements cmake file
     checkCmakelistFileExist(project_dir)
-    epcr.checkNameAndVersionValid(module_name, '1.0')
+    ProjectCommonRoutines.checkNameAndVersionValid(module_name, '1.0')
     checkDependencyListValid(dependency_list)
 
 ################################################################################
@@ -248,7 +240,7 @@ def mainMethod(args):
         createModule(project_dir, module_name, dependency_list, standalone, answer_yes)
         logger.info('# <%s> module successfully created in <%s>.', module_name, project_dir)
         # Print all files created
-        epcr.printCreationList()
+        ProjectCommonRoutines.printCreationList()
 
     except Exception as msg:
         if str(msg):
