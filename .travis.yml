@@ -25,7 +25,7 @@ after_success: |
     case "${TRAVIS_BRANCH}" in
       develop|master)
         for p in *.rpm; do
-          curl -T "${p}" "-u${BINTRAY_USER}:${BINTRAY_TOKEN}" "${BINTRAY_REPO}/${OS_TYPE}/${TRAVIS_BRANCH}/${OS_VERSION}/${OS_ARCH}/rpms/${p};bt_package=Elements;bt_version=${version}?override=1&publish=1"
+          curl -T "${p}" "-u${BINTRAY_USER}:${BINTRAY_TOKEN}" "${BINTRAY_REPO}/${TRAVIS_BRANCH}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/${p};bt_package=Elements;bt_version=${version}?override=1&publish=1"
         done;;
     esac
   fi
