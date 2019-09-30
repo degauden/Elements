@@ -28,13 +28,14 @@ import argparse
 import os
 import time
 
-import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.ParseCmakeListsMacros as pclm
-import ElementsKernel.Logging as log
+from ElementsKernel import Auxiliary
+from ElementsKernel import ProjectCommonRoutines
+from ElementsKernel import ParseCmakeListsMacros
+from ElementsKernel import Logging
 
 from ElementsKernel import Exit
 
-logger = log.getLogger('AddCppClass')
+logger = Logging.getLogger('AddCppClass')
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
@@ -65,128 +66,51 @@ def createDirectories(module_dir, module_name, subdir):
     """
     Create directories needed for a module and a class
     """
-    # Create Directories
-    module_path = os.path.join(module_dir, module_name, subdir)
-    if not os.path.exists(module_path):
-        os.makedirs(module_path)
-    src_lib_path = os.path.join(module_dir, 'src', 'lib', subdir)
-    if not os.path.exists(src_lib_path):
-        os.makedirs(src_lib_path)
-    test_path = os.path.join(module_dir, 'tests', 'src', subdir)
-    if not os.path.exists(test_path):
-        os.makedirs(test_path)
+    # Create standalone directories
+    standalone_directories = [os.path.join(module_name, subdir),
+                              os.path.join('src', 'lib', subdir),
+                              os.path.join('tests', 'src', subdir)]
+    for d in standalone_directories:
+        target_dir = os.path.join(module_dir, d)
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+            ProjectCommonRoutines.addItemToCreationList(target_dir)
 
 ################################################################################
 
-
-def substituteStringsInDotH(file_path, class_name, module_name, subdir):
+def substituteAuxFiles(module_dir, class_name, module_name, subdir):
     """
-    Substitute variables in the Header template file and rename it
     """
-    template_file = os.path.join(file_path, H_TEMPLATE_FILE)
-    os.rename(os.path.join(file_path, H_TEMPLATE_FILE_IN), template_file)
+    target_locations = { 
+                       H_TEMPLATE_FILE_IN: os.path.join(module_name, subdir, class_name + ".h"),
+                       CPP_TEMPLATE_FILE_IN: os.path.join('src', 'lib', subdir, class_name + ".cpp"),
+                       UNITTEST_TEMPLATE_FILE_IN: os.path.join('tests', 'src', subdir, class_name + "_test.cpp")
+                       }
 
-    # Substitute strings in h_template_file
-    f = open(template_file)
-    data = f.read()
-    # Format all dependent projects
-    # We put by default Elements dependency if no one is given
-    date_str = time.strftime("%x")
-    author_str = epcr.getAuthor()
-    # Make some substitutions
-    file_name_str = os.path.join(module_name, subdir, class_name + '.h')
-    define_words_str = '_' + file_name_str
-    define_words_str = define_words_str.replace(H_TEMPLATE_FILE, class_name + '.h')
-    define_words_str = define_words_str.replace('.', '_')
-    define_words_str = (define_words_str.replace(os.path.sep, '_')).upper()
-    new_data = data % {"FILE": file_name_str,
-                       "DATE": date_str,
-                       "AUTHOR": author_str,
-                       "DEFINE_WORDS": define_words_str,
+    ossep2 ="" if not subdir else os.sep
+
+    configuration = {  "FILE_H": os.path.join(module_name, subdir, class_name + '.h'),
+                       "FILE_CPP": os.path.join('src', 'lib', subdir, class_name + '.cpp'),
+                       "FILE_TEST": os.path.join('tests', 'src', subdir, class_name + '_test.cpp'),
+                       "DATE": time.strftime("%x"),
+                       "AUTHOR": ProjectCommonRoutines.getAuthor(),
+                       "DEFINE_WORDS": ("_" + module_name + "_" + class_name + "_H").upper(),
                        "CLASSNAME": class_name,
-                       "MODULENAME": module_name}
-
-    f.close()
-    # Save new data
-    file_name = template_file.replace(H_TEMPLATE_FILE, class_name + '.h')
-    f = open(file_name, 'w')
-    f.write(new_data)
-    f.close()
-    os.remove(template_file)
-    epcr.addItemToCreationList(file_name)
-
-################################################################################
-
-
-def substituteStringsInDotCpp(file_path, class_name, module_name, subdir):
-    """
-    Substitute variables in the CPP template file and rename it
-    """
-    template_file = os.path.join(file_path, CPP_TEMPLATE_FILE)
-    os.rename(os.path.join(file_path, CPP_TEMPLATE_FILE_IN), template_file)
-
-    # Substitute strings in template_file
-    f = open(template_file)
-    data = f.read()
-    author_str = epcr.getAuthor()
-    date_str = time.strftime("%x")
-    # This avoid double slashes
-    ossep2 = os.sep
-    if not subdir:
-        ossep2 = ''
-    file_name_str = os.path.join('src', 'lib', subdir, class_name + '.cpp')
-    new_data = data % {"FILE": file_name_str,
-                       "DATE": date_str,
-                       "AUTHOR": author_str,
                        "OSSEP": os.sep,
                        "OSSEP2": ossep2,
                        "MODULENAME": module_name,
                        "SUBDIR": subdir,
-                       "CLASSNAME": class_name}
+                    }
+    # Put AUX files to their target
+    for src in target_locations:
+        file_name = os.path.join("ElementsKernel", "templates", src)
+        tgt = target_locations[src]
+        Auxiliary.configure(file_name, module_dir, tgt,
+                            configuration=configuration,
+                            create_missing_dir=True)
+        ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, tgt))
 
-    f.close()
-    # Save new data
-    file_name = template_file.replace(CPP_TEMPLATE_FILE, class_name + '.cpp')
-    f = open(file_name, 'w')
-    f.write(new_data)
-    f.close()
-    os.remove(template_file)
-    epcr.addItemToCreationList(file_name)
-
-################################################################################
-
-
-def substituteStringsInUnitTestFile(file_path, class_name, module_name, subdir):
-    """
-    Substitute variables in the Unit Test template file and rename it
-    """
-    template_file = os.path.join(file_path, UNITTEST_TEMPLATE_FILE)
-    os.rename(os.path.join(file_path, UNITTEST_TEMPLATE_FILE_IN), template_file)
-
-    # Substitute strings in template_file
-    f = open(template_file)
-    data = f.read()
-    author_str = epcr.getAuthor()
-    date_str = time.strftime("%x")
-    file_name_str = os.path.join('tests', 'src', subdir, class_name + '_test.cpp')
-    new_data = data % {"FILE": file_name_str,
-                       "DATE": date_str,
-                       "AUTHOR": author_str,
-                       "OSSEP": os.sep,
-                       "MODULENAME": module_name,
-                       "SUBDIR": subdir,
-                       "CLASSNAME": class_name}
-
-    f.close()
-    # Save new data
-    file_name = template_file.replace(UNITTEST_TEMPLATE_FILE, class_name + '_test.cpp')
-    f = open(file_name, 'w')
-    f.write(new_data)
-    f.close()
-    os.remove(template_file)
-    epcr.addItemToCreationList(file_name)
-
-################################################################################
+# # ###############################################################################
 
 
 def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
@@ -196,11 +120,11 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
-    epcr.addItemToCreationList(cmake_filename)
+    ProjectCommonRoutines.addItemToCreationList(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
-        cmake_object, module_name = epcr.updateCmakeCommonPart(cmake_filename, library_dep_list)
+        cmake_object, module_name = ProjectCommonRoutines.updateCmakeCommonPart(cmake_filename, library_dep_list)
 
         # Put ElementsKernel as a default
         default_dependency = 'ElementsKernel'
@@ -213,7 +137,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
         # Update ElementsDependsOnSubdirs macro
         if elements_dep_list:
             for mod_dep in elements_dep_list:
-                dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
+                dep_object = ParseCmakeListsMacros.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
         # Update elements_add_library macro
@@ -235,7 +159,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                 source_list = [source]
                 include_dirs_list = []
                 public_headers_list = [module_name]
-                lib_object = pclm.ElementsAddLibrary(module_name, source_list,
+                lib_object = ParseCmakeListsMacros.ElementsAddLibrary(module_name, source_list,
                                                     link_libs, include_dirs_list,
                                                     public_headers_list)
                 cmake_object.elements_add_library_list.append(lib_object)
@@ -249,7 +173,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
                 exec_test_name = module_name + "_" + class_name + '_test'
                 test_name = class_name
 
-            unittest_object = pclm.ElementsAddUnitTest(test_name,
+            unittest_object = ParseCmakeListsMacros.ElementsAddUnitTest(test_name,
                                                       [source_name], [module_name],
                                                       [], 'Boost', exec_test_name)
             cmake_object.elements_add_unit_test_list.append(unittest_object)
@@ -288,19 +212,10 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
 
     createDirectories(module_dir, module_name, subdir)
 
-    # Copy aux files
-    class_h_path = os.path.join(module_dir, module_name, subdir)
-    epcr.copyAuxFile(class_h_path, H_TEMPLATE_FILE_IN)
-    class_cpp_path = os.path.join(module_dir, 'src', 'lib', subdir)
-    epcr.copyAuxFile(class_cpp_path, CPP_TEMPLATE_FILE_IN)
-    unittest_path = os.path.join(module_dir, 'tests', 'src', subdir)
-    epcr.copyAuxFile(unittest_path, UNITTEST_TEMPLATE_FILE_IN)
     # Update cmake file
     updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list, library_dep_list)
     # Substitue strings in files
-    substituteStringsInDotH(class_h_path, class_name, module_name, subdir)
-    substituteStringsInDotCpp(class_cpp_path, class_name, module_name, subdir)
-    substituteStringsInUnitTestFile(unittest_path, class_name, module_name, subdir)
+    substituteAuxFiles( module_dir, class_name, module_name, subdir)
 
 ################################################################################
 
@@ -310,8 +225,8 @@ def makeChecks():
     Make some checks
     """
     # Check aux files exist
-    epcr.checkAuxFileExist(H_TEMPLATE_FILE_IN)
-    epcr.checkAuxFileExist(CPP_TEMPLATE_FILE_IN)
+    ProjectCommonRoutines.checkAuxFileExist(H_TEMPLATE_FILE_IN)
+    ProjectCommonRoutines.checkAuxFileExist(CPP_TEMPLATE_FILE_IN)
 
 ################################################################################
 
@@ -367,7 +282,7 @@ def mainMethod(args):
         # Make checks
         makeChecks()
         # We absolutely need a Elements cmake file
-        module_name = epcr.getElementsModuleName(module_dir)
+        module_name = ProjectCommonRoutines.getElementsModuleName(module_dir)
 
         logger.info('Current directory : %s', module_dir)
         logger.info('')
@@ -378,10 +293,10 @@ def mainMethod(args):
         logger.info('<%s> class successfully created in <%s>.', class_name, os.path.join(module_dir, subdir))
 
         # Remove backup file
-        epcr.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
+        ProjectCommonRoutines.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
 
         # Print all files created
-        epcr.printCreationList()
+        ProjectCommonRoutines.printCreationList()
 
     except Exception as msg:
         if str(msg):
