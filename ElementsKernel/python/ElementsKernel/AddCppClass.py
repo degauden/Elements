@@ -99,7 +99,7 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir):
                        "OSSEP": os.sep,
                        "OSSEP2": ossep2,
                        "MODULENAME": module_name,
-                       "SUBDIR": subdir,
+                       "SUBDIR": subdir
                     }
     # Put AUX files to their target
     for src in target_locations:
