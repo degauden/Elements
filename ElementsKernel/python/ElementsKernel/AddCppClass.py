@@ -74,7 +74,6 @@ def createDirectories(module_dir, module_name, subdir):
         target_dir = os.path.join(module_dir, d)
         if not os.path.exists(target_dir):
             os.makedirs(target_dir)
-            ProjectCommonRoutines.addItemToCreationList(target_dir)
 
 ################################################################################
 
