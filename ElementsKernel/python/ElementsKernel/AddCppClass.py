@@ -61,12 +61,10 @@ def getClassName(subdir_class):
 
 ################################################################################
 
-
 def createDirectories(module_dir, module_name, subdir):
     """
     Create directories needed for a module and a class
     """
-    # Create standalone directories
     standalone_directories = [os.path.join(module_name, subdir),
                               os.path.join('src', 'lib', subdir),
                               os.path.join('tests', 'src', subdir)]
@@ -79,6 +77,7 @@ def createDirectories(module_dir, module_name, subdir):
 
 def substituteAuxFiles(module_dir, class_name, module_name, subdir):
     """
+    Copy AUX file(s) and substitutes keyworks
     """
     target_locations = { 
                        H_TEMPLATE_FILE_IN: os.path.join(module_name, subdir, class_name + ".h"),

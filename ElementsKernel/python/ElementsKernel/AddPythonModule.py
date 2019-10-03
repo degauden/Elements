@@ -105,11 +105,10 @@ def createPythonModule(module_dir, module_name, python_module_name):
                        "MODULENAME": module_name,
                        "PYTHONMODULE": python_module_name
                     }
-    # Put AUX files to their target
+    # Put AUX files to their target and substitut
     for src in target_locations:
         file_name = os.path.join("ElementsKernel", "templates", src)
         tgt = target_locations[src]
-        print ('modurldir ',module_dir, 'src ',src)
         Auxiliary.configure(file_name, module_dir, tgt,
                             configuration=configuration,
                             create_missing_dir=True)
@@ -123,11 +122,9 @@ def makeChecks(module_file_path, python_module_name):
     """
     Make some checks
     """
-    # Module as no version number, '1.0' is just for using the routine
+    # Module as no version number? but '1.0' is just for using the routine
     ProjectCommonRoutines.checkNameAndVersionValid(python_module_name, '1.0')
-    # Make sure the program does not already exist
     ProjectCommonRoutines.checkFileNotExist(module_file_path, python_module_name)
-    # Check aux file exist
     ProjectCommonRoutines.checkAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
 
 ################################################################################

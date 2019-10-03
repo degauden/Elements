@@ -76,9 +76,9 @@ def addConfFile(module_dir, module_name, program_name):
 
 ################################################################################
 
-def substituteStringsInProgramFile(module_dir, program_name):
+def substituteAuxFiles(module_dir, program_name):
     """
-    Substitute variables in template file and rename the file
+    Copy AUX file(s) and substitutes keyworks
     """
     target_location = os.path.join('src', 'program', program_name + '.cpp')
     configuration = {  "FILE": target_location,
@@ -149,8 +149,7 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list, lib
     Creates all necessary files for a program
     """
     createDirectories(module_dir)
-    program_path = os.path.join(module_dir, 'src', 'program')
-    substituteStringsInProgramFile(module_dir, program_name)
+    substituteAuxFiles(module_dir, program_name)
     addConfFile(module_dir, module_name, program_name)
     updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list)
@@ -164,9 +163,7 @@ def makeChecks(current_dir, program_name):
     # Check if file exits
     program_file_path = os.path.join(current_dir, 'src', 'program', program_name + '.cpp')
     ProjectCommonRoutines.checkFileNotExist(program_file_path, program_name)
-    # Check program name is valid
     ProjectCommonRoutines.checkNameAndVersionValid(program_name, '1.0')
-    # Check aux file exist
     ProjectCommonRoutines.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
 ################################################################################
@@ -227,7 +224,6 @@ def mainMethod(args):
         module_name = ProjectCommonRoutines.getElementsModuleName(current_dir)
         # make some checks
         makeChecks(current_dir, program_name)
-
         # Create CPP program
         createCppProgram(current_dir, module_name, program_name, module_list, library_list)
 
