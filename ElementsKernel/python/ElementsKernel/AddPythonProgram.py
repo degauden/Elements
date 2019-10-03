@@ -88,11 +88,10 @@ def substituteAuxFiles(module_dir, program_name, module_name):
     # Put AUX files to their target and substitut
     tgt = os.path.join('python', module_name, program_name + '.py')
     Auxiliary.configure(os.path.join("ElementsKernel", "templates", PROGRAM_TEMPLATE_FILE_IN),
-                         module_dir, tgt,
+                        module_dir, tgt,
                         configuration=configuration,
                         create_missing_dir=True)
     ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, tgt))
-
 
 ################################################################################
 
