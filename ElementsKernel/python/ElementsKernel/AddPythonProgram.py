@@ -27,14 +27,16 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import argparse
 import os
 import time
-import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.ParseCmakeLists as pcl
-import ElementsKernel.ParseCmakeListsMacros as pclm
-import ElementsKernel.Logging as log
+
+from ElementsKernel import Auxiliary
+from ElementsKernel import ProjectCommonRoutines
+from ElementsKernel import ParseCmakeLists
+from ElementsKernel import ParseCmakeListsMacros
+from ElementsKernel import Logging
 
 from ElementsKernel import Exit
 
-logger = log.getLogger('AddPythonProgram')
+logger = Logging.getLogger('AddPythonProgram')
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
@@ -47,12 +49,12 @@ def createDirectories(module_dir, module_name):
     """
     Create directories needed for a python program
     """
-    # Create the executable directory
-    program_path = os.path.join(module_dir, 'python', module_name)
-    epcr.makeDirectory(program_path)
-    # Create the conf directory
-    conf_dir = os.path.join(module_dir, 'conf', module_name)
-    epcr.makeDirectory(conf_dir)
+    standalone_directories = [os.path.join('python', module_name),
+                              os.path.join('conf', module_name)]
+    for d in standalone_directories:
+        target_dir = os.path.join(module_dir, d)
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
 
 ################################################################################
 
@@ -60,13 +62,12 @@ def createFiles(module_dir, module_name, program_name):
     """
     Create files needed for a python program
     """
-    # Create the executable directory
     init_file = os.path.join(module_dir, 'python', module_name, '__init__.py')
-    epcr.createPythonInitFile(init_file)
-    epcr.addItemToCreationList(init_file)
+    ProjectCommonRoutines.createPythonInitFile(init_file)
+    ProjectCommonRoutines.addItemToCreationList(init_file)
 
     conf_file = os.path.join(module_dir, 'conf', module_name, program_name + '.conf')
-    epcr.addItemToCreationList(conf_file)
+    ProjectCommonRoutines.addItemToCreationList(conf_file)
     if not os.path.exists(conf_file):
         f = open(conf_file, 'w')
         f.write('# Write your program options here. e.g. : option = string')
@@ -74,37 +75,23 @@ def createFiles(module_dir, module_name, program_name):
 
 ################################################################################
 
-def subStringsInPythonProgramFile(file_path, program_name, module_name):
+def substituteAuxFiles(module_dir, program_name, module_name):
     """
-    Substitute variables in the python template file and rename it
+    Copy AUX file(s) and substitutes keyworks
     """
-    template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
-    os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
-
-    # Substitute strings in h_template_file
-    f = open(template_file)
-    data = f.read()
-    # Format all dependent projects
-    # We put by default Elements dependency if no one is given
-    date_str = time.strftime("%x")
-    author_str = epcr.getAuthor()
-    # Make some substitutions
-    file_name_str = os.path.join('python', module_name, program_name + '.py')
-    new_data = data % {"FILE": file_name_str,
-                       "DATE": date_str,
-                       "AUTHOR": author_str,
-                       "PROGRAMNAME": program_name}
-
-    f.close()
-
-    # Save new data
-    file_name = template_file.replace(PROGRAM_TEMPLATE_FILE, program_name)
-    file_name += '.py'
-    f = open(file_name, 'w')
-    f.write(new_data)
-    f.close()
-    os.remove(template_file)
-    epcr.addItemToCreationList(file_name)
+    filename = program_name + ".py"
+    configuration = {  "FILE":  os.path.join('python', module_name, filename),
+                       "DATE": time.strftime("%x"),
+                       "AUTHOR": ProjectCommonRoutines.getAuthor(),
+                       "PROGRAMNAME": program_name
+                    }
+    # Put AUX files to their target and substitut
+    tgt = os.path.join('python', module_name, program_name + '.py')
+    Auxiliary.configure(os.path.join("ElementsKernel", "templates", PROGRAM_TEMPLATE_FILE_IN),
+                        module_dir, tgt,
+                        configuration=configuration,
+                        create_missing_dir=True)
+    ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, tgt))
 
 ################################################################################
 
@@ -114,24 +101,24 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
-    epcr.addItemToCreationList(cmake_filename)
+    ProjectCommonRoutines.addItemToCreationList(cmake_filename)
 
     # Backup the file
-    epcr.makeACopy(cmake_filename)
+    ProjectCommonRoutines.makeACopy(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
         f = open(cmake_filename)
         data = f.read()
         f.close()
-        cmake_object = pcl.CMakeLists(data)
+        cmake_object = ParseCmakeLists.CMakeLists(data)
         module_name = cmake_object.elements_subdir_list[0].name + '.' + program_name
 
         # Add elements_install_conf_files if any
         cmake_object.elements_install_python_modules = 'elements_install_python_modules()'
         cmake_object.elements_install_conf_files = 'elements_install_conf_files()'
 
-        program_object = pclm.ElementsAddPythonExecutable(program_name, module_name)
+        program_object = ParseCmakeListsMacros.ElementsAddPythonExecutable(program_name, module_name)
         cmake_object.elements_add_python_executable_list.append(program_object)
 
     # Write new data
@@ -147,9 +134,7 @@ def createPythonProgram(current_dir, module_name, program_name):
     """
     createDirectories(current_dir, module_name)
     createFiles(current_dir, module_name, program_name)
-    program_path = os.path.join(current_dir, 'python', module_name)
-    epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
-    subStringsInPythonProgramFile(program_path, program_name, module_name)
+    substituteAuxFiles(current_dir, program_name, module_name)
     updateCmakeListsFile(current_dir, program_name)
 
 ################################################################################
@@ -159,11 +144,11 @@ def makeChecks(program_file_path, program_name):
     Make some checks
     """
     # Module as no version number, '1.0' is just for using the routine
-    epcr.checkNameAndVersionValid(program_name, '1.0')
+    ProjectCommonRoutines.checkNameAndVersionValid(program_name, '1.0')
     # Check aux file exist
-    epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+    ProjectCommonRoutines.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
     # Make sure the program does not already exist
-    epcr.checkFileNotExist(program_file_path, program_name)
+    ProjectCommonRoutines.checkFileNotExist(program_file_path, program_name)
 
 ################################################################################
 
@@ -208,7 +193,7 @@ def mainMethod(args):
         logger.info('')
 
         # We absolutely need a Elements cmake file
-        module_name = epcr.getElementsModuleName(current_dir)
+        module_name = ProjectCommonRoutines.getElementsModuleName(current_dir)
 
         program_file_path = os.path.join(current_dir, 'python', module_name, program_name + '.py')
         # Make checks
@@ -219,10 +204,10 @@ def mainMethod(args):
 
         logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
         # Remove backup file
-        epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
+        ProjectCommonRoutines.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
 
         # Print all files created
-        epcr.printCreationList()
+        ProjectCommonRoutines.printCreationList()
 
     except Exception as msg:
         if str(msg):
