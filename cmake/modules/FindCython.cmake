@@ -1,6 +1,7 @@
 if (NOT CYTHON_FOUND)
 
     find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION})
+    find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION})
     
     set(explicit_cython)
     if(PYTHON_EXPLICIT_VERSION)

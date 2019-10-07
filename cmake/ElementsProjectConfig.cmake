@@ -2577,14 +2577,15 @@ endfunction()
 #                           sources ...
 #                           PLAIN_MODULE
 #                           LINK_LIBRARIES ...
-#                           INCLUDE_DIRS ...)
+#                           INCLUDE_DIRS ...
+#                           LINKER_LANGUAGE C|CXX)
 #
 # Build a binary python module from the given sources.
 #---------------------------------------------------------------------------------------------------
 function(elements_add_python_module module)
 
   # this function uses an extra option: 'PLAIN_MODULE'
-  CMAKE_PARSE_ARGUMENTS(ARG "PLAIN_MODULE" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "PLAIN_MODULE" "LINKER_LANGUAGE" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
 
   elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
                             LIBRARIES ${ARG_LIBRARIES}
@@ -2597,6 +2598,10 @@ function(elements_add_python_module module)
   elements_include_directories(AFTER ${PYTHON_INCLUDE_DIRS})
   add_library(${module} MODULE ${srcs})
   
+  if(ARG_LINKER_LANGUAGE)
+    set_target_properties(${module} PROPERTIES LINKER_LANGUAGE ${ARG_LINKER_LANGUAGE})
+  endif()
+
   if(NOT ${ARG_PLAIN_MODULE})
     set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "_")
     set_target_properties(${module} PROPERTIES BASENAME "_${module}.so")
@@ -2805,14 +2810,15 @@ endfunction()
 # _generate_cython_cpp(interface
 #                      OUTFILE out.cxx
 #                      LINK_LIBRARIES library1 library2 ...
-#                      INCLUDE_DIRS dir1 package2 ...)
+#                      INCLUDE_DIRS dir1 package2 ...
+#                      LINKER_LANGUAGE C|CXX)
 #
 # Generate the C++ source file from the .pyx file using the INCLUDE_DIRS
 #---------------------------------------------------------------------------------------------------
 function(_generate_cython_cpp)
 
   find_package(Cython QUIET REQUIRED)
-  CMAKE_PARSE_ARGUMENTS(ARG "" "OUTFILE" "INCLUDE_DIRS;LINK_LIBRARIES" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "" "OUTFILE;LINKER_LANGUAGE" "INCLUDE_DIRS;LINK_LIBRARIES" ${ARGN})
   
   if("${ARG_OUTFILE}" STREQUAL "")
     message(FATAL_ERROR "_generate_cython_cpp: No OUTFILE defined")
@@ -2861,6 +2867,12 @@ function(_generate_cython_cpp)
   endforeach()  
   
   
+  if (ARG_LINKER_LANGUAGE STREQUAL "CXX")
+    set(linker_arg "--cplus")
+  else()
+    set(linker_arg "")
+  endif()
+
   # Set additional flags.
   set(annotate_arg)
   if(CYTHON_ANNOTATE)
@@ -2889,7 +2901,7 @@ function(_generate_cython_cpp)
         ${ARG_OUTFILE}
     COMMAND 
         ${env_cmd} --xml ${env_xml} ${CYTHON_EXECUTABLE}
-        --cplus
+        ${linker_arg}
         ${CYTHON_MOD_INCLUDE_DIRS}
         ${version_arg}
         ${annotate_arg} 
@@ -2900,7 +2912,7 @@ function(_generate_cython_cpp)
         ${src}
     DEPENDS 
         ${src}
-    COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} --cplus ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${ARG_OUTFILE}  ${srcs}"
+    COMMENT "Generating Cython module: ${CYTHON_EXECUTABLE} ${linker_arg} ${CYTHON_MOD_INCLUDE_DIRS} ${version_arg} ${annotate_arg} ${no_docstrings_arg} ${cython_debug_arg} ${CYTHON_FLAGS} --output-file ${ARG_OUTFILE}  ${srcs}"
     )
   
   set_source_files_properties(${ARG_OUTFILE} PROPERTIES GENERATED TRUE)
@@ -2920,7 +2932,8 @@ endfunction()
 # elements_add_cython_module([interface] source1 source2 ...
 #                            LINK_LIBRARIES library1 library2 ...
 #                            INCLUDE_DIRS dir1 package2 ...
-#                            [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...])
+#                            [NO_PUBLIC_HEADERS | PUBLIC_HEADERS dir1 dir2 ...]
+#                            LINKER_LANGUAGE C|CXX)
 #
 # Create a Cython binary python module from the specified sources (glob patterns are allowed), linking
 # it with the libraries specified and adding the include directories to the search path. The sources
@@ -2929,7 +2942,11 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 function(elements_add_cython_module)
 
-  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "LINKER_LANGUAGE" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+
+  if(NOT ARG_LINKER_LANGUAGE)
+    set(ARG_LINKER_LANGUAGE "CXX")
+  endif()
 
   elements_expand_sources(srcs ${ARG_UNPARSED_ARGUMENTS})
   set(pyx_module_sources)
@@ -2955,8 +2972,11 @@ function(elements_add_cython_module)
     message(WARNING "Cython module ${mod_name} (in ${package}) does not declare PUBLIC_HEADERS. Use the option NO_PUBLIC_HEADERS if it is intended.")
   endif()
 
-  set(PY_MODULE_CYTHON_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${mod_name}CYTHON_wrap.cxx)
-
+  if(ARG_LINKER_LANGUAGE STREQUAL "CXX")
+    set(PY_MODULE_CYTHON_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${mod_name}CYTHON_wrap.cxx)
+  else()
+    set(PY_MODULE_CYTHON_SRC ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${mod_name}CYTHON_wrap.c)
+  endif()
 
   elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
                             LIBRARIES ${ARG_LIBRARIES}
@@ -2966,7 +2986,8 @@ function(elements_add_cython_module)
   _generate_cython_cpp(${pyx_module_sources}
                        OUTFILE ${PY_MODULE_CYTHON_SRC}
                        LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
-                       INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+                       INCLUDE_DIRS ${ARG_INCLUDE_DIRS}
+                       LINKER_LANGUAGE ${ARG_LINKER_LANGUAGE})
 
   if(CXX_HAS_MISSING_FIELD_INITIALIZERS)
     set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING

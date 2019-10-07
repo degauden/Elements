@@ -26,9 +26,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import argparse
 import os
-import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.Logging as log
-import ElementsKernel.ParseCmakeLists as pcl
+from ElementsKernel import ProjectCommonRoutines
+from ElementsKernel import ParseCmakeLists
+from ElementsKernel import Logging
+
 from ElementsKernel import Exit
 
 try:
@@ -38,7 +39,7 @@ except:
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
-logger = log.getLogger('RemovePythonProgram')
+logger = Logging.getLogger('RemovePythonProgram')
 
 ################################################################################
 
@@ -68,12 +69,12 @@ def updateCmakeListsFile(module_dir, program_name):
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
         # Backup the file
-        epcr.makeACopy(cmake_filename)
+        ProjectCommonRoutines.makeACopy(cmake_filename)
         f = open(cmake_filename)
         data = f.read()
         f.close()
         # Add the program to be removed
-        cmake_object = pcl.CMakeLists(data)
+        cmake_object = ParseCmakeLists.CMakeLists(data)
         cmake_object.elements_remove_python_executable = program_name
 
     # Write new data
@@ -126,7 +127,7 @@ def mainMethod(args):
 
     try:
         # We absolutely need a Elements cmake file
-        module_name = epcr.getElementsModuleName(module_dir)
+        module_name = ProjectCommonRoutines.getElementsModuleName(module_dir)
 
         # Default is the current directory
         file_to_be_deleted = getAllFiles(program_name, module_dir, module_name)
@@ -136,7 +137,7 @@ def mainMethod(args):
                 logger.info(' --> %s', elt_file)
             response_key = input('Do you want to continue?(y/n, default: n)')
             if response_key.lower() == 'y':
-                epcr.removeFilesOnDisk(file_to_be_deleted)
+                ProjectCommonRoutines.removeFilesOnDisk(file_to_be_deleted)
                 updateCmakeListsFile(module_dir, program_name)
         else:
             logger.info('No file found for deletion!')

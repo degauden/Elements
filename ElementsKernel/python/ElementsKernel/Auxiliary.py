@@ -62,7 +62,7 @@ def configure(file_name, target_dir, target_name=None, use_stem=False,
         parent_path = os.path.dirname(target_path)
         if not os.path.exists(parent_path):
             os.makedirs(parent_path)
-            
+
     if not configuration:
         shutil.copy(file_path, target_path)
     else:
