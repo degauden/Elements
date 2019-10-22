@@ -83,8 +83,8 @@ if(SQUEEZED_INSTALL)
   endif()
 endif()
 
-set(CMAKE_LIB_INSTALL_SUFFIX ${lib_install_suff} CACHE STRING "Suffix for the install directory of the libraries" FORCE)
-set(CMAKE_BIN_INSTALL_SUFFIX bin CACHE STRING "Suffix for the install directory of the binaries" FORCE)
+set(CMAKE_LIB_INSTALL_SUFFIX ${lib_install_suff} CACHE STRING "Suffix for the install directory of the libraries")
+set(CMAKE_BIN_INSTALL_SUFFIX bin CACHE STRING "Suffix for the install directory of the binaries")
 
 
 
