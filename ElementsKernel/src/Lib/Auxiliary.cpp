@@ -61,7 +61,7 @@ std::vector<path> getAuxiliaryLocations(bool exist_only) {
   if (exist_only) {
     auto new_end = std::remove_if(location_list.begin(),
                                   location_list.end(),
-                                  [](path p){
+                                  [](const path& p){
                                      return boost::filesystem::exists(p);
                                   });
     location_list.erase(new_end, location_list.end());

@@ -199,8 +199,24 @@ ELEMENTS_API boost::filesystem::path getPathFromEnvVariable<std::string>(const s
  * @return collated string
  */
 template <typename T>
-ELEMENTS_API std::string joinPath(const std::vector<T> path_list);
+ELEMENTS_API std::string joinPath(const std::vector<T>& path_list);
+// Template instantiation for the most common types
+template <typename T>
+ELEMENTS_API std::string joinPath(const std::vector<boost::filesystem::path>& path_list);
 
+template <typename T>
+ELEMENTS_API std::string joinPath(const std::vector<std::string>& path_list);
+
+
+/**
+ * @brief path join each suffix to each initial locations
+ * @ingroup ElementsKernel
+ * @param initial_locations
+ *   list of initial locations.
+ * @param suffixes
+ *   list of suffixes
+ * @return full list of each joined item
+ */
 template <typename T, typename U>
 ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations,
                                                                     const std::vector<U>& suffixes);

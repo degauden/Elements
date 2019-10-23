@@ -88,14 +88,14 @@ vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
   vector<path> found_list(str_list.size());
   std::transform(str_list.cbegin(), str_list.cend(),
       found_list.begin(),
-      [](string s){
-      return path{s};
+      [](const string& s){
+        return path{s};
   });
 
   if (exist_only) {
     auto new_end = std::remove_if(found_list.begin(),
                                   found_list.end(),
-                                  [](path p){
+                                  [](const path& p){
                                      return boost::filesystem::exists(p);
                                   });
     found_list.erase(new_end, found_list.end());
@@ -118,6 +118,9 @@ template vector<path> getAllPathFromLocations(const string& file_name, const vec
 
 template path getPathFromEnvVariable<path>(const path& file_name, const string& path_variable);
 template path getPathFromEnvVariable<string>(const string& file_name, const string& path_variable);
+
+template string joinPath(const vector<path>& path_list);
+template string joinPath(const vector<string>& path_list);
 
 template vector<path> multiPathAppend(const vector<path>& initial_locations, const vector<path>& suffixes);
 template vector<path> multiPathAppend(const vector<path>& initial_locations, const vector<string>& suffixes);

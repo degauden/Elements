@@ -421,7 +421,7 @@ void ProgramManager::bootstrapEnvironment(char* arg0) {
 
   std::transform(m_search_dirs.cbegin(), m_search_dirs.cend(),
       local_search_paths.begin(),
-      [](string s){
+      [](const string& s){
       return boost::filesystem::complete(s);
   });
 
