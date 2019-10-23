@@ -42,17 +42,17 @@ VARIABLE = {"executable": "PATH",
 SUFFIXES = {"executable": ["scripts", "bin"],
             "library": ["lib"],
             "python": ["python"],
-            "configuration": ["conf"],
-            "auxiliary": ["auxdir", "aux"]}
+            "configuration": ["conf", "share/conf"],
+            "auxiliary": ["auxdir", "aux", "share/auxdir", "share/aux"]}
 
 DEFAULT_INSTALL_LOCATIONS = { "executable": [ os.path.join(DEFAULT_INSTALL_PREFIX, "bin")],
                                  "library": [ os.path.join(DEFAULT_INSTALL_PREFIX, "lib64"),
                                               os.path.join(DEFAULT_INSTALL_PREFIX, "lib"),
                                               os.path.join(DEFAULT_INSTALL_PREFIX, "lib32")],
                                   "python": [ get_python_lib(prefix=DEFAULT_INSTALL_PREFIX)],
-                           "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "conf") ],
-                               "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "auxdir"),
-                                             os.path.join(DEFAULT_INSTALL_PREFIX, "aux")]}
+                           "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "conf") ],
+                               "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "auxdir"),
+                                             os.path.join(DEFAULT_INSTALL_PREFIX, "share", "aux")]}
 
 HAS_SUBLEVELS = { "executable": False,
                      "library": False,

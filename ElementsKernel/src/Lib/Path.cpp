@@ -55,8 +55,8 @@ const map<Type, const vector<string>> SUFFIXES {
   {Type::executable, {"scripts", "bin"}},
   {Type::library, {"lib"}},
   {Type::python, {"python"}},
-  {Type::configuration, {"conf"}},
-  {Type::auxiliary, {"auxdir", "aux"}}
+  {Type::configuration, {"conf", "share/conf"}},
+  {Type::auxiliary, {"auxdir", "aux", "share/auxdir", "share/aux"}}
 };
 
 const map<Type, const vector<string>> DEFAULT_LOCATIONS {
@@ -64,7 +64,7 @@ const map<Type, const vector<string>> DEFAULT_LOCATIONS {
   {Type::library, {"/usr/lib64", "/usr/lib"}},
   {Type::python, {}},
   {Type::configuration, {"/usr/share/conf"}},
-  {Type::auxiliary, {"/usr/share/auxiliary"}}
+  {Type::auxiliary, {"/usr/share/auxdir", "/usr/share/aux"}}
 };
 
 const std::map<Type, const bool> HAS_SUBLEVELS {
