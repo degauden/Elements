@@ -237,6 +237,44 @@ BOOST_AUTO_TEST_CASE(JoinPath_test) {
 
 }
 
+BOOST_AUTO_TEST_CASE(Join_test) {
+
+  using Elements::Path::join;
+
+  const vector<string> path_list {"/toto", "titi", "./tutu"};
+
+  BOOST_CHECK(join(path_list) == "/toto:titi:./tutu");
+
+  const vector<string> path_list2 {"", "/toto", "titi", "./tutu"};
+
+  BOOST_CHECK(join(path_list2) == ":/toto:titi:./tutu");
+
+  const vector<string> path_list3 {"/toto", "titi", "./tutu", ""};
+
+  BOOST_CHECK(join(path_list3) == "/toto:titi:./tutu:");
+
+}
+
+
+BOOST_AUTO_TEST_CASE(SplitPath_test) {
+
+  using Elements::Path::splitPath;
+
+  const vector<path> path_list {"/toto", "titi", "./tutu"};
+  const string path_string {"/toto:titi:./tutu"};
+  BOOST_CHECK(splitPath(path_string) == path_list);
+
+  const vector<path> path_list2 {"", "/toto", "titi", "./tutu"};
+  const string path_string2 {":/toto:titi:./tutu"};
+  BOOST_CHECK(splitPath(path_string2) == path_list2);
+
+  const vector<path> path_list3 {"/toto", "titi", "./tutu", ""};
+  const string path_string3 {"/toto:titi:./tutu:"};
+  BOOST_CHECK(splitPath(path_string3) == path_list3);
+
+}
+
+
 BOOST_AUTO_TEST_CASE(MultiPathAppend_test) {
 
   using Elements::Path::multiPathAppend;
@@ -261,6 +299,35 @@ BOOST_AUTO_TEST_CASE(MultiPathAppend_test) {
                  });
 
   BOOST_CHECK(ref_paths == full_path_strings);
+
+}
+
+BOOST_AUTO_TEST_CASE(RemoveDuplicates_test) {
+
+  using Elements::Path::removeDuplicates;
+
+  const vector<string> locations {"/usr/bin", "/usr/local/bin",
+                                 "/usr/bin", "/opt/bin", "/opt/local/bin",
+                                 "/usr/bin", "/usr/local/bin"};
+
+  const vector<string> unique_locations {"/usr/bin", "/usr/local/bin",
+                                         "/opt/bin", "/opt/local/bin"};
+  vector<path> unique_paths;
+
+  for (const auto& l : unique_locations) {
+    unique_paths.push_back(path(l));
+  }
+
+  BOOST_CHECK(removeDuplicates(locations) == unique_paths);
+
+  vector<path> paths;
+
+  for (const auto& l : locations) {
+    paths.push_back(path(l));
+  }
+
+  BOOST_CHECK(removeDuplicates(paths) == unique_paths);
+
 
 }
 

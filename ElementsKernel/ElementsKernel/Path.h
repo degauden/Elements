@@ -38,6 +38,7 @@
 #include <string>                   // for string
 #include <vector>                   // for vector
 #include <map>                      // for map
+#include <utility>                  // for forward
 #include <boost/filesystem.hpp>     // for boost::filesystem
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
@@ -201,12 +202,40 @@ ELEMENTS_API boost::filesystem::path getPathFromEnvVariable<std::string>(const s
 template <typename T>
 ELEMENTS_API std::string joinPath(const std::vector<T>& path_list);
 // Template instantiation for the most common types
-template <typename T>
+extern template
 ELEMENTS_API std::string joinPath(const std::vector<boost::filesystem::path>& path_list);
 
-template <typename T>
+extern template
 ELEMENTS_API std::string joinPath(const std::vector<std::string>& path_list);
 
+/**
+ * @brief alias for the joinPath function
+ * @ingroup ElementsKernel
+ * @param Args
+ *   Forward arguments
+ * @return same as joinPath
+ */
+template <typename... Args>
+ELEMENTS_API auto join(Args&&... args) -> decltype(joinPath(std::forward<Args>(args)...));
+
+/**
+ * @brief split a string into a vector of path using PATH_SEP
+ * @ingroup ElementsKernel
+ * @param path_string
+ *   string containing a list of path separated by PATH_SEP
+ * @return vector of path
+ */
+ELEMENTS_API std::vector<boost::filesystem::path> splitPath(const std::string& path_string);
+
+/**
+ * @brief alias for the splitPath function
+ * @ingroup ElementsKernel
+ * @param Args
+ *   Forward arguments
+ * @return same as splitPath
+ */
+template <typename... Args>
+ELEMENTS_API auto split(Args&&... args) -> decltype(splitPath(std::forward<Args>(args)...));
 
 /**
  * @brief path join each suffix to each initial locations
@@ -233,6 +262,22 @@ ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vec
 extern template
 ELEMENTS_API std::vector<boost::filesystem::path> multiPathAppend(const std::vector<std::string>& initial_locations,
                                                              const std::vector<std::string>& suffixes);
+/**
+ * @brief remove duplicated paths keeping the order
+ * @ingroup ElementsKernel
+ * @param path_list
+ *   list of path to uniquify.
+ * @return deduplicated list of path
+ */
+template <typename T>
+ELEMENTS_API std::vector<boost::filesystem::path> removeDuplicates(const std::vector<T>& path_list);
+// Template instantiation for the most common types
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> removeDuplicates(const std::vector<boost::filesystem::path>& path_list);
+
+extern template
+ELEMENTS_API std::vector<boost::filesystem::path> removeDuplicates(const std::vector<std::string>& path_list);
+
 
 }  // namespace Path
 }  // namespace Elements

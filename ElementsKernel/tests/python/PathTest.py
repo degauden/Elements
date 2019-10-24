@@ -28,6 +28,7 @@ from ElementsKernel.Path import joinPath, multiPathAppend, getLocationsFromEnv
 from ElementsKernel.Path import getLocations
 from ElementsKernel.Path import which
 from ElementsKernel.Path import getTargetPath
+from ElementsKernel.Path import removeDuplicates
 
 
 class PathTest(unittest.TestCase):
@@ -105,6 +106,15 @@ class PathTest(unittest.TestCase):
         target_name = "foo/tutu"
         self.assert_(getTargetPath(file_name, target_dir, target_name) == "/blab/blo/foo/tutu")
 
+
+    def testRemoveDuplicates(self):
+        locations = ["/usr/bin", "/usr/local/bin",
+                     "/usr/bin", "/opt/bin", "/opt/local/bin",
+                     "/usr/bin", "/usr/local/bin"]
+
+        unique_locations = ["/usr/bin", "/usr/local/bin",
+                            "/opt/bin", "/opt/local/bin"]
+        self.assert_(removeDuplicates(locations)==unique_locations)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

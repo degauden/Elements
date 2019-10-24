@@ -82,15 +82,7 @@ vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
   string env_content = getEnv(path_variable);
 
-  vector<string> str_list;
-  boost::split(str_list, env_content, boost::is_any_of(PATH_SEP));
-
-  vector<path> found_list(str_list.size());
-  std::transform(str_list.cbegin(), str_list.cend(),
-      found_list.begin(),
-      [](const string& s){
-        return path{s};
-  });
+  vector<path> found_list = split(env_content);
 
   if (exist_only) {
     auto new_end = std::remove_if(found_list.begin(),
@@ -104,6 +96,20 @@ vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
   return found_list;
 }
 
+vector<path> splitPath(const string& path_string) {
+
+  vector<string> str_list;
+  boost::split(str_list, path_string, boost::is_any_of(PATH_SEP));
+
+  vector<path> found_list(str_list.size());
+  std::transform(str_list.cbegin(), str_list.cend(),
+      found_list.begin(),
+      [](const string& s){
+        return path{s};
+  });
+
+  return found_list;
+}
 
 // Template instantiation for the most common types
 template path getPathFromLocations(const path& file_name, const vector<path>& locations);
@@ -127,6 +133,8 @@ template vector<path> multiPathAppend(const vector<path>& initial_locations, con
 template vector<path> multiPathAppend(const vector<string>& initial_locations, const vector<path>& suffixes);
 template vector<path> multiPathAppend(const vector<string>& initial_locations, const vector<string>& suffixes);
 
+template vector<path> removeDuplicates(const vector<path>& path_list);
+template vector<path> removeDuplicates(const vector<string>& path_list);
 
 }  // namespace Path
 }  // namespace Elements
