@@ -54,10 +54,14 @@ def _updateSysPath(extra_list):
         if os_env_str:
             sys_path_str = os.pathsep.join(sys.path)
             found_idx = sys_path_str.find(os_env_str)
-            size_of_env = len(os_env_str)
-            new_sys_path_str = sys_path_str[:found_idx+size_of_env]
-            new_sys_path_str += os.pathsep + os.pathsep.join(extra_list)
-            new_sys_path_str += sys_path_str[found_idx+size_of_env:]
+            new_sys_path_str = sys_path_str
+            if found_idx != -1:
+                size_of_env = len(os_env_str)
+                new_sys_path_str = sys_path_str[:found_idx+size_of_env]
+                new_sys_path_str += os.pathsep + os.pathsep.join(extra_list)
+                new_sys_path_str += sys_path_str[found_idx+size_of_env:]
+            else:
+                new_sys_path_str += os.pathsep + os.pathsep.join(extra_list)
             sys.path = new_sys_path_str.split(os.pathsep)
         else:
             sys.path = extra_list + sys.path
