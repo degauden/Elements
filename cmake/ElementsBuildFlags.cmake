@@ -274,6 +274,11 @@ if(NOT ELEMENTS_DEFAULT_LOGLEVEL)
   endif()
 endif()
 
+option(INSTALL_TESTS)
+       "Enable the installation of the binary tests"
+       OFF)
+
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   message(STATUS "Setting cached build flags")
