@@ -2473,6 +2473,13 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
   string(TOLOWER ${CMAKE_BUILD_TYPE} lower_cmake_build_type)
   set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${CMAKE_PROJECT_NAME}Exports-${lower_cmake_build_type}.cmake)
 
+  # Versioned shared libraries
+  if(USE_VERSIONED_LIBRARIES)
+    set_target_properties(${library} PROPERTIES
+      SOVERSION ${CMAKE_PROJECT_VERSION}
+    )
+  endif()
+
 endfunction()
 
 # Backward compatibility macro

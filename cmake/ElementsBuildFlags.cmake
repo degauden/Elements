@@ -173,6 +173,10 @@ option(USE_LOCAL_INSTALLAREA
        "Use local InstallArea for the Developers"
        OFF)
 
+option(USE_VERSIONED_LIBRARIES
+       "Generate versioned shared libraries"
+       OFF)
+
 option(OPT_DEBUG
        "Enable optimisation for the Debug version"
        ON)
