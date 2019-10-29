@@ -274,7 +274,7 @@ if(NOT ELEMENTS_DEFAULT_LOGLEVEL)
   endif()
 endif()
 
-option(INSTALL_TESTS)
+option(INSTALL_TESTS
        "Enable the installation of the binary tests"
        OFF)
 
