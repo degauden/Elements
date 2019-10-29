@@ -211,7 +211,7 @@ ELEMENTS_API std::string joinPath(const std::vector<std::string>& path_list);
 /**
  * @brief alias for the joinPath function
  * @ingroup ElementsKernel
- * @param Args
+ * @param args
  *   Forward arguments
  * @return same as joinPath
  */
@@ -230,7 +230,7 @@ ELEMENTS_API std::vector<boost::filesystem::path> splitPath(const std::string& p
 /**
  * @brief alias for the splitPath function
  * @ingroup ElementsKernel
- * @param Args
+ * @param args
  *   Forward arguments
  * @return same as splitPath
  */
