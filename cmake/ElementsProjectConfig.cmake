@@ -2410,7 +2410,7 @@ endmacro()
 #---------------------------------------------------------------------------------------------------
 function(elements_add_library library)
   # this function uses an extra option: 'PUBLIC_HEADERS'
-  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS" "LINKER_LANGUAGE" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS;NO_INSTALL" "LINKER_LANGUAGE" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
 
   elements_get_package_name(package)
   if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
@@ -2436,11 +2436,13 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
 
   add_library(${library} ${srcs} ${h_srcs})
   if(ELEMENTS_HIDE_SYMBOLS)
-    include(GenerateExportHeader)
-    generate_export_header(${library} BASE_NAME ${library} EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${library}_export.h)
-    install(FILES ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${library}_export.h DESTINATION ${INCLUDE_INSTALL_SUFFIX})
-    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
-    set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${library}_export.h)
+    if(NOT NO_INSTALL)
+      include(GenerateExportHeader)
+      generate_export_header(${library} BASE_NAME ${library} EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${library}_export.h)
+      install(FILES ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${library}_export.h DESTINATION ${INCLUDE_INSTALL_SUFFIX})
+      set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
+      set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${library}_export.h)
+    endif()
   else()
     set_target_properties(${library} PROPERTIES DEFINE_SYMBOL "")
   endif()
@@ -2463,16 +2465,17 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
   set_property(GLOBAL APPEND PROPERTY LINKER_LIBRARIES ${library})
 
   #----Installation details-------------------------------------------------------
-  install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
-  elements_export(LIBRARY ${library})
-  elements_install_headers(${ARG_PUBLIC_HEADERS})
-  install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_INSTALL_SUFFIX} OPTIONAL)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
-  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${CMAKE_PROJECT_NAME}Exports.cmake)
-  string(TOLOWER ${CMAKE_BUILD_TYPE} lower_cmake_build_type)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${CMAKE_PROJECT_NAME}Exports-${lower_cmake_build_type}.cmake)
-
+  if(NOT NO_INSTALL)
+    install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
+    elements_export(LIBRARY ${library})
+    elements_install_headers(${ARG_PUBLIC_HEADERS})
+    install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_INSTALL_SUFFIX} OPTIONAL)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
+    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${CMAKE_PROJECT_NAME}Exports.cmake)
+    string(TOLOWER ${CMAKE_BUILD_TYPE} lower_cmake_build_type)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${CMAKE_PROJECT_NAME}Exports-${lower_cmake_build_type}.cmake)
+  endif()
 endfunction()
 
 # Backward compatibility macro
@@ -3118,24 +3121,32 @@ function(elements_add_test_executable name)
       set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${testmain_file})
     endif()
       
+    set(INSTALL_OPT)
+      
+    if(NOT INSTALL_TESTS)
+      set(INSTALL_OPT "NO_INSTALL")
+    endif()
+      
     if (NOT TARGET ${package}${${name}_TEST_EXEC_TYPE}Test)
       elements_add_library(${package}${${name}_TEST_EXEC_TYPE}Test ${testmain_file}
                            LINK_LIBRARIES ${${name}_TEST_EXEC_TYPE}
                            INCLUDE_DIRS ${${name}_TEST_EXEC_TYPE}
-                           NO_PUBLIC_HEADERS
+                           NO_PUBLIC_HEADERS ${INSTALL_OPT}
                            )
       add_dependencies(${package}${${name}_TEST_EXEC_TYPE}Test ${package}_${${name}_TEST_EXEC_TYPE}TestMain)
     endif()
       
     elements_add_executable(${executable} ${srcs}
                             LINK_LIBRARIES ${ARG_LINK_LIBRARIES} ${${name}_TEST_EXEC_TYPE} ${package}${${name}_TEST_EXEC_TYPE}Test
-                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_TEST_EXEC_TYPE})
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS} ${${name}_TEST_EXEC_TYPE}
+                            ${INSTALL_OPT})
     add_dependencies(${executable} ${package}_${${name}_TEST_EXEC_TYPE}TestMain)
 
   else()
     elements_add_executable(${executable} ${srcs}
                             LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
-                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS}
+                            ${INSTALL_OPT})
   endif()
 
 
@@ -3149,7 +3160,7 @@ endfunction()
 #---------------------------------------------------------------------------------------------------
 # elements_add_unit_test(<name>
 #                     source1 source2 ...
-#                      [EXECUTABLE exename]
+#                     [EXECUTABLE exename]
 #                     LINK_LIBRARIES library1 library2 ...
 #                     INCLUDE_DIRS dir1 package2 ...
 #                     [WORKING_DIRECTORY dir]
