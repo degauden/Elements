@@ -2462,6 +2462,10 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
     REQUIRED_LIBRARIES "${ARG_LINK_LIBRARIES}")
   set_property(GLOBAL APPEND PROPERTY LINKER_LIBRARIES ${library})
 
+  if(USE_VERSIONED_LIBRARIES)
+    set_target_properties(${library} PROPERTIES SOVERSION ${CMAKE_PROJECT_VERSION})
+  endif()
+
   #----Installation details-------------------------------------------------------
   install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
   elements_export(LIBRARY ${library})

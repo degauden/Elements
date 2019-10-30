@@ -274,6 +274,8 @@ if(NOT ELEMENTS_DEFAULT_LOGLEVEL)
   endif()
 endif()
 
+option(USE_VERSIONED_LIBRARIES "Generate versioned shared libraries" ON)
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   message(STATUS "Setting cached build flags")
