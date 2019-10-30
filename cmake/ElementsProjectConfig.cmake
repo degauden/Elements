@@ -992,16 +992,21 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 #------------------------------------------------------------------------------
   get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
 
+  set(VERSION_SUFFIX "")
+  if(USE_VERSIONED_LIBRARIES)
+    set(VERSION_SUFFIX ".${CMAKE_PROJECT_VERSION}")
+  endif()
+  
+
   if(regular_lib_objects)
 
     list(SORT regular_lib_objects)
     list(REMOVE_DUPLICATES regular_lib_objects)
     foreach(_do ${regular_lib_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+%{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}${VERSION_SUFFIX}")
     endforeach()
   endif()
-
 
 #------------------------------------------------------------------------------
 
@@ -1165,6 +1170,21 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     endif()
     
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
+  endif()
+
+#------------------------------------------------------------------------------
+  if(USE_VERSIONED_LIBRARIES)
+    get_property(regular_dev_lib_objects GLOBAL PROPERTY REGULAR_DEV_LIB_OBJECTS)
+    if(regular_dev_lib_objects)
+
+      list(SORT regular_dev_lib_objects)
+      list(REMOVE_DUPLICATES regular_dev_lib_objects)
+      foreach(_do ${regular_dev_lib_objects})
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+      endforeach()
+    endif()
+ 
   endif()
 
 #===============================================================================
@@ -2471,6 +2491,9 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
   elements_export(LIBRARY ${library})
   elements_install_headers(${ARG_PUBLIC_HEADERS})
   install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_INSTALL_SUFFIX} OPTIONAL)
+  if(USE_VERSIONED_LIBRARIES)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_DEV_LIB_OBJECTS ${library})  
+  endif()
   set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
   set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${CMAKE_PROJECT_NAME}Exports.cmake)
@@ -2500,6 +2523,9 @@ function(elements_add_module library)
   #----Installation details-------------------------------------------------------
   install(TARGETS ${library} LIBRARY DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
   elements_export(MODULE ${library})
+  if(USE_VERSIONED_LIBRARIES)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_DEV_LIB_OBJECTS ${library})  
+  endif()
   set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
 endfunction()
 
