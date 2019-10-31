@@ -479,13 +479,17 @@ macro(elements_project project version)
   endif()
 
   if(instheader_cmd)
+    set(so_version_option)
+    if(USE_VERSIONED_LIBRARIES)
+      set(so_version_option "-V")     
+    endif()
     JOIN("${used_elements_projects}" ":" joined_used_projects)
     execute_process(COMMAND
-                    ${instheader_cmd} --quiet
+                    ${instheader_cmd} --quiet ${so_version_option}
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h)
     # special installation because the install location can be changed on the fly
     install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}\"\)
-execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h\)")
+execute_process\(COMMAND ${instheader_cmd} --quiet ${so_version_option} ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${_proj}_INSTALL.h)
   endif()
@@ -522,13 +526,18 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   endif()
 
   if(instmodule_cmd)
+    set(so_version_option)
+    if(USE_VERSIONED_LIBRARIES)
+      set(so_version_option "-V")     
+    endif()
+    
     JOIN("${used_elements_projects}" ":" joined_used_projects)
     execute_process(COMMAND
-                    ${instmodule_cmd} --quiet
+                    ${instmodule_cmd} --quiet ${so_version_option}
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
     # special install procedure because the install loction can be changed on the fly.
     install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}\"\)
-execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}/${_proj}_INSTALL.py\)")
+execute_process\(COMMAND ${instmodule_cmd} --quiet ${so_version_option} ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}/${_proj}_INSTALL.py\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.py)
     
