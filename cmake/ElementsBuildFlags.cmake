@@ -274,6 +274,11 @@ if(NOT ELEMENTS_DEFAULT_LOGLEVEL)
   endif()
 endif()
 
+
+option(INSTALL_TESTS
+       "Enable the installation of the binary tests"
+       OFF)
+
 option(USE_VERSIONED_LIBRARIES "Generate versioned shared libraries" ON)
 
 #--- Compilation Flags ---------------------------------------------------------
@@ -334,9 +339,7 @@ if(NOT ELEMENTS_FLAGS_SET)
     check_and_use_cxx_option(-Wcast-function-type CXX_HAS_CAST_FUNCTION_TYPE)
   endif()
 
-  if(SGS_COMP STREQUAL gcc)
-    check_cxx_compiler_flag(-Wmissing-field-initializers CXX_HAS_MISSING_FIELD_INITIALIZERS)
-  endif()
+  check_cxx_compiler_flag(-Wmissing-field-initializers CXX_HAS_MISSING_FIELD_INITIALIZERS)
 
   if(SGS_COMP STREQUAL clang)
     check_cxx_compiler_flag(-Wunused-function CXX_HAS_UNUSED_FUNCTION)
