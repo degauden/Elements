@@ -274,10 +274,12 @@ if(NOT ELEMENTS_DEFAULT_LOGLEVEL)
   endif()
 endif()
 
+
 option(INSTALL_TESTS
        "Enable the installation of the binary tests"
        OFF)
 
+option(USE_VERSIONED_LIBRARIES "Generate versioned shared libraries" ON)
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
