@@ -144,6 +144,7 @@ macro(elements_project project version)
 
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DSQUEEZED_INSTALL:BOOL=${SQUEEZED_INSTALL}")
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DINSTALL_DOC:BOOL=${INSTALL_DOC}")
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DUSE_VERSIONED_LIBRARIES:BOOL=${USE_VERSIONED_LIBRARIES}")
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DUSE_SPHINX:BOOL=${USE_SPHINX}")
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "--no-warn-unused-cli")
   
@@ -479,13 +480,17 @@ macro(elements_project project version)
   endif()
 
   if(instheader_cmd)
+    set(so_version_option)
+    if(USE_VERSIONED_LIBRARIES)
+      set(so_version_option "-V")     
+    endif()
     JOIN("${used_elements_projects}" ":" joined_used_projects)
     execute_process(COMMAND
-                    ${instheader_cmd} --quiet
+                    ${instheader_cmd} --quiet ${so_version_option}
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h)
     # special installation because the install location can be changed on the fly
     install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.h in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}\"\)
-execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h\)")
+execute_process\(COMMAND ${instheader_cmd} --quiet ${so_version_option} ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${_proj}_INSTALL.h)
   endif()
@@ -522,13 +527,18 @@ execute_process\(COMMAND ${instheader_cmd} --quiet ${project} \${CMAKE_INSTALL_P
   endif()
 
   if(instmodule_cmd)
+    set(so_version_option)
+    if(USE_VERSIONED_LIBRARIES)
+      set(so_version_option "-V")     
+    endif()
+    
     JOIN("${used_elements_projects}" ":" joined_used_projects)
     execute_process(COMMAND
-                    ${instmodule_cmd} --quiet
+                    ${instmodule_cmd} --quiet ${so_version_option}
                     ${project} ${CMAKE_INSTALL_PREFIX} ${joined_used_projects} ${CMAKE_BINARY_DIR}/python/${_proj}_INSTALL.py)
     # special install procedure because the install loction can be changed on the fly.
     install(CODE "message\(STATUS \"Installing: ${_proj}_INSTALL.py in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}\"\)
-execute_process\(COMMAND ${instmodule_cmd} --quiet ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}/${_proj}_INSTALL.py\)")
+execute_process\(COMMAND ${instmodule_cmd} --quiet ${so_version_option} ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}/${_proj}_INSTALL.py\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_OBJECTS ${_proj}_INSTALL.py)
     
@@ -992,16 +1002,21 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 #------------------------------------------------------------------------------
   get_property(regular_lib_objects GLOBAL PROPERTY REGULAR_LIB_OBJECTS)
 
+  set(VERSION_SUFFIX "")
+  if(USE_VERSIONED_LIBRARIES)
+    set(VERSION_SUFFIX ".${CMAKE_PROJECT_VERSION}")
+  endif()
+  
+
   if(regular_lib_objects)
 
     list(SORT regular_lib_objects)
     list(REMOVE_DUPLICATES regular_lib_objects)
     foreach(_do ${regular_lib_objects})
       set(CPACK_RPM_REGULAR_FILES "${CPACK_RPM_REGULAR_FILES}
-%{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+%{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}${VERSION_SUFFIX}")
     endforeach()
   endif()
-
 
 #------------------------------------------------------------------------------
 
@@ -1165,6 +1180,21 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     endif()
     
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
+  endif()
+
+#------------------------------------------------------------------------------
+  if(USE_VERSIONED_LIBRARIES)
+    get_property(regular_dev_lib_objects GLOBAL PROPERTY REGULAR_DEV_LIB_OBJECTS)
+    if(regular_dev_lib_objects)
+
+      list(SORT regular_dev_lib_objects)
+      list(REMOVE_DUPLICATES regular_dev_lib_objects)
+      foreach(_do ${regular_dev_lib_objects})
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{libdir}/${CMAKE_SHARED_LIBRARY_PREFIX}${_do}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+      endforeach()
+    endif()
+ 
   endif()
 
 #===============================================================================
@@ -2462,11 +2492,18 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
     REQUIRED_LIBRARIES "${ARG_LINK_LIBRARIES}")
   set_property(GLOBAL APPEND PROPERTY LINKER_LIBRARIES ${library})
 
+  if(USE_VERSIONED_LIBRARIES)
+    set_target_properties(${library} PROPERTIES SOVERSION ${CMAKE_PROJECT_VERSION})
+  endif()
+
   #----Installation details-------------------------------------------------------
   install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
   elements_export(LIBRARY ${library})
   elements_install_headers(${ARG_PUBLIC_HEADERS})
   install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_INSTALL_SUFFIX} OPTIONAL)
+  if(USE_VERSIONED_LIBRARIES)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_DEV_LIB_OBJECTS ${library})  
+  endif()
   set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_CMAKE TRUE)
   set_property(GLOBAL APPEND PROPERTY REGULAR_CMAKE_OBJECTS ${CMAKE_PROJECT_NAME}Exports.cmake)
@@ -2496,6 +2533,9 @@ function(elements_add_module library)
   #----Installation details-------------------------------------------------------
   install(TARGETS ${library} LIBRARY DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
   elements_export(MODULE ${library})
+  if(USE_VERSIONED_LIBRARIES)
+    set_property(GLOBAL APPEND PROPERTY REGULAR_DEV_LIB_OBJECTS ${library})  
+  endif()
   set_property(GLOBAL APPEND PROPERTY REGULAR_LIB_OBJECTS ${library})
 endfunction()
 

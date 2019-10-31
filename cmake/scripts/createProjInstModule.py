@@ -8,11 +8,18 @@ def main():
     """ main function of the script module """
     parser = OptionParser(
         usage="ERROR: Usage %prog <project> <location> <used_projects> <outputfile>")
+    
     parser.add_option("-q", "--quiet", action="store_true",
-                      help="Do not print messages.")
+                      help="Do not print messages")
+    
     parser.set_defaults(install_prefix="")
     parser.add_option("-i", "--install-prefix", action="store",
                      help="set the CMAKE_INSTALL_PREFIX")
+
+    parser.set_defaults(so_version=False)
+    parser.add_option("-V", "--so-version", action="store_true",
+                      help="Use So Version")
+
 
     opts, args = parser.parse_args()
 
@@ -25,6 +32,10 @@ def main():
     else:
         project, location, used_projects, outputfile = args
         used_projects = used_projects.split(":")
+
+    so_value = "False"
+    if (opts.so_version):
+        so_value = "True"
 
     if not opts.quiet:
         print("Creating %s for %s with %s install location" % (outputfile, project, location))
@@ -46,6 +57,11 @@ def main():
     outputdata += """
 %(proj)s_INSTALL_LOCATION = "%(location)s"
 """ % { 'proj': project.upper(), 'location': location }
+
+    outputdata += """
+%(proj)s_USE_SOVERSION = %(so_value)s
+""" % { 'proj': project.upper(), 'so_value': so_value }
+
 
     used_locations = []
     used_locations.append("%(proj)s_INSTALL_LOCATION" % { 'proj': project.upper()})
