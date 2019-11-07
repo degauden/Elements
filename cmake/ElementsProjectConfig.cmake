@@ -70,7 +70,7 @@ debug_message("    <---- Elements Main config: ${CMAKE_CURRENT_LIST_FILE} ----> 
 #-------------------------------------------------------------------------------
 # Basic configuration
 #-------------------------------------------------------------------------------
-set(CMAKE_VERBOSE_MAKEFILES OFF)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Ensure that the include directories added are always taken first.
 set(CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
@@ -147,6 +147,7 @@ macro(elements_project project version)
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DUSE_VERSIONED_LIBRARIES:BOOL=${USE_VERSIONED_LIBRARIES}")
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DUSE_SPHINX:BOOL=${USE_SPHINX}")
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DINSTALL_TESTS:BOOL=${INSTALL_TESTS}")
+  set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DCMAKE_VERBOSE_MAKEFILE:BOOL=${CMAKE_VERBOSE_MAKEFILE}")
   set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "--no-warn-unused-cli")
   
 
@@ -918,6 +919,19 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 %{_prefix}/manifest.xml")
   endif()
 
+
+  set(CPACK_VERBOSE_LINE)
+  set(CPACK_EXPORT_VERBOSE_LINE "unset VERBOSE")
+  if(DEFINED ENV{VERBOSE})
+    if($ENV{VERBOSE})
+      set(CPACK_VERBOSE $ENV{VERBOSE})
+    else()
+      set(CPACK_VERBOSE 0)  
+    endif()
+    set(CPACK_VERBOSE_LINE "VERBOSE=${CPACK_VERBOSE}")
+    set(CPACK_EXPORT_VERBOSE_LINE "export ${CPACK_VERBOSE_LINE}")
+  endif()
+  
 #------------------------------------------------------------------------------
   get_property(regular_bin_objects GLOBAL PROPERTY REGULAR_BIN_OBJECTS)
 
