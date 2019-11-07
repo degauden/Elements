@@ -85,7 +85,7 @@ Documentation for package %{name}
 
 %build
 export BINARY_TAG=%{bin_tag}
-export VERBOSE=1
+@CPACK_EXPORT_VERBOSE_LINE@
 export HAS_ELEMENTS_TOOLCHAIN=@HAS_ELEMENTS_TOOLCHAIN@
 if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
   if [[ ! -z "@ELEMENTS_BASE_DIR@" ]]; then
@@ -114,11 +114,11 @@ else
     @CPACK_CMAKE_MACRO@ @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
   fi
 fi
-%__make VERBOSE=1 %{?_smp_mflags} all
+%__make @CPACK_VERBOSE_LINE@ %{?_smp_mflags} all
 
 %install
 export BINARY_TAG=%{bin_tag}
-export VERBOSE=1
+@CPACK_EXPORT_VERBOSE_LINE@
 if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
   if [[ ! -z "@ELEMENTS_BASE_DIR@" ]]; then
     export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
@@ -128,13 +128,13 @@ else
 fi
 @CPACK_CMAKE_PREFIX_PATH_LINE@
 cd $RPM_BUILD_DIR/$BINARY_TAG
-%__make install VERBOSE=1 DESTDIR=$RPM_BUILD_ROOT
+%__make install @CPACK_VERBOSE_LINE@ DESTDIR=$RPM_BUILD_ROOT
 
 %check
 export CTEST_OUTPUT_ON_FAILURE=1
 export ELEMENTS_NAMING_DB_URL=https://pieclddj00.isdc.unige.ch/elementsnaming
 export BINARY_TAG=%{bin_tag}
-export VERBOSE=1
+@CPACK_EXPORT_VERBOSE_LINE@
 if [[ -z "$@ELEMENTS_BASE_VAR@" ]]; then
   if [[ ! -z "@ELEMENTS_BASE_DIR@" ]]; then
     export CMAKE_PROJECT_PATH=@ELEMENTS_BASE_DIR@
