@@ -364,6 +364,8 @@ macro(elements_project project version)
 
 
   #--- Project Installations------------------------------------------------------------------------
+  if(NOT SQUEEZED_INSTALL OR (${CMAKE_PROJECT_NAME} STREQUAL "Elements"))
+
   install(DIRECTORY cmake/ DESTINATION ${CMAKE_INSTALL_SUFFIX}
                            FILES_MATCHING
                              PATTERN "*.cmake"
@@ -390,6 +392,8 @@ macro(elements_project project version)
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_MAKE TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_MAKE_OBJECTS ${m}) 
   endforeach()
+
+  endif()
 
   #------------------------------------------------------------------------------------------------
 
@@ -1142,7 +1146,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     if(regular_include_objects)
     if(NOT SQUEEZED_INSTALL)
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%dir %{_includedir}")    
+%dir %{_includedir}")
     endif()
     foreach(_do ${regular_include_objects})
       set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
@@ -1158,23 +1162,28 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
   if(proj_has_cmake)
 
-   get_property(regular_cmake_objects GLOBAL PROPERTY REGULAR_CMAKE_OBJECTS)
-   if(SQUEEZED_INSTALL)
-     get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
-     foreach(_do ${config_objects})
-       list(APPEND regular_cmake_objects ${_do})
-     endforeach()
-   endif()
-    list(REMOVE_DUPLICATES regular_cmake_objects)
-    if(regular_cmake_objects)
-    set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%dir %{cmakedir}")    
-    foreach(_do ${regular_cmake_objects})
-      set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
-%{cmakedir}/${_do}")
-    endforeach()
+    get_property(regular_cmake_objects GLOBAL PROPERTY REGULAR_CMAKE_OBJECTS)
+
+    if(SQUEEZED_INSTALL)
+      get_property(config_objects GLOBAL PROPERTY CONFIG_OBJECTS)
+      foreach(_do ${config_objects})
+        list(APPEND regular_cmake_objects ${_do})
+      endforeach()
     endif()
+
+    list(REMOVE_DUPLICATES regular_cmake_objects)
+
+    if(regular_cmake_objects)
+      set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%dir %{cmakedir}")
+      foreach(_do ${regular_cmake_objects})
+        set(CPACK_RPM_DEVEL_FILES "${CPACK_RPM_DEVEL_FILES}
+%{cmakedir}/${_do}")
+      endforeach()
+    endif()
+
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
+
   endif()
 
 #------------------------------------------------------------------------------
@@ -1195,6 +1204,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     endif()
     
     #message(STATUS "The devel objects: ${CPACK_RPM_DEVEL_FILES}")
+
   endif()
 
 #------------------------------------------------------------------------------
