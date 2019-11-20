@@ -2780,6 +2780,12 @@ function(_generate_swig_files swig_module)
                  PROPERTY COMPILE_FLAGS " -Wno-cast-function-type")
   endif()
   
+  if(CXX_HAS_SHADOW)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-shadow")
+  endif()
+
+
 
   install(FILES ${PY_MODULE_DIR}/${PY_MODULE}.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
   

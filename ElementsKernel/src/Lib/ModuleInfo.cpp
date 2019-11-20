@@ -126,7 +126,7 @@ ModuleType moduleType()   {
   static ModuleType type = ModuleType::UNKNOWN;
   if (type == ModuleType::UNKNOWN)    {
     const string& module = moduleNameFull();
-    int loc = module.rfind('.')+1;
+    std::size_t loc = module.rfind('.')+1;
     if (loc == 0) {
       type = ModuleType::EXECUTABLE;
     } else if (module[loc] == 'e' or module[loc] == 'E') {
