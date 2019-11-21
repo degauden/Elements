@@ -8,7 +8,7 @@ include(SGSPlatform)
 macro(check_and_use_cxx_option opt var)
     check_cxx_compiler_flag(${opt} ${var})
     if(${var})
-      message(STATUS "   C++ uses \"${opt}\"")
+      debug_message(STATUS "   C++ uses \"${opt}\"")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${opt}"
           CACHE STRING "Flags used by the compiler during all build types."
           FORCE)
@@ -19,7 +19,7 @@ endmacro()
 macro(check_and_use_c_option opt var)
     check_c_compiler_flag(${opt} ${var})
     if(${var})
-      message(STATUS "   C uses \"${opt}\"")
+      debug_message(STATUS "   C uses \"${opt}\"")
       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${opt}"
           CACHE STRING "Flags used by the compiler during all build types."
           FORCE)
@@ -226,6 +226,10 @@ option(FLOAT_EQUAL_WARNING
        "Enable the -Wfloat-equal warning"
        OFF)
 
+option(CONVERSION_WARNING
+       "Enable the -Wconversion warning"
+       OFF)
+
 option(SQUEEZED_INSTALL
        "Enable the squeezing of the installation into a prefix directory"
        ON)
@@ -301,9 +305,25 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
 
   set(CMAKE_CXX_FLAGS
-      "${CMAKE_CXX_FLAGS} -fmessage-length=0 -pipe -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-long-long -Wno-unknown-pragmas -fPIC"
+      "${CMAKE_CXX_FLAGS} -fmessage-length=0 -pipe -pthread -pedantic -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
+
+  check_and_use_cxx_option(-Wall CXX_HAS_ALL)
+  check_and_use_cxx_option(-Wextra CXX_HAS_EXTRA)
+  check_and_use_cxx_option(-Wwrite-strings CXX_HAS_WRITE_STRINGS)
+  check_and_use_cxx_option(-Wpointer-arith CXX_HAS_POINTER_ARITH)
+  check_and_use_cxx_option(-Wno-long-long CXX_HAS_NO_LONG_LONG)
+  check_and_use_cxx_option(-Wno-unknown-pragmas CXX_HAS_NO_UNKNOWN_PRAGMAS)
+  check_and_use_cxx_option(-Wformat-security CXX_HAS_FORMAT_SECURITY)
+  check_and_use_cxx_option(-Wduplicated-cond CXX_HAS_DUPLICATED_COND)
+  check_and_use_cxx_option(-Wshadow CXX_HAS_SHADOW)
+  check_and_use_cxx_option(-Wlogical-not-parentheses CXX_HAS_LOGICAL_NOT_PARENTHESES)
+  check_and_use_cxx_option(-Wnull-dereference CXX_HAS_NULL_DEREFERENCE)
+
+  check_and_use_cxx_option(-Woverloaded-virtual CXX_HAS_OVERLOADED_VIRTUAL)
+
+  check_and_use_cxx_option(-Werror=return-type CXX_HAS_ERROR_RETURN_TYPE)
 
   if(USE_ENV_FLAGS)
     set(CMAKE_C_FLAGS $ENV{CFLAGS})
@@ -312,9 +332,26 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
       
   set(CMAKE_C_FLAGS
-      "${CMAKE_C_FLAGS} -fmessage-length=0 -pipe -Wall -Wextra -Werror=return-type -pthread -pedantic -Wwrite-strings -Wpointer-arith -Wno-long-long -Wno-unknown-pragmas -Wno-unused-parameter -fPIC"
+      "${CMAKE_C_FLAGS} -fmessage-length=0 -pipe -pthread -pedantic -fPIC"
       CACHE STRING "Flags used by the compiler during all build types."
       FORCE)
+
+  check_and_use_c_option(-Wall C_HAS_ALL)
+  check_and_use_c_option(-Wextra C_HAS_EXTRA)
+  check_and_use_c_option(-Wwrite-strings C_HAS_WRITE_STRINGS)
+  check_and_use_c_option(-Wpointer-arith C_HAS_POINTER_ARITH)
+  check_and_use_c_option(-Wno-long-long C_HAS_NO_LONG_LONG)
+  check_and_use_c_option(-Wno-unknown-pragmas C_HAS_NO_UNKNOWN_PRAGMAS)
+  check_and_use_c_option(-Wformat-security C_HAS_FORMAT_SECURITY)
+  check_and_use_c_option(-Wduplicated-cond C_HAS_DUPLICATED_COND)
+  check_and_use_c_option(-Wshadow C_HAS_SHADOW)
+  check_and_use_c_option(-Wlogical-not-parentheses C_HAS_LOGICAL_NOT_PARENTHESES)
+  check_and_use_c_option(-Wnull-dereference C_HAS_NULL_DEREFERENCE)
+
+  check_and_use_c_option(-Wjump-misses-init C_HAS_JUMP_MISSES_INIT)
+  check_and_use_c_option(-Wno-unused-parameter C_HAS_NO_UNUSED_PARAMETER)
+
+  check_and_use_c_option(-Werror=return-type C_HAS_ERROR_RETURN_TYPE)
 
   if((NOT SGS_COMP STREQUAL clang) OR (SGS_COMPVERS VERSION_GREATER "40") )
     check_and_use_cxx_option(-ansi CXX_HAS_ANSI)
@@ -329,6 +366,11 @@ if(NOT ELEMENTS_FLAGS_SET)
   if(FLOAT_EQUAL_WARNING)
     check_and_use_cxx_option(-Wfloat-equal CXX_HAS_FLOAT_EQUAL)
     check_and_use_c_option(-Wfloat-equal C_HAS_FLOAT_EQUAL)
+  endif()
+  
+  if(CONVERSION_WARNING)
+    check_and_use_cxx_option(-Wconversion CXX_HAS_CONVERSION)
+    check_and_use_c_option(-Wconversion C_HAS_CONVERSION)
   endif()
 
   if(CXX_SUGGEST_OVERRIDE AND (SGS_COMP STREQUAL gcc))

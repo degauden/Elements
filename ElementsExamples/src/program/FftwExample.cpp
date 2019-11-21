@@ -57,7 +57,7 @@ public:
 
     /* prepare a cosine wave */
     for (size_t i = 0; i < N; i++) {
-      in[i][0] = cos(3 * 2*Units::pi*i/N);
+      in[i][0] = cos(3.0 * 2.0*Units::pi*static_cast<double>(i)/static_cast<double>(N));
       in[i][1] = 0;
     }
 

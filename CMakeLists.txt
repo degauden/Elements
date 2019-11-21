@@ -25,6 +25,11 @@ set(FLOAT_EQUAL_WARNING ON
     CACHE STRING "Enable the -Wfloat-equal warning"
     FORCE)
 
+set(CONVERSION_WARNING ON
+    CACHE STRING "Enable the -Wconversion warning"
+    FORCE)
+
+
 set(HIDE_SYSINC_WARNINGS ON
     CACHE STRING "Hide System includes warnings by using -isystem instead of -I"
     FORCE)

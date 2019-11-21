@@ -58,7 +58,7 @@ double UnitTestExample::average(const vector<int>& v) {
     // auto sum = std::accumulate(v.begin(), v.end(), 0);  // example mistake to feed a unit test exercise
     auto sum = std::accumulate(v.begin(), v.end(), 0.);  // example mistake to feed a unit test exercise
 
-    result = sum / size;
+    result = static_cast<double>(sum) / static_cast<double>(size);
   }
 
   return result;
