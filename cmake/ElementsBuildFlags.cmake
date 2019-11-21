@@ -8,9 +8,7 @@ include(SGSPlatform)
 macro(check_and_use_cxx_option opt var)
     check_cxx_compiler_flag(${opt} ${var})
     if(${var})
-      if(USE_DEBUG_PRINT)
-        message(STATUS "   C++ uses \"${opt}\"")
-      endif()
+      debug_message(STATUS "   C++ uses \"${opt}\"")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${opt}"
           CACHE STRING "Flags used by the compiler during all build types."
           FORCE)
@@ -21,9 +19,7 @@ endmacro()
 macro(check_and_use_c_option opt var)
     check_c_compiler_flag(${opt} ${var})
     if(${var})
-      if(USE_DEBUG_PRINT)
-        message(STATUS "   C uses \"${opt}\"")
-      endif()
+      debug_message(STATUS "   C uses \"${opt}\"")
       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${opt}"
           CACHE STRING "Flags used by the compiler during all build types."
           FORCE)

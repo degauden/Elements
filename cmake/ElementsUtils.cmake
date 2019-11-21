@@ -22,15 +22,7 @@ endmacro()
 # Options
 option(USE_DEBUG_PRINT
        "make the debug_print_var macro talkative"
-       ON)
-
-
-macro(debug_print_var var)
-  if(USE_DEBUG_PRINT)
-    message(STATUS "${var} -> ${${var}}")
-  endif()
-endmacro()
-
+       OFF)
 
 macro(debug_message)
   if(USE_DEBUG_PRINT)
@@ -40,6 +32,10 @@ endmacro()
 
 macro(debug_print)
   debug_message(STATUS ${ARGN})
+endmacro()
+
+macro(debug_print_var var)
+  debug_message(STATUS "${var} -> ${${var}}")
 endmacro()
 
 set(FULL_MESSAGE_LIST "" CACHE INTERNAL "This is the full list of guarded messages")
