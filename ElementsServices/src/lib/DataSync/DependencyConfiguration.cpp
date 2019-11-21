@@ -53,19 +53,19 @@ size_t DependencyConfiguration::dependencyCount() const {
 }
 
 vector<path> DependencyConfiguration::distantPaths() const {
-  vector<path> distantPaths;
+  vector<path> distant_paths;
   for (const auto& item : m_fileMap) {
-    distantPaths.push_back(item.second);
+    distant_paths.push_back(item.second);
   }
-  return distantPaths;
+  return distant_paths;
 }
 
 vector<path> DependencyConfiguration::localPaths() const {
-  vector<path> localPaths;
+  vector<path> local_paths;
   for (const auto& item : m_fileMap) {
-    localPaths.push_back(item.first);
+    local_paths.push_back(item.first);
   }
-  return localPaths;
+  return local_paths;
 }
 
 void DependencyConfiguration::parseConfigurationFile(path filename) {

@@ -2856,6 +2856,12 @@ function(elements_add_swig_binding binding)
                  PROPERTY COMPILE_FLAGS " -Wno-parentheses-equality")
   endif()
 
+  if(CXX_HAS_CONVERSION)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-conversion")
+  endif()
+
+
   elements_add_python_module(${binding}
                              ${PY_MODULE_SWIG_SRC} ${cpp_srcs}
                              LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
@@ -3093,6 +3099,12 @@ function(elements_add_cython_module)
     set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
                  PROPERTY COMPILE_FLAGS " -Wno-constant-logical-operand")    
   endif()
+
+  if(CXX_HAS_SHADOW)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-shadow")    
+  endif()
+
 
 
   elements_add_python_module(${mod_name}

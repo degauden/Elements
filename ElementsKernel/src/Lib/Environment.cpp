@@ -44,7 +44,7 @@ using System::setEnv;
 using System::getEnv;
 using System::isEnvSet;
 
-Environment::Variable::Variable(Environment& env, const string& index): m_env{env}, m_index{index} {
+Environment::Variable::Variable(Environment& arg_env, const string& arg_index): m_env{arg_env}, m_index{arg_index} {
 }
 
 Environment::Variable::Variable(const Environment::Variable& other): m_env{other.m_env} {
@@ -78,16 +78,16 @@ Environment::Variable& Environment::Variable::operator=(Environment::Variable&& 
 }
 
 
-Environment::Variable& Environment::Variable::operator=(const string& value) {
+Environment::Variable& Environment::Variable::operator=(const string& arg_value) {
 
-  set(value);
+  set(arg_value);
 
   return *this;
 }
 
-Environment::Variable& Environment::Variable::set(const string& value) {
+Environment::Variable& Environment::Variable::set(const string& arg_value) {
 
-  m_env.get().set(m_index, value);
+  m_env.get().set(m_index, arg_value);
 
   return *this;
 }
@@ -99,31 +99,31 @@ Environment::Variable& Environment::Variable::unSet() {
   return *this;
 }
 
-Environment::Variable& Environment::Variable::append(const string& value) {
+Environment::Variable& Environment::Variable::append(const string& arg_value) {
 
-  m_env.get().append(m_index, value);
-
-  return *this;
-}
-
-Environment::Variable& Environment::Variable::operator +=(const string& value) {
-
-  return append(value);
-
-}
-
-Environment::Variable& Environment::Variable::prepend(const string& value) {
-
-  m_env.get().prepend(m_index, value);
+  m_env.get().append(m_index, arg_value);
 
   return *this;
 }
 
-Environment::Variable Environment::Variable::operator+(const string& value) {
+Environment::Variable& Environment::Variable::operator +=(const string& arg_value) {
+
+  return append(arg_value);
+
+}
+
+Environment::Variable& Environment::Variable::prepend(const string& arg_value) {
+
+  m_env.get().prepend(m_index, arg_value);
+
+  return *this;
+}
+
+Environment::Variable Environment::Variable::operator+(const string& arg_value) {
 
   Environment::Variable result(m_env, m_index);
 
-  result.append(value);
+  result.append(arg_value);
 
   return result;
 }
