@@ -230,6 +230,10 @@ option(FLOAT_EQUAL_WARNING
        "Enable the -Wfloat-equal warning"
        OFF)
 
+option(CONVERSION_WARNING
+       "Enable the -Wconversion warning"
+       OFF)
+
 option(SQUEEZED_INSTALL
        "Enable the squeezing of the installation into a prefix directory"
        ON)
@@ -318,7 +322,6 @@ if(NOT ELEMENTS_FLAGS_SET)
   check_and_use_cxx_option(-Wformat-security CXX_HAS_FORMAT_SECURITY)
   check_and_use_cxx_option(-Wduplicated-cond CXX_HAS_DUPLICATED_COND)
   check_and_use_cxx_option(-Wshadow CXX_HAS_SHADOW)
-  check_and_use_cxx_option(-Wconversion CXX_HAS_CONVERSION)
   check_and_use_cxx_option(-Wlogical-not-parentheses CXX_HAS_LOGICAL_NOT_PARENTHESES)
   check_and_use_cxx_option(-Wnull-dereference CXX_HAS_NULL_DEREFERENCE)
 
@@ -346,7 +349,6 @@ if(NOT ELEMENTS_FLAGS_SET)
   check_and_use_c_option(-Wformat-security C_HAS_FORMAT_SECURITY)
   check_and_use_c_option(-Wduplicated-cond C_HAS_DUPLICATED_COND)
   check_and_use_c_option(-Wshadow C_HAS_SHADOW)
-  check_and_use_c_option(-Wconversion C_HAS_CONVERSION)
   check_and_use_c_option(-Wlogical-not-parentheses C_HAS_LOGICAL_NOT_PARENTHESES)
   check_and_use_c_option(-Wnull-dereference C_HAS_NULL_DEREFERENCE)
 
@@ -368,6 +370,11 @@ if(NOT ELEMENTS_FLAGS_SET)
   if(FLOAT_EQUAL_WARNING)
     check_and_use_cxx_option(-Wfloat-equal CXX_HAS_FLOAT_EQUAL)
     check_and_use_c_option(-Wfloat-equal C_HAS_FLOAT_EQUAL)
+  endif()
+  
+  if(CONVERSION_WARNING)
+    check_and_use_cxx_option(-Wconversion CXX_HAS_CONVERSION)
+    check_and_use_c_option(-Wconversion C_HAS_CONVERSION)
   endif()
 
   if(CXX_SUGGEST_OVERRIDE AND (SGS_COMP STREQUAL gcc))
