@@ -136,11 +136,11 @@ ELEMENTS_API unsigned long getProcedureByName(ImageHandle handle,
 ELEMENTS_API unsigned long getProcedureByName(ImageHandle handle,
     const std::string& name, Creator* pFunction);
 /// Get last system known error
-ELEMENTS_API int getLastError();
+ELEMENTS_API unsigned long getLastError();
 /// Get last system error as string
 ELEMENTS_API const std::string getLastErrorString();
 /// Retrieve error code as string for a given error
-ELEMENTS_API const std::string getErrorString(int error);
+ELEMENTS_API const std::string getErrorString(unsigned long error);
 /// Get platform independent information about the class type
 ELEMENTS_API const std::string typeinfoName(const std::type_info&);
 ELEMENTS_API const std::string typeinfoName(const char*);
