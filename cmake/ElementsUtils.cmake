@@ -384,7 +384,9 @@ function(get_full_binary_list binary_tag binary_base full_list)
     list(APPEND the_list "${binary_tag}")
   endif()
 
-  guarded_message(STATUS "Elements use strict binary dependencies: ${ELEMENTS_USE_STRICT_BINARY_DEP}")
+  if(${ELEMENTS_USE_STRICT_BINARY_DEP})
+    guarded_message(STATUS "Elements use strict binary dependencies: ${ELEMENTS_USE_STRICT_BINARY_DEP}")
+  endif()
 
   if(SGS_BUILD_TYPE_SHORT_NAMES AND NOT ELEMENTS_USE_STRICT_BINARY_DEP)
     foreach(_s3 ${SGS_BUILD_TYPE_SHORT_NAMES})
