@@ -138,7 +138,7 @@ std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initi
                                   [l](const U& s){
                                   return path {l} / s;
                                   });
-                   pos += suffixes.size();
+                   pos += static_cast<std::ptrdiff_t>(suffixes.size());
 
                  });
 

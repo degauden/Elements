@@ -3105,6 +3105,10 @@ function(elements_add_cython_module)
                  PROPERTY COMPILE_FLAGS " -Wno-shadow")    
   endif()
 
+  if(CXX_HAS_CONVERSION)
+    set_property(SOURCE ${PY_MODULE_CYTHON_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-conversion")
+  endif()
 
 
   elements_add_python_module(${mod_name}
