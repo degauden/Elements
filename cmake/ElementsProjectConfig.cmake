@@ -3312,11 +3312,16 @@ function(elements_add_unit_test name)
         set(extra_env ${extra_env} -s ${var})
       endif()
     endforeach()
+    
+    set(exec_argument)
+    if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
+      set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)
+    endif()
 
     add_test(NAME ${package}.${name}
              WORKING_DIRECTORY ${${name}_UNIT_TEST_WORKING_DIRECTORY}
              COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
-             ${executable}${exec_suffix})
+             ${executable}${exec_suffix} ${exec_argument})
 
     set_property(GLOBAL APPEND PROPERTY TEST_LIST ${package}.${name}:${executable}${exec_suffix})
 
