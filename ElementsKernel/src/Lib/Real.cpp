@@ -39,18 +39,19 @@ extern const double DBL_DEFAULT_TEST_TOLERANCE = pow(10.0, -numeric_limits<doubl
 bool almostEqual2sComplement(const float& left, const float& right, const int& max_ulps) {
 
     using std::int32_t;
+    using std::uint32_t;
 
     // int a_int = *(int*)&a;
     int32_t a_int = *reinterpret_cast<const int32_t *>(&left);
     // Make a_int lexicographically ordered as a twos-complement int
     if (a_int < 0) {
-        a_int = static_cast<int32_t>(0x80000000 - a_int);
+        a_int = static_cast<int32_t>(0x80000000 - static_cast<uint32_t>(a_int));
     }
     // Make b_int lexicographically ordered as a twos-complement int
     //    int b_int = *(int*)&b;
     int32_t b_int = *reinterpret_cast<const int32_t *>(&right);
     if (b_int < 0) {
-        b_int = static_cast<int32_t>(0x80000000 - b_int);
+        b_int = static_cast<int32_t>(0x80000000 - static_cast<uint32_t>(b_int));
     }
     int32_t int_diff = abs(a_int - b_int);
     if (int_diff <= max_ulps && -max_ulps <= int_diff) {
@@ -63,19 +64,20 @@ bool almostEqual2sComplement(const float& left, const float& right, const int& m
 bool almostEqual2sComplement(const double& left, const double& right, const int& max_ulps) {
 
     using std::int64_t;
+    using std::uint64_t;
 
     // long long a_int = *(long long*)&a;
 
     int64_t a_int = *reinterpret_cast<const int64_t *>(&left);
     // Make a_int lexicographically ordered as a twos-complement int
     if (a_int < 0) {
-        a_int = static_cast<int64_t>(0x8000000000000000LL - a_int);
+        a_int = static_cast<int64_t>(0x8000000000000000LL - static_cast<uint64_t>(a_int));
     }
     // Make b_int lexicographically ordered as a twos-complement int
     //    long long b_int = *(long long*)&b;
     int64_t b_int = *reinterpret_cast<const int64_t *>(&right);
     if (b_int < 0) {
-        b_int = static_cast<int64_t>(0x8000000000000000LL - b_int);
+        b_int = static_cast<int64_t>(0x8000000000000000LL - static_cast<uint64_t>(b_int));
     }
     int64_t int_diff = abs(a_int - b_int);
     if (int_diff <= max_ulps && -max_ulps <= int_diff) {

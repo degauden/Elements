@@ -106,7 +106,7 @@ unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
       res = loadWithoutEnvironment(dllName, handle);
     }
     if (res != 1) {
-      errno = 0xAFFEDEAD;
+      errno = static_cast<int>(0xAFFEDEAD);
     }
   }
   return res;
@@ -127,7 +127,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
 #if defined(__linux)
   *pFunction = FuncPtrCast<EntryPoint>(::dlsym(handle, name.c_str()));
   if (0 == *pFunction) {
-    errno = 0xAFFEDEAD;
+    errno = static_cast<int>(0xAFFEDEAD);
     return 0;
   }
   return 1;
@@ -139,7 +139,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
     *pFunction = (EntryPoint)::dlsym(handle, sname.c_str());
   }
   if ( 0 == *pFunction ) {
-    errno = 0xAFFEDEAD;
+    errno = static_cast<int>(0xAFFEDEAD);
     std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
     return 0;
   }
