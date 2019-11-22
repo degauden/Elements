@@ -81,7 +81,7 @@ void ConnectionConfiguration::parseConfigurationFile(const path& filename) {
   parseOverwritingPolicy(vm["overwrite"].as<string>());
   distantRoot = vm["distant-workspace"].as<string>();
   localRoot = localWorkspacePrefix() / vm["local-workspace"].as<string>();
-  tries = vm["tries"].as<int>();
+  tries = vm["tries"].as<size_t>();
 
 }
 
