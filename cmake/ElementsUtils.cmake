@@ -38,6 +38,11 @@ macro(debug_print_var var)
   debug_message(STATUS "${var} -> ${${var}}")
 endmacro()
 
+macro(print_var var)
+  message(STATUS "${var} -> ${${var}}")
+endmacro()
+
+
 set(FULL_MESSAGE_LIST "" CACHE INTERNAL "This is the full list of guarded messages")
 
 macro(guarded_message)
