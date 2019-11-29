@@ -99,7 +99,7 @@ include_guard()
 #===========================================================================================================
 
 
-  if(USE_SPHINX)
+  if(USE_SPHINX AND (NOT PYTHON_EXPLICIT_VERSION STREQUAL 2))
 
   find_package(Sphinx REQUIRED)
   if(SPHINX_FOUND)
