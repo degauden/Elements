@@ -440,7 +440,7 @@ macro(elements_project project version)
 
   # compute the VCS version
 
-  string(TIMESTAMP PROJECT_TIMESTAMP_VERSION "%Y%m%d" UTC)
+  string(TIMESTAMP PROJECT_TIMESTAMP_VERSION "%Y%m%d%H%M%S" UTC)
 
   find_package(Git)
 
@@ -902,7 +902,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
   if(NOT SQUEEZED_INSTALL)
     SET(CPACK_RPM_PACKAGE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}")
-    SET(CPACK_RPM_PACKAGE_VERSION "1.0")
+    SET(CPACK_RPM_PACKAGE_VERSION ${PROJECT_VCS_VERSION})
   else()
     SET(CPACK_RPM_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
     SET(CPACK_RPM_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION})
