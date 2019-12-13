@@ -753,20 +753,20 @@ function(get_rpm_dep_lines project_use package_suffix squeezed_install line_pref
     endif()
     
     if(package_suffix)
-	  set(other_proj_pack_name "${other_proj_pack_name}-${package_suffix}")
+      set(other_proj_pack_name "${other_proj_pack_name}-${package_suffix}")
     endif()
- 
+
     if(squeezed_install)
       set(other_proj_pack_line "${other_proj_pack_name} = ${other_project_version}")
     else()
       set(other_proj_pack_line "${other_proj_pack_name}")
     endif()
- 
+
     if(line_prefix)
       set(other_proj_pack_line "${line_prefix}: ${other_proj_pack_line}")  
     endif()
 
-    
+
     if( "${output_str_lines}" STREQUAL "")
       set(output_str_lines "${other_proj_pack_line}")
     else()
@@ -776,7 +776,7 @@ ${other_proj_pack_line}")
 
     list(REMOVE_AT ARGN_ 0 1)
   endwhile()
-    
+
   set(${output_var} ${output_str_lines} PARENT_SCOPE)
 
 endfunction()
