@@ -289,6 +289,9 @@ option(INSTALL_TESTS
 
 option(USE_VERSIONED_LIBRARIES "Generate versioned shared libraries" ON)
 
+option(USE_TIMESTAMP_RPM_VERSION "Use timestamp for the RPM version in non-squeezed mode" OFF)
+
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   message(STATUS "Setting cached build flags")
