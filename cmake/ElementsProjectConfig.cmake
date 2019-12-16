@@ -347,8 +347,7 @@ macro(elements_project project version)
 
   find_program(ctest2junit_cmd ctest2JUnit.py HINTS ${binary_paths})
   if(ctest2junit_cmd)
-#    set(ctest2junit_cmd ${PYTHON_EXECUTABLE} ${ctest2junit_cmd})
-    set(ctest2junit_cmd python ${ctest2junit_cmd})
+    set(ctest2junit_cmd ${PYTHON_EXECUTABLE} ${ctest2junit_cmd})
   endif()
 
   find_program(ctestxml2html_cmd CTestXML2HTML.py HINTS ${binary_paths})
