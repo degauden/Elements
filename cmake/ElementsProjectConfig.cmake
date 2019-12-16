@@ -3572,7 +3572,9 @@ function(add_python_test_dir)
     set(PYFRMK_JUNIT_FILE_OPT)
     set(PYFRMK_JUNIT_PREFIX_OPT)
     if(PYFRMK_NAME STREQUAL "PyTest")
-        set(PYFRMK_JUNIT_FILE_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.xml")
+        if(TEST_JUNIT_REPORT)
+          set(PYFRMK_JUNIT_FILE_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.xml")
+        endif()
     endif()
     elements_add_test(${pytest_name}
                       COMMAND ${PYFRMK_TEST} ${PYFRMK_JUNIT_FILE_OPT} ${PYFRMK_JUNIT_PREFIX_OPT} ${pysrcs}
