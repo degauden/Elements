@@ -3339,7 +3339,7 @@ function(elements_add_unit_test name)
     
     set(exec_argument)
     if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
-      if(TEST_JUNIT_REPORT)
+      if(TEST_JUNIT_REPORT AND (NOT ${BOOST_version} VERSION_LESS 1.63.0))
         set(exec_argument --log_format=JUNIT --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.JUnit.xml --log_level=all)
       else()
         set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)      
