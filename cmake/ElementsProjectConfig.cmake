@@ -3339,7 +3339,11 @@ function(elements_add_unit_test name)
     
     set(exec_argument)
     if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
-      set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)
+      if(TEST_JUNIT_REPORT)
+        set(exec_argument --log_format=JUNIT --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.JUnit.xml --log_level=all)
+      else()
+        set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)      
+      endif()
     endif()
 
     add_test(NAME ${package}.${name}
