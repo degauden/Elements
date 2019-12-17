@@ -94,6 +94,12 @@ elements_add_unit_test(UnitTestExample_test tests/src/Boost/UnitTestExample_test
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
+elements_add_unit_test(Rectangle tests/src/Boost/Rectangle_test.cpp
+                       EXECUTABLE Rectangle_test
+                       INCLUDE_DIRS ElementsExamples
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+
+
 
 #===== CppUnit tests =============================================================
 
