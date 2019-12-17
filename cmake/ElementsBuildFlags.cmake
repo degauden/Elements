@@ -262,6 +262,10 @@ option(TEST_HTML_REPORT
        "Enable the conversion of the CTest XML reports into HTML"
        ON)
 
+option(TEST_JUNIT_REPORT
+       "Enable the conversion of the CTest XML reports into JUnit XML reports"
+       ON)
+
 option(WITH_DATASYNC_TEST
        "Enable the test which require a specific DataSync connection"
        OFF)

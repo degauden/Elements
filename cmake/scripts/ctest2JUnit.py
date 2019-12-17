@@ -30,20 +30,16 @@ def main():
     tag_file = os.path.join(build_dir, "Testing", "TAG")
     dir_name = open(tag_file).readline().strip()
     qtest_xml_file = os.path.join(build_dir, "Testing", dir_name, "Test.xml")
-    junit_xml_file = os.path.join(build_dir, "Testing", dir_name, "JUnitTest.xml")
+    junit_xml_file = os.path.join(build_dir, "Testing", dir_name, "Test.JUnit.xml")
 
-    xml_content = open(qtest_xml_file).read()
     xsl_content = open(xsl_file).read()
-    xml_doc = etree.parse(StringIO(xml_content))
+    xml_doc = etree.parse(open(qtest_xml_file))
     xslt_root = etree.XML(xsl_content)
     transform = etree.XSLT(xslt_root)
     result_tree = transform(xml_doc)
 
-    open(junit_xml_file, "w").write(etree.tostring(result_tree, pretty_print=True))
+    open(junit_xml_file, "wb").write(etree.tostring(result_tree, pretty_print=True))
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except:
-        pass
+    main()

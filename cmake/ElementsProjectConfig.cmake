@@ -857,6 +857,26 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
       add_custom_command(TARGET HTMLSummary
                          COMMAND echo "The HTML reports for the tests are not enabled.")
     endif()
+
+    if(TEST_JUNIT_REPORT)
+      find_python_module(lxml)
+      if(PY_LXML)
+        find_file(ctest2junit_xsl_file
+                  NAMES CTest2JUnit.xsl
+                  PATHS ${CMAKE_MODULE_PATH}
+                  PATH_SUFFIXES auxdir/test auxdir
+                  NO_DEFAULT_PATH)
+        add_custom_target(JUnitSummary)
+        add_custom_command(TARGET JUnitSummary
+                           COMMAND ${env_cmd} --xml ${env_xml} 
+                                   ${ctest2junit_cmd} ${PROJECT_BINARY_DIR} ${ctest2junit_xsl_file})
+
+      endif()
+    else()
+      add_custom_target(JUnitSummary)
+      add_custom_command(TARGET JUnitSummary
+                         COMMAND echo "The JUnit reports for the tests are not enabled.")
+    endif()
   endif()
 
 
@@ -3319,7 +3339,11 @@ function(elements_add_unit_test name)
     
     set(exec_argument)
     if (${${name}_UNIT_TEST_TYPE} STREQUAL "Boost")
-      set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)
+      if(TEST_JUNIT_REPORT AND NOT (Boost_VERSION_STRING VERSION_LESS 1.63.0))
+        set(exec_argument --log_format=JUNIT --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.JUnit.xml --log_level=all)
+      else()
+        set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)      
+      endif()
     endif()
 
     add_test(NAME ${package}.${name}
@@ -3552,7 +3576,9 @@ function(add_python_test_dir)
     set(PYFRMK_JUNIT_FILE_OPT)
     set(PYFRMK_JUNIT_PREFIX_OPT)
     if(PYFRMK_NAME STREQUAL "PyTest")
-        set(PYFRMK_JUNIT_FILE_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.xml")
+        if(TEST_JUNIT_REPORT)
+          set(PYFRMK_JUNIT_FILE_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.JUnit.xml")
+        endif()
     endif()
     elements_add_test(${pytest_name}
                       COMMAND ${PYFRMK_TEST} ${PYFRMK_JUNIT_FILE_OPT} ${PYFRMK_JUNIT_PREFIX_OPT} ${pysrcs}
