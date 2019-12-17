@@ -30,7 +30,7 @@ def main():
     tag_file = os.path.join(build_dir, "Testing", "TAG")
     dir_name = open(tag_file).readline().strip()
     qtest_xml_file = os.path.join(build_dir, "Testing", dir_name, "Test.xml")
-    junit_xml_file = os.path.join(build_dir, "Testing", dir_name, "JUnitTest.xml")
+    junit_xml_file = os.path.join(build_dir, "Testing", dir_name, "Test.JUnit.xml")
 
     xsl_content = open(xsl_file).read()
     xml_doc = etree.parse(open(qtest_xml_file))
