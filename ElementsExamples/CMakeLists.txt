@@ -104,6 +104,11 @@ elements_add_unit_test(PiCalculator tests/src/Boost/PiCalculator_test.cpp
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
+elements_add_unit_test(crashingFunction tests/src/Boost/crashingFunction_test.cpp
+                       EXECUTABLE crashingFunction_test
+                       INCLUDE_DIRS ElementsExamples
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+
 #===== CppUnit tests =============================================================
 
 if(CPPUNIT_FOUND)
