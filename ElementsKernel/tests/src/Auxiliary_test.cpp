@@ -85,6 +85,20 @@ BOOST_AUTO_TEST_CASE(AuxiliaryConstructor_test) {
 
 }
 
+BOOST_AUTO_TEST_CASE(AuxiliaryVariableName_test) {
+
+  BOOST_CHECK_EQUAL(Elements::getAuxiliaryVariableName(), "ELEMENTS_AUX_PATH");
+
+}
+
+
+BOOST_AUTO_TEST_CASE(AuxiliaryException_test) {
+
+  BOOST_CHECK_THROW(Elements::getAuxiliaryPath("NonExistingFile.txt"), Elements::Exception);
+
+}
+
+
 BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Auxiliary_Fixture) {
 
 

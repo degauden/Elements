@@ -86,6 +86,12 @@ BOOST_AUTO_TEST_CASE(ConfigurationException_test) {
 
 }
 
+BOOST_AUTO_TEST_CASE(ConfigurationVariableName_test) {
+
+  BOOST_CHECK_EQUAL(Elements::getConfigurationVariableName(), "ELEMENTS_CONF_PATH");
+
+}
+
 BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Configuration_Fixture) {
 
 
