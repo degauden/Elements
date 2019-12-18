@@ -99,7 +99,10 @@ elements_add_unit_test(Rectangle tests/src/Boost/Rectangle_test.cpp
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
-
+elements_add_unit_test(PiCalculator tests/src/Boost/PiCalculator_test.cpp
+                       EXECUTABLE PiCalculator_test
+                       INCLUDE_DIRS ElementsExamples
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 #===== CppUnit tests =============================================================
 

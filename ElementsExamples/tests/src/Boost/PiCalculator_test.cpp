@@ -19,30 +19,29 @@
  *
  */
 
-#include "ElementsExamples/Rectangle.h"  // Access the objects you want to test
+#include "ElementsExamples/PiCalculator.h"  // Access the objects you want to test
 
+
+#include <iostream>
 #include <boost/test/unit_test.hpp>
 
-using Elements::Examples::Rectangle;
+using Elements::Examples::PiCalculator;
 
 // Starts a test suite and name it.
-BOOST_AUTO_TEST_SUITE(Rectangle_test_suite)
+BOOST_AUTO_TEST_SUITE(PiCalculator_test_suite)
 
+void callBackFunction(double pi) {
 
-BOOST_AUTO_TEST_CASE(Dimension_test) {
-
-  auto r = Rectangle(1, 1, 3, 2);
-
-  BOOST_CHECK_EQUAL(r.getLength(), 2);
-  BOOST_CHECK_EQUAL(r.getHeight(), 1);
-
+  std::cout << "Here is the pi value: " << pi << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(Area_test) {
+BOOST_AUTO_TEST_CASE(Creation_test) {
 
-  auto r = Rectangle(1, 1, 3, 2);
+  auto pc = PiCalculator();
 
-  BOOST_CHECK_EQUAL(r.getArea(), 2);
+  pc.setShowResultCallback(callBackFunction);
+
+  pc.calculate(10);
 
 }
 
