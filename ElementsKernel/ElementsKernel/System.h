@@ -99,7 +99,7 @@ const std::string DEFAULT_INSTALL_PREFIX { "/usr" };
 # endif
 #endif
 
-#if defined(__linux) || defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__)
 #define TEMPLATE_SPECIALIZATION
 #endif
 
