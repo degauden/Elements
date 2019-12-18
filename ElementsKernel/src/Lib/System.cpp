@@ -124,7 +124,7 @@ unsigned long unloadDynamicLib(ImageHandle handle) {
 /// Get a specific function defined in the DLL
 unsigned long getProcedureByName(ImageHandle handle, const string& name,
     EntryPoint* pFunction) {
-#if defined(__linux)
+#if defined(__linux__)
   *pFunction = FuncPtrCast<EntryPoint>(::dlsym(handle, name.c_str()));
   if (0 == *pFunction) {
     errno = static_cast<int>(0xAFFEDEAD);
