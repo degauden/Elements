@@ -88,7 +88,7 @@ vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
     auto new_end = std::remove_if(found_list.begin(),
                                   found_list.end(),
                                   [](const path& p){
-                                     return boost::filesystem::exists(p);
+                                     return (not boost::filesystem::exists(p));
                                   });
     found_list.erase(new_end, found_list.end());
   }
