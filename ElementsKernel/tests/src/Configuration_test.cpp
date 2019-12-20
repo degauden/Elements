@@ -101,8 +101,6 @@ struct Configuration_Fixture {
     m_target_real_item_list.resize(distance(m_target_real_item_list.begin(), it2));
 
 
-
-
   }
 
   ~Configuration_Fixture() {

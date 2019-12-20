@@ -51,6 +51,7 @@ struct Path_Fixture {
   Elements::TempDir m_top_dir;
   vector<path> m_item_list;
   vector<path> m_file_list;
+  vector<path> m_directory_list;
 
   static void create_test_file(const path& p) {
 
@@ -80,15 +81,25 @@ struct Path_Fixture {
 
 
     m_file_list.push_back(m_top_dir.path() / "test1" / "foo" / "e1e2");
+    m_directory_list.push_back(m_top_dir.path() / "test1" / "foo");
+
     m_file_list.push_back(m_top_dir.path() / "test3" / "e1e2");
+    m_directory_list.push_back(m_top_dir.path() / "test3");
+
     m_file_list.push_back(m_top_dir.path() / "test4" / "e1e2");
+    m_directory_list.push_back(m_top_dir.path() / "test4");
 
     create_directory(m_top_dir.path() / "test1" / "sub");
     create_directory(m_top_dir.path() / "test5" / "sub");
 
     m_file_list.push_back(m_top_dir.path() / "test1" / "sub" / "d1d2");
+    m_directory_list.push_back(m_top_dir.path() / "test1" / "sub");
+
     m_file_list.push_back(m_top_dir.path() / "test5" / "sub" / "d1d2");
+    m_directory_list.push_back(m_top_dir.path() / "test5" / "sub");
+
     m_file_list.push_back(m_top_dir.path() / "test6" / "d1d2");
+    m_directory_list.push_back(m_top_dir.path() / "test6");
 
     for_each(m_file_list.cbegin(), m_file_list.cend(),
         [](path p) {
@@ -215,6 +226,25 @@ BOOST_FIXTURE_TEST_CASE(getFromStringLocations_test, Path_Fixture) {
   BOOST_CHECK(that_file2.filename() != "");
   BOOST_CHECK(exists(that_file2));
   BOOST_CHECK(is_regular_file(that_file2));
+
+}
+
+BOOST_FIXTURE_TEST_CASE(getPathFromEnvVariable_test, Path_Fixture) {
+
+  using Elements::Path::getPathFromEnvVariable;
+  using Elements::Path::join;
+
+  auto env = Elements::TempEnv();
+
+  env["THAT_PATH"] = join(m_directory_list);
+
+  auto foobar_path = getPathFromEnvVariable("foobar", "THAT_PATH");
+
+  BOOST_CHECK(foobar_path.empty());
+
+  auto e1e2_path = getPathFromEnvVariable("e1e2", "THAT_PATH");
+
+  BOOST_CHECK_EQUAL(e1e2_path, m_top_dir.path() / "test1" / "foo" / "e1e2");
 
 }
 

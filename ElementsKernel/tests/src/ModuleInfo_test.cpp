@@ -27,8 +27,25 @@
 #include <boost/test/unit_test.hpp>          // for the boost test macros
 #include <boost/filesystem.hpp>              // for boost/filesystem
 
+#include "ElementsKernel/ThisModule.h"       // for getThisModuleInfo
+
+using Elements::System::ModuleInfo;
+using Elements::System::getThisModuleInfo;
 
 BOOST_AUTO_TEST_SUITE(ModuleInfo_test)
+
+//-----------------------------------------------------------------------------
+struct ModuleInfo_Fixture {
+
+  ModuleInfo_Fixture() {
+
+  }
+
+  ~ModuleInfo_Fixture() {
+
+  }
+
+};
 
 //-----------------------------------------------------------------------------
 
@@ -48,6 +65,47 @@ BOOST_AUTO_TEST_CASE(ExeName_test) {
   BOOST_CHECK_EQUAL(exe_path.string(), name);
 
 }
+
+BOOST_AUTO_TEST_CASE(SelfProc_test) {
+
+  auto proc_path = Elements::System::getSelfProc();
+
+  BOOST_CHECK(not proc_path.empty());
+
+}
+
+BOOST_AUTO_TEST_CASE(libraryName_test) {
+  const ModuleInfo& info = getThisModuleInfo();
+
+  BOOST_CHECK_EQUAL(::basename(info.libraryName().c_str()), "ModuleInfo_test");
+
+}
+
+BOOST_AUTO_TEST_CASE(addresse_test) {
+
+  const ModuleInfo& info = getThisModuleInfo();
+
+  BOOST_CHECK_EQUAL(info.addresse(), static_cast<void*>(0));
+
+}
+
+BOOST_AUTO_TEST_CASE(moduleName_test) {
+
+  auto module_name = Elements::System::moduleName();
+
+  BOOST_CHECK_EQUAL(module_name, "libElementsKernel");
+
+}
+
+BOOST_AUTO_TEST_CASE(exeHandle_test) {
+
+  auto exe_handle = Elements::System::exeHandle();
+
+  BOOST_CHECK_NE(exe_handle, static_cast<void*>(0));
+
+}
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END()

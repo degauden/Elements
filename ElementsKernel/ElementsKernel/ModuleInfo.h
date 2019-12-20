@@ -80,6 +80,9 @@ ELEMENTS_API std::vector<boost::filesystem::path> linkedModulePaths();
 ELEMENTS_API void setModuleHandle(ImageHandle handle);
 /// Get the full executable path
 ELEMENTS_API boost::filesystem::path getExecutablePath();
+/// Get the path to the /proc directory of the process
+ELEMENTS_API boost::filesystem::path getSelfProc();
+
 
 }  // namespace System
 }  // namespace Elements
