@@ -57,6 +57,11 @@ ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const std::string& file_na
 
 ELEMENTS_API std::vector<boost::filesystem::path> getAuxiliaryLocations(bool exist_only = false);
 
+
+/** @example ElementsExamples/src/program/CCfitsExample.cpp
+ * This is an example of how to use the getAuxiliaryPath function.
+ */
+
 }  // namespace Elements
 
 

@@ -306,25 +306,25 @@ const string& osName() {
 
 /// OS version
 const string& osVersion() {
-  static string osver = "";
+  static string osver = "UNKNOWN";
   struct utsname ut;
+
   if (uname(&ut) == 0) {
     osver = ut.release;
-  } else {
-    osver = "UNKNOWN";
   }
+
   return osver;
 }
 
 /// Machine type
 const string& machineType() {
-  static string mach = "";
+  static string mach = "UNKNOWN";
   struct utsname ut;
+
   if (uname(&ut) == 0) {
     mach = ut.machine;
-  } else {
-    mach = "UNKNOWN";
   }
+
   return mach;
 }
 

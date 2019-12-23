@@ -66,8 +66,31 @@ private:
 
 };
 
+/** @example ElementsExamples/src/program/AnotherSimpleProgramExample.cpp
+ * This is an example of how to use the SimpleProgram class.
+ */
+
+
 }  // namespace Elements
 
+/**
+ * @def MAIN(ELEMENTS_PROGRAM)
+ * Macro which must be used to create a main in classes
+ * that derived from Elements::SimpleProgram, i.e., these derived classes
+ * must end with the following line:
+ * @code
+ *    MAIN(ELEMENTS_PROGRAM)
+ * @endcode.
+ * @param ELEMENTS_PROGRAM name of the main program class, derived from
+ * the class Elements::SimpleProgram class.
+ */
+#define MAIN(ELEMENTS_PROGRAM)         \
+  ELEMENTS_API int main(int argc, char* argv[])              \
+  { \
+    auto program = ELEMENTS_PROGRAM();\
+    Elements::ExitCode exit_code = program.run(argc, argv);   \
+    return static_cast<Elements::ExitCodeType>(exit_code);    \
+  }
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 
