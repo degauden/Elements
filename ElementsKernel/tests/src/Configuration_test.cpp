@@ -90,7 +90,7 @@ struct Configuration_Fixture {
                       [](const path& p){
                             return exists(p);
                       });
-    m_real_item_list.resize(distance(m_real_item_list.begin(), it));
+    m_real_item_list.erase(it, m_real_item_list.end());
 
     m_target_real_item_list.resize(m_target_item_list.size());
     auto it2 = copy_if(m_target_item_list.begin(), m_target_item_list.end(),
@@ -98,8 +98,7 @@ struct Configuration_Fixture {
                       [](const path& p){
                             return exists(p);
                       });
-    m_target_real_item_list.resize(distance(m_target_real_item_list.begin(), it2));
-
+    m_target_real_item_list.erase(it2, m_target_real_item_list.end());
 
   }
 

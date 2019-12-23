@@ -95,10 +95,10 @@ namespace {
 /// Retrieve base name of module
 const string& moduleName()   {
   static string module("");
-  if ( module == "" )   {
-    if ( processHandle() && moduleHandle() )    {
+  if (module == "")   {
+    if ( processHandle() and moduleHandle() )    {
       string mod = ::basename(const_cast<char *>((reinterpret_cast<Dl_info*>(moduleHandle()))->dli_fname));
-      module = mod.substr(static_cast<string::size_type>(0), mod.rfind('.'));
+      module = mod.substr(static_cast<string::size_type>(0), mod.find('.'));
     }
   }
   return module;
@@ -108,7 +108,7 @@ const string& moduleName()   {
 const string& moduleNameFull()   {
   static string module("");
   if ( module == "" )   {
-    if ( processHandle() && moduleHandle() )    {
+    if (processHandle() and moduleHandle())    {
       char name[PATH_MAX] = {"Unknown.module"};
       name[0] = 0;
       const char *path =
