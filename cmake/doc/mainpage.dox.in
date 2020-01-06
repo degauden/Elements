@@ -107,7 +107,7 @@ For the installation, the usual command:
 	$ make install
 
 will do the installation. And since we didn't use the ``-DUSE_LOCAL_INSTALLAREA=on``
-option at configure time, the installation directory will be ``@ELEMENTS_BASE_DIR@/@PROJECT_NAME@/${VERSION}/InstallArea``.
+option at configure time, the installation directory will be ``@ELEMENTS_BASE_DIR@/@PROJECT_NAME@/@PROJECT_VERSION@/InstallArea``.
 
 
 Please note that the build can also be performed by pure CMake commands:
