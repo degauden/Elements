@@ -43,12 +43,14 @@ logger = log.getLogger('CreateElementsProject')
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
 AUX_MAKE_FILE_IN = "Makefile.in"
 AUX_PROJ_RST_IN = "doc_project.rst.in"
+AUX_PROJ_MAINPAGE_IN = "mainpage.dox.in"
 AUX_GITIGNORE_IN = "gitignore_template.in"
 AUX_EDITOR_CONFIG = "editorconfig"
 
 target_locations = { AUX_CMAKE_LIST_IN: "CMakeLists.txt",
                      AUX_MAKE_FILE_IN: "Makefile",
                      AUX_PROJ_RST_IN: "doc/doc_project.rst",
+                     AUX_PROJ_MAINPAGE_IN: "doc/mainpage.dox",
                      AUX_GITIGNORE_IN: ".gitignore",
                      AUX_EDITOR_CONFIG: ".editorconfig"
                    }
