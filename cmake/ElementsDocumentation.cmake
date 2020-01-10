@@ -67,6 +67,28 @@ include_guard()
         "${DOXYGEN_TAGFILES} \"${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/cppreference-doxygen-web.tag.xml=http://en.cppreference.com/w/\"")
     endif()
 
+    # Generation of the Doxygen Main Page
+    
+    list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/doc/mainpage.dox)
+    list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/mainpage.dox)
+    list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/doc/${PROJECT_NAME}.dox)
+    list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.dox)
+
+    any_file_exist(${maindox_list} do_exist)
+    
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doc/mainpage.dox")
+      message(STATUS "No ${CMAKE_CURRENT_SOURCE_DIR}/doc/mainpage.dox can be found.")
+      find_file_to_configure(mainpage.dox.in
+                             FILETYPE "Doxygen main page"
+                             OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
+                             PATHS ${CMAKE_MODULE_PATH}
+                             PATH_SUFFIXES doc)
+      set(DOX_EXCLUDE_BINARY_DIR)
+    else()
+      message(STATUS "The ${CMAKE_CURRENT_SOURCE_DIR}/doc/mainpage.dox file exists.")
+      set(DOX_EXCLUDE_BINARY_DIR ${PROJECT_BINARY_DIR})  
+    endif()
+
 
     # Generation of the main Doxygen configuration: the Doxyfile
     find_file_to_configure(Doxyfile.in
@@ -83,12 +105,6 @@ include_guard()
                            PATHS ${CMAKE_MODULE_PATH}
                            PATH_SUFFIXES doc)
 
-    # Generation of the Doxygen Main Page
-    find_file_to_configure(mainpage.dox.in
-                           FILETYPE "Doxygen main page"
-                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
-                           PATHS ${CMAKE_MODULE_PATH}
-                           PATH_SUFFIXES doc)
 
 
   endif()
