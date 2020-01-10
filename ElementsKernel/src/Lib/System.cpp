@@ -306,25 +306,25 @@ const string& osName() {
 
 /// OS version
 const string& osVersion() {
-  static string osver = "";
+  static string osver = "UNKNOWN";
   struct utsname ut;
+
   if (uname(&ut) == 0) {
     osver = ut.release;
-  } else {
-    osver = "UNKNOWN";
   }
+
   return osver;
 }
 
 /// Machine type
 const string& machineType() {
-  static string mach = "";
+  static string mach = "UNKNOWN";
   struct utsname ut;
+
   if (uname(&ut) == 0) {
     mach = ut.machine;
-  } else {
-    mach = "UNKNOWN";
   }
+
   return mach;
 }
 
@@ -404,35 +404,6 @@ int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses,
   }
 
 }
-
-bool backTrace(string& btrace, const int depth, const int offset) {
-
-  // Always hide the first two levels of the stack trace (that's us)
-  const int total_offset = offset + STACK_OFFSET;
-  const int total_depth = depth + total_offset;
-  bool result = false;
-
-
-  std::shared_ptr<void*> addresses {new (std::nothrow) void*[total_depth], std::default_delete<void*[]>()};
-
-  if (addresses != nullptr) {
-    int count = backTrace(addresses, total_depth);
-    for (int i = total_offset; i < count; ++i) {
-      void *addr = 0;
-      string fnc, lib;
-      if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
-        std::ostringstream ost;
-        ost << "#" << std::setw(3) << std::setiosflags(std::ios::left) << i - total_offset + 1;
-        ost << std::hex << addr << std::dec << " " << fnc << "  [" << lib << "]" << std::endl;
-        btrace += ost.str();
-      }
-    }
-    result = true;
-  }
-
-  return result;
-}
-
 
 const vector<string> backTrace(const int depth, const int offset) {
 

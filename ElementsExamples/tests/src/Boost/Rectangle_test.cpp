@@ -46,6 +46,19 @@ BOOST_AUTO_TEST_CASE(Area_test) {
 
 }
 
+BOOST_AUTO_TEST_CASE(Move_test) {
+
+  auto r = Rectangle(1, 1, 3, 2);
+
+  r.move(4, 5);
+
+  BOOST_CHECK_EQUAL(r.getArea(), 2);
+  BOOST_CHECK_EQUAL(r.getLength(), 2);
+  BOOST_CHECK_EQUAL(r.getHeight(), 1);
+
+}
+
+
 
 // Ends the test suite
 BOOST_AUTO_TEST_SUITE_END()

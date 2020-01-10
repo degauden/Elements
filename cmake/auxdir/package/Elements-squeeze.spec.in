@@ -26,20 +26,20 @@ Vendor:         @CPACK_PACKAGE_VENDOR@
 Requires(post):    /sbin/ldconfig
 Requires(postun):  /sbin/ldconfig
 
-%define bin_tag @CPACK_SYSTEM_NAME@
-%define _prefix @CPACK_PACKAGING_INSTALL_PREFIX@
-%define build_dir_name @BUILD_SUBDIR@
+%global bin_tag @CPACK_SYSTEM_NAME@
+%global _prefix @CPACK_PACKAGING_INSTALL_PREFIX@
+%global build_dir_name @BUILD_SUBDIR@
 
-%define libdir @SPEC_LIBDIR@
-%define pydir @SPEC_PYDIR@
-%define pydyndir @SPEC_PYDYNDIR@
-%define scriptsdir @SPEC_SCRIPTSDIR@
-%define cmakedir @SPEC_CMAKEDIR@
-%define makedir @SPEC_MAKEDIR@
-%define confdir @SPEC_CONFDIR@
-%define auxdir @SPEC_AUXDIR@
-%define docdir @SPEC_DOCDIR@
-%define xmldir @SPEC_XMLDIR@
+%global libdir @SPEC_LIBDIR@
+%global pydir @SPEC_PYDIR@
+%global pydyndir @SPEC_PYDYNDIR@
+%global scriptsdir @SPEC_SCRIPTSDIR@
+%global cmakedir @SPEC_CMAKEDIR@
+%global makedir @SPEC_MAKEDIR@
+%global confdir @SPEC_CONFDIR@
+%global auxdir @SPEC_AUXDIR@
+%global docdir @SPEC_DOCDIR@
+%global xmldir @SPEC_XMLDIR@
 
 @RPM_DEBUG_PACKAGE_NIL@
 

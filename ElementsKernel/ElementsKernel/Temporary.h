@@ -70,6 +70,10 @@ public:
 
 using TempEnv = Environment;
 
+/** @example ElementsKernel/tests/src/Configuration_test.cpp
+ * This is an example of how to use the TempDir and TemEnv classes.
+ */
+
 }  // namespace Elements
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_TEMPORARY_H_

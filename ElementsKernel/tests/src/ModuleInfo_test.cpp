@@ -21,14 +21,35 @@
 
 #include "ElementsKernel/ModuleInfo.h"       // header file to test
 
+#include <libgen.h>                          // for basename
+
 #include <iostream>
 #include <string>
 
 #include <boost/test/unit_test.hpp>          // for the boost test macros
 #include <boost/filesystem.hpp>              // for boost/filesystem
 
+#include "ElementsKernel/ThisModule.h"       // for getThisModuleInfo
+
+using std::string;
+
+using Elements::System::ModuleInfo;
+using Elements::System::getThisModuleInfo;
 
 BOOST_AUTO_TEST_SUITE(ModuleInfo_test)
+
+//-----------------------------------------------------------------------------
+struct ModuleInfo_Fixture {
+
+  ModuleInfo_Fixture() {
+
+  }
+
+  ~ModuleInfo_Fixture() {
+
+  }
+
+};
 
 //-----------------------------------------------------------------------------
 
@@ -43,9 +64,76 @@ BOOST_AUTO_TEST_CASE(GetExecutablePath_test) {
 BOOST_AUTO_TEST_CASE(ExeName_test) {
 
   boost::filesystem::path exe_path = Elements::System::getExecutablePath();
-  std::string name = Elements::System::exeName();
+  string name = Elements::System::exeName();
 
   BOOST_CHECK_EQUAL(exe_path.string(), name);
+
+}
+
+BOOST_AUTO_TEST_CASE(SelfProc_test) {
+
+  auto proc_path = Elements::System::getSelfProc();
+
+  BOOST_CHECK(not proc_path.empty());
+
+}
+
+BOOST_AUTO_TEST_CASE(libraryName_test) {
+  const ModuleInfo& info = getThisModuleInfo();
+
+  BOOST_CHECK_EQUAL(::basename(const_cast<char *>(info.libraryName().c_str())), "ModuleInfo_test");
+
+}
+
+BOOST_AUTO_TEST_CASE(addresse_test) {
+
+  const ModuleInfo& info = getThisModuleInfo();
+
+  BOOST_CHECK_EQUAL(info.addresse(), static_cast<void*>(0));
+
+}
+
+BOOST_AUTO_TEST_CASE(moduleName_test) {
+
+  auto module_name = Elements::System::moduleName();
+
+  BOOST_CHECK_EQUAL(module_name, "libElementsKernel");
+
+}
+
+BOOST_AUTO_TEST_CASE(moduleNameFull_test) {
+
+  auto module_name_full = Elements::System::moduleNameFull();
+
+  string module = ::basename(const_cast<char *>(module_name_full.c_str()));
+
+  BOOST_CHECK_EQUAL(module.substr(static_cast<string::size_type>(0), module.find('.')),
+                    "libElementsKernel");
+
+}
+
+
+BOOST_AUTO_TEST_CASE(exeHandle_test) {
+
+  auto exe_handle = Elements::System::exeHandle();
+
+  BOOST_CHECK_NE(exe_handle, static_cast<void*>(0));
+
+}
+
+BOOST_AUTO_TEST_CASE(linkedModules_test) {
+
+  auto linked_modules = Elements::System::linkedModules();
+
+  BOOST_CHECK(linked_modules.size() > 0);
+
+}
+
+BOOST_AUTO_TEST_CASE(linkedModulePaths_test) {
+
+  auto linked_module_path = Elements::System::linkedModulePaths();
+
+  BOOST_CHECK(linked_module_path.size() > 0);
 
 }
 

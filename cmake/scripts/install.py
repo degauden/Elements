@@ -10,9 +10,8 @@ Command line:
 
    install.py [-x exclusion1 [-x exclusion2 ...]] [-l logfile] source1 [source2 ...] dest
    install.py -u [-l logfile] [dest1 ...]
-
-@author: Marco Clemencic <marco.clemencic@cern.ch>
 """
+
 _version = "$Id: install.py,v 1.15 2008/10/28 17:24:39 marcocle Exp $"
 
 import os

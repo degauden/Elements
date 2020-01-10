@@ -1,7 +1,7 @@
 # - ElementsProject
 # Define the macros used by Elements-based projects.
 #
-# Authors: Pere Mato, Marco Clemencic, Hubert Degaudenzi
+# Authors: Hubert Degaudenzi
 #
 # Commit Id: $Format:%H$
 

@@ -32,6 +32,10 @@ elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgramEx
                         INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
 
+elements_add_executable(ElementsAnotherSimpleProgramExample src/program/AnotherSimpleProgramExample.cpp
+                        INCLUDE_DIRS Boost ElementsExamples
+                        LINK_LIBRARIES Boost ElementsExamples)
+
 elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramExampleWithArguments.cpp
                         INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
@@ -44,6 +48,8 @@ elements_add_executable(CProgramExample src/CProgram/*.c)
 
 elements_add_test(CppProgramExampleRun COMMAND CppProgramExample)
 elements_add_test(CppProgramExampleNoConfigFile COMMAND CppProgramExample --config-file=toto.conf FAILS)
+elements_add_test(CppProgramExampleWrongArgument COMMAND CppProgramExample --toto FAILS)
+elements_add_test(CppProgramExampleWrongLevel COMMAND CppProgramExample --log-level dddsc FAILS)
 elements_add_test(CProgramExampleRun COMMAND CProgramExample)
 elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramExample)
 elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
@@ -306,6 +312,7 @@ elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError_test F
 
 elements_add_test(CppProgramExample COMMAND CppProgramExample)
 elements_add_test(SimpleProgramExample COMMAND ElementsSimpleProgramExample)
+elements_add_test(AnotherSimpleProgramExample COMMAND ElementsAnotherSimpleProgramExample FAILS)
 
 elements_add_test(UnrecognizedOption COMMAND UnrecognizedOption_test)
 elements_add_test(OptionPrecedence COMMAND OptionPrecedence_test)

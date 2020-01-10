@@ -172,7 +172,6 @@ ELEMENTS_API int unSetEnv(const std::string& name);
 ELEMENTS_API bool isEnvSet(const std::string& var);
 
 ELEMENTS_API int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses, ELEMENTS_UNUSED const int depth);
-ELEMENTS_API bool backTrace(std::string& btrace, const int depth, const int offset = 0);
 ELEMENTS_API const std::vector<std::string> backTrace(const int depth, const int offset = 0);
 
 ELEMENTS_API bool getStackLevel(ELEMENTS_UNUSED void* addresses, ELEMENTS_UNUSED void*& addr,
