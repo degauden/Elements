@@ -74,10 +74,11 @@ include_guard()
     list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/doc/${PROJECT_NAME}.dox)
     list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.dox)
 
-    any_file_exist(${maindox_list} do_exist)
+    set(maindox_file)    
+    find_first_file("${maindox_list}" maindox_file)
     
-    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doc/mainpage.dox")
-      message(STATUS "No ${CMAKE_CURRENT_SOURCE_DIR}/doc/mainpage.dox can be found.")
+    if(NOT maindox_file)
+      message(STATUS "No doxygen main page (${maindox_list}) can be found.")
       find_file_to_configure(mainpage.dox.in
                              FILETYPE "Doxygen main page"
                              OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
@@ -85,7 +86,7 @@ include_guard()
                              PATH_SUFFIXES doc)
       set(DOX_EXCLUDE_BINARY_DIR)
     else()
-      message(STATUS "The ${CMAKE_CURRENT_SOURCE_DIR}/doc/mainpage.dox file exists.")
+      message(STATUS "The ${maindox_file} file exists.")
       set(DOX_EXCLUDE_BINARY_DIR ${PROJECT_BINARY_DIR})  
     endif()
 

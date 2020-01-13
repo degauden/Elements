@@ -929,3 +929,18 @@ function(any_file_exist file_list do_exist)
   set(${do_exist} ${exist} PARENT_SCOPE)
 
 endfunction()
+
+function(find_first_file file_list first_file)
+
+  set(first_f)
+
+  foreach(f ${file_list})
+     if(EXISTS "${f}")
+       set(first_f ${f})
+       break()
+     endif()  
+  endforeach()
+
+  set(${first_file} ${first_f} PARENT_SCOPE)
+
+endfunction()
