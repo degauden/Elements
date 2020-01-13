@@ -84,10 +84,12 @@ include_guard()
                              OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
                              PATHS ${CMAKE_MODULE_PATH}
                              PATH_SUFFIXES doc)
+      set(DOX_INPUT_BINARY_MAIN ${PROJECT_BINARY_DIR}/doc/doxygen/mainpage.dox)
       set(DOX_EXCLUDE_BINARY_DIR)
     else()
       message(STATUS "The ${maindox_file} file exists.")
-      set(DOX_EXCLUDE_BINARY_DIR ${PROJECT_BINARY_DIR})  
+      set(DOX_EXCLUDE_BINARY_DIR ${PROJECT_BINARY_DIR})
+      set(DOX_INPUT_BINARY_MAIN)
     endif()
 
 
