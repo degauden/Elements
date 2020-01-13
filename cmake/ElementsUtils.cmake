@@ -908,3 +908,39 @@ function(elements_include_directories)
   endforeach()
 
 endfunction(elements_include_directories)
+
+
+function(any_file_exist file_list do_exist)
+
+  print_var(file_list)
+
+
+  set(exist FALSE)
+  foreach(f ${file_list})
+     print_var(f)
+     if(EXISTS $f)
+       message("-------------------------------------->The ${f} file exists")
+       set(exist TRUE)
+     else()
+       message("-------------------------------------->The ${f} file does not exist")
+     endif()
+  endforeach()
+
+  set(${do_exist} ${exist} PARENT_SCOPE)
+
+endfunction()
+
+function(find_first_file file_list first_file)
+
+  set(first_f)
+
+  foreach(f ${file_list})
+     if(EXISTS "${f}")
+       set(first_f ${f})
+       break()
+     endif()  
+  endforeach()
+
+  set(${first_file} ${first_f} PARENT_SCOPE)
+
+endfunction()

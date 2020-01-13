@@ -1,0 +1,7 @@
+/** \mainpage The Elements Project Documentation
+
+Here are the various topic of the documentation of the project:
+
+- \subpage howtobuild "How to Build the Project" : How to build and use the Elements project with CMake
+
+*/

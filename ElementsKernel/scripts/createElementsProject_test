@@ -63,6 +63,10 @@ if [ ! -e $User_area/$project_name/$version/Makefile ]; then
    echo "Error: <$User_area/$project_name/$version/Makefile> file not found" 1>&2
    local_clean_exit 1
 fi
+if [ ! -e $User_area/$project_name/$version/doc/mainpage.dox ]; then
+   echo "Error: <$User_area/$project_name/$version/doc/mainpage.dox> file not found" 1>&2
+   local_clean_exit 1
+fi
 
 # Make sure <Project_test> is there
 result=$( grep "$project_name $version" $User_area/$project_name/$version/CMakeLists.txt )

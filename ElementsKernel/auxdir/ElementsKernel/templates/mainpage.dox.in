@@ -1,12 +1,12 @@
-/** \mainpage The basic instruction for building and running the %@PROJECT_NAME@ framework
+/** \mainpage The basic instruction for building and running the %%(PROJECT_NAME)s framework
 
 \tableofcontents
 
-\section howtobuild How to build and use the @PROJECT_NAME@ project with CMake
+\section howtobuild How to build and use the %(PROJECT_NAME)s project with CMake
 
 \subsection requirements Requirements
 
-The CMake configuration of %@PROJECT_NAME@ is based on the version 2.8.5 or later
+The CMake configuration of %%(PROJECT_NAME)s is based on the version 2.8.5 or later
 of [CMake](https://cmake.org).
 
 \subsection quickstart Quick Start
@@ -71,16 +71,16 @@ a local installation in the ```InstallArea``` sub-directory of the source tree.
 
 ---
 
-There is another way to build @PROJECT_NAME@ by using the standard CMake off-source
+There is another way to build %(PROJECT_NAME)s by using the standard CMake off-source
 build, which means that the files required by the build and the build products
 are created in a different directory than the source one. In this example
-``$MY_WORK/@PROJECT_NAME@/source`` will contain the source checkout and
- ``$MY_WORK/@PROJECT_NAME@/build`` will contain the built items.
+``$MY_WORK/%(PROJECT_NAME)s/source`` will contain the source checkout and
+ ``$MY_WORK/%(PROJECT_NAME)s/build`` will contain the built items.
 
 To prepare the build directory, you have to:
 
-	$ src=$MY_WORK/@PROJECT_NAME@/source
-	$ dest=$MY_WORK/@PROJECT_NAME@/build
+	$ src=$MY_WORK/%(PROJECT_NAME)s/source
+	$ dest=$MY_WORK/%(PROJECT_NAME)s/build
 	$ mkdir $dest
 	$ cd $dest
 	$ cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/EuclidEnv/cmake/ElementsToolChain.cmake \
@@ -88,13 +88,13 @@ To prepare the build directory, you have to:
 
 
 This will create the required Unix makefiles and the Eclipse project
-configuration to build @PROJECT_NAME@.
+configuration to build %(PROJECT_NAME)s.
 
 Other options are available on the command line when you prepare the
 build directory the first time or afterwards via the CMake configuration
 tool ``ccmake``.
 
-Now you can build the project with a simple (from ``$MY_WORK/@PROJECT_NAME@/build``):
+Now you can build the project with a simple (from ``$MY_WORK/%(PROJECT_NAME)s/build``):
 
 	$ cd $dest
 	$ make
@@ -107,7 +107,7 @@ For the installation, the usual command:
 	$ make install
 
 will do the installation. And since we didn't use the ``-DUSE_LOCAL_INSTALLAREA=on``
-option at configure time, the installation directory will be ``@ELEMENTS_BASE_DIR@/@PROJECT_NAME@/@PROJECT_VERSION@/InstallArea``.
+option at configure time, the installation directory will be ``@ELEMENTS_BASE_DIR@/%(PROJECT_NAME)s/%(PROJECT_VERSION)s/InstallArea``.
 
 
 Please note that the build can also be performed by pure CMake commands:
@@ -121,7 +121,7 @@ This render the build agnostic about the used build subsystem (``gmake``, ``ninj
 and gives more options. For example the installation can be done in a different directory chosen
 on the fly:
 
-	$ cmake -DCMAKE_INSTALL_PREFIX=/tmp/install_@PROJECT_NAME@ -P cmake_install.cmake
+	$ cmake -DCMAKE_INSTALL_PREFIX=/tmp/install_%(PROJECT_NAME)s -P cmake_install.cmake
 
 \subsection runfromthebuilddir Run from the build directory
 
