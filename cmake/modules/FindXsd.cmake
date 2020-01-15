@@ -1,6 +1,7 @@
 if (NOT XSD_FOUND)
 
-    find_program(XSDCXX_EXECUTABLE xsdcxx
+    find_program(XSDCXX_EXECUTABLE
+                 NAMES xsdcxx xsd
                  HINTS ENV XSD_ROOT_DIR XSD_INSTALL_DIR
                  PATH_SUFFIXES bin)
     message(STATUS "This is XSDCXX executable: ${XSDCXX_EXECUTABLE}")
