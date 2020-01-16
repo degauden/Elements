@@ -291,6 +291,17 @@ function(sgs_get_target_platform)
     set(SGS_OS     ${os})
     set(SGS_OSVERS "")
   endif()
+  
+  set(SGS_SUBOS)
+  if(SGS_OS MATCHES "^conda_(.*)")
+    set(SGS_SUBOS ${CMAKE_MATCH_1})
+  endif()
+  
+  if(SGS_SUBOS)
+    set(SGS_COREOS ${SGS_SUBOS})
+  else()
+    set(SGS_COREOS ${SGS_OS})  
+  endif()
 
   if (comp MATCHES "([^0-9.]+)([0-9.]+|max)")
     set(SGS_COMP     ${CMAKE_MATCH_1})
@@ -311,15 +322,17 @@ function(sgs_get_target_platform)
   set(CMAKE_SYSTEM_PROCESSOR ${SGS_ARCH} PARENT_SCOPE)
 
   # system name
-  if(SGS_OS STREQUAL "winxp")
+  if(SGS_COREOS STREQUAL "winxp")
     set(CMAKE_SYSTEM_NAME Windows PARENT_SCOPE)
-  elseif(SGS_OS STREQUAL "mac" OR SGS_OS STREQUAL "osx")
+  elseif(SGS_COREOS STREQUAL "mac" OR SGS_COREOS STREQUAL "osx")
     set(CMAKE_SYSTEM_NAME Darwin PARENT_SCOPE)
-  elseif(SGS_OS STREQUAL "slc" OR SGS_OS STREQUAL "sl" OR SGS_OS STREQUAL "ub" OR SGS_OS STREQUAL "fc" OR SGS_OS STREQUAL "co" OR SGS_OS STREQUAL "linux")
+  elseif(SGS_COREOS STREQUAL "slc" OR SGS_COREOS STREQUAL "sl" OR SGS_COREOS STREQUAL "ub" 
+         OR SGS_COREOS STREQUAL "fc" OR SGS_COREOS STREQUAL "co" OR SGS_COREOS STREQUAL "cos" 
+         OR SGS_COREOS STREQUAL "linux")
     set(CMAKE_SYSTEM_NAME Linux PARENT_SCOPE)
   else()
     set(CMAKE_SYSTEM_NAME ${CMAKE_HOST_SYSTEM_NAME})
-    message(WARNING "OS ${SGS_OS} is not a known platform, assuming it's a ${CMAKE_SYSTEM_NAME}.")
+    message(WARNING "OS ${SGS_COREOS} is not a known platform, assuming it's a ${CMAKE_SYSTEM_NAME}.")
   endif()
 
   # set default platform ids
