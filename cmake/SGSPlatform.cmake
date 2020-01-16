@@ -291,17 +291,24 @@ function(sgs_get_target_platform)
     set(SGS_OS     ${os})
     set(SGS_OSVERS "")
   endif()
-  
+
+  print_var(SGS_OS)
+  print_var(SGG_OSVERS)
+
   set(SGS_SUBOS)
   if(SGS_OS MATCHES "^conda_(.*)")
     set(SGS_SUBOS ${CMAKE_MATCH_1})
   endif()
   
+  print_var(SGS_SUBOS)
+
   if(SGS_SUBOS)
     set(SGS_COREOS ${SGS_SUBOS})
   else()
     set(SGS_COREOS ${SGS_OS})  
   endif()
+
+  print_var(SGS_COREOS)
 
   if (comp MATCHES "([^0-9.]+)([0-9.]+|max)")
     set(SGS_COMP     ${CMAKE_MATCH_1})
