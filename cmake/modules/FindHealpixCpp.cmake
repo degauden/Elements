@@ -22,7 +22,7 @@ if(NOT HEALPIXCPP_FOUND)
 
   if(${HEALPIXCPP_INCLUDE_DIR})
 
-    find_library(HEALPIXCPP_SUPPORT_LIBRARY healpix_cxxsupport
+    find_library(HEALPIXCPP_SUPPORT_LIBRARY healpix_cxxsupport cxxsupport
                  HINTS ENV HEALPIXCPP_ROOT_DIR HEALPIXCPP_INSTALL_DIR
                  PATH_SUFFIXES lib)
 
