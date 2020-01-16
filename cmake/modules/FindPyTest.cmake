@@ -3,6 +3,8 @@ if (NOT PYTEST_FOUND)
     find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION})
     
     set(explicit_pytest)
+    set(implicit_pytest py.test)
+
     if(PYTHON_EXPLICIT_VERSION)
       set(explicit_pytest py.test-${PYTHON_EXPLICIT_VERSION})
     endif()
@@ -11,10 +13,10 @@ if (NOT PYTEST_FOUND)
     if(PYTHONINTERP_FOUND)
         get_filename_component(_python_path ${PYTHON_EXECUTABLE} PATH)
         find_program(PYTEST_EXECUTABLE
-                     NAMES ${explicit_pytest} py.test
+                     NAMES ${explicit_pytest} ${implicit_pytest} 
                      HINTS ${_python_path})
     else()
-        find_program(PYTEST_EXECUTABLE NAMES ${explicit_pytest} py.test
+        find_program(PYTEST_EXECUTABLE NAMES ${explicit_pytest} ${implicit_pytest}
                      HINTS ENV PYTEST_INSTALL_DIR
                      PATH_SUFFIXES bin)
     endif()
