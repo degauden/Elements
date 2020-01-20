@@ -67,7 +67,7 @@ else
   endif
 endif
 
-override ALL_CMAKEFLAGS := --no-warn-unused-cli
+override ALL_CMAKEFLAGS := -Wno-dev --no-warn-unused-cli
 
 ifneq ($(TOOLCHAIN_FILE),)
   # A toolchain has been found. Lets use it.
