@@ -91,8 +91,8 @@ endif()
 
 #-------------------------------------------------------------------------------
 # elements_project(project version
-#               [USE proj1 vers1 [proj2 vers2 ...]]
-#               [DATA package [VERSION vers] [package [VERSION vers] ...]])
+#                  [USE proj1 vers1 [proj2 vers2 ...]]
+#                  [DATA package [VERSION vers] [package [VERSION vers] ...]])
 #
 # Main macro for a Elements-based project.
 # Each project must call this macro once in the top-level CMakeLists.txt,
