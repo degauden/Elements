@@ -105,7 +105,7 @@ endif()
 # runtime.
 #-------------------------------------------------------------------------------
 macro(elements_project project version)
-  
+
   set(project_vers_format OLD)
   if(POLICY CMP0048)
     cmake_policy(GET CMP0048 project_vers_format)
@@ -4435,6 +4435,21 @@ function(elements_generate_project_manifest filename project version)
 
   # Project name and version
   set(data "${data}  <project name=\"${project}\" version=\"${version}\" description=\"${PROJECT_DESCRIPTION}\" />\n")
+
+  include(GetGitRevisionDescription)
+
+  get_git_head_revision(ref_value hash_value)
+  if(hash_value)
+    set(data "${data}  <git hash=\"${hash_value}\"")
+    if(ref_value)
+      set(data "${data}  ref=\"${ref_value}\"")
+    endif()
+    git_get_exact_tag(tag_value --tags)
+    if(tag_value)
+      set(data "${data} tag=\"${tag_value}\"")
+    endif()
+    set(data "${data} />\n")
+  endif()
 
   # Astro toolchain infos
   if(astrotools_version)
