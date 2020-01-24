@@ -27,6 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import argparse
 import os
 import time
+import stat
 from ElementsKernel import Auxiliary
 from ElementsKernel import ProjectCommonRoutines
 from ElementsKernel import ParseCmakeLists
@@ -66,7 +67,14 @@ def substituteAuxFiles(module_dir, program_name, module_name):
                         module_dir, tgt,
                         configuration=configuration,
                         create_missing_dir=True)
-    ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, tgt))
+    
+    full_tgt = os.path.join(module_dir, tgt)
+    
+    # Add the execution flag
+    tgt_stat = os.stat(full_tgt)
+    os.chmod(full_tgt, tgt_stat.st_mode | stat.S_IEXEC)
+    
+    ProjectCommonRoutines.addItemToCreationList(full_tgt)
 
 def updateCmakeListsFile(module_dir, program_name):
     """
