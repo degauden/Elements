@@ -60,7 +60,7 @@ def substituteAuxFiles(module_dir, program_name, module_name):
                        "DATE": time.strftime("%x"),
                        "AUTHOR": ProjectCommonRoutines.getAuthor(),
                     }
-    # Put AUX files to their target and substitut
+    # Put AUX files to their target and substitute
     tgt = os.path.join('scripts', program_name)
     Auxiliary.configure(os.path.join("ElementsKernel", "templates", PROGRAM_TEMPLATE_FILE_IN),
                         module_dir, tgt,
@@ -100,7 +100,6 @@ def createScript(current_dir, module_name, program_name):
     Create the python program
     """
     createDirectories(current_dir, module_name)
-    ProjectCommonRoutines.copyAuxFile(os.path.join(current_dir, 'scripts'), PROGRAM_TEMPLATE_FILE_IN)
     substituteAuxFiles(current_dir, program_name, module_name)
     updateCmakeListsFile(current_dir, program_name)
 
