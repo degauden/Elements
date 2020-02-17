@@ -66,10 +66,17 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
-if [ ! -e build.${BINARY_TAG}/cmake_info.cmake ]; then
+if [ ! -f build.${BINARY_TAG}/cmake_info.cmake ]; then
     echo "Error: <Build of $projectA_name $projectA_version> failed!" 1>&2
     echo "Missing the build.${BINARY_TAG}/cmake_info.cmake file" 1>&2
     local_clean_exit 1
+fi
+
+# Make sure <ProjectA_version> is there
+result=$(grep "${projectA_version}"  build.${BINARY_TAG}/cmake_info.cmake)
+if [ $? -ne 0 ]; then
+   echo "Error: <${projectA_version}> not found in <build.${BINARY_TAG}/cmake_info.cmake> file!" 1>&2
+   local_clean_exit 1
 fi
 
 make install
