@@ -62,7 +62,7 @@ fi
 make
 
 if [ $? -ne 0 ]; then
-   echo "Error: <Builld of $projectA_name $projectA_version> failed!" 1>&2
+   echo "Error: <Build of $projectA_name $projectA_version> failed!" 1>&2
    local_clean_exit 1
 fi
 
@@ -108,7 +108,7 @@ fi
 make
 
 if [ $? -ne 0 ]; then
-   echo "Error: <Builld of $projectB_name $projectB_version> failed!" 1>&2
+   echo "Error: <Build of $projectB_name $projectB_version> failed!" 1>&2
    local_clean_exit 1
 fi
 
