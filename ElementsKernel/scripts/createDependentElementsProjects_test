@@ -66,11 +66,17 @@ if [ $? -ne 0 ]; then
    local_clean_exit 1
 fi
 
+if [ ! -e build.${BINARY_TAG}/cmake_info.cmake ]; then
+    echo "Error: <Build of $projectA_name $projectA_version> failed!" 1>&2
+    echo "Missing the build.${BINARY_TAG}/cmake_info.cmake file" 1>&2
+    local_clean_exit 1
+fi
+
 make install
 
 if [ $? -ne 0 ]; then
-   echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
-   local_clean_exit 1
+    echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
+    local_clean_exit 1
 fi
 
 if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
@@ -107,7 +113,7 @@ if [ $? -ne 0 ]; then
 fi
 
 else
-echo "Warning: The Elements framework is not available in its InstallArea" 1>&2
+    echo "Warning: The Elements framework is not available in its InstallArea" 1>&2
 fi
 
 

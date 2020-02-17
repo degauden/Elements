@@ -118,9 +118,16 @@ macro(elements_project project version)
   endif()
   #----For some reason this is not set by calling 'project()'
   set(CMAKE_PROJECT_NAME ${project})
+  if(PROJECT_NAME STREQUAL "")
+    set(PROJECT_NAME ${CMAKE_PROJECT_NAME} CACHE STRING "Name of the project")
+  endif()
 
   #--- Define the version of the project - can be used to generate sources,
   set(CMAKE_PROJECT_VERSION ${version} CACHE STRING "Version of the project")
+  if(PROJECT_VERSION STREQUAL "")
+    set(PROJECT_VERSION ${CMAKE_PROJECT_VERSION} CACHE STRING "Version of the project")
+  endif()
+
 
   #--- Parse the other arguments on the
   CMAKE_PARSE_ARGUMENTS(PROJECT "" "DESCRIPTION" "USE;DATA" ${ARGN})
