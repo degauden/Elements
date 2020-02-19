@@ -88,7 +88,7 @@ option(ELEMENTS_USE_EXE_SUFFIX "Add the .exe suffix to executables on Unix syste
 
 
 
-if((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm"))
+if(("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm"))
   find_package(Clang)
   SET (CMAKE_C_COMPILER    "${CLANG_C_COMPILER}")
   SET (CMAKE_CXX_COMPILER  "${CLANG_CXX_COMPILER}")
@@ -130,13 +130,13 @@ set(CYTHON_FLAGS "" CACHE STRING
   "Extra flags to the cython compiler.")
 
 # Special defaults
-if ( (SGS_COMP STREQUAL gcc AND ( (NOT SGS_COMPVERS VERSION_LESS "47") OR (SGS_COMPVERS MATCHES "max") ))
-    OR (SGS_COMP STREQUAL clang AND (NOT SGS_COMPVERS VERSION_LESS "30") )
-    OR (SGS_COMP STREQUAL llvm))
+if ( ("${SGS_COMP}" STREQUAL gcc AND ( (NOT SGS_COMPVERS VERSION_LESS "47") OR (SGS_COMPVERS MATCHES "max") ))
+    OR ("${SGS_COMP}" STREQUAL clang AND (NOT SGS_COMPVERS VERSION_LESS "30") )
+    OR ("${SGS_COMP}" STREQUAL llvm))
 
   # C++11 is enable by default on gcc47 and gcc48
   set(ELEMENTS_CPP11_DEFAULT ON)
-elseif(SGS_COMP STREQUAL icc)
+elseif("${SGS_COMP}" STREQUAL icc)
   set(ELEMENTS_CPP11_DEFAULT ON)
 else()
   set(ELEMENTS_CPP11_DEFAULT OFF)
@@ -364,12 +364,12 @@ if(NOT ELEMENTS_FLAGS_SET)
 
   check_and_use_c_option(-Werror=return-type C_HAS_ERROR_RETURN_TYPE)
 
-  if((NOT SGS_COMP STREQUAL clang) OR (SGS_COMPVERS VERSION_GREATER "40") )
+  if((NOT "${SGS_COMP}" STREQUAL clang) OR (SGS_COMPVERS VERSION_GREATER "40") )
     check_and_use_cxx_option(-ansi CXX_HAS_ANSI)
     check_and_use_c_option(-ansi C_HAS_ANSI)
   endif()
 
-  if(SANITIZE_OPTIONS AND (SGS_COMP STREQUAL gcc))
+  if(SANITIZE_OPTIONS AND ("${SGS_COMP}" STREQUAL gcc))
     check_and_use_cxx_option(-fsanitize=${SANITIZE_STYLE} CXX_HAS_SANITIZE)
     check_and_use_c_option(-fsanitize=${SANITIZE_STYLE} C_HAS_SANITIZE)
   endif()
@@ -384,37 +384,37 @@ if(NOT ELEMENTS_FLAGS_SET)
     check_and_use_c_option(-Wconversion C_HAS_CONVERSION)
   endif()
 
-  if(CXX_SUGGEST_OVERRIDE AND (SGS_COMP STREQUAL gcc))
+  if(CXX_SUGGEST_OVERRIDE AND ("${SGS_COMP}" STREQUAL gcc))
     check_and_use_cxx_option(-Wsuggest-override CXX_HAS_SUGGEST_OVERRIDE)
   endif()
 
-  if(SGS_COMP STREQUAL gcc)
+  if("${SGS_COMP}" STREQUAL gcc)
     check_and_use_cxx_option(-Wcast-function-type CXX_HAS_CAST_FUNCTION_TYPE)
   endif()
 
   check_cxx_compiler_flag(-Wmissing-field-initializers CXX_HAS_MISSING_FIELD_INITIALIZERS)
 
-  if(SGS_COMP STREQUAL clang)
+  if("${SGS_COMP}" STREQUAL clang)
     check_cxx_compiler_flag(-Wunused-function CXX_HAS_UNUSED_FUNCTION)
   endif()
 
-  if(SGS_COMP STREQUAL clang)
+  if("${SGS_COMP}" STREQUAL clang)
     check_cxx_compiler_flag(-Wno-unneeded-internal-declaration CXX_HAS_NO_UNNEEDED_INTERNAL_DECLARATION)
   endif()
 
-  if(SGS_COMP STREQUAL clang)
+  if("${SGS_COMP}" STREQUAL clang)
     check_cxx_compiler_flag(-Wno-c++17-extensions CXX_HAS_NO_CXX17_EXTENSIONS)
   endif()
 
-  if(SGS_COMP STREQUAL clang)
+  if("${SGS_COMP}" STREQUAL clang)
     check_cxx_compiler_flag(-Wno-parentheses-equality CXX_HAS_NO_PARENTHESES_EQUALITY)
   endif()
 
-  if(SGS_COMP STREQUAL clang)
+  if("${SGS_COMP}" STREQUAL clang)
     check_cxx_compiler_flag(-Wno-self-assign CXX_HAS_NO_SELF_ASSIGN)
   endif()
 
-  if(SGS_COMP STREQUAL clang)
+  if("${SGS_COMP}" STREQUAL clang)
     check_cxx_compiler_flag(-Wno-constant-logical-operand CXX_HAS_NO_CONSTANT_LOGICAL_OPERAND)
   endif()
 
@@ -522,7 +522,7 @@ if(NOT ELEMENTS_FLAGS_SET)
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed -Wl,--no-undefined"
         CACHE STRING "Flags used by the linker during the creation of modules."
         FORCE)
-    if(CMAKE_BUILD_TYPE STREQUAL "Profile" AND SGS_COMPVERS VERSION_LESS "50")
+    if("${CMAKE_BUILD_TYPE}" STREQUAL "Profile" AND SGS_COMPVERS VERSION_LESS "50")
       set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags -Wl,--as-needed"
           CACHE STRING "Flags used by the linker during the creation of exe's."
           FORCE)
@@ -543,7 +543,7 @@ if(NOT ELEMENTS_FLAGS_SET)
         FORCE)
   endif()
 
-  if(CMAKE_BUILD_TYPE STREQUAL Coverage AND SGS_COMP STREQUAL gcc)
+  if("${CMAKE_BUILD_TYPE}" STREQUAL "Coverage" AND "${SGS_COMP}" STREQUAL "gcc")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage"
           CACHE STRING "Flags used by the linker during the creation of exe's."
           FORCE)
@@ -556,7 +556,7 @@ endif()
 
 add_definitions(-DELEMENTS_DEFAULT_LOGLEVEL=${ELEMENTS_DEFAULT_LOGLEVEL})
 
-if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release")
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo" OR "${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     add_definitions(-DNDEBUG)
 endif()
 
@@ -572,13 +572,13 @@ if(APPLE)
 endif()
 
 #--- Special build flags -------------------------------------------------------
-if ((ELEMENTS_HIDE_SYMBOLS) AND (SGS_COMP STREQUAL gcc AND ( (NOT SGS_COMPVERS VERSION_LESS "40") OR (SGS_COMPVERS MATCHES "max") )))
+if ((ELEMENTS_HIDE_SYMBOLS) AND ("${SGS_COMP}" STREQUAL "gcc" AND ( (NOT SGS_COMPVERS VERSION_LESS "40") OR (SGS_COMPVERS MATCHES "max") )))
   set(CMAKE_CXX_VISIBILITY_PRESET hidden)
   set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
   add_definitions(-DELEMENTS_HIDE_SYMBOLS)
 endif()
 
-if ((CONCEPT_CHECKS) AND (SGS_COMP STREQUAL gcc))
+if ((CONCEPT_CHECKS) AND ("${SGS_COMP}" STREQUAL "gcc"))
   add_definitions(-D_GLIBCXX_CONCEPT_CHECKS)
 endif()
 
@@ -598,7 +598,7 @@ endif()
 if ( ELEMENTS_CPP11 )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
-  if ( APPLE AND ((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") ) )
+  if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
     check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
   endif()
   if(USE_ODB)
@@ -609,13 +609,13 @@ endif()
 if ( ELEMENTS_CPP14 )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11") # this is the latest C standard available
-  if ( APPLE AND ((SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") ) )
+  if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
     check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
   endif()
 endif()
 
 
-if ( APPLE AND ( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm")))
+if ( APPLE AND ( ("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm")))
   if(DEFINED ENV{MACPORT_LOCATION})
     set(macport_inc "$ENV{MACPORT_LOCATION}/include")
   else()
@@ -623,7 +623,7 @@ if ( APPLE AND ( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm")))
   endif()
   if(EXISTS ${macport_inc})
     include_directories(SYSTEM ${macport_inc})
-    if(SGS_COMP STREQUAL "clang")
+    if("${SGS_COMP}" STREQUAL "clang")
       if (SGS_COMPVERS VERSION_GREATER "34")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${macport_inc}")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isystem ${macport_inc}")
@@ -632,23 +632,23 @@ if ( APPLE AND ( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm")))
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xclang -isystem-prefix -Xclang  ${macport_inc}")
       endif()
     endif()
-    if(SGS_COMP STREQUAL "llvm")
+    if("${SGS_COMP}" STREQUAL "llvm")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${macport_inc}")
       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isystem ${macport_inc}")
     endif()
   endif()
 endif()
 
-if ( ELEMENTS_PARALLEL AND (SGS_COMP STREQUAL gcc AND ( (SGS_COMPVERS VERSION_GREATER "41") OR (SGS_COMPVERS MATCHES "max") )) )
+if ( ELEMENTS_PARALLEL AND ("${SGS_COMP}" STREQUAL "gcc" AND ( (SGS_COMPVERS VERSION_GREATER "41") OR (SGS_COMPVERS MATCHES "max") )) )
   add_definitions(-D_GLIBCXX_PARALLEL)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 endif()
 
-if ( ELEMENTS_FORTIFY AND (SGS_COMP STREQUAL gcc AND ( (SGS_COMPVERS VERSION_GREATER "40") OR (SGS_COMPVERS MATCHES "max") )) )
-  if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND SGS_COMPVERS VERSION_GREATER "47" AND OPT_DEBUG)
+if ( ELEMENTS_FORTIFY AND ("${SGS_COMP}" STREQUAL "gcc" AND ( (SGS_COMPVERS VERSION_GREATER "40") OR (SGS_COMPVERS MATCHES "max") )) )
+  if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND SGS_COMPVERS VERSION_GREATER "47" AND OPT_DEBUG)
     add_definitions(-D_FORTIFY_SOURCE=2)
   endif()
-  if ( (CMAKE_BUILD_TYPE STREQUAL "Release") OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo") OR (CMAKE_BUILD_TYPE STREQUAL "MinSizeRel"))
+  if ( ("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo") OR ("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel"))
     add_definitions(-D_FORTIFY_SOURCE=2)
   endif()
 endif()
@@ -661,11 +661,11 @@ endif()
 #
 
 if (SGS_HOST_ARCH AND SGS_ARCH)
-  if (SGS_HOST_ARCH STREQUAL x86_64 AND SGS_ARCH STREQUAL i686)
+  if ("${SGS_HOST_ARCH}" STREQUAL x86_64 AND "${SGS_ARCH}" STREQUAL i686)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
     set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -m32")
     set(GCCXML_CXX_FLAGS "${GCCXML_CXX_FLAGS} -m32")
-  elseif(NOT SGS_HOST_ARCH STREQUAL SGS_ARCH)
+  elseif(NOT "${SGS_HOST_ARCH}" STREQUAL SGS_ARCH)
     message(FATAL_ERROR "Cannot build for ${SGS_ARCH} on ${SGS_HOST_ARCH}.")
   endif()
 endif()
@@ -674,24 +674,24 @@ endif()
 if(ELEMENTS_HIDE_WARNINGS)
   if( (SGS_COMP MATCHES clang) OR (SGS_COMP MATCHES llvm) )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated -Wno-overloaded-virtual -Wno-char-subscripts -Wno-unused-parameter")
-  elseif(SGS_COMP STREQUAL gcc AND ( (SGS_COMPVERS VERSION_GREATER "42") OR (SGS_COMPVERS MATCHES "max") ))
+  elseif("${SGS_COMP}" STREQUAL "gcc" AND ( (SGS_COMPVERS VERSION_GREATER "42") OR (SGS_COMPVERS MATCHES "max") ))
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated -Wno-empty-body")
   endif()
 endif()
 
-if( (SGS_COMP STREQUAL "clang") OR (SGS_COMP STREQUAL "llvm") )
+if( ("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
 endif()
 
 #--- Special flags -------------------------------------------------------------
 add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 
-if((SGS_COMP STREQUAL gcc AND ( (SGS_COMPVERS VERSION_GREATER "46") OR (SGS_COMPVERS MATCHES "max") )) OR ELEMENTS_CPP11)
+if(("${SGS_COMP}" STREQUAL "gcc" AND ( (SGS_COMPVERS VERSION_GREATER "46") OR (SGS_COMPVERS MATCHES "max") )) OR ELEMENTS_CPP11)
   set(GCCXML_CXX_FLAGS "${GCCXML_CXX_FLAGS} -D__STRICT_ANSI__")
 endif()
 
-if(SGS_COMP STREQUAL gcc)
-  if(SGS_COMPVERS STREQUAL 43)
+if("${SGS_COMP}" STREQUAL gcc)
+  if("${SGS_COMPVERS}" STREQUAL 43)
     # The -pedantic flag gives problems on GCC 4.3.
     string(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     string(REPLACE "-pedantic" "" CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}")
