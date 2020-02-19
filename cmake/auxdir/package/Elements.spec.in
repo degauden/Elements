@@ -96,15 +96,18 @@ else
 fi
 @CPACK_CMAKE_PREFIX_PATH_LINE@
 toolchain_name=ElementsToolChain.cmake
-if [[ -f "${PWD}/cmake/${toolchain_name}" ]]; then
-  toolchain_file=${PWD}/cmake/${toolchain_name}
-else
-  if [[ -f "/usr/share/EuclidEnv/cmake/${toolchain_name}" ]]; then
-    toolchain_file=/usr/share/EuclidEnv/cmake/${toolchain_name}
-  fi
-fi
+search_path="${PWD}/cmake/:${CMAKE_PREFIX_PATH}:/usr/share/EuclidEnv/cmake/" 
+for d in ${search_path//:/ }; do
+       if [[ -f "${d}/${toolchain_name}" ]]; then
+               toolchain_file=${d}/${toolchain_name}
+               break
+       fi
+done
+
 %__mkdir -p $RPM_BUILD_DIR/$BINARY_TAG
 cd $RPM_BUILD_DIR/$BINARY_TAG
+
+
 if [[ -z "${toolchain_file}" ]]; then
   @CPACK_CMAKE_MACRO@ @CPACK_EXTRA_CMAKEFLAGS@ $RPM_BUILD_DIR/%{name}-%{version}
 else
