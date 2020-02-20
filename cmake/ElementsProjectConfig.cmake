@@ -2425,11 +2425,11 @@ endmacro()
 #-------------------------------------------------------------------------------
 macro(_elements_detach_debinfo target)
   if(NOT SQUEEZED_INSTALL)
-  if(("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo" OR "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" ) AND ELEMENTS_DETACHED_DEBINFO)
+  if((CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo OR CMAKE_BUILD_TYPE STREQUAL Debug ) AND ELEMENTS_DETACHED_DEBINFO)
     # get the type of the target (MODULE_LIBRARY, SHARED_LIBRARY, EXECUTABLE)
     get_property(_type TARGET ${target} PROPERTY TYPE)
     #message(STATUS "_elements_detach_debinfo(${target}): target type -> ${_type}")
-    if(NOT "${_type}" STREQUAL "STATIC_LIBRARY") # we ignore static libraries
+    if(NOT _type STREQUAL STATIC_LIBRARY) # we ignore static libraries
       # guess the target file name
       if(_type MATCHES "MODULE|LIBRARY")
         #message(STATUS "_elements_detach_debinfo(${target}): library sub-type -> ${CMAKE_MATCH_0}")
@@ -2441,12 +2441,12 @@ macro(_elements_detach_debinfo target)
         set(spec_prefix "%{libdir}")
         get_property(_prefix TARGET ${target} PROPERTY PREFIX)
         # python module
-        if("${_prefix}" STREQUAL "_")
+        if(_prefix STREQUAL "_")
           set(_tn _${target}.so)
           set(_builddir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
           set(_dest ${PYTHON_DYNLIB_INSTALL_SUFFIX})
           set(spec_prefix "%{pydyndir}")
-        elseif("${_prefix}" STREQUAL "")
+        elseif(_prefix STREQUAL "")
           set(_tn ${target}.so)
           set(_builddir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
           set(_dest ${PYTHON_DYNLIB_INSTALL_SUFFIX})        
