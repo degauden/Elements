@@ -68,7 +68,7 @@ set(lib_install_suff lib)
 
 if(SQUEEZED_INSTALL)
   set(lib_install_suff lib64)
-  if(SGS_ARCH STREQUAL x86_64)
+  if("${SGS_ARCH}" STREQUAL "x86_64")
     if(EXISTS /usr/lib64)
       set(lib_install_suff lib64)
     else()

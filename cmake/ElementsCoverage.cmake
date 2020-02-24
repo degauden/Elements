@@ -5,7 +5,7 @@ include_guard()
                     COMMENT "Generating the coverage report" VERBATIM)
 
 
-if(CMAKE_BUILD_TYPE STREQUAL Coverage)
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Coverage")
 
   find_package(GenHTML QUIET)
 
@@ -76,7 +76,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
    
    # The pytest directory has to be created at configure time
    find_python_module(pytest_cov)
-   if (PY_PYTEST_COV AND PYFRMK_NAME STREQUAL "PyTest")
+   if (PY_PYTEST_COV AND "${PYFRMK_NAME}" STREQUAL "PyTest")
      file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/cov/${PYFRMK_NAME})
    endif()
 

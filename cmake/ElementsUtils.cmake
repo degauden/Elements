@@ -385,7 +385,7 @@ endmacro(copy_dir)
 
 function(get_full_binary_list binary_tag binary_base full_list)
 
-  if(NOT binary_tag STREQUAL "")
+  if(NOT "${binary_tag}" STREQUAL "")
     list(APPEND the_list "${binary_tag}")
   endif()
 
@@ -613,7 +613,7 @@ function(get_project_from_file config_file project version dep_list)
   file(READ ${config_file} config_file_data)
   filter_comments(config_file_data)
 
-  if(cfg_file STREQUAL "CMakeLists.txt")
+  if("${cfg_file}" STREQUAL "CMakeLists.txt")
 
     string(REGEX MATCH "[ \t]*(elements_project)[ \t]*\\(([^)]+)\\)" match_use ${config_file_data})
     set(match_use ${CMAKE_MATCH_2})
@@ -678,7 +678,7 @@ function(check_project_version_from_file config_file project version match_found
 
   get_project_from_file(${config_file} file_project_name file_version_name file_project_dep_list)
 
-  if( (project STREQUAL file_project_name) AND (version STREQUAL file_version_name) )
+  if( ("${project}" STREQUAL "${file_project_name}") AND ("${version}" STREQUAL "${file_version_name}") )
     set(has_found TRUE)
   endif()
 
@@ -721,7 +721,7 @@ function(get_rpm_dep_list project_use package_suffix squeezed_install output_var
   endwhile()
 
   if(NOT squeezed_install)
-    if(package_suffix STREQUAL "")
+    if("${package_suffix}" STREQUAL "")
       set(output_str_list "${output_str_list}, EuclidEnv")
     endif()
   endif()
@@ -834,7 +834,7 @@ function(find_python_module module)
 
     string(TOUPPER ${module} module_upper)
     if(NOT PY_${module_upper})
-        if(ARGC GREATER 1 AND ARGV1 STREQUAL "REQUIRED")
+        if(ARGC GREATER 1 AND "${ARGV1}" STREQUAL "REQUIRED")
             set(${module}_FIND_REQUIRED TRUE)
         endif()
         # A module's location is usually a directory, but for binary modules
