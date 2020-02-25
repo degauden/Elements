@@ -156,7 +156,7 @@ function(_internal_find_projects projects_var config_file)
     endif()
 
 
-    get_filename_component(cfg_file ${upper_proj_name}_CONFIG_FILE NAME)
+    get_filename_component(cfg_file ${${upper_proj_name}_CONFIG_FILE} NAME)
 
     if("${cfg_file}" STREQUAL "CMakeLists.txt")
       get_filename_component(${upper_proj_name}_ROOT_DIR ${${upper_proj_name}_CONFIG_FILE} PATH CACHE)

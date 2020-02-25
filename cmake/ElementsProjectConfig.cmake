@@ -40,6 +40,17 @@ if(POLICY CMP0048)
   endif()
 endif()
 
+if(POLICY CMP0054)
+  # this policy is related to the string comparison
+  # please run "cmake --help-policy CMP0054" for more details
+  if(NOT CMAKE_VERSION VERSION_LESS 3.1) # i.e CMAKE_VERSION >= 3.3
+    cmake_policy(SET CMP0054 NEW)
+  else()
+    cmake_policy(SET CMP0054 OLD)
+  endif()
+endif()
+
+
 if (NOT HAS_ELEMENTS_TOOLCHAIN)
   # this is the call to the preload_local_module_path is the toolchain has not been called
   # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
@@ -1553,7 +1564,7 @@ macro(_elements_use_other_projects)
 
       if(${other_project}_FOUND)
         message(STATUS "  found ${other_project} ${${other_project}_VERSION} ${${other_project}_DIR}")
-        if(NOT "${SGS_SYSTEM}" STREQUAL "${other_project}_astrotools_system")
+        if(NOT "${SGS_SYSTEM}" STREQUAL "${${other_project}_astrotools_system}")
           message(FATAL_ERROR "Incompatible values of SGS_SYSTEM:
   ${CMAKE_PROJECT_NAME} -> ${SGS_SYSTEM}
   ${other_project} ${${other_project}_VERSION} -> ${${other_project}_astrotools_system}
@@ -4043,9 +4054,11 @@ endfunction()
 # helper macro used by elements_generate_env_conf.
 #-------------------------------------------------------------------------------
 macro(_env_conf_pop_instruction instr lst)
-  #message(STATUS "_env_conf_pop_instruction ${lst} => ${${lst}}")
-  list(GET ${lst} 0 ${instr})
-  if("${instr}" STREQUAL "INCLUDE" OR "${instr}" STREQUAL "UNSET" OR "${instr}" STREQUAL "SEARCH_PATH")
+#  message(STATUS "_env_conf_pop_instruction ${lst} => ${${lst}}")
+  list(GET ${lst} 0 tmp_instr)
+  if(("${tmp_instr}" STREQUAL "INCLUDE") 
+      OR ("${tmp_instr}" STREQUAL "UNSET") 
+      OR ("${tmp_instr}" STREQUAL "SEARCH_PATH"))
     list(GET ${lst} 0 1 ${instr})
     list(REMOVE_AT ${lst} 0 1)
     # even if the command expects only one argument, ${instr} must have 3 elements
@@ -4144,9 +4157,9 @@ function(elements_generate_env_conf filename)
 
   set(commands ${ARGN})
 
-  #message(STATUS "start - ${commands}")
+#  message(STATUS "start - ${commands}")
   while(commands)
-    #message(STATUS "iter - ${commands}")
+#    message(STATUS "iter - ${commands}")
     _env_conf_pop_instruction(instr commands)
     # ensure that the variables in the value are not expanded when passing the arguments
     string(REPLACE "\$" "\\\$" instr "${instr}")

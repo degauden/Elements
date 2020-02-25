@@ -311,7 +311,7 @@ function(sgs_get_target_platform)
     set(SGS_COMPVERS "")
   endif()
 
-  getLongBuildType(type SGS_BUILD_TYPE)
+  getLongBuildType(type ${SGS_BUILD_TYPE})
   
   set(CMAKE_BUILD_TYPE ${type} CACHE STRING
       "Choose the type of build, options are: empty, Debug, Release, Coverage, Profile, RelWithDebInfo, MinSizeRel." FORCE)
