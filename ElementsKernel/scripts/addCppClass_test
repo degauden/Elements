@@ -79,7 +79,7 @@ if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
-# Make sure the LINK_LIBRARIES is there and Elements dependency
+# Make sure the INCLUDE_DIRS is there and Elements dependency
 result=$( grep "INCLUDE_DIRS" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
           grep $elt_dep_name)
 if [ $? -ne 0 ]  ;then
@@ -87,7 +87,7 @@ if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
-# Make sure the LINK_LIBRARIES is there and external dependency
+# Make sure the INCLUDE_DIRS is there and external dependency
 result=$( grep "INCLUDE_DIRS" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
           grep $external_dep_name)
 if [ $? -ne 0 ]  ;then
