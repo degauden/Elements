@@ -143,22 +143,27 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
             source = os.path.join('src', 'lib', subdir, '*.cpp')
             existing = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
             link_libs = []
+            include_dirs = []
             if elements_dep_list:
                 link_libs = link_libs + elements_dep_list
+                include_dirs = include_dirs + elements_dep_list
             if library_dep_list:
                 link_libs = link_libs + library_dep_list
+                include_dirs = include_dirs + library_dep_list
             if existing:
                 if not source in existing[0].source_list:
                     existing[0].source_list.append(source)
                 for lib in link_libs:
                     if not lib in existing[0].link_libraries_list:
                         existing[0].link_libraries_list.append(lib)
+                for incd in include_dirs:
+                    if not incd in existing[0].include_dirs_list:
+                        existing[0].include_dirs_list.append(incd)
             else:
                 source_list = [source]
-                include_dirs_list = []
                 public_headers_list = [module_name]
                 lib_object = ParseCmakeListsMacros.ElementsAddLibrary(module_name, source_list,
-                                                    link_libs, include_dirs_list,
+                                                    link_libs, include_dirs,
                                                     public_headers_list)
                 cmake_object.elements_add_library_list.append(lib_object)
 

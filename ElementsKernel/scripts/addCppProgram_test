@@ -6,6 +6,7 @@
 cpp_program_name="CppProgramTest"
 module_dep_name="Alexandria"
 library_dep_name="Boost"
+elements_kernel="ElementsKernel"
 
 # Create a unique directory
 tmploc=${TEMPORARY_LOCATION}
@@ -61,9 +62,9 @@ fi
 
 # Make sure the LINK_LIBRARIES Macro is there and ElementsKernel
 result=$( grep "LINK_LIBRARIES" ${MODULE_NAME_PATH}/CMakeLists.txt | grep -v "#" |
-          grep "ElementsKernel" )
+          grep $elements_kernel )
 if [ $? -ne 0 ]  ;then
-   echo "Error: <LINK_LIBRARIES> macro with <ElementsKernel> module not found!" 1>&2
+   echo "Error: <LINK_LIBRARIES> macro with <$elements_kernel> module not found!" 1>&2
    clean_and_exit 1
 fi
 
@@ -82,6 +83,31 @@ if [ $? -ne 0 ]  ;then
    echo "Error: <LINK_LIBRARIES> macro with <$library_dep_name> library not found!" 1>&2
    clean_and_exit 1
 fi
+
+# Make sure the INCLUDE_DIRS is there and ElementsKernel dependency
+result=$( grep "INCLUDE_DIRS" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
+          grep $elements_kernel)
+if [ $? -ne 0 ]  ;then
+   echo "Error: <INCLUDE_DIRS> macro with <$elements_kernel> module not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Make sure the INCLUDE_DIRS is there and  module dependency
+result=$( grep "INCLUDE_DIRS" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
+          grep $module_dep_name)
+if [ $? -ne 0 ]  ;then
+   echo "Error: <INCLUDE_DIRS> macro with <$module_dep_name> module dependency not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Make sure the INCLUDE_DIRS is there and  library dependency
+result=$( grep "INCLUDE_DIRS" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
+          grep $library_dep_name)
+if [ $? -ne 0 ]  ;then
+   echo "Error: <INCLUDE_DIRS> macro with <$library_dep_name> library dependency not found!" 1>&2
+   clean_and_exit 1
+fi
+
 
 # Make sure the elements_install_conf_files Macro is there
 result=$( grep "elements_install_conf_files" ${MODULE_NAME_PATH}/CMakeLists.txt )
