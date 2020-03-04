@@ -62,7 +62,7 @@ def addItemToCreationList(element):
 ################################################################################
 def printCreationList():
     """
-    Add an element to the global list.
+    Print the contents of the file list 
     """
     logger.info("#")
     logger.info("# File(s) created/modified:")

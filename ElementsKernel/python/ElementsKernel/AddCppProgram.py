@@ -121,19 +121,26 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name == program_name]
         existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
         link_libs = ['ElementsKernel']
+        include_dirs = ['ElementsKernel']
         if module_dep_list:
             link_libs = link_libs + module_dep_list
+            include_dirs = include_dirs + module_dep_list
         if existing_add_lib:
             link_libs += [module_name]
+            include_dirs += [module_name]
         if library_dep_list:
             link_libs = link_libs + library_dep_list
+            include_dirs = include_dirs + library_dep_list
         if existing_exe:
             for lib in link_libs:
                 if not lib in existing_exe[0].link_libraries_list:
                     existing_exe[0].link_libraries_list.append(lib)
+            for incd in include_dirs:
+                if not incd in existing_exe[0].include_dirs_list:
+                    existing_exe[0].include_dirs_list.append(incd)
         else:
             exe_object = ParseCmakeListsMacros.ElementsAddExecutable(program_name, source,
-                                                   link_libs)
+                                                   link_libs, include_dirs)
             cmake_object.elements_add_executable_list.append(exe_object)
 
     # Write new data

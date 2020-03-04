@@ -94,13 +94,13 @@ class ElementsAddLibrary(object):
         result = 'elements_add_library(' + self.name
         for source in self.source_list:
             result += ' ' + source
-        if self.link_libraries_list:
-            result += '\n                     LINK_LIBRARIES'
-            for name in self.link_libraries_list:
-                result += ' ' + name
         if self.include_dirs_list:
             result += '\n                     INCLUDE_DIRS'
             for name in self.include_dirs_list:
+                result += ' ' + name
+        if self.link_libraries_list:
+            result += '\n                     LINK_LIBRARIES'
+            for name in self.link_libraries_list:
                 result += ' ' + name
         if self.public_headers_list:
             result += '\n                     PUBLIC_HEADERS'
@@ -115,14 +115,19 @@ class ElementsAddExecutable(object):
     Decode the <elements_add_executable> macro
     """
 
-    def __init__(self, name, source, link_libraries):
+    def __init__(self, name, source, link_libraries, include_dirs):
         self.name = name
         self.source = source
         self.link_libraries_list = link_libraries
+        self.include_dirs_list = include_dirs
 
     def __str__(self):
         result = 'elements_add_executable(' + self.name
         result += ' ' + self.source
+        if self.include_dirs_list:
+            result += '\n                     INCLUDE_DIRS'
+            for name in self.include_dirs_list:
+                result += ' ' + name
         if self.link_libraries_list:
             result += '\n                     LINK_LIBRARIES'
             for name in self.link_libraries_list:
