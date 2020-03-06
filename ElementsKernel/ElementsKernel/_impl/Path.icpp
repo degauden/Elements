@@ -23,7 +23,7 @@
 
 #include <string>                           // for string
 #include <vector>                           // for vector
-#include <set>                              // for set
+#include <unordered_set>                    // for unordered_set
 #include <algorithm>                        // for find_if, transform, for_each
 
 #include <boost/filesystem.hpp>             // for boost::filesystem
@@ -42,7 +42,7 @@ boost::filesystem::path getPathFromLocations(const T& file_name, const std::vect
   path file_path {file_name};
 
   auto found_pos = std::find_if(locations.cbegin(), locations.cend(),
-      [file_path](U l) {
+      [file_path](const U& l) {
     return boost::filesystem::exists(path {l} / file_path);
   });
 
@@ -64,20 +64,18 @@ std::vector<boost::filesystem::path> getAllPathFromLocations(const T& file_name,
 
   std::transform(locations.cbegin(), locations.cend(),
                  file_list.begin(),
-                 [file_path](U l){
+                 [file_path](const U& l){
     return path {l} / file_path;
   });
 
   auto found_pos = std::remove_if(file_list.begin(), file_list.end(),
-      [](path p){
+      [](const path& p){
           return not boost::filesystem::exists(p);
   });
 
   file_list.erase(found_pos, file_list.end());
 
-  std::set<path> file_set(file_list.begin(), file_list.end());
-
-  return std::vector<path>(file_set.begin(), file_set.end());
+  return removeDuplicates(file_list);
 
 }
 
@@ -94,7 +92,7 @@ boost::filesystem::path getPathFromEnvVariable(const T& file_name, const std::st
 }
 
 template <typename T>
-std::string joinPath(const std::vector<T> path_list) {
+std::string joinPath(const std::vector<T>& path_list) {
 
   using std::vector;
   using std::string;
@@ -103,14 +101,25 @@ std::string joinPath(const std::vector<T> path_list) {
 
   std::transform(path_list.cbegin(), path_list.cend(),
                  elems.begin(),
-                 [](T s){
-                   return boost::filesystem::path(s).string();
+                 [](const T& s){
+                   return boost::filesystem::path{s}.string();
                  });
 
   std::string result = boost::algorithm::join(elems, PATH_SEP);
 
   return result;
 }
+
+template <typename... Args>
+auto join(Args&&... args) -> decltype(joinPath(std::forward<Args>(args)...)) {
+  return joinPath(std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+auto split(Args&&... args) -> decltype(splitPath(std::forward<Args>(args)...)) {
+  return splitPath(std::forward<Args>(args)...);
+}
+
 
 template <typename T, typename U>
 std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initial_locations, const std::vector<U>& suffixes) {
@@ -123,19 +132,40 @@ std::vector<boost::filesystem::path> multiPathAppend(const std::vector<T>& initi
   auto pos = result.begin();
 
   std::for_each(initial_locations.cbegin(), initial_locations.cend(),
-                 [&pos, &suffixes](T l) {
+                 [&pos, &suffixes](const T& l) {
                    std::transform(suffixes.cbegin(), suffixes.cend(),
                                   pos,
-                                  [l](U s){
-                                  return path(l) / s;
+                                  [l](const U& s){
+                                  return path {l} / s;
                                   });
-                   pos += suffixes.size();
+                   pos += static_cast<std::ptrdiff_t>(suffixes.size());
 
                  });
 
 
   return result;
 }
+
+template <typename T>
+std::vector<boost::filesystem::path> removeDuplicates(const std::vector<T>& path_list) {
+
+  using boost::filesystem::path;
+
+  std::unordered_set<std::string> s;
+
+  std::vector<path> output(path_list.size());
+
+  auto end = copy_if(path_list.cbegin(), path_list.cend(), output.begin(),
+        [&s](const T& i) {
+          return s.insert(path{i}.string()).second;
+        });
+
+  output.erase(end, output.end());
+
+  return output;
+
+}
+
 
 }  // namespace Path
 }  // namespace Elements

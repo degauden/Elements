@@ -62,15 +62,48 @@ fi
 make
 
 if [ $? -ne 0 ]; then
-   echo "Error: <Builld of $projectA_name $projectA_version> failed!" 1>&2
+   echo "Error: <Build of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+if [ ! -f build.${BINARY_TAG}/cmake_info.cmake ]; then
+    echo "Error: <Build of $projectA_name $projectA_version> failed!" 1>&2
+    echo "Missing the build.${BINARY_TAG}/cmake_info.cmake file" 1>&2
+    local_clean_exit 1
+fi
+
+# Make sure <ProjectA_version> is there
+result=$(grep -F "Version: ${projectA_version}" build.${BINARY_TAG}/cmake_info.cmake)
+if [ $? -ne 0 ]; then
+   echo "Error: <${projectA_version}> not found in <build.${BINARY_TAG}/cmake_info.cmake> file!" 1>&2
+   local_clean_exit 1
+fi
+
+result=$(cmake -P build.${BINARY_TAG}/cmake_info.cmake | grep -F "Version: ${projectA_version}")
+if [ $? -ne 0 ]; then
+   echo "Error: <${projectA_version}> not found in <build.${BINARY_TAG}/cmake_info.cmake> file!" 1>&2
+   local_clean_exit 1
+fi
+
+
+# Make sure <ProjectA_name> is there
+result=$(grep -F "Name: ${projectA_name}" build.${BINARY_TAG}/cmake_info.cmake)
+if [ $? -ne 0 ]; then
+   echo "Error: <${projectA_name}> not found in <build.${BINARY_TAG}/cmake_info.cmake> file!" 1>&2
+   local_clean_exit 1
+fi
+
+result=$(cmake -P build.${BINARY_TAG}/cmake_info.cmake | grep -F "Name: ${projectA_name}")
+if [ $? -ne 0 ]; then
+   echo "Error: <${projectA_name}> not found in <build.${BINARY_TAG}/cmake_info.cmake> file!" 1>&2
    local_clean_exit 1
 fi
 
 make install
 
 if [ $? -ne 0 ]; then
-   echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
-   local_clean_exit 1
+    echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
+    local_clean_exit 1
 fi
 
 if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
@@ -95,7 +128,7 @@ fi
 make
 
 if [ $? -ne 0 ]; then
-   echo "Error: <Builld of $projectB_name $projectB_version> failed!" 1>&2
+   echo "Error: <Build of $projectB_name $projectB_version> failed!" 1>&2
    local_clean_exit 1
 fi
 
@@ -107,7 +140,7 @@ if [ $? -ne 0 ]; then
 fi
 
 else
-echo "Warning: The Elements framework is not available in its InstallArea" 1>&2
+    echo "Warning: The Elements framework is not available in its InstallArea" 1>&2
 fi
 
 

@@ -34,7 +34,7 @@ def defineSpecificProgramOptions():
     Define program option(s)
     """
     description = """
-This script creates an <Elements> project in your current directory(by default)
+This script creates an <Elements> project in your current directory (by default)
 or at the location defined by the <$User_area> environment variable.
 It means that all the necessary structure (directory structure, makefiles etc...)
 will be automatically created for you. In addition, the project name will be registered (if any) into
@@ -61,7 +61,7 @@ e.g.
     at the location pointed by the $User_area environment variable
 
 Note:
-    - If your project directory exists already(e.g. project cloned from git), the script will not erase it,
+    - If your project directory exists already (e.g. project cloned from git), the script will not erase it,
       it will just replace the files needed to be updated. For instance, the <.git> directory will
       not be erased (and/or whatever files/directory there).
       If you do not use the -n (or -novd) option, in such a case the <.git> directory for instance will not be

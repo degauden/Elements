@@ -16,6 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsServices ElementsServices
+ * @{
+ */
+
 #ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H_
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H_
 
@@ -45,6 +50,7 @@ enum OverwritingPolicy {
 
 /**
  * @class UnknownHost
+ * @ingroup ElementsServices
  * @brief Exception raised when a hosting solution is not supported by the tool.
  */
 class ELEMENTS_API UnknownHost: public std::runtime_error {
@@ -53,13 +59,14 @@ public:
   UnknownHost() :
       std::runtime_error("I don't know this hosting solution!") {
   }
-  explicit UnknownHost(std::string hostName):
+  explicit UnknownHost(const std::string& hostName):
       std::runtime_error("I don't know this hosting solution: " + hostName) {
   }
 };
 
 /**
  * @class ConnectionConfiguration
+ * @ingroup ElementsServices
  * @brief The connection configuration mainly holds:
  * * the host type and URL,
  * * the user name and password,
@@ -74,7 +81,7 @@ public:
   /**
    * @brief Create a dependency configuration by reading a configuration file.
    */
-  explicit ConnectionConfiguration(path configFile);
+  explicit ConnectionConfiguration(const path& configFile);
 
   /**
    * @brief Check whether existing local files can be overwritten.
@@ -83,11 +90,11 @@ public:
 
 protected:
 
-  void parseConfigurationFile(path filename);
+  void parseConfigurationFile(const path& filename);
 
-  void parseHost(std::string name);
+  void parseHost(const std::string& name);
 
-  void parseOverwritingPolicy(std::string policy);
+  void parseOverwritingPolicy(const std::string& policy);
 
 public:
 
@@ -106,3 +113,5 @@ public:
 }  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_CONNECTIONCONFIGURATION_H_
+
+/**@}*/

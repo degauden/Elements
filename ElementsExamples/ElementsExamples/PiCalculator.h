@@ -16,6 +16,11 @@
  *
  */
 
+/**
+ * @addtogroup ElementsExamples ElementsExamples
+ * @{
+ */
+
 #ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_PICALCULATOR_H_
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_PICALCULATOR_H_
 
@@ -41,3 +46,5 @@ private:
 }  // namespace Elements
 
 #endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_PICALCULATOR_H_
+
+/**@}*/

@@ -120,7 +120,7 @@ struct ElementsLogging_Fixture {
 class SetRandomSeed {
  public:
   SetRandomSeed() {
-    std::srand(std::time(NULL));
+    std::srand(static_cast<unsigned>(std::time(NULL)));
   }
 };
 

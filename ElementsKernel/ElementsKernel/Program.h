@@ -41,6 +41,7 @@ namespace Elements {
 
 /**
  * @class Program
+ * @ingroup ElementsKernel
  * @brief
  *   Abstract class for all Elements programs
  * @details

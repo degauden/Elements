@@ -11,7 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os, imp
+import sys, os, importlib
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -39,7 +39,7 @@ if sphinx_major_version < 1 or (sphinx_major_version == 1 and sphinx_minor_versi
     napoleon_extension = 'sphinxcontrib.napoleon'
 
 try:
-    imp.find_module(napoleon_extension)
+    importlib.import_module(napoleon_extension)
     found_napo = True
 except ImportError:
     found_napo = False

@@ -20,6 +20,7 @@ if (NOT SPHINX_FOUND)
   foreach (_sphinx_tool IN LISTS Sphinx_FIND_COMPONENTS)
     string(TOUPPER ${_sphinx_tool} _SPHINX_TOOL_UPPER)
     set(explicit_sphinx)
+    set(implicit_sphinx sphinx-${_sphinx_tool})
     if(PYTHON_EXPLICIT_VERSION)
       set(explicit_sphinx sphinx-${_sphinx_tool}-${PYTHON_EXPLICIT_VERSION})
     else()
@@ -27,7 +28,7 @@ if (NOT SPHINX_FOUND)
     endif()
     find_program (
       SPHINX_${_SPHINX_TOOL_UPPER}_EXECUTABLE
-      NAMES ${explicit_sphinx} ${explicit_sphinx}.py
+      NAMES ${explicit_sphinx} ${explicit_sphinx}.py ${implicit_sphinx} ${implicit_sphinx}
       HINTS ENV SPHINX_INSTALL_DIR
       PATH_SUFFIXES bin
       DOC   "The sphinx-${_sphinx_tool} Python script."

@@ -150,3 +150,4 @@ elements_install_python_modules(TEST_EXCLUDE ${EXCLUDED_PYTHON_TESTS})
 # Examples:
 #          elements_install_conf_files()
 #===============================================================================
+elements_install_conf_files()

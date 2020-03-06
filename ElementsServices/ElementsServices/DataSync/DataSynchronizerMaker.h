@@ -16,6 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsServices ElementsServices
+ * @{
+ */
+
 #ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H_
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H_
 
@@ -40,3 +45,5 @@ ELEMENTS_API std::shared_ptr<DataSynchronizer> createSynchronizer(
 }
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H_
+
+/**@}*/

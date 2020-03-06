@@ -27,6 +27,7 @@ import os
 import sys
 import re
 from distutils.sysconfig import get_python_lib
+from collections import OrderedDict
 
 Type = ["executable", "library", "python", "configuration", "auxiliary"]
 
@@ -42,17 +43,17 @@ VARIABLE = {"executable": "PATH",
 SUFFIXES = {"executable": ["scripts", "bin"],
             "library": ["lib"],
             "python": ["python"],
-            "configuration": ["conf"],
-            "auxiliary": ["auxdir", "aux"]}
+            "configuration": ["conf", "share/conf"],
+            "auxiliary": ["auxdir", "aux", "share/auxdir", "share/aux"]}
 
 DEFAULT_INSTALL_LOCATIONS = { "executable": [ os.path.join(DEFAULT_INSTALL_PREFIX, "bin")],
                                  "library": [ os.path.join(DEFAULT_INSTALL_PREFIX, "lib64"),
                                               os.path.join(DEFAULT_INSTALL_PREFIX, "lib"),
                                               os.path.join(DEFAULT_INSTALL_PREFIX, "lib32")],
                                   "python": [ get_python_lib(prefix=DEFAULT_INSTALL_PREFIX)],
-                           "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "conf") ],
-                               "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "auxdir"),
-                                             os.path.join(DEFAULT_INSTALL_PREFIX, "aux")]}
+                           "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "conf") ],
+                               "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "auxdir"),
+                                             os.path.join(DEFAULT_INSTALL_PREFIX, "share", "aux")]}
 
 HAS_SUBLEVELS = { "executable": False,
                      "library": False,
@@ -134,7 +135,7 @@ def getAllPathFromLocations(file_name, locations):
         if os.path.exists(file_path):
             file_list.append(file_path)
 
-    return list(set(file_list))
+    return removeDuplicates(file_list)
 
 
 def getPathFromEnvVariable(file_name, path_variable):
@@ -159,6 +160,7 @@ def joinPath(path_list):
     """ stupid wrapper to look like the C++ call """
     return os.pathsep.join(path_list)
 
+join = joinPath
 
 def multiPathAppend(initial_locations, suffixes):
     """ Function to append all the suffixes to
@@ -236,3 +238,7 @@ def getTargetPath(file_name, target_dir, target_name=None, use_stem=False):
     else:
         target_path = os.path.join(target_dir, os.path.basename(file_name))
     return target_path
+
+def removeDuplicates(file_list):
+    """ stupid wrapper to look like the C++ call """
+    return list(OrderedDict.fromkeys(file_list))

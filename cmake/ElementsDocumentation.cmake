@@ -18,7 +18,10 @@ include_guard()
 
   if(DOXYGEN_FOUND)
 
-    find_package(PlantUML)
+    message(STATUS "Doxygen executable: ${DOXYGEN_EXECUTABLE}")
+    message(STATUS "Doxygen version: ${DOXYGEN_VERSION}")
+
+    find_package(PlantUML QUIET)
     
     set(DOXYGEN_EXTRA_FILE_PATTERNS) 
     if(USE_PYTHON_DOXYGEN)
@@ -64,6 +67,31 @@ include_guard()
         "${DOXYGEN_TAGFILES} \"${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/cppreference-doxygen-web.tag.xml=http://en.cppreference.com/w/\"")
     endif()
 
+    # Generation of the Doxygen Main Page
+    
+    list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/doc/mainpage.dox)
+    list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/mainpage.dox)
+    list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/doc/${PROJECT_NAME}.dox)
+    list(APPEND maindox_list ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.dox)
+
+    set(maindox_file)    
+    find_first_file("${maindox_list}" maindox_file)
+    
+    if(NOT maindox_file)
+      message(STATUS "No doxygen main page (${maindox_list}) can be found.")
+      find_file_to_configure(mainpage.dox.in
+                             FILETYPE "Doxygen main page"
+                             OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
+                             PATHS ${CMAKE_MODULE_PATH}
+                             PATH_SUFFIXES doc)
+      set(DOX_INPUT_BINARY_MAIN ${PROJECT_BINARY_DIR}/doc/doxygen/mainpage.dox)
+      set(DOX_EXCLUDE_BINARY_DIR)
+    else()
+      message(STATUS "The ${maindox_file} file exists.")
+      set(DOX_EXCLUDE_BINARY_DIR ${PROJECT_BINARY_DIR})
+      set(DOX_INPUT_BINARY_MAIN)
+    endif()
+
 
     # Generation of the main Doxygen configuration: the Doxyfile
     find_file_to_configure(Doxyfile.in
@@ -80,12 +108,6 @@ include_guard()
                            PATHS ${CMAKE_MODULE_PATH}
                            PATH_SUFFIXES doc)
 
-    # Generation of the Doxygen Main Page
-    find_file_to_configure(mainpage.dox.in
-                           FILETYPE "Doxygen main page"
-                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/doxygen"
-                           PATHS ${CMAKE_MODULE_PATH}
-                           PATH_SUFFIXES doc)
 
 
   endif()
@@ -96,7 +118,7 @@ include_guard()
 #===========================================================================================================
 
 
-  if(USE_SPHINX)
+  if(USE_SPHINX AND (NOT "${PYTHON_EXPLICIT_VERSION}" STREQUAL "2"))
 
   find_package(Sphinx REQUIRED)
   if(SPHINX_FOUND)
@@ -123,9 +145,6 @@ include_guard()
                            PATHS ${CMAKE_MODULE_PATH}
                            PATH_SUFFIXES doc)
 
-    copy_dir(${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx)
-
-
     if(DOXYGEN_FOUND AND USE_SPHINX_APIDOC AND USE_SPHINX_BREATHE)
 
       find_file_to_configure(cpp_modules.rst.in
@@ -146,9 +165,11 @@ include_guard()
     get_property(proj_python_package_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
 
     add_custom_target(sphinx
+                      COMMAND  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx 
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/_static
                       COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} . ${_py_pack} html
+                      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/doc
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)
 

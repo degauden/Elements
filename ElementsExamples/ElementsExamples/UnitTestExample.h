@@ -34,6 +34,7 @@ namespace Examples {
 
 /**
  * @class UnitTestExample
+ * @ingroup ElementsExamples
  * @brief This class has been created to demonstrate unit testing.
  */
 class ELEMENTS_API UnitTestExample {

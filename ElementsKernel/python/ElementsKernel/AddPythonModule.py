@@ -27,19 +27,18 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import os
 import argparse
 import time
-import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.ParseCmakeLists as pcl
-import ElementsKernel.Logging as log
+from ElementsKernel import Auxiliary
+from ElementsKernel import ProjectCommonRoutines
+from ElementsKernel import ParseCmakeLists
+from ElementsKernel import Logging
 
 from ElementsKernel import Exit
 
-logger = log.getLogger('AddPythonModule')
+logger = Logging.getLogger('AddPythonModule')
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
-PYTEST_TEMPLATE_FILE = 'PythonTest_template.py'
 PYTEST_TEMPLATE_FILE_IN = 'PythonTest_template.py.in'
-PYMODULE_TEMPLATE_FILE = 'PythonModule_template.py'
 PYMODULE_TEMPLATE_FILE_IN = 'PythonModule_template.py.in'
 
 ################################################################################
@@ -48,12 +47,12 @@ def createDirectories(module_dir, module_name):
     """
     Create directories needed for a python module
     """
-    # Create the executable directory
-    python_module_path = os.path.join(module_dir, 'python', module_name)
-    epcr.makeDirectory(python_module_path)
-    # Create the python directory in tests
-    tests_python_path = os.path.join(module_dir, 'tests', 'python')
-    epcr.makeDirectory(tests_python_path)
+    standalone_directories = [os.path.join('python', module_name),
+                              os.path.join('tests', 'python')]
+    for d in standalone_directories:
+        target_dir = os.path.join(module_dir, d)
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
 
 ################################################################################
 
@@ -63,17 +62,17 @@ def updateCmakeListsFile(module_dir):
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
-    epcr.addItemToCreationList(cmake_filename)
+    ProjectCommonRoutines.addItemToCreationList(cmake_filename)
 
     # Backup the file
-    epcr.makeACopy(cmake_filename)
+    ProjectCommonRoutines.makeACopy(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
         f = open(cmake_filename)
         data = f.read()
         f.close()
-        cmake_object = pcl.CMakeLists(data)
+        cmake_object = ParseCmakeLists.CMakeLists(data)
 
         # Add elements_install_conf_files if any
         cmake_object.elements_install_python_modules = 'elements_install_python_modules()'
@@ -82,79 +81,40 @@ def updateCmakeListsFile(module_dir):
     f = open(cmake_filename, 'w')
     f.write(str(cmake_object))
     f.close()
-################################################################################
-
-def substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_name):
-    """
-    Substitute variables in the python test template file and rename it
-    """
-    template_file = os.path.join(pymodule_path, PYMODULE_TEMPLATE_FILE)
-    os.rename(os.path.join(pymodule_path, PYMODULE_TEMPLATE_FILE_IN), template_file)
-
-    # Substitute strings in template_file
-    f = open(template_file)
-    data = f.read()
-    author_str = epcr.getAuthor()
-    date_str = time.strftime("%x")
-    file_name_str = os.path.join('python', module_name, python_module_name + '.py')
-    new_data = data % {"FILE": file_name_str,
-                       "DATE": date_str,
-                       "AUTHOR": author_str}
-    f.close()
-    # Save new data
-    file_name = template_file.replace(PYMODULE_TEMPLATE_FILE, python_module_name + '.py')
-    f = open(file_name, 'w')
-    f.write(new_data)
-    f.close()
-    os.remove(template_file)
-    epcr.addItemToCreationList(file_name)
 
 ################################################################################
 
-def substituteStringsInPyTestFile(pytest_path, module_name, python_module_name):
-    """
-    Substitute variables in the python test template file and rename it
-    """
-    template_file = os.path.join(pytest_path, PYTEST_TEMPLATE_FILE)
-    os.rename(os.path.join(pytest_path, PYTEST_TEMPLATE_FILE_IN), template_file)
-
-    # Substitute strings in template_file
-    f = open(template_file)
-    data = f.read()
-    author_str = epcr.getAuthor()
-    date_str = time.strftime("%x")
-    file_name_str = os.path.join('tests', 'python', python_module_name + '_test.py')
-    new_data = data % {"FILE": file_name_str,
-                       "DATE": date_str,
-                       "AUTHOR": author_str,
-                       "MODULENAME": module_name,
-                       "PYTHONMODULE": python_module_name}
-
-    f.close()
-    # Save new data
-    file_name = template_file.replace(PYTEST_TEMPLATE_FILE, python_module_name + '_test.py')
-    f = open(file_name, 'w')
-    f.write(new_data)
-    f.close()
-    os.remove(template_file)
-    epcr.addItemToCreationList(file_name)
-
-################################################################################
-
-def createPythonModule(current_dir, module_name, python_module_name):
+def createPythonModule(module_dir, module_name, python_module_name):
     """
     Create the python module
     """
-    createDirectories(current_dir, module_name)
-    epcr.createPythonInitFile(os.path.join(current_dir, 'python', module_name, '__init__.py'))
-    pytest_path = os.path.join(current_dir, 'tests', 'python')
-    epcr.copyAuxFile(pytest_path, PYTEST_TEMPLATE_FILE_IN)
-    pymodule_path = os.path.join(current_dir, 'python', module_name)
-    epcr.copyAuxFile(pymodule_path, PYMODULE_TEMPLATE_FILE_IN)
+    print ('module_dir ',module_dir, 'module_name ',module_name, 'python_module_name ',python_module_name)
+    createDirectories(module_dir, module_name)
+    ProjectCommonRoutines.createPythonInitFile(os.path.join(module_dir, 'python', module_name, '__init__.py'))
+    full_pymodule_name = os.path.join('python', module_name, python_module_name + '.py')
+    pytest_name = os.path.join('tests', 'python', python_module_name + '_test.py')
+    target_locations = { 
+                       PYMODULE_TEMPLATE_FILE_IN: full_pymodule_name,
+                       PYTEST_TEMPLATE_FILE_IN: pytest_name
+                       }
 
-    substituteStringsInPyModuleFile(pymodule_path, module_name, python_module_name)
-    substituteStringsInPyTestFile(pytest_path, module_name, python_module_name)
-    updateCmakeListsFile(current_dir)
+    configuration = {  "FILE":  full_pymodule_name,
+                       "FILETEST": pytest_name,
+                       "DATE": time.strftime("%x"),
+                       "AUTHOR": ProjectCommonRoutines.getAuthor(),
+                       "MODULENAME": module_name,
+                       "PYTHONMODULE": python_module_name
+                    }
+    # Put AUX files to their target and substitut
+    for src in target_locations:
+        file_name = os.path.join("ElementsKernel", "templates", src)
+        tgt = target_locations[src]
+        Auxiliary.configure(file_name, module_dir, tgt,
+                            configuration=configuration,
+                            create_missing_dir=True)
+        ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, tgt))
+
+    updateCmakeListsFile(module_dir)
 
 ################################################################################
 
@@ -162,12 +122,10 @@ def makeChecks(module_file_path, python_module_name):
     """
     Make some checks
     """
-    # Module as no version number, '1.0' is just for using the routine
-    epcr.checkNameAndVersionValid(python_module_name, '1.0')
-    # Make sure the program does not already exist
-    epcr.checkFileNotExist(module_file_path, python_module_name)
-    # Check aux file exist
-    epcr.checkAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
+    # Module as no version number? but '1.0' is just for using the routine
+    ProjectCommonRoutines.checkNameAndVersionValid(python_module_name, '1.0')
+    ProjectCommonRoutines.checkFileNotExist(module_file_path, python_module_name)
+    ProjectCommonRoutines.checkAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
 
 ################################################################################
 
@@ -212,7 +170,7 @@ def mainMethod(args):
         logger.info('')
 
         # We absolutely need a Elements cmake file
-        module_name = epcr.getElementsModuleName(current_dir)
+        module_name = ProjectCommonRoutines.getElementsModuleName(current_dir)
 
         module_file_path = os.path.join(current_dir, 'python', module_name,
                                         python_module_name + '.py')
@@ -223,10 +181,10 @@ def mainMethod(args):
 
         logger.info('< %s > python module successfully created in < %s >', python_module_name, module_file_path)
         # Remove backup file
-        epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
+        ProjectCommonRoutines.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
 
         # Print all files created
-        epcr.printCreationList()
+        ProjectCommonRoutines.printCreationList()
 
     except Exception as msg:
         if str(msg):

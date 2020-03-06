@@ -1,3 +1,60 @@
+* Fri Feb 6 2020 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.10
+- Fix the packaging of byte-compiled python files for FC30. The byte compilation
+  is note done for files outside of the /usr prefix
+- Enable the original CMake symbol hiding mechanism
+- Add the GnuAstro CMake find package with an example
+- CTestXML2HTML.py compatible with Python 2 (Alejandro Alvarez Ayllon)
+- Add example how to override the log for string and char[]
+- Sonar and doxygen warning fixes
+- Travis build and packaging (Alejandro Alvarez Ayllon)
+- Use MathJax in doxygen
+- Use the python Auxiliary functions for the creation scripts (Nicolas Morisset)
+- Add the possibility to generate C file for Cython
+- Remove the FORCE for CMAKE_*_INSTALL_SUFFIX. Elements only uses lib64 for x86_64,
+  but in Fedora we also have aarch64, ppc64, and s390x. For packaging there, we need
+  to be able to override the destination (Alejandro Alvarez Ayllon)
+- Add option to install the binary tests. By default, it is set to OFF.
+- Add option to use the so version in the library file names.
+- Add new gcc warnings
+    -Wformat-security
+    -Wduplicated-cond
+    -Wshadow
+    -Wconversion
+    -Wjump-misses-init
+    -Wlogical-not-parentheses
+    -Wnull-dereference
+-  Add the cmake CONVERSION_WARNING option
+    - it enables the gcc -Wconversion option
+    - Since it is very verbose, it is OFF by default
+    - it is enabled explicitly for Elements
+- Add Visual Studio Code in the gitignore template for Elements
+  project (Manuel Grizonnet)
+- remove the __linux macro that is deprecated (Alejandro Alvarez Ayllon).
+- Add the doc subdirectory for the doxygen mainpage lookup
+  - the <project>/doc subdir will be looked first,
+  - then the <project> dir
+  - and then the <project>/build.*/doc
+- Add the generation of a doc/mainpage.dox file at the project creation
+- Add the lookup of the xsd executable if the xsdcxx is not found
+- Add the detection of the sub OS wrapped by Conda
+- Enhance the detection of the sphinx tool with a fallback without version
+- Add alternative name for the healpix cxx support library on Conda
+- Add the -Wno-dev CMake option by default. It prevents the display of
+  the "project" instruction not being present in the main CMakeLists.txt file
+- Add the generation of the git informations in the manifest
+- Make AddScript create the file with the execution flag
+- https://euclid.roe.ac.uk/issues/12302. On rpm generation, Elements searches
+  the CMAKE_PREFIX_PATH for ElementsToolChain.cmake (Frederic Leroux)
+- Fix the initial copy of the files in the main doc sub-directory It was done
+  at configure time which prevented the proper update detection by make. Now
+  it's done within the sphinx target with a genuinedependency.
+- Replace the imp module by the importlib module https://euclid.roe.ac.uk/issues/12377
+  (Tristan Grégoire).
+- Fix issue https://euclid.roe.ac.uk/issues/12390. INCLUDE_DIRS not
+  written by generation scripts (Nicolas Morisset)
+- Remove unneeded lines (for compatibility py2 to py3) in the python
+  template files (Nicolas Morisset)
+
 * Mon Jul 8 2019 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.8
 - Bug fixes
 - Add the New DataSync service. (Antoine Basset)

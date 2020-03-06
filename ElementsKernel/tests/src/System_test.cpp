@@ -21,6 +21,8 @@
 
 #include "ElementsKernel/System.h"
 
+#include <sys/utsname.h>
+
 #include <string>
 #include <vector>
 #include <boost/test/unit_test.hpp>
@@ -44,6 +46,32 @@ BOOST_AUTO_TEST_CASE(HostName_test) {
   }
 
 }
+
+BOOST_AUTO_TEST_CASE(osName_test) {
+
+  string osname = "UNKNOWN";
+  struct utsname ut;
+  if (::uname(&ut) == 0) {
+    osname = ut.sysname;
+  }
+
+  BOOST_CHECK_EQUAL(Elements::System::osName(), osname);
+
+}
+
+BOOST_AUTO_TEST_CASE(osVersion_test) {
+
+
+  string osver = "UNKNOWN";
+  struct utsname ut;
+  if (uname(&ut) == 0) {
+    osver = ut.release;
+  }
+
+  BOOST_CHECK_EQUAL(Elements::System::osVersion(), osver);
+
+}
+
 
 //-----------------------------------------------------------------------------
 

@@ -73,7 +73,7 @@ function(_internal_find_local_project projects_var project_uses_var config_file)
   string(REGEX MATCH "[ \t]*(elements_project)[ \t]*\\(([^)]+)\\)" match_use ${config_file_data})
   set(match_use ${CMAKE_MATCH_2})
 
-  if(match_use STREQUAL "")
+  if("${match_use}" STREQUAL "")
     message(FATAL_ERROR "${config_file} does not contain elements_project")
   endif()
 
@@ -105,7 +105,7 @@ function(_internal_find_installed_project projects_var project_uses_var config_f
   string(REGEX MATCH "[ \t]*(set[ \t]*\\([ \t]*)([^_])_USES[ \t]+([^)]+)\\)" match_use ${config_file_data})
   set(match_use ${CMAKE_MATCH_3})
 
-  if(match_use STREQUAL "")
+  if("${match_use}" STREQUAL "")
     message(FATAL_ERROR "${config_file} does not contain elements_project")
   endif()
 
@@ -156,9 +156,9 @@ function(_internal_find_projects projects_var config_file)
     endif()
 
 
-    get_filename_component(cfg_file ${upper_proj_name}_CONFIG_FILE NAME)
+    get_filename_component(cfg_file ${${upper_proj_name}_CONFIG_FILE} NAME)
 
-    if(cfg_file STREQUAL "CMakeLists.txt")
+    if("${cfg_file}" STREQUAL "CMakeLists.txt")
       get_filename_component(${upper_proj_name}_ROOT_DIR ${${upper_proj_name}_CONFIG_FILE} PATH CACHE)
     else()
       get_filename_component(root_dir1 ${${upper_proj_name}_CONFIG_FILE} PATH)

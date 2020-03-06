@@ -64,14 +64,18 @@ template<std::size_t max_digits, typename T>
 ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageType target_unit);
 
 template<typename T>
-ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageType target_unit);
+ELEMENTS_API T
+storageConvert(const T& size, StorageType source_unit, StorageType target_unit);
 // explicit instantiation:
 extern template
-ELEMENTS_API double storageConvert<double>(const double& size, StorageType source_unit, StorageType target_unit);
+ELEMENTS_API double
+storageConvert<double>(const double& size, StorageType source_unit, StorageType target_unit);
 extern template
-ELEMENTS_API float storageConvert<float>(const float& size, StorageType source_unit, StorageType target_unit);
+ELEMENTS_API float
+storageConvert<float>(const float& size, StorageType source_unit, StorageType target_unit);
 extern template
-ELEMENTS_API std::int64_t storageConvert<std::int64_t>(const std::int64_t& size, StorageType source_unit, StorageType target_unit);
+ELEMENTS_API std::int64_t
+storageConvert<std::int64_t>(const std::int64_t& size, StorageType source_unit, StorageType target_unit);
 
 
 }  // namespace Units

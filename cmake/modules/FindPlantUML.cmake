@@ -6,7 +6,7 @@ if (NOT PLANTUML_FOUND)
     set(PLANTUML_EXECUTABLE ${PLANTUML_EXECUTABLE} CACHE STRING "")
 
 
-    find_package(Java)
+    find_package(Java QUIET)
 
     if(Java_FOUND)
 

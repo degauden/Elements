@@ -31,7 +31,13 @@
 
 namespace Elements {
 namespace System {
-
+/**
+ * @brief function to retrieve the current module
+ * @ingroup ElementsKernel
+ *
+ * It has to be included in the target source and compiled
+ * within the module to be identified.
+ */
 static inline const ModuleInfo& getThisModuleInfo() {
   static ModuleInfo this_module;
   if (this_module.isEmpty()) {

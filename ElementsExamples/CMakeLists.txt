@@ -16,7 +16,7 @@ find_package(GMock)
 # Instruction for creating a C++ library
 #    ElementsExamples is the library name
 #    src/Lib/*.cpp are the source files
-elements_add_library(ElementsExamples src/lib/*.cpp
+elements_add_library(ElementsExamples src/lib/*.cpp src/lib/*.c
                      LINK_LIBRARIES Boost ElementsKernel
                      PUBLIC_HEADERS ElementsExamples)
 
@@ -32,18 +32,25 @@ elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgramEx
                         INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
 
+elements_add_executable(ElementsAnotherSimpleProgramExample src/program/AnotherSimpleProgramExample.cpp
+                        INCLUDE_DIRS Boost ElementsExamples
+                        LINK_LIBRARIES Boost ElementsExamples)
+
 elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramExampleWithArguments.cpp
                         INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
 
 # Example of a pure C program with a C++-compatible header file example.
-elements_add_executable(CProgramExample src/CProgram/*.c)
-
+elements_add_executable(CProgramExample src/CProgram/*.c
+                        INCLUDE_DIRS ElementsExamples
+                        LINK_LIBRARIES ElementsExamples)
 
 #===== Test that the executables do run ========================================
 
 elements_add_test(CppProgramExampleRun COMMAND CppProgramExample)
 elements_add_test(CppProgramExampleNoConfigFile COMMAND CppProgramExample --config-file=toto.conf FAILS)
+elements_add_test(CppProgramExampleWrongArgument COMMAND CppProgramExample --toto FAILS)
+elements_add_test(CppProgramExampleWrongLevel COMMAND CppProgramExample --log-level dddsc FAILS)
 elements_add_test(CProgramExampleRun COMMAND CProgramExample)
 elements_add_test(ElementsSimpleProgramExampleRun COMMAND ElementsSimpleProgramExample)
 elements_add_test(ElementsProgramExampleWithArgumentsRun COMMAND ElementsProgramExampleWithArguments)
@@ -94,6 +101,20 @@ elements_add_unit_test(UnitTestExample_test tests/src/Boost/UnitTestExample_test
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
+elements_add_unit_test(Rectangle tests/src/Boost/Rectangle_test.cpp
+                       EXECUTABLE Rectangle_test
+                       INCLUDE_DIRS ElementsExamples
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+
+elements_add_unit_test(PiCalculator tests/src/Boost/PiCalculator_test.cpp
+                       EXECUTABLE PiCalculator_test
+                       INCLUDE_DIRS ElementsExamples
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
+
+elements_add_unit_test(crashingFunction tests/src/Boost/crashingFunction_test.cpp
+                       EXECUTABLE crashingFunction_test
+                       INCLUDE_DIRS ElementsExamples
+                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 
 #===== CppUnit tests =============================================================
 
@@ -216,6 +237,15 @@ elements_add_executable(CfitsioExample src/program/CfitsioExample.cpp
 elements_add_test(CfitsioWorks COMMAND CfitsioExample LABELS Cfitsio Build)
 endif()
 
+find_package(GnuAstro QUIET)
+if(GNUASTRO_FOUND)
+elements_add_executable(GnuAstroExample src/program/GnuAstroExample.cpp
+                        LINK_LIBRARIES GnuAstro ElementsExamples
+                        INCLUDE_DIRS GnuAstro ElementsExamples)
+elements_add_test(GnuAstroWorks COMMAND GnuAstroExample LABELS GnuAstro Build)
+endif()
+
+
 find_package(SWIG QUIET)
 find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET)
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
@@ -283,6 +313,7 @@ elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError_test F
 
 elements_add_test(CppProgramExample COMMAND CppProgramExample)
 elements_add_test(SimpleProgramExample COMMAND ElementsSimpleProgramExample)
+elements_add_test(AnotherSimpleProgramExample COMMAND ElementsAnotherSimpleProgramExample FAILS)
 
 elements_add_test(UnrecognizedOption COMMAND UnrecognizedOption_test)
 elements_add_test(OptionPrecedence COMMAND OptionPrecedence_test)

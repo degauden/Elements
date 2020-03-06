@@ -44,6 +44,7 @@ namespace Elements {
 
 /**
  * @class ProgramManager
+ * @ingroup ElementsKernel
  * @brief
  *    Class for managing all Elements programs
  * @details

@@ -51,6 +51,7 @@ struct Path_Fixture {
   Elements::TempDir m_top_dir;
   vector<path> m_item_list;
   vector<path> m_file_list;
+  vector<path> m_directory_list;
 
   static void create_test_file(const path& p) {
 
@@ -80,15 +81,25 @@ struct Path_Fixture {
 
 
     m_file_list.push_back(m_top_dir.path() / "test1" / "foo" / "e1e2");
+    m_directory_list.push_back(m_top_dir.path() / "test1" / "foo");
+
     m_file_list.push_back(m_top_dir.path() / "test3" / "e1e2");
+    m_directory_list.push_back(m_top_dir.path() / "test3");
+
     m_file_list.push_back(m_top_dir.path() / "test4" / "e1e2");
+    m_directory_list.push_back(m_top_dir.path() / "test4");
 
     create_directory(m_top_dir.path() / "test1" / "sub");
     create_directory(m_top_dir.path() / "test5" / "sub");
 
     m_file_list.push_back(m_top_dir.path() / "test1" / "sub" / "d1d2");
+    m_directory_list.push_back(m_top_dir.path() / "test1" / "sub");
+
     m_file_list.push_back(m_top_dir.path() / "test5" / "sub" / "d1d2");
+    m_directory_list.push_back(m_top_dir.path() / "test5" / "sub");
+
     m_file_list.push_back(m_top_dir.path() / "test6" / "d1d2");
+    m_directory_list.push_back(m_top_dir.path() / "test6");
 
     for_each(m_file_list.cbegin(), m_file_list.cend(),
         [](path p) {
@@ -218,6 +229,25 @@ BOOST_FIXTURE_TEST_CASE(getFromStringLocations_test, Path_Fixture) {
 
 }
 
+BOOST_FIXTURE_TEST_CASE(getPathFromEnvVariable_test, Path_Fixture) {
+
+  using Elements::Path::getPathFromEnvVariable;
+  using Elements::Path::join;
+
+  auto env = Elements::TempEnv();
+
+  env["THAT_PATH"] = join(m_directory_list);
+
+  auto foobar_path = getPathFromEnvVariable("foobar", "THAT_PATH");
+
+  BOOST_CHECK(foobar_path.empty());
+
+  auto e1e2_path = getPathFromEnvVariable("e1e2", "THAT_PATH");
+
+  BOOST_CHECK_EQUAL(e1e2_path, m_top_dir.path() / "test1" / "foo" / "e1e2");
+
+}
+
 
 BOOST_AUTO_TEST_CASE(JoinPath_test) {
 
@@ -236,6 +266,44 @@ BOOST_AUTO_TEST_CASE(JoinPath_test) {
   BOOST_CHECK(joinPath(path_list3) == "/toto:titi:./tutu:");
 
 }
+
+BOOST_AUTO_TEST_CASE(Join_test) {
+
+  using Elements::Path::join;
+
+  const vector<string> path_list {"/toto", "titi", "./tutu"};
+
+  BOOST_CHECK(join(path_list) == "/toto:titi:./tutu");
+
+  const vector<string> path_list2 {"", "/toto", "titi", "./tutu"};
+
+  BOOST_CHECK(join(path_list2) == ":/toto:titi:./tutu");
+
+  const vector<string> path_list3 {"/toto", "titi", "./tutu", ""};
+
+  BOOST_CHECK(join(path_list3) == "/toto:titi:./tutu:");
+
+}
+
+
+BOOST_AUTO_TEST_CASE(SplitPath_test) {
+
+  using Elements::Path::splitPath;
+
+  const vector<path> path_list {"/toto", "titi", "./tutu"};
+  const string path_string {"/toto:titi:./tutu"};
+  BOOST_CHECK(splitPath(path_string) == path_list);
+
+  const vector<path> path_list2 {"", "/toto", "titi", "./tutu"};
+  const string path_string2 {":/toto:titi:./tutu"};
+  BOOST_CHECK(splitPath(path_string2) == path_list2);
+
+  const vector<path> path_list3 {"/toto", "titi", "./tutu", ""};
+  const string path_string3 {"/toto:titi:./tutu:"};
+  BOOST_CHECK(splitPath(path_string3) == path_list3);
+
+}
+
 
 BOOST_AUTO_TEST_CASE(MultiPathAppend_test) {
 
@@ -261,6 +329,35 @@ BOOST_AUTO_TEST_CASE(MultiPathAppend_test) {
                  });
 
   BOOST_CHECK(ref_paths == full_path_strings);
+
+}
+
+BOOST_AUTO_TEST_CASE(RemoveDuplicates_test) {
+
+  using Elements::Path::removeDuplicates;
+
+  const vector<string> locations {"/usr/bin", "/usr/local/bin",
+                                 "/usr/bin", "/opt/bin", "/opt/local/bin",
+                                 "/usr/bin", "/usr/local/bin"};
+
+  const vector<string> unique_locations {"/usr/bin", "/usr/local/bin",
+                                         "/opt/bin", "/opt/local/bin"};
+  vector<path> unique_paths;
+
+  for (const auto& l : unique_locations) {
+    unique_paths.push_back(path(l));
+  }
+
+  BOOST_CHECK(removeDuplicates(locations) == unique_paths);
+
+  vector<path> paths;
+
+  for (const auto& l : locations) {
+    paths.push_back(path(l));
+  }
+
+  BOOST_CHECK(removeDuplicates(paths) == unique_paths);
+
 
 }
 

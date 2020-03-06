@@ -104,16 +104,22 @@ class CMakeLists(object):
             name = content[0]
             source = ''
             link_libraries = []
+            include_dirs = []
             location = 'SOURCE'
             for word in content[1:]:
                 if word == 'LINK_LIBRARIES':
                     location = 'LINK_LIBRARIES'
                     continue
+                if word == 'INCLUDE_DIRS':
+                    location = 'INCLUDE_DIRS'
+                    continue
                 if location == 'SOURCE':
                     source = word
                 if location == 'LINK_LIBRARIES':
                     link_libraries.append(word)
-            self.elements_add_executable_list.append(pclm.ElementsAddExecutable(name, source, link_libraries))
+                if location == 'INCLUDE_DIRS':
+                    include_dirs.append(word)
+            self.elements_add_executable_list.append(pclm.ElementsAddExecutable(name, source, link_libraries, include_dirs))
 
         regex_pattern = r"elements_add_unit_test\(.*?\)"
         for elements_add_unit_test in self._findAllPattern(regex_pattern, text, True):

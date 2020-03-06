@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(median_test) {
                                 };
   vector<double> expected_result {6.5, 11, 55.5, 101};
 
-  for (int test_id = 0; test_id < 4; ++test_id) {
+  for (size_t test_id = 0; test_id < 4; ++test_id) {
     BOOST_CHECK_EQUAL(expected_result[test_id], tested_object.average(input_vec[test_id]));
   }
 }
@@ -65,10 +65,10 @@ BOOST_AUTO_TEST_CASE(mean_test) {
   vector<vector<int>> input_vec {{1}, {1, 2}, {1, 2, 4}, {1, 2, 4, 8},
                                  {1, 2, 4, 8, 16}};
   vector<double> expected_result {1.0, 1.5, 2.33333333333333333, 3.75, 6.2};
-  double tolerence {1e-10};
+  double local_tolerence {1e-10};
 
-  for (int test_id = 0; test_id < 5; ++test_id) {
-    BOOST_CHECK_CLOSE(expected_result[test_id], tested_object.average(input_vec[test_id]), tolerence);
+  for (size_t test_id = 0; test_id < 5; ++test_id) {
+    BOOST_CHECK_CLOSE(expected_result[test_id], tested_object.average(input_vec[test_id]), local_tolerence);
   }
 }
 

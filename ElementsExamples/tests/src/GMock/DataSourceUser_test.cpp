@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(sumRecords_test) {
   EXPECT_CALL(data_source_mock, countRecords()).Times(1).WillOnce(Return(5));
 
   for (size_t index = 0; index < 5; ++index) {
-    EXPECT_CALL(data_source_mock, getRecordValue(index)).Times(1).WillOnce(Return(index+1.));
+    EXPECT_CALL(data_source_mock, getRecordValue(index)).Times(1).WillOnce(Return(static_cast<double>(index)+1.));
   }
 
   // object to test

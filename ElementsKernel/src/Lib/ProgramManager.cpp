@@ -421,7 +421,7 @@ void ProgramManager::bootstrapEnvironment(char* arg0) {
 
   std::transform(m_search_dirs.cbegin(), m_search_dirs.cend(),
       local_search_paths.begin(),
-      [](string s){
+      [](const string& s){
       return boost::filesystem::complete(s);
   });
 
@@ -531,16 +531,16 @@ void ProgramManager::onTerminate() noexcept {
     // we have an exception
     try {
       std::rethrow_exception(exc);  // throw to recognise the type
-    } catch (const Exception & exc) {
+    } catch (const Exception & exc1) {
       log.fatal() << "# ";
-      log.fatal() << "# Elements Exception : " << exc.what();
+      log.fatal() << "# Elements Exception : " << exc1.what();
       log.fatal() << "# ";
-      exit_code = exc.exitCode();
-    } catch (const std::exception & exc) {
+      exit_code = exc1.exitCode();
+    } catch (const std::exception & exc2) {
       /// @todo : set the exit code according to the type of exception
       ///         if a clear match is found.
       log.fatal() << "# ";
-      log.fatal() << "# Standard Exception : " << exc.what();
+      log.fatal() << "# Standard Exception : " << exc2.what();
       log.fatal() << "# ";
     } catch (...) {
       log.fatal() << "# ";

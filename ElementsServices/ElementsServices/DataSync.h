@@ -16,6 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @addtogroup ElementsServices ElementsServices
+ * @{
+ */
+
 #ifndef ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_H_
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_H_
 
@@ -30,6 +35,8 @@ namespace DataSync {
 
 
 /**
+ * @class DataSync
+ * @ingroup ElementsServices
  * @brief A class to download test data from a data repository
  * prior to the unit test run.
  *
@@ -97,3 +104,5 @@ private:
 }  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_H_
+
+/**@}*/

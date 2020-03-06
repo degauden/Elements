@@ -38,7 +38,6 @@
 #         backward-compatibility target for the CMT generic Makefile. Tt
 #         ensures that the "all" target has been called before.
 #
-# :Author: Marco Clemencic
 # :Author: Hubert Degaudenzi
 #
 # .. [*] Targets defined by this Makefile.
@@ -68,7 +67,7 @@ else
   endif
 endif
 
-override ALL_CMAKEFLAGS := --no-warn-unused-cli
+override ALL_CMAKEFLAGS := -Wno-dev --no-warn-unused-cli
 
 ifneq ($(TOOLCHAIN_FILE),)
   # A toolchain has been found. Lets use it.
@@ -79,6 +78,7 @@ endif
 BUILD_PREFIX_NAME := build
 
 override ALL_CMAKEFLAGS += -DUSE_LOCAL_INSTALLAREA=ON -DBUILD_PREFIX_NAME:STRING=$(BUILD_PREFIX_NAME)
+override ALL_CMAKEFLAGS += -DUSE_VERSIONED_LIBRARIES=OFF
 
 ifndef BINARY_TAG
   ifdef CMAKECONFIG
@@ -155,6 +155,7 @@ test: $(BUILDDIR)/$(BUILD_CONF_FILE)
 	$(RM) -r $(BUILDDIR)/Testing $(BUILDDIR)/html
 	-cd $(BUILDDIR) && $(CTEST) -T test $(ARGS)
 	+$(BUILD_CMD) HTMLSummary
+	+$(BUILD_CMD) JUnitSummary
 
 
 # This target ensures that the "all" target is called before
@@ -163,6 +164,7 @@ tests: all
 	$(RM) -r $(BUILDDIR)/Testing $(BUILDDIR)/html
 	-cd $(BUILDDIR) && $(CTEST) -T test $(ARGS)
 	+$(BUILD_CMD) HTMLSummary
+	+$(BUILD_CMD) JUnitSummary
 
 ifeq ($(VERBOSE),)
 # less verbose install

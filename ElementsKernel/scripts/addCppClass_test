@@ -63,11 +63,11 @@ if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
-# Make sure the LINK_LIBRARIES is there and Element dependency
+# Make sure the LINK_LIBRARIES is there and Elements dependency
 result=$( grep "LINK_LIBRARIES" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
           grep $elt_dep_name)
 if [ $? -ne 0 ]  ;then
-   echo "Error: LINK_LIBRARIES macro with <$elt_dep_name> Element dependency not found!" 1>&2
+   echo "Error: LINK_LIBRARIES macro with <$elt_dep_name> Elements dependency not found!" 1>&2
    clean_and_exit 1
 fi
 
@@ -78,6 +78,23 @@ if [ $? -ne 0 ]  ;then
    echo "Error: LINK_LIBRARIES macro with <$external_dep_name> external dependency not found!" 1>&2
    clean_and_exit 1
 fi
+
+# Make sure the INCLUDE_DIRS is there and Elements dependency
+result=$( grep "INCLUDE_DIRS" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
+          grep $elt_dep_name)
+if [ $? -ne 0 ]  ;then
+   echo "Error: INCLUDE_DIRS macro with <$elt_dep_name> Elements dependency not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Make sure the INCLUDE_DIRS is there and external dependency
+result=$( grep "INCLUDE_DIRS" ${MODULE_NAME_PATH}/CMakeLists.txt |  grep -v "#" |
+          grep $external_dep_name)
+if [ $? -ne 0 ]  ;then
+   echo "Error: INCLUDE_DIRS macro with <$external_dep_name> external dependency not found!" 1>&2
+   clean_and_exit 1
+fi
+
 
 # Create a class into a subdir and make sure the elements_add_unit_test macro
 # is correct and files are at the right place

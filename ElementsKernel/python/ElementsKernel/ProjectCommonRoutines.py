@@ -37,7 +37,7 @@ import ElementsKernel.Auxiliary as aux
 
 try:
     from builtins import input
-except:
+except ImportError:
     from __builtin__ import input
 
 # Define a global list containing files created or modified
@@ -62,7 +62,7 @@ def addItemToCreationList(element):
 ################################################################################
 def printCreationList():
     """
-    Add an element to the global list.
+    Print the contents of the file list 
     """
     logger.info("#")
     logger.info("# File(s) created/modified:")
@@ -293,4 +293,3 @@ def updateCmakeCommonPart(cmake_filename, library_dep_list):
     module_name = cmake_object.elements_subdir_list[0].name
 
     return cmake_object, module_name
-

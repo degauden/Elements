@@ -40,6 +40,7 @@ namespace Examples {
 
 /**
  * @class ClassExample
+ * @ingroup ElementsExamples
  * @brief
  *    An class example
  * @details

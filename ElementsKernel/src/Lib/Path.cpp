@@ -55,8 +55,8 @@ const map<Type, const vector<string>> SUFFIXES {
   {Type::executable, {"scripts", "bin"}},
   {Type::library, {"lib"}},
   {Type::python, {"python"}},
-  {Type::configuration, {"conf"}},
-  {Type::auxiliary, {"auxdir", "aux"}}
+  {Type::configuration, {"conf", "share/conf"}},
+  {Type::auxiliary, {"auxdir", "aux", "share/auxdir", "share/aux"}}
 };
 
 const map<Type, const vector<string>> DEFAULT_LOCATIONS {
@@ -64,7 +64,7 @@ const map<Type, const vector<string>> DEFAULT_LOCATIONS {
   {Type::library, {"/usr/lib64", "/usr/lib"}},
   {Type::python, {}},
   {Type::configuration, {"/usr/share/conf"}},
-  {Type::auxiliary, {"/usr/share/auxiliary"}}
+  {Type::auxiliary, {"/usr/share/auxdir", "/usr/share/aux"}}
 };
 
 const std::map<Type, const bool> HAS_SUBLEVELS {
@@ -82,21 +82,13 @@ vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
   string env_content = getEnv(path_variable);
 
-  vector<string> str_list;
-  boost::split(str_list, env_content, boost::is_any_of(PATH_SEP));
-
-  vector<path> found_list(str_list.size());
-  std::transform(str_list.cbegin(), str_list.cend(),
-      found_list.begin(),
-      [](string s){
-      return path{s};
-  });
+  vector<path> found_list = split(env_content);
 
   if (exist_only) {
     auto new_end = std::remove_if(found_list.begin(),
                                   found_list.end(),
-                                  [](path p){
-                                     return boost::filesystem::exists(p);
+                                  [](const path& p){
+                                     return (not boost::filesystem::exists(p));
                                   });
     found_list.erase(new_end, found_list.end());
   }
@@ -104,6 +96,20 @@ vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
   return found_list;
 }
 
+vector<path> splitPath(const string& path_string) {
+
+  vector<string> str_list;
+  boost::split(str_list, path_string, boost::is_any_of(PATH_SEP));
+
+  vector<path> found_list(str_list.size());
+  std::transform(str_list.cbegin(), str_list.cend(),
+      found_list.begin(),
+      [](const string& s){
+        return path{s};
+  });
+
+  return found_list;
+}
 
 // Template instantiation for the most common types
 template path getPathFromLocations(const path& file_name, const vector<path>& locations);
@@ -119,11 +125,16 @@ template vector<path> getAllPathFromLocations(const string& file_name, const vec
 template path getPathFromEnvVariable<path>(const path& file_name, const string& path_variable);
 template path getPathFromEnvVariable<string>(const string& file_name, const string& path_variable);
 
+template string joinPath(const vector<path>& path_list);
+template string joinPath(const vector<string>& path_list);
+
 template vector<path> multiPathAppend(const vector<path>& initial_locations, const vector<path>& suffixes);
 template vector<path> multiPathAppend(const vector<path>& initial_locations, const vector<string>& suffixes);
 template vector<path> multiPathAppend(const vector<string>& initial_locations, const vector<path>& suffixes);
 template vector<path> multiPathAppend(const vector<string>& initial_locations, const vector<string>& suffixes);
 
+template vector<path> removeDuplicates(const vector<path>& path_list);
+template vector<path> removeDuplicates(const vector<string>& path_list);
 
 }  // namespace Path
 }  // namespace Elements

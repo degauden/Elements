@@ -27,29 +27,31 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import argparse
 import os
 import time
-import ElementsKernel.ProjectCommonRoutines as epcr
-import ElementsKernel.ParseCmakeListsMacros as pclm
-import ElementsKernel.Logging as log
+from ElementsKernel import Auxiliary
+from ElementsKernel import ProjectCommonRoutines
+from ElementsKernel import ParseCmakeListsMacros
+from ElementsKernel import Logging
 
 from ElementsKernel import Exit
 
-logger = log.getLogger('AddCppProgram')
+logger = Logging.getLogger('AddCppProgram')
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 PROGRAM_TEMPLATE_FILE = 'Program_template.cpp'
 PROGRAM_TEMPLATE_FILE_IN = 'Program_template.cpp.in'
 
-def createDirectories(module_dir, module_name):
+def createDirectories(module_dir):
     """
     Create directories needed for a program
     """
-    # Create the executable directory
-    program_path = os.path.join(module_dir, 'src', 'program')
-    epcr.makeDirectory(program_path)
-    # Create the conf directory
-    epcr.makeDirectory('conf')
 
+    standalone_directories = [os.path.join('src', 'program'),
+                              'conf']
+    for d in standalone_directories:
+        target_dir = os.path.join(module_dir, d)
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
 
 ################################################################################
 
@@ -67,43 +69,28 @@ def addConfFile(module_dir, module_name, program_name):
         f.write('#\n')
         f.write('###############################################################################\n')
         f.close()
-        epcr.addItemToCreationList(conf_file)
+        ProjectCommonRoutines.addItemToCreationList(conf_file)
     else:
         logger.warning('The < %s > conf file has been kept as it already exists!', conf_file)
         logger.warning('The < %s > conf file already exists!', conf_file)
 
 ################################################################################
 
-def substituteStringsInProgramFile(file_path, program_name):
+def substituteAuxFiles(module_dir, program_name):
     """
-    Substitute variables in template file and rename the file
+    Copy AUX file(s) and substitutes keyworks
     """
-    template_file = os.path.join(file_path, PROGRAM_TEMPLATE_FILE)
-    os.rename(os.path.join(file_path, PROGRAM_TEMPLATE_FILE_IN), template_file)
+    target_location = os.path.join('src', 'program', program_name + '.cpp')
+    configuration = {  "FILE": target_location,
+                       "DATE": time.strftime("%x"),
+                       "AUTHOR": ProjectCommonRoutines.getAuthor(),
+                       "PROGRAMNAME": program_name
+                    }
 
-    # Substitute strings in h_template_file
-    f = open(template_file)
-    data = f.read()
-    # Format all dependent projects
-    # We put by default Elements dependency if no one is given
-    date_str = time.strftime("%x")
-    author_str = epcr.getAuthor()
-    # Make some substitutions
-    file_name_str = os.path.join('src', 'program', program_name + '.cpp')
-    new_data = data % {"FILE": file_name_str,
-                       "DATE": date_str,
-                       "AUTHOR": author_str,
-                       "PROGRAMNAME": program_name}
-
-    f.close()
-    # Save new data
-    file_name = template_file.replace(PROGRAM_TEMPLATE_FILE, program_name)
-    file_name += '.cpp'
-    f = open(file_name, 'w')
-    f.write(new_data)
-    f.close()
-    os.remove(template_file)
-    epcr.addItemToCreationList(file_name)
+    Auxiliary.configure(os.path.join("ElementsKernel", "templates", PROGRAM_TEMPLATE_FILE_IN), module_dir, target_location,
+                        configuration=configuration,
+                        create_missing_dir=True)
+    ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, target_location))
 
 ################################################################################
 
@@ -114,16 +101,16 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
     """
     logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
-    epcr.addItemToCreationList(cmake_filename)
+    ProjectCommonRoutines.addItemToCreationList(cmake_filename)
 
     # Cmake file already exist
     if os.path.isfile(cmake_filename):
-        cmake_object, module_name = epcr.updateCmakeCommonPart(cmake_filename, library_dep_list)
+        cmake_object, module_name = ProjectCommonRoutines.updateCmakeCommonPart(cmake_filename, library_dep_list)
 
         # Update ElementsDependsOnSubdirs macro
         if module_dep_list:
             for mod_dep in module_dep_list:
-                dep_object = pclm.ElementsDependsOnSubdirs([mod_dep])
+                dep_object = ParseCmakeListsMacros.ElementsDependsOnSubdirs([mod_dep])
                 cmake_object.elements_depends_on_subdirs_list.append(dep_object)
 
         # Add elements_install_conf_files if any
@@ -134,19 +121,26 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
         existing_exe = [x for x in cmake_object.elements_add_executable_list if x.name == program_name]
         existing_add_lib = [x for x in cmake_object.elements_add_library_list if x.name == module_name]
         link_libs = ['ElementsKernel']
+        include_dirs = ['ElementsKernel']
         if module_dep_list:
             link_libs = link_libs + module_dep_list
+            include_dirs = include_dirs + module_dep_list
         if existing_add_lib:
             link_libs += [module_name]
+            include_dirs += [module_name]
         if library_dep_list:
             link_libs = link_libs + library_dep_list
+            include_dirs = include_dirs + library_dep_list
         if existing_exe:
             for lib in link_libs:
                 if not lib in existing_exe[0].link_libraries_list:
                     existing_exe[0].link_libraries_list.append(lib)
+            for incd in include_dirs:
+                if not incd in existing_exe[0].include_dirs_list:
+                    existing_exe[0].include_dirs_list.append(incd)
         else:
-            exe_object = pclm.ElementsAddExecutable(program_name, source,
-                                                   link_libs)
+            exe_object = ParseCmakeListsMacros.ElementsAddExecutable(program_name, source,
+                                                   link_libs, include_dirs)
             cmake_object.elements_add_executable_list.append(exe_object)
 
     # Write new data
@@ -161,10 +155,8 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list, lib
     """
     Creates all necessary files for a program
     """
-    createDirectories(module_dir, module_name)
-    program_path = os.path.join(module_dir, 'src', 'program')
-    epcr.copyAuxFile(program_path, PROGRAM_TEMPLATE_FILE_IN)
-    substituteStringsInProgramFile(program_path, program_name)
+    createDirectories(module_dir)
+    substituteAuxFiles(module_dir, program_name)
     addConfFile(module_dir, module_name, program_name)
     updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list)
@@ -177,11 +169,9 @@ def makeChecks(current_dir, program_name):
     """
     # Check if file exits
     program_file_path = os.path.join(current_dir, 'src', 'program', program_name + '.cpp')
-    epcr.checkFileNotExist(program_file_path, program_name)
-    # Check program name is valid
-    epcr.checkNameAndVersionValid(program_name, '1.0')
-    # Check aux file exist
-    epcr.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
+    ProjectCommonRoutines.checkFileNotExist(program_file_path, program_name)
+    ProjectCommonRoutines.checkNameAndVersionValid(program_name, '1.0')
+    ProjectCommonRoutines.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
 ################################################################################
 
@@ -238,10 +228,9 @@ def mainMethod(args):
         logger.info('Current directory : %s', current_dir)
         logger.info('')
         # We absolutely need a Elements cmake file
-        module_name = epcr.getElementsModuleName(current_dir)
+        module_name = ProjectCommonRoutines.getElementsModuleName(current_dir)
         # make some checks
         makeChecks(current_dir, program_name)
-
         # Create CPP program
         createCppProgram(current_dir, module_name, program_name, module_list, library_list)
 
@@ -249,10 +238,10 @@ def mainMethod(args):
         logger.info('< %s > program successfully created in < %s >.', program_name, location)
 
         # Remove backup file
-        epcr.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
+        ProjectCommonRoutines.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
 
         # Print all files created
-        epcr.printCreationList()
+        ProjectCommonRoutines.printCreationList()
 
     except Exception as msg:
         if str(msg):

@@ -36,7 +36,7 @@ using std::int64_t;
 using Elements::Examples::ClassExample;
 
 // tolerance value to compare floating point numbers
-constexpr double tolerance = 1e-12;
+constexpr double EXAMPLE_TOLERANCE = 1e-12;
 
 /*
  * Fixture to compare the test result against reference values
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(WithoutFixture) {
 
 BOOST_FIXTURE_TEST_CASE(fundamentalTypeMethod_test, ClassExampleFixture) {
   BOOST_CHECK_CLOSE(expected_result,
-      example_class.fundamentalTypeMethod(input_variable), tolerance);
+      example_class.fundamentalTypeMethod(input_variable), EXAMPLE_TOLERANCE);
 }
 
 BOOST_FIXTURE_TEST_CASE(Getter_test, ClassExampleFixture) {

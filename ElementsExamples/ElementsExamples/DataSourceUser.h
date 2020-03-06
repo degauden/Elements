@@ -36,6 +36,7 @@ namespace Examples {
 
 /**
  * @class DataSourceInterface
+ * @ingroup ElementsExamples
  * @brief This class has been created to demonstrate unit testing. It is an
  * Interface over a DataSource (a File, a DataBase Table, ...).
  *

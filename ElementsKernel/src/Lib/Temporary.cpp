@@ -38,8 +38,8 @@ namespace {
   auto log = Logging::getLogger();
 }
 
-TempPath::TempPath(const string& motif, const string& keep_var) :
-    m_motif(motif), m_keep_var(keep_var) {
+TempPath::TempPath(const string& arg_motif, const string& keep_var) :
+    m_motif(arg_motif), m_keep_var(keep_var) {
 
   using boost::filesystem::temp_directory_path;
   using boost::filesystem::unique_path;
@@ -78,8 +78,8 @@ string TempPath::motif() const {
   return m_motif;
 }
 
-TempDir::TempDir(const string& motif, const string& keep_var) :
-    TempPath(motif, keep_var) {
+TempDir::TempDir(const string& arg_motif, const string& keep_var) :
+    TempPath(arg_motif, keep_var) {
 
   log.debug() << "Creation of the " << path() << " temporary directory";
 
@@ -90,8 +90,8 @@ TempDir::TempDir(const string& motif, const string& keep_var) :
 TempDir::~TempDir() {
 }
 
-TempFile::TempFile(const string& motif, const string& keep_var) :
-    TempPath(motif, keep_var) {
+TempFile::TempFile(const string& arg_motif, const string& keep_var) :
+    TempPath(arg_motif, keep_var) {
 
   log.debug() << "Creation of the " << path() << " temporary file";
 

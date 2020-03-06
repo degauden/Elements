@@ -23,11 +23,6 @@ Created on: 10/10/17
 Author: hubert
 """
 
-from __future__ import division, print_function
-import sys
-if sys.version_info[0] < 3:
-    from future_builtins import *
-
 import os
 import argparse
 import ElementsKernel.Logging as log

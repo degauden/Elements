@@ -51,7 +51,8 @@ def configure(file_name, target_dir, target_name=None, use_stem=False,
                          be used or only the last component (basename) of 
                          the file_name path.
         @param configuration: dictionary of item to replace in the text
-        @param create_missing_dir: 
+        @param create_missing_dir: create intermediate directories if they
+                                          don't exist
         @return: the final target path for the copy/configuration.
     """  
     file_path = getAuxiliaryPath(file_name)
@@ -61,11 +62,13 @@ def configure(file_name, target_dir, target_name=None, use_stem=False,
         parent_path = os.path.dirname(target_path)
         if not os.path.exists(parent_path):
             os.makedirs(parent_path)
-            
+
     if not configuration:
         shutil.copy(file_path, target_path)
     else:
         file_txt = open(file_path).read()
         with open(target_path, "w") as tf:
             tf.write(file_txt % configuration)
+
+    return target_path
 

@@ -17,16 +17,11 @@
 #
 
 """
-File: %(FILE)s
+File: %(FILETEST)s
 
 Created on: %(DATE)s
 Author: %(AUTHOR)s
 """
-
-from __future__ import division, print_function
-import sys
-if sys.version_info[0] < 3:
-    from future_builtins import *
 
 import py.test
 import %(MODULENAME)s.%(PYTHONMODULE)s

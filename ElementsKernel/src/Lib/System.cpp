@@ -106,7 +106,7 @@ unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
       res = loadWithoutEnvironment(dllName, handle);
     }
     if (res != 1) {
-      errno = 0xAFFEDEAD;
+      errno = static_cast<int>(0xAFFEDEAD);
     }
   }
   return res;
@@ -124,10 +124,10 @@ unsigned long unloadDynamicLib(ImageHandle handle) {
 /// Get a specific function defined in the DLL
 unsigned long getProcedureByName(ImageHandle handle, const string& name,
     EntryPoint* pFunction) {
-#if defined(__linux)
+#if defined(__linux__)
   *pFunction = FuncPtrCast<EntryPoint>(::dlsym(handle, name.c_str()));
   if (0 == *pFunction) {
-    errno = 0xAFFEDEAD;
+    errno = static_cast<int>(0xAFFEDEAD);
     return 0;
   }
   return 1;
@@ -139,7 +139,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
     *pFunction = (EntryPoint)::dlsym(handle, sname.c_str());
   }
   if ( 0 == *pFunction ) {
-    errno = 0xAFFEDEAD;
+    errno = static_cast<int>(0xAFFEDEAD);
     std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
     return 0;
   }
@@ -173,7 +173,7 @@ const string getErrorString(unsigned long error) {
   if (error == 0xAFFEDEAD) {
     cerrString = reinterpret_cast<char*>(::dlerror());
     if (0 == cerrString) {
-      cerrString = std::strerror(error);
+      cerrString = std::strerror(static_cast<int>(error));
     }
     if (0 == cerrString) {
       cerrString =
@@ -182,7 +182,7 @@ const string getErrorString(unsigned long error) {
     errString = string(cerrString);
     errno = 0;
   } else {
-    cerrString = std::strerror(error);
+    cerrString = std::strerror(static_cast<int>(error));
     errString = string(cerrString);
   }
   return errString;
@@ -306,25 +306,25 @@ const string& osName() {
 
 /// OS version
 const string& osVersion() {
-  static string osver = "";
+  static string osver = "UNKNOWN";
   struct utsname ut;
+
   if (uname(&ut) == 0) {
     osver = ut.release;
-  } else {
-    osver = "UNKNOWN";
   }
+
   return osver;
 }
 
 /// Machine type
 const string& machineType() {
-  static string mach = "";
+  static string mach = "UNKNOWN";
   struct utsname ut;
+
   if (uname(&ut) == 0) {
     mach = ut.machine;
-  } else {
-    mach = "UNKNOWN";
   }
+
   return mach;
 }
 
@@ -404,35 +404,6 @@ int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses,
   }
 
 }
-
-bool backTrace(string& btrace, const int depth, const int offset) {
-
-  // Always hide the first two levels of the stack trace (that's us)
-  const int total_offset = offset + STACK_OFFSET;
-  const int total_depth = depth + total_offset;
-  bool result = false;
-
-
-  std::shared_ptr<void*> addresses {new (std::nothrow) void*[total_depth], std::default_delete<void*[]>()};
-
-  if (addresses != nullptr) {
-    int count = backTrace(addresses, total_depth);
-    for (int i = total_offset; i < count; ++i) {
-      void *addr = 0;
-      string fnc, lib;
-      if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
-        std::ostringstream ost;
-        ost << "#" << std::setw(3) << std::setiosflags(std::ios::left) << i - total_offset + 1;
-        ost << std::hex << addr << std::dec << " " << fnc << "  [" << lib << "]" << std::endl;
-        btrace += ost.str();
-      }
-    }
-    result = true;
-  }
-
-  return result;
-}
-
 
 const vector<string> backTrace(const int depth, const int offset) {
 

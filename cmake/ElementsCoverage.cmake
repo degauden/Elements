@@ -5,7 +5,7 @@ include_guard()
                     COMMENT "Generating the coverage report" VERBATIM)
 
 
-if(CMAKE_BUILD_TYPE STREQUAL Coverage)
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Coverage")
 
   find_package(GenHTML QUIET)
 
@@ -27,7 +27,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
 
     add_custom_target(lcov
                       COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --capture --output-file ${PROJECT_NAME}.info
-                      COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* ${PROJECT_BINARY_DIR}/* --output-file ${PROJECT_NAME}.info.cleaned
+                      COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* ${PROJECT_BINARY_DIR}/* /usr/lib/gcc/* --output-file ${PROJECT_NAME}.info.cleaned
                       COMMAND ${GENHTML_EXECUTABLE} -o html ${PROJECT_NAME}.info.cleaned
                       WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
                       COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters" VERBATIM)
@@ -76,7 +76,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
    
    # The pytest directory has to be created at configure time
    find_python_module(pytest_cov)
-   if (PY_PYTEST_COV AND PYFRMK_NAME STREQUAL "PyTest")
+   if (PY_PYTEST_COV AND "${PYFRMK_NAME}" STREQUAL "PyTest")
      file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/cov/${PYFRMK_NAME})
    endif()
 

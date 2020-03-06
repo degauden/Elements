@@ -23,6 +23,13 @@ export User_area=${tmploc}
 
 cd ${tmploc} || local_clean_exit 1
 
+CreateElementsProject --help
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+ echo "Error: <CreateElementsProject --help command failed!" 1>&2
+  local_clean_exit 1
+fi
+
 CreateElementsProject $project_name $version -d $dep_project $version --yes
 
 # Error? stop and clean up
@@ -61,6 +68,10 @@ if [ ! -e $User_area/$project_name/$version/.editorconfig ]; then
 fi
 if [ ! -e $User_area/$project_name/$version/Makefile ]; then
    echo "Error: <$User_area/$project_name/$version/Makefile> file not found" 1>&2
+   local_clean_exit 1
+fi
+if [ ! -e $User_area/$project_name/$version/doc/mainpage.dox ]; then
+   echo "Error: <$User_area/$project_name/$version/doc/mainpage.dox> file not found" 1>&2
    local_clean_exit 1
 fi
 
