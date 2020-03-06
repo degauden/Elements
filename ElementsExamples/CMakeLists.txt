@@ -16,7 +16,7 @@ find_package(GMock)
 # Instruction for creating a C++ library
 #    ElementsExamples is the library name
 #    src/Lib/*.cpp are the source files
-elements_add_library(ElementsExamples src/lib/*.cpp
+elements_add_library(ElementsExamples src/lib/*.cpp src/lib/*.c
                      LINK_LIBRARIES Boost ElementsKernel
                      PUBLIC_HEADERS ElementsExamples)
 
@@ -41,8 +41,9 @@ elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramE
                         LINK_LIBRARIES Boost ElementsExamples)
 
 # Example of a pure C program with a C++-compatible header file example.
-elements_add_executable(CProgramExample src/CProgram/*.c)
-
+elements_add_executable(CProgramExample src/CProgram/*.c
+                        INCLUDE_DIRS ElementsExamples
+                        LINK_LIBRARIES ElementsExamples)
 
 #===== Test that the executables do run ========================================
 

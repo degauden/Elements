@@ -22,12 +22,10 @@
  *
  */
 
-#include "util.h"
+#include "ElementsExamples/util.h"
 
 int MY_CONST = 42;
 
 int myFunc() {
   return 1;
 }
-
-
