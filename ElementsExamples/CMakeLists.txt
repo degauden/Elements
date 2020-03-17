@@ -245,6 +245,11 @@ elements_add_executable(GnuAstroExample src/program/GnuAstroExample.cpp
 elements_add_test(GnuAstroWorks COMMAND GnuAstroExample LABELS GnuAstro Build)
 endif()
 
+elements_add_executable(OpenMPExample src/program/OpenMPExample.cpp
+                        LINK_LIBRARIES ElementsExamples
+                        INCLUDE_DIRS ElementsExamples)
+elements_add_test(OpenMPWorks COMMAND OpenMPExample LABELS OpenMP Build)
+
 
 find_package(SWIG QUIET)
 find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET)
