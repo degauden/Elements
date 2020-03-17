@@ -23,7 +23,6 @@
 #include <string>                           // for string
 #include <complex>                          // for complex
 #include <cstdio>
-#include <omp.h>
 
 #include <boost/current_function.hpp>       // for BOOST_CURRENT_FUNCTION
 
