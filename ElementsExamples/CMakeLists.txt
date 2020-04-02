@@ -289,8 +289,7 @@ if(pybind11_FOUND)
 #                             LINK_LIBRARIES ElementsExamples pybind11
 #                             INCLUDE_DIRS ElementsExamples pybind11)
   pybind11_add_module(testCallBack src/pybind11/callback.cpp)
-  target_link_libraries(testCallBack ${PYTHON_LIBRARIES})
-  target_link_libraries(testCallBack ElementsExamples)
+  target_link_libraries(testCallBack ${PYTHON_LIBRARIES} ElementsExamples)
 
 endif()
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
