@@ -3167,6 +3167,51 @@ function(elements_add_cython_module)
 endfunction()
 
 #---------------------------------------------------------------------------------------------------
+# elements_add_pybind11_module(module source1 source2 ...
+#                              LINK_LIBRARIES library1 library2 ...
+#                              INCLUDE_DIRS dir1 package2 ...
+#                              LINKER_LANGUAGE C|CXX)
+#
+# Create a pybind11 binary python module from the specified sources (glob patterns are allowed), linking
+# it with the libraries specified and adding the include directories to the search path. The sources
+# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package
+# (module).
+#---------------------------------------------------------------------------------------------------
+function(elements_add_pybind11_module module)
+
+  CMAKE_PARSE_ARGUMENTS(ARG "" "LINKER_LANGUAGE" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS" ${ARGN})
+
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
+                            LIBRARIES ${ARG_LIBRARIES}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+  # require Python libraries
+  find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
+
+  elements_include_directories(AFTER ${PYTHON_INCLUDE_DIRS})
+  
+  find_package(pybind11)
+
+  pybind11_add_module(${module} ${srcs})
+  
+  if(ARG_LINKER_LANGUAGE)
+    set_target_properties(${module} PROPERTIES LINKER_LANGUAGE ${ARG_LINKER_LANGUAGE})
+  endif()
+
+  target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
+  
+  _elements_detach_debinfo(${module})
+
+  #----Installation details-------------------------------------------------------
+  install(TARGETS ${module} LIBRARY DESTINATION ${PYTHON_DYNLIB_INSTALL_SUFFIX} OPTIONAL)
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+  
+  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS ${module}.so)
+
+
+endfunction()
+#---------------------------------------------------------------------------------------------------
 # elements_add_executable(<name>
 #                      source1 source2 ...
 #                      LINK_LIBRARIES library1 library2 ...

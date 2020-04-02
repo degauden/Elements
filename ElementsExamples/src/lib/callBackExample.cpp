@@ -19,9 +19,11 @@
  *
  */
 
-#include <cstdio>                              // for printf
 #include <vector>                              // for vector
 #include <functional>                          // for function
+
+#include "ElementsKernel/Logging.h"            // for Logging
+
 #include "ElementsExamples/callBackExample.h"
 
 using std::vector;
@@ -31,13 +33,15 @@ namespace Examples {
 
 double testCallBack(vector<double> x, const std::function<double(vector<double>)> &fun) {
 
-  printf("Calling the Python function from C++\n");
+  auto log = Logging::getLogger("ElementsExamples");
+
+  log.info() << "Calling the Python function from C++";
 
   double f = fun(x);
 
-  printf("The value of the function is %f\n", f);
+  log.info() << "The value of the function is " << f;
 
-  printf("Returning the result\n");
+  log.info() << "Returning the result";
 
     return (f);
 }

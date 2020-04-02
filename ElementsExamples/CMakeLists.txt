@@ -283,9 +283,9 @@ endif()
 
 find_package(pybind11)
 if(pybind11_FOUND)
-  pybind11_add_module(testCallBack src/pybind11/callback.cpp)
-  include_directories(${PYTHON_INCLUDE_DIRS})
-  target_link_libraries(testCallBack PRIVATE ${PYTHON_LIBRARY} ElementsExamples)
+  elements_add_pybind11_module(testCallBack src/pybind11/callback.cpp
+                               INCLUDE_DIRS ElementsExamples
+                               LINK_LIBRARIES ElementsExamples)  
 endif()
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
