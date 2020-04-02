@@ -27,8 +27,6 @@
 #include "ElementsKernel/Export.h"
 #include "ElementsExamples/callBackExample.h"
 
-using Elements::Examples::testCallBack;
-
-PYBIND11_MODULE(callback, mod) {
-    mod.def("test", &testCallBack);
+ELEMENTS_API PYBIND11_MODULE(testCallBack, mod) {
+    mod.def("test", &Elements::Examples::testCallBack);
 }
