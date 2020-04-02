@@ -283,15 +283,11 @@ endif()
 
 find_package(pybind11)
 if(pybind11_FOUND)
-
-  message(STATUS "---------------------------->   Found pybind11")
-#  elements_add_python_module(testCallBack src/pybind11/callback.cpp
-#                             LINK_LIBRARIES ElementsExamples pybind11
-#                             INCLUDE_DIRS ElementsExamples pybind11)
   pybind11_add_module(testCallBack src/pybind11/callback.cpp)
-  target_link_libraries(testCallBack ${PYTHON_LIBRARIES} ElementsExamples)
-
+  include_directories(${PYTHON_INCLUDE_DIRS})
+  target_link_libraries(testCallBack PRIVATE ${PYTHON_LIBRARY} ElementsExamples)
 endif()
+
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
 elements_install_python_modules(TEST_TIMEOUT 60)
