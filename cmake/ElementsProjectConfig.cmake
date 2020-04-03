@@ -2724,7 +2724,10 @@ function(elements_add_python_module module)
   _elements_detach_debinfo(${module})
 
   #----Installation details-------------------------------------------------------
+
   install(TARGETS ${module} LIBRARY DESTINATION ${PYTHON_DYNLIB_INSTALL_SUFFIX} OPTIONAL)
+  set_target_properties(${module} PROPERTIES INSTALL_RPATH "$ORIGIN/../../${CMAKE_LIB_INSTALL_SUFFIX}")
+
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   if(NOT ${ARG_PLAIN_MODULE})
     set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS _${module}.so)
@@ -3205,6 +3208,8 @@ function(elements_add_pybind11_module module)
 
   #----Installation details-------------------------------------------------------
   install(TARGETS ${module} LIBRARY DESTINATION ${PYTHON_DYNLIB_INSTALL_SUFFIX} OPTIONAL)
+  set_target_properties(${module} PROPERTIES INSTALL_RPATH "$ORIGIN/../../${CMAKE_LIB_INSTALL_SUFFIX}")
+
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   
   set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS ${module}.so)
