@@ -3212,8 +3212,11 @@ function(elements_add_pybind11_module module)
   install(TARGETS ${module} LIBRARY DESTINATION ${PYTHON_DYNLIB_INSTALL_SUFFIX} OPTIONAL)
   set_target_properties(${module} PROPERTIES INSTALL_RPATH "$ORIGIN/../../${CMAKE_LIB_INSTALL_SUFFIX}")
 
+  get_property(_prefix TARGET ${module} PROPERTY PREFIX)
+  get_property(_suffix TARGET ${module} PROPERTY SUFFIX)
+
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
-  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS ${module}.so)
+  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS ${_prefix}${module}${_suffix})
 
 
 endfunction()
