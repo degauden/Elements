@@ -2435,11 +2435,12 @@ endmacro()
 # with the extension '.dbg', that is installed alongside the binary.
 #-------------------------------------------------------------------------------
 macro(_elements_detach_debinfo target)
+
   if(NOT SQUEEZED_INSTALL)
   if((CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo OR CMAKE_BUILD_TYPE STREQUAL Debug ) AND ELEMENTS_DETACHED_DEBINFO)
     # get the type of the target (MODULE_LIBRARY, SHARED_LIBRARY, EXECUTABLE)
     get_property(_type TARGET ${target} PROPERTY TYPE)
-    #message(STATUS "_elements_detach_debinfo(${target}): target type -> ${_type}")
+    # message(STATUS "_elements_detach_debinfo(${target}): target type -> ${_type}")
     if(NOT _type STREQUAL STATIC_LIBRARY) # we ignore static libraries
       # guess the target file name
       if(_type MATCHES "MODULE|LIBRARY")
@@ -2451,14 +2452,15 @@ macro(_elements_detach_debinfo target)
         set(_dest ${CMAKE_LIB_INSTALL_SUFFIX})
         set(spec_prefix "%{libdir}")
         get_property(_prefix TARGET ${target} PROPERTY PREFIX)
+        get_property(_suffix TARGET ${target} PROPERTY SUFFIX)
         # python module
         if(_prefix STREQUAL "_")
-          set(_tn _${target}.so)
+          set(_tn ${_prefix}${target}${_suffix})
           set(_builddir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
           set(_dest ${PYTHON_DYNLIB_INSTALL_SUFFIX})
           set(spec_prefix "%{pydyndir}")
         elseif(_prefix STREQUAL "")
-          set(_tn ${target}.so)
+          set(_tn ${_prefix}${target}${_suffix})
           set(_builddir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
           set(_dest ${PYTHON_DYNLIB_INSTALL_SUFFIX})        
           set(spec_prefix "%{pydyndir}")
@@ -2473,7 +2475,7 @@ macro(_elements_detach_debinfo target)
         set(spec_prefix "%{_bindir}")
       endif()
     endif()
-    #message(STATUS "_elements_detach_debinfo(${target}): target name -> ${_tn}")
+    # message(STATUS "_elements_detach_debinfo(${target}): target name -> ${_tn}")
     # From 'man objcopy':
     #   objcopy --only-keep-debug foo foo.dbg
     #   objcopy --strip-debug foo
@@ -3197,13 +3199,13 @@ function(elements_add_pybind11_module module)
   find_package(pybind11)
 
   pybind11_add_module(${module} ${srcs})
-  
+
   if(ARG_LINKER_LANGUAGE)
     set_target_properties(${module} PROPERTIES LINKER_LANGUAGE ${ARG_LINKER_LANGUAGE})
   endif()
 
   target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
-  
+
   _elements_detach_debinfo(${module})
 
   #----Installation details-------------------------------------------------------
@@ -3211,7 +3213,6 @@ function(elements_add_pybind11_module module)
   set_target_properties(${module} PROPERTIES INSTALL_RPATH "$ORIGIN/../../${CMAKE_LIB_INSTALL_SUFFIX}")
 
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
-  
   set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS ${module}.so)
 
 
