@@ -67,20 +67,11 @@ message(STATUS "The squeezing of the installation is ${SQUEEZED_INSTALL}")
 set(lib_install_suff lib)
 
 if(SQUEEZED_INSTALL)
-  set(lib_install_suff lib64)
-  if("${SGS_ARCH}" STREQUAL "x86_64")
-    if(EXISTS /usr/lib64)
-      set(lib_install_suff lib64)
-    else()
-      set(lib_install_suff lib)
-    endif()
-  else()
-    if(EXISTS /usr/lib32)
-      set(lib_install_suff lib32)
-    else()
-      set(lib_install_suff lib)
-    endif()
-  endif()
+
+  include(GNUInstallDirs)
+  
+  set(lib_install_suff ${CMAKE_INSTALL_LIBDIR})
+
 endif()
 
 set(CMAKE_LIB_INSTALL_SUFFIX ${lib_install_suff} CACHE STRING "Suffix for the install directory of the libraries")
