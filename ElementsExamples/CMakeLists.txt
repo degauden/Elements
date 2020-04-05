@@ -281,6 +281,12 @@ elements_add_cython_module(src/Cython/lib/Rect.pyx
                            PUBLIC_HEADERS ElementsExamples)
 endif()
 
+find_package(pybind11)
+if(pybind11_FOUND)
+  elements_add_pybind11_module(testCallBack src/pybind11/callback.cpp
+                               INCLUDE_DIRS ElementsExamples
+                               LINK_LIBRARIES ElementsExamples)  
+endif()
 
 #---Python modules, Scripts, conf and aux files ------------------------------------------------------------
 
@@ -299,6 +305,11 @@ elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
 elements_add_test(PythonProgramExampleNoConfigFile COMMAND PythonProgramExample --config-file=toto.conf FAILS)
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
 elements_add_test(SwigProgramExampleRun COMMAND SwigProgramExample LABELS Swig Build)
+endif()
+
+if(pybind11_FOUND)
+  elements_add_python_program(PyBind11ProgramExample ElementsExamples.PyBind11ProgramExample)
+  elements_add_test(PyBind11ProgramExampleRun COMMAND PyBind11ProgramExample)
 endif()
 
 elements_add_python_program(PythonTestProgramExample ElementsExamples.PythonTestProgramExample)

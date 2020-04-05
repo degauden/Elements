@@ -354,7 +354,7 @@ macro(elements_project project version)
     set(rpmbuild_wrap_cmd ${PYTHON_EXECUTABLE} ${rpmbuild_wrap_cmd})
 	  mark_as_advanced(rpmbuild_wrap_cmd)
 	  if (NOT RPMBUILD_VERSION VERSION_LESS 4.14)
-      set(ELEMENTS_DETACHED_DEBINFO OFF)
+	    set_property(GLOBAL APPEND PROPERTY CMAKE_EXTRA_FLAGS "-DELEMENTS_DETACHED_DEBINFO=OFF")
     endif()
   endif()
 
@@ -2435,11 +2435,12 @@ endmacro()
 # with the extension '.dbg', that is installed alongside the binary.
 #-------------------------------------------------------------------------------
 macro(_elements_detach_debinfo target)
+
   if(NOT SQUEEZED_INSTALL)
   if((CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo OR CMAKE_BUILD_TYPE STREQUAL Debug ) AND ELEMENTS_DETACHED_DEBINFO)
     # get the type of the target (MODULE_LIBRARY, SHARED_LIBRARY, EXECUTABLE)
     get_property(_type TARGET ${target} PROPERTY TYPE)
-    #message(STATUS "_elements_detach_debinfo(${target}): target type -> ${_type}")
+    # message(STATUS "_elements_detach_debinfo(${target}): target type -> ${_type}")
     if(NOT _type STREQUAL STATIC_LIBRARY) # we ignore static libraries
       # guess the target file name
       if(_type MATCHES "MODULE|LIBRARY")
@@ -2451,14 +2452,15 @@ macro(_elements_detach_debinfo target)
         set(_dest ${CMAKE_LIB_INSTALL_SUFFIX})
         set(spec_prefix "%{libdir}")
         get_property(_prefix TARGET ${target} PROPERTY PREFIX)
+        get_property(_suffix TARGET ${target} PROPERTY SUFFIX)
         # python module
         if(_prefix STREQUAL "_")
-          set(_tn _${target}.so)
+          set(_tn ${_prefix}${target}${_suffix})
           set(_builddir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
           set(_dest ${PYTHON_DYNLIB_INSTALL_SUFFIX})
           set(spec_prefix "%{pydyndir}")
         elseif(_prefix STREQUAL "")
-          set(_tn ${target}.so)
+          set(_tn ${_prefix}${target}${_suffix})
           set(_builddir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
           set(_dest ${PYTHON_DYNLIB_INSTALL_SUFFIX})        
           set(spec_prefix "%{pydyndir}")
@@ -2473,7 +2475,7 @@ macro(_elements_detach_debinfo target)
         set(spec_prefix "%{_bindir}")
       endif()
     endif()
-    #message(STATUS "_elements_detach_debinfo(${target}): target name -> ${_tn}")
+    # message(STATUS "_elements_detach_debinfo(${target}): target name -> ${_tn}")
     # From 'man objcopy':
     #   objcopy --only-keep-debug foo foo.dbg
     #   objcopy --strip-debug foo
@@ -2724,7 +2726,10 @@ function(elements_add_python_module module)
   _elements_detach_debinfo(${module})
 
   #----Installation details-------------------------------------------------------
+
   install(TARGETS ${module} LIBRARY DESTINATION ${PYTHON_DYNLIB_INSTALL_SUFFIX} OPTIONAL)
+  set_target_properties(${module} PROPERTIES INSTALL_RPATH "$ORIGIN/../../${CMAKE_LIB_INSTALL_SUFFIX}")
+
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
   if(NOT ${ARG_PLAIN_MODULE})
     set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS _${module}.so)
@@ -3166,6 +3171,55 @@ function(elements_add_cython_module)
 
 endfunction()
 
+#---------------------------------------------------------------------------------------------------
+# elements_add_pybind11_module(module source1 source2 ...
+#                              LINK_LIBRARIES library1 library2 ...
+#                              INCLUDE_DIRS dir1 package2 ...
+#                              LINKER_LANGUAGE C|CXX)
+#
+# Create a pybind11 binary python module from the specified sources (glob patterns are allowed), linking
+# it with the libraries specified and adding the include directories to the search path. The sources
+# can be either *.i or *.cpp files. Their location is relative to the base of the Elements package
+# (module).
+#---------------------------------------------------------------------------------------------------
+function(elements_add_pybind11_module module)
+
+  CMAKE_PARSE_ARGUMENTS(ARG "" "LINKER_LANGUAGE" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS" ${ARGN})
+
+  elements_common_add_build(${ARG_UNPARSED_ARGUMENTS}
+                            LIBRARIES ${ARG_LIBRARIES}
+                            LINK_LIBRARIES ${ARG_LINK_LIBRARIES}
+                            INCLUDE_DIRS ${ARG_INCLUDE_DIRS})
+
+  # require Python libraries
+  find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} QUIET REQUIRED)
+
+  elements_include_directories(AFTER ${PYTHON_INCLUDE_DIRS})
+  
+  find_package(pybind11)
+
+  pybind11_add_module(${module} ${srcs})
+
+  if(ARG_LINKER_LANGUAGE)
+    set_target_properties(${module} PROPERTIES LINKER_LANGUAGE ${ARG_LINKER_LANGUAGE})
+  endif()
+
+  target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
+
+  _elements_detach_debinfo(${module})
+
+  #----Installation details-------------------------------------------------------
+  install(TARGETS ${module} LIBRARY DESTINATION ${PYTHON_DYNLIB_INSTALL_SUFFIX} OPTIONAL)
+  set_target_properties(${module} PROPERTIES INSTALL_RPATH "$ORIGIN/../../${CMAKE_LIB_INSTALL_SUFFIX}")
+
+  get_property(_prefix TARGET ${module} PROPERTY PREFIX)
+  get_property(_suffix TARGET ${module} PROPERTY SUFFIX)
+
+  set_property(GLOBAL APPEND PROPERTY PROJ_HAS_PYTHON TRUE)
+  set_property(GLOBAL APPEND PROPERTY REGULAR_PYTHON_DYNLIB_OBJECTS ${_prefix}${module}${_suffix})
+
+
+endfunction()
 #---------------------------------------------------------------------------------------------------
 # elements_add_executable(<name>
 #                      source1 source2 ...
