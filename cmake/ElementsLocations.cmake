@@ -96,7 +96,7 @@ set(AUX_DIR_NAME "auxdir" CACHE STRING "Name of the auxiliary files directory")
 set(MAKE_DIR_NAME "make" CACHE STRING "Name of the make files directory")
 set(DOC_DIR_NAME "doc" CACHE STRING "Name of the documentation directory")
 
-set(INCLUDE_INSTALL_SUFFIX include)
+set(INCLUDE_INSTALL_SUFFIX ${CMAKE_INSTALL_INCLUDEDIR})
 set(BIN_INSTALL_SUFFIX ${CMAKE_BIN_INSTALL_SUFFIX})
 
 if(SQUEEZED_INSTALL)
