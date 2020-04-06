@@ -2553,7 +2553,7 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
   endif()
 
   set_target_properties(${library} PROPERTIES COMPILE_DEFINITIONS ELEMENTS_LINKER_LIBRARY)
-  target_link_libraries(${library} ${ARG_LINK_LIBRARIES})
+  target_link_libraries(${library} PRIVATE ${ARG_LINK_LIBRARIES})
   _elements_detach_debinfo(${library})
 
   # Declare that the used headers are needed by the libraries linked against this one
@@ -2598,7 +2598,7 @@ function(elements_add_module library)
   elements_common_add_build(${ARGN})
 
   add_library(${library} MODULE ${srcs})
-  target_link_libraries(${library} ${ROOT_Reflex_LIBRARY} ${ARG_LINK_LIBRARIES})
+  target_link_libraries(${library} PRIVATE ${ROOT_Reflex_LIBRARY} ${ARG_LINK_LIBRARIES})
   _elements_detach_debinfo(${library})
 
   set_property(GLOBAL APPEND PROPERTY COMPONENT_LIBRARIES ${library})
@@ -2722,7 +2722,7 @@ function(elements_add_python_module module)
     set_target_properties(${module} PROPERTIES SUFFIX .so PREFIX "")
     set_target_properties(${module} PROPERTIES BASENAME "${module}.so")
   endif()
-  target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
+  target_link_libraries(${module} PRIVATE ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
   _elements_detach_debinfo(${module})
 
   #----Installation details-------------------------------------------------------
@@ -3204,7 +3204,7 @@ function(elements_add_pybind11_module module)
     set_target_properties(${module} PROPERTIES LINKER_LANGUAGE ${ARG_LINKER_LANGUAGE})
   endif()
 
-  target_link_libraries(${module} ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
+  target_link_libraries(${module} PRIVATE ${PYTHON_LIBRARIES} ${ARG_LINK_LIBRARIES})
 
   _elements_detach_debinfo(${module})
 
@@ -3237,7 +3237,7 @@ function(elements_add_executable executable)
   elements_common_add_build(${ARGN})
 
   add_executable(${executable} ${srcs})
-  target_link_libraries(${executable} ${ARG_LINK_LIBRARIES})
+  target_link_libraries(${executable} PRIVATE ${ARG_LINK_LIBRARIES})
   _elements_detach_debinfo(${executable})
 
   if (ELEMENTS_USE_EXE_SUFFIX)
