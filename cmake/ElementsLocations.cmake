@@ -1,5 +1,7 @@
 include_guard()
 
+include(GNUInstallDirs)
+
 include(SGSPlatform)
 include(ElementsBuildFlags)
 
@@ -11,7 +13,7 @@ endif()
 
 if(NOT DEFINED SQUEEZED_INSTALL)
     set(SQUEEZED_INSTALL ON
-        CACHE STRING "Enable the squizzing of the installation into a prefix directory"
+        CACHE STRING "Enable the squeezing of the installation into a prefix directory"
         FORCE)
     message(STATUS "Sets the default value for SQUEEZED_INSTALL to ${SQUEEZED_INSTALL}")     
 endif()
@@ -65,22 +67,22 @@ message(STATUS "The installation location is ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "The squeezing of the installation is ${SQUEEZED_INSTALL}")
 
 set(lib_install_suff lib)
+set(bin_install_suff bin)
 
 if(SQUEEZED_INSTALL)
-
-  include(GNUInstallDirs)
   
   set(lib_install_suff ${CMAKE_INSTALL_LIBDIR})
+  set(bin_install_suff ${CMAKE_INSTALL_BINDIR})
 
 endif()
 
 set(CMAKE_LIB_INSTALL_SUFFIX ${lib_install_suff} CACHE STRING "Suffix for the install directory of the libraries")
-set(CMAKE_BIN_INSTALL_SUFFIX bin CACHE STRING "Suffix for the install directory of the binaries")
+set(CMAKE_BIN_INSTALL_SUFFIX ${bin_install_suff} CACHE STRING "Suffix for the install directory of the binaries")
 
 
 
 if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin CACHE STRING
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BIN_INSTALL_SUFFIX} CACHE STRING
 	   "Single build output directory for all executables" FORCE)
 endif()
 if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
@@ -95,9 +97,10 @@ set(MAKE_DIR_NAME "make" CACHE STRING "Name of the make files directory")
 set(DOC_DIR_NAME "doc" CACHE STRING "Name of the documentation directory")
 
 set(INCLUDE_INSTALL_SUFFIX include)
+set(BIN_INSTALL_SUFFIX ${CMAKE_BIN_INSTALL_SUFFIX})
+
 if(SQUEEZED_INSTALL)
-  set(BIN_INSTALL_SUFFIX bin)
-  set(SCRIPT_INSTALL_SUFFIX bin)
+  set(SCRIPT_INSTALL_SUFFIX ${BIN_INSTALL_SUFFIX})
   set(CONF_INSTALL_SUFFIX share/${CONF_DIR_NAME})
   set(AUX_INSTALL_SUFFIX share/${AUX_DIR_NAME})
   set(CMAKE_INSTALL_SUFFIX ${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject)
@@ -107,7 +110,6 @@ if(SQUEEZED_INSTALL)
   set(MAKE_INSTALL_SUFFIX share/Elements/${MAKE_DIR_NAME})
   set(DOC_INSTALL_SUFFIX share/${DOC_DIR_NAME}/${CMAKE_PROJECT_NAME})
 else()
-  set(BIN_INSTALL_SUFFIX bin)
   set(SCRIPT_INSTALL_SUFFIX scripts)
   set(CONF_INSTALL_SUFFIX ${CONF_DIR_NAME})
   set(AUX_INSTALL_SUFFIX ${AUX_DIR_NAME})
