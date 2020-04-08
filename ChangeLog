@@ -1,3 +1,13 @@
+* Wed Apr 8 2020 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.10.1
+- Add a test and an example for the OpenMP usage
+- Add the numpydoc extension to sphinx
+- Fix the INSTALL_RPATH for the python binary modules
+- Tune the debinfo detachment for the rpm build only
+- Use the GNU Install directories cmake library for the library install. This
+  is needed for the Debian architecture.
+- Fix the library linkage. It is PRIVATE by default
+- add a pybind11 python module binding example
+
 * Fri Feb 6 2020 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.10
 - Fix the packaging of byte-compiled python files for FC30. The byte compilation
   is note done for files outside of the /usr prefix
