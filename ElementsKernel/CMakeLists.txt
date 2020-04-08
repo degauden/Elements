@@ -142,6 +142,14 @@ elements_add_unit_test(Exception tests/src/Exception_test.cpp
                        EXECUTABLE Exception_test
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
+#-----------------------
+# OpenMP_test
+if(ELEMENTS_PARALLEL AND OPENMP_FOUND)
+  elements_add_unit_test(OpenMP tests/src/OpenMP_test.cpp
+                         EXECUTABLE OpenMP_test
+                         TYPE Boost
+                         LABELS OpenMP)
+endif()
 
 #if(ELEMENTS_HIDE_WARNINGS)
 #  if(UNIX)

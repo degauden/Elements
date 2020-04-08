@@ -230,7 +230,7 @@ function(reflex_dictionary dictionary headerfile selectionfile)
   reflex_generate_dictionary(${dictionary} ${headerfile} ${selectionfile} OPTIONS ${ARG_OPTIONS} ${ARG_SPLIT_CLASSDEF})
   include_directories(${ROOT_INCLUDE_DIR})
   add_library(${dictionary}Dict MODULE ${gensrcdict})
-  target_link_libraries(${dictionary}Dict ${ARG_LINK_LIBRARIES} ${ROOT_Core_LIBRARY})
+  target_link_libraries(${dictionary}Dict PRIVATE ${ARG_LINK_LIBRARIES} ${ROOT_Core_LIBRARY})
   # ensure that *Gen and *Dict are not built at the same time
   add_dependencies(${dictionary}Dict ${dictionary}Gen)
   # Attach the name of the rootmap file to the target so that it can be used from

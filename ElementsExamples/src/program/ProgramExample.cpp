@@ -23,6 +23,7 @@
 #include <vector>                           // for vector
 #include <utility>                          // for move
 #include <memory>                           // for unique_ptr
+#include <cstdint>                          // for int64_t
 
 #include <boost/current_function.hpp>       // for BOOST_CURRENT_FUNCTION
 
@@ -40,6 +41,8 @@ using boost::program_options::options_description;
 using boost::program_options::value;
 using boost::program_options::variable_value;
 using boost::program_options::bool_switch;
+
+using std::int64_t;
 
 namespace Elements {
 namespace Examples {

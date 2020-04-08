@@ -51,6 +51,16 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode',
 if found_napo:
     extensions.append(napoleon_extension)
 
+numpydoc_extension = 'numpydoc'
+try:
+    importlib.import_module(numpydoc_extension)
+    found_npdoc = True
+except ImportError:
+    found_npdoc = False
+
+if found_npdoc:
+    extensions.append(numpydoc_extension)
+
 @APPEND_BREATHE_EXT@
 
 # Add any paths that contain templates here, relative to this directory.

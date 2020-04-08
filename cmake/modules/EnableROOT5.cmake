@@ -206,7 +206,7 @@ function(reflex_dictionary dictionary headerfile selectionfile)
   if(NOT ROOT_Reflex_LIBRARY)
     message(FATAL_ERROR "Cannot find ROOT Reflex component: cannot build dictionary ${dictionary}")
   endif()
-  target_link_libraries(${dictionary}Dict ${ARG_LINK_LIBRARIES} ${ROOT_Reflex_LIBRARY})
+  target_link_libraries(${dictionary}Dict PRIVATE ${ARG_LINK_LIBRARIES} ${ROOT_Reflex_LIBRARY})
   # ensure that *Gen and *Dict are not built at the same time
   add_dependencies(${dictionary}Dict ${dictionary}Gen)
   # Attach the name of the rootmap file to the target so that it can be used from

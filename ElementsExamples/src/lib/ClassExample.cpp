@@ -27,7 +27,6 @@
 #include <memory>                            // for unique_ptr
 #include <string>                            // for string
 
-#include "ElementsKernel/Logging.h"          // for Logging
 #include "ElementsKernel/Exception.h"
 
 using std::vector;
