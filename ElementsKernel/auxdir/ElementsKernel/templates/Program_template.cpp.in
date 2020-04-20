@@ -31,8 +31,6 @@ using boost::program_options::options_description;
 using boost::program_options::variable_value;
 
 
-static Elements::Logging logger = Elements::Logging::getLogger("%(PROGRAMNAME)s");
-
 class %(PROGRAMNAME)s : public Elements::Program {
 
 public:
