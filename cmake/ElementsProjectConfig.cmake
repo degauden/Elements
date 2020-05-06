@@ -3410,11 +3410,14 @@ function(elements_add_unit_test name)
     endforeach()
     
     set(exec_argument)
-    if ("${${name}_UNIT_TEST_TYPE}" STREQUAL "Boost")
-      if(TEST_JUNIT_REPORT AND NOT (Boost_VERSION_STRING VERSION_LESS 1.63.0))
-        set(exec_argument --log_format=JUNIT --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.JUnit.xml --log_level=all)
-      else()
-        set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)      
+    
+    if(TEST_XML_REPORT)
+      if ("${${name}_UNIT_TEST_TYPE}" STREQUAL "Boost")
+        if(TEST_JUNIT_REPORT AND NOT (Boost_VERSION_STRING VERSION_LESS 1.63.0))
+          set(exec_argument --log_format=JUNIT --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.JUnit.xml --log_level=all)
+        else()
+          set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)      
+        endif()
       endif()
     endif()
 
@@ -3646,14 +3649,13 @@ function(add_python_test_dir)
 
   if(PYFRMK_TEST)
     set(PYFRMK_JUNIT_FILE_OPT)
-    set(PYFRMK_JUNIT_PREFIX_OPT)
     if("${PYFRMK_NAME}" STREQUAL "PyTest")
-        if(TEST_JUNIT_REPORT)
-          set(PYFRMK_JUNIT_FILE_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.JUnit.xml")
-        endif()
+      if(TEST_JUNIT_REPORT)
+        set(PYFRMK_JUNIT_FILE_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.JUnit.xml")
+      endif()
     endif()
     elements_add_test(${pytest_name}
-                      COMMAND ${PYFRMK_TEST} ${PYFRMK_JUNIT_FILE_OPT} ${PYFRMK_JUNIT_PREFIX_OPT} ${pysrcs}
+                      COMMAND ${PYFRMK_TEST} ${PYFRMK_JUNIT_FILE_OPT} ${pysrcs}
                       ENVIRONMENT ${PYTEST_ARG_ENVIRONMENT})
     set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest ${PYFRMK_NAME})
     if(PYTEST_ARG_TIMEOUT)

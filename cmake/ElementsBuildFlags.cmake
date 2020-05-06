@@ -262,6 +262,10 @@ option(TEST_HTML_REPORT
        "Enable the conversion of the CTest XML reports into HTML"
        ON)
 
+option(TEST_XML_REPORT
+       "Enable the redirection of the Boost tests output to XML files instead of the regular output"
+       OFF)
+
 option(TEST_JUNIT_REPORT
        "Enable the conversion of the CTest XML reports into JUnit XML reports"
        ON)
