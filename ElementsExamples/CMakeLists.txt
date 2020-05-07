@@ -282,7 +282,7 @@ elements_add_cython_module(src/Cython/lib/Rect.pyx
 endif()
 
 find_package(pybind11)
-if(pybind11_FOUND)
+if(pybind11_FOUND AND PYTHONLIBS_FOUND)
   elements_add_pybind11_module(testCallBack src/pybind11/callback.cpp
                                INCLUDE_DIRS ElementsExamples
                                LINK_LIBRARIES ElementsExamples)  
