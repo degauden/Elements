@@ -361,7 +361,6 @@ if(NOT ELEMENTS_FLAGS_SET)
   check_and_use_c_option(-Wlogical-not-parentheses C_HAS_LOGICAL_NOT_PARENTHESES)
   check_and_use_c_option(-Wnull-dereference C_HAS_NULL_DEREFERENCE)
 
-  check_and_use_c_option(-Wjump-misses-init C_HAS_JUMP_MISSES_INIT)
   check_and_use_c_option(-Wno-unused-parameter C_HAS_NO_UNUSED_PARAMETER)
 
   check_and_use_c_option(-Werror=return-type C_HAS_ERROR_RETURN_TYPE)
@@ -369,6 +368,7 @@ if(NOT ELEMENTS_FLAGS_SET)
   if(NOT "${SGS_COMP}" STREQUAL clang)
     check_and_use_cxx_option(-Wduplicated-cond CXX_HAS_DUPLICATED_COND)
     check_and_use_c_option(-Wduplicated-cond C_HAS_DUPLICATED_COND)
+    check_and_use_c_option(-Wjump-misses-init C_HAS_JUMP_MISSES_INIT)
   endif()
 
 
