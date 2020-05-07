@@ -604,22 +604,48 @@ endif()
 
 
 if ( ELEMENTS_CPP11 )
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
-  if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
-    check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+
+  check_cxx_compiler_flag("-std=c++11" HAS_CPP11_FLAG)
+  if(HAS_CPP11_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
+      check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+    endif()
+    if(USE_ODB)
+      set(ODB_CXX_EXTRA_FLAGS --std c++11)
+    endif()
+  else()
+    message(WARNING "The -std=c++11 option is not available")  
   endif()
-  if(USE_ODB)
-    set(ODB_CXX_EXTRA_FLAGS --std c++11)
+
+  check_c_compiler_flag("-std=c11" HAS_C11_FLAG)
+  if(HAS_C11_FLAG)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
+  else()
+    message(WARNING "The -std=c11 option is not available")  
   endif()
+
 endif()
 
 if ( ELEMENTS_CPP14 )
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11") # this is the latest C standard available
-  if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
-    check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+
+  check_cxx_compiler_flag("-std=c++14" HAS_CPP14_FLAG)
+  if(HAS_CPP14_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
+      check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+    endif()
+  else()
+    message(WARNING "The -std=c++14 option is not available")  
   endif()
+
+  check_c_compiler_flag("-std=c11" HAS_C11_FLAG)
+  if(HAS_C11_FLAG)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11") # this is the latest C standard available
+  else()
+    message(WARNING "The -std=c11 option is not available")
+  endif()
+
 endif()
 
 
