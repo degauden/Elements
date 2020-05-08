@@ -25,10 +25,11 @@
 
 #include <boost/program_options/positional_options.hpp>  // for options_description
 
-using boost::program_options::options_description;
-using boost::program_options::positional_options_description;
-
 namespace Elements {
+
+  using options_description = Program::options_description;
+  using positional_options_description = Program::positional_options_description;
+
 
   options_description Program::defineSpecificProgramOptions() {
     options_description config_desc("");

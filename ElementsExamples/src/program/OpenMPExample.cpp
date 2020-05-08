@@ -33,10 +33,10 @@ using std::map;
 using std::string;
 using complex = std::complex<double>;
 
-using boost::program_options::variable_value;
-
 namespace Elements {
 namespace Examples {
+
+static constexpr char CHARSET[] = ".,c8M@jawrpogOQEPGJ";
 
 class OpenMPExample: public Program {
 
@@ -69,8 +69,7 @@ public:
       {
         char c2 = ' ';
         if (n > 0) {
-          static const char charset[] = ".,c8M@jawrpogOQEPGJ";
-          c2 = charset[n % (sizeof(charset) - 1)];
+          c2 = CHARSET[n % (sizeof(CHARSET) - 1)];
         }
         std::putchar(c2);
           if (x+1 == width) {

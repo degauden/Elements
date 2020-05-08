@@ -34,7 +34,6 @@
 
 using std::map;
 using std::string;
-using boost::program_options::variable_value;
 
 constexpr std::size_t N = 32;
 
