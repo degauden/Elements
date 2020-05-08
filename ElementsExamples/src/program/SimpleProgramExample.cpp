@@ -27,8 +27,6 @@
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
 
-namespace po = boost::program_options;
-
 using std::map;
 using std::string;
 
@@ -59,7 +57,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     // Get logger and log the entry into the mainMethod
     auto log = Logging::getLogger();

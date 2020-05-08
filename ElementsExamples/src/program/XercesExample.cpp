@@ -21,8 +21,6 @@
 #include <map>                              // for map
 #include <string>                           // for string
 
-#include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
-
 #include <xercesc/util/XercesVersion.hpp>   // For gXercesFullVersionStr
 #include <xercesc/util/PlatformUtils.hpp>   // for Initialize and Terminate
 
@@ -41,7 +39,7 @@ class XercesExample: public Program {
 
 public:
 
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("XercesExample");
 

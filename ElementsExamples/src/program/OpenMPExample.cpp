@@ -42,7 +42,7 @@ class OpenMPExample: public Program {
 
 public:
 
-  ExitCode mainMethod(map<string, variable_value>& /*args*/) override {
+  ExitCode mainMethod(map<string, VariableValue>& /*args*/) override {
 
     auto log = Logging::getLogger("ProgramExample");
 

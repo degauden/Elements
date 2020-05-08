@@ -26,6 +26,7 @@
 #include <cstdint>                          // for int64_t
 
 #include <boost/current_function.hpp>       // for BOOST_CURRENT_FUNCTION
+#include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/ThisModule.h"      // for getThisExecutableInfo
@@ -88,9 +89,9 @@ public:
    * @return
    *    A BOOST program options_description
    */
-  options_description defineSpecificProgramOptions() override {
+  OptionsDescription defineSpecificProgramOptions() override {
 
-    options_description config_options { "Example program options" };
+    OptionsDescription config_options { "Example program options" };
 
     bool flag = false;
 
@@ -138,7 +139,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(map<string, variable_value>& args) override {
+  ExitCode mainMethod(map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("ProgramExample");
     log.info("Entering mainMethod()");

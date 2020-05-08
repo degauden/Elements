@@ -37,6 +37,7 @@
 #include <boost/filesystem/path.hpp>             // for filesystem::path
 #include <boost/program_options.hpp>             // for program_options
 
+#include "ElementsKernel/Program.h"              // for Program
 #include "ElementsKernel/Configuration.h"        // for getConfigurationPath
 #include "ElementsKernel/Path.h"                 // for Path::VARIABLE, multiPathAppend, PATH_SEP
 #include "ElementsKernel/Exception.h"            // for Exception
@@ -56,7 +57,6 @@ using std::cerr;
 using log4cpp::Priority;
 
 using boost::filesystem::path;
-using boost::program_options::variables_map;
 
 namespace Elements {
 
@@ -65,6 +65,7 @@ namespace {
 }
 
 using System::getExecutablePath;
+using VariablesMap = Program::VariablesMap;
 
 ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
                const string& parent_project_version,
@@ -169,13 +170,13 @@ void ProgramManager::checkCommandLineOptions(
 /*
  * Get program options
  */
-const variables_map ProgramManager::getProgramOptions(
+const VariablesMap ProgramManager::getProgramOptions(
     int argc, char* argv[]) {
 
 
   using std::cout;
   using std::exit;
-  using boost::program_options::options_description;
+  using OptionsDescription = Program::OptionsDescription;
   using boost::program_options::value;
   using boost::program_options::store;
   using boost::program_options::command_line_parser;
@@ -184,7 +185,7 @@ const variables_map ProgramManager::getProgramOptions(
   using boost::program_options::notify;
   using boost::program_options::parse_config_file;
 
-  variables_map var_map { };
+  VariablesMap var_map { };
 
   // default value for default_log_level option
   string default_log_level = "INFO";
@@ -194,7 +195,7 @@ const variables_map ProgramManager::getProgramOptions(
                                                   m_parent_module_name);
 
   // Define the options which can be given only at the command line
-  options_description cmd_only_generic_options {};
+  OptionsDescription cmd_only_generic_options {};
   cmd_only_generic_options.add_options()
       ("version", "Print version string")
       ("help", "Produce help message")
@@ -203,7 +204,7 @@ const variables_map ProgramManager::getProgramOptions(
           "Name of a configuration file");
 
   // Define the options which can be given both at command line and conf file
-  options_description cmd_and_file_generic_options {};
+  OptionsDescription cmd_and_file_generic_options {};
   cmd_and_file_generic_options.add_options()
       ("log-level", value<string>()->default_value(default_log_level),
          "Log level: FATAL, ERROR, WARN, INFO (default), DEBUG")
@@ -212,7 +213,7 @@ const variables_map ProgramManager::getProgramOptions(
 
   // Group all the generic options, for help output. Note that we add the
   // options one by one to avoid having empty lines between the groups
-  options_description all_generic_options {"Generic options"};
+  OptionsDescription all_generic_options {"Generic options"};
   for (auto o : cmd_only_generic_options.options()) {
     all_generic_options.add(o);
   }
@@ -224,17 +225,17 @@ const variables_map ProgramManager::getProgramOptions(
   // options) from the derived class
   auto specific_options = m_program_ptr->defineSpecificProgramOptions();
   auto program_arguments = m_program_ptr->defineProgramArguments();
-  options_description all_specific_options {};
+  OptionsDescription all_specific_options {};
   all_specific_options.add(specific_options)
                       .add(program_arguments.first);
 
   // Put together all the options to parse from the cmd line and the file
-  options_description all_cmd_and_file_options {};
+  OptionsDescription all_cmd_and_file_options {};
   all_cmd_and_file_options.add(cmd_and_file_generic_options)
                           .add(all_specific_options);
 
   // Put together all the options to use for the help message
-  options_description help_options {};
+  OptionsDescription help_options {};
   help_options.add(all_generic_options).add(all_specific_options);
 
   // Perform a first parsing of the command line, to handle the cmd only options

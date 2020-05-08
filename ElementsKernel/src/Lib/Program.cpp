@@ -23,22 +23,19 @@
 
 #include <utility>                                       // for pair
 
-#include <boost/program_options/positional_options.hpp>  // for options_description
-
 namespace Elements {
 
-  using options_description = Program::options_description;
-  using positional_options_description = Program::positional_options_description;
+  using OptionsDescription = Program::OptionsDescription;
+  using PositionalOptionsDescription = Program::PositionalOptionsDescription;
 
-
-  options_description Program::defineSpecificProgramOptions() {
-    options_description config_desc("");
+  OptionsDescription Program::defineSpecificProgramOptions() {
+    OptionsDescription config_desc("");
     return config_desc;
   }
 
-  std::pair<options_description, positional_options_description> Program::defineProgramArguments() {
-    options_description desc("");
-    positional_options_description pos_desc;
+  std::pair<OptionsDescription, PositionalOptionsDescription> Program::defineProgramArguments() {
+    OptionsDescription desc("");
+    PositionalOptionsDescription pos_desc;
 
     return std::make_pair(desc, pos_desc);
   }

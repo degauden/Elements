@@ -21,8 +21,6 @@
 #include <map>                              // for map
 #include <string>                           // for string
 
-#include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
-
 #include <healpix_cxx/healpix_map.h>            // for Healpix_Map
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
@@ -38,7 +36,7 @@ class HealpixExample: public Program {
 
 public:
 
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("HealpixExample");
 

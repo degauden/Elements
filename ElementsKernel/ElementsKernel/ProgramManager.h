@@ -164,7 +164,7 @@ private:
    *  @return
    *    A BOOST variable_map
    */
-  const boost::program_options::variables_map getProgramOptions(int argc,
+  const Program::VariablesMap getProgramOptions(int argc,
       char* argv[]);
 
   /**
@@ -213,7 +213,7 @@ private:
    * of different types. See the pseudoMain() in ElementsProgramExample.cpp
    * to see how to retrieve options from this map.
    */
-  boost::program_options::variables_map m_variables_map {};
+  Program::VariablesMap m_variables_map {};
 
   /**
    * Name of the executable (from argv[0])

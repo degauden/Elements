@@ -23,7 +23,6 @@
 #include <map>                              // for map
 #include <string>                           // for string
 
-#include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
 #include <boost/format.hpp>                 // for format
 
 #include <fftw3.h>
@@ -45,7 +44,7 @@ class FftwExample: public Program {
 public:
 
 
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("FftwExample");
 
