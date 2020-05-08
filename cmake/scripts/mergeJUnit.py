@@ -11,18 +11,6 @@ import sys
 import xml.etree.ElementTree as ET
 
 
-def main():
-    """ main wrapper function """
-    args = sys.argv[1:]
-    if not args:
-        usage()
-        sys.exit(2)
-    if '-h' in args or '--help' in args:
-        usage()
-        sys.exit(2)
-    merge_results(args[:])
-
-
 def merge_results(xml_files):
     """ Workhorse function that merges JUnit XML files """
     failures = 0
@@ -55,6 +43,18 @@ def usage():
     """ Usage message for the script """
     this_file = os.path.basename(__file__)
     print('Usage:  %s results1.xml results2.xml' % this_file)
+
+
+def main():
+    """ main wrapper function """
+    args = sys.argv[1:]
+    if not args:
+        usage()
+        sys.exit(2)
+    if '-h' in args or '--help' in args:
+        usage()
+        sys.exit(2)
+    merge_results(args[:])
 
 
 if __name__ == '__main__':

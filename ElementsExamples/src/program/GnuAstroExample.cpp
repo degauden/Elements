@@ -31,7 +31,6 @@
 
 using std::string;
 using std::map;
-using boost::program_options::variable_value;
 
 namespace Elements {
 namespace Examples {

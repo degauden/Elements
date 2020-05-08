@@ -37,9 +37,8 @@
 using std::map;
 using std::string;
 using std::vector;
-using boost::program_options::options_description;
+
 using boost::program_options::value;
-using boost::program_options::variable_value;
 using boost::program_options::bool_switch;
 
 using std::int64_t;

@@ -262,6 +262,10 @@ option(TEST_HTML_REPORT
        "Enable the conversion of the CTest XML reports into HTML"
        ON)
 
+option(TEST_XML_REPORT
+       "Enable the redirection of the Boost tests output to XML files instead of the regular output"
+       OFF)
+
 option(TEST_JUNIT_REPORT
        "Enable the conversion of the CTest XML reports into JUnit XML reports"
        ON)
@@ -327,7 +331,6 @@ if(NOT ELEMENTS_FLAGS_SET)
   check_and_use_cxx_option(-Wno-long-long CXX_HAS_NO_LONG_LONG)
   check_and_use_cxx_option(-Wno-unknown-pragmas CXX_HAS_NO_UNKNOWN_PRAGMAS)
   check_and_use_cxx_option(-Wformat-security CXX_HAS_FORMAT_SECURITY)
-  check_and_use_cxx_option(-Wduplicated-cond CXX_HAS_DUPLICATED_COND)
   check_and_use_cxx_option(-Wshadow CXX_HAS_SHADOW)
   check_and_use_cxx_option(-Wlogical-not-parentheses CXX_HAS_LOGICAL_NOT_PARENTHESES)
   check_and_use_cxx_option(-Wnull-dereference CXX_HAS_NULL_DEREFERENCE)
@@ -354,15 +357,20 @@ if(NOT ELEMENTS_FLAGS_SET)
   check_and_use_c_option(-Wno-long-long C_HAS_NO_LONG_LONG)
   check_and_use_c_option(-Wno-unknown-pragmas C_HAS_NO_UNKNOWN_PRAGMAS)
   check_and_use_c_option(-Wformat-security C_HAS_FORMAT_SECURITY)
-  check_and_use_c_option(-Wduplicated-cond C_HAS_DUPLICATED_COND)
   check_and_use_c_option(-Wshadow C_HAS_SHADOW)
   check_and_use_c_option(-Wlogical-not-parentheses C_HAS_LOGICAL_NOT_PARENTHESES)
   check_and_use_c_option(-Wnull-dereference C_HAS_NULL_DEREFERENCE)
 
-  check_and_use_c_option(-Wjump-misses-init C_HAS_JUMP_MISSES_INIT)
   check_and_use_c_option(-Wno-unused-parameter C_HAS_NO_UNUSED_PARAMETER)
 
   check_and_use_c_option(-Werror=return-type C_HAS_ERROR_RETURN_TYPE)
+
+  if(NOT "${SGS_COMP}" STREQUAL clang)
+    check_and_use_cxx_option(-Wduplicated-cond CXX_HAS_DUPLICATED_COND)
+    check_and_use_c_option(-Wduplicated-cond C_HAS_DUPLICATED_COND)
+    check_and_use_c_option(-Wjump-misses-init C_HAS_JUMP_MISSES_INIT)
+  endif()
+
 
   if((NOT "${SGS_COMP}" STREQUAL clang) OR (SGS_COMPVERS VERSION_GREATER "40") )
     check_and_use_cxx_option(-ansi CXX_HAS_ANSI)
@@ -596,22 +604,48 @@ endif()
 
 
 if ( ELEMENTS_CPP11 )
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
-  if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
-    check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+
+  check_cxx_compiler_flag("-std=c++11" HAS_CPP11_FLAG)
+  if(HAS_CPP11_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
+      check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+    endif()
+    if(USE_ODB)
+      set(ODB_CXX_EXTRA_FLAGS --std c++11)
+    endif()
+  else()
+    message(WARNING "The -std=c++11 option is not available")  
   endif()
-  if(USE_ODB)
-    set(ODB_CXX_EXTRA_FLAGS --std c++11)
+
+  check_c_compiler_flag("-std=c11" HAS_C11_FLAG)
+  if(HAS_C11_FLAG)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
+  else()
+    message(WARNING "The -std=c11 option is not available")  
   endif()
+
 endif()
 
 if ( ELEMENTS_CPP14 )
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11") # this is the latest C standard available
-  if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
-    check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+
+  check_cxx_compiler_flag("-std=c++14" HAS_CPP14_FLAG)
+  if(HAS_CPP14_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
+      check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+    endif()
+  else()
+    message(WARNING "The -std=c++14 option is not available")  
   endif()
+
+  check_c_compiler_flag("-std=c11" HAS_C11_FLAG)
+  if(HAS_C11_FLAG)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11") # this is the latest C standard available
+  else()
+    message(WARNING "The -std=c11 option is not available")
+  endif()
+
 endif()
 
 
