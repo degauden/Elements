@@ -28,10 +28,9 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_SIMPLEPROGRAM_H_
 
-#include <boost/filesystem/path.hpp>
-
 #include "ElementsKernel/Export.h"
 #include "ElementsKernel/Main.h"
+#include "ElementsKernel/Path.h"
 
 namespace Elements {
 
@@ -43,8 +42,8 @@ class ELEMENTS_API SimpleProgram {
 public:
 
   ELEMENTS_API ExitCode run(int argc, char** argv) noexcept;
-  ELEMENTS_API const boost::filesystem::path& getProgramPath() const;
-  ELEMENTS_API const boost::filesystem::path& getProgramName() const;
+  ELEMENTS_API const Path::Item& getProgramPath() const;
+  ELEMENTS_API const Path::Item& getProgramName() const;
 
 
 protected:
@@ -61,8 +60,8 @@ private:
 
 private:
 
-  boost::filesystem::path m_program_name;
-  boost::filesystem::path m_program_path;
+  Path::Item m_program_name;
+  Path::Item m_program_path;
 
 };
 

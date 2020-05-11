@@ -27,16 +27,18 @@
 
 #include <boost/test/unit_test.hpp>       // for boost unit test macros
 
-
 using std::string;
 
-struct TestException : public Elements::Exception {
 
-  explicit TestException(const string& message = "") : Exception(message, Elements::ExitCode::NOT_OK) {
+namespace Elements {
+
+struct TestException : public Exception {
+
+  explicit TestException(const string& message = "") : Exception(message, ExitCode::NOT_OK) {
     m_number = -1;
   }
 
-  explicit TestException(const int number) : Exception("", Elements::ExitCode::NOT_OK) {
+  explicit TestException(const int number) : Exception("", ExitCode::NOT_OK) {
     m_number = number;
   }
 
@@ -61,7 +63,7 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1);
     BOOST_CHECK_EQUAL(ex.m_number, -1);
-  } catch (const Elements::Exception& ex) {
+  } catch (const Exception& ex) {
     BOOST_FAIL("Exception subclass thrown as Elements::Exception");
   } catch (...) {
     BOOST_FAIL("Unknown type of exception instead of TestException");
@@ -75,7 +77,7 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1 + message_part_2);
     BOOST_CHECK_EQUAL(ex.m_number, 5);
-  } catch (const Elements::Exception& ex) {
+  } catch (const Exception& ex) {
     BOOST_FAIL("Exception subclass thrown as Elements::Exception");
   } catch (...) {
     BOOST_FAIL("Unknown type of exception instead of TestException");
@@ -90,7 +92,7 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1 + message_part_2);
     BOOST_CHECK_EQUAL(ex.m_number, 6);
-  } catch (const Elements::Exception& ex) {
+  } catch (const Exception& ex) {
     BOOST_FAIL("Exception subclass thrown as Elements::Exception");
   } catch (...) {
     BOOST_FAIL("Unknown type of exception instead of TestException");
@@ -106,7 +108,7 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1 + message_part_2);
     BOOST_CHECK_EQUAL(ex.m_number, 7);
-  } catch (const Elements::Exception& ex) {
+  } catch (const Exception& ex) {
     BOOST_FAIL("Exception subclass thrown as Elements::Exception");
   } catch (...) {
     BOOST_FAIL("Unknown type of exception instead of TestException");
@@ -117,3 +119,5 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
+
+}  // namespace Elements

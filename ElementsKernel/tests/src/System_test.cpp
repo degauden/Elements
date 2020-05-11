@@ -31,6 +31,8 @@
 
 using std::string;
 
+namespace Elements {
+
 BOOST_AUTO_TEST_SUITE(System_test)
 
 //-----------------------------------------------------------------------------
@@ -39,10 +41,10 @@ BOOST_AUTO_TEST_CASE(HostName_test) {
 
   using std::string;
 
-  Elements::Environment current;
+  Environment current;
 
   if (current["HOSTNAME"].exists() and string(current["HOSTNAME"]) != ".") {
-    BOOST_CHECK_EQUAL(string(current["HOSTNAME"]), Elements::System::hostName());
+    BOOST_CHECK_EQUAL(string(current["HOSTNAME"]), System::hostName());
   }
 
 }
@@ -55,7 +57,7 @@ BOOST_AUTO_TEST_CASE(osName_test) {
     osname = ut.sysname;
   }
 
-  BOOST_CHECK_EQUAL(Elements::System::osName(), osname);
+  BOOST_CHECK_EQUAL(System::osName(), osname);
 
 }
 
@@ -68,7 +70,7 @@ BOOST_AUTO_TEST_CASE(osVersion_test) {
     osver = ut.release;
   }
 
-  BOOST_CHECK_EQUAL(Elements::System::osVersion(), osver);
+  BOOST_CHECK_EQUAL(System::osVersion(), osver);
 
 }
 
@@ -77,3 +79,4 @@ BOOST_AUTO_TEST_CASE(osVersion_test) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
+}  // namespace Elements

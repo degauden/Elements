@@ -21,16 +21,14 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_AUXILIARY_ICPP_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_AUXILIARY_ICPP_
 
-#include <boost/filesystem.hpp>         // for boost::filesystem
-
 #include "ElementsKernel/System.h"      // for DEFAULT_INSTALL_PREFIX
 #include "ElementsKernel/Exception.h"   // for Exception
-#include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type
-                                         // for Path::getPathFromEnvVariable
+#include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type, Path::Item
+                                        // getPathFromLocations
 namespace Elements {
 
 template <typename T>
-boost::filesystem::path getAuxiliaryPath(const T& file_name, bool raise_exception) {
+Path::Item getAuxiliaryPath(const T& file_name, bool raise_exception) {
 
   auto location_list = getAuxiliaryLocations();
 

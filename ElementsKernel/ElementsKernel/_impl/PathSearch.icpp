@@ -25,8 +25,9 @@
 #include <string>
 #include <vector>
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
 
+#include "ElementsKernel/Path.h"
 
 namespace Elements {
 
@@ -38,7 +39,7 @@ std::vector<T> pathSearch(const std::string& searched_name, T directory) {
   // create the resulting vector
   std::vector<T> searchResults { };
   // make sure directory is ps::path, changing from string to path if T is string.
-  boost::filesystem::path l_directory { directory };
+  Path::Item l_directory { directory };
   // the default constructor of ITER return a pointer to one-past last element
   ITER end_iter;
   if (boost::filesystem::is_directory(l_directory)) {

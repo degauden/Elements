@@ -30,7 +30,7 @@
 #include "ElementsKernel/Real.h"                // for the isEqual function
 
 
-using Elements::isEqual;
+namespace Elements {
 
 //-----------------------------------------------------------------------------
 BOOST_AUTO_TEST_SUITE(MathConstants_test)
@@ -38,8 +38,8 @@ BOOST_AUTO_TEST_SUITE(MathConstants_test)
 
 BOOST_AUTO_TEST_CASE(SqrtOfPi_test) {
 
-  using Elements::Units::sqrt_of_pi;
-  using Elements::Units::pi;
+  using Units::sqrt_of_pi;
+  using Units::pi;
 
   // Get the present module. Here this must be the test executable
   BOOST_CHECK(isEqual(sqrt_of_pi, sqrt(pi)));
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(SqrtOfPi_test) {
 
 BOOST_AUTO_TEST_CASE(SqrtOfTwo_test) {
 
-  using Elements::Units::sqrt_of_two;
+  using Units::sqrt_of_two;
 
   // Get the present module. Here this must be the test executable
   BOOST_CHECK(isEqual(sqrt_of_two, sqrt(2.0)));
@@ -57,8 +57,8 @@ BOOST_AUTO_TEST_CASE(SqrtOfTwo_test) {
 
 BOOST_AUTO_TEST_CASE(SqrtOfHalfPi_test) {
 
-  using Elements::Units::sqrt_of_halfpi;
-  using Elements::Units::pi;
+  using Units::sqrt_of_halfpi;
+  using Units::pi;
 
   // Get the present module. Here this must be the test executable
   BOOST_CHECK(isEqual(sqrt_of_halfpi, sqrt(pi/2.0)));
@@ -67,11 +67,11 @@ BOOST_AUTO_TEST_CASE(SqrtOfHalfPi_test) {
 
 BOOST_AUTO_TEST_CASE(GccConstants_test) {
 
-  using Elements::Units::pi;
-  using Elements::Units::e;
-  using Elements::Units::halfpi;
-  using Elements::Units::sqrt_of_two;
-  using Elements::Units::sqrt_of_pi;
+  using Units::pi;
+  using Units::e;
+  using Units::halfpi;
+  using Units::sqrt_of_two;
+  using Units::sqrt_of_pi;
 
   BOOST_CHECK(isEqual(pi, M_PI));
   BOOST_CHECK(isEqual(e, M_E));
@@ -98,12 +98,12 @@ BOOST_AUTO_TEST_CASE(BoostConstants_test) {
 
   namespace mc = boost::math::constants;
 
-  using Elements::Units::pi;
-  using Elements::Units::e;
-  using Elements::Units::halfpi;
-  using Elements::Units::sqrt_of_two;
-  using Elements::Units::gamma;
-  using Elements::Units::pi2;
+  using Units::pi;
+  using Units::e;
+  using Units::halfpi;
+  using Units::sqrt_of_two;
+  using Units::gamma;
+  using Units::pi2;
 
   BOOST_CHECK(isEqual(pi, mc::pi<double>()));
   BOOST_CHECK(isEqual(e, mc::e<double>()));
@@ -122,3 +122,5 @@ BOOST_AUTO_TEST_SUITE_END()
 //-----------------------------------------------------------------------------
 //
 // End of the Boost tests
+
+}  // namespace Elements

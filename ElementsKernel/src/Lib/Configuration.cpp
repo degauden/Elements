@@ -22,21 +22,18 @@
 
 #include "ElementsKernel/Configuration.h"
 
-#include <algorithm>                      // for remove_if
+#include <algorithm>                        // for remove_if
 #include <iterator>
 #include <map>
-#include <string>                         // for string
-#include <vector>                         // for vector
+#include <string>                           // for string
+#include <vector>                           // for vector
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>  // for exists
 
-#include "ElementsKernel/Path.h"          // for Path::VARIABLE, Path::Type
-#include "ElementsKernel/System.h"        // for DEFAULT_INSTALL_PREFIX
+#include "ElementsKernel/Path.h"            // for Path::VARIABLE, Path::Type
+#include "ElementsKernel/System.h"          // for DEFAULT_INSTALL_PREFIX
 
-                                          // for Path::getLocationsFromEnv
 using std::string;
-using boost::filesystem::path;
 
 namespace Elements {
 
@@ -45,20 +42,20 @@ string getConfigurationVariableName() {
 }
 
 // Instantiation of the most expected types
-template path getConfigurationPath(const path& file_name, bool raise_exception);
-template path getConfigurationPath(const string& file_name, bool raise_exception);
+template Path::Item getConfigurationPath(const Path::Item& file_name, bool raise_exception);
+template Path::Item getConfigurationPath(const string& file_name, bool raise_exception);
 
-std::vector<path> getConfigurationLocations(bool exist_only) {
+std::vector<Path::Item> getConfigurationLocations(bool exist_only) {
 
   auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::configuration), exist_only);
 
   // the search is extended to the default system /usr/share/conf
-  location_list.push_back(path(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
+  location_list.push_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
 
   if (exist_only) {
     auto new_end = std::remove_if(location_list.begin(),
                                   location_list.end(),
-                                  [](const path& p){
+                                  [](const Path::Item& p){
                                      return (not boost::filesystem::exists(p));
                                   });
     location_list.erase(new_end, location_list.end());

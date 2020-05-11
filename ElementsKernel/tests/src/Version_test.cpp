@@ -27,9 +27,7 @@
 
 using std::string;
 
-using Elements::getVersionFromSvnKeywords;
-using Elements::getVersionString;
-
+namespace Elements {
 //-----------------------------------------------------------------------------
 
 // input string to test the generation of an appropriate version in case of a trunk or tags
@@ -63,3 +61,5 @@ BOOST_AUTO_TEST_CASE(getVersionFromString_test) {
 
 
 BOOST_AUTO_TEST_SUITE_END()
+
+}  // namespace Elements

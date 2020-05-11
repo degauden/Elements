@@ -36,8 +36,8 @@
 
 #include <string>                     // for string
 #include <vector>                     // for vector
-#include <boost/filesystem/path.hpp>  // for path
 
+#include "ElementsKernel/Path.h"      // for Path::Item
 #include "ElementsKernel/Export.h"    // ELEMENTS_API
 
 namespace Elements {
@@ -45,17 +45,16 @@ namespace Elements {
 ELEMENTS_API std::string getConfigurationVariableName();
 
 template <typename T>
-ELEMENTS_API boost::filesystem::path getConfigurationPath(const T& file_name, bool raise_exception = true);
+ELEMENTS_API Path::Item getConfigurationPath(const T& file_name, bool raise_exception = true);
 
 // Instantiation of the most expected types
 extern template
-ELEMENTS_API boost::filesystem::path getConfigurationPath(const boost::filesystem::path& file_name,
-                                                          bool raise_exception);
-extern template
-ELEMENTS_API boost::filesystem::path getConfigurationPath(const std::string& file_name,
-                                                          bool raise_exception);
+ELEMENTS_API Path::Item getConfigurationPath(const Path::Item& file_name, bool raise_exception);
 
-ELEMENTS_API std::vector<boost::filesystem::path> getConfigurationLocations(bool exist_only = false);
+extern template
+ELEMENTS_API Path::Item getConfigurationPath(const std::string& file_name, bool raise_exception);
+
+ELEMENTS_API std::vector<Path::Item> getConfigurationLocations(bool exist_only = false);
 
 }  // namespace Elements
 

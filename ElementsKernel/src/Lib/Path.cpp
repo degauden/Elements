@@ -36,8 +36,6 @@ using std::string;
 using std::vector;
 using std::map;
 
-using boost::filesystem::path;
-
 namespace Elements {
 namespace Path {
 
@@ -76,18 +74,18 @@ const std::map<Type, const bool> HAS_SUBLEVELS {
 };
 
 
-vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
+vector<Item> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
   using System::getEnv;
 
   string env_content = getEnv(path_variable);
 
-  vector<path> found_list = split(env_content);
+  vector<Item> found_list = split(env_content);
 
   if (exist_only) {
     auto new_end = std::remove_if(found_list.begin(),
                                   found_list.end(),
-                                  [](const path& p){
+                                  [](const Item& p){
                                      return (not boost::filesystem::exists(p));
                                   });
     found_list.erase(new_end, found_list.end());
@@ -96,45 +94,45 @@ vector<path> getLocationsFromEnv(const string& path_variable, bool exist_only) {
   return found_list;
 }
 
-vector<path> splitPath(const string& path_string) {
+vector<Item> splitPath(const string& path_string) {
 
   vector<string> str_list;
   boost::split(str_list, path_string, boost::is_any_of(PATH_SEP));
 
-  vector<path> found_list(str_list.size());
+  vector<Item> found_list(str_list.size());
   std::transform(str_list.cbegin(), str_list.cend(),
       found_list.begin(),
       [](const string& s){
-        return path{s};
+        return Item{s};
   });
 
   return found_list;
 }
 
 // Template instantiation for the most common types
-template path getPathFromLocations(const path& file_name, const vector<path>& locations);
-template path getPathFromLocations(const path& file_name, const vector<string>& locations);
-template path getPathFromLocations(const string& file_name, const vector<path>& locations);
-template path getPathFromLocations(const string& file_name, const vector<string>& locations);
+template Item getPathFromLocations(const Item& file_name, const vector<Item>& locations);
+template Item getPathFromLocations(const Item& file_name, const vector<string>& locations);
+template Item getPathFromLocations(const string& file_name, const vector<Item>& locations);
+template Item getPathFromLocations(const string& file_name, const vector<string>& locations);
 
-template vector<path> getAllPathFromLocations(const path& file_name, const vector<path>& locations);
-template vector<path> getAllPathFromLocations(const path& file_name, const vector<string>& locations);
-template vector<path> getAllPathFromLocations(const string& file_name, const vector<path>& locations);
-template vector<path> getAllPathFromLocations(const string& file_name, const vector<string>& locations);
+template vector<Item> getAllPathFromLocations(const Item& file_name, const vector<Item>& locations);
+template vector<Item> getAllPathFromLocations(const Item& file_name, const vector<string>& locations);
+template vector<Item> getAllPathFromLocations(const string& file_name, const vector<Item>& locations);
+template vector<Item> getAllPathFromLocations(const string& file_name, const vector<string>& locations);
 
-template path getPathFromEnvVariable<path>(const path& file_name, const string& path_variable);
-template path getPathFromEnvVariable<string>(const string& file_name, const string& path_variable);
+template Item getPathFromEnvVariable<Item>(const Item& file_name, const string& path_variable);
+template Item getPathFromEnvVariable<string>(const string& file_name, const string& path_variable);
 
-template string joinPath(const vector<path>& path_list);
+template string joinPath(const vector<Item>& path_list);
 template string joinPath(const vector<string>& path_list);
 
-template vector<path> multiPathAppend(const vector<path>& initial_locations, const vector<path>& suffixes);
-template vector<path> multiPathAppend(const vector<path>& initial_locations, const vector<string>& suffixes);
-template vector<path> multiPathAppend(const vector<string>& initial_locations, const vector<path>& suffixes);
-template vector<path> multiPathAppend(const vector<string>& initial_locations, const vector<string>& suffixes);
+template vector<Item> multiPathAppend(const vector<Item>& initial_locations, const vector<Item>& suffixes);
+template vector<Item> multiPathAppend(const vector<Item>& initial_locations, const vector<string>& suffixes);
+template vector<Item> multiPathAppend(const vector<string>& initial_locations, const vector<Item>& suffixes);
+template vector<Item> multiPathAppend(const vector<string>& initial_locations, const vector<string>& suffixes);
 
-template vector<path> removeDuplicates(const vector<path>& path_list);
-template vector<path> removeDuplicates(const vector<string>& path_list);
+template vector<Item> removeDuplicates(const vector<Item>& path_list);
+template vector<Item> removeDuplicates(const vector<string>& path_list);
 
 }  // namespace Path
 }  // namespace Elements

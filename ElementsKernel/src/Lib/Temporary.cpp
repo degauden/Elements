@@ -24,11 +24,12 @@
 #include <string>
 #include <iostream>
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 #include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Environment.h"
+#include "ElementsKernel/Path.h"
 
 using std::string;
 
@@ -61,7 +62,7 @@ TempPath::~TempPath() {
 
   if (not current.hasKey(m_keep_var)) {
     log.debug() << "Automatic destruction of the " << path()
-                   << " temporary path";
+                << " temporary path";
     boost::filesystem::remove_all(m_path);
   } else {
     log.info() << m_keep_var << " set: I do not remove the "
@@ -70,7 +71,7 @@ TempPath::~TempPath() {
 
 }
 
-boost::filesystem::path TempPath::path() const {
+Path::Item TempPath::path() const {
   return m_path;
 }
 

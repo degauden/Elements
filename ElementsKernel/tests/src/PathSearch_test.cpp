@@ -38,17 +38,14 @@ using std::vector;
 
 using boost::filesystem::path;
 
-using Elements::Environment;
-using Elements::SearchType;
-using Elements::pathSearch;
-using Elements::pathSearchInEnvVariable;
+namespace Elements {
 
 struct PathSearch_Fixture {
 
   Environment m_env;
   string m_env_variable_name = "ELEMENTS_CONF_PATH";
 
-  path m_root_path = Elements::getAuxiliaryPath("ElementsKernel/tests");
+  path m_root_path = getAuxiliaryPath("ElementsKernel/tests");
   path m_full_path = m_root_path / "PathSearch/";
 
 
@@ -250,11 +247,11 @@ BOOST_AUTO_TEST_CASE(PathConstructor_test) {
 
 BOOST_AUTO_TEST_CASE(Recursion_test) {
 
-  using Elements::TempDir;
-
   TempDir top_dir {"PathSearch_Recursion_test-%%%%%%%"};
   path top_dir_path = top_dir.path();
   createTemporaryStructure(top_dir_path);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+}  // namespace Elements

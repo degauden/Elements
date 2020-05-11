@@ -34,12 +34,12 @@
 
 #include <boost/algorithm/string/predicate.hpp>  // for starts_with
 #include <boost/filesystem/operations.hpp>       // for filesystem::complete, exists
-#include <boost/filesystem/path.hpp>             // for filesystem::path
 #include <boost/program_options.hpp>             // for program_options
 
 #include "ElementsKernel/Program.h"              // for Program
 #include "ElementsKernel/Configuration.h"        // for getConfigurationPath
 #include "ElementsKernel/Path.h"                 // for Path::VARIABLE, multiPathAppend, PATH_SEP
+                                                 // for Path::Item
 #include "ElementsKernel/Exception.h"            // for Exception
 #include "ElementsKernel/Exit.h"                 // for ExitCode
 #include "ElementsKernel/Logging.h"              // for Logging
@@ -56,7 +56,6 @@ using std::endl;
 using std::cerr;
 using log4cpp::Priority;
 
-using boost::filesystem::path;
 
 namespace Elements {
 
@@ -87,11 +86,11 @@ ProgramManager::ProgramManager(std::unique_ptr<Program> program_ptr,
 
 }
 
-const path& ProgramManager::getProgramPath() const {
+const Path::Item& ProgramManager::getProgramPath() const {
   return m_program_path;
 }
 
-const path& ProgramManager::getProgramName() const {
+const Path::Item& ProgramManager::getProgramName() const {
   return m_program_name;
 }
 
@@ -101,12 +100,12 @@ const path& ProgramManager::getProgramName() const {
  * @todo check whether priotities are correct if more than one
  * config file is found in pathSearchInEnvVariable
  * */
-const path ProgramManager::getDefaultConfigFile(const path & program_name,
-                                                const string& module_name) {
-  path default_config_file{};
+const Path::Item ProgramManager::getDefaultConfigFile(const Path::Item & program_name,
+                                                      const string& module_name) {
+  Path::Item default_config_file{};
 
   // .conf is the standard extension for configuration file
-  path conf_name(program_name);
+  Path::Item conf_name(program_name);
   conf_name.replace_extension("conf");
 
   // Construct and return the full path
@@ -117,7 +116,7 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name,
       log.warn() << " " << loc;
     }
     if (not module_name.empty()) {
-      conf_name = path {module_name} / conf_name;
+      conf_name = Path::Item {module_name} / conf_name;
       log.warn() << "Trying " << conf_name << ".";
       default_config_file = getConfigurationPath(conf_name.string(), false);
     }
@@ -132,16 +131,16 @@ const path ProgramManager::getDefaultConfigFile(const path & program_name,
   return default_config_file;
 }
 
-const path ProgramManager::setProgramName(ELEMENTS_UNUSED char* arg0) {
+const Path::Item ProgramManager::setProgramName(ELEMENTS_UNUSED char* arg0) {
 
-  path full_path = getExecutablePath();
+  Path::Item full_path = getExecutablePath();
 
   return full_path.filename();
 }
 
-const path ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
+const Path::Item ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
 
-  path full_path = getExecutablePath();
+  Path::Item full_path = getExecutablePath();
 
   return full_path.parent_path();
 }
@@ -156,7 +155,7 @@ void ProgramManager::checkCommandLineOptions(
         cerr << "Wrong usage of the --config-file option" << endl;
         exit(static_cast<int>(ExitCode::USAGE));
       } else {
-        auto conf_file = path { o.value[0] };
+        auto conf_file = Path::Item { o.value[0] };
         if (not boost::filesystem::exists(conf_file)) {
           cerr << "The " << conf_file
                << " configuration file doesn't exist!" << endl;
@@ -191,7 +190,7 @@ const VariablesMap ProgramManager::getProgramOptions(
   string default_log_level = "INFO";
 
   // Get defaults
-  path default_config_file = getDefaultConfigFile(getProgramName(),
+  Path::Item default_config_file = getDefaultConfigFile(getProgramName(),
                                                   m_parent_module_name);
 
   // Define the options which can be given only at the command line
@@ -200,7 +199,7 @@ const VariablesMap ProgramManager::getProgramOptions(
       ("version", "Print version string")
       ("help", "Produce help message")
       ("config-file",
-          value<path>()->default_value(default_config_file),
+          value<Path::Item>()->default_value(default_config_file),
           "Name of a configuration file");
 
   // Define the options which can be given both at command line and conf file
@@ -209,7 +208,7 @@ const VariablesMap ProgramManager::getProgramOptions(
       ("log-level", value<string>()->default_value(default_log_level),
          "Log level: FATAL, ERROR, WARN, INFO (default), DEBUG")
       ("log-file",
-         value<path>(), "Name of a log file");
+         value<Path::Item>(), "Name of a log file");
 
   // Group all the generic options, for help output. Note that we add the
   // options one by one to avoid having empty lines between the groups
@@ -261,7 +260,7 @@ const VariablesMap ProgramManager::getProgramOptions(
 
   // Get the configuration file. It is guaranteed to exist, because it has
   // default value
-  auto config_file = var_map.at("config-file").as<path>();
+  auto config_file = var_map.at("config-file").as<Path::Item>();
 
   // Parse from the command line the rest of the options. Here we also handle
   // the positional arguments.
@@ -356,9 +355,9 @@ void ProgramManager::logAllOptions() const {
     } else if (v.second.value().type() == typeid(bool)) {
       log_message << v.first << " = " << v.second.as<bool>();
       // path option
-    } else if (v.second.value().type() == typeid(path)) {
+    } else if (v.second.value().type() == typeid(Path::Item)) {
       log_message << v.first << " = "
-          << v.second.as<path>();
+          << v.second.as<Path::Item>();
       // int vector option
     } else if (v.second.value().type() == typeid(vector<int>)) {
       vector<int> intVec = v.second.as<vector<int>>();
@@ -418,7 +417,7 @@ void ProgramManager::bootstrapEnvironment(char* arg0) {
   m_program_name = setProgramName(arg0);
   m_program_path = setProgramPath(arg0);
 
-  vector<path> local_search_paths(m_search_dirs.size());
+  vector<Path::Item> local_search_paths(m_search_dirs.size());
 
   std::transform(m_search_dirs.cbegin(), m_search_dirs.cend(),
       local_search_paths.begin(),
@@ -428,7 +427,7 @@ void ProgramManager::bootstrapEnvironment(char* arg0) {
 
   // insert local parent dir if it is not already
   // the first one of the list
-  const path this_parent_path = boost::filesystem::canonical(m_program_path.parent_path());
+  const Path::Item this_parent_path = boost::filesystem::canonical(m_program_path.parent_path());
   if (local_search_paths[0] != this_parent_path) {
     auto b = local_search_paths.begin();
     local_search_paths.insert(b, this_parent_path);
@@ -471,10 +470,10 @@ void ProgramManager::setup(int argc, char* argv[]) {
      throw Exception("Required option log-level is not provided!",
                      ExitCode::CONFIG);
   }
-  path log_file_name;
+  Path::Item log_file_name;
 
   if (m_variables_map.count("log-file")) {
-    log_file_name = m_variables_map["log-file"].as<path>();
+    log_file_name = m_variables_map["log-file"].as<Path::Item>();
     Logging::setLogFile(log_file_name);
   }
 
