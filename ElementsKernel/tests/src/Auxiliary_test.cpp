@@ -19,7 +19,7 @@
  *
  */
 
-#include "ElementsKernel/Auxiliary.h"          // header to test
+#include "ElementsKernel/Auxiliary.h"       // header to test
 
 #include <string>                           // for std::string
 #include <vector>                           // for std::vector
@@ -114,6 +114,24 @@ BOOST_AUTO_TEST_CASE(AuxiliaryConstructor_test) {
   Path::Item make_template = getAuxiliaryPath("ElementsKernel/templates/Makefile.in");
 
 }
+
+BOOST_AUTO_TEST_CASE(AuxiliaryConstructor2_test) {
+
+  const string make_template_stem {"ElementsKernel/templates/Makefile.in"};
+
+  Path::Item make_template = getAuxiliaryPath(make_template_stem);
+
+}
+
+
+BOOST_AUTO_TEST_CASE(AuxiliaryConstructor3_test) {
+
+  const Path::Item make_template_stem {"ElementsKernel/templates/Makefile.in"};
+
+  Path::Item make_template = getAuxiliaryPath(make_template_stem);
+
+}
+
 
 BOOST_AUTO_TEST_CASE(AuxiliaryVariableName_test) {
 
