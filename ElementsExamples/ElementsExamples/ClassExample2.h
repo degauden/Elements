@@ -24,8 +24,8 @@
  * @{
  */
 
-#ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE_H_
-#define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE_H_
+#ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE2_H_
+#define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE2_H_
 
 #include <string>                   // for std::string
 #include <vector>                   // for std::vector
@@ -46,7 +46,7 @@ namespace Examples {
  * @details
  *    Our naming convention and coding standard are used in this example
  */
-class ELEMENTS_API ClassExample {
+class ELEMENTS_API ClassExample2 {
 
 public:
 
@@ -61,7 +61,7 @@ public:
    *    Right Ascension coordinate
    *
    */
-  static ClassExample factoryMethod(const std::int64_t source_id, const double ra);
+  static ClassExample2 factoryMethod(const std::int64_t source_id, const double ra);
 
   /*
    * Getter to access the static private string
@@ -73,7 +73,7 @@ public:
   /**
    * @brief Destructor
    */
-  virtual ~ClassExample() = default;
+  virtual ~ClassExample2() = default;
 
   /**
    * @brief
@@ -180,12 +180,12 @@ private:
    * can be chosen via the factory.
    *
    */
-  ClassExample(const std::int64_t source_id, const double ra) :
+  ClassExample2(const std::int64_t source_id, const double ra) :
       m_source_id(source_id), m_ra(ra) {
   }
 
   /// An example of a static string
-  static const std::string s_static_string;
+  static std::string s_static_string;
 
   /// Source ID as an example of a 64 bits integer
   std::int64_t m_source_id { 0 };
@@ -198,6 +198,6 @@ private:
 }  // namespace Examples
 }  // namespace Elements
 
-#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE_H_
+#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE2_H_
 
 /**@}*/

@@ -25,7 +25,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include "ElementsExamples/ClassExample.h"
+#include "ElementsExamples/ClassExample2.h"
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Real.h"                 // Provides isEqual
@@ -33,7 +33,7 @@
 
 
 using std::string;
-using Elements::Examples::ClassExample;
+using Elements::Examples::ClassExample2;
 
 /*
  * Fixture to compare the test result against reference values
@@ -77,7 +77,7 @@ private:
 // Number to test the methods
   const double m_expected_result {1.273645899};
 
-  ClassExample m_class_example = ClassExample::factoryMethod(m_source_id, m_ra);
+  ClassExample2 m_class_example = ClassExample2::factoryMethod(m_source_id, m_ra);
 
 };
 

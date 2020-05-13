@@ -1,5 +1,8 @@
 /**
- * @file ElementsExamples/src/lib/PiCalculator.cpp
+ * @file ElementsExamples/src/lib/default/ModuleInfo.cpp
+ *
+ * @date Feb 12, 2015
+ * @author hubert
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
  *
@@ -15,37 +18,18 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "ElementsExamples/ModuleInfo.h"
 
-#include "ElementsExamples/PiCalculator.h"
+#include "ElementsKernel/ThisModule.h"
 
 namespace Elements {
 namespace Examples {
 
-void PiCalculator::calculate(unsigned int terms) {
+const System::ModuleInfo& getModuleInfo() {
 
-  double pi = 0.0;
-  // Leibniz formula for pi
-  double numerator = -1.0;
-  double denominator = -1.0;
-
-  for (unsigned int ii = 0; ii < terms; ++ii)  {
-    numerator   *= -1;
-    denominator += 2.0;
-    pi += numerator / denominator;
-  }
-
-  pi *= 4.0;
-
-  m_show_result_callback(pi);
+  return System::getThisModuleInfo();
 
 }
-
-void PiCalculator::setShowResultCallback(show_result_callback_type f) {
-
-  m_show_result_callback = f;
-
-}
-
 
 }  // namespace Examples
 }  // namespace Elements

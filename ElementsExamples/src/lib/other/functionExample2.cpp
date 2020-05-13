@@ -1,8 +1,8 @@
 /**
- * @file ElementsExamples/src/lib/ModuleInfo.cpp
+ * @file functionExample2.cpp
  *
- * @date Feb 12, 2015
- * @author hubert
+ * @date Feb 16, 2016
+ * @author Hubert Degaudenzi
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
  *
@@ -16,19 +16,16 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
-#include "ElementsExamples/ModuleInfo.h"
-
-#include "ElementsKernel/ThisModule.h"
+#include "ElementsExamples/functionExample2.h"
 
 namespace Elements {
 namespace Examples {
 
-const System::ModuleInfo& getModuleInfo() {
-
-  return System::getThisModuleInfo();
-
+int functionExample2(const int j) {
+  return j*j;
 }
 
 }  // namespace Examples

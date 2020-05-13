@@ -27,11 +27,11 @@
 
 #include <boost/current_function.hpp>       // for BOOST_CURRENT_FUNCTION
 #include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
+#include "ElementsExamples/ClassExample.h"
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/ThisModule.h"      // for getThisExecutableInfo
 
-#include "ElementsExamples/ClassExample.h"
 #include "ElementsExamples/functionExample.h"
 
 

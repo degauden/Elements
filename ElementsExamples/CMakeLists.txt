@@ -16,9 +16,14 @@ find_package(GMock)
 # Instruction for creating a C++ library
 #    ElementsExamples is the library name
 #    src/Lib/*.cpp are the source files
-elements_add_library(ElementsExamples src/lib/*.cpp src/lib/*.c
+elements_add_library(ElementsExamples src/lib/default/*.cpp src/lib/default/*.c
                      LINK_LIBRARIES Boost ElementsKernel
                      PUBLIC_HEADERS ElementsExamples)
+
+elements_add_library(ElementsOther src/lib/other/*.cpp
+                     LINK_LIBRARIES Boost ElementsKernel
+                     PUBLIC_HEADERS ElementsExamples)
+
 
 #===== Executables =============================================================
 # Instruction for creating a C++ executable
@@ -71,10 +76,23 @@ elements_add_unit_test(BoostClassExample tests/src/Boost/ClassExample_test.cpp
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
 
+
+
 elements_add_unit_test(FunctionExample tests/src/Boost/FunctionExample_test.cpp
                        EXECUTABLE FunctionExample_test
                        INCLUDE_DIRS ElementsExamples
                        LINK_LIBRARIES ElementsExamples TYPE Boost)
+
+# example with the second library
+elements_add_unit_test(BoostClassExample2 tests/src/Boost/ClassExample2_test.cpp
+                       EXECUTABLE BoostClassExample2_test
+                       INCLUDE_DIRS ElementsOther
+                       LINK_LIBRARIES ElementsOther TYPE Boost)
+
+elements_add_unit_test(FunctionExample2 tests/src/Boost/FunctionExample2_test.cpp
+                       EXECUTABLE FunctionExample2_test
+                       INCLUDE_DIRS ElementsOther
+                       LINK_LIBRARIES ElementsOther TYPE Boost)
 
 
 # Example with explict TestMain.cpp. Please mind the "unit_test_framework" in the boost components
@@ -92,8 +110,8 @@ elements_add_unit_test(ModuleInfo tests/src/Boost/ModuleInfo_test.cpp
 
 elements_add_unit_test(AllTests tests/src/Boost/*_test.cpp
                        EXECUTABLE BoostElementsExampleAllTests
-                       INCLUDE_DIRS ElementsExamples
-                       LINK_LIBRARIES ElementsExamples 
+                       INCLUDE_DIRS ElementsExamples ElementsOther
+                       LINK_LIBRARIES ElementsExamples ElementsOther
                        ENVIRONMENT MYTESTENV=FooBar
                        TYPE Boost)
 
