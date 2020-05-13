@@ -155,6 +155,10 @@ option(ELEMENTS_HIDE_SYMBOLS
        "Enable explicit symbol visibility on gcc-4"
        OFF)
 
+option(PROJECT_HIDE_SYMBOLS
+       "Enable explicit symbol visibility with a local project header"
+       OFF)
+
 
 option(ELEMENTS_CPP11
        "enable C++11 compilation"

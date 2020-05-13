@@ -300,6 +300,11 @@ macro(elements_project project version)
     set(instheader_cmd ${PYTHON_EXECUTABLE} ${instheader_cmd})
   endif()
 
+  find_program(expheader_cmd createProjExpHeader.py HINTS ${binary_paths})
+  if(expheader_cmd)
+    set(expheader_cmd ${PYTHON_EXECUTABLE} ${expheader_cmd})
+  endif()
+
 
   find_program(versmodule_cmd createProjVersModule.py HINTS ${binary_paths})
   if(versmodule_cmd)
@@ -373,7 +378,8 @@ macro(elements_project project version)
     set(ctestxml2html_cmd ${PYTHON_EXECUTABLE} ${ctestxml2html_cmd})
   endif()
 
-  mark_as_advanced(env_cmd merge_cmd versheader_cmd instheader_cmd versmodule_cmd instmodule_cmd
+  mark_as_advanced(env_cmd merge_cmd versheader_cmd instheader_cmd expheader_cmd 
+                   versmodule_cmd instmodule_cmd
                    thisheader_cmd thismodule_cmd
                    thismodheader_cmd
                    Boost_testmain_cmd CppUnit_testmain_cmd
@@ -517,6 +523,19 @@ macro(elements_project project version)
 execute_process\(COMMAND ${instheader_cmd} --quiet ${so_version_option} ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${_proj}_INSTALL.h)
+  endif()
+
+
+  if(PROJECT_HIDE_SYMBOLS)
+    if(expheader_cmd)
+      execute_process(COMMAND
+                      ${expheader_cmd} --quiet
+                      ${project} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_EXPORT.h)
+      install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_EXPORT.h DESTINATION ${INCLUDE_INSTALL_SUFFIX})
+      add_definitions(-D${_proj}_HIDE_SYMBOLS)
+      set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
+      set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${_proj}_EXPORT.h)
+    endif()
   endif()
 
   if(thisheader_cmd)
