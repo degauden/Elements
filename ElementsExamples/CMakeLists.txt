@@ -30,8 +30,8 @@ elements_add_library(ElementsOther src/lib/other/*.cpp
 #    CppProgramExample is the executable name
 #    src/Program/ProgramExample.cpp is the source file
 elements_add_executable(CppProgramExample src/program/ProgramExample.cpp
-                        INCLUDE_DIRS Boost ElementsExamples
-                        LINK_LIBRARIES Boost ElementsExamples)
+                        INCLUDE_DIRS Boost ElementsExamples ElementsOther
+                        LINK_LIBRARIES Boost ElementsExamples ElementsOther)
 
 elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgramExample.cpp
                         INCLUDE_DIRS Boost ElementsExamples

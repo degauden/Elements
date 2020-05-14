@@ -31,8 +31,10 @@
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/ThisModule.h"      // for getThisExecutableInfo
+#include "ElementsKernel/Project.h"         // for Project
 
 #include "ElementsExamples/functionExample.h"
+#include "ElementsExamples/printProject.h"
 
 
 using std::map;
@@ -235,6 +237,12 @@ public:
     log.info() << "This executable name: " << Elements::System::getThisExecutableInfo().name();
 
     myLocalLogTestFunc();
+
+    printProject();
+
+    log.info() << Project();
+    log.info() << "Project Name: " << Project::name();
+    log.info() << "Project Version: " << Project::versionString();
 
     log.info("#");
     log.info("Exiting mainMethod()");

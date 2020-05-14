@@ -143,6 +143,13 @@ elements_add_unit_test(Exception tests/src/Exception_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #-----------------------
+# Project_test
+elements_add_unit_test(Project tests/src/Project_test.cpp
+                       EXECUTABLE Project_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
+#-----------------------
 # OpenMP_test
 if(ELEMENTS_PARALLEL AND OPENMP_FOUND)
   elements_add_unit_test(OpenMP tests/src/OpenMP_test.cpp
