@@ -32,6 +32,7 @@
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/ThisModule.h"      // for getThisExecutableInfo
 #include "ElementsKernel/Project.h"         // for Project
+#include "ElementsKernel/Module.h"          // for Module
 
 #include "ElementsExamples/functionExample.h"
 #include "ElementsExamples/printProject.h"
@@ -243,6 +244,8 @@ public:
     log.info() << Project();
     log.info() << "Project Name: " << Project::name();
     log.info() << "Project Version: " << Project::versionString();
+    log.info() << "Module Name: " << Module::name();
+    log.info() << "Module Version: " << Module::versionString();
 
     log.info("#");
     log.info("Exiting mainMethod()");

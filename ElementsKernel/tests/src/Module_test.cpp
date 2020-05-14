@@ -1,5 +1,5 @@
 /**
- * @file Module_test.cpp
+ * @file Project_test.cpp
  *
  * @date May 14, 2020
  * @author Hubert Degaudenzi
@@ -19,7 +19,7 @@
  *
  */
 
-#include "ElementsKernel/Module.h"            // for Project
+#include "ElementsKernel/Project.h"            // for Project
 
 #include <iostream>
 #include <boost/test/unit_test.hpp>
@@ -33,12 +33,12 @@ namespace Elements {
 //
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE(Module_test)
+BOOST_AUTO_TEST_SUITE(Project_test)
 
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Info_test) {
-  BOOST_CHECK(Module::name() == "ElementsKernel");
+  BOOST_CHECK(Project::name() == "Elements");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
