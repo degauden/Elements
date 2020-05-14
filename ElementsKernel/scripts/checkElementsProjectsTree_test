@@ -55,7 +55,8 @@ if [ -e ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}/manifest.xml ]; then
 
 cd $projectA_name/$projectA_version
 
-AddElementsModule $projectA_name
+AddElementsModule ${projectA_name}
+AddElementsModule -s ${projectA_name}Second
 
 make configure
 
@@ -120,7 +121,10 @@ CreateElementsProject -d $projectA_name $projectA_version -d $projectB_name $pro
 
 cd $projectC_name/$projectC_version
 
-AddElementsModule $projectC_name
+AddElementsModule ${projectC_name}
+AddElementsModule -s ${projectC_name}Second
+AddElementsModule -s --module-dependency ${projectB_name} ${projectC_name}Third
+
 
 make configure
 
