@@ -36,6 +36,7 @@
 
 #include "ElementsKernel/Export.h"      // ELEMENTS_API
 #include "ElementsKernel/Exit.h"        // for ExitCode
+#include "ElementsKernel/Logging.h"     // for Logging
 
 namespace Elements {
 
@@ -63,6 +64,9 @@ public:
   using PositionalOptionsDescription = positional_options_description;
   using VariableValue = variable_value;
   using VariablesMap = variables_map;
+
+  using ExitCode = Elements::ExitCode;
+  using Logging = Elements::Logging;
 
   /**
    * @brief Constructor
