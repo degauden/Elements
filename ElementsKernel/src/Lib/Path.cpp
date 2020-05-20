@@ -73,7 +73,6 @@ const std::map<Type, const bool> HAS_SUBLEVELS {
   {Type::auxiliary, true}
 };
 
-
 vector<Item> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
   using System::getEnv;
@@ -93,6 +92,11 @@ vector<Item> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
   return found_list;
 }
+
+vector<Item> getLocations(const Type& path_type, bool exist_only) {
+  return getLocationsFromEnv(VARIABLE.at(path_type), exist_only);
+}
+
 
 vector<Item> splitPath(const string& path_string) {
 

@@ -47,7 +47,7 @@ template Path::Item getConfigurationPath(const string& file_name, bool raise_exc
 
 std::vector<Path::Item> getConfigurationLocations(bool exist_only) {
 
-  auto location_list = Path::getLocationsFromEnv(Path::VARIABLE.at(Path::Type::configuration), exist_only);
+  auto location_list = Path::getLocations(Path::Type::configuration, exist_only);
 
   // the search is extended to the default system /usr/share/conf
   location_list.push_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
