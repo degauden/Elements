@@ -23,6 +23,10 @@
 *.out
 *.app
 
+# Unit test / coverage reports
+.coverage
+
+
 #---------------------
 # Python
 #---------------------
