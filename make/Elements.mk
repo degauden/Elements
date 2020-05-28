@@ -52,6 +52,20 @@ ifeq ($(NINJA),)
   NINJA := $(shell which ninja 2> /dev/null)
 endif
 
+# Looking for the Custom make library
+
+CUSTOM_MAKE_LIB := Custom.mk
+
+ifneq ($(wildcard $(CURDIR)/make/$(CUSTOM_MAKE_LIB)),)
+  CUSTOM_MAKE_LIB_FILE := $(CURDIR)/make/$(CUSTOM_MAKE_LIB)
+else
+  ifneq ($(CMAKE_PREFIX_PATH),)
+    PREFIX_LIST := $(subst :, ,$(CMAKE_PREFIX_PATH))
+    CUSTOM_MAKE_LIB_LIST := $(foreach dir,$(PREFIX_LIST),$(wildcard $(dir)/share/Elements/make/$(CUSTOM_MAKE_LIB) $(dir)/../make/$(CUSTOM_MAKE_LIB)))
+  endif
+  CUSTOM_MAKE_LIB_LIST += /usr/share/Elements/make/$(CUSTOM_MAKE_LIB)
+  CUSTOM_MAKE_LIB_FILE := $(firstword $(CUSTOM_MAKE_LIB_LIST))
+endif
 
 # Looking for the ToolChain
 
@@ -173,14 +187,15 @@ install: all
 	cd $(BUILDDIR) && $(CMAKE) -P cmake_install.cmake | grep -v "^-- Up-to-date:"
 endif
 
+# import the library to look for a custom Makefile
+-include $(CUSTOM_MAKE_LIB_FILE)
+
 # ensure that the target are always passed to the CMake Makefile
-FORCE:
-	@ # dummy target
+FORCE: ; # dummy target
 
 # Makefiles are used as implicit targets in make, but we should not consider
 # them for delegation.
-$(MAKEFILE_LIST):
-	@ # do not delegate further
+$(MAKEFILE_LIST): ; # do not delegate further
 
 
 # trigger CMake configuration
@@ -189,3 +204,4 @@ $(BUILDDIR)/$(BUILD_CONF_FILE): | $(BUILDDIR)
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
+
