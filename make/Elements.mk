@@ -191,11 +191,11 @@ endif
 -include $(CUSTOM_MAKE_LIB_FILE)
 
 # ensure that the target are always passed to the CMake Makefile
-FORCE: ; # dummy target
+FORCE: ;
 
 # Makefiles are used as implicit targets in make, but we should not consider
 # them for delegation.
-$(MAKEFILE_LIST): ; # do not delegate further
+$(MAKEFILE_LIST): ;
 
 
 # trigger CMake configuration
