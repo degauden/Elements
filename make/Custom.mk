@@ -6,7 +6,7 @@ $(info Using the $(CURRENT_MAKEFILE_LIBRARY) make library)
 
 ifneq (${CUSTOM_MAKEFILE},)
 
-  $(info Looking for the ${CUSTOM_MAKEFILE} make file)
+  $(info Looking for the custom ${CUSTOM_MAKEFILE} make file)
 
   ifneq ($(wildcard ${CUSTOM_MAKEFILE}),)
     # checking if it is an absolute file. It has priority.

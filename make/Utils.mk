@@ -1,0 +1,7 @@
+CURRENT_MAKEFILE_LIBRARY := $(lastword $(MAKEFILE_LIST))
+
+$(info Using the $(CURRENT_MAKEFILE_LIBRARY) make library)
+
+TOP_MAKEFILE_PATH := $(abspath $(firstword $(MAKEFILE_LIST)))
+PROJECT_SOURCE_PATH := $(dir $(TOP_MAKEFILE_PATH))
+PROJECT_BUILD_PATH := $(BUILDDIR)
