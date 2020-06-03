@@ -34,10 +34,10 @@
                Mega electron Volt      (MeV)
                positron charge         (eplus)
                degree Kelvin           (kelvin)
-              the amount of substance (mole)
-              luminous intensity      (candela)
+               the amount of substance (mole)
+               luminous intensity      (candela)
                radian                  (radian)
-              steradian               (steradian)
+               steradian               (steradian)
 
  Below is a non exhaustive list of derived and pratical units
  (i.e. mostly the SI units).
