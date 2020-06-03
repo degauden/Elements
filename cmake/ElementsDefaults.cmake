@@ -20,7 +20,7 @@ set(HIDE_SYSINC_WARNINGS ON
     FORCE)
 
 # Use only the Doxygen API documentation generation
-set(USE_SPHINX_APIDOC OFF
+set(USE_SPHINX_APIDOC ON
     CACHE STRING "Generates the sphinx API documentation"
     FORCE)
 
