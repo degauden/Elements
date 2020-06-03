@@ -23,6 +23,10 @@ include_guard()
 
     find_package(PlantUML QUIET)
     
+    if(NOT PLANTUML_JARFILE)
+      set(PLANTUML_JARFILE "")
+    endif()
+    
     set(DOXYGEN_EXTRA_FILE_PATTERNS) 
     if(USE_PYTHON_DOXYGEN)
         set(DOXYGEN_EXTRA_FILE_PATTERNS "*.py") 
