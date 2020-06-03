@@ -17,10 +17,10 @@
 #
 
 """
-File: %(FILETEST)s
+:file: %(FILETEST)s
 
-Created on: %(DATE)s
-Author: %(AUTHOR)s
+:date: %(DATE)s
+:author: %(AUTHOR)s
 """
 
 import py.test

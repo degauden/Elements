@@ -17,10 +17,10 @@
 #
 
 """
-File: python/ElementsKernel/GetElementsFiles.py
+:file: python/ElementsKernel/GetElementsFiles.py
 
-Created on: 10/10/17
-Author: hubert
+:date: Created on: 10/10/17
+:author: Hubert Degaudenzi
 """
 
 import os
