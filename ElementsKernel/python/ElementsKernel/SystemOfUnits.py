@@ -23,7 +23,6 @@
  This script is a direct adaptation of CLHEP/Units/SystemOfUnits.h
  and the following is the original CLHEP comment:
 
- -----
  HEP coherent system of Units
 
  This file has been provided to CLHEP by Geant4 (simulation toolkit for HEP).

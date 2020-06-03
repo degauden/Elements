@@ -19,7 +19,7 @@
 """ This script will create a new Elements project
 
 :file: ElementsKernel/Project.py
-:author Nicolas Morisset
+:author: Nicolas Morisset
 
 :date: 01/07/15
 
