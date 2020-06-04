@@ -35,9 +35,11 @@ import ElementsKernel.Logging as log
 from ElementsKernel import Auxiliary
 from ElementsKernel import ProjectCommonRoutines
 
-# Python 2 and 3 compatibility 
-# see https://python-future.org/compatible_idioms.html
-from builtins import input
+try:
+    from builtins import input
+except ImportError:
+    from __builtin__ import input
+
 
 logger = log.getLogger('CreateElementsProject')
 
@@ -198,7 +200,7 @@ def lookForDirectories(project_dir):
     match_list = []
     dirlist = [elt for elt in os.listdir(project_dir) if os.path.isdir(os.path.join(project_dir, elt)) ]
     for elt in dirlist:
-        match = re.match(ProjectCommonRoutines.version_regex, elt)
+        match = re.match(ProjectCommonRoutines.VERSION_REGEX, elt)
         if match:
             match_list.append(match.group(0))
     return match_list
@@ -217,7 +219,7 @@ def checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes
         if no_version_directory and version_dir_list:
             logger.warning('Found the following version(s) directory(ies) : %s', version_dir_list)
         if not answer_yes:
-            response_key = eval(input('Do you want to overwrite the existing project (y/n, default: n)?'))
+            response_key = input('Do you want to overwrite the existing project (y/n, default: n)?')
         if answer_yes or response_key.lower() == "yes" or response_key == "y":
             logger.info('# Overwriting the existing project: <%s>', project_dir)
         else:

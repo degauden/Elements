@@ -16,6 +16,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
+""" The ConnectionConfiguration Module """
+
 import argparse
 #TODO use configparse
 import enum
@@ -23,54 +25,54 @@ import enum
 from .DataSyncUtils import dataSyncConfFilePath, localWorkspacePrefix, concatenatePaths
 
 
-class DataHost (enum.Enum):
+class DataHost(enum.Enum):
     """The test data hosting solution.
     """
     IRODS = "iRODS"
     WEBDAV = "WebDAV"
 
 
-class OverwritingPolicy (enum.IntEnum):
+class OverwritingPolicy(enum.IntEnum):
     """The overwriting policy if the local file already exists.
     """
     ABORT = 0
     OVERWRITE = 1
 
 
-class ConnectionConfiguration (object):
+class ConnectionConfiguration(object):
     """The connection configuration mainly holds:
     * the host type and URL,
     * the user name and password,
     * the overwriting policy.
     """
 
-    def __init__ (self, filename=None):
+    def __init__(self, filename=None):
         """Create a connection configuration,
         and optionally parse a connection configuration file.
         """
         self.host = None
-        self.hostURL = None
+        self.host_url = None
         self.user = None
         self.password = None
-        self.overwritingPolicy = False
+        self.overwriting_policy = False
         self.tries = 4
-        self.distantRoot = ""
-        self.localRoot = ""
+        self.distant_root = ""
+        self.local_root = ""
         if filename is not None:
             self.parseConfigurationFile(filename)
 
-    def overwritingAllowed (self):
+    def overwritingAllowed(self):
         """Check whether overwriting a local file is allowed.
         """
-        return self.overwritingPolicy == OverwritingPolicy.OVERWRITE
+        return self.overwriting_policy == OverwritingPolicy.OVERWRITE
 
-    def parseConfigurationFile (self, filename):
+    def parseConfigurationFile(self, filename):
         """Parse the connection configuration file.
         """
         assert isinstance(filename, str)
-        configFile = dataSyncConfFilePath(filename)
+        config_file = dataSyncConfFilePath(filename)
         parser = argparse.ArgumentParser()
-        #TODO: use configparser
+        # TODO: use configparser
         parser.add_argument("--host", type=str)
         parser.add_argument("--host-url", type=str)
         parser.add_argument("--user", type=str)
@@ -81,40 +83,41 @@ class ConnectionConfiguration (object):
         parser.add_argument("--local-workspace", type=str)
         # Read config file
         values = []
-        with open(configFile) as f:
+        with open(config_file) as f:
             for line in f:
                 if not line == '\n':
                     values.append("--" + line.replace('\n', '').replace(' ', ''))
-                    #TODO avoid loop
+                    # TODO: avoid loop
         args = parser.parse_args(values)
         # Configure object
         self.parseHost(args.host)
-        self.hostURL = args.host_url
+        self.host_url = args.host_url
         self.user = args.user
         self.password = args.password
         self.parseOverwritingPolicy(args.overwrite)
         self.tries = args.tries
-        self.distantRoot = args.distant_workspace
+        self.distant_root = args.distant_workspace
         prefix = localWorkspacePrefix()
         workspace = args.local_workspace
-        self.localRoot = concatenatePaths([prefix, workspace])
+        self.local_root = concatenatePaths([prefix, workspace])
 
-    def parseHost (self, name):
+    def parseHost(self, name):
         """Parse the name of a data hosting solution (case-insensitive).
         """
         for host in DataHost:
             if host.name.lower() == name.lower():
                 self.host = host
                 return
-        #TODO raise error
+        # TODO raise error
 
-    def parseOverwritingPolicy (self, policy):
-        overwriteAllowedOptions = ["true", "yes", "y"]
-        overwriteForbiddenOptions = ["false", "no", "n"]
-        if policy.lower() in overwriteAllowedOptions:
-            self.overwritingPolicy = OverwritingPolicy.OVERWRITE
-        elif policy.lower() in overwriteForbiddenOptions:
-            self.overwritingPolicy = OverwritingPolicy.ABORT
+    def parseOverwritingPolicy(self, policy):
+        """ Parse the Overwriting Policy """
+        overwrite_allowed_options = ["true", "yes", "y"]
+        overwrite_forbidden_options = ["false", "no", "n"]
+        if policy.lower() in overwrite_allowed_options:
+            self.overwriting_policy = OverwritingPolicy.OVERWRITE
+        elif policy.lower() in overwrite_forbidden_options:
+            self.overwriting_policy = OverwritingPolicy.ABORT
         else:
             return
-            #TODO raise error
+            # TODO: raise error

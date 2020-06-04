@@ -1,16 +1,16 @@
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
-# 
+#
 # This library is free software; you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option)
 # any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 # details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -35,17 +35,18 @@ import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 import ElementsKernel.Auxiliary as aux
 
-# Python 2 and 3 compatibility 
-# see https://python-future.org/compatible_idioms.html
-from builtins import input
+try:
+    from builtins import input
+except ImportError:
+    from __builtin__ import input
 
 # Define a global list containing files created or modified
 # by the python scripts for the creation of a Elements project
 _filelist = []
 
 # Define regex for name & version checking
-name_regex = r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
-version_regex = r"^(\d+\.\d+(\.\d+)?|HEAD)$"
+NAME_REGEX = r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
+VERSION_REGEX = r"^(\d+\.\d+(\.\d+)?|HEAD)$"
 
 logger = log.getLogger('ProjectCommonRoutines')
 
@@ -61,13 +62,13 @@ def addItemToCreationList(element):
 ################################################################################
 def printCreationList():
     """
-    Print the contents of the file list 
+    Print the contents of the file list
     """
     logger.info("#")
     logger.info("# File(s) created/modified:")
     logger.info("#")
     for elt in _filelist:
-        logger.info("#  file --> %s" % elt)
+        logger.info("#  file --> %s", elt)
     logger.info("#")
 
 ################################################################################
@@ -106,8 +107,8 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=Fals
                 logger.warning("< %s/NameCheck/project1/ >", db_url)
                 logger.info("")
 
-    if not answer_yes and not script_goes_on :
-        response_key = eval(input('Do you want to continue?(y/n, default: n)'))
+    if not answer_yes and not script_goes_on:
+        response_key = input('Do you want to continue?(y/n, default: n)')
         if not response_key.lower() == "yes" and not response_key.lower() == "y":
             raise Exception()
 
@@ -161,13 +162,13 @@ def checkNameAndVersionValid(name, version):
     """
     Check that the <name> and <version> respect a regex
     """
-    if not re.match(name_regex, name):
+    if not re.match(NAME_REGEX, name):
         raise Exception("Name not valid : < %s >. It must follow this regex : < %s >"
-                            % (name, name_regex))
+                        % (name, NAME_REGEX))
 
-    if not re.match(version_regex, version):
+    if not re.match(VERSION_REGEX, version):
         raise Exception("Version number not valid : < %s >. It must follow this regex : < %s >"
-                            % (version, version_regex))
+                        % (version, VERSION_REGEX))
 
 ################################################################################
 
@@ -224,19 +225,19 @@ def getElementsModuleName(module_directory):
     cmake_file = os.path.join(module_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         raise Exception("< %s > cmake module file is missing! Are you inside a module directory?" % cmake_file)
-    else:
-        # Check the make file is an Elements cmake file
-        # it should contain the string : "elements_project"
-        f = open(cmake_file)
-        for line in f.readlines():
-            if 'elements_subdir' in line:
-                pos_start = line.find('(')
-                pos_end = line.find(')')
-                module_name = line[pos_start + 1:pos_end]
-        f.close()
 
-        if not module_name:
-            raise Exception("Module name not found in the <%s> file! Perhaps you are not in a " \
+    # Check the make file is an Elements cmake file
+    # it should contain the string : "elements_project"
+    f = open(cmake_file)
+    for line in f.readlines():
+        if 'elements_subdir' in line:
+            pos_start = line.find('(')
+            pos_end = line.find(')')
+            module_name = line[pos_start + 1:pos_end]
+    f.close()
+
+    if not module_name:
+        raise Exception("Module name not found in the <%s> file! Perhaps you are not in a " \
                                 "module directory!" % cmake_file)
 
     return module_name

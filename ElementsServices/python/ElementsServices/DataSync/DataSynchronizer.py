@@ -49,12 +49,12 @@ class DataSynchronizer(object):
             connection,
             dependencies):
         self._connection = connection
-        self._fileMap = dependencies.getFileMap()
+        self._file_map = dependencies.getFileMap()
 
     def downloadAllFiles (self):
         """Download all the test files.
         """
-        for localFile, distantFile in self._fileMap.items():
+        for localFile, distantFile in self._file_map.items():
             if self.fileShouldBeWritten(localFile):
                 self.downloadOneFile(distantFile, localFile)
 

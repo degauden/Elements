@@ -33,9 +33,11 @@ from ElementsKernel import ParseCmakeLists
 from ElementsKernel import Logging
 from ElementsKernel import Exit
 
-# Python 2 and 3 compatibility 
-# see https://python-future.org/compatible_idioms.html
-from builtins import input
+try:
+    from builtins import input
+except ImportError:
+    from __builtin__ import input
+
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
@@ -140,7 +142,7 @@ def mainMethod(args):
             logger.info('File to be deleted:')
             for elt_file in file_to_be_deleted:
                 logger.info('--> %s', elt_file)
-            response_key = eval(input('Do you want to continue?(y/n, default: n)'))
+            response_key = input('Do you want to continue?(y/n, default: n)')
             if response_key.lower() == 'y':
                 ProjectCommonRoutines.removeFilesOnDisk(file_to_be_deleted)
                 cmakefile = os.path.join(module_dir, 'CMakeLists.txt')

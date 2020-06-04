@@ -45,7 +45,7 @@ class WebdavSynchronizer (DataSynchronizer):
             localFile):
         user = self._connection.user
         password = self._connection.password
-        hostURL = self._connection.hostURL
+        hostURL = self._connection.host_url
         cmd = "wget --no-check-certificate "
         cmd += " --user=" + str(user)
         cmd += " --password=" + str(password)
