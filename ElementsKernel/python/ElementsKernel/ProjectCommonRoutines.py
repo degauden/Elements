@@ -35,10 +35,9 @@ import ElementsKernel.NameCheck as nc
 import ElementsKernel.Logging as log
 import ElementsKernel.Auxiliary as aux
 
-try:
-    from builtins import input
-except ImportError:
-    from __builtin__ import input
+# Python 2 and 3 compatibility 
+# see https://python-future.org/compatible_idioms.html
+from builtins import input
 
 # Define a global list containing files created or modified
 # by the python scripts for the creation of a Elements project
@@ -108,7 +107,7 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=Fals
                 logger.info("")
 
     if not answer_yes and not script_goes_on :
-        response_key = input('Do you want to continue?(y/n, default: n)')
+        response_key = eval(input('Do you want to continue?(y/n, default: n)'))
         if not response_key.lower() == "yes" and not response_key.lower() == "y":
             raise Exception()
 

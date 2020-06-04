@@ -33,6 +33,7 @@ class DownloadFailed (Exception):
     """An exception raised when downloading fails.
     """
     def __init__ (self, distantFile, localFile):
+        super(DownloadFailed, self).__init__()
         self.message = "Unable to download file: '" + distantFile + "' as: '" + localFile + "'."
 
 
@@ -74,10 +75,10 @@ class DataSynchronizer(object):
         """
         command = self.createDownloadCommand(distantFile, localFile)
         createLocalDirOf(localFile)
-        out, err = runCommandAndCaptureOutErr(command)
+        _out, _err = runCommandAndCaptureOutErr(command)
         if not self.hasBeenDownloaded(distantFile, localFile):
             raise DownloadFailed(distantFile, localFile)
-            #TODO output out, err
+            #TODO output _out, _err
 
     def hasBeenDownloaded (self, distantFile, localFile):
         """Check whether a given test file has been downloaded,

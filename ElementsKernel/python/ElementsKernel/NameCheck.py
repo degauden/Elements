@@ -35,12 +35,13 @@ from ElementsKernel import Exit
 
 import json
 
-try:
-    from urllib2 import urlopen
-    from urllib2 import URLError
-except:
-    from urllib.request import urlopen
-    from urllib.error import URLError
+# Python 2 and 3: easiest option for urllib
+# see https://python-future.org/compatible_idioms.html
+from future.standard_library import install_aliases
+install_aliases()
+
+from urllib.request import urlopen
+from urllib.error import URLError
 
 logger = log.getLogger('NameCheck')
 

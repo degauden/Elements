@@ -35,10 +35,9 @@ from ElementsKernel import ParseCmakeLists
 from ElementsKernel import ParseCmakeListsMacros
 from ElementsKernel import Logging
 
-try:
-    from builtins import input
-except:
-    from __builtin__ import input
+# Python 2 and 3 compatibility 
+# see https://python-future.org/compatible_idioms.html
+from builtins import input
 
 logger = Logging.getLogger('AddElementsModule')
 
@@ -147,8 +146,8 @@ def createModule(project_dir, module_name, dependency_list, standalone=False, an
         # Ask user
         logger.warning('<%s> module ALREADY exists on disk!!!', module_name)
         if not answer_yes:
-            response_key = input(
-            'Do you want to replace the existing module (y/n), default: n)?')
+            response_key = eval(input(
+            'Do you want to replace the existing module (y/n), default: n)?'))
         if answer_yes or response_key.lower() == "y":
             logger.info('# Replacing the existing module: <%s>', module_name)
             ProjectCommonRoutines.eraseDirectory(mod_path)

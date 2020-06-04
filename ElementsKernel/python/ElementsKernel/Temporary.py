@@ -1,21 +1,20 @@
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
-# 
+#
 # This library is free software; you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option)
 # any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 # details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-
 
 ''' create temporary structure for remote builds
 
@@ -39,12 +38,14 @@ if not 'mkdtemp' in dir(tempfile):
 
     def mkdtemp():
         """Replacement for the missing function in the tempfile module"""
+        # pylint: disable=no-member
         name = os.tmpnam()  # @UndefinedVariable
         os.mkdir(name, 0o700)
         return name
 
     def mkstemp():
         """Replacement for the missing function in the tempfile module"""
+        # pylint: disable=no-member
         name = os.tmpnam()  # @UndefinedVariable
         return (os.open(name, os.O_CREAT | os.O_RDWR | os.O_EXCL, 0o600),
                 name)
@@ -65,13 +66,14 @@ class TempResource(object):
         """ Constructor """
         self._name = None
         self._keep_var = keep_var
-        self._get_resource()
+        self._getResource()
 
     def getName(self):
         """Returns the name of the temporary directory"""
         return self._name
 
     def path(self):
+        """ Retuns the path to the resource """
         return self._name
 
     def __str__(self):
@@ -86,7 +88,7 @@ class TempResource(object):
                 log.info("%s set: I do not remove the '%s' temporary path",
                          self._keep_var, self._name)
             else:
-                self._del_resource()
+                self._delResource()
                 self._name = None
 
     def __del__(self):
@@ -98,7 +100,7 @@ class TempResource(object):
 
     def __enter__(self):
         """ To work with the context"""
-        self._get_resource()
+        self._getResource()
         return self
 
     def __exit__(self, *_):
@@ -126,12 +128,13 @@ class TempDir(TempResource):
         self._base_dir = base_dir
         super(TempDir, self).__init__(keep_var)
 
-    def _get_resource(self):
+    def _getResource(self):
         """ Internal function to get the resource"""
         if not self._name:
+            # pylint: disable=too-many-function-args
             self._name = mkdtemp(self._suffix, self._prefix, self._base_dir)
 
-    def _del_resource(self):
+    def _delResource(self):
         """Internal function to remove the resource"""
         rmtree(self._name)
 
@@ -145,13 +148,13 @@ class TempFile(TempResource):
         self._file = None
         super(TempFile, self).__init__(keep_var)
 
-    def _get_resource(self):
+    def _getResource(self):
         """ Internal function to get the resource"""
         if not self._name:
             fd, self._name = mkstemp()
             self._file = os.fdopen(fd, "w+")
 
-    def _del_resource(self):
+    def _delResource(self):
         """ Internal function to remove the resource """
         self._file.close()
         self._file = None
@@ -164,7 +167,7 @@ class Environment(object):
     Class to changes the environment temporarily.
     """
 
-    def __init__(self, orig=os.environ, keep_same=False):
+    def __init__(self, orig=os.environ, keep_same=False): # pylint: disable=dangerous-default-value
         """
         Create a temporary environment on top of the one specified
         (it can be another TemporaryEnvironment instance).
@@ -173,16 +176,16 @@ class Environment(object):
         self._orig = orig
         self.env = None
         self._keep_same = keep_same
-        self._aq_env()
+        self._aqEnv()
 
         # the keys of the environment dictionary are case insensitive on
         # windows
         if sys.platform.startswith("win"):
-            self._fixKey = lambda key: key.upper()
+            self._fix_key = lambda key: key.upper()
         else:
-            self._fixKey = lambda key: key
+            self._fix_key = lambda key: key
 
-    def _aq_env(self):
+    def _aqEnv(self):
         if not self.env:
             self.env = self._orig
 
@@ -190,7 +193,7 @@ class Environment(object):
         """
         Set an environment variable recording the previous value.
         """
-        key = self._fixKey(key)
+        key = self._fix_key(key)
         if key not in self.old_values:
             if key in self.env:
                 if not self._keep_same or self.env[key] != value:
@@ -204,7 +207,7 @@ class Environment(object):
         Get an environment variable.
         Needed to provide the same interface as os.environ.
         """
-        key = self._fixKey(key)
+        key = self._fix_key(key)
         return self.env[key]
 
     def __delitem__(self, key):
@@ -212,7 +215,7 @@ class Environment(object):
         Unset an environment variable.
         Needed to provide the same interface as os.environ.
         """
-        key = self._fixKey(key)
+        key = self._fix_key(key)
         if key not in self.env:
             raise KeyError(key)
         self.old_values[key] = self.env[key]
@@ -227,11 +230,11 @@ class Environment(object):
         """
         return self.env.keys()
 
-    def has_key(self, key):
+    def has_key(self, key): # pylint: disable=invalid-name
         """
         return True if the key is present
         """
-        key = self._fixKey(key)
+        key = self._fix_key(key)
         return key in self.env.keys()
 
     def items(self):
@@ -246,7 +249,7 @@ class Environment(object):
         Operator 'in'.
         Needed to provide the same interface as os.environ.
         """
-        key = self._fixKey(key)
+        key = self._fix_key(key)
         return key in self.env
 
     def restore(self):
@@ -268,7 +271,7 @@ class Environment(object):
 
     def __enter__(self):
         """ To work with the context"""
-        self._aq_env()
+        self._aqEnv()
         return self
 
     def __exit__(self, *_):
@@ -282,7 +285,7 @@ class Environment(object):
         Implementation of the standard get method of a dictionary: return the
         value associated to "key" if present, otherwise return the default.
         """
-        key = self._fixKey(key)
+        key = self._fix_key(key)
         return self.env.get(key, default)
 
     def commit(self):
@@ -292,7 +295,7 @@ class Environment(object):
         """
         self.old_values = {}
 
-    def gen_script(self, shell_type):
+    def gen_script(self, shell_type): # pylint: disable=invalid-name
         """
         Generate a shell script to reproduce the changes in the environment.
         """
@@ -319,6 +322,5 @@ class Environment(object):
                 elif shell_type == 'bat':
                     out += 'set %s=%s\n' % (key, self.env[key])
         return out
-
 
 TempEnv = Environment

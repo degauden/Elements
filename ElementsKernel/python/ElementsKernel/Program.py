@@ -278,7 +278,7 @@ class Program(object):
     def _tearDown(self, exit_code):
 
         if exit_code is not None:
-            self._logger.debug("# Exit Code: %d" % exit_code)
+            self._logger.debug("# Exit Code: %d", exit_code)
         self._logFooter()
 
     def getProgramName(self):
@@ -291,7 +291,7 @@ class Program(object):
         exit_code = Exit.Code["NOT_OK"]
         try:
             exit_code = self._app_module.mainMethod(args)
-        except:
+        except Exception:
             self._logger.exception(sys.exc_info()[1])
 
         self._tearDown(exit_code)

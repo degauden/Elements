@@ -16,11 +16,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
-from .ConnectionConfiguration import *
-from .DependencyConfiguration import *
-from .IrodsSynchronizer import *
-from .WebdavSynchronizer import *
+from .ConnectionConfiguration import DataHost
+from .IrodsSynchronizer import IrodsSynchronizer
+from .WebdavSynchronizer import WebdavSynchronizer
 
 
 synchronizerRegister = {
