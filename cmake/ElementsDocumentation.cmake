@@ -141,6 +141,13 @@ include_guard()
       set(APPEND_BREATHE_EXT "")
     endif()
 
+    if(USE_SPHINX_NUMPYDOC)
+      set(APPEND_NUMPYDOC_EXT "extensions.append(numpydoc_extension)")
+    else()
+      set(APPEND_NUMPYDOC_EXT "pass")
+    endif()
+
+
     # Generation of the main sphinx configuration file.
     find_file_to_configure(Sphinx_conf.py.in
                            FILETYPE "Sphinx configuration"
@@ -172,7 +179,7 @@ include_guard()
                       COMMAND  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx 
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/_static
-                      COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} . ${_py_pack} html
+                      COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} -b html . html
                       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/doc
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)

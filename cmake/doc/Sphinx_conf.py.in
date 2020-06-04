@@ -59,7 +59,8 @@ except ImportError:
     found_npdoc = False
 
 if found_npdoc:
-    extensions.append(numpydoc_extension)
+    numpydoc_show_class_members = False
+    @APPEND_NUMPYDOC_EXT@
 
 @APPEND_BREATHE_EXT@
 
