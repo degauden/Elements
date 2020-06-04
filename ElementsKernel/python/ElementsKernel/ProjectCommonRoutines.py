@@ -82,8 +82,8 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=Fals
     db_url = os.environ.get("ELEMENTS_NAMING_DB_URL", "")
     if not nc.checkDataBaseUrl(db_url):
         logger.info("#")
-        logger.warn("!!! The Elements Naming Database URL is not valid : <%s> !!!", db_url)
-        logger.warn("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
+        logger.warning("!!! The Elements Naming Database URL is not valid : <%s> !!!", db_url)
+        logger.warning("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
     else:
         info = nc.getInfo(entity_name, db_url, entity_type)
         if info["error"]:
@@ -91,19 +91,19 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=Fals
         else:
             if info["exists"]:
                 logger.info("#")
-                logger.warn("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!",
-                            entity_name, entity_type)
-                logger.warn("See the result for the global query of the \"%s\" name in the DB: %s", entity_name,
-                            info["url"])
-                logger.warn("For more information also connect to: %s", info["private_url"])
+                logger.warning("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!",
+                               entity_name, entity_type)
+                logger.warning("See the result for the global query of the \"%s\" name in the DB: %s", entity_name,
+                               info["url"])
+                logger.warning("For more information also connect to: %s", info["private_url"])
                 script_goes_on = False
             else:
-                logger.warn("")
-                logger.warn("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!",
-                            entity_name,
-                            entity_type)
-                logger.warn("Please think to add the \"%s\" name in the Element Naming Database below:", entity_name)
-                logger.warn("< %s/NameCheck/project1/ >", db_url)
+                logger.warning("")
+                logger.warning("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!",
+                               entity_name,
+                               entity_type)
+                logger.warning("Please think to add the \"%s\" name in the Element Naming Database below:", entity_name)
+                logger.warning("< %s/NameCheck/project1/ >", db_url)
                 logger.info("")
 
     if not answer_yes and not script_goes_on :
