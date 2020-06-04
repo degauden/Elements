@@ -106,8 +106,24 @@ ELEMENTS_API extern const std::map<Type, const bool> HAS_SUBLEVELS;
  * @return
  *    return a list of boost filesystem paths
  */
-ELEMENTS_API std::vector<Item> getLocationsFromEnv(const std::string& path_variable,
-                                                                      bool exist_only = false);
+ELEMENTS_API std::vector<Item> getLocationsFromEnv(const std::string& path_variable, bool exist_only = false);
+
+/**
+ * @brief function to get the locations for the specific type
+ * @ingroup ElementsKernel
+ * @details
+ *    This function return the raw locations for the given type.
+ *    It doesn't add the internal locations which are not in
+ *    the variable (like /usr/lib for the library type)
+ * @param path_type
+ *    type of the path
+ * @param exist_only
+ *    if true returns only existing locations. by default it is set
+ *    to false.
+ * @return
+ *    return a list of boost filesystem paths
+ */
+ELEMENTS_API std::vector<Item> getLocations(const Type& path_type, bool exist_only = false);
 
 /**
  * @brief retrieve path from a file name and a set of location to look into
@@ -129,17 +145,13 @@ template <typename T, typename U>
 ELEMENTS_API Item getPathFromLocations(const T& file_name, const std::vector<U>& locations);
 // Template instantiation for the most common types
 extern template
-ELEMENTS_API Item getPathFromLocations(const Item& file_name,
-                                                          const std::vector<Item>& locations);
+ELEMENTS_API Item getPathFromLocations(const Item& file_name, const std::vector<Item>& locations);
 extern template
-ELEMENTS_API Item getPathFromLocations(const Item& file_name,
-                                                          const std::vector<std::string>& locations);
+ELEMENTS_API Item getPathFromLocations(const Item& file_name, const std::vector<std::string>& locations);
 extern template
-ELEMENTS_API Item getPathFromLocations(const std::string& file_name,
-                                                          const std::vector<Item>& locations);
+ELEMENTS_API Item getPathFromLocations(const std::string& file_name, const std::vector<Item>& locations);
 extern template
-ELEMENTS_API Item getPathFromLocations(const std::string& file_name,
-                                                          const std::vector<std::string>& locations);
+ELEMENTS_API Item getPathFromLocations(const std::string& file_name, const std::vector<std::string>& locations);
 
 
 /**
@@ -164,20 +176,16 @@ getAllPathFromLocations(const T& file_name, const std::vector<U>& locations);
 // Template instantiation for the most common types
 extern template
 ELEMENTS_API std::vector<Item>
-getAllPathFromLocations(const Item& file_name,
-                        const std::vector<Item>& locations);
+getAllPathFromLocations(const Item& file_name, const std::vector<Item>& locations);
 extern template
 ELEMENTS_API std::vector<Item>
-getAllPathFromLocations(const Item& file_name,
-                        const std::vector<std::string>& locations);
+getAllPathFromLocations(const Item& file_name, const std::vector<std::string>& locations);
 extern template
 ELEMENTS_API std::vector<Item>
-getAllPathFromLocations(const std::string& file_name,
-                        const std::vector<Item>& locations);
+getAllPathFromLocations(const std::string& file_name, const std::vector<Item>& locations);
 extern template
 ELEMENTS_API std::vector<Item>
-getAllPathFromLocations(const std::string& file_name,
-                        const std::vector<std::string>& locations);
+getAllPathFromLocations(const std::string& file_name, const std::vector<std::string>& locations);
 
 /**
  * @brief retrieve path from a file name and an environment variable to look into
@@ -198,12 +206,10 @@ getPathFromEnvVariable(const T& file_name, const std::string& path_variable);
 // Template instantiation for the most common types
 extern template
 ELEMENTS_API Item
-getPathFromEnvVariable<Item>(const Item& file_name,
-                                                const std::string& path_variable);
+getPathFromEnvVariable<Item>(const Item& file_name, const std::string& path_variable);
 extern template
 ELEMENTS_API Item
-getPathFromEnvVariable<std::string>(const std::string& file_name,
-                                    const std::string& path_variable);
+getPathFromEnvVariable<std::string>(const std::string& file_name, const std::string& path_variable);
 
 /**
  * @brief collate a vector of path into a string using PATH_SEP
@@ -261,25 +267,20 @@ ELEMENTS_API auto split(Args&&... args) -> decltype(splitPath(std::forward<Args>
  */
 template <typename T, typename U>
 ELEMENTS_API std::vector<Item>
-multiPathAppend(const std::vector<T>& initial_locations,
-                const std::vector<U>& suffixes);
+multiPathAppend(const std::vector<T>& initial_locations, const std::vector<U>& suffixes);
 // Template instantiation for the most common types
 extern template
 ELEMENTS_API std::vector<Item>
-multiPathAppend(const std::vector<Item>& initial_locations,
-                const std::vector<Item>& suffixes);
+multiPathAppend(const std::vector<Item>& initial_locations, const std::vector<Item>& suffixes);
 extern template
 ELEMENTS_API std::vector<Item>
-multiPathAppend(const std::vector<Item>& initial_locations,
-                const std::vector<std::string>& suffixes);
+multiPathAppend(const std::vector<Item>& initial_locations, const std::vector<std::string>& suffixes);
 extern template
 ELEMENTS_API std::vector<Item>
-multiPathAppend(const std::vector<std::string>& initial_locations,
-                const std::vector<Item>& suffixes);
+multiPathAppend(const std::vector<std::string>& initial_locations, const std::vector<Item>& suffixes);
 extern template
 ELEMENTS_API std::vector<Item>
-multiPathAppend(const std::vector<std::string>& initial_locations,
-                const std::vector<std::string>& suffixes);
+multiPathAppend(const std::vector<std::string>& initial_locations, const std::vector<std::string>& suffixes);
 /**
  * @brief remove duplicated paths keeping the order
  * @ingroup ElementsKernel

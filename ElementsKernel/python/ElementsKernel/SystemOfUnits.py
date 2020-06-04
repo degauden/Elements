@@ -1,40 +1,59 @@
-# #
-# @file: ElementsKernel/SystemOfUnits.py
-# @author: Wim Lavrijsen (LBNL, WLavrijsen@lbl.gov)
-# @author: Hubert Degaudenzi (ISDC -- Hubert.Degaudenzi@unige.ch)
-# @date: 01/21/04
 #
-# This script is a direct adaptation of CLHEP/Units/SystemOfUnits.h
-# and the following is the original CLHEP comment:
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+# 
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+# 
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+# 
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-# -----
-# HEP coherent system of Units
-#
-# This file has been provided to CLHEP by Geant4 (simulation toolkit for HEP).
-#
-# The basic units are :
-#               millimeter              (millimeter)
-#               nanosecond              (nanosecond)
-#               Mega electron Volt      (MeV)
-#               positron charge         (eplus)
-#               degree Kelvin           (kelvin)
-#              the amount of substance (mole)
-#              luminous intensity      (candela)
-#               radian                  (radian)
-#              steradian               (steradian)
-#
-# Below is a non exhaustive list of derived and pratical units
-# (i.e. mostly the SI units).
-# You can add your own units.
-#
-# The SI numerical value of the positron charge is defined here,
-# as it is needed for conversion factor : positron charge = e_SI (coulomb)
-#
-# The others physical constants are defined in the header file :
-#                       PhysicalConstants.h
-#
-""" System of Units Constants"""
 
+
+""" System of Units Constants
+
+
+ This script is a direct adaptation of CLHEP/Units/SystemOfUnits.h
+ and the following is the original CLHEP comment:
+
+ HEP coherent system of Units
+
+ This file has been provided to CLHEP by Geant4 (simulation toolkit for HEP).
+
+ The basic units are :
+               millimeter              (millimeter)
+               nanosecond              (nanosecond)
+               Mega electron Volt      (MeV)
+               positron charge         (eplus)
+               degree Kelvin           (kelvin)
+               the amount of substance (mole)
+               luminous intensity      (candela)
+               radian                  (radian)
+               steradian               (steradian)
+
+ Below is a non exhaustive list of derived and pratical units
+ (i.e. mostly the SI units).
+ You can add your own units.
+
+ The SI numerical value of the positron charge is defined here,
+ as it is needed for conversion factor : positron charge = e_SI (coulomb)
+
+ The others physical constants are defined in the header file :
+                       PhysicalConstants.h
+
+:file: ElementsKernel/SystemOfUnits.py
+:author: Wim Lavrijsen (LBNL, WLavrijsen@lbl.gov)
+:author: Hubert Degaudenzi (ISDC -- Hubert.Degaudenzi@unige.ch)
+:date: 01/21/04
+
+"""
 
 
 #

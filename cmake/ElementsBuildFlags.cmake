@@ -213,6 +213,10 @@ option(USE_SPHINX_BREATHE
        "Use sphinx C++ API Breathe plugin to bind to doxygen"
        OFF)
 
+option(USE_SPHINX_NUMPYDOC
+       "Use sphinx numpydoc extension"
+       ON)
+
 option(ELEMENTS_USE_RPATH
        "Use full RPATH for both build and installation"
        ON)
