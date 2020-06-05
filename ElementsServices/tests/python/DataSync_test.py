@@ -42,19 +42,19 @@ class TestDataSync(unittest.TestCase):
         unittest.TestCase.tearDown(self)
         del self.m_top_dir
 
-    def checkDownload(self, connectionConfig):
-        sync = DataSync(connectionConfig, theDependencyConfig())
+    def checkDownload(self, connection_config):
+        sync = DataSync(connection_config, theDependencyConfig())
         sync.download()
         for file in theLocalFiles():
             abs_path = sync.absolutePath(file)
             assert os.path.isfile(abs_path)
             os.remove(abs_path)
 
-    def checkFallback(self, fallbackConfig):
+    def checkFallback(self, fallback_config):
         sync = DataSync(aBadConnectionConfig(), theDependencyConfig())
         with py.test.raises(Exception):
             sync.download()
-        sync.downloadWithFallback(fallbackConfig)
+        sync.downloadWithFallback(fallback_config)
         for file in theLocalFiles():
             abs_path = sync.absolutePath(file)
             assert os.path.isfile(abs_path)

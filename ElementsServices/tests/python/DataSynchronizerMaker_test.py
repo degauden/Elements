@@ -42,7 +42,7 @@ class TestDataSynchronizerMaker(unittest.TestCase):
 
     def checkSynchronizerCreation(self, connectionConfig, expectedSynchronizer):
         connection = ConnectionConfiguration(connectionConfig)
-        dependency = DependencyConfiguration(theDependencyConfig(), connection.localRoot)
+        dependency = DependencyConfiguration(theDependencyConfig(), connection.local_root)
         synchronizer = createSynchronizer(connection, dependency)
         assert type(synchronizer), expectedSynchronizer
 

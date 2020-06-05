@@ -89,7 +89,7 @@ class DataSynchronizer(object):
         return os.path.getsize(localFile) > 0
 
     @abstractmethod
-    def createDownloadCommand (self, distantFile, localFile):
+    def createDownloadCommand (self, distant_file, local_file):
         """Create the command to download a file.
         """
         pass

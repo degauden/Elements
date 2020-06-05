@@ -42,12 +42,12 @@ class IrodsSynchronizer (DataSynchronizer):
                 'but it does not seem to be installed.')
 
     def createDownloadCommand (self,
-            distantFile,
-            localFile):
+            distant_file,
+            local_file):
         if not irodsIsInstalled ():
             return ""
         cmd = "irsync i:"
-        cmd += distantFile + " " + localFile
+        cmd += distant_file + " " + local_file
         # Number of retries cannot be set with irsync
         # -s option allows comparing only file size (no checksum) to save time
         return cmd

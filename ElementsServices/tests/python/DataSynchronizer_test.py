@@ -45,14 +45,14 @@ class TestDataSynchronizer(unittest.TestCase):
             mock.downloadAllFiles()
 
     def testOverwritingPolicy(self):
-        theFilename = "SayThisFileHasAlreadyBeenDownloaded.txt"
-        with open(theFilename, "w") as f:
+        the_filename = "SayThisFileHasAlreadyBeenDownloaded.txt"
+        with open(the_filename, "w") as f:
             f.write("Some contents")
-        mockOverwrite = MockDataSynchronizer()
-        mockNoOverwrite = MockDataSynchronizer(
+        mock_overwrite = MockDataSynchronizer()
+        mock_no_overwrite = MockDataSynchronizer(
             connection=theNoOverwriteConfig())
-        assert mockOverwrite.fileAlreadyExists(theFilename)
-        assert mockOverwrite.fileShouldBeWritten(theFilename)
-        assert mockNoOverwrite.fileAlreadyExists(theFilename)
-        assert not mockNoOverwrite.fileShouldBeWritten(theFilename)
-        os.remove(theFilename)
+        assert mock_overwrite.fileAlreadyExists(the_filename)
+        assert mock_overwrite.fileShouldBeWritten(the_filename)
+        assert mock_no_overwrite.fileAlreadyExists(the_filename)
+        assert not mock_no_overwrite.fileShouldBeWritten(the_filename)
+        os.remove(the_filename)

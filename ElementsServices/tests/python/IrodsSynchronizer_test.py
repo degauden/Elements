@@ -36,12 +36,12 @@ class TestIrodsSynchronizer(TestDataSynchronizer):
     def test_irodsFixture(self):
         if not IrodsSynchronizer.irodsIsInstalled():
             return
-        irodsFR = theIrodsFrConfig()
-        self.checkSynchronization(irodsFR)
-        self.checkDownloadTestData(irodsFR)
+        irods_fr = theIrodsFrConfig()
+        self.checkSynchronization(irods_fr)
+        self.checkDownloadTestData(irods_fr)
 
     def test_downloadErrorReport(self):
         if not IrodsSynchronizer.irodsIsInstalled():
             return
-        irodsFR = theIrodsFrConfig()
-        self.checkDownloadErrorReport(irodsFR)
+        irods_fr = theIrodsFrConfig()
+        self.checkDownloadErrorReport(irods_fr)
