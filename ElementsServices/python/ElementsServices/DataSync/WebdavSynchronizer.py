@@ -17,8 +17,9 @@
 #
 
 import subprocess
+import shlex
 
-from .DataSynchronizer import *
+from .DataSynchronizer import DataSynchronizer
 
 
 def webdavIsInstalled ():
@@ -34,11 +35,6 @@ def webdavIsInstalled ():
 class WebdavSynchronizer (DataSynchronizer):
     """A data synchronizer for WebDAV hosts.
     """
-
-    def __init__ (self,
-            connection,
-            dependencies):
-        super(WebdavSynchronizer, self).__init__(connection, dependencies)
 
     def createDownloadCommand (self,
             distant_file,

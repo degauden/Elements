@@ -16,9 +16,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-from .DataSynchronizer import *
+import subprocess
+import shlex
 
-def irodsIsInstalled ():
+from .DataSynchronizer import DataSynchronizer
+
+def irodsIsInstalled():
     """Check whether an iRODS client is installed.
     """
     try:
@@ -28,7 +31,7 @@ def irodsIsInstalled ():
         return False
 
 
-class IrodsSynchronizer (DataSynchronizer):
+class IrodsSynchronizer(DataSynchronizer):
     """A data synchronizer for iRods hosts.
     """
 
@@ -36,15 +39,13 @@ class IrodsSynchronizer (DataSynchronizer):
             connection,
             dependencies):
         super(IrodsSynchronizer, self).__init__(connection, dependencies)
-        if not irodsIsInstalled ():
+        if not irodsIsInstalled():
             raise RuntimeError(
                 'You are trying to use iRODS, '
                 'but it does not seem to be installed.')
 
-    def createDownloadCommand (self,
-            distant_file,
-            local_file):
-        if not irodsIsInstalled ():
+    def createDownloadCommand(self, distant_file, local_file):
+        if not irodsIsInstalled():
             return ""
         cmd = "irsync i:"
         cmd += distant_file + " " + local_file

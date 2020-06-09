@@ -17,15 +17,9 @@
 #
 
 
-import py.test
-import shlex
-import subprocess
-
 from ElementsServices.DataSync import IrodsSynchronizer
-from ElementsServices.DataSync.ConnectionConfiguration import ConnectionConfiguration
-from ElementsServices.DataSync.DependencyConfiguration import DependencyConfiguration
 
-from fixtures.ConfigFilesFixture import *
+from fixtures.ConfigFilesFixture import theIrodsFrConfig
 from fixtures.TestDataSynchronizer import TestDataSynchronizer
 
 

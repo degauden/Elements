@@ -1,23 +1,26 @@
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+# 
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+# 
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+# 
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+
+
 '''
-Created on Apr 29, 2016
+:date: Apr 29, 2016
 
-@author: Hubert Degaudenzi
-
-@copyright: 2012-2020 Euclid Science Ground Segment
-
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+:author: Hubert Degaudenzi
 
 '''
 import unittest
@@ -46,13 +49,13 @@ class PathTest(unittest.TestCase):
     def testJoinPath(self):
 
         path_list = ["/toto", "titi", "./tutu"]
-        self.assert_(joinPath(path_list) == "/toto:titi:./tutu")
+        self.assertEqual(joinPath(path_list), "/toto:titi:./tutu")
 
         path_list2 = ["", "/toto", "titi", "./tutu"]
-        self.assert_(joinPath(path_list2) == ":/toto:titi:./tutu")
+        self.assertEqual(joinPath(path_list2), ":/toto:titi:./tutu")
 
         path_list3 = ["/toto", "titi", "./tutu", ""]
-        self.assert_(joinPath(path_list3) == "/toto:titi:./tutu:")
+        self.assertEqual(joinPath(path_list3), "/toto:titi:./tutu:")
 
     def testMultiPathAppend(self):
 
@@ -63,20 +66,20 @@ class PathTest(unittest.TestCase):
                      "/loc2/bin", "/loc2/scripts",
                      "./loc3/bin", "./loc3/scripts"]
 
-        self.assert_(multiPathAppend(locations, suffixes) == ref_paths)
+        self.assertEqual(multiPathAppend(locations, suffixes), ref_paths)
         
     def testGetLoctions(self):
 
         # by construction the PATH variable is never empty
-        self.assert_(getLocations() != [])
+        self.assertNotEqual(getLocations(), [])
 
     def testGetLocationsFromEnv(self):
 
-        self.assert_(getLocationsFromEnv("NonExistingEnvVar") == [])
-        self.assert_(getLocationsFromEnv("PATH") != [])
+        self.assertEqual(getLocationsFromEnv("NonExistingEnvVar"), [])
+        self.assertNotEqual(getLocationsFromEnv("PATH"), [])
 
         tmp_list = getLocationsFromEnv("PATH", exist_only=True)
-        self.assert_(len(tmp_list) != 0)
+        self.assertNotEqual(len(tmp_list), 0)
 
     def testWhich(self):
         sys_ls = subprocess.check_output(["which", "ls"]).strip()
@@ -86,25 +89,25 @@ class PathTest(unittest.TestCase):
         
         file_name = "toto"
         target_dir = "/blab/blo"
-        self.assert_(getTargetPath(file_name, target_dir) == "/blab/blo/toto")
+        self.assertEqual(getTargetPath(file_name, target_dir), "/blab/blo/toto")
         
         file_name = "tata/toto"
         target_dir = "/blab/blo"
-        self.assert_(getTargetPath(file_name, target_dir) == "/blab/blo/toto")
+        self.assertEqual(getTargetPath(file_name, target_dir), "/blab/blo/toto")
 
         file_name = "tata/toto"
         target_dir = "/blab/blo"
-        self.assert_(getTargetPath(file_name, target_dir, use_stem=True) == "/blab/blo/tata/toto")
+        self.assertEqual(getTargetPath(file_name, target_dir, use_stem=True), "/blab/blo/tata/toto")
 
         file_name = "tata/toto"
         target_dir = "/blab/blo"
         target_name = "tutu"
-        self.assert_(getTargetPath(file_name, target_dir, target_name) == "/blab/blo/tutu")
+        self.assertEqual(getTargetPath(file_name, target_dir, target_name), "/blab/blo/tutu")
 
         file_name = "tata/toto"
         target_dir = "/blab/blo"
         target_name = "foo/tutu"
-        self.assert_(getTargetPath(file_name, target_dir, target_name) == "/blab/blo/foo/tutu")
+        self.assertEqual(getTargetPath(file_name, target_dir, target_name), "/blab/blo/foo/tutu")
 
 
     def testRemoveDuplicates(self):
@@ -114,7 +117,7 @@ class PathTest(unittest.TestCase):
 
         unique_locations = ["/usr/bin", "/usr/local/bin",
                             "/opt/bin", "/opt/local/bin"]
-        self.assert_(removeDuplicates(locations)==unique_locations)
+        self.assertEqual(removeDuplicates(locations), unique_locations)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

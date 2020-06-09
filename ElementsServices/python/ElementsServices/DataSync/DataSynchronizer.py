@@ -17,24 +17,18 @@
 #
 
 from abc import abstractmethod, ABCMeta
-# try:
-#     from abc import ABC
-# except:
-#     from abc import ABCMeta as ABC
 
 import os.path
 
-from .ConnectionConfiguration import *
-from .DependencyConfiguration import *
-from .DataSyncUtils import *
+from .DataSyncUtils import createLocalDirOf, runCommandAndCaptureOutErr
 
 
 class DownloadFailed (Exception):
     """An exception raised when downloading fails.
     """
-    def __init__ (self, distantFile, localFile):
+    def __init__ (self, distant_file, local_file):
         super(DownloadFailed, self).__init__()
-        self.message = "Unable to download file: '" + distantFile + "' as: '" + localFile + "'."
+        self.message = "Unable to download file: '" + distant_file + "' as: '" + local_file + "'."
 
 
 class DataSynchronizer(object):
@@ -92,4 +86,4 @@ class DataSynchronizer(object):
     def createDownloadCommand (self, distant_file, local_file):
         """Create the command to download a file.
         """
-        pass
+

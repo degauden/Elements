@@ -20,7 +20,7 @@ from ElementsServices.DataSync import ConnectionConfiguration
 from ElementsServices.DataSync import DependencyConfiguration
 from ElementsServices.DataSync import WebdavSynchronizer
 
-from fixtures.ConfigFilesFixture import *
+from fixtures.ConfigFilesFixture import theWebdavFrConfig, theDependencyConfig
 from fixtures.TestDataSynchronizer import TestDataSynchronizer
 
 
@@ -52,7 +52,7 @@ class TestWebdavSynchronizer(TestDataSynchronizer):
         self.checkSynchronization(webdav_fr)
         self.checkDownloadTestData(webdav_fr)
 
-          #TODO should we validate in all SDCs?
+        # TODO should we validate in all SDCs?
 #         webdavES = theWebdavEsConfig()
 #         self.checkSynchronization(webdavES)
 #         self.checkDownloadTestData(webdavES)

@@ -17,14 +17,14 @@
 #
 
 import unittest
+import os
 
 from ElementsKernel.Temporary import TempDir, TempEnv
 
-from ElementsServices.DataSync import DataSync
 from ElementsServices.DataSync import DependencyConfiguration
-from ElementsServices.DataSync.DataSyncUtils import getConfigurationPath, localWorkspacePrefix
+from ElementsServices.DataSync.DataSyncUtils import getConfigurationPath, localWorkspacePrefix, concatenatePaths
 
-from fixtures.ConfigFilesFixture import *
+from fixtures.ConfigFilesFixture import theDependencyConfig, thePrefixedLocalWorkspace, theLocalFiles
 
 
 class TestDependencyConfiguration(unittest.TestCase):

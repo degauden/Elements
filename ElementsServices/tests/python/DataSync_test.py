@@ -27,7 +27,9 @@ from ElementsServices.DataSync import DataSync
 from ElementsServices.DataSync.IrodsSynchronizer import irodsIsInstalled
 from ElementsServices.DataSync.WebdavSynchronizer import webdavIsInstalled
 
-from fixtures.ConfigFilesFixture import *
+from fixtures.ConfigFilesFixture import theDependencyConfig, theLocalFiles
+from fixtures.ConfigFilesFixture import aBadConnectionConfig, theWebdavFrConfig
+from fixtures.ConfigFilesFixture import theIrodsFrConfig
 
 
 class TestDataSync(unittest.TestCase):

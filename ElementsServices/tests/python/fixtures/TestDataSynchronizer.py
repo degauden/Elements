@@ -21,12 +21,10 @@ import os.path
 from ElementsServices.DataSync.DataSyncUtils import dataSyncConfFilePath
 from ElementsServices.DataSync import ConnectionConfiguration, DependencyConfiguration
 from ElementsServices.DataSync import DataSync
-from ElementsServices.DataSync import DataSynchronizer
 from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 from ElementsServices.DataSync.DataSynchronizerMaker import createSynchronizer
 
-from fixtures.ConfigFilesFixture import *
-
+from fixtures.ConfigFilesFixture import theDependencyConfig, theInvalidDependencyConfig
 
 class TestDataSynchronizer (object):
 

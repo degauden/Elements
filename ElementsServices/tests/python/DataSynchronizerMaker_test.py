@@ -16,17 +16,17 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
+import os
 import unittest
 
 from ElementsKernel.Temporary import TempDir, TempEnv
 
 from ElementsServices.DataSync import \
-    DataHost, ConnectionConfiguration, DependencyConfiguration, \
+    ConnectionConfiguration, DependencyConfiguration, \
     IrodsSynchronizer, WebdavSynchronizer, createSynchronizer
-import ElementsServices.DataSync.DataSynchronizerMaker
 
-from fixtures.ConfigFilesFixture import *
+
+from fixtures.ConfigFilesFixture import theDependencyConfig, theWebdavFrConfig, theIrodsFrConfig
 
 class TestDataSynchronizerMaker(unittest.TestCase):
     
@@ -40,22 +40,22 @@ class TestDataSynchronizerMaker(unittest.TestCase):
         unittest.TestCase.tearDown(self)
         del self.m_top_dir
 
-    def checkSynchronizerCreation(self, connectionConfig, expectedSynchronizer):
-        connection = ConnectionConfiguration(connectionConfig)
+    def checkSynchronizerCreation(self, connection_config, expected_synchronizer):
+        connection = ConnectionConfiguration(connection_config)
         dependency = DependencyConfiguration(theDependencyConfig(), connection.local_root)
         synchronizer = createSynchronizer(connection, dependency)
-        assert type(synchronizer), expectedSynchronizer
+        assert type(synchronizer), expected_synchronizer
 
     def testSynchronizerCreation(self):
-        webdavConfigs = {
+        webdav_configs = {
             theWebdavFrConfig(): WebdavSynchronizer,
         }
-        irodsConfigs = {
+        irods_configs = {
             theIrodsFrConfig(): IrodsSynchronizer
         }
         if not IrodsSynchronizer.irodsIsInstalled():
-            irodsConfigs = {}
-        configs = webdavConfigs.copy()
-        configs.update(irodsConfigs)
+            irods_configs = {}
+        configs = webdav_configs.copy()
+        configs.update(irods_configs)
         for config, expected in configs.items():
             self.checkSynchronizerCreation(config, expected)

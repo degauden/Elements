@@ -16,9 +16,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-from ElementsServices.DataSync.DataSynchronizer import *
 
-from .ConfigFilesFixture import *
+from ElementsServices.DataSync.DataSynchronizer import DataSynchronizer
+from ElementsServices.DataSync.ConnectionConfiguration import ConnectionConfiguration
+from ElementsServices.DataSync.DependencyConfiguration import DependencyConfiguration
+
+from .ConfigFilesFixture import theIrodsFrConfig, theDependencyConfig
 
 
 class MockDataSynchronizer (DataSynchronizer):

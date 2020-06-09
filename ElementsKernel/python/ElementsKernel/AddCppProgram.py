@@ -58,7 +58,7 @@ def createDirectories(module_dir):
 
 ################################################################################
 
-def addConfFile(module_dir, module_name, program_name):
+def addConfFile(module_dir, program_name):
     """
     Create the configuration file by default
     """
@@ -160,7 +160,7 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list, lib
     """
     createDirectories(module_dir)
     substituteAuxFiles(module_dir, program_name)
-    addConfFile(module_dir, module_name, program_name)
+    addConfFile(module_dir, program_name)
     updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list)
 

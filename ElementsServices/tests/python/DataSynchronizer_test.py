@@ -19,12 +19,13 @@
 
 import unittest
 import py.test
+import os
 
 from ElementsKernel.Temporary import TempDir, TempEnv
-from ElementsServices.DataSync import DataSynchronizer
+from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 
-from fixtures.ConfigFilesFixture import *
-from fixtures.MockDataSynchronizer import *
+from fixtures.MockDataSynchronizer import MockDataSynchronizer
+from fixtures.ConfigFilesFixture import theNoOverwriteConfig
 
 
 class TestDataSynchronizer(unittest.TestCase):
