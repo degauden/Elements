@@ -304,7 +304,9 @@ removeDuplicates(const std::vector<std::string>& path_list);
 }  // namespace Path
 }  // namespace Elements
 
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_IMPL_
 #include "ElementsKernel/_impl/Path.icpp"
+#undef ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
 

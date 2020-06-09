@@ -98,8 +98,9 @@ std::vector<Path::Item> pathSearchInEnvVariable(
 
 }  // namespace Elements
 
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_IMPL_
 #include "ElementsKernel/_impl/PathSearch.icpp"
-
+#undef ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_H_
 

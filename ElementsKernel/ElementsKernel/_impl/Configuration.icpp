@@ -18,8 +18,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_CONFIGURATION_ICPP_
-#define ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_CONFIGURATION_ICPP_
+#ifdef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
 
 #include "ElementsKernel/Exception.h"   // for Exception
 #include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type, Path::Item
@@ -43,4 +42,4 @@ Path::Item getConfigurationPath(const T& file_name, bool raise_exception) {
 
 }  // namespace Elements
 
-#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_CONFIGURATION_ICPP_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
