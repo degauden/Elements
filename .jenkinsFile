@@ -2,6 +2,7 @@
 @Library('integration-library@release-8') _
 pipelineElements(
 	artifactId:"Elements",
+	groupId:"CT",
 	component:'eden.2.1',
 	repository:'eden.2.1',
 	skipTest: true,
