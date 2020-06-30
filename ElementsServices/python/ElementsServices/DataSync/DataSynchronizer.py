@@ -48,39 +48,39 @@ class DataSynchronizer(object):
     def downloadAllFiles (self):
         """Download all the test files.
         """
-        for localFile, distantFile in self._file_map.items():
-            if self.fileShouldBeWritten(localFile):
-                self.downloadOneFile(distantFile, localFile)
+        for local_file, distant_file in self._file_map.items():
+            if self.fileShouldBeWritten(local_file):
+                self.downloadOneFile(distant_file, local_file)
 
-    def fileShouldBeWritten (self, localFile):
+    def fileShouldBeWritten (self, local_file):
         """Check whether a file should be locally written.
         """
-        if not self.fileAlreadyExists(localFile):
+        if not self.fileAlreadyExists(local_file):
             return True
         return self._connection.overwritingAllowed()
 
-    def fileAlreadyExists (self, localFile):
+    def fileAlreadyExists (self, local_file):
         """Check whether a file to be downloaded already exists locally.
         """
-        return os.path.isfile(localFile)
+        return os.path.isfile(local_file)
 
-    def downloadOneFile (self, distantFile, localFile):
+    def downloadOneFile (self, distant_file, local_file):
         """Download a given test file.
         """
-        command = self.createDownloadCommand(distantFile, localFile)
-        createLocalDirOf(localFile)
+        command = self.createDownloadCommand(distant_file, local_file)
+        createLocalDirOf(local_file)
         _out, _err = runCommandAndCaptureOutErr(command)
-        if not self.hasBeenDownloaded(distantFile, localFile):
-            raise DownloadFailed(distantFile, localFile)
+        if not self.hasBeenDownloaded(distant_file, local_file):
+            raise DownloadFailed(distant_file, local_file)
             #TODO output _out, _err
 
-    def hasBeenDownloaded (self, distantFile, localFile):
+    def hasBeenDownloaded (self, distant_file, local_file):
         """Check whether a given test file has been downloaded,
         i.e., exists and is not empty.
         """
-        if not os.path.isfile(localFile):
+        if not os.path.isfile(local_file):
             return False
-        return os.path.getsize(localFile) > 0
+        return os.path.getsize(local_file) > 0
 
     @abstractmethod
     def createDownloadCommand (self, distant_file, local_file):
