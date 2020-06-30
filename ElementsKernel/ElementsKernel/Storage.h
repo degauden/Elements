@@ -81,7 +81,9 @@ storageConvert<std::int64_t>(const std::int64_t& size, StorageType source_unit, 
 }  // namespace Units
 }  // namespace Elements
 
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_IMPL_
 #include "ElementsKernel/_impl/Storage.icpp"
+#undef ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_
 

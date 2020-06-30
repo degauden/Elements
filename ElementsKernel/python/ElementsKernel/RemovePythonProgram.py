@@ -1,21 +1,20 @@
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
-# 
+#
 # This library is free software; you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option)
 # any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 # details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-
 
 """ This script will remove all files related to a python program
 
@@ -28,16 +27,20 @@
 
 import argparse
 import os
+
+from argparse import RawTextHelpFormatter
+
+try:
+    from builtins import input
+except ImportError:
+    from __builtin__ import input
+
+
 from ElementsKernel import ProjectCommonRoutines
 from ElementsKernel import ParseCmakeLists
 from ElementsKernel import Logging
 
 from ElementsKernel import Exit
-
-try:
-    from builtins import input
-except:
-    from __builtin__ import input
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
@@ -96,7 +99,6 @@ def defineSpecificProgramOptions():
     name when calling the <AddPythonProgram> script. The <CMakeLists.txt> file
     is updated accordingly.
     """
-    from argparse import RawTextHelpFormatter
 
     parser = argparse.ArgumentParser(description=description,
                                      formatter_class=RawTextHelpFormatter)
@@ -116,7 +118,7 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the RemovePythonProgram \
     script ')
     logger.info('#')
-    
+
     exit_code = Exit.Code["OK"]
 
     program_name = args.program_name

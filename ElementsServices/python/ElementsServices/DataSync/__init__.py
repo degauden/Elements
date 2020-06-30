@@ -1,3 +1,7 @@
+# @PydevCodeAnalysisIgnore
+
+""" Main DataSync Package """
+
 from pkgutil import extend_path
 __path__ = extend_path(__path__, __name__)
 
@@ -7,7 +11,6 @@ from .ConnectionConfiguration import *
 from .DependencyConfiguration import *
 from .DataSynchronizerMaker import createSynchronizer
 from .DataSyncUtils import concatenatePaths, localWorkspacePrefix
-
 
 class DataSync(object):
     """ A class to download test data from a data repository \
@@ -24,20 +27,20 @@ class DataSync(object):
     .. seealso:: https://euclid.roe.ac.uk/projects/testdata/wiki
     """
 
-    def __init__ (self, connectionFile, dependencyFile):
-        self._connectionConfig = ConnectionConfiguration(connectionFile)
-        self._distantRoot = self._connectionConfig.distantRoot
-        self._localRoot = self._connectionConfig.localRoot
-        self._dependencyConfig = DependencyConfiguration(
-                self._distantRoot, self._localRoot,
+    def __init__(self, connectionFile, dependencyFile):
+        self._connection_config = ConnectionConfiguration(connectionFile)
+        self._distant_root = self._connection_config.distant_root
+        self._local_root = self._connection_config.local_root
+        self._dependency_config = DependencyConfiguration(
+                self._distant_root, self._local_root,
                 dependencyFile)
 
     def download (self):
         """ Download the test data.
         """
         synchronizer = createSynchronizer(
-                self._connectionConfig,
-                self._dependencyConfig)
+                self._connection_config,
+                self._dependency_config)
         synchronizer.downloadAllFiles()
 
     def downloadWithFallback (self, connectionFile):
@@ -50,7 +53,7 @@ class DataSync(object):
         try:
             self.download()
         except Exception:
-            self._connectionConfig = ConnectionConfiguration(connectionFile)
+            self._connection_config = ConnectionConfiguration(connectionFile)
             self.download()
 
     def absolutePath (self, relativePath):
@@ -70,4 +73,4 @@ class DataSync(object):
         .. warning:: This function must be used to access any data \
         downloaded by the DataSync tool.
         """
-        return concatenatePaths([self._localRoot, relativePath])
+        return concatenatePaths([self._local_root, relativePath])

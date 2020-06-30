@@ -1,5 +1,5 @@
 /**
- * @file Export.h
+ * @file ElementsKernel/Export.h
  * @brief defines the macros to be used for explicit export of the symbols
  * @date Nov 4, 2013
  * @author: Hubert Degaudenzi - The Euclid Consortium

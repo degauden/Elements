@@ -37,8 +37,9 @@ from ElementsKernel import ProjectCommonRoutines
 
 try:
     from builtins import input
-except:
+except ImportError:
     from __builtin__ import input
+
 
 logger = log.getLogger('CreateElementsProject')
 
@@ -199,7 +200,7 @@ def lookForDirectories(project_dir):
     match_list = []
     dirlist = [elt for elt in os.listdir(project_dir) if os.path.isdir(os.path.join(project_dir, elt)) ]
     for elt in dirlist:
-        match = re.match(ProjectCommonRoutines.version_regex, elt)
+        match = re.match(ProjectCommonRoutines.VERSION_REGEX, elt)
         if match:
             match_list.append(match.group(0))
     return match_list

@@ -64,8 +64,9 @@ ELEMENTS_API std::vector<Path::Item> getAuxiliaryLocations(bool exist_only = fal
 
 }  // namespace Elements
 
-
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_
 #include "ElementsKernel/_impl/Auxiliary.icpp"
+#undef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 

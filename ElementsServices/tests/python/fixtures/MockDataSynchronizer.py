@@ -16,9 +16,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-from ElementsServices.DataSync.DataSynchronizer import *
 
-from .ConfigFilesFixture import *
+from ElementsServices.DataSync.DataSynchronizer import DataSynchronizer
+from ElementsServices.DataSync.ConnectionConfiguration import ConnectionConfiguration
+from ElementsServices.DataSync.DependencyConfiguration import DependencyConfiguration
+
+from .ConfigFilesFixture import theIrodsFrConfig, theDependencyConfig
 
 
 class MockDataSynchronizer (DataSynchronizer):
@@ -26,15 +29,15 @@ class MockDataSynchronizer (DataSynchronizer):
     def __init__(self,
                  connection=theIrodsFrConfig(),
                  dependency=theDependencyConfig()):
-        connectionConfig = ConnectionConfiguration(connection)
-        distantRoot = connectionConfig.distantRoot
-        localRoot = connectionConfig.localRoot
-        dependencyConfig = DependencyConfiguration(
-            distantRoot, localRoot, dependency)
-        super(MockDataSynchronizer, self).__init__(connectionConfig, dependencyConfig)
+        connection_config = ConnectionConfiguration(connection)
+        distant_root = connection_config.distant_root
+        local_root = connection_config.local_root
+        dependency_config = DependencyConfiguration(
+            distant_root, local_root, dependency)
+        super(MockDataSynchronizer, self).__init__(connection_config, dependency_config)
 
     def createDownloadCommand(self,
-                              distantFile,
-                              localFile):
-        cmd = "echo " + distantFile + ";" + localFile
+                              distant_file,
+                              local_file):
+        cmd = "echo " + distant_file + ";" + local_file
         return cmd

@@ -87,7 +87,7 @@ public:
     size_t len = snprintf(NULL, 0, stringFormat, std::forward<Args>(args)...)+1;
     char* message = new char[len];
     snprintf(message, len, stringFormat, std::forward<Args>(args)...);
-    m_error_msg = std::string {message};
+    m_error_msg = std::string(message);
     delete [] message;
   }
 

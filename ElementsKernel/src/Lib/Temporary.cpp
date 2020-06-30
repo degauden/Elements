@@ -32,6 +32,7 @@
 #include "ElementsKernel/Path.h"
 
 using std::string;
+using boost::filesystem::temp_directory_path;
 
 namespace Elements {
 
@@ -40,20 +41,22 @@ namespace {
 }
 
 TempPath::TempPath(const string& arg_motif, const string& keep_var) :
-    m_motif(arg_motif), m_keep_var(keep_var) {
+    m_motif(arg_motif), m_path(temp_directory_path()), m_keep_var(keep_var) {
 
-  using boost::filesystem::temp_directory_path;
   using boost::filesystem::unique_path;
 
   if (m_motif.find('%') == string::npos) {
-    log.warn() << "The '" << m_motif << "' motif is not random";
+    log.error() << "The '" << m_motif << "' motif is not random";
   }
 
-  if (m_motif != "") {
-    m_path = temp_directory_path() / unique_path(m_motif);
-  } else {
-    m_path = temp_directory_path() / unique_path();
+  auto pattern = m_motif;
+
+  if (pattern.empty()) {
+    log.warn() << "The motif has been replaced by \"" << DEFAULT_TMP_MOTIF << "\"";
+    pattern = DEFAULT_TMP_MOTIF;
   }
+
+  m_path /= unique_path(pattern);
 }
 
 TempPath::~TempPath() {
@@ -63,7 +66,8 @@ TempPath::~TempPath() {
   if (not current.hasKey(m_keep_var)) {
     log.debug() << "Automatic destruction of the " << path()
                 << " temporary path";
-    boost::filesystem::remove_all(m_path);
+    const auto file_number = boost::filesystem::remove_all(m_path);
+    log.debug() << "Number of files removed: " << file_number;
   } else {
     log.info() << m_keep_var << " set: I do not remove the "
                   << m_path.string() << " temporary path";

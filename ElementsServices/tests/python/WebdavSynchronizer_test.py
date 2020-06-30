@@ -20,7 +20,7 @@ from ElementsServices.DataSync import ConnectionConfiguration
 from ElementsServices.DataSync import DependencyConfiguration
 from ElementsServices.DataSync import WebdavSynchronizer
 
-from fixtures.ConfigFilesFixture import *
+from fixtures.ConfigFilesFixture import theWebdavFrConfig, theDependencyConfig
 from fixtures.TestDataSynchronizer import TestDataSynchronizer
 
 
@@ -28,31 +28,31 @@ class TestWebdavSynchronizer(TestDataSynchronizer):
 
     def createTestSynchronizer(self):
         connection = ConnectionConfiguration(theWebdavFrConfig())
-        distantRoot = connection.distantRoot
-        localRoot = connection.localRoot
+        distant_root = connection.distant_root
+        local_root = connection.local_root
         dependencies = DependencyConfiguration(
-            distantRoot, localRoot, theDependencyConfig())
+            distant_root, local_root, theDependencyConfig())
         return WebdavSynchronizer.WebdavSynchronizer(connection, dependencies)
 
     def test_webdavGetCmd(self):
-        distantFile = "src/distant_file.fits"
-        localFile = "dst/local_file.fits"
+        distant_file = "src/distant_file.fits"
+        local_file = "dst/local_file.fits"
         synchronizer = self.createTestSynchronizer()
-        cmd = synchronizer.createDownloadCommand(distantFile, localFile)
+        cmd = synchronizer.createDownloadCommand(distant_file, local_file)
         assert "wget " in cmd, "wget not found in WebDAV command: " + cmd
         assert "-O" in cmd, "-O option not specified in WebDAV command: " + cmd
-        assert localFile in cmd, "Local path not found in WebDAV command: " + cmd
-        assert distantFile in cmd, "Distant path not fount in WebDAV command: " + cmd
+        assert local_file in cmd, "Local path not found in WebDAV command: " + cmd
+        assert distant_file in cmd, "Distant path not fount in WebDAV command: " + cmd
         assert "8" in cmd, "Retries not found in WebDAV command: " + cmd
 
     def test_webdavFixture(self):
         if not WebdavSynchronizer.webdavIsInstalled():
             return
-        webdavFR = theWebdavFrConfig()
-        self.checkSynchronization(webdavFR)
-        self.checkDownloadTestData(webdavFR)
+        webdav_fr = theWebdavFrConfig()
+        self.checkSynchronization(webdav_fr)
+        self.checkDownloadTestData(webdav_fr)
 
-          #TODO should we validate in all SDCs?
+        # TODO should we validate in all SDCs?
 #         webdavES = theWebdavEsConfig()
 #         self.checkSynchronization(webdavES)
 #         self.checkDownloadTestData(webdavES)
@@ -60,5 +60,5 @@ class TestWebdavSynchronizer(TestDataSynchronizer):
     def test_downloadErrorReport(self):
         if not WebdavSynchronizer.webdavIsInstalled():
             return
-        webdavFR = theWebdavFrConfig()
-        self.checkDownloadErrorReport(webdavFR)
+        webdav_fr = theWebdavFrConfig()
+        self.checkDownloadErrorReport(webdav_fr)

@@ -37,8 +37,9 @@ from ElementsKernel import Logging
 
 try:
     from builtins import input
-except:
+except ImportError:
     from __builtin__ import input
+
 
 logger = Logging.getLogger('AddElementsModule')
 

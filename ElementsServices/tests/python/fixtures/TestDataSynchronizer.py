@@ -21,12 +21,10 @@ import os.path
 from ElementsServices.DataSync.DataSyncUtils import dataSyncConfFilePath
 from ElementsServices.DataSync import ConnectionConfiguration, DependencyConfiguration
 from ElementsServices.DataSync import DataSync
-from ElementsServices.DataSync import DataSynchronizer
 from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 from ElementsServices.DataSync.DataSynchronizerMaker import createSynchronizer
 
-from fixtures.ConfigFilesFixture import *
-
+from fixtures.ConfigFilesFixture import theDependencyConfig, theInvalidDependencyConfig
 
 class TestDataSynchronizer (object):
 
@@ -40,29 +38,29 @@ class TestDataSynchronizer (object):
             pass
 
         dependency = theDependencyConfig()
-        connectionConfig = ConnectionConfiguration(connection)
-        distantRoot = connectionConfig.distantRoot
-        localRoot = connectionConfig.localRoot
-        dependencyConfig = DependencyConfiguration(
-            distantRoot, localRoot, dependency)
-        synchronizer = createSynchronizer(connectionConfig, dependencyConfig)
+        connection_config = ConnectionConfiguration(connection)
+        distant_root = connection_config.distant_root
+        local_root = connection_config.local_root
+        dependency_config = DependencyConfiguration(
+            distant_root, local_root, dependency)
+        synchronizer = createSynchronizer(connection_config, dependency_config)
         synchronizer.downloadAllFiles()
-        fileList = dependencyConfig.getLocalPaths()
-        for f in fileList:
+        file_list = dependency_config.getLocalPaths()
+        for f in file_list:
             assert os.path.isfile(f), "File not found: " + f + " using command: " \
-                + synchronizer.createDownloadCommand(dependencyConfig.getFileMap()[f], f)
+                + synchronizer.createDownloadCommand(dependency_config.getFileMap()[f], f)
             os.remove(f)
 
     def checkDownloadTestData(self, connection):
         dependency = theDependencyConfig()
         sync = DataSync(connection, dependency)
         sync.download()
-        connectionConfig = ConnectionConfiguration(connection)
-        distantRoot = connectionConfig.distantRoot
-        localRoot = connectionConfig.localRoot
-        dependencyConfig = DependencyConfiguration(
-            distantRoot, localRoot, dependency)
-        fileList = dependencyConfig.getLocalPaths()
+        connection_config = ConnectionConfiguration(connection)
+        distant_root = connection_config.distant_root
+        local_root = connection_config.local_root
+        dependency_config = DependencyConfiguration(
+            distant_root, local_root, dependency)
+        fileList = dependency_config.getLocalPaths()
         for f in fileList:
             assert os.path.isfile(f), "File not found: " + f
             os.remove(f)

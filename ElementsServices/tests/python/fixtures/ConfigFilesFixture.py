@@ -18,7 +18,7 @@
 
 import os.path
 
-from ElementsServices.DataSync.DataSyncUtils import *
+from ElementsServices.DataSync.DataSyncUtils import concatenatePaths, localWorkspacePrefix
 from ElementsKernel.Temporary import TempDir, TempEnv
 
 class WorkspaceFixture(object):

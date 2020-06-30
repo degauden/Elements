@@ -18,8 +18,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_AUXILIARY_ICPP_
-#define ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_AUXILIARY_ICPP_
+#ifdef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_
 
 #include "ElementsKernel/System.h"      // for DEFAULT_INSTALL_PREFIX
 #include "ElementsKernel/Exception.h"   // for Exception
@@ -43,4 +42,4 @@ Path::Item getAuxiliaryPath(const T& file_name, bool raise_exception) {
 
 }  // namespace Elements
 
-#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_AUXILIARY_ICPP_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_

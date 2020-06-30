@@ -35,8 +35,9 @@ from ElementsKernel import Exit
 
 try:
     from builtins import input
-except:
+except ImportError:
     from __builtin__ import input
+
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
@@ -138,21 +139,21 @@ def mainMethod(args):
         # Default is the current directory
         file_to_be_deleted = getAllFiles(class_name, module_dir, module_name)
         if file_to_be_deleted:
-                logger.info('File to be deleted:')
-                for elt_file in file_to_be_deleted:
-                    logger.info('--> %s', elt_file)
-                response_key = input('Do you want to continue?(y/n, default: n)')
-                if response_key.lower() == 'y':
-                    ProjectCommonRoutines.removeFilesOnDisk(file_to_be_deleted)
-                    cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
-                    updateCmakeListsFile(module_dir, class_name)
-                    logger.info('')
-                    logger.warning('# !!!!!!!!!!!!!!!!!!')
-                    logger.warning('# If your <%s> class has some Element and/or external dependencies,', class_name)
-                    logger.warning('# Maybe you need to remove them. Check the <elements_add_library, find_package,')
-                    logger.warning('# elements_add_library, elements_depends_on_subdirs> macros in the file :')
-                    logger.warning('# < %s >', cmakefile)
-                    logger.warning('# !!!!!!!!!!!!!!!!!!')
+            logger.info('File to be deleted:')
+            for elt_file in file_to_be_deleted:
+                logger.info('--> %s', elt_file)
+            response_key = input('Do you want to continue?(y/n, default: n)')
+            if response_key.lower() == 'y':
+                ProjectCommonRoutines.removeFilesOnDisk(file_to_be_deleted)
+                cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
+                updateCmakeListsFile(module_dir, class_name)
+                logger.info('')
+                logger.warning('# !!!!!!!!!!!!!!!!!!')
+                logger.warning('# If your <%s> class has some Element and/or external dependencies,', class_name)
+                logger.warning('# Maybe you need to remove them. Check the <elements_add_library, find_package,')
+                logger.warning('# elements_add_library, elements_depends_on_subdirs> macros in the file :')
+                logger.warning('# < %s >', cmakefile)
+                logger.warning('# !!!!!!!!!!!!!!!!!!')
         else:
             logger.info('No file found for deletion!')
             logger.info('')

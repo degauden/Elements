@@ -17,14 +17,14 @@
 #
 
 import unittest
+import os
 
 from ElementsKernel.Temporary import TempDir, TempEnv
 
-from ElementsServices.DataSync import DataSync
 from ElementsServices.DataSync import DependencyConfiguration
-from ElementsServices.DataSync.DataSyncUtils import getConfigurationPath, localWorkspacePrefix
+from ElementsServices.DataSync.DataSyncUtils import getConfigurationPath, localWorkspacePrefix, concatenatePaths
 
-from fixtures.ConfigFilesFixture import *
+from fixtures.ConfigFilesFixture import theDependencyConfig, thePrefixedLocalWorkspace, theLocalFiles
 
 
 class TestDependencyConfiguration(unittest.TestCase):
@@ -40,44 +40,44 @@ class TestDependencyConfiguration(unittest.TestCase):
         del self.m_top_dir
 
     def test_parseLineWithoutAlias(self):
-        distantRoot = "distant/"
-        localRoot = "local/"
-        config = DependencyConfiguration(distantRoot, localRoot)
+        distant_root = "distant/"
+        local_root = "local/"
+        config = DependencyConfiguration(distant_root, local_root)
         file = "test/file.fits"
         assert not config.lineHasAlias(file)
         config.parseLineWithoutAlias(file)
         assert config.getDependencyCount() == 1
-        assert config.getDistantPaths()[0] == distantRoot + file
-        absLocalFile = concatenatePaths([localWorkspacePrefix(), localRoot, file])
-        assert config.getLocalPaths()[0] == absLocalFile
-        assert config.getDistantPathOf(absLocalFile) == distantRoot + file
+        assert config.getDistantPaths()[0] == distant_root + file
+        abs_local_file = concatenatePaths([localWorkspacePrefix(), local_root, file])
+        assert config.getLocalPaths()[0] == abs_local_file
+        assert config.getDistantPathOf(abs_local_file) == distant_root + file
 
     def test_parseLineWithAlias(self):
-        distantRoot = "distant/"
-        localRoot = "local/"
-        config = DependencyConfiguration(distantRoot, localRoot)
+        distant_root = "distant/"
+        local_root = "local/"
+        config = DependencyConfiguration(distant_root, local_root)
         distant = "test/file_v1.fits"
         local = "test/file.fits"
         line = distant + config.getAliasSeparator() + local
         assert config.lineHasAlias(line)
         config.parseLineWithAlias(line)
         assert config.getDependencyCount() == 1
-        assert config.getDistantPaths()[0] == distantRoot + distant
-        absLocalFile = concatenatePaths([localWorkspacePrefix(), localRoot, local])
-        assert config.getLocalPaths()[0] == absLocalFile
-        assert config.getDistantPathOf(absLocalFile) == distantRoot + distant
+        assert config.getDistantPaths()[0] == distant_root + distant
+        abs_local_file = concatenatePaths([localWorkspacePrefix(), local_root, local])
+        assert config.getLocalPaths()[0] == abs_local_file
+        assert config.getDistantPathOf(abs_local_file) == distant_root + distant
 
     def test_confDependencies(self):
-        theConfigFile = getConfigurationPath(theDependencyConfig())
+        the_config_file = getConfigurationPath(theDependencyConfig())
         dependencies = DependencyConfiguration(
             "", thePrefixedLocalWorkspace(),
-            theConfigFile)
-        parsedFiles = dependencies.getLocalPaths()
-        assert len(parsedFiles) == len(theLocalFiles()), "Input cardinal is different from read one"
-        theLocalAbsPaths = [
+            the_config_file)
+        parsed_files = dependencies.getLocalPaths()
+        assert len(parsed_files) == len(theLocalFiles()), "Input cardinal is different from read one"
+        the_local_abs_paths = [
             concatenatePaths([thePrefixedLocalWorkspace(), f])
             for f in theLocalFiles()]
-        for f in theLocalAbsPaths:
-            assert f in parsedFiles, "Input file not read"
-        for f in parsedFiles:
-            assert f in theLocalAbsPaths, "File not in input list"
+        for f in the_local_abs_paths:
+            assert f in parsed_files, "Input file not read"
+        for f in parsed_files:
+            assert f in the_local_abs_paths, "File not in input list"

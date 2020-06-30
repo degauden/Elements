@@ -36,8 +36,9 @@ from ElementsKernel import Exit
 
 try:
     from builtins import input
-except:
+except ImportError:
     from __builtin__ import input
+
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 

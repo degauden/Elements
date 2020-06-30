@@ -24,9 +24,8 @@
 
 '''
 
-__updated__ = "2020-06-03"
+__updated__ = "2020-06-09"
 
-import os
 from subprocess import Popen, PIPE
 import shlex
 import unittest
