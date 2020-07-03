@@ -67,7 +67,7 @@ class PathTest(unittest.TestCase):
                      "./loc3/bin", "./loc3/scripts"]
 
         self.assertEqual(multiPathAppend(locations, suffixes), ref_paths)
-        
+
     def testGetLoctions(self):
 
         # by construction the PATH variable is never empty
@@ -86,11 +86,11 @@ class PathTest(unittest.TestCase):
         self.assertEqual(sys_ls, which(sys_ls))
 
     def testGetTargetPath(self):
-        
+
         file_name = "toto"
         target_dir = "/blab/blo"
         self.assertEqual(getTargetPath(file_name, target_dir), "/blab/blo/toto")
-        
+
         file_name = "tata/toto"
         target_dir = "/blab/blo"
         self.assertEqual(getTargetPath(file_name, target_dir), "/blab/blo/toto")
@@ -120,5 +120,4 @@ class PathTest(unittest.TestCase):
         self.assertEqual(removeDuplicates(locations), unique_locations)
 
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
