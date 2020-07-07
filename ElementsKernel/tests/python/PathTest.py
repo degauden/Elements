@@ -1,21 +1,20 @@
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
-# 
+#
 # This library is free software; you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option)
 # any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 # details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-
 
 '''
 :date: Apr 29, 2016
@@ -67,7 +66,7 @@ class PathTest(unittest.TestCase):
                      "./loc3/bin", "./loc3/scripts"]
 
         self.assertEqual(multiPathAppend(locations, suffixes), ref_paths)
-        
+
     def testGetLoctions(self):
 
         # by construction the PATH variable is never empty
@@ -86,11 +85,11 @@ class PathTest(unittest.TestCase):
         self.assertEqual(sys_ls, which(sys_ls))
 
     def testGetTargetPath(self):
-        
+
         file_name = "toto"
         target_dir = "/blab/blo"
         self.assertEqual(getTargetPath(file_name, target_dir), "/blab/blo/toto")
-        
+
         file_name = "tata/toto"
         target_dir = "/blab/blo"
         self.assertEqual(getTargetPath(file_name, target_dir), "/blab/blo/toto")
@@ -109,7 +108,6 @@ class PathTest(unittest.TestCase):
         target_name = "foo/tutu"
         self.assertEqual(getTargetPath(file_name, target_dir, target_name), "/blab/blo/foo/tutu")
 
-
     def testRemoveDuplicates(self):
         locations = ["/usr/bin", "/usr/local/bin",
                      "/usr/bin", "/opt/bin", "/opt/local/bin",
@@ -119,6 +117,6 @@ class PathTest(unittest.TestCase):
                             "/opt/bin", "/opt/local/bin"]
         self.assertEqual(removeDuplicates(locations), unique_locations)
 
+
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

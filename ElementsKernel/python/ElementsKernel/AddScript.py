@@ -45,6 +45,7 @@ PROGRAM_TEMPLATE_FILE_IN = 'Script_template.in'
 
 ################################################################################
 
+
 def createDirectories(module_dir):
     """
     Create directories needed for a python program
@@ -52,6 +53,7 @@ def createDirectories(module_dir):
     # Create the scripts directory
     scripts_path = os.path.join(module_dir, 'scripts')
     ProjectCommonRoutines.makeDirectory(scripts_path)
+
 
 ################################################################################
 def substituteAuxFiles(module_dir, program_name):
@@ -76,6 +78,7 @@ def substituteAuxFiles(module_dir, program_name):
     os.chmod(full_tgt, tgt_stat.st_mode | stat.S_IEXEC)
 
     ProjectCommonRoutines.addItemToCreationList(full_tgt)
+
 
 def updateCmakeListsFile(module_dir):
     """
@@ -104,6 +107,7 @@ def updateCmakeListsFile(module_dir):
 
 ################################################################################
 
+
 def createScript(current_dir, program_name):
     """
     Create the python program
@@ -113,6 +117,7 @@ def createScript(current_dir, program_name):
     updateCmakeListsFile(current_dir)
 
 ################################################################################
+
 
 def makeChecks(program_file_path, program_name):
     """
@@ -124,6 +129,7 @@ def makeChecks(program_file_path, program_name):
     ProjectCommonRoutines.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -142,6 +148,7 @@ def defineSpecificProgramOptions():
     return parser
 
 ################################################################################
+
 
 def mainMethod(args):
     """

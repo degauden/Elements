@@ -1,21 +1,20 @@
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
-# 
+#
 # This library is free software; you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option)
 # any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 # details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-
 
 """Main Program Class Module"""
 
@@ -30,14 +29,17 @@ from ElementsKernel.Environment import Environment
 from ElementsKernel.Configuration import getConfigurationPath, getConfigurationLocations
 from ElementsKernel import Exit
 
+
 def str_to_bool(s):
     """Convert string to bool (in argparse context)."""
     if s.lower() not in ['true', 'false']:
         raise ValueError('Need bool; got %r' % s)
     return {'true': True, 'false': False}[s.lower()]
 
+
 class Program(object):
     """Main Program Class"""
+
     def __init__(self, app_module,
                  parent_project_version=None, parent_project_name=None,
                  parent_project_vcs_version=None,
@@ -227,7 +229,6 @@ class Program(object):
             self._logger.log(self._elements_loglevel, names[name] + ' = ' + str(value))
         self._logger.log(self._elements_loglevel, "#")
 
-
     def _logTheEnvironment(self):
         self._logger.debug("##########################################################")
         self._logger.debug("#")
@@ -247,7 +248,6 @@ class Program(object):
         if self._parent_project_vcs_version:
             version += self._parent_project_vcs_version
         return version
-
 
     def _bootStrapEnvironment(self):
         self._program_path = os.path.dirname(os.path.realpath(sys.argv[0]))

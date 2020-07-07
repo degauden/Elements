@@ -24,7 +24,7 @@
 
 '''
 
-__updated__ = "2020-06-09"
+__updated__ = "2020-07-07"
 
 from subprocess import Popen, PIPE
 import shlex
@@ -84,7 +84,7 @@ class TestCppProgramTest(object):
                 cmd = '{} --{}=666'.format(cmd, arg_name)
             else:
                 cmd = '{} --{} 666'.format(cmd, arg_name)
-                
+
 
         process = Popen(shlex.split(cmd), stdout=PIPE, stderr=PIPE)
         _, stderr = process.communicate()

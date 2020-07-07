@@ -1,17 +1,17 @@
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
-# 
+#
 # This library is free software; you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option)
 # any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 # details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -29,6 +29,7 @@
 
 import ElementsKernel.ParseCmakeListsMacros as pclm
 import re
+
 
 class CMakeLists(object):
     """
@@ -60,7 +61,6 @@ class CMakeLists(object):
         #
         self._getMacroListWithNoParams(text_with_no_comment)
         self._getMacroListWithParams(text_with_no_comment)
-
 
     def _getMacroListWithParams(self, text):
         """
@@ -169,7 +169,6 @@ class CMakeLists(object):
             module_name = content[1]
             self.elements_add_python_executable_list.append(pclm.ElementsAddPythonExecutable(name, module_name))
 
-
     def _getMacroListWithNoParams(self, text):
         """
         Look for specific Elements macros with no parameters and set the object members accordingly
@@ -205,7 +204,6 @@ class CMakeLists(object):
                 name = name.split('REQUIRED COMPONENTS')[0].strip()
             self.find_package_list.append(pclm.FindPackage(name, components))
 
-
     def _removeComments(self):
         """
         Remove all comments (with the <#> character et the beginning of the line)
@@ -229,7 +227,6 @@ class CMakeLists(object):
         else:
             found_pattern = re.findall(pattern, text_with_nocomments)
         return found_pattern
-
 
     # Look for the right location for adding the text just after this position
     @staticmethod
