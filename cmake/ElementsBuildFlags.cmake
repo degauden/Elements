@@ -678,6 +678,50 @@ if ( ELEMENTS_CPP14 )
 endif()
 
 
+if ( ELEMENTS_CPP17 )
+
+  check_cxx_compiler_flag("-std=c++17" HAS_CPP17_FLAG)
+  if(HAS_CPP17_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+    if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
+      check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+    endif()
+  else()
+    message(WARNING "The -std=c++17 option is not available")  
+  endif()
+
+  check_c_compiler_flag("-std=c17" HAS_C17_FLAG)
+  if(HAS_C17_FLAG)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c17") # this is the latest C standard available
+  else()
+    message(WARNING "The -std=c17 option is not available")
+  endif()
+
+endif()
+
+if ( ELEMENTS_CPP20 )
+
+  check_cxx_compiler_flag("-std=c++20" HAS_CPP20_FLAG)
+  if(HAS_CPP20_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+    if ( APPLE AND (("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm") ) )
+      check_and_use_cxx_option(-stdlib=libc++ CXX_HAS_MINUS_STDLIB)
+    endif()
+  else()
+    message(WARNING "The -std=c++20 option is not available")  
+  endif()
+
+  check_c_compiler_flag("-std=c2x" HAS_C2X_FLAG)
+  if(HAS_C2X_FLAG)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c2x") # this is the latest C standard available
+  else()
+    message(WARNING "The -std=c2x option is not available")
+  endif()
+
+endif()
+
+
+
 if ( APPLE AND ( ("${SGS_COMP}" STREQUAL "clang") OR ("${SGS_COMP}" STREQUAL "llvm")))
   if(DEFINED ENV{MACPORT_LOCATION})
     set(macport_inc "$ENV{MACPORT_LOCATION}/include")
