@@ -1,21 +1,20 @@
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
-# 
+#
 # This library is free software; you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option)
 # any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 # details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-
 
 """ This script will remove all files related to a python module
 
@@ -39,12 +38,12 @@ try:
 except ImportError:
     from __builtin__ import input
 
-
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
 logger = Logging.getLogger('RemovePythonModule')
 
 ################################################################################
+
 
 def getAllFiles(pymodule_name, module_directory, module_name):
     """
@@ -63,6 +62,7 @@ def getAllFiles(pymodule_name, module_directory, module_name):
     return delete_file_list
 
 ################################################################################
+
 
 def updateCmakeListsFile(module_dir):
     """
@@ -89,6 +89,7 @@ def updateCmakeListsFile(module_dir):
 
 ################################################################################
 
+
 def defineSpecificProgramOptions():
     """
     Define program option(s)
@@ -109,6 +110,7 @@ def defineSpecificProgramOptions():
 
 ################################################################################
 
+
 def mainMethod(args):
     """
     Main
@@ -118,7 +120,7 @@ def mainMethod(args):
     logger.info('#  Logging from the mainMethod() of the RemovePythonModule \
     script ')
     logger.info('#')
-    
+
     exit_code = Exit.Code["OK"]
 
     pymodule_name = args.pymodule_name

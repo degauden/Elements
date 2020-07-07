@@ -54,7 +54,6 @@ else:
     # use the real mkdtemp
     from tempfile import mkdtemp, mkstemp
 
-
 DEFAULT_TMP_KEEP_VAR = "KEEPTEMPDIR"
 
 
@@ -167,7 +166,7 @@ class Environment(object):
     Class to changes the environment temporarily.
     """
 
-    def __init__(self, orig=os.environ, keep_same=False): # pylint: disable=dangerous-default-value
+    def __init__(self, orig=os.environ, keep_same=False):  # pylint: disable=dangerous-default-value
         """
         Create a temporary environment on top of the one specified
         (it can be another TemporaryEnvironment instance).
@@ -230,7 +229,7 @@ class Environment(object):
         """
         return self.env.keys()
 
-    def has_key(self, key): # pylint: disable=invalid-name
+    def has_key(self, key):  # pylint: disable=invalid-name
         """
         return True if the key is present
         """
@@ -295,7 +294,7 @@ class Environment(object):
         """
         self.old_values = {}
 
-    def gen_script(self, shell_type): # pylint: disable=invalid-name
+    def gen_script(self, shell_type):  # pylint: disable=invalid-name
         """
         Generate a shell script to reproduce the changes in the environment.
         """
@@ -322,5 +321,6 @@ class Environment(object):
                 elif shell_type == 'bat':
                     out += 'set %s=%s\n' % (key, self.env[key])
         return out
+
 
 TempEnv = Environment
