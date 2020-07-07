@@ -16,7 +16,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
 """ This script check a name of a project, module or product agains a given
 online naming DB. The script return 0 if the entity exists and 1 if it doesn't
 
@@ -38,9 +37,9 @@ from ElementsKernel import Exit
 # pyling: disable=bare-except
 try:
     from urllib2 import urlopen  # @UnusedImport @UnresolvedImport
-    from urllib2 import URLError # @UnusedImport @UnresolvedImport
-except: # pylint: disable=bare-except
-    from urllib.request import urlopen # @ImportRedefinition
+    from urllib2 import URLError  # @UnusedImport @UnresolvedImport
+except:  # pylint: disable=bare-except
+    from urllib.request import urlopen  # @ImportRedefinition
     from urllib.error import URLError
 
 logger = log.getLogger('NameCheck')
@@ -49,6 +48,7 @@ TYPES = ["cmake", "library", "executable"]
 DEFAULT_TYPE = "cmake"
 
 _localUrlOpen = urlopen
+
 
 def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
     """ Get the informations about a given entity of a specific type """
@@ -59,6 +59,7 @@ def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
         if u in info and info[u]:
             info[u] = db_url + info[u]
     return info
+
 
 def checkDataBaseUrl(db_url):
     """ check if the DB URL exists """
@@ -75,10 +76,8 @@ def checkDataBaseUrl(db_url):
 
     return site_exists
 
-
-
-
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -108,6 +107,7 @@ def defineSpecificProgramOptions():
 
 
 Exit.Code.update({"INVALID_URL":2, "DB_ERROR":3})
+
 
 def mainMethod(args):
     """

@@ -1,21 +1,20 @@
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
-# 
+#
 # This library is free software; you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option)
 # any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 # details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-
 
 """ This script creates a new Elements python module
 
@@ -45,6 +44,7 @@ PYMODULE_TEMPLATE_FILE_IN = 'PythonModule_template.py.in'
 
 ################################################################################
 
+
 def createDirectories(module_dir, module_name):
     """
     Create directories needed for a python module
@@ -57,6 +57,7 @@ def createDirectories(module_dir, module_name):
             os.makedirs(target_dir)
 
 ################################################################################
+
 
 def updateCmakeListsFile(module_dir):
     """
@@ -86,16 +87,17 @@ def updateCmakeListsFile(module_dir):
 
 ################################################################################
 
+
 def createPythonModule(module_dir, module_name, python_module_name):
     """
     Create the python module
     """
-    print ('module_dir ',module_dir, 'module_name ',module_name, 'python_module_name ',python_module_name)
+    print ('module_dir ', module_dir, 'module_name ', module_name, 'python_module_name ', python_module_name)
     createDirectories(module_dir, module_name)
     ProjectCommonRoutines.createPythonInitFile(os.path.join(module_dir, 'python', module_name, '__init__.py'))
     full_pymodule_name = os.path.join('python', module_name, python_module_name + '.py')
     pytest_name = os.path.join('tests', 'python', python_module_name + '_test.py')
-    target_locations = { 
+    target_locations = {
                        PYMODULE_TEMPLATE_FILE_IN: full_pymodule_name,
                        PYTEST_TEMPLATE_FILE_IN: pytest_name
                        }
@@ -120,6 +122,7 @@ def createPythonModule(module_dir, module_name, python_module_name):
 
 ################################################################################
 
+
 def makeChecks(module_file_path, python_module_name):
     """
     Make some checks
@@ -130,6 +133,7 @@ def makeChecks(module_file_path, python_module_name):
     ProjectCommonRoutines.checkAuxFileExist(PYTEST_TEMPLATE_FILE_IN)
 
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -150,6 +154,7 @@ This script creates an <Elements> python module at your current directory
     return parser
 
 ################################################################################
+
 
 def mainMethod(args):
     """

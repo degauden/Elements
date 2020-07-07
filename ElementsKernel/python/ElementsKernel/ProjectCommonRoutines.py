@@ -52,12 +52,14 @@ logger = log.getLogger('ProjectCommonRoutines')
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
+
 ################################################################################
 def addItemToCreationList(element):
     """
     Add an element to the global list.
     """
     _filelist.append(element)
+
 
 ################################################################################
 def printCreationList():
@@ -70,6 +72,7 @@ def printCreationList():
     for elt in _filelist:
         logger.info("#  file --> %s", elt)
     logger.info("#")
+
 
 ################################################################################
 def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=False):
@@ -114,6 +117,7 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=Fals
 
 ################################################################################
 
+
 def removeFilesOnDisk(file_list):
     """
     Remove all files on hard drive from the <file_list> list.
@@ -126,6 +130,7 @@ def removeFilesOnDisk(file_list):
 
 ################################################################################
 
+
 def makeDirectory(directory_path):
     """
     Create a directory on disk if any
@@ -134,6 +139,7 @@ def makeDirectory(directory_path):
         os.makedirs(directory_path)
 
 ################################################################################
+
 
 def deleteFile(path_filename):
     """
@@ -144,6 +150,7 @@ def deleteFile(path_filename):
         os.remove(path_filename)
 
 ################################################################################
+
 
 def makeACopy(cmakefile):
     """
@@ -157,6 +164,7 @@ def makeACopy(cmakefile):
         logger.warning('File not found: <%s> Can not make a copy of this file!', cmakefile)
 
 ################################################################################
+
 
 def checkNameAndVersionValid(name, version):
     """
@@ -172,6 +180,7 @@ def checkNameAndVersionValid(name, version):
 
 ################################################################################
 
+
 def eraseDirectory(directory):
     """
     Erase a directory and its contents from disk
@@ -182,6 +191,7 @@ def eraseDirectory(directory):
 
 ################################################################################
 
+
 def copyAuxFile(destination, aux_file_name):
     """
     Copy the <aux_file_name> file to the <destination> directory.
@@ -190,8 +200,8 @@ def copyAuxFile(destination, aux_file_name):
     aux_path_file = aux.getAuxiliaryPath(os.path.join('ElementsKernel', 'templates', aux_file_name))
     shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
 
-
 ################################################################################
+
 
 def checkAuxFileExist(aux_file_name):
     """
@@ -203,6 +213,7 @@ def checkAuxFileExist(aux_file_name):
     aux.getAuxiliaryPath(auxpath)
 
 ################################################################################
+
 
 def getAuthor():
     """
@@ -216,6 +227,7 @@ def getAuthor():
     return author_str
 
 ################################################################################
+
 
 def getElementsModuleName(module_directory):
     """
@@ -244,6 +256,7 @@ def getElementsModuleName(module_directory):
 
 ################################################################################
 
+
 def checkFileNotExist(path_filename, name):
     """
     Check if the <path_filename> file does not already exist
@@ -255,6 +268,7 @@ def checkFileNotExist(path_filename, name):
 ################################################################################
 
 ################################################################################
+
 
 def createPythonInitFile(init_path_filename):
     """
@@ -269,6 +283,7 @@ def createPythonInitFile(init_path_filename):
 ################################################################################
 
 ################################################################################
+
 
 def updateCmakeCommonPart(cmake_filename, library_dep_list):
     """

@@ -40,7 +40,7 @@ if cython_exe:
             self.rectangle = Rectangle(1, 2, 3, 4)
 
         def test_getLength(self):
-            self.assertEqual(self.rectangle.getLength(), 3)
+            self.assertEqual(self.rectangle.getLength(), 2)
 
         def test_getHeight(self):
             self.assertEqual(self.rectangle.getHeight(), 2)

@@ -35,7 +35,6 @@ try:
 except ImportError:
     from __builtin__ import input
 
-
 from ElementsKernel import ProjectCommonRoutines
 from ElementsKernel import ParseCmakeLists
 from ElementsKernel import Logging
@@ -47,6 +46,7 @@ CMAKE_LISTS_FILE = 'CMakeLists.txt'
 logger = Logging.getLogger('RemovePythonProgram')
 
 ################################################################################
+
 
 def getAllFiles(program_name, module_directory, module_name):
     """
@@ -63,6 +63,7 @@ def getAllFiles(program_name, module_directory, module_name):
     return delete_file_list
 
 ################################################################################
+
 
 def updateCmakeListsFile(module_dir, program_name):
     """
@@ -89,6 +90,7 @@ def updateCmakeListsFile(module_dir, program_name):
 
 ################################################################################
 
+
 def defineSpecificProgramOptions():
     """
     Define program option(s)
@@ -108,6 +110,7 @@ def defineSpecificProgramOptions():
     return parser
 
 ################################################################################
+
 
 def mainMethod(args):
     """

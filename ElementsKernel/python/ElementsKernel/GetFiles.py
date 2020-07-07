@@ -29,9 +29,9 @@ import ElementsKernel.Logging as log
 
 from ElementsKernel import Path, Exit
 
-
 DEFAULT_TYPE = "executable"
 TYPES = [DEFAULT_TYPE, "library", "python", "configuration", "auxiliary"]
+
 
 def defineSpecificProgramOptions():
     """
@@ -61,14 +61,13 @@ def defineSpecificProgramOptions():
                         action="store_true",
                         help='Add the system internal paths to the environment for the lookup')
 
-
     parser.add_argument('-t', '--type',
                         default=DEFAULT_TYPE,
                         choices=TYPES,
                         help='The type of file to search for [default: %s]' % DEFAULT_TYPE)
 
-
     return parser
+
 
 def selfFilter(f_list, only_self):
     """
@@ -82,7 +81,6 @@ def selfFilter(f_list, only_self):
         f_list = [f for f in f_list if f.startswith(this_project_root)]
 
     return f_list
-
 
 
 def mainMethod(args):
@@ -114,7 +112,6 @@ def mainMethod(args):
             for root, _, files in os.walk(l):
                 for f in files:
                     found_list.append(os.path.join(root, f))
-
 
     found_list = selfFilter(found_list, args.self)
 
