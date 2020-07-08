@@ -14,7 +14,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
 import py.test
 import os.path
 
@@ -26,17 +25,10 @@ from ElementsServices.DataSync.DataSynchronizerMaker import createSynchronizer
 
 from fixtures.ConfigFilesFixture import theDependencyConfig, theInvalidDependencyConfig
 
+
 class TestDataSynchronizer (object):
 
     def checkSynchronization(self, connection):
-        capture_manager = py.test.config.pluginmanager.getplugin(
-            'capturemanager')
-        try:
-            capture_manager.suspendcapture(in_=True)
-            # TODO why is this ugly thing needed with EDEN 2.0?
-        except:
-            pass
-
         dependency = theDependencyConfig()
         connection_config = ConnectionConfiguration(connection)
         distant_root = connection_config.distant_root
@@ -48,7 +40,7 @@ class TestDataSynchronizer (object):
         file_list = dependency_config.getLocalPaths()
         for f in file_list:
             assert os.path.isfile(f), "File not found: " + f + " using command: " \
-                + synchronizer.createDownloadCommand(dependency_config.getFileMap()[f], f)
+                +synchronizer.createDownloadCommand(dependency_config.getFileMap()[f], f)
             os.remove(f)
 
     def checkDownloadTestData(self, connection):
