@@ -234,3 +234,9 @@ elements_add_test(CMakeOverride
                   COMMAND cmakeOverride_test  
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation Override)
+                  
+elements_add_test(MissingElementsProjectVersion
+                  COMMAND missingElementsProjectVersion_test
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  TIMEOUT 120
+                  LABELS Creation)

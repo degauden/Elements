@@ -1,0 +1,192 @@
+#!/bin/sh
+
+home_dir=${PWD}
+
+projectA_name="ProjectA"
+projectA_version="1.1"
+
+projectB_name="ProjectB"
+projectB_version="1.2"
+
+projectC_name="ProjectC"
+projectC_version="1.3"
+
+
+# Create unique directory
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+# Clean and exit
+local_clean_exit() {
+  cd ${home_dir}
+  #  rm -rf ${tmploc}
+  exit $1
+}
+
+if [ "$(basename ${ELEMENTS_PROJECT_ROOT})" = "Elements" ]; then
+  extra_proj_path=$(dirname ${ELEMENTS_PROJECT_ROOT})
+else
+  extra_proj_path=$(dirname $(dirname${ELEMENTS_PROJECT_ROOT}))
+fi
+
+# Set to the User_area
+export User_area=${tmploc}
+export CMAKE_PROJECT_PATH=${tmploc}:${extra_proj_path}:${CMAKE_PROJECT_PATH}
+
+echo "CMAKE_PROJECT_PATH: ${CMAKE_PROJECT_PATH}"
+echo "BINARY_TAG: ${BINARY_TAG}"
+echo "User_area ${User_area}"
+echo "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}"
+
+# --------------------------------------------------------------------------------------------
+
+cd ${tmploc}
+
+CreateElementsProject $projectA_name $projectA_version --yes
+
+# Error? stop and clean up
+if [ $? -ne 0 ]; then
+   echo "Error: <CreateElementsProject $projectA_name $projectA_version> command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+# check that the Elements framework has been installed. It is
+# not enough to have it built
+if [ -e ${ELEMENTS_PROJECT_ROOT}/InstallArea/${BINARY_TAG}/manifest.xml ]; then
+
+cd $projectA_name/$projectA_version
+
+make configure > configure.log 2>&1
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Configuration of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+mv CMakeLists.txt CMakeLists.txt.bck
+
+cat << EOF > CMakeLists.txt
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+
+find_package(ElementsProject)
+
+elements_project(ProjectA 1.1 USE Elements)
+
+EOF
+
+make configure > configure.failed.log 2>&1
+if [ $? -eq 0 ]; then
+   echo "Error: <Configuration of $projectA_name $projectA_version> Succeeded!" 1>&2
+   local_clean_exit 1
+fi
+
+grep -q "CMake Error" configure.failed.log
+if [ $? -ne 0 ]; then
+   echo "Error: cannot find 'CMake Error' in the log file" 1>&2
+   local_clean_exit 1
+fi
+
+grep -q "No project version specified for Elements" configure.failed.log
+if [ $? -ne 0 ]; then
+   echo "Error: cannot find the error message in the log file" 1>&2
+   local_clean_exit 1
+fi
+
+
+rm -f CMakeLists.txt
+mv CMakeLists.txt.bck CMakeLists.txt
+rm -f configure.log
+make configure > configure.log 2>&1
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Configuration of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+
+
+make
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Builld of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+make install
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
+   echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+# --------------------------------------------------------------------------------------------
+
+
+cd ${tmploc}
+
+CreateElementsProject -s -d $projectA_name $projectA_version $projectB_name $projectB_version --yes
+
+cd $projectB_name/$projectB_version
+
+make configure
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Configuration of $projectB_name $projectB_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+make
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Builld of $projectB_name $projectB_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+make install
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Installation of $projectB_name $projectB_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+
+# --------------------------------------------------------------------------------------------
+
+cd ${tmploc}
+
+CreateElementsProject -s -d $projectA_name $projectA_version -d $projectB_name $projectB_version $projectC_name $projectC_version --yes
+
+cd $projectC_name/$projectC_version
+
+make configure
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Configuration of $projectC_name $projectC_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+make
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Builld of $projectC_name $projectC_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+make install
+
+if [ $? -ne 0 ]; then
+   echo "Error: <Installation of $projectC_name $projectC_version> failed!" 1>&2
+   local_clean_exit 1
+fi
+
+# --------------------------------------------------------------------------------------------
+
+else
+echo "Warning: The Elements framework is not available in its InstallArea" 1>&2
+fi
+
+local_clean_exit 0

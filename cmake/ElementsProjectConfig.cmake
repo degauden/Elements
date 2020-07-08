@@ -147,7 +147,7 @@ macro(elements_project project version)
   endif()
 
   if(NOT CMAKE_PROJECT_VERSION MATCHES "^HEAD.*")
-    string(REGEX MATCH "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+))?" _version ${CMAKE_PROJECT_VERSION})
+    string(REGEX MATCH ${version_regex} _version ${CMAKE_PROJECT_VERSION})
     set(CMAKE_PROJECT_VERSION_MAJOR ${CMAKE_MATCH_1} CACHE INTERNAL "Major version of project")
     set(CMAKE_PROJECT_VERSION_MINOR ${CMAKE_MATCH_2} CACHE INTERNAL "Minor version of project")
     set(CMAKE_PROJECT_VERSION_PATCH ${CMAKE_MATCH_4} CACHE INTERNAL "Patch version of project")
@@ -1521,7 +1521,7 @@ macro(_elements_use_other_projects)
     list(REMOVE_AT other_dependee_list 0 1)
 
     if(NOT other_project_version MATCHES "^HEAD.*")
-      string(REGEX MATCH "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+))?" _version ${other_project_version})
+      string(REGEX MATCH ${version_regex} _version ${other_project_version})
 
       set(other_project_cmake_version ${CMAKE_MATCH_1}.${CMAKE_MATCH_2})
       if(DEFINED CMAKE_MATCH_4)
