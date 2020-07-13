@@ -50,7 +50,7 @@ std::vector<Path::Item> getConfigurationLocations(bool exist_only) {
   auto location_list = Path::getLocations(Path::Type::configuration, exist_only);
 
   // the search is extended to the default system /usr/share/conf
-  location_list.push_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
+  location_list.emplace_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
 
   if (exist_only) {
     auto new_end = std::remove_if(location_list.begin(),

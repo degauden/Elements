@@ -55,7 +55,7 @@ size_t DependencyConfiguration::dependencyCount() const {
 vector<path> DependencyConfiguration::distantPaths() const {
   vector<path> distant_paths;
   for (const auto& item : m_fileMap) {
-    distant_paths.push_back(item.second);
+    distant_paths.emplace_back(item.second);
   }
   return distant_paths;
 }
@@ -63,7 +63,7 @@ vector<path> DependencyConfiguration::distantPaths() const {
 vector<path> DependencyConfiguration::localPaths() const {
   vector<path> local_paths;
   for (const auto& item : m_fileMap) {
-    local_paths.push_back(item.first);
+    local_paths.emplace_back(item.first);
   }
   return local_paths;
 }

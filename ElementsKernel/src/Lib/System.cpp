@@ -368,7 +368,7 @@ vector<string> getEnv() {
 #endif
   vector<string> vars;
   for (int i = 0; environ[i] != 0; ++i) {
-    vars.push_back(environ[i]);
+    vars.emplace_back(environ[i]);
   }
   return vars;
 }
@@ -425,7 +425,7 @@ const vector<string> backTrace(const int depth, const int offset) {
         std::ostringstream ost;
         ost << "#" << std::setw(3) << std::setiosflags(std::ios::left) << i - total_offset + 1;
         ost << std::hex << addr << std::dec << " " << fnc << "  [" << lib << "]";
-        trace.push_back(ost.str());
+        trace.emplace_back(ost.str());
       }
     }
   }

@@ -67,13 +67,13 @@ struct Path_Fixture {
     using std::for_each;
     using boost::filesystem::create_directory;
 
-    m_item_list.push_back(m_top_dir.path() / "test1");
-    m_item_list.push_back(m_top_dir.path() / "test1" / "foo");
-    m_item_list.push_back(m_top_dir.path() / "test2");
-    m_item_list.push_back(m_top_dir.path() / "test3");
-    m_item_list.push_back(m_top_dir.path() / "test4");
-    m_item_list.push_back(m_top_dir.path() / "test5");
-    m_item_list.push_back(m_top_dir.path() / "test6");
+    m_item_list.emplace_back(m_top_dir.path() / "test1");
+    m_item_list.emplace_back(m_top_dir.path() / "test1" / "foo");
+    m_item_list.emplace_back(m_top_dir.path() / "test2");
+    m_item_list.emplace_back(m_top_dir.path() / "test3");
+    m_item_list.emplace_back(m_top_dir.path() / "test4");
+    m_item_list.emplace_back(m_top_dir.path() / "test5");
+    m_item_list.emplace_back(m_top_dir.path() / "test6");
 
     for_each(m_item_list.cbegin(), m_item_list.cend(),
         [](Path::Item p) {
@@ -81,26 +81,26 @@ struct Path_Fixture {
     });
 
 
-    m_file_list.push_back(m_top_dir.path() / "test1" / "foo" / "e1e2");
-    m_directory_list.push_back(m_top_dir.path() / "test1" / "foo");
+    m_file_list.emplace_back(m_top_dir.path() / "test1" / "foo" / "e1e2");
+    m_directory_list.emplace_back(m_top_dir.path() / "test1" / "foo");
 
-    m_file_list.push_back(m_top_dir.path() / "test3" / "e1e2");
-    m_directory_list.push_back(m_top_dir.path() / "test3");
+    m_file_list.emplace_back(m_top_dir.path() / "test3" / "e1e2");
+    m_directory_list.emplace_back(m_top_dir.path() / "test3");
 
-    m_file_list.push_back(m_top_dir.path() / "test4" / "e1e2");
-    m_directory_list.push_back(m_top_dir.path() / "test4");
+    m_file_list.emplace_back(m_top_dir.path() / "test4" / "e1e2");
+    m_directory_list.emplace_back(m_top_dir.path() / "test4");
 
     create_directory(m_top_dir.path() / "test1" / "sub");
     create_directory(m_top_dir.path() / "test5" / "sub");
 
-    m_file_list.push_back(m_top_dir.path() / "test1" / "sub" / "d1d2");
-    m_directory_list.push_back(m_top_dir.path() / "test1" / "sub");
+    m_file_list.emplace_back(m_top_dir.path() / "test1" / "sub" / "d1d2");
+    m_directory_list.emplace_back(m_top_dir.path() / "test1" / "sub");
 
-    m_file_list.push_back(m_top_dir.path() / "test5" / "sub" / "d1d2");
-    m_directory_list.push_back(m_top_dir.path() / "test5" / "sub");
+    m_file_list.emplace_back(m_top_dir.path() / "test5" / "sub" / "d1d2");
+    m_directory_list.emplace_back(m_top_dir.path() / "test5" / "sub");
 
-    m_file_list.push_back(m_top_dir.path() / "test6" / "d1d2");
-    m_directory_list.push_back(m_top_dir.path() / "test6");
+    m_file_list.emplace_back(m_top_dir.path() / "test6" / "d1d2");
+    m_directory_list.emplace_back(m_top_dir.path() / "test6");
 
     for_each(m_file_list.cbegin(), m_file_list.cend(),
         [](Path::Item p) {
@@ -176,9 +176,9 @@ BOOST_FIXTURE_TEST_CASE(getAllFromLocations_test, Path_Fixture) {
   BOOST_CHECK(file_list.size() == 3);
 
   vector<Path::Item> ref_file_list;
-  ref_file_list.push_back(m_top_dir.path() / "test1" / "foo" / "e1e2");
-  ref_file_list.push_back(m_top_dir.path() / "test3" / "e1e2");
-  ref_file_list.push_back(m_top_dir.path() / "test4" / "e1e2");
+  ref_file_list.emplace_back(m_top_dir.path() / "test1" / "foo" / "e1e2");
+  ref_file_list.emplace_back(m_top_dir.path() / "test3" / "e1e2");
+  ref_file_list.emplace_back(m_top_dir.path() / "test4" / "e1e2");
 
   BOOST_CHECK_EQUAL_COLLECTIONS(file_list.cbegin(), file_list.cend(),
                                 ref_file_list.cbegin(), ref_file_list.cend());
@@ -189,8 +189,8 @@ BOOST_FIXTURE_TEST_CASE(getAllFromLocations_test, Path_Fixture) {
   BOOST_CHECK(file_list2.size() == 2);
 
   vector<Path::Item> ref_file_list2;
-  ref_file_list2.push_back(m_top_dir.path() / "test1" / "sub" / "d1d2");
-  ref_file_list2.push_back(m_top_dir.path() / "test5" / "sub" / "d1d2");
+  ref_file_list2.emplace_back(m_top_dir.path() / "test1" / "sub" / "d1d2");
+  ref_file_list2.emplace_back(m_top_dir.path() / "test5" / "sub" / "d1d2");
 
   BOOST_CHECK_EQUAL_COLLECTIONS(file_list2.cbegin(), file_list2.cend(),
                                 ref_file_list2.cbegin(), ref_file_list2.cend());
@@ -345,7 +345,7 @@ BOOST_AUTO_TEST_CASE(RemoveDuplicates_test) {
   vector<Path::Item> unique_paths;
 
   for (const auto& l : unique_locations) {
-    unique_paths.push_back(Path::Item(l));
+    unique_paths.emplace_back(Path::Item(l));
   }
 
   BOOST_CHECK(removeDuplicates(locations) == unique_paths);
@@ -353,7 +353,7 @@ BOOST_AUTO_TEST_CASE(RemoveDuplicates_test) {
   vector<Path::Item> paths;
 
   for (const auto& l : locations) {
-    paths.push_back(Path::Item(l));
+    paths.emplace_back(Path::Item(l));
   }
 
   BOOST_CHECK(removeDuplicates(paths) == unique_paths);

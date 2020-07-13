@@ -216,7 +216,7 @@ Environment& Environment::set(const string& index, const string& value) {
         m_old_values[index] = getEnv(index);
       }
     } else {
-      m_added_variables.push_back(index);
+      m_added_variables.emplace_back(index);
     }
   }
 

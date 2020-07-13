@@ -64,21 +64,21 @@ struct Configuration_Fixture {
     using std::copy_if;
     using std::distance;
 
-    m_item_list.push_back(m_top_dir.path() / "test1");
-    m_item_list.push_back(m_top_dir.path() / "test1" / "foo");
-    m_item_list.push_back(m_top_dir.path() / "test2");
-    m_item_list.push_back(m_top_dir.path() / "test3");
+    m_item_list.emplace_back(m_top_dir.path() / "test1");
+    m_item_list.emplace_back(m_top_dir.path() / "test1" / "foo");
+    m_item_list.emplace_back(m_top_dir.path() / "test2");
+    m_item_list.emplace_back(m_top_dir.path() / "test3");
 
     for_each(m_item_list.cbegin(), m_item_list.cend(),
         [](Path::Item p) {
         boost::filesystem::create_directory(p);
     });
 
-    m_item_list.push_back(m_top_dir.path() / "test4");
+    m_item_list.emplace_back(m_top_dir.path() / "test4");
 
     m_target_item_list = m_item_list;
 
-    m_target_item_list.push_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
+    m_target_item_list.emplace_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
 
     m_real_item_list.resize(m_item_list.size());
     auto it = copy_if(m_item_list.begin(), m_item_list.end(),

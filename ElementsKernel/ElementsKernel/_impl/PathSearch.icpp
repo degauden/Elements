@@ -48,7 +48,7 @@ std::vector<T> pathSearch(const std::string& searched_name, T directory) {
         // File found: make sure the result is T: string to string or string to
         // boost::filesystem::path
         T l_result { dir_iter->path().string() };
-        searchResults.push_back(l_result);
+        searchResults.emplace_back(l_result);
       }
     }
   }

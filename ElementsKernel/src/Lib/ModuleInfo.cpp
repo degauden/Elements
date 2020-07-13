@@ -222,7 +222,7 @@ vector<Path::Item> linkedModulePaths() {
       continue;
     }
     if (perms == "r-xp" and boost::filesystem::exists(pathname)) {
-      linked_modules.push_back(Path::Item(pathname));
+      linked_modules.emplace_back(Path::Item(pathname));
     }
   }
 
@@ -237,7 +237,7 @@ const vector<string> linkedModules() {
   if (s_linkedModules.size() == 0) {
 
     for (auto m : linkedModulePaths()) {
-      s_linkedModules.push_back(m.string());
+      s_linkedModules.emplace_back(m.string());
     }
 
   }

@@ -52,9 +52,9 @@ std::vector<Path::Item> getAuxiliaryLocations(bool exist_only) {
   auto location_list = Path::getLocations(Path::Type::auxiliary, exist_only);
 
   // extended to /usr/share/aux{dir,}
-  location_list.push_back(Path::Item(DEFAULT_INSTALL_PREFIX) / "share" / "auxdir");
+  location_list.emplace_back(Path::Item(DEFAULT_INSTALL_PREFIX) / "share" / "auxdir");
   // for backward compatibility with the former convention
-  location_list.push_back(Path::Item(DEFAULT_INSTALL_PREFIX) / "share" / "aux");
+  location_list.emplace_back(Path::Item(DEFAULT_INSTALL_PREFIX) / "share" / "aux");
 
   if (exist_only) {
     auto new_end = std::remove_if(location_list.begin(),

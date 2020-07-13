@@ -89,7 +89,7 @@ class LogMessageTracker {
       // Logging::Level logLevel = levelMap[logLevelString];
       string name = line.substr(0, line.rfind(' '));
       trim(name);
-      messages.push_back(
+      messages.emplace_back(
           std::make_tuple(timestamp, logLevelString, name, message));
     }
     return messages;
@@ -351,7 +351,7 @@ BOOST_FIXTURE_TEST_CASE(setLogFile_test, ElementsLogging_Fixture) {
   vector<string> lines { };
   string line;
   while (std::getline(logFile, line)) {
-    lines.push_back(line);
+    lines.emplace_back(line);
   }
   logFile.close();
   BOOST_CHECK_EQUAL(lines.size(), 2);
@@ -389,7 +389,7 @@ BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
   vector<string> lines { };
   string line;
   while (std::getline(logFile1, line)) {
-    lines.push_back(line);
+    lines.emplace_back(line);
   }
   logFile1.close();
   BOOST_CHECK_EQUAL(lines.size(), 1);
@@ -398,7 +398,7 @@ BOOST_FIXTURE_TEST_CASE(singleLogFile_test, ElementsLogging_Fixture) {
   std::ifstream logFile2 { logFileName2.str() };
   lines = vector<string> { };
   while (std::getline(logFile2, line)) {
-    lines.push_back(line);
+    lines.emplace_back(line);
   }
   logFile2.close();
   BOOST_CHECK_EQUAL(lines.size(), 2);
