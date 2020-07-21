@@ -15,7 +15,7 @@
 - Make the Logging and ExitCode local types of the Program class in order to do 
   less typing when creating a program using them.
 - Add the support for a custom Makefile. The file has to be pointed by the 
-  CUSTOM_MAKE environment variable. It can be absolute or can be searched 
+  CUSTOM_MAKEFILE environment variable. It can be absolute or can be searched 
   in the usual directories otherwise. The custom Makefile is appended to the regular 
   one.
 - Add a utlity make library to be used in the CUSTOM_MAKEFILE.

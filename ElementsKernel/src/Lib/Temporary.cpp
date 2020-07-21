@@ -70,7 +70,7 @@ TempPath::~TempPath() {
     log.debug() << "Number of files removed: " << file_number;
   } else {
     log.info() << m_keep_var << " set: I do not remove the "
-                  << m_path.string() << " temporary path";
+               << m_path.string() << " temporary path";
   }
 
 }
