@@ -1,3 +1,6 @@
+* Tue Jul 21 2020 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.12.0
+- specific tag for the Euclid release
+
 * Fri Jul 10 2020 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.12
 - Factor out Elements own build default values into a separate file 
   cmake/ElementsDefaults.cmake
