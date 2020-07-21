@@ -19,14 +19,13 @@
  *
  */
 
-#include "ElementsExamples/ClassExample.h"
-
 #include <iostream>
 #include <string>                                // for string
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include "ElementsExamples/ClassExample.h"
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Real.h"                 // Provides isEqual

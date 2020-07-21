@@ -1,32 +1,34 @@
-"""
-@file: ElementsKernel/ParseCmakeListsMacros.py
-@author: Nicolas Morisset
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
 
-@date: 21/07/16
-
-Purpose:
- All these classes are for parsing the macros in the CMakeLists.txt file. Each class
+""" All these classes are for parsing the macros in the CMakeLists.txt file. Each class
  represents a cmake macro.
 
-@copyright: 2012-2020 Euclid Science Ground Segment
+:file: ElementsKernel/ParseCmakeListsMacros.py
+:author: Nicolas Morisset
 
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
+:date: 21/07/16
 
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 """
 
 ################################################################################
+
 
 class ElementsSubdir(object):
     """
@@ -40,6 +42,7 @@ class ElementsSubdir(object):
         return 'elements_subdir(' + self.name + ')'
 
 ################################################################################
+
 
 class ElementsDependsOnSubdirs(object):
     """
@@ -57,6 +60,7 @@ class ElementsDependsOnSubdirs(object):
         return result
 
 ################################################################################
+
 
 class FindPackage(object):
     """
@@ -76,6 +80,7 @@ class FindPackage(object):
         return result + ')'
 
 ################################################################################
+
 
 class ElementsAddLibrary(object):
     """
@@ -110,6 +115,7 @@ class ElementsAddLibrary(object):
 
 ################################################################################
 
+
 class ElementsAddExecutable(object):
     """
     Decode the <elements_add_executable> macro
@@ -137,6 +143,7 @@ class ElementsAddExecutable(object):
 
 ################################################################################
 
+
 class ElementsAddPythonExecutable(object):
     """
     Decode the <elements_add_python_program> macro
@@ -153,6 +160,7 @@ class ElementsAddPythonExecutable(object):
         return result
 
 ################################################################################
+
 
 class ElementsAddUnitTest(object):
     """

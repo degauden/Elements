@@ -1,42 +1,45 @@
-"""
-@file: ElementsKernel/NameCheck.py
-@author: Hubert Degaudenzi
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
 
-@date: 17/01/17
-
-This script check a name of a project, module or product agains a given
+""" This script check a name of a project, module or product agains a given
 online naming DB. The script return 0 if the entity exists and 1 if it doesn't
 
-@copyright: 2012-2020 Euclid Science Ground Segment
+:file: ElementsKernel/NameCheck.py
+:author: Hubert Degaudenzi
 
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
+:date: 17/01/17
 
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 """
 
 import os
 import argparse
+import json
+
 import ElementsKernel.Logging as log
 from ElementsKernel import Exit
 
-import json
-
+# pyling: disable=bare-except
 try:
-    from urllib2 import urlopen
-    from urllib2 import URLError
-except:
-    from urllib.request import urlopen
+    from urllib2 import urlopen  # @UnusedImport @UnresolvedImport
+    from urllib2 import URLError  # @UnusedImport @UnresolvedImport
+except:  # pylint: disable=bare-except
+    from urllib.request import urlopen  # @ImportRedefinition
     from urllib.error import URLError
 
 logger = log.getLogger('NameCheck')
@@ -45,6 +48,7 @@ TYPES = ["cmake", "library", "executable"]
 DEFAULT_TYPE = "cmake"
 
 _localUrlOpen = urlopen
+
 
 def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
     """ Get the informations about a given entity of a specific type """
@@ -55,6 +59,7 @@ def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
         if u in info and info[u]:
             info[u] = db_url + info[u]
     return info
+
 
 def checkDataBaseUrl(db_url):
     """ check if the DB URL exists """
@@ -71,10 +76,8 @@ def checkDataBaseUrl(db_url):
 
     return site_exists
 
-
-
-
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -105,6 +108,7 @@ def defineSpecificProgramOptions():
 
 Exit.Code.update({"INVALID_URL":2, "DB_ERROR":3})
 
+
 def mainMethod(args):
     """
     Main
@@ -125,16 +129,14 @@ def mainMethod(args):
             exit_code = Exit.Code["DB_ERROR"]
         else:
             if info["exists"]:
-                logger.warn("The \"%s\" name for the %s type already exists", entity_name, args.type)
+                logger.warning("The \"%s\" name for the %s type already exists", entity_name, args.type)
                 logger.info("The result for the global query of the name \"%s\" in the DB: %s",
                             entity_name, info["url"])
                 logger.info("The full information for the \"%s\" name of type %s: %s", entity_name,
                             args.type, info["private_url"])
                 exit_code = Exit.Code["OK"]
             else:
-                logger.warn("The \"%s\" name of type %s doesn't exist", entity_name, args.type)
+                logger.warning("The \"%s\" name of type %s doesn't exist", entity_name, args.type)
                 exit_code = Exit.Code["NOT_OK"]
 
     return exit_code
-
-

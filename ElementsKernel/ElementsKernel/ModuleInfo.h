@@ -33,10 +33,9 @@
 #include <memory>
 #include <dlfcn.h>
 
-#include <boost/filesystem/path.hpp>    // for filesystem::path
-
 // Framework include files
 #include "ElementsKernel/System.h"      // LIB_PREFIX, LIB_EXTENSION
+#include "ElementsKernel/Path.h"        // for Path::Item
 #include "ElementsKernel/Export.h"      // ELEMENTS_API
 
 namespace Elements {
@@ -75,13 +74,13 @@ ELEMENTS_API ImageHandle exeHandle();
 ELEMENTS_API const std::string& exeName();
 /// Vector of names of linked modules
 ELEMENTS_API const std::vector<std::string> linkedModules();
-ELEMENTS_API std::vector<boost::filesystem::path> linkedModulePaths();
+ELEMENTS_API std::vector<Path::Item> linkedModulePaths();
 /// Attach module handle
 ELEMENTS_API void setModuleHandle(ImageHandle handle);
 /// Get the full executable path
-ELEMENTS_API boost::filesystem::path getExecutablePath();
+ELEMENTS_API Path::Item getExecutablePath();
 /// Get the path to the /proc directory of the process
-ELEMENTS_API boost::filesystem::path getSelfProc();
+ELEMENTS_API Path::Item getSelfProc();
 
 
 }  // namespace System

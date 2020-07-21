@@ -28,11 +28,11 @@ export User_area=${tmploc}
 cd ${tmploc}
 
 # We need to create first a project
-CreateElementsProject $project_name $version --yes
+CreateElementsProject ${project_name} ${version} --yes
 
 # if error stop and clean up
 if [ $? -ne 0 ]; then
-   echo "Error: <CreateElementsProject $project_name $version> command failed!" 1>&2
+   echo "Error: <CreateElementsProject ${project_name} ${version}> command failed!" 1>&2
    clean_and_exit 1
 fi
 
@@ -54,6 +54,6 @@ if [ "$(basename $0)" = "createCommonStructure_test" ]; then
 fi
 
 # Variables to propagate
-export TEMPORARY_LOCATION=$User_area
-export MODULE_NAME_PATH=$User_area/$project_name/$version/$module_name
-export MODULE_NAME=$module_name
+export TEMPORARY_LOCATION=${User_area}
+export MODULE_NAME_PATH=${User_area}/${project_name}/${version}/${module_name}
+export MODULE_NAME=${module_name}

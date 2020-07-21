@@ -185,7 +185,7 @@ private:
   }
 
   /// An example of a static string
-  static std::string s_static_string;
+  static const std::string s_static_string;
 
   /// Source ID as an example of a 64 bits integer
   std::int64_t m_source_id { 0 };

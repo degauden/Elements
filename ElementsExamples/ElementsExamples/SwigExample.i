@@ -33,7 +33,3 @@ public:
 
 } // namespace Examples
 } // namespace Elements
-
-
-
-

@@ -28,6 +28,8 @@
 // Temporary includes for dev
 #include <iostream>
 
+namespace Elements {
+
 void second() {
 
 }
@@ -48,7 +50,7 @@ BOOST_AUTO_TEST_CASE(Raw_test) {
   const size_t depth = 21;
 
 
-  std::vector<string> trace = Elements::System::backTrace(depth);
+  std::vector<string> trace = System::backTrace(depth);
 
   if (not trace.empty()) {
     size_t found = trace[0].find("BackTrace_test");
@@ -62,3 +64,4 @@ BOOST_AUTO_TEST_CASE(Raw_test) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
+}  // namespace Elements

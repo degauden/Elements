@@ -11,6 +11,10 @@ endmacro()
 
 include_guard()
 
+set(version_regex "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+))?")
+set(full_version_regex "${version_regex}|HEAD.*")
+
+
 macro(reset_include_guards)
 
   foreach(_s1 ${FULL_INCLUDE_FILE_LIST})

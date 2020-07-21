@@ -36,26 +36,26 @@
 
 #include <string>                     // for string
 #include <vector>                     // for vector
-#include <boost/filesystem/path.hpp>  // for path
 
-#include "ElementsKernel/Export.h"   // ELEMENTS_API
+#include "ElementsKernel/Path.h"      // for Path::Item
+#include "ElementsKernel/Export.h"    // ELEMENTS_API
 
 namespace Elements {
 
 ELEMENTS_API std::string getAuxiliaryVariableName();
 
 template <typename T>
-ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const T& file_name, bool raise_exception = true);
+ELEMENTS_API Path::Item getAuxiliaryPath(const T& file_name, bool raise_exception = true);
 
 // instantiation of the most expected types
 extern template
-ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const boost::filesystem::path& file_name,
+ELEMENTS_API Path::Item getAuxiliaryPath(const Path::Item& file_name,
                                                       bool raise_exception);
 extern template
-ELEMENTS_API boost::filesystem::path getAuxiliaryPath(const std::string& file_name,
+ELEMENTS_API Path::Item getAuxiliaryPath(const std::string& file_name,
                                                       bool raise_exception);
 
-ELEMENTS_API std::vector<boost::filesystem::path> getAuxiliaryLocations(bool exist_only = false);
+ELEMENTS_API std::vector<Path::Item> getAuxiliaryLocations(bool exist_only = false);
 
 
 /** @example ElementsExamples/src/program/CCfitsExample.cpp
@@ -64,8 +64,9 @@ ELEMENTS_API std::vector<boost::filesystem::path> getAuxiliaryLocations(bool exi
 
 }  // namespace Elements
 
-
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_
 #include "ElementsKernel/_impl/Auxiliary.icpp"
+#undef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 

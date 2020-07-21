@@ -1,5 +1,8 @@
 /**
- * @file ElementsExamples/src/lib/Rectangle.cpp
+ * @file functionExample2.cpp
+ *
+ * @date Feb 16, 2016
+ * @author Hubert Degaudenzi
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
  *
@@ -13,40 +16,16 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
  */
 
-#include "ElementsExamples/Rectangle.h"
+#include "ElementsExamples/functionExample2.h"
 
 namespace Elements {
 namespace Examples {
 
-Rectangle::Rectangle(int X0, int Y0, int X1, int Y1) {
-    x0 = X0;
-    y0 = Y0;
-    x1 = X1;
-    y1 = Y1;
-}
-
-Rectangle::~Rectangle() {
-}
-
-int Rectangle::getLength() {
-    return (x1 - x0);
-}
-
-int Rectangle::getHeight() {
-    return (y1 - y0);
-}
-
-int Rectangle::getArea() {
-    return (x1 - x0) * (y1 - y0);
-}
-
-void Rectangle::move(int dx, int dy) {
-    x0 += dx;
-    y0 += dy;
-    x1 += dx;
-    y1 += dy;
+int functionExample2(const int j) {
+  return j*j;
 }
 
 }  // namespace Examples

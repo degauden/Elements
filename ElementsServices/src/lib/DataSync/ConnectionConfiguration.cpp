@@ -97,8 +97,12 @@ void ConnectionConfiguration::parseHost(const string& name) {
 }
 
 void ConnectionConfiguration::parseOverwritingPolicy(const string& policy) {
-  const std::vector<string> overwriteAllowedOptions = { "true", "yes", "y" };
-  const std::vector<string> overwriteForbiddenOptions = { "false", "no", "n" };
+
+  using std::vector;
+
+  const vector<string> overwriteAllowedOptions = { "true", "yes", "y" };
+  const vector<string> overwriteForbiddenOptions = { "false", "no", "n" };
+
   string uncased = lower(policy);
   if (valueIsListed(uncased, overwriteAllowedOptions)) {
     overwritingPolicy = OverwritingPolicy::OVERWRITE;
@@ -107,6 +111,7 @@ void ConnectionConfiguration::parseOverwritingPolicy(const string& policy) {
   } else {
     throw std::runtime_error("I don't know this overwriting policy: " + policy);
   }
+
 }
 
 }  // namespace DataSync

@@ -45,14 +45,13 @@
 #include <climits>            // for PATH_MAX
 #endif
 
-#include <boost/filesystem/path.hpp>          // for filesystem::path
-#include <boost/filesystem/operations.hpp>    // for filesystem::exists
+#include <boost/filesystem/operations.hpp>    // for filesystem::exists, canonical
 
 #include "ElementsKernel/FuncPtrCast.h"
+#include "ElementsKernel/Path.h"              // for Path::Item
 
 using std::string;
 using std::vector;
-using boost::filesystem::path;
 
 namespace {
   vector<string> s_linkedModules;
@@ -191,27 +190,27 @@ const string& exeName() {
   return module;
 }
 
-path getSelfProc() {
+Path::Item getSelfProc() {
 
-  path self_proc {"/proc/self"};
+  Path::Item self_proc {"/proc/self"};
 
-  path exe = self_proc / "exe";
+  Path::Item exe = self_proc / "exe";
 
   if (not boost::filesystem::exists(exe)) {
     std::stringstream self_str {};
     self_str << "/proc/" << ::getpid();
-    self_proc = path(self_str.str());
+    self_proc = Path::Item(self_str.str());
   }
 
   return self_proc;
 
 }
 
-vector<path> linkedModulePaths() {
+vector<Path::Item> linkedModulePaths() {
 
-  vector<path> linked_modules;
+  vector<Path::Item> linked_modules;
 
-  path self_maps = getSelfProc() / "maps";
+  Path::Item self_maps = getSelfProc() / "maps";
   std::ifstream maps_str(self_maps.string());
 
   string line;
@@ -223,7 +222,7 @@ vector<path> linkedModulePaths() {
       continue;
     }
     if (perms == "r-xp" and boost::filesystem::exists(pathname)) {
-      linked_modules.push_back(path(pathname));
+      linked_modules.push_back(Path::Item(pathname));
     }
   }
 
@@ -245,7 +244,7 @@ const vector<string> linkedModules() {
   return s_linkedModules;
 }
 
-path getExecutablePath() {
+Path::Item getExecutablePath() {
 
 #ifdef __APPLE__
   path self_proc {};
@@ -255,7 +254,7 @@ path getExecutablePath() {
   path self_exe = path(string(pathbuf));
 #else
 
-  path self_exe = getSelfProc() / "exe";
+  Path::Item self_exe = getSelfProc() / "exe";
 
 #endif
 

@@ -19,12 +19,13 @@
 
 import unittest
 import py.test
+import os
 
 from ElementsKernel.Temporary import TempDir, TempEnv
-from ElementsServices.DataSync import DataSynchronizer
+from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 
-from fixtures.ConfigFilesFixture import *
-from fixtures.MockDataSynchronizer import *
+from fixtures.MockDataSynchronizer import MockDataSynchronizer
+from fixtures.ConfigFilesFixture import theNoOverwriteConfig
 
 
 class TestDataSynchronizer(unittest.TestCase):
@@ -45,14 +46,14 @@ class TestDataSynchronizer(unittest.TestCase):
             mock.downloadAllFiles()
 
     def testOverwritingPolicy(self):
-        theFilename = "SayThisFileHasAlreadyBeenDownloaded.txt"
-        with open(theFilename, "w") as f:
+        the_filename = "SayThisFileHasAlreadyBeenDownloaded.txt"
+        with open(the_filename, "w") as f:
             f.write("Some contents")
-        mockOverwrite = MockDataSynchronizer()
-        mockNoOverwrite = MockDataSynchronizer(
+        mock_overwrite = MockDataSynchronizer()
+        mock_no_overwrite = MockDataSynchronizer(
             connection=theNoOverwriteConfig())
-        assert mockOverwrite.fileAlreadyExists(theFilename)
-        assert mockOverwrite.fileShouldBeWritten(theFilename)
-        assert mockNoOverwrite.fileAlreadyExists(theFilename)
-        assert not mockNoOverwrite.fileShouldBeWritten(theFilename)
-        os.remove(theFilename)
+        assert mock_overwrite.fileAlreadyExists(the_filename)
+        assert mock_overwrite.fileShouldBeWritten(the_filename)
+        assert mock_no_overwrite.fileAlreadyExists(the_filename)
+        assert not mock_no_overwrite.fileShouldBeWritten(the_filename)
+        os.remove(the_filename)

@@ -1,26 +1,27 @@
-"""
-@file ElementsKernel/python/ElementsKernel/RemoveCppClass.py
-@author Nicolas Morisset
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
 
-@date 02/10/16
+""" This script will remove all files related to a C++ class
 
-This script will remove all files related to a C++ class
+:file: ElementsKernel/python/ElementsKernel/RemoveCppClass.py
+:author: Nicolas Morisset
 
-@copyright: 2012-2020 Euclid Science Ground Segment
-
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+:date: 02/10/16
 
 """
 
@@ -33,7 +34,7 @@ from ElementsKernel import Exit
 
 try:
     from builtins import input
-except:
+except ImportError:
     from __builtin__ import input
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
@@ -41,6 +42,7 @@ CMAKE_LISTS_FILE = 'CMakeLists.txt'
 logger = Logging.getLogger('RemoveCppClass')
 
 ################################################################################
+
 
 def getAllFiles(class_name, module_directory, module_name):
     """
@@ -60,6 +62,7 @@ def getAllFiles(class_name, module_directory, module_name):
     return delete_file_list
 
 ################################################################################
+
 
 def updateCmakeListsFile(module_dir, class_name):
     """
@@ -110,6 +113,7 @@ def defineSpecificProgramOptions():
 
 ################################################################################
 
+
 def mainMethod(args):
     """
     Main
@@ -136,21 +140,21 @@ def mainMethod(args):
         # Default is the current directory
         file_to_be_deleted = getAllFiles(class_name, module_dir, module_name)
         if file_to_be_deleted:
-                logger.info('File to be deleted:')
-                for elt_file in file_to_be_deleted:
-                    logger.info('--> %s', elt_file)
-                response_key = input('Do you want to continue?(y/n, default: n)')
-                if response_key.lower() == 'y':
-                    ProjectCommonRoutines.removeFilesOnDisk(file_to_be_deleted)
-                    cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
-                    updateCmakeListsFile(module_dir, class_name)
-                    logger.info('')
-                    logger.warning('# !!!!!!!!!!!!!!!!!!')
-                    logger.warning('# If your <%s> class has some Element and/or external dependencies,', class_name)
-                    logger.warning('# Maybe you need to remove them. Check the <elements_add_library, find_package,')
-                    logger.warning('# elements_add_library, elements_depends_on_subdirs> macros in the file :')
-                    logger.warning('# < %s >', cmakefile)
-                    logger.warning('# !!!!!!!!!!!!!!!!!!')
+            logger.info('File to be deleted:')
+            for elt_file in file_to_be_deleted:
+                logger.info('--> %s', elt_file)
+            response_key = input('Do you want to continue?(y/n, default: n)')
+            if response_key.lower() == 'y':
+                ProjectCommonRoutines.removeFilesOnDisk(file_to_be_deleted)
+                cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
+                updateCmakeListsFile(module_dir, class_name)
+                logger.info('')
+                logger.warning('# !!!!!!!!!!!!!!!!!!')
+                logger.warning('# If your <%s> class has some Element and/or external dependencies,', class_name)
+                logger.warning('# Maybe you need to remove them. Check the <elements_add_library, find_package,')
+                logger.warning('# elements_add_library, elements_depends_on_subdirs> macros in the file :')
+                logger.warning('# < %s >', cmakefile)
+                logger.warning('# !!!!!!!!!!!!!!!!!!')
         else:
             logger.info('No file found for deletion!')
             logger.info('')
@@ -164,4 +168,3 @@ def mainMethod(args):
         logger.info('# Script over.')
 
     return exit_code
-    

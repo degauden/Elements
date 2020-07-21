@@ -30,9 +30,9 @@
 #include <map>
 #include <utility>                  // for forward
 
-#include <boost/filesystem.hpp>     // for path
 #include <log4cpp/Category.hh>
 
+#include "ElementsKernel/Path.h"    // for Item
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
@@ -136,7 +136,7 @@ public:
    *
    * @param fileName The file where the log messages will be stored
    */
-  static void setLogFile(const boost::filesystem::path& fileName);
+  static void setLogFile(const Path::Item& fileName);
 
   /**
    * Logs a debug message.

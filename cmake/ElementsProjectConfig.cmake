@@ -147,7 +147,7 @@ macro(elements_project project version)
   endif()
 
   if(NOT CMAKE_PROJECT_VERSION MATCHES "^HEAD.*")
-    string(REGEX MATCH "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+))?" _version ${CMAKE_PROJECT_VERSION})
+    string(REGEX MATCH ${version_regex} _version ${CMAKE_PROJECT_VERSION})
     set(CMAKE_PROJECT_VERSION_MAJOR ${CMAKE_MATCH_1} CACHE INTERNAL "Major version of project")
     set(CMAKE_PROJECT_VERSION_MINOR ${CMAKE_MATCH_2} CACHE INTERNAL "Minor version of project")
     set(CMAKE_PROJECT_VERSION_PATCH ${CMAKE_MATCH_4} CACHE INTERNAL "Patch version of project")
@@ -300,6 +300,11 @@ macro(elements_project project version)
     set(instheader_cmd ${PYTHON_EXECUTABLE} ${instheader_cmd})
   endif()
 
+  find_program(expheader_cmd createProjExpHeader.py HINTS ${binary_paths})
+  if(expheader_cmd)
+    set(expheader_cmd ${PYTHON_EXECUTABLE} ${expheader_cmd})
+  endif()
+
 
   find_program(versmodule_cmd createProjVersModule.py HINTS ${binary_paths})
   if(versmodule_cmd)
@@ -373,7 +378,8 @@ macro(elements_project project version)
     set(ctestxml2html_cmd ${PYTHON_EXECUTABLE} ${ctestxml2html_cmd})
   endif()
 
-  mark_as_advanced(env_cmd merge_cmd versheader_cmd instheader_cmd versmodule_cmd instmodule_cmd
+  mark_as_advanced(env_cmd merge_cmd versheader_cmd instheader_cmd expheader_cmd 
+                   versmodule_cmd instmodule_cmd
                    thisheader_cmd thismodule_cmd
                    thismodheader_cmd
                    Boost_testmain_cmd CppUnit_testmain_cmd
@@ -517,6 +523,19 @@ macro(elements_project project version)
 execute_process\(COMMAND ${instheader_cmd} --quiet ${so_version_option} ${project} \${CMAKE_INSTALL_PREFIX} ${joined_used_projects} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_INSTALL.h\)")
     set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
     set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${_proj}_INSTALL.h)
+  endif()
+
+
+  if(PROJECT_HIDE_SYMBOLS)
+    if(expheader_cmd)
+      execute_process(COMMAND
+                      ${expheader_cmd} --quiet
+                      ${project} ${CMAKE_BINARY_DIR}/${INCLUDE_INSTALL_SUFFIX}/${_proj}_EXPORT.h)
+      install(FILES ${CMAKE_BINARY_DIR}/include/${_proj}_EXPORT.h DESTINATION ${INCLUDE_INSTALL_SUFFIX})
+      add_definitions(-D${_proj}_HIDE_SYMBOLS)
+      set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
+      set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${_proj}_EXPORT.h)
+    endif()
   endif()
 
   if(thisheader_cmd)
@@ -1502,7 +1521,7 @@ macro(_elements_use_other_projects)
     list(REMOVE_AT other_dependee_list 0 1)
 
     if(NOT other_project_version MATCHES "^HEAD.*")
-      string(REGEX MATCH "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+))?" _version ${other_project_version})
+      string(REGEX MATCH ${version_regex} _version ${other_project_version})
 
       set(other_project_cmake_version ${CMAKE_MATCH_1}.${CMAKE_MATCH_2})
       if(DEFINED CMAKE_MATCH_4)
@@ -3410,11 +3429,14 @@ function(elements_add_unit_test name)
     endforeach()
     
     set(exec_argument)
-    if ("${${name}_UNIT_TEST_TYPE}" STREQUAL "Boost")
-      if(TEST_JUNIT_REPORT AND NOT (Boost_VERSION_STRING VERSION_LESS 1.63.0))
-        set(exec_argument --log_format=JUNIT --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.JUnit.xml --log_level=all)
-      else()
-        set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)      
+    
+    if(TEST_XML_REPORT)
+      if ("${${name}_UNIT_TEST_TYPE}" STREQUAL "Boost")
+        if(TEST_JUNIT_REPORT AND NOT (Boost_VERSION_STRING VERSION_LESS 1.63.0))
+          set(exec_argument --log_format=JUNIT --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.JUnit.xml --log_level=all)
+        else()
+          set(exec_argument --log_format=XML --log_sink=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.xml --log_level=all)      
+        endif()
       endif()
     endif()
 
@@ -3646,14 +3668,13 @@ function(add_python_test_dir)
 
   if(PYFRMK_TEST)
     set(PYFRMK_JUNIT_FILE_OPT)
-    set(PYFRMK_JUNIT_PREFIX_OPT)
     if("${PYFRMK_NAME}" STREQUAL "PyTest")
-        if(TEST_JUNIT_REPORT)
-          set(PYFRMK_JUNIT_FILE_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.JUnit.xml")
-        endif()
+      if(TEST_JUNIT_REPORT)
+        set(PYFRMK_JUNIT_FILE_OPT "--junit-xml=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${pytest_name}.JUnit.xml")
+      endif()
     endif()
     elements_add_test(${pytest_name}
-                      COMMAND ${PYFRMK_TEST} ${PYFRMK_JUNIT_FILE_OPT} ${PYFRMK_JUNIT_PREFIX_OPT} ${pysrcs}
+                      COMMAND ${PYFRMK_TEST} ${PYFRMK_JUNIT_FILE_OPT} ${pysrcs}
                       ENVIRONMENT ${PYTEST_ARG_ENVIRONMENT})
     set_property(TEST ${package}.${pytest_name} APPEND PROPERTY LABELS Python UnitTest ${PYFRMK_NAME})
     if(PYTEST_ARG_TIMEOUT)

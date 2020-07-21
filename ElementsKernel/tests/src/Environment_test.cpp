@@ -31,7 +31,8 @@
 #include "ElementsKernel/System.h"             // for isEnvSet
 
 using std::string;
-using Elements::Environment;
+
+namespace Elements {
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -66,7 +67,7 @@ public:
   }
 
   bool checkInternalEnv() const {
-    using Elements::System::getEnv;
+    using System::getEnv;
     return (getEnv(m_internal_var_name) == m_internal_var_value);
   }
 private:
@@ -77,10 +78,10 @@ private:
 
 BOOST_AUTO_TEST_SUITE(Environment_test)
 
-using Elements::System::isEnvSet;
-using Elements::System::getEnv;
-using Elements::System::setEnv;
-using Elements::System::unSetEnv;
+using System::isEnvSet;
+using System::getEnv;
+using System::setEnv;
+using System::unSetEnv;
 
 //-----------------------------------------------------------------------------
 
@@ -399,3 +400,5 @@ BOOST_AUTO_TEST_SUITE_END()
 // End of the Boost tests
 //
 //-----------------------------------------------------------------------------
+
+}  // namespace Elements

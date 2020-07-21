@@ -24,22 +24,15 @@
 #include <map>
 #include <string>
 
-#include <boost/program_options.hpp>
 #include "ElementsKernel/ProgramHeaders.h"
-
-using boost::program_options::options_description;
-using boost::program_options::variable_value;
-
-
-static Elements::Logging logger = Elements::Logging::getLogger("%(PROGRAMNAME)s");
 
 class %(PROGRAMNAME)s : public Elements::Program {
 
 public:
 
-  options_description defineSpecificProgramOptions() override {
+  OptionsDescription defineSpecificProgramOptions() override {
   
-    options_description options {};
+    OptionsDescription options {};
     
     //
     // !!! Implement the program options here !!!
@@ -47,7 +40,7 @@ public:
     return options;
   }
 
-  Elements::ExitCode mainMethod(std::map<std::string, variable_value>& args) override {
+  Elements::ExitCode mainMethod(std::map<std::string, VariableValue>& args) override {
 
     Elements::Logging logger = Elements::Logging::getLogger("%(PROGRAMNAME)s");
 

@@ -26,8 +26,6 @@
                                                   // it exposes numeric_limits
 #include <cmath>                                  // for nextafter
 
-#include <boost/program_options.hpp>              // for program options from configuration file
-                                                  // of command line arguments
 #include <boost/format.hpp>                       // for format
 #include <boost/math/constants/constants.hpp>     // for pi
 #include <boost/math/special_functions/next.hpp>  // for float_next
@@ -39,8 +37,6 @@ using std::map;
 using std::string;
 using std::cout;
 using std::endl;
-
-using boost::program_options::variable_value;
 
 
 namespace Elements {
@@ -169,7 +165,7 @@ class FloatPrecisionExample: public Program {
 
 public:
 
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     cout << std::fixed
          << std::setprecision(PRINT_PRECISION);

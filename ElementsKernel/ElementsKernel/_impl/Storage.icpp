@@ -20,8 +20,7 @@
  *
  */
 
-#ifndef ELEMENTSKERNEL__IMPL_STORAGE_ICPP_
-#define ELEMENTSKERNEL__IMPL_STORAGE_ICPP_
+#ifdef ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_IMPL_
 
 #include <cstdint>                   // for int64_t
 #include <cmath>                     // for pow, round
@@ -79,4 +78,4 @@ ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageTyp
 }  // namespace Elements
 
 
-#endif  // ELEMENTSKERNEL__IMPL_STORAGE_ICPP_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_IMPL_

@@ -24,7 +24,9 @@
 #ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_RECTANGLE_H_
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_RECTANGLE_H_
 
-#include "ElementsKernel/Export.h"
+#include <utility>                   // for move
+
+#include "ElementsKernel/Export.h"   // for ELEMENTS_API
 
 namespace Elements {
 namespace Examples {

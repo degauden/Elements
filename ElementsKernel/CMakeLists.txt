@@ -143,6 +143,19 @@ elements_add_unit_test(Exception tests/src/Exception_test.cpp
                        LINK_LIBRARIES ElementsKernel TYPE Boost)
 
 #-----------------------
+# Project_test
+elements_add_unit_test(Project tests/src/Project_test.cpp
+                       EXECUTABLE Project_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+#-----------------------
+# Module_test
+elements_add_unit_test(Module tests/src/Module_test.cpp
+                       EXECUTABLE Module_test
+                       LINK_LIBRARIES ElementsKernel TYPE Boost)
+
+
+#-----------------------
 # OpenMP_test
 if(ELEMENTS_PARALLEL AND OPENMP_FOUND)
   elements_add_unit_test(OpenMP tests/src/OpenMP_test.cpp
@@ -221,3 +234,9 @@ elements_add_test(CMakeOverride
                   COMMAND cmakeOverride_test  
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   LABELS Creation Override)
+                  
+elements_add_test(MissingElementsProjectVersion
+                  COMMAND missingElementsProjectVersion_test
+                  ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
+                  TIMEOUT 120
+                  LABELS Creation)

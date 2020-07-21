@@ -1,28 +1,28 @@
-"""
-@file: ElementsKernel/ProjectCommonRoutines.py
-@author: Nicolas Morisset
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
 
-@date: 01/07/15
-
-Purpose:
-This module offers some common routines used by the Elements scripts for creating (C++, python)
+""" This module offers some common routines used by the Elements scripts for creating (C++, python)
 projects, modules, classes etc..
 
-@copyright: 2012-2020 Euclid Science Ground Segment
+:file: ElementsKernel/ProjectCommonRoutines.py
+:author: Nicolas Morisset
 
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+:date: 01/07/15
 
 """
 
@@ -45,12 +45,13 @@ except ImportError:
 _filelist = []
 
 # Define regex for name & version checking
-name_regex = r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
-version_regex = r"^(\d+\.\d+(\.\d+)?|HEAD)$"
+NAME_REGEX = r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
+VERSION_REGEX = r"^(\d+\.\d+(\.\d+)?|HEAD)$"
 
 logger = log.getLogger('ProjectCommonRoutines')
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
+
 
 ################################################################################
 def addItemToCreationList(element):
@@ -59,17 +60,19 @@ def addItemToCreationList(element):
     """
     _filelist.append(element)
 
+
 ################################################################################
 def printCreationList():
     """
-    Print the contents of the file list 
+    Print the contents of the file list
     """
     logger.info("#")
     logger.info("# File(s) created/modified:")
     logger.info("#")
     for elt in _filelist:
-        logger.info("#  file --> %s" % elt)
+        logger.info("#  file --> %s", elt)
     logger.info("#")
+
 
 ################################################################################
 def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=False):
@@ -83,8 +86,8 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=Fals
     db_url = os.environ.get("ELEMENTS_NAMING_DB_URL", "")
     if not nc.checkDataBaseUrl(db_url):
         logger.info("#")
-        logger.warn("!!! The Elements Naming Database URL is not valid : <%s> !!!", db_url)
-        logger.warn("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
+        logger.warning("!!! The Elements Naming Database URL is not valid : <%s> !!!", db_url)
+        logger.warning("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
     else:
         info = nc.getInfo(entity_name, db_url, entity_type)
         if info["error"]:
@@ -92,27 +95,28 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=Fals
         else:
             if info["exists"]:
                 logger.info("#")
-                logger.warn("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!",
-                            entity_name, entity_type)
-                logger.warn("See the result for the global query of the \"%s\" name in the DB: %s", entity_name,
-                            info["url"])
-                logger.warn("For more information also connect to: %s", info["private_url"])
+                logger.warning("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!",
+                               entity_name, entity_type)
+                logger.warning("See the result for the global query of the \"%s\" name in the DB: %s", entity_name,
+                               info["url"])
+                logger.warning("For more information also connect to: %s", info["private_url"])
                 script_goes_on = False
             else:
-                logger.warn("")
-                logger.warn("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!",
-                            entity_name,
-                            entity_type)
-                logger.warn("Please think to add the \"%s\" name in the Element Naming Database below:", entity_name)
-                logger.warn("< %s/NameCheck/project1/ >", db_url)
+                logger.warning("")
+                logger.warning("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!",
+                               entity_name,
+                               entity_type)
+                logger.warning("Please think to add the \"%s\" name in the Element Naming Database below:", entity_name)
+                logger.warning("< %s/NameCheck/project1/ >", db_url)
                 logger.info("")
 
-    if not answer_yes and not script_goes_on :
+    if not answer_yes and not script_goes_on:
         response_key = input('Do you want to continue?(y/n, default: n)')
         if not response_key.lower() == "yes" and not response_key.lower() == "y":
             raise Exception()
 
 ################################################################################
+
 
 def removeFilesOnDisk(file_list):
     """
@@ -126,6 +130,7 @@ def removeFilesOnDisk(file_list):
 
 ################################################################################
 
+
 def makeDirectory(directory_path):
     """
     Create a directory on disk if any
@@ -134,6 +139,7 @@ def makeDirectory(directory_path):
         os.makedirs(directory_path)
 
 ################################################################################
+
 
 def deleteFile(path_filename):
     """
@@ -144,6 +150,7 @@ def deleteFile(path_filename):
         os.remove(path_filename)
 
 ################################################################################
+
 
 def makeACopy(cmakefile):
     """
@@ -158,19 +165,21 @@ def makeACopy(cmakefile):
 
 ################################################################################
 
+
 def checkNameAndVersionValid(name, version):
     """
     Check that the <name> and <version> respect a regex
     """
-    if not re.match(name_regex, name):
+    if not re.match(NAME_REGEX, name):
         raise Exception("Name not valid : < %s >. It must follow this regex : < %s >"
-                            % (name, name_regex))
+                        % (name, NAME_REGEX))
 
-    if not re.match(version_regex, version):
+    if not re.match(VERSION_REGEX, version):
         raise Exception("Version number not valid : < %s >. It must follow this regex : < %s >"
-                            % (version, version_regex))
+                        % (version, VERSION_REGEX))
 
 ################################################################################
+
 
 def eraseDirectory(directory):
     """
@@ -182,6 +191,7 @@ def eraseDirectory(directory):
 
 ################################################################################
 
+
 def copyAuxFile(destination, aux_file_name):
     """
     Copy the <aux_file_name> file to the <destination> directory.
@@ -190,8 +200,8 @@ def copyAuxFile(destination, aux_file_name):
     aux_path_file = aux.getAuxiliaryPath(os.path.join('ElementsKernel', 'templates', aux_file_name))
     shutil.copy(aux_path_file, os.path.join(destination, aux_file_name))
 
-
 ################################################################################
+
 
 def checkAuxFileExist(aux_file_name):
     """
@@ -203,6 +213,7 @@ def checkAuxFileExist(aux_file_name):
     aux.getAuxiliaryPath(auxpath)
 
 ################################################################################
+
 
 def getAuthor():
     """
@@ -217,6 +228,7 @@ def getAuthor():
 
 ################################################################################
 
+
 def getElementsModuleName(module_directory):
     """
     Get the module name from the <CMAKE_LISTS_FILE> file
@@ -225,24 +237,25 @@ def getElementsModuleName(module_directory):
     cmake_file = os.path.join(module_directory, CMAKE_LISTS_FILE)
     if not os.path.isfile(cmake_file):
         raise Exception("< %s > cmake module file is missing! Are you inside a module directory?" % cmake_file)
-    else:
-        # Check the make file is an Elements cmake file
-        # it should contain the string : "elements_project"
-        f = open(cmake_file)
-        for line in f.readlines():
-            if 'elements_subdir' in line:
-                pos_start = line.find('(')
-                pos_end = line.find(')')
-                module_name = line[pos_start + 1:pos_end]
-        f.close()
 
-        if not module_name:
-            raise Exception("Module name not found in the <%s> file! Perhaps you are not in a " \
+    # Check the make file is an Elements cmake file
+    # it should contain the string : "elements_project"
+    f = open(cmake_file)
+    for line in f.readlines():
+        if 'elements_subdir' in line:
+            pos_start = line.find('(')
+            pos_end = line.find(')')
+            module_name = line[pos_start + 1:pos_end]
+    f.close()
+
+    if not module_name:
+        raise Exception("Module name not found in the <%s> file! Perhaps you are not in a " \
                                 "module directory!" % cmake_file)
 
     return module_name
 
 ################################################################################
+
 
 def checkFileNotExist(path_filename, name):
     """
@@ -255,6 +268,7 @@ def checkFileNotExist(path_filename, name):
 ################################################################################
 
 ################################################################################
+
 
 def createPythonInitFile(init_path_filename):
     """
@@ -269,6 +283,7 @@ def createPythonInitFile(init_path_filename):
 ################################################################################
 
 ################################################################################
+
 
 def updateCmakeCommonPart(cmake_filename, library_dep_list):
     """

@@ -1,26 +1,28 @@
-"""
-@file ElementsKernel/AddCppProgram.py
-@author Nicolas Morisset
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
 
-@date 01/07/15
+""" This script creates a new Elements C++ Program
 
-This script creates a new Elements C++ Program
+:file: ElementsKernel/AddCppProgram.py
+:author: Nicolas Morisset
 
-@copyright: 2012-2020 Euclid Science Ground Segment
+:date: 01/07/15
 
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 """
 
@@ -41,6 +43,7 @@ CMAKE_LISTS_FILE = 'CMakeLists.txt'
 PROGRAM_TEMPLATE_FILE = 'Program_template.cpp'
 PROGRAM_TEMPLATE_FILE_IN = 'Program_template.cpp.in'
 
+
 def createDirectories(module_dir):
     """
     Create directories needed for a program
@@ -55,7 +58,8 @@ def createDirectories(module_dir):
 
 ################################################################################
 
-def addConfFile(module_dir, module_name, program_name):
+
+def addConfFile(module_dir, program_name):
     """
     Create the configuration file by default
     """
@@ -76,6 +80,7 @@ def addConfFile(module_dir, module_name, program_name):
 
 ################################################################################
 
+
 def substituteAuxFiles(module_dir, program_name):
     """
     Copy AUX file(s) and substitutes keyworks
@@ -93,6 +98,7 @@ def substituteAuxFiles(module_dir, program_name):
     ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, target_location))
 
 ################################################################################
+
 
 def updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list):
@@ -157,11 +163,12 @@ def createCppProgram(module_dir, module_name, program_name, module_dep_list, lib
     """
     createDirectories(module_dir)
     substituteAuxFiles(module_dir, program_name)
-    addConfFile(module_dir, module_name, program_name)
+    addConfFile(module_dir, program_name)
     updateCmakeListsFile(module_dir, module_name, program_name,
                          module_dep_list, library_dep_list)
 
 ################################################################################
+
 
 def makeChecks(current_dir, program_name):
     """
@@ -174,6 +181,7 @@ def makeChecks(current_dir, program_name):
     ProjectCommonRoutines.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -205,6 +213,7 @@ ically created for you if any but you have to be inside an <Elements> module.
     return parser
 
 ################################################################################
+
 
 def mainMethod(args):
     """

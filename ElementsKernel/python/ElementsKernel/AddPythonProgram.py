@@ -1,26 +1,27 @@
-"""
-@file: ElementsKernel/AddPythonProgram.py
-@author: Nicolas Morisset
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
 
-@date: 01/07/15
+""" This script creates a new Elements module
 
-This script creates a new Elements module
+:file: ElementsKernel/AddPythonProgram.py
+:author: Nicolas Morisset
 
-@copyright: 2012-2020 Euclid Science Ground Segment
-
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+:date: 01/07/15
 
 """
 
@@ -45,6 +46,7 @@ PROGRAM_TEMPLATE_FILE_IN = 'PythonProgram_template.py.in'
 
 ################################################################################
 
+
 def createDirectories(module_dir, module_name):
     """
     Create directories needed for a python program
@@ -57,6 +59,7 @@ def createDirectories(module_dir, module_name):
             os.makedirs(target_dir)
 
 ################################################################################
+
 
 def createFiles(module_dir, module_name, program_name):
     """
@@ -74,6 +77,7 @@ def createFiles(module_dir, module_name, program_name):
         f.close()
 
 ################################################################################
+
 
 def substituteAuxFiles(module_dir, program_name, module_name):
     """
@@ -94,6 +98,7 @@ def substituteAuxFiles(module_dir, program_name, module_name):
     ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, tgt))
 
 ################################################################################
+
 
 def updateCmakeListsFile(module_dir, program_name):
     """
@@ -128,6 +133,7 @@ def updateCmakeListsFile(module_dir, program_name):
 
 ################################################################################
 
+
 def createPythonProgram(current_dir, module_name, program_name):
     """
     Create the python program
@@ -138,6 +144,7 @@ def createPythonProgram(current_dir, module_name, program_name):
     updateCmakeListsFile(current_dir, program_name)
 
 ################################################################################
+
 
 def makeChecks(program_file_path, program_name):
     """
@@ -151,6 +158,7 @@ def makeChecks(program_file_path, program_name):
     ProjectCommonRoutines.checkFileNotExist(program_file_path, program_name)
 
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -171,6 +179,7 @@ def defineSpecificProgramOptions():
     return parser
 
 ################################################################################
+
 
 def mainMethod(args):
     """

@@ -173,6 +173,13 @@ function(_internal_find_projects projects_var config_file)
         # we extract two entries per iteration
         list(GET project_dep_list 0 name)
         list(GET project_dep_list 1 version)
+        if(NOT version MATCHES "^${full_version_regex}")
+          if(NOT version)
+            message(FATAL_ERROR "No project version specified for ${name}")        
+          else()
+            message(FATAL_ERROR "${version} is not a version")
+          endif()
+        endif()
         list(REMOVE_AT project_dep_list 0 1)
         string(TOUPPER ${name} name_upper)
         # look for the configuration file of the project

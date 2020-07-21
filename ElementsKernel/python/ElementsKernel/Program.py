@@ -1,3 +1,21 @@
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+
 """Main Program Class Module"""
 
 import importlib
@@ -11,14 +29,17 @@ from ElementsKernel.Environment import Environment
 from ElementsKernel.Configuration import getConfigurationPath, getConfigurationLocations
 from ElementsKernel import Exit
 
+
 def str_to_bool(s):
     """Convert string to bool (in argparse context)."""
     if s.lower() not in ['true', 'false']:
         raise ValueError('Need bool; got %r' % s)
     return {'true': True, 'false': False}[s.lower()]
 
+
 class Program(object):
     """Main Program Class"""
+
     def __init__(self, app_module,
                  parent_project_version=None, parent_project_name=None,
                  parent_project_vcs_version=None,
@@ -74,16 +95,16 @@ class Program(object):
         default_config_file = getConfigurationPath(conf_name, False)
 
         if not default_config_file:
-            self._logger.warn('The "%s" configuration file cannot be found in:', conf_name)
+            self._logger.warning('The "%s" configuration file cannot be found in:', conf_name)
             for l in getConfigurationLocations():
-                self._logger.warn(" %s", l)
+                self._logger.warning(" %s", l)
             if not module_name and '.' in self._app_module.__name__:
                 module_name = self._app_module.__name__[
                     :self._app_module.__name__.index('.')]
                 module_name = module_name.replace('.', os.sep)
             if module_name:
                 conf_name = os.sep.join([module_name, conf_name])
-                self._logger.warn('Trying "%s".', conf_name)
+                self._logger.warning('Trying "%s".', conf_name)
                 default_config_file = getConfigurationPath(conf_name, False)
 
         if not default_config_file:
@@ -208,7 +229,6 @@ class Program(object):
             self._logger.log(self._elements_loglevel, names[name] + ' = ' + str(value))
         self._logger.log(self._elements_loglevel, "#")
 
-
     def _logTheEnvironment(self):
         self._logger.debug("##########################################################")
         self._logger.debug("#")
@@ -228,7 +248,6 @@ class Program(object):
         if self._parent_project_vcs_version:
             version += self._parent_project_vcs_version
         return version
-
 
     def _bootStrapEnvironment(self):
         self._program_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -259,7 +278,7 @@ class Program(object):
     def _tearDown(self, exit_code):
 
         if exit_code is not None:
-            self._logger.debug("# Exit Code: %d" % exit_code)
+            self._logger.debug("# Exit Code: %d", exit_code)
         self._logFooter()
 
     def getProgramName(self):
@@ -272,7 +291,7 @@ class Program(object):
         exit_code = Exit.Code["NOT_OK"]
         try:
             exit_code = self._app_module.mainMethod(args)
-        except:
+        except Exception:
             self._logger.exception(sys.exc_info()[1])
 
         self._tearDown(exit_code)

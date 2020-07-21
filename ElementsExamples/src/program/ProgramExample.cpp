@@ -26,20 +26,23 @@
 #include <cstdint>                          // for int64_t
 
 #include <boost/current_function.hpp>       // for BOOST_CURRENT_FUNCTION
+#include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
+#include "ElementsExamples/ClassExample.h"
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/ThisModule.h"      // for getThisExecutableInfo
+#include "ElementsKernel/Project.h"         // for Project
+#include "ElementsKernel/Module.h"          // for Module
 
-#include "ElementsExamples/ClassExample.h"
 #include "ElementsExamples/functionExample.h"
+#include "ElementsExamples/printProject.h"
 
 
 using std::map;
 using std::string;
 using std::vector;
-using boost::program_options::options_description;
+
 using boost::program_options::value;
-using boost::program_options::variable_value;
 using boost::program_options::bool_switch;
 
 using std::int64_t;
@@ -89,9 +92,9 @@ public:
    * @return
    *    A BOOST program options_description
    */
-  options_description defineSpecificProgramOptions() override {
+  OptionsDescription defineSpecificProgramOptions() override {
 
-    options_description config_options { "Example program options" };
+    OptionsDescription config_options { "Example program options" };
 
     bool flag = false;
 
@@ -139,7 +142,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(map<string, variable_value>& args) override {
+  ExitCode mainMethod(map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("ProgramExample");
     log.info("Entering mainMethod()");
@@ -235,6 +238,14 @@ public:
     log.info() << "This executable name: " << Elements::System::getThisExecutableInfo().name();
 
     myLocalLogTestFunc();
+
+    printProject();
+
+    log.info() << Project();
+    log.info() << "Project Name: " << Project::name();
+    log.info() << "Project Version: " << Project::versionString();
+    log.info() << "Module Name: " << Module::name();
+    log.info() << "Module Version: " << Module::versionString();
 
     log.info("#");
     log.info("Exiting mainMethod()");

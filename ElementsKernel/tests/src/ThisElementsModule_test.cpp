@@ -28,6 +28,8 @@
 
 using std::string;
 
+namespace Elements {
+
 //-----------------------------------------------------------------------------
 BOOST_AUTO_TEST_SUITE(ThisElementsModule_test)
 //-----------------------------------------------------------------------------
@@ -44,3 +46,5 @@ BOOST_AUTO_TEST_SUITE_END()
 //-----------------------------------------------------------------------------
 //
 // End of the Boost tests
+
+}  // namespace Elements

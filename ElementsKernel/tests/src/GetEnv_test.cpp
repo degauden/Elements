@@ -31,6 +31,8 @@
 using std::string;
 using std::getenv;                      // standard
 
+namespace Elements {
+
 BOOST_AUTO_TEST_SUITE(GetEnv_test)
 
 //-----------------------------------------------------------------------------
@@ -88,8 +90,8 @@ BOOST_AUTO_TEST_CASE(RawEmpty_test) {
 
 BOOST_AUTO_TEST_CASE(StringWrap_test) {
 
-  using Elements::System::getEnv;
-  using Elements::System::isEnvSet;
+  using System::getEnv;
+  using System::isEnvSet;
 
   const string name_var {"PATH"};
   const string path_var = getenv("PATH");
@@ -106,7 +108,7 @@ BOOST_AUTO_TEST_CASE(StringWrap_test) {
 
 BOOST_AUTO_TEST_CASE(EmptyEnv_test) {
 
-  using Elements::System::getEnv;
+  using System::getEnv;
 
   string rnd_name {"Dldoed7dja7c"};
 
@@ -136,9 +138,9 @@ BOOST_AUTO_TEST_CASE(EmptyEnv_test) {
 
 BOOST_AUTO_TEST_CASE(Set_test) {
 
-  using Elements::System::setEnv;
-  using Elements::System::isEnvSet;
-  using Elements::System::getEnv;
+  using System::setEnv;
+  using System::isEnvSet;
+  using System::getEnv;
 
   string rnd_name {"Dldoed7dja7c"};
 
@@ -166,10 +168,10 @@ BOOST_AUTO_TEST_CASE(Set_test) {
 
 BOOST_AUTO_TEST_CASE(UnSet_test) {
 
-  using Elements::System::setEnv;
-  using Elements::System::isEnvSet;
-  using Elements::System::getEnv;
-  using Elements::System::unSetEnv;
+  using System::setEnv;
+  using System::isEnvSet;
+  using System::getEnv;
+  using System::unSetEnv;
 
   string rnd_name {"Dldoed7dja7c"};
 
@@ -190,3 +192,4 @@ BOOST_AUTO_TEST_CASE(UnSet_test) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
+}  // namespace Elements

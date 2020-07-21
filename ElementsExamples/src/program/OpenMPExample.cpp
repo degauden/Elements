@@ -22,27 +22,27 @@
 #include <map>                              // for map
 #include <string>                           // for string
 #include <complex>                          // for complex
-#include <cstdio>
+#include <cstdio>                           // for size_t
 
 #include <boost/current_function.hpp>       // for BOOST_CURRENT_FUNCTION
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 
-
+using std::size_t;
 using std::map;
 using std::string;
 using complex = std::complex<double>;
 
-using boost::program_options::variable_value;
-
 namespace Elements {
 namespace Examples {
+
+static constexpr char CHARSET[] = ".,c8M@jawrpogOQEPGJ";
 
 class OpenMPExample: public Program {
 
 public:
 
-  ExitCode mainMethod(map<string, variable_value>& /*args*/) override {
+  ExitCode mainMethod(map<string, VariableValue>& /*args*/) override {
 
     auto log = Logging::getLogger("ProgramExample");
 
@@ -60,7 +60,7 @@ public:
       complex c = begin + complex(x * span.real() / (width +1.0),
                                   y * span.imag() / (height+1.0));
 
-      int n = mandelbrotCalculate(c, maxiter);
+      size_t n = mandelbrotCalculate(c, maxiter);
       if (n == maxiter) {
         n = 0;
       }
@@ -69,8 +69,7 @@ public:
       {
         char c2 = ' ';
         if (n > 0) {
-          static const char charset[] = ".,c8M@jawrpogOQEPGJ";
-          c2 = charset[static_cast<std::size_t>(n % (sizeof(charset)-1))];
+          c2 = CHARSET[n % (sizeof(CHARSET) - 1)];
         }
         std::putchar(c2);
           if (x+1 == width) {
@@ -87,11 +86,11 @@ public:
 
 private:
 
-  static int mandelbrotCalculate(complex c, int maxiter) {
+  static size_t mandelbrotCalculate(const complex c, const size_t maxiter) {
     // iterates z = z + c until |z| >= 2 or maxiter is reached,
     // returns the number of iterations.
     complex z = c;
-    int n = 0;
+    size_t n = 0;
     for (; n < maxiter; ++n) {
       if (std::abs(z) >= 2.0) {
         break;

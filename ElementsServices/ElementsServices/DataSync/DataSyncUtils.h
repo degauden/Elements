@@ -31,11 +31,12 @@
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/Export.h"
+#include "ElementsKernel/Path.h"
 
 namespace ElementsServices {
 namespace DataSync {
 
-using path = boost::filesystem::path;
+using path = Elements::Path::Item;
 
 ELEMENTS_API path confFilePath(path filename);
 

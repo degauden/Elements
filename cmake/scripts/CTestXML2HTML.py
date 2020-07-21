@@ -295,7 +295,7 @@ class TestOrganizer:
         # insert the test
         container.insert(index, span)
 
-        for namedMeasurment in testElement.find("Results").getiterator("NamedMeasurement"):
+        for namedMeasurment in testElement.find("Results").iter("NamedMeasurement"):
             name = namedMeasurment.get("name")
             if name == 'Causes':
                 cause = namedMeasurment.find("Value")
@@ -739,7 +739,7 @@ def main():
                     failures_count[summary['outcome']] += 1
 
                 # Fill the summary fields
-                for NamedMeasurement in Results.getiterator("NamedMeasurement"):
+                for NamedMeasurement in Results.iter("NamedMeasurement"):
 
                     # remove the space character
                     summary["fields"].append(cleanSpace(
@@ -821,7 +821,7 @@ def main():
                 else:
                     executionTime = float(0)
                     # write the other files
-                    for NamedMeasurement in Results.getiterator("NamedMeasurement"):
+                    for NamedMeasurement in Results.iter("NamedMeasurement"):
                         value = NamedMeasurement.find("Value")
                         cleanName = cleanSpace(cleanWebChar(
                             NamedMeasurement.get("name"))).lower()

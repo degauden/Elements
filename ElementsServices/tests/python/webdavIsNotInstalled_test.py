@@ -21,5 +21,5 @@ from ElementsServices.DataSync import WebdavSynchronizer
 
 class TestWebdavIsNotInstalled(object):
 
-    def test_webdavIsNotInstalled(self):
+    def testWebdavIsNotInstalled(self):
         assert not WebdavSynchronizer.webdavIsInstalled()

@@ -19,13 +19,12 @@
  *
  */
 
-#include "ElementsExamples/ClassExample.h"
-
 #include <cstdint>                          // for int64_t
 #include <string>                           // for string
 
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
+#include "ElementsExamples/ClassExample.h"
 
 #include "ElementsKernel/Exception.h"
 

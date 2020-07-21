@@ -18,6 +18,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#ifdef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_TEMPLATEDDATASOURCEUSER_IMPL_
+
 #include <cstddef>   // for std::size_t
 
 namespace Elements {
@@ -37,4 +39,4 @@ template <typename T>
 }  // namespace Examples
 }  // namespace Elements
 
-
+#endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_TEMPLATEDDATASOURCEUSER_IMPL_

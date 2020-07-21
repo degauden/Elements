@@ -27,7 +27,6 @@
 #include <string>                                // for char_traits, string
 
 #include <boost/algorithm/string/case_conv.hpp>  // for to_upper
-#include <boost/filesystem/path.hpp>             // for path
 
 #include <log4cpp/Category.hh>                   // for Category
 #include <log4cpp/FileAppender.hh>               // for FileAppender
@@ -35,7 +34,8 @@
 #include <log4cpp/PatternLayout.hh>              // for PatternLayout
 #include <log4cpp/Priority.hh>                   // for Priority, Priority::::INFO, etc
 
-#include "ElementsKernel/Exception.h"   // for Exception
+#include "ElementsKernel/Exception.h"            // for Exception
+#include "ElementsKernel/Path.h"                 // for Path::Item
 
 using std::string;
 using std::unique_ptr;
@@ -85,7 +85,7 @@ void Logging::setLevel(string level) {
   }
 }
 
-void Logging::setLogFile(const boost::filesystem::path& fileName) {
+void Logging::setLogFile(const Path::Item& fileName) {
   Category& root = Category::getRoot();
   root.removeAppender(root.getAppender("file"));
   if (fileName.has_filename()) {

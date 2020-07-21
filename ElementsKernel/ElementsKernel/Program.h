@@ -36,6 +36,7 @@
 
 #include "ElementsKernel/Export.h"      // ELEMENTS_API
 #include "ElementsKernel/Exit.h"        // for ExitCode
+#include "ElementsKernel/Logging.h"     // for Logging
 
 namespace Elements {
 
@@ -51,6 +52,21 @@ namespace Elements {
 class ELEMENTS_API Program {
 
 public:
+
+  // backwards compatible type aliases
+  using options_description = boost::program_options::options_description;
+  using positional_options_description = boost::program_options::positional_options_description;
+  using variable_value = boost::program_options::variable_value;
+  using variables_map = boost::program_options::variables_map;
+
+  // camel case type aliases
+  using OptionsDescription = options_description;
+  using PositionalOptionsDescription = positional_options_description;
+  using VariableValue = variable_value;
+  using VariablesMap = variables_map;
+
+  using ExitCode = Elements::ExitCode;
+  using Logging = Elements::Logging;
 
   /**
    * @brief Constructor
@@ -71,7 +87,7 @@ public:
    * @return
    *   A BOOST options description
    */
-  virtual boost::program_options::options_description defineSpecificProgramOptions();
+  virtual OptionsDescription defineSpecificProgramOptions();
 
   /**
    * @brief
@@ -82,8 +98,7 @@ public:
    * @return
    *   a pair of  BOOST options description and positional_options_description
    */
-  virtual std::pair<boost::program_options::options_description,
-                     boost::program_options::positional_options_description> defineProgramArguments();
+  virtual std::pair<OptionsDescription, PositionalOptionsDescription> defineProgramArguments();
 
   /**
    * @brief
@@ -98,7 +113,7 @@ public:
    * @return
    *    The exit code which should be returned when the program exits
    */
-  virtual ExitCode mainMethod(std::map<std::string, boost::program_options::variable_value>& args) = 0;
+  virtual ExitCode mainMethod(std::map<std::string, VariableValue>& args) = 0;
 
 };
 

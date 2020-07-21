@@ -32,7 +32,6 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>             // for boost::filesystem
 #include <boost/version.hpp>                // for the BOOST_VERSION define
 
 #include "ElementsKernel/Temporary.h"      // For TempDir

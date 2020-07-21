@@ -34,9 +34,8 @@
 #include "ElementsKernel/ProgramManager.h"         // for ProgramManager
 #include "ElementsKernel/Export.h"                 // for ELEMENTS_API
 #include "ElementsKernel/Unused.h"                 // for ELEMENTS_UNUSED
-
-#include "ThisProject.h"
-#include "ThisElementsModule.h"
+#include "ElementsKernel/Project.h"                // for Project
+#include "ElementsKernel/Module.h"                 // for Module
 
 #ifndef ELEMENTS_DEFAULT_LOGLEVEL
 #  define ELEMENTS_DEFAULT_LOGLEVEL DEBUG
@@ -52,10 +51,10 @@
  */
 #define CREATE_MANAGER_WITH_ARGS(MANAGER, ELEMENTS_PROGRAM, ...) \
   Elements::ProgramManager MANAGER {std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM{__VA_ARGS__}}, \
-                                    THIS_PROJECT_VERSION_STRING, THIS_PROJECT_NAME_STRING, \
-                                    THIS_PROJECT_VCS_VERSION, \
-                                    THIS_MODULE_VERSION_STRING, THIS_MODULE_NAME_STRING, \
-                                    THIS_PROJECT_SEARCH_DIRS, \
+                                    Elements::Project::versionString(), Elements::Project::name(), \
+                                    Elements::Project::vcsVersion(), \
+                                    Elements::Module::versionString(), Elements::Module::name(), \
+                                    Elements::Project::searchDirectories(), \
                                     log4cpp::Priority::ELEMENTS_DEFAULT_LOGLEVEL}
 
 /**

@@ -40,20 +40,20 @@ def runCommandAndCaptureOutErr (cmd):
     return out.decode("utf-8"), err.decode("utf-8")
 
 
-def localDirExists (localDir):
+def localDirExists (local_dir):
     """Check whether a local directory exists.
     """
-    if not localDir:
+    if not local_dir:
         return True
-    if os.path.isdir(localDir):
+    if os.path.isdir(local_dir):
         return True
     return False
 
 
-def createLocalDirOf (localFile):
+def createLocalDirOf (local_file):
     """Create the parent directory for a local file.
     """
-    dir_name = os.path.dirname(localFile)
+    dir_name = os.path.dirname(local_file)
     if not localDirExists(dir_name):
         os.makedirs(dir_name)
 
@@ -66,13 +66,13 @@ def environmentVariable (name):
 def localWorkspacePrefix ():
     """Get the prefix of the local workspace.
     """
-    codeenPrefix = 'WORKSPACE'
-    return environmentVariable(codeenPrefix)
+    codeen_prefix = 'WORKSPACE'
+    return environmentVariable(codeen_prefix)
 
 
 def concatenatePaths (chunks):
     """Concatenate path chunks into a single path.
     """
-    meaningfulChunks = [x for x in chunks if x]
-    joined = '/'.join(meaningfulChunks)
+    meaningful_chunks = [x for x in chunks if x]
+    joined = '/'.join(meaningful_chunks)
     return os.path.normpath(joined)

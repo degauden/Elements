@@ -27,10 +27,10 @@
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_TEMPORARY_H_
 
 #include <string>
-#include <boost/filesystem.hpp>
 
 #include "ElementsKernel/Export.h"                 // ELEMENTS_API
 #include "ElementsKernel/Environment.h"            // for Environment
+#include "ElementsKernel/Path.h"                   // for Path::Item
 
 namespace Elements {
 
@@ -44,11 +44,11 @@ public:
   explicit TempPath(const std::string& motif = DEFAULT_TMP_MOTIF,
                     const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempPath();
-  boost::filesystem::path path() const;
+  Path::Item path() const;
   std::string motif() const;
 private:
   const std::string m_motif;
-  boost::filesystem::path m_path;
+  Path::Item m_path;
   const std::string m_keep_var;
 };
 

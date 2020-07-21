@@ -17,8 +17,9 @@
 #
 
 """
-File: %(FILE)s
+:file: %(FILE)s
 
-Created on: %(DATE)s
-Author: %(AUTHOR)s
+:date: %(DATE)s
+:author: %(AUTHOR)s
+
 """

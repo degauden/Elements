@@ -19,28 +19,28 @@
  *
  */
 
-#include "ElementsKernel/Temporary.h"    // for Elements::TempDir
+#include "ElementsKernel/Temporary.h"      // for TempDir
 
-#include <string>                        // for string
+#include <string>                          // for string
 #include <vector>
 #include <cstdlib>
 #include <iostream>
 
 #include <boost/test/unit_test.hpp>
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 #include "ElementsKernel/Exception.h"
-#include "ElementsKernel/System.h"       // for getEnv, setEnv, unSetEnv
-#include "ElementsKernel/Environment.h"  // for Environment
+#include "ElementsKernel/System.h"         // for getEnv, setEnv, unSetEnv
+#include "ElementsKernel/Environment.h"    // for Environment
+#include "ElementsKernel/Path.h"           // for Path::Item
 
 using std::string;
-using Elements::TempDir;
-using Elements::TempEnv;
 
-using boost::filesystem::path;
 using boost::filesystem::exists;
 using boost::filesystem::create_directory;
+
+namespace Elements {
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -70,17 +70,17 @@ BOOST_AUTO_TEST_SUITE(Temporary_test)
 BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
 
   // handle on created path names
-  path test_path;
-  path test_file_path;
+  Path::Item test_path;
+  Path::Item test_file_path;
 
   {
     // block creation for local variables
     TempDir one;
-    BOOST_CHECK_EQUAL(one.motif(), Elements::DEFAULT_TMP_MOTIF);
+    BOOST_CHECK_EQUAL(one.motif(), DEFAULT_TMP_MOTIF);
     test_path = one.path();
     BOOST_CHECK(exists(test_path));
 
-    Elements::TempFile two;
+    TempFile two;
     test_file_path = two.path();
     BOOST_CHECK(exists(test_file_path));
   }
@@ -90,8 +90,8 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
   BOOST_CHECK(!exists(test_path));
   BOOST_CHECK(!exists(test_file_path));
 
-  path test2_path;
-  path test2_file_path;
+  Path::Item test2_path;
+  Path::Item test2_file_path;
 
   {
     using std::endl;
@@ -114,13 +114,13 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(TempEnv_test, Temporary_Fixture) {
 
-  using Elements::System::getEnv;
-  using Elements::System::setEnv;
-  using Elements::System::unSetEnv;
+  using System::getEnv;
+  using System::setEnv;
+  using System::unSetEnv;
 
   // test if the global temporary directory exists.
   BOOST_CHECK(exists(m_top_dir.path()));
-  path test_tmpdir = m_top_dir.path() / "tmpdir";
+  Path::Item test_tmpdir = m_top_dir.path() / "tmpdir";
   create_directory(test_tmpdir);
   setEnv("TMPDIR", test_tmpdir.c_str(), 1);
   string tmp_env_val = getEnv("TMPDIR");
@@ -146,13 +146,13 @@ BOOST_FIXTURE_TEST_CASE(TempEnv_test, Temporary_Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(TempEnv2_test, Temporary_Fixture) {
 
-  using Elements::System::getEnv;
+  using System::getEnv;
 
   BOOST_CHECK(m_env["WORKSPACE"].value() == (m_top_dir.path() / "work").string());
 
   // test if the global temporary directory exists.
   BOOST_CHECK(exists(m_top_dir.path()));
-  path test_tmpdir = m_top_dir.path() / "tmpdir2";
+  Path::Item test_tmpdir = m_top_dir.path() / "tmpdir2";
   create_directory(test_tmpdir);
 
   {
@@ -179,12 +179,11 @@ BOOST_FIXTURE_TEST_CASE(TempEnv2_test, Temporary_Fixture) {
 
 BOOST_AUTO_TEST_CASE(KeepTmpDir_test) {
 
-  using Elements::Environment;
   using boost::filesystem::remove_all;
 
   Environment current;
   current["KEEPTEMPDIR"] = "1";
-  path that_path;
+  Path::Item that_path;
 
   {
     TempDir that;
@@ -216,8 +215,8 @@ BOOST_AUTO_TEST_CASE(Fake_test) {
   cout << "path1p:" << path1p << endl;
   cout << "path2:" << path2 << endl;
 
-  Elements::TempPath p1;
-  Elements::TempPath p2(motif1);
+  TempPath p1;
+  TempPath p2(motif1);
 
 }
 
@@ -229,3 +228,5 @@ BOOST_AUTO_TEST_SUITE_END()
 // End of the Boost tests
 //
 //-----------------------------------------------------------------------------
+
+}  // namespace Elements

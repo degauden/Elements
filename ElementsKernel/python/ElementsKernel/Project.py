@@ -1,26 +1,27 @@
-"""
-@file ElementsKernel/Project.py
-@author Nicolas Morisset
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
 
-@date 01/07/15
+""" This script will create a new Elements project
+:file: ElementsKernel/Project.py
+:author: Nicolas Morisset
 
-This script will create a new Elements project
+:date: 01/07/15
 
-@copyright: 2012-2020 Euclid Science Ground Segment
-
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 """
 
@@ -35,7 +36,7 @@ from ElementsKernel import ProjectCommonRoutines
 
 try:
     from builtins import input
-except:
+except ImportError:
     from __builtin__ import input
 
 logger = log.getLogger('CreateElementsProject')
@@ -113,6 +114,7 @@ def getElementsVersion():
 
 ################################################################################
 
+
 def getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone=False):
     """
     Format all dependent projects
@@ -128,14 +130,14 @@ def getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone
                 str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
             else:
                 logger.warning('<%s> dependency already exists. It is skipped!', dep[0])
-    
+
     if str_dep_projects:
         str_dep_projects = "USE " + str_dep_projects
-        
-    configuration = {"PROJECT_NAME":proj_name, 
-                     "PROJECT_VERSION":proj_version, 
+
+    configuration = {"PROJECT_NAME":proj_name,
+                     "PROJECT_VERSION":proj_version,
                      "DEPENDANCE_LIST":str_dep_projects}
-    
+
     return configuration
 
 ################################################################################
@@ -156,7 +158,6 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
                             configuration=configuration,
                             create_missing_dir=True)
         ProjectCommonRoutines.addItemToCreationList(os.path.join(project_dir, tgt))
-
 
 
 def makeChecks(proj_name, proj_version, dependency, dependant_projects):
@@ -197,7 +198,7 @@ def lookForDirectories(project_dir):
     match_list = []
     dirlist = [elt for elt in os.listdir(project_dir) if os.path.isdir(os.path.join(project_dir, elt)) ]
     for elt in dirlist:
-        match = re.match(ProjectCommonRoutines.version_regex, elt)
+        match = re.match(ProjectCommonRoutines.VERSION_REGEX, elt)
         if match:
             match_list.append(match.group(0))
     return match_list

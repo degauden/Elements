@@ -1,26 +1,27 @@
-"""
-@file: ElementsKernel/AddScript.py
-@author: Hubert Degaudenzi
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
 
-@date: 03/08/17
+""" This script creates a new Elements module
 
-This script creates a new Elements module
+:file: ElementsKernel/AddScript.py
+:author: Hubert Degaudenzi
 
-@copyright: 2012-2020 Euclid Science Ground Segment
-
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+:date: 03/08/17
 
 """
 
@@ -44,7 +45,8 @@ PROGRAM_TEMPLATE_FILE_IN = 'Script_template.in'
 
 ################################################################################
 
-def createDirectories(module_dir, module_name):
+
+def createDirectories(module_dir):
     """
     Create directories needed for a python program
     """
@@ -52,14 +54,15 @@ def createDirectories(module_dir, module_name):
     scripts_path = os.path.join(module_dir, 'scripts')
     ProjectCommonRoutines.makeDirectory(scripts_path)
 
+
 ################################################################################
-def substituteAuxFiles(module_dir, program_name, module_name):
+def substituteAuxFiles(module_dir, program_name):
     """
     Copy AUX file(s) and substitutes keyworks
     """
-    configuration = {  "FILE": os.path.join('scripts', program_name),
-                       "DATE": time.strftime("%x"),
-                       "AUTHOR": ProjectCommonRoutines.getAuthor(),
+    configuration = {"FILE": os.path.join('scripts', program_name),
+                     "DATE": time.strftime("%x"),
+                     "AUTHOR": ProjectCommonRoutines.getAuthor(),
                     }
     # Put AUX files to their target and substitute
     tgt = os.path.join('scripts', program_name)
@@ -67,16 +70,17 @@ def substituteAuxFiles(module_dir, program_name, module_name):
                         module_dir, tgt,
                         configuration=configuration,
                         create_missing_dir=True)
-    
+
     full_tgt = os.path.join(module_dir, tgt)
-    
+
     # Add the execution flag
     tgt_stat = os.stat(full_tgt)
     os.chmod(full_tgt, tgt_stat.st_mode | stat.S_IEXEC)
-    
+
     ProjectCommonRoutines.addItemToCreationList(full_tgt)
 
-def updateCmakeListsFile(module_dir, program_name):
+
+def updateCmakeListsFile(module_dir):
     """
     Update the <CMakeList.txt> file
     """
@@ -103,15 +107,17 @@ def updateCmakeListsFile(module_dir, program_name):
 
 ################################################################################
 
-def createScript(current_dir, module_name, program_name):
+
+def createScript(current_dir, program_name):
     """
     Create the python program
     """
-    createDirectories(current_dir, module_name)
-    substituteAuxFiles(current_dir, program_name, module_name)
-    updateCmakeListsFile(current_dir, program_name)
+    createDirectories(current_dir)
+    substituteAuxFiles(current_dir, program_name)
+    updateCmakeListsFile(current_dir)
 
 ################################################################################
+
 
 def makeChecks(program_file_path, program_name):
     """
@@ -123,6 +129,7 @@ def makeChecks(program_file_path, program_name):
     ProjectCommonRoutines.checkAuxFileExist(PROGRAM_TEMPLATE_FILE_IN)
 
 ################################################################################
+
 
 def defineSpecificProgramOptions():
     """
@@ -141,6 +148,7 @@ def defineSpecificProgramOptions():
     return parser
 
 ################################################################################
+
 
 def mainMethod(args):
     """
@@ -162,14 +170,12 @@ def mainMethod(args):
     logger.info('')
 
     try:
-        # We absolutely need a Elements cmake file
-        module_name = ProjectCommonRoutines.getElementsModuleName(current_dir)
         # Check name in the Element Naming Database
         program_file_path = os.path.join(current_dir, 'scripts', program_name)
         # Make checks
         makeChecks(program_file_path, program_name)
 
-        createScript(current_dir, module_name, program_name)
+        createScript(current_dir, program_name)
         logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
 
         # Remove backup file

@@ -51,21 +51,21 @@ class TestConnectionConfiguration(unittest.TestCase):
 
     def test_overwritingPolicy(self):
         config = ConnectionConfiguration(theWebdavFrConfig())
-        configNoOverwrite = ConnectionConfiguration(theNoOverwriteConfig())
+        config_no_overwrite = ConnectionConfiguration(theNoOverwriteConfig())
         assert config.overwritingAllowed(), \
             "Overwrite should be allowed, but it is not"
-        assert not configNoOverwrite.overwritingAllowed(), \
+        assert not config_no_overwrite.overwritingAllowed(), \
             "Overwrite should not be allowed, but it is"
 
     def test_webdavFrConfig(self):
         config = ConnectionConfiguration(theWebdavFrConfig())
         assert config.host == DataHost.WEBDAV, \
             "Host shoud be WebDAV, but it is not"
-        assert config.overwritingPolicy, \
+        assert config.overwriting_policy, \
             "Overwrite should be allowed, but it is not"
-        assert config.distantRoot == "/euclid-fr/ct/mock_test_data", \
-            "Distant workspace path misread: " + confif.distantRoot
-        assert config.localRoot == thePrefixedLocalWorkspace(), \
-            "Local workspace path misread: " + config.localRoot
+        assert config.distant_root == "/euclid-fr/ct/mock_test_data", \
+            "Distant workspace path misread: " + config.distant_root
+        assert config.local_root == thePrefixedLocalWorkspace(), \
+            "Local workspace path misread: " + config.local_root
         assert config.tries == 8, \
             "Wrong number of tries: " + str(config.tries)

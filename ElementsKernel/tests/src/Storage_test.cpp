@@ -28,6 +28,8 @@
 #include "ElementsKernel/Real.h"              // For isEqual
 
 
+namespace Elements {
+
 //-----------------------------------------------------------------------------
 //
 // Begin of the Boost tests
@@ -39,8 +41,8 @@ BOOST_AUTO_TEST_SUITE(Storage_test)
 
 BOOST_AUTO_TEST_CASE(StorageFactorValue_test) {
 
-  using Elements::Units::StorageType;
-  using Elements::Units::StorageFactor;
+  using Units::StorageType;
+  using Units::StorageFactor;
 
 
   BOOST_CHECK_EQUAL(StorageFactor[StorageType::Byte],                          1);
@@ -60,8 +62,8 @@ BOOST_AUTO_TEST_CASE(StorageFactorValue_test) {
 
 BOOST_AUTO_TEST_CASE(StorageShortName_test) {
 
-  using Elements::Units::StorageType;
-  using Elements::Units::StorageShortName;
+  using Units::StorageType;
+  using Units::StorageShortName;
 
   BOOST_CHECK_EQUAL(StorageShortName[StorageType::Byte],             "B");
   BOOST_CHECK_EQUAL(StorageShortName[StorageType::KiloByte],        "KiB");
@@ -79,9 +81,8 @@ BOOST_AUTO_TEST_CASE(StorageShortName_test) {
 
 BOOST_AUTO_TEST_CASE(RoundToDigits_test) {
 
-  using Elements::Units::roundToDigits;
-  using Elements::Units::pi;
-  using Elements::isEqual;
+  using Units::roundToDigits;
+  using Units::pi;
 
   BOOST_CHECK(isEqual(roundToDigits(pi, 12), 3.14159265359));
   BOOST_CHECK(isEqual(roundToDigits(pi,  0),            3.));
@@ -93,9 +94,8 @@ BOOST_AUTO_TEST_CASE(RoundToDigits_test) {
 
 BOOST_AUTO_TEST_CASE(StorageConvertLower_test) {
 
-  using Elements::Units::StorageType;
-  using Elements::isEqual;
-  using Elements::Units::storageConvert;
+  using Units::StorageType;
+  using Units::storageConvert;
 
   std::int64_t size_in_byte { 1000 };
 
@@ -118,9 +118,8 @@ BOOST_AUTO_TEST_CASE(StorageConvertLower_test) {
 
 BOOST_AUTO_TEST_CASE(StorageConverterRounding_test) {
 
-  using Elements::Units::StorageType;
-  using Elements::isEqual;
-  using Elements::Units::storageConvert;
+  using Units::StorageType;
+  using Units::storageConvert;
 
   std::int64_t size_in_byte { 1000 };
 
@@ -143,9 +142,8 @@ BOOST_AUTO_TEST_CASE(StorageConverterRounding_test) {
 
 BOOST_AUTO_TEST_CASE(StorageConvertUpper_test) {
 
-  using Elements::Units::StorageType;
-  using Elements::isEqual;
-  using Elements::Units::storageConvert;
+  using Units::StorageType;
+  using Units::storageConvert;
 
   std::int64_t size { 1 };
 
@@ -171,9 +169,8 @@ BOOST_AUTO_TEST_CASE(StorageConvertUpper_test) {
 
 BOOST_AUTO_TEST_CASE(StorageConvertMetric_test) {
 
-  using Elements::Units::StorageType;
-  using Elements::isEqual;
-  using Elements::Units::storageConvert;
+  using Units::StorageType;
+  using Units::storageConvert;
 
   std::int64_t size { 1 };
 
@@ -199,3 +196,4 @@ BOOST_AUTO_TEST_CASE(StorageConvertMetric_test) {
 // End of the Boost tests
 BOOST_AUTO_TEST_SUITE_END()
 
+}  // namespace Elements

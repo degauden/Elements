@@ -17,10 +17,11 @@
 #
 
 import subprocess
+import shlex
 
-from .DataSynchronizer import *
+from .DataSynchronizer import DataSynchronizer
 
-def irodsIsInstalled ():
+def irodsIsInstalled():
     """Check whether an iRODS client is installed.
     """
     try:
@@ -30,7 +31,7 @@ def irodsIsInstalled ():
         return False
 
 
-class IrodsSynchronizer (DataSynchronizer):
+class IrodsSynchronizer(DataSynchronizer):
     """A data synchronizer for iRods hosts.
     """
 
@@ -38,18 +39,16 @@ class IrodsSynchronizer (DataSynchronizer):
             connection,
             dependencies):
         super(IrodsSynchronizer, self).__init__(connection, dependencies)
-        if not irodsIsInstalled ():
+        if not irodsIsInstalled():
             raise RuntimeError(
                 'You are trying to use iRODS, '
                 'but it does not seem to be installed.')
 
-    def createDownloadCommand (self,
-            distantFile,
-            localFile):
-        if not irodsIsInstalled ():
+    def createDownloadCommand(self, distant_file, local_file):
+        if not irodsIsInstalled():
             return ""
         cmd = "irsync i:"
-        cmd += distantFile + " " + localFile
+        cmd += distant_file + " " + local_file
         # Number of retries cannot be set with irsync
         # -s option allows comparing only file size (no checksum) to save time
         return cmd

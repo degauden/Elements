@@ -18,18 +18,16 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_CONFIGURATION_ICPP_
-#define ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_CONFIGURATION_ICPP_
-
-#include <boost/filesystem.hpp>         // for boost::filesystem
+#ifdef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
 
 #include "ElementsKernel/Exception.h"   // for Exception
-#include "ElementsKernel/Path.h"        // for Path::getPathFromLocations
+#include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type, Path::Item
+                                        // getPathFromLocations
 
 namespace Elements {
 
 template <typename T>
-boost::filesystem::path getConfigurationPath(const T& file_name, bool raise_exception) {
+Path::Item getConfigurationPath(const T& file_name, bool raise_exception) {
 
   auto location_list = getConfigurationLocations();
 
@@ -44,4 +42,4 @@ boost::filesystem::path getConfigurationPath(const T& file_name, bool raise_exce
 
 }  // namespace Elements
 
-#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL__IMPL_CONFIGURATION_ICPP_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_

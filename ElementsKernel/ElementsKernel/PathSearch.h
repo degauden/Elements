@@ -28,8 +28,8 @@
 
 #include <string>
 #include <vector>
-#include <boost/filesystem.hpp>
 
+#include "ElementsKernel/Path.h"       // for Path::Item
 #include "ElementsKernel/Export.h"     // ELEMENTS_API
 
 namespace Elements {
@@ -64,9 +64,9 @@ ELEMENTS_API std::vector<T> pathSearch(
 
 // template instantiations of the most common types
 extern template
-ELEMENTS_API std::vector<boost::filesystem::path> pathSearch(const std::string& searched_name,
-                                                             boost::filesystem::path directory,
-                                                             SearchType search_type);
+ELEMENTS_API std::vector<Path::Item> pathSearch(const std::string& searched_name,
+                                                Path::Item directory,
+                                                SearchType search_type);
 extern template
 ELEMENTS_API std::vector<std::string> pathSearch(const std::string& searched_name,
                                                  std::string directory,
@@ -91,15 +91,16 @@ ELEMENTS_API std::vector<std::string> pathSearch(const std::string& searched_nam
  *   A vector of paths of the files found or empty string, if nothing is found
  */
 ELEMENTS_API
-std::vector<boost::filesystem::path> pathSearchInEnvVariable(
+std::vector<Path::Item> pathSearchInEnvVariable(
     const std::string& file_name,
     const std::string& path_like_env_variable,
     SearchType search_type = SearchType::Recursive);
 
 }  // namespace Elements
 
+#define ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_IMPL_
 #include "ElementsKernel/_impl/PathSearch.icpp"
-
+#undef ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_H_
 

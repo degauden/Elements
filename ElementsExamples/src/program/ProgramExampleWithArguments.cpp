@@ -25,6 +25,8 @@
 #include <string>                            // for string
 #include <vector>                            // for vector
 
+#include <boost/program_options.hpp>         // for program options from configuration file of command line arguments
+
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
 
@@ -32,10 +34,7 @@ using std::map;
 using std::string;
 using std::vector;
 
-using boost::program_options::variable_value;
 using boost::program_options::value;
-using boost::program_options::options_description;
-using boost::program_options::positional_options_description;
 
 namespace Elements {
 namespace Examples {
@@ -63,7 +62,7 @@ public:
    *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode mainMethod(ELEMENTS_UNUSED map<string, variable_value>& args) override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     // Get logger and log the entry into the mainMethod
     auto log = Logging::getLogger();
@@ -75,7 +74,7 @@ public:
 
     cout << "This Works too!" << endl;
 
-    if (args.count("input-files")) {
+    if (args.count("input-files") > 0) {
       vector<string> files = args["input-files"].as<vector<string>>();
       for (string file : files) {
         cout << "Input file " << file << endl;
@@ -85,11 +84,11 @@ public:
 
   }
 
-  std::pair<options_description, positional_options_description> defineProgramArguments() override {
-    options_description desc("");
+  std::pair<OptionsDescription, PositionalOptionsDescription> defineProgramArguments() override {
+    OptionsDescription desc("");
     desc.add_options()("input-files", value<vector<string>>(), "Input files");
 
-    positional_options_description pos_desc;
+    PositionalOptionsDescription pos_desc;
     pos_desc.add("input-files", -1);
 
     return std::make_pair(desc, pos_desc);

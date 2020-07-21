@@ -1,26 +1,29 @@
-"""
-@file ElementsKernel/AddCppClass.py
-@author Nicolas Morisset
+#
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
 
-@date 01/07/15
+""" This script creates a new Elements C++ Class
 
-This script creates a new Elements C++ Class
+:file: ElementsKernel/AddCppClass.py
+:author: Nicolas Morisset
 
-@copyright: 2012-2020 Euclid Science Ground Segment
+:date: 01/07/15
 
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation; either version 3.0 of the License, or (at your option)
-any later version.
 
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 """
 
@@ -49,6 +52,7 @@ UNITTEST_TEMPLATE_FILE_IN = 'UnitTestFile_template.cpp.in'
 
 ################################################################################
 
+
 def getClassName(subdir_class):
     """
     Get the class name and sub directory if any
@@ -60,6 +64,7 @@ def getClassName(subdir_class):
     return subdir, class_name
 
 ################################################################################
+
 
 def createDirectories(module_dir, module_name, subdir):
     """
@@ -75,17 +80,18 @@ def createDirectories(module_dir, module_name, subdir):
 
 ################################################################################
 
+
 def substituteAuxFiles(module_dir, class_name, module_name, subdir):
     """
     Copy AUX file(s) and substitutes keyworks
     """
-    target_locations = { 
+    target_locations = {
                        H_TEMPLATE_FILE_IN: os.path.join(module_name, subdir, class_name + ".h"),
                        CPP_TEMPLATE_FILE_IN: os.path.join('src', 'lib', subdir, class_name + ".cpp"),
                        UNITTEST_TEMPLATE_FILE_IN: os.path.join('tests', 'src', subdir, class_name + "_test.cpp")
                        }
 
-    ossep2 ="" if not subdir else os.sep
+    ossep2 = "" if not subdir else os.sep
 
     configuration = {  "FILE_H": os.path.join(module_name, subdir, class_name + '.h'),
                        "FILE_CPP": os.path.join('src', 'lib', subdir, class_name + '.cpp'),
@@ -218,7 +224,7 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
     # Update cmake file
     updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list, library_dep_list)
     # Substitue strings in files
-    substituteAuxFiles( module_dir, class_name, module_name, subdir)
+    substituteAuxFiles(module_dir, class_name, module_name, subdir)
 
 ################################################################################
 

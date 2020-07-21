@@ -34,7 +34,7 @@ using std::vector;
 namespace Elements {
 namespace Examples {
 
-std::string ClassExample::s_static_string = "This is a static field example";
+const std::string ClassExample::s_static_string = "This is a static field example";
 
 double ClassExample::fundamentalTypeMethod(const double input_variable) const {
   return input_variable;

@@ -23,12 +23,9 @@
 
 #include <iostream>                             // for cerr
 
-#include <boost/filesystem/path.hpp>            // for path
-
 #include "ElementsKernel/Exit.h"                // for ExitCode
 #include "ElementsKernel/Unused.h"              // for ELEMENTS_UNUSED
-
-using boost::filesystem::path;
+#include "ElementsKernel/Path.h"                // for Path::Item
 
 namespace Elements {
 
@@ -59,7 +56,7 @@ ExitCode SimpleProgram::run(int argc, char** argv) noexcept {
 
 void SimpleProgram::setup(ELEMENTS_UNUSED int argc, char** argv) {
 
-  path prog_path {argv[0]};
+  Path::Item prog_path {argv[0]};
 
   m_program_name = prog_path.filename();
   m_program_path = prog_path.parent_path();
@@ -68,11 +65,11 @@ void SimpleProgram::setup(ELEMENTS_UNUSED int argc, char** argv) {
 
 }
 
-const path& SimpleProgram::getProgramPath() const {
+const Path::Item& SimpleProgram::getProgramPath() const {
   return m_program_path;
 }
 
-const path& SimpleProgram::getProgramName() const {
+const Path::Item& SimpleProgram::getProgramName() const {
   return m_program_name;
 }
 

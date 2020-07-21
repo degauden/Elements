@@ -26,19 +26,19 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
 
-#include <map>                           // for map
-#include <string>                        // for string
-#include <memory>                        // for unique_ptr
-#include <vector>                        // for vector
+#include <map>                                // for map
+#include <string>                             // for string
+#include <memory>                             // for unique_ptr
+#include <vector>                             // for vector
 
-#include <boost/filesystem.hpp>
-#include <boost/program_options.hpp>
+#include <boost/program_options/parsers.hpp>
 #include <log4cpp/Priority.hh>
 
-#include "ElementsKernel/Export.h"       // ELEMENTS_API
-#include "ElementsKernel/Exit.h"         // For ExitCode
+#include "ElementsKernel/Export.h"            // ELEMENTS_API
+#include "ElementsKernel/Exit.h"              // For ExitCode
 #include "ElementsKernel/Program.h"
-#include "ElementsKernel/Environment.h"  // For Environment
+#include "ElementsKernel/Environment.h"       // For Environment
+#include "ElementsKernel/Path.h"              // for Path::Item
 
 namespace Elements {
 
@@ -105,7 +105,7 @@ private:
    * @return
    *   The program path
    */
-  const boost::filesystem::path& getProgramPath() const;
+  const Path::Item& getProgramPath() const;
 
   /**
    * @brief Getter
@@ -113,7 +113,7 @@ private:
    * @return
    *   The program name
    */
-  const boost::filesystem::path& getProgramName() const;
+  const Path::Item& getProgramName() const;
 
   /**
    * @brief
@@ -123,8 +123,8 @@ private:
    * @return
    *   A complete name/path to the default configuration file
    */
-  static const boost::filesystem::path getDefaultConfigFile(
-      const boost::filesystem::path & program_name,
+  static const Path::Item getDefaultConfigFile(
+      const Path::Item& program_name,
       const std::string& module_name = "");
 
   /**
@@ -135,7 +135,7 @@ private:
    * @return
    *    A BOOST path with the program name
    */
-  static const boost::filesystem::path setProgramName(char* arg0);
+  static const Path::Item setProgramName(char* arg0);
 
   /**
    * @brief
@@ -145,7 +145,7 @@ private:
    * @return
    *    A BOOST path with the program path
    */
-  static const boost::filesystem::path setProgramPath(char* arg0);
+  static const Path::Item setProgramPath(char* arg0);
 
   /**
    * @brief
@@ -164,7 +164,7 @@ private:
    *  @return
    *    A BOOST variable_map
    */
-  const boost::program_options::variables_map getProgramOptions(int argc,
+  const Program::VariablesMap getProgramOptions(int argc,
       char* argv[]);
 
   /**
@@ -213,17 +213,17 @@ private:
    * of different types. See the pseudoMain() in ElementsProgramExample.cpp
    * to see how to retrieve options from this map.
    */
-  boost::program_options::variables_map m_variables_map {};
+  Program::VariablesMap m_variables_map {};
 
   /**
    * Name of the executable (from argv[0])
    */
-  boost::filesystem::path m_program_name;
+  Path::Item m_program_name;
 
   /**
    * Path of the executable (from argv[0])
    */
-  boost::filesystem::path m_program_path;
+  Path::Item m_program_path;
 
   /**
    * Pointer to a program interface, which provides two methods
