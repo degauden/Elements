@@ -3323,6 +3323,10 @@ function(elements_add_test_executable name)
     
     set(testmain_file ${CMAKE_CURRENT_BINARY_DIR}/tests/${${name}_TEST_EXEC_TYPE}TestMain.cpp)
     set_source_files_properties(${testmain_file} PROPERTIES GENERATED TRUE)
+    if ("${${name}_TEST_EXEC_TYPE}" STREQUAL "Boost")
+      set_source_files_properties(${testmain_file} PROPERTIES COMPILE_DEFINITIONS_DEBUG "BOOST_TEST_TOOLS_UNDER_DEBUGGER")
+      set_source_files_properties(${srcs} PROPERTIES COMPILE_DEFINITIONS_DEBUG "BOOST_TEST_TOOLS_UNDER_DEBUGGER")
+    endif()
     if(NOT TARGET ${package}_${${name}_TEST_EXEC_TYPE}TestMain)
       add_custom_target(${package}_${${name}_TEST_EXEC_TYPE}TestMain
                         COMMAND ${${${name}_TEST_EXEC_TYPE}_testmain_cmd} --quiet ${package} ${testmain_file}
