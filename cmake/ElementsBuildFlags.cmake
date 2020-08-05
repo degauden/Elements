@@ -506,6 +506,7 @@ if(NOT ELEMENTS_FLAGS_SET)
   set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g"
       CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
       FORCE)
+
   if (ELEMENTS_LINKOPT AND SGS_COMPVERS VERSION_GREATER "47")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-flto ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}"
         CACHE STRING "Flags used by the compiler during release builds."
@@ -514,10 +515,6 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the compiler during release builds."
         FORCE)
   endif()
-
-
-
-
 
 
   set(CMAKE_CXX_FLAGS_COVERAGE "--coverage"
