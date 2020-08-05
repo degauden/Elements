@@ -465,6 +465,10 @@ if(NOT ELEMENTS_FLAGS_SET)
       FORCE)
 
   if (ELEMENTS_LINKOPT AND SGS_COMPVERS VERSION_GREATER "47")
+    check_cxx_compiler_flag(-flto CXX_HAS_LTO)
+  endif()
+  
+  if(CXX_HAS_LTO)
     set(CMAKE_CXX_FLAGS_RELEASE "-flto ${CMAKE_CXX_FLAGS_RELEASE}"
         CACHE STRING "Flags used by the compiler during release builds."
         FORCE)
@@ -472,7 +476,6 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the compiler during release builds."
         FORCE)
   endif()
-
 
 
   if (SGS_COMPVERS VERSION_GREATER "47")
@@ -507,7 +510,7 @@ if(NOT ELEMENTS_FLAGS_SET)
       CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
       FORCE)
 
-  if (ELEMENTS_LINKOPT AND SGS_COMPVERS VERSION_GREATER "47")
+  if(CXX_HAS_LTO)
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-flto ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}"
         CACHE STRING "Flags used by the compiler during release builds."
         FORCE)
@@ -515,7 +518,6 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the compiler during release builds."
         FORCE)
   endif()
-
 
   set(CMAKE_CXX_FLAGS_COVERAGE "--coverage"
       CACHE STRING "Flags used by the compiler during coverage builds."
