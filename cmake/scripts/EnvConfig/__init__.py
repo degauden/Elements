@@ -62,6 +62,11 @@ class Script(object):
         self._parse_args(args)
         self._check_args()
 
+    def _getEnv(self):
+        if not self.env:
+            self._makeEnv()
+        return self.env
+
     def _prepare_parser(self):
         '''
         Prepare an OptionParser instance used to analyze the command line
