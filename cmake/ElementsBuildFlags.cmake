@@ -206,6 +206,10 @@ option(OPT_DEBUG
        "Enable optimisation for the Debug version"
        ON)
 
+set(DEBUG_FORMAT "" CACHE STRING "Set the -g debug format")
+
+set(DEBUG_LEVEL "" CACHE STRING "Set the -g debug level")
+
 option(ELEMENTS_LINKOPT
        "Enable Link Time Optimisation"
        OFF)
@@ -480,10 +484,10 @@ if(NOT ELEMENTS_FLAGS_SET)
 
   if (SGS_COMPVERS VERSION_GREATER "47")
     # Use -Og with Debug builds in gcc >= 4.8
-    set(CMAKE_CXX_FLAGS_DEBUG "-g"
+    set(CMAKE_CXX_FLAGS_DEBUG "-g${DEBUG_FORMAT}${DEBUG_LEVEL}"
       CACHE STRING "Flags used by the compiler during Debug builds."
       FORCE)
-    set(CMAKE_C_FLAGS_DEBUG "-g"
+    set(CMAKE_C_FLAGS_DEBUG "-g${DEBUG_FORMAT}${DEBUG_LEVEL}"
         CACHE STRING "Flags used by the compiler during Debug builds."
         FORCE)
     if(OPT_DEBUG)
@@ -503,10 +507,10 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
 
 
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g"
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g${DEBUG_FORMAT}${DEBUG_LEVEL}"
       CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
       FORCE)
-  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g"
+  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g${DEBUG_FORMAT}${DEBUG_LEVEL}"
       CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
       FORCE)
 
