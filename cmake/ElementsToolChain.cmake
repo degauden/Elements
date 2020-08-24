@@ -25,6 +25,8 @@ set(CMAKE_PREFIX_PATH ${CMAKE_MODULE_PATH} CACHE STRING "The internal prefix pat
 reset_include_guards()
 reset_message_guards()
 
+set(USED_CMAKE_GENERATOR "${CMAKE_GENERATOR}" CACHE STRING "Expose CMAKE_GENERATOR" FORCE)
+message(STATUS "Generator: ${USED_CMAKE_GENERATOR}")
 
 set(CMAKE_CROSSCOMPILING FALSE)
 message(STATUS "-----------------------------------------------------------------------")
