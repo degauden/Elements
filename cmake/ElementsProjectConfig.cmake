@@ -2528,7 +2528,7 @@ endmacro()
 #---------------------------------------------------------------------------------------------------
 function(elements_add_library library)
   # this function uses an extra option: 'PUBLIC_HEADERS'
-  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS;NO_INSTALL" "LINKER_LANGUAGE" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "NO_PUBLIC_HEADERS;NO_INSTALL;NO_EXIST_CHECK" "LINKER_LANGUAGE" "LIBRARIES;LINK_LIBRARIES;INCLUDE_DIRS;PUBLIC_HEADERS" ${ARGN})
 
   elements_get_package_name(package)
   if(NOT ARG_NO_PUBLIC_HEADERS AND NOT ARG_PUBLIC_HEADERS)
@@ -2590,7 +2590,11 @@ Provide source files and the NO_PUBLIC_HEADERS option for a plugin/module librar
   if(NOT ARG_NO_INSTALL)
     install(TARGETS ${library} EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_LIB_INSTALL_SUFFIX} OPTIONAL)
     elements_export(LIBRARY ${library})
-    elements_install_headers(${ARG_PUBLIC_HEADERS})
+    if (ARG_NO_EXIST_CHECK)
+      elements_install_headers(${ARG_PUBLIC_HEADERS} NO_EXIST_CHECK)
+    else()
+      elements_install_headers(${ARG_PUBLIC_HEADERS})
+    endif()
     install(EXPORT ${CMAKE_PROJECT_NAME}Exports DESTINATION ${CMAKE_INSTALL_SUFFIX} OPTIONAL)
     if(USE_VERSIONED_LIBRARIES)
       set_property(GLOBAL APPEND PROPERTY REGULAR_DEV_LIB_OBJECTS ${library})  
@@ -3580,14 +3584,17 @@ endfunction()
 # To be used in case the header files do not have a library.
 #---------------------------------------------------------------------------------------------------
 function(elements_install_headers)
+
+  CMAKE_PARSE_ARGUMENTS(ARG "NO_EXIST_CHECK" "" "" ${ARGN})
+
   set(has_local_headers FALSE)
-  foreach(hdr_dir ${ARGN})
+  foreach(hdr_dir ${ARG_UNPARSED_ARGUMENTS})
     if(NOT IS_ABSOLUTE ${hdr_dir})
       set(full_hdr_dir ${CMAKE_CURRENT_SOURCE_DIR}/${hdr_dir})
     else()
       set(full_hdr_dir ${hdr_dir})
     endif()
-    if(IS_DIRECTORY ${full_hdr_dir})
+    if(ARG_NO_EXIST_CHECK)
       install(DIRECTORY ${hdr_dir}
               DESTINATION ${INCLUDE_INSTALL_SUFFIX}
               FILES_MATCHING
@@ -3604,7 +3611,25 @@ function(elements_install_headers)
         set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${hdr_dir})
       endif()
     else()
-      message(FATAL_ERROR "No ${hdr_dir} directory for header files in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+      if(IS_DIRECTORY ${full_hdr_dir})
+        install(DIRECTORY ${hdr_dir}
+                DESTINATION ${INCLUDE_INSTALL_SUFFIX}
+                FILES_MATCHING
+                PATTERN "*.h"
+                PATTERN "*.icpp"
+                PATTERN "*.hpp"
+                PATTERN "*.hxx"
+                PATTERN "*.i"
+                PATTERN "*.pxd"
+                PATTERN "CVS" EXCLUDE
+                PATTERN ".svn" EXCLUDE)
+        if(NOT IS_ABSOLUTE ${hdr_dir})
+          set(has_local_headers TRUE)
+          set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${hdr_dir})
+        endif()
+      else()
+        message(FATAL_ERROR "No ${hdr_dir} directory for header files in the ${CMAKE_CURRENT_SOURCE_DIR} location")
+      endif()
     endif()
   endforeach()
   # flag the current directory as one that installs headers
