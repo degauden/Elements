@@ -43,5 +43,12 @@ class SwigExampleTestCase(unittest.TestCase):
             self.assertEqual(a.getRa(), 2.0)
             self.assertEqual(a.getDec(), 3.0)
 
+    def testClassPositionalArgsSwig(self):
+        if self.has_swig:
+            from SwigExample import SwigClassExample
+            a = SwigClassExample(dec = 3.0, ra = 2.0)
+            self.assertEqual(a.getRa(), 2.0)
+            self.assertEqual(a.getDec(), 3.0)
+
 if __name__ == '__main__':
     unittest.main()

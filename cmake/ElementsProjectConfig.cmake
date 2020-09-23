@@ -2798,7 +2798,7 @@ function(_generate_swig_files swig_module)
   set(PY_MODULE_SWIG_SRC ${ARG_OUTFILE})
 
   execute_process(
-    COMMAND ${SWIG_EXECUTABLE} -MM -python -module ${PY_MODULE} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} ${i_srcs}
+    COMMAND ${SWIG_EXECUTABLE} -MM -python -keyword -module ${PY_MODULE} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} ${i_srcs}
     OUTPUT_VARIABLE swmm_dependencies
     RESULT_VARIABLE swmm_return_value
   )
@@ -2820,6 +2820,7 @@ function(_generate_swig_files swig_module)
     COMMAND
         ${env_cmd} --xml ${env_xml} ${SWIG_EXECUTABLE}
         -python
+        -keyword
         -module ${PY_MODULE}
         -Wextra
         -outdir ${PY_MODULE_DIR}
@@ -2829,7 +2830,7 @@ function(_generate_swig_files swig_module)
         ${i_srcs}
     DEPENDS
         ${i_srcs} ${swig_deps}
-    COMMENT "Generating SWIG binding: ${SWIG_EXECUTABLE} -python -module ${PY_MODULE} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} -o ${PY_MODULE_SWIG_SRC} ${i_srcs}"
+    COMMENT "Generating SWIG binding: ${SWIG_EXECUTABLE} -python -keyword -module ${PY_MODULE} -Wextra -outdir ${PY_MODULE_DIR} -c++ ${SWIG_MOD_INCLUDE_DIRS} -o ${PY_MODULE_SWIG_SRC} ${i_srcs}"
   )
 
   set_source_files_properties(${PY_MODULE_SWIG_SRC} PROPERTIES GENERATED TRUE)
