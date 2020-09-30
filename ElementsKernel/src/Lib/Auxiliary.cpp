@@ -22,16 +22,16 @@
 
 #include "ElementsKernel/Auxiliary.h"
 
-#include <algorithm>                        // for remove_if
+#include <algorithm>  // for remove_if
 #include <iterator>
 #include <map>
-#include <string>                           // for string
-#include <vector>                           // for vector
+#include <string>  // for string
+#include <vector>  // for vector
 
 #include <boost/filesystem/operations.hpp>  // for exists
 
-#include "ElementsKernel/Path.h"            // for Type, Item, VARIABLE
-#include "ElementsKernel/System.h"          // for DEFAULT_INSTALL_PREFIX
+#include "ElementsKernel/Path.h"    // for Type, Item, VARIABLE
+#include "ElementsKernel/System.h"  // for DEFAULT_INSTALL_PREFIX
 
 using std::string;
 
@@ -57,11 +57,8 @@ std::vector<Path::Item> getAuxiliaryLocations(bool exist_only) {
   location_list.emplace_back(Path::Item(DEFAULT_INSTALL_PREFIX) / "share" / "aux");
 
   if (exist_only) {
-    auto new_end = std::remove_if(location_list.begin(),
-                                  location_list.end(),
-                                  [](const Path::Item& p){
-                                     return (not boost::filesystem::exists(p));
-                                  });
+    auto new_end = std::remove_if(location_list.begin(), location_list.end(),
+                                  [](const Path::Item& p) { return (not boost::filesystem::exists(p)); });
     location_list.erase(new_end, location_list.end());
   }
 

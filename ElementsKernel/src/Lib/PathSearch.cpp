@@ -21,20 +21,20 @@
 
 #include "ElementsKernel/PathSearch.h"  // for SearchType, etc
 
-#include <ostream>                      // for operator<<, basic_ostream, etc
-#include <string>                       // for string, char_traits
-#include <vector>                       // for vector
+#include <ostream>  // for operator<<, basic_ostream, etc
+#include <string>   // for string, char_traits
+#include <vector>   // for vector
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include "ElementsKernel/Exception.h"   // for Exception
+#include "ElementsKernel/Exception.h"  // for Exception
+#include "ElementsKernel/Logging.h"    // for the logger
+#include "ElementsKernel/Path.h"       // for Path::Item
 #include "ElementsKernel/System.h"
-#include "ElementsKernel/Logging.h"     // for the logger
-#include "ElementsKernel/Path.h"        // for Path::Item
 
-using std::vector;
 using std::string;
+using std::vector;
 
 using boost::filesystem::directory_iterator;
 using boost::filesystem::recursive_directory_iterator;
@@ -42,21 +42,18 @@ using boost::filesystem::recursive_directory_iterator;
 namespace Elements {
 
 namespace {
-  auto log = Logging::getLogger("PathSearch");
+auto log = Logging::getLogger("PathSearch");
 }
 
 // template instantiations
 
-template vector<string> pathSearch<string, directory_iterator>(const string& searched_name, string directory);
+template vector<string>     pathSearch<string, directory_iterator>(const string& searched_name, string directory);
 template vector<Path::Item> pathSearch<Path::Item, directory_iterator>(const string& searched_name, Path::Item directory);
-template vector<string> pathSearch<string, recursive_directory_iterator>(const string& searched_name, string directory);
+template vector<string>     pathSearch<string, recursive_directory_iterator>(const string& searched_name, string directory);
 template vector<Path::Item> pathSearch<Path::Item, recursive_directory_iterator>(const string& searched_name, Path::Item directory);
 
-template vector<Path::Item> pathSearch(const string& searched_name, Path::Item directory,
-                                 SearchType search_type);
-template vector<string> pathSearch(const string& searched_name, string directory,
-                                   SearchType search_type);
-
+template vector<Path::Item> pathSearch(const string& searched_name, Path::Item directory, SearchType search_type);
+template vector<string>     pathSearch(const string& searched_name, string directory, SearchType search_type);
 
 /**
  * Iterate over the different directories included in the path-like environment variable, i.e.,
@@ -65,17 +62,14 @@ template vector<string> pathSearch(const string& searched_name, string directory
  *
  * and call pathSearch(...) for each of them
  */
-vector<Path::Item> pathSearchInEnvVariable(const string& file_name,
-                                           const string& path_like_env_variable,
-                                           SearchType search_type) {
+vector<Path::Item> pathSearchInEnvVariable(const string& file_name, const string& path_like_env_variable, SearchType search_type) {
   // Placeholder for the to-be-returned search result
-  vector<Path::Item> search_results { };
+  vector<Path::Item> search_results{};
 
   // get the multiple path from the environment variable
-  string multiple_path {};
+  string multiple_path{};
   if (not System::getEnv(path_like_env_variable.c_str(), multiple_path)) {
-    log.warn() << "Environment variable \"" << path_like_env_variable
-                  << "\" is not defined !";
+    log.warn() << "Environment variable \"" << path_like_env_variable << "\" is not defined !";
   }
 
   // Tokenize the path elements
@@ -87,11 +81,8 @@ vector<Path::Item> pathSearchInEnvVariable(const string& file_name,
     // Check if directory exists
     if (boost::filesystem::exists(path_element) && boost::filesystem::is_directory(path_element)) {
       // loop recursively inside directory
-      auto single_path_results = pathSearch(file_name,
-                                            Path::Item { path_element },
-                                            search_type);
-      search_results.insert(search_results.end(),
-                            single_path_results.cbegin(), single_path_results.cend());
+      auto single_path_results = pathSearch(file_name, Path::Item{path_element}, search_type);
+      search_results.insert(search_results.end(), single_path_results.cbegin(), single_path_results.cend());
     }
   }
   return search_results;

@@ -25,18 +25,7 @@
 namespace Elements {
 namespace System {
 /// Enumeration for fetching information
-enum class InfoType {
-  NoFetch,
-  RemainTime,
-  Times,
-  ProcessBasics,
-  PriorityBoost,
-  Memory,
-  Quota,
-  System,
-  Modules,
-  IO
-};
+enum class InfoType { NoFetch, RemainTime, Times, ProcessBasics, PriorityBoost, Memory, Quota, System, Modules, IO };
 
 }  // namespace System
 }  // namespace Elements

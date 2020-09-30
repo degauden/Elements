@@ -23,17 +23,17 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMHEADERS_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMHEADERS_H_
 
-#include <boost/program_options.hpp>        // for program options from configuration file of command line arguments
-#include <boost/filesystem.hpp>             // for boost path type
+#include <boost/filesystem.hpp>       // for boost path type
+#include <boost/program_options.hpp>  // for program options from configuration file of command line arguments
 
-#include "ElementsKernel/Exit.h"            // for ExitCode, ExitCode::OK
-#include "ElementsKernel/Logging.h"         // for Logging::LogMessageStream, etc
-#include "ElementsKernel/Exception.h"       // for Elements Exception
+#include "ElementsKernel/Exception.h"  // for Elements Exception
+#include "ElementsKernel/Exit.h"       // for ExitCode, ExitCode::OK
+#include "ElementsKernel/Logging.h"    // for Logging::LogMessageStream, etc
 
-#include "ElementsKernel/Main.h"            // for the MAIN macro
-#include "ElementsKernel/Program.h"         // for the Program interface
+#include "ElementsKernel/Main.h"     // for the MAIN macro
+#include "ElementsKernel/Program.h"  // for the Program interface
 
-#include "ElementsKernel/Version.h"         // ??
+#include "ElementsKernel/Version.h"  // ??
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMHEADERS_H_
 

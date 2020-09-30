@@ -20,9 +20,9 @@
 
 #ifdef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
 
-#include "ElementsKernel/Exception.h"   // for Exception
-#include "ElementsKernel/Path.h"        // for Path::VARIABLE, Path::Type, Path::Item
-                                        // getPathFromLocations
+#include "ElementsKernel/Exception.h"  // for Exception
+#include "ElementsKernel/Path.h"       // for Path::VARIABLE, Path::Type, Path::Item
+                                       // getPathFromLocations
 
 namespace Elements {
 

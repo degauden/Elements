@@ -26,14 +26,13 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_VERSION_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_VERSION_H_
 
-#include <string>                   // for string
 #include <cstdint>
+#include <string>  // for string
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 /// Mangle major, minor and patch version number into a single integer
-constexpr std::uint_least64_t CALC_PROJECT_VERSION(const std::uint_least64_t maj,
-                                                   const std::uint_least64_t min,
+constexpr std::uint_least64_t CALC_PROJECT_VERSION(const std::uint_least64_t maj, const std::uint_least64_t min,
                                                    const std::uint_least64_t pat) {
   return (((maj) << 32) + ((min) << 16) + (pat));
 }
@@ -80,9 +79,7 @@ ELEMENTS_API std::string getVersionFromSvnKeywords(const std::string& svnUrl, co
  * @return
  *    The formatted string with the version numbers
  */
-ELEMENTS_API std::string getVersionString(const unsigned short major,
-                                          const unsigned short minor,
-                                          const unsigned short patch = 0);
+ELEMENTS_API std::string getVersionString(const unsigned short major, const unsigned short minor, const unsigned short patch = 0);
 
 }  // namespace Elements
 

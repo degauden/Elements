@@ -31,248 +31,244 @@
 namespace Elements {
 namespace Units {
 
-    //
-    // Length [L]
-    //
-    constexpr double meter  = 1.0;
-    constexpr double meter2 = meter*meter;
-    constexpr double meter3 = meter*meter*meter;
+//
+// Length [L]
+//
+constexpr double meter  = 1.0;
+constexpr double meter2 = meter * meter;
+constexpr double meter3 = meter * meter * meter;
 
+constexpr double millimeter  = 1.e-3 * meter;
+constexpr double millimeter2 = millimeter * millimeter;
+constexpr double millimeter3 = millimeter * millimeter * millimeter;
 
-    constexpr double millimeter  = 1.e-3 * meter;
-    constexpr double millimeter2 = millimeter*millimeter;
-    constexpr double millimeter3 = millimeter*millimeter*millimeter;
+constexpr double centimeter  = 1.e-2 * meter;
+constexpr double centimeter2 = centimeter * centimeter;
+constexpr double centimeter3 = centimeter * centimeter * centimeter;
 
-    constexpr double centimeter  = 1.e-2 * meter;
-    constexpr double centimeter2 = centimeter*centimeter;
-    constexpr double centimeter3 = centimeter*centimeter*centimeter;
+constexpr double kilometer  = 1000. * meter;
+constexpr double kilometer2 = kilometer * kilometer;
+constexpr double kilometer3 = kilometer * kilometer * kilometer;
 
-    constexpr double kilometer = 1000.*meter;
-    constexpr double kilometer2 = kilometer*kilometer;
-    constexpr double kilometer3 = kilometer*kilometer*kilometer;
+constexpr double parsec = 3.0856775807e+16 * meter;
 
-    constexpr double parsec = 3.0856775807e+16*meter;
+constexpr double micrometer = 1.e-6 * meter;
+constexpr double nanometer  = 1.e-9 * meter;
+constexpr double angstrom   = 1.e-10 * meter;
+constexpr double fermi      = 1.e-15 * meter;
 
-    constexpr double micrometer = 1.e-6 *meter;
-    constexpr double  nanometer = 1.e-9 *meter;
-    constexpr double  angstrom  = 1.e-10*meter;
-    constexpr double  fermi     = 1.e-15*meter;
+constexpr double barn      = 1.e-28 * meter2;
+constexpr double millibarn = 1.e-3 * barn;
+constexpr double microbarn = 1.e-6 * barn;
+constexpr double nanobarn  = 1.e-9 * barn;
+constexpr double picobarn  = 1.e-12 * barn;
 
-    constexpr double      barn = 1.e-28*meter2;
-    constexpr double millibarn = 1.e-3 *barn;
-    constexpr double microbarn = 1.e-6 *barn;
-    constexpr double  nanobarn = 1.e-9 *barn;
-    constexpr double  picobarn = 1.e-12*barn;
+// symbols
+constexpr double nm = nanometer;
+constexpr double um = micrometer;
 
-    // symbols
-    constexpr double nm  = nanometer;
-    constexpr double um  = micrometer;
+constexpr double mm  = millimeter;
+constexpr double mm2 = millimeter2;
+constexpr double mm3 = millimeter3;
 
-    constexpr double mm  = millimeter;
-    constexpr double mm2 = millimeter2;
-    constexpr double mm3 = millimeter3;
+constexpr double cm  = centimeter;
+constexpr double cm2 = centimeter2;
+constexpr double cm3 = centimeter3;
 
-    constexpr double cm  = centimeter;
-    constexpr double cm2 = centimeter2;
-    constexpr double cm3 = centimeter3;
+constexpr double m  = meter;
+constexpr double m2 = meter2;
+constexpr double m3 = meter3;
 
-    constexpr double m  = meter;
-    constexpr double m2 = meter2;
-    constexpr double m3 = meter3;
+constexpr double km  = kilometer;
+constexpr double km2 = kilometer2;
+constexpr double km3 = kilometer3;
 
-    constexpr double km  = kilometer;
-    constexpr double km2 = kilometer2;
-    constexpr double km3 = kilometer3;
+constexpr double pc = parsec;
 
-    constexpr double pc = parsec;
+//
+// Angle
+//
+constexpr double radian      = 1.;
+constexpr double milliradian = 1.e-3 * radian;
+constexpr double degree      = (pi / 180.0) * radian;
 
-    //
-    // Angle
-    //
-    constexpr double radian      = 1.;
-    constexpr double milliradian = 1.e-3*radian;
-    constexpr double degree = (pi/180.0)*radian;
+constexpr double steradian = 1.;
 
-    constexpr double   steradian = 1.;
+// symbols
+constexpr double rad  = radian;
+constexpr double mrad = milliradian;
+constexpr double sr   = steradian;
+constexpr double deg  = degree;
 
-    // symbols
-    constexpr double rad  = radian;
-    constexpr double mrad = milliradian;
-    constexpr double sr   = steradian;
-    constexpr double deg  = degree;
+//
+// Time [T]
+//
+constexpr double second = 1.;
 
-    //
-    // Time [T]
-    //
-    constexpr double second      = 1.;
+constexpr double nanosecond  = 1.e-9 * second;
+constexpr double millisecond = 1.e-3 * second;
+constexpr double microsecond = 1.e-6 * second;
+constexpr double picosecond  = 1.e-12 * second;
+constexpr double femtosecond = 1.e-15 * second;
 
-    constexpr double nanosecond  = 1.e-9 *second;
-    constexpr double millisecond = 1.e-3 *second;
-    constexpr double microsecond = 1.e-6 *second;
-    constexpr double  picosecond = 1.e-12*second;
-    constexpr double femtosecond = 1.e-15*second;
+constexpr double hertz     = 1. / second;
+constexpr double kilohertz = 1.e+3 * hertz;
+constexpr double megahertz = 1.e+6 * hertz;
 
-    constexpr double hertz = 1./second;
-    constexpr double kilohertz = 1.e+3*hertz;
-    constexpr double megahertz = 1.e+6*hertz;
+// symbols
+constexpr double ns = nanosecond;
+constexpr double s  = second;
+constexpr double ms = millisecond;
 
-    // symbols
-    constexpr double ns = nanosecond;
-    constexpr double  s = second;
-    constexpr double ms = millisecond;
+//
+// Electric current [I]
+//
+constexpr double ampere      = 1.0;
+constexpr double milliampere = 1.e-3 * ampere;
+constexpr double microampere = 1.e-6 * ampere;
+constexpr double nanoampere  = 1.e-9 * ampere;
 
-    //
-    // Electric current [I]
-    //
-    constexpr double      ampere = 1.0;
-    constexpr double milliampere = 1.e-3*ampere;
-    constexpr double microampere = 1.e-6*ampere;
-    constexpr double  nanoampere = 1.e-9*ampere;
+//
+// Electric charge [I][T]
+//
+constexpr double coulomb = ampere * second;
+constexpr double eplus   = 1.;                         // positron charge
+constexpr double e_SI    = 1.602176565e-19 * coulomb;  // positron charge in coulomb
 
+//
+// Mass [M]
+//
+constexpr double kilogram  = 1.0;
+constexpr double gram      = 1.e-3 * kilogram;
+constexpr double milligram = 1.e-3 * gram;
 
-    //
-    // Electric charge [I][T]
-    //
-    constexpr double coulomb = ampere * second;
-    constexpr double eplus = 1.;    // positron charge
-    constexpr double e_SI  = 1.602176565e-19 * coulomb;  // positron charge in coulomb
+// symbols
+constexpr double kg = kilogram;
+constexpr double g  = gram;
+constexpr double mg = milligram;
 
+//
+// Energy [M][L^2][T^-2]
+//
+constexpr double joule            = kilogram * (meter * meter) / (second * second);
+constexpr double electronvolt     = joule * e_SI;
+constexpr double megaelectronvolt = 1.e+6 * electronvolt;
+constexpr double kiloelectronvolt = 1.e+3 * electronvolt;
+constexpr double gigaelectronvolt = 1.e+9 * electronvolt;
+constexpr double teraelectronvolt = 1.e+12 * electronvolt;
+constexpr double petaelectronvolt = 1.e+15 * electronvolt;
+constexpr double erg              = 1.e-7 * joule;
 
-    //
-    // Mass [M]
-    //
-    constexpr double  kilogram = 1.0;
-    constexpr double      gram = 1.e-3*kilogram;
-    constexpr double milligram = 1.e-3*gram;
+// symbols
+constexpr double MeV = megaelectronvolt;
+constexpr double eV  = electronvolt;
+constexpr double keV = kiloelectronvolt;
+constexpr double GeV = gigaelectronvolt;
+constexpr double TeV = teraelectronvolt;
+constexpr double PeV = petaelectronvolt;
 
-    // symbols
-    constexpr double  kg = kilogram;
-    constexpr double   g = gram;
-    constexpr double  mg = milligram;
+//
+// Power [E][T^-1]
+//
+constexpr double watt = joule / second;
 
-    //
-    // Energy [M][L^2][T^-2]
-    //
-    constexpr double joule = kilogram * (meter*meter)/(second*second);
-    constexpr double     electronvolt = joule * e_SI;
-    constexpr double megaelectronvolt = 1.e+6*electronvolt;
-    constexpr double kiloelectronvolt = 1.e+3*electronvolt;
-    constexpr double gigaelectronvolt = 1.e+9*electronvolt;
-    constexpr double teraelectronvolt = 1.e+12*electronvolt;
-    constexpr double petaelectronvolt = 1.e+15*electronvolt;
-    constexpr double erg              = 1.e-7*joule;
+//
+// Force [E][L^-1]
+//
+constexpr double newton = joule / meter;
 
-    // symbols
-    constexpr double MeV = megaelectronvolt;
-    constexpr double  eV = electronvolt;
-    constexpr double keV = kiloelectronvolt;
-    constexpr double GeV = gigaelectronvolt;
-    constexpr double TeV = teraelectronvolt;
-    constexpr double PeV = petaelectronvolt;
+//
+// Pressure [E][L^-3]
+//
+constexpr double Pa         = newton / m2;
+constexpr double bar        = 100000 * Pa;
+constexpr double atmosphere = 101325 * Pa;
 
-    //
-    // Power [E][T^-1]
-    //
-    constexpr double watt = joule/second;
+//
+// Electric potential [E][Q^-1]
+//
+constexpr double volt     = electronvolt / eplus;
+constexpr double megavolt = 1.e+6 * volt;
+constexpr double kilovolt = 1.e+3 * volt;
 
-    //
-    // Force [E][L^-1]
-    //
-    constexpr double newton = joule/meter;
+//
+// Electric resistance [E][T][Q^-2]
+//
+constexpr double ohm = volt / ampere;
 
-    //
-    // Pressure [E][L^-3]
-    //
-    constexpr double Pa         = newton/m2;
-    constexpr double bar        = 100000*Pa;
-    constexpr double atmosphere = 101325*Pa;
+//
+// Electric capacitance [Q^2][E^-1]
+//
+constexpr double farad      = coulomb / volt;
+constexpr double millifarad = 1.e-3 * farad;
+constexpr double microfarad = 1.e-6 * farad;
+constexpr double nanofarad  = 1.e-9 * farad;
+constexpr double picofarad  = 1.e-12 * farad;
 
-    //
-    // Electric potential [E][Q^-1]
-    //
-    constexpr double     volt = electronvolt/eplus;
-    constexpr double megavolt = 1.e+6*volt;
-    constexpr double kilovolt = 1.e+3*volt;
+//
+// Magnetic Flux [T][E][Q^-1]
+//
+constexpr double weber = volt * second;
+//
+// Magnetic Field [T][E][Q^-1][L^-2]
+//
+constexpr double tesla = volt * second / meter2;
 
-    //
-    // Electric resistance [E][T][Q^-2]
-    //
-    constexpr double ohm = volt/ampere;
+constexpr double gauss     = 1.e-4 * tesla;
+constexpr double kilogauss = 1.e-1 * tesla;
 
-    //
-    // Electric capacitance [Q^2][E^-1]
-    //
-    constexpr double farad = coulomb/volt;
-    constexpr double millifarad = 1.e-3*farad;
-    constexpr double microfarad = 1.e-6*farad;
-    constexpr double  nanofarad = 1.e-9*farad;
-    constexpr double  picofarad = 1.e-12*farad;
+//
+// Inductance [T^2][E][Q^-2]
+//
+constexpr double henry = weber / ampere;
 
-    //
-    // Magnetic Flux [T][E][Q^-1]
-    //
-    constexpr double weber = volt*second;
-    //
-    // Magnetic Field [T][E][Q^-1][L^-2]
-    //
-    constexpr double tesla     = volt*second/meter2;
+//
+// Temperature
+//
+constexpr double kelvin = 1.;
 
-    constexpr double gauss     = 1.e-4*tesla;
-    constexpr double kilogauss = 1.e-1*tesla;
+//
+// Amount of substance
+//
+constexpr double mole = 1.;
 
-    //
-    // Inductance [T^2][E][Q^-2]
-    //
-    constexpr double henry = weber/ampere;
+//
+// Activity [T^-1]
+//
+constexpr double becquerel = 1. / second;
+constexpr double curie     = 3.7e+10 * becquerel;
 
-    //
-    // Temperature
-    //
-    constexpr double kelvin = 1.;
+//
+// Absorbed dose [L^2][T^-2]
+//
+constexpr double gray = joule / kilogram;
 
-    //
-    // Amount of substance
-    //
-    constexpr double mole = 1.;
+//
+// Luminous intensity [I]
+//
+constexpr double candela = 1.;
 
-    //
-    // Activity [T^-1]
-    //
-    constexpr double becquerel = 1./second;
-    constexpr double curie = 3.7e+10 * becquerel;
+//
+// Luminous flux [I]
+//
+constexpr double lumen       = candela * steradian;
+constexpr double jansky      = 1.e-26 * watt / (m2 * hertz);
+constexpr double microjansky = 1.e-6 * jansky;
 
-    //
-    // Absorbed dose [L^2][T^-2]
-    //
-    constexpr double gray = joule/kilogram;
+//
+// Illuminance [I][L^-2]
+//
+constexpr double lux = lumen / meter2;
 
-    //
-    // Luminous intensity [I]
-    //
-    constexpr double candela = 1.;
-
-    //
-    // Luminous flux [I]
-    //
-    constexpr double lumen  = candela*steradian;
-    constexpr double jansky = 1.e-26 * watt / (m2*hertz);
-    constexpr double microjansky = 1.e-6 * jansky;
-
-    //
-    // Illuminance [I][L^-2]
-    //
-    constexpr double lux = lumen/meter2;
-
-    //
-    // Miscellaneous
-    //
-    constexpr double perCent     = 0.01;
-    constexpr double perThousand = 0.001;
-    constexpr double perMillion  = 0.000001;
+//
+// Miscellaneous
+//
+constexpr double perCent     = 0.01;
+constexpr double perThousand = 0.001;
+constexpr double perMillion  = 0.000001;
 
 }  // namespace Units
 }  // namespace Elements
-
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEMOFUNITS_H_
 

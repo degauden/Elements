@@ -18,8 +18,6 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
-
 #ifndef ELEMENTSKERNEL_SRC_LIB_OPTIONEXCEPTION_H_
 #define ELEMENTSKERNEL_SRC_LIB_OPTIONEXCEPTION_H_
 
@@ -32,9 +30,7 @@ namespace Elements {
 class OptionException : public Exception {
 
 public:
-  explicit OptionException(const std::string& message = "") : Exception(message, Elements::ExitCode::USAGE) {
-  }
-
+  explicit OptionException(const std::string& message = "") : Exception(message, Elements::ExitCode::USAGE) {}
 };
 
 }  // namespace Elements

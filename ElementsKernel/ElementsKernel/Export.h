@@ -50,17 +50,17 @@
 /// These macros will allow selection on exported symbols
 /// taken from http://gcc.gnu.org/wiki/Visibility
 #if defined(__GNUC__) && not defined(__CINT__)
-#  define ELEMENTS_HASCLASSVISIBILITY
+#define ELEMENTS_HASCLASSVISIBILITY
 #endif
 
 #if defined(ELEMENTS_HASCLASSVISIBILITY)
-#  define ELEMENTS_IMPORT __attribute__((visibility("default")))
-#  define ELEMENTS_EXPORT __attribute__((visibility("default")))
-#  define ELEMENTS_LOCAL  __attribute__((visibility("hidden")))
+#define ELEMENTS_IMPORT __attribute__((visibility("default")))
+#define ELEMENTS_EXPORT __attribute__((visibility("default")))
+#define ELEMENTS_LOCAL __attribute__((visibility("hidden")))
 #else
-#  define ELEMENTS_IMPORT
-#  define ELEMENTS_EXPORT
-#  define ELEMENTS_LOCAL
+#define ELEMENTS_IMPORT
+#define ELEMENTS_EXPORT
+#define ELEMENTS_LOCAL
 #endif
 
 /// Define ELEMENTS_API for DLL builds

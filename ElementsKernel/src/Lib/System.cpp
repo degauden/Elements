@@ -19,33 +19,33 @@
 
 #include "ElementsKernel/System.h"
 
-#include <dlfcn.h>                      // for Dl_info, dladdr, dlclose, etc
-#include <execinfo.h>                   // for backtrace
-#include <unistd.h>                     // for environ
 #include <cxxabi.h>
+#include <dlfcn.h>     // for Dl_info, dladdr, dlclose, etc
+#include <execinfo.h>  // for backtrace
 #include <sys/utsname.h>
+#include <unistd.h>  // for environ
 
-#include <cstdlib>                      // for free, getenv, malloc, etc
-#include <typeinfo>                     // for type_info
-#include <sstream>
+#include <cstdlib>  // for free, getenv, malloc, etc
 #include <iomanip>
 #include <iostream>
-#include <string>                       // for string
-#include <vector>                       // for vector
-#include <new>                          // for new
+#include <new>  // for new
+#include <sstream>
+#include <string>    // for string
+#include <typeinfo>  // for type_info
+#include <vector>    // for vector
 
-#include <cerrno>                       // for errno
-#include <cstring>                      // for strnlen, strerror
-#include <climits>                      // for HOST_NAME_MAX
-#include <cstddef>                      // for size_t
+#include <cerrno>   // for errno
+#include <climits>  // for HOST_NAME_MAX
+#include <cstddef>  // for size_t
+#include <cstring>  // for strnlen, strerror
 
 #include "ElementsKernel/FuncPtrCast.h"
 #include "ElementsKernel/ModuleInfo.h"  // for ImageHandle
 #include "ElementsKernel/Unused.h"      // for ELEMENTS_UNUSED
 
+using std::size_t;
 using std::string;
 using std::vector;
-using std::size_t;
 
 namespace Elements {
 namespace System {
@@ -57,24 +57,22 @@ namespace System {
 namespace {
 
 unsigned long doLoad(const string& name, ImageHandle* handle) {
-  void *mh = ::dlopen(name.length() == 0 ? 0 : name.c_str(), RTLD_LAZY | RTLD_GLOBAL);
-  *handle = mh;
+  void* mh = ::dlopen(name.length() == 0 ? 0 : name.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+  *handle  = mh;
   if (0 == *handle) {
     return getLastError();
   }
   return 1;
 }
 
-unsigned long loadWithoutEnvironment(const string& name,
-    ImageHandle* handle) {
+unsigned long loadWithoutEnvironment(const string& name, ImageHandle* handle) {
 
   string dll_name = name;
-  size_t dll_len = dll_name.size();
-  size_t suf_len = SHLIB_SUFFIX.size();
+  size_t dll_len  = dll_name.size();
+  size_t suf_len  = SHLIB_SUFFIX.size();
 
   // Add the suffix at the end of the library name only if necessary
-  if (dll_len >= suf_len &&
-      dll_name.compare(dll_len - suf_len, suf_len, SHLIB_SUFFIX) != 0) {
+  if (dll_len >= suf_len && dll_name.compare(dll_len - suf_len, suf_len, SHLIB_SUFFIX) != 0) {
     dll_name += SHLIB_SUFFIX;
   }
 
@@ -100,7 +98,7 @@ unsigned long loadDynamicLib(const string& name, ImageHandle* handle) {
     } else {
       // build the dll name
       string dllName = name;
-      dllName = "lib" + dllName;
+      dllName        = "lib" + dllName;
       dllName += SHLIB_SUFFIX;
       // try to locate the dll using the standard PATH
       res = loadWithoutEnvironment(dllName, handle);
@@ -122,8 +120,7 @@ unsigned long unloadDynamicLib(ImageHandle handle) {
 }
 
 /// Get a specific function defined in the DLL
-unsigned long getProcedureByName(ImageHandle handle, const string& name,
-    EntryPoint* pFunction) {
+unsigned long getProcedureByName(ImageHandle handle, const string& name, EntryPoint* pFunction) {
 #if defined(__linux__)
   *pFunction = FuncPtrCast<EntryPoint>(::dlsym(handle, name.c_str()));
   if (0 == *pFunction) {
@@ -136,9 +133,9 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
   if (not *pFunction) {
     // Try with an underscore :
     string sname = "_" + name;
-    *pFunction = (EntryPoint)::dlsym(handle, sname.c_str());
+    *pFunction   = (EntryPoint)::dlsym(handle, sname.c_str());
   }
-  if ( 0 == *pFunction ) {
+  if (0 == *pFunction) {
     errno = static_cast<int>(0xAFFEDEAD);
     std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
     return 0;
@@ -148,8 +145,7 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name,
 }
 
 /// Get a specific function defined in the DLL
-unsigned long getProcedureByName(ImageHandle handle, const string& name,
-    Creator* pFunction) {
+unsigned long getProcedureByName(ImageHandle handle, const string& name, Creator* pFunction) {
   return getProcedureByName(handle, name, reinterpret_cast<EntryPoint*>(pFunction));
 }
 
@@ -168,7 +164,7 @@ const string getLastErrorString() {
 /// Retrieve error code as string for a given error
 const string getErrorString(unsigned long error) {
   string errString = "";
-  char *cerrString(0);
+  char*  cerrString(0);
   // Remember: for linux dl* routines must be handled differently!
   if (error == 0xAFFEDEAD) {
     cerrString = reinterpret_cast<char*>(::dlerror());
@@ -176,14 +172,13 @@ const string getErrorString(unsigned long error) {
       cerrString = std::strerror(static_cast<int>(error));
     }
     if (0 == cerrString) {
-      cerrString =
-          const_cast<char *> ("Unknown error. No information found in strerror()!");
+      cerrString = const_cast<char*>("Unknown error. No information found in strerror()!");
     }
     errString = string(cerrString);
-    errno = 0;
+    errno     = 0;
   } else {
     cerrString = std::strerror(static_cast<int>(error));
-    errString = string(cerrString);
+    errString  = string(cerrString);
   }
   return errString;
 }
@@ -198,72 +193,72 @@ const string typeinfoName(const char* class_name) {
     // See http://www.realitydiluted.com/mirrors/reality.sgi.com/dehnert_engr/cxx/abi.pdf
     // for details
     switch (class_name[0]) {
-      case 'v':
-        result = "void";
-        break;
-      case 'w':
-        result = "wchar_t";
-        break;
-      case 'b':
-        result = "bool";
-        break;
-      case 'c':
-        result = "char";
-        break;
-      case 'a':
-        result = "signed char";
-        break;
-      case 'h':
-        result = "unsigned char";
-        break;
-      case 's':
-        result = "short";
-        break;
-      case 't':
-        result = "unsigned short";
-        break;
-      case 'i':
-        result = "int";
-        break;
-      case 'j':
-        result = "unsigned int";
-        break;
-      case 'l':
-        result = "long";
-        break;
-      case 'm':
-        result = "unsigned long";
-        break;
-      case 'x':
-        result = "long long";
-        break;
-      case 'y':
-        result = "unsigned long long";
-        break;
-      case 'n':
-        result = "__int128";
-        break;
-      case 'o':
-        result = "unsigned __int128";
-        break;
-      case 'f':
-        result = "float";
-        break;
-      case 'd':
-        result = "double";
-        break;
-      case 'e':
-        result = "long double";
-        break;
-      case 'g':
-        result = "__float128";
-        break;
-      case 'z':
-        result = "ellipsis";
-        break;
+    case 'v':
+      result = "void";
+      break;
+    case 'w':
+      result = "wchar_t";
+      break;
+    case 'b':
+      result = "bool";
+      break;
+    case 'c':
+      result = "char";
+      break;
+    case 'a':
+      result = "signed char";
+      break;
+    case 'h':
+      result = "unsigned char";
+      break;
+    case 's':
+      result = "short";
+      break;
+    case 't':
+      result = "unsigned short";
+      break;
+    case 'i':
+      result = "int";
+      break;
+    case 'j':
+      result = "unsigned int";
+      break;
+    case 'l':
+      result = "long";
+      break;
+    case 'm':
+      result = "unsigned long";
+      break;
+    case 'x':
+      result = "long long";
+      break;
+    case 'y':
+      result = "unsigned long long";
+      break;
+    case 'n':
+      result = "__int128";
+      break;
+    case 'o':
+      result = "unsigned __int128";
+      break;
+    case 'f':
+      result = "float";
+      break;
+    case 'd':
+      result = "double";
+      break;
+    case 'e':
+      result = "long double";
+      break;
+    case 'g':
+      result = "__float128";
+      break;
+    case 'z':
+      result = "ellipsis";
+      break;
     }
   } else {
-    int status;
+    int   status;
     char* realname;
     realname = abi::__cxa_demangle(class_name, 0, 0, &status);
     if (realname == 0) {
@@ -283,9 +278,9 @@ const string typeinfoName(const char* class_name) {
 
 /// Host name
 const string& hostName() {
-  static string host {};
+  static string host{};
   if (host.empty()) {
-    std::unique_ptr<char> buffer(new char[HOST_NAME_MAX+1]);
+    std::unique_ptr<char> buffer(new char[HOST_NAME_MAX + 1]);
     ::gethostname(buffer.get(), HOST_NAME_MAX);
     host = buffer.get();
   }
@@ -294,7 +289,7 @@ const string& hostName() {
 
 /// OS name
 const string& osName() {
-  static string osname = "";
+  static string  osname = "";
   struct utsname ut;
   if (::uname(&ut) == 0) {
     osname = ut.sysname;
@@ -306,7 +301,7 @@ const string& osName() {
 
 /// OS version
 const string& osVersion() {
-  static string osver = "UNKNOWN";
+  static string  osver = "UNKNOWN";
   struct utsname ut;
 
   if (uname(&ut) == 0) {
@@ -318,7 +313,7 @@ const string& osVersion() {
 
 /// Machine type
 const string& machineType() {
-  static string mach = "UNKNOWN";
+  static string  mach = "UNKNOWN";
   struct utsname ut;
 
   if (uname(&ut) == 0) {
@@ -330,7 +325,7 @@ const string& machineType() {
 
 string getEnv(const string& var) {
 
-  string env_str {};
+  string env_str{};
 
   getEnv(var, env_str);
 
@@ -340,7 +335,7 @@ string getEnv(const string& var) {
 /// get a particular env var, storing the value in the passed string (if set)
 bool getEnv(const string& var, string& value) {
   bool found = false;
-  value = "";
+  value      = "";
 
   char* env = ::getenv(var.c_str());
   if (env != NULL) {
@@ -350,7 +345,6 @@ bool getEnv(const string& var, string& value) {
 
   return found;
 }
-
 
 bool isEnvSet(const string& var) {
   string result;
@@ -364,12 +358,10 @@ bool isEnvSet(const string& var) {
 #endif
 vector<string> getEnv() {
 #if defined(__APPLE__)
-  static char **environ = *_NSGetEnviron();
+  static char** environ = *_NSGetEnviron();
 #endif
   vector<string> vars;
-  for (int i = 0; environ[i] != 0; ++i) {
-    vars.emplace_back(environ[i]);
-  }
+  for (int i = 0; environ[i] != 0; ++i) { vars.emplace_back(environ[i]); }
   return vars;
 }
 
@@ -384,7 +376,6 @@ int setEnv(const string& name, const string& value, bool overwrite) {
   return ::setenv(name.c_str(), value.c_str(), over);
 }
 
-
 int unSetEnv(const string& name) {
   return ::unsetenv(name.c_str());
 }
@@ -393,8 +384,7 @@ int unSetEnv(const string& name) {
 // backtrace utilities
 // -----------------------------------------------------------------------------
 
-int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses,
-              ELEMENTS_UNUSED const int depth) {
+int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses, ELEMENTS_UNUSED const int depth) {
 
   int count = ::backtrace(addresses.get(), depth);
   if (count > 0) {
@@ -402,24 +392,23 @@ int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses,
   } else {
     return 0;
   }
-
 }
 
 const vector<string> backTrace(const int depth, const int offset) {
 
   // Always hide the first two levels of the stack trace (that's us)
-  const int total_offset = offset + STACK_OFFSET;
-  const int total_depth = depth + total_offset;
-  vector<string> trace {};
+  const int      total_offset = offset + STACK_OFFSET;
+  const int      total_depth  = depth + total_offset;
+  vector<string> trace{};
 
-  std::shared_ptr<void*> addresses {new (std::nothrow) void*[total_depth], std::default_delete<void*[]>()};
+  std::shared_ptr<void*> addresses{new (std::nothrow) void*[total_depth], std::default_delete<void*[]>()};
 
   if (addresses != nullptr) {
 
     int count = backTrace(addresses, total_depth);
 
-    for (int i=total_offset; i < count; ++i) {
-      void *addr = 0;
+    for (int i = total_offset; i < count; ++i) {
+      void*  addr = 0;
       string fnc, lib;
       if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
         std::ostringstream ost;
@@ -433,22 +422,19 @@ const vector<string> backTrace(const int depth, const int offset) {
   return trace;
 }
 
-bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
-    string& fnc ELEMENTS_UNUSED, string& lib ELEMENTS_UNUSED) {
-
+bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED, string& fnc ELEMENTS_UNUSED,
+                   string& lib ELEMENTS_UNUSED) {
 
   Dl_info info;
 
-  if (::dladdr(addresses, &info) && info.dli_fname
-      && info.dli_fname[0] != '\0') {
-    const char* symbol =
-        info.dli_sname && info.dli_sname[0] != '\0' ? info.dli_sname : 0;
+  if (::dladdr(addresses, &info) && info.dli_fname && info.dli_fname[0] != '\0') {
+    const char* symbol = info.dli_sname && info.dli_sname[0] != '\0' ? info.dli_sname : 0;
 
-    lib = info.dli_fname;
+    lib  = info.dli_fname;
     addr = info.dli_saddr;
 
     if (symbol != 0) {
-      int stat;
+      int                                    stat;
       std::unique_ptr<char, decltype(free)*> dmg(abi::__cxa_demangle(symbol, 0, 0, &stat), free);
       fnc = string((stat == 0) ? dmg.get() : symbol);
     } else {
@@ -458,7 +444,6 @@ bool getStackLevel(void* addresses ELEMENTS_UNUSED, void*& addr ELEMENTS_UNUSED,
   } else {
     return false;
   }
-
 }
 
 }  // namespace System

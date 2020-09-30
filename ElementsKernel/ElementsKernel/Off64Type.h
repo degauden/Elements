@@ -29,9 +29,8 @@
 
 #include <sys/types.h>
 #if defined(__APPLE__)
-#  include <sys/dtrace.h>
+#include <sys/dtrace.h>
 #endif
-
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_OFF64TYPE_H_
 

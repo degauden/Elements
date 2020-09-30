@@ -19,20 +19,20 @@
  *
  */
 
-#include "ElementsKernel/Auxiliary.h"       // header to test
+#include "ElementsKernel/Auxiliary.h"  // header to test
 
-#include <string>                           // for std::string
-#include <vector>                           // for std::vector
-#include <algorithm>                        // for for_each, transform, copy_if
+#include <algorithm>  // for for_each, transform, copy_if
+#include <string>     // for std::string
+#include <vector>     // for std::vector
 
-#include <boost/test/unit_test.hpp>         // for boost unit test macros
-#include <boost/filesystem/operations.hpp>  // for exists
 #include <boost/filesystem/fstream.hpp>     // for ofstream
+#include <boost/filesystem/operations.hpp>  // for exists
+#include <boost/test/unit_test.hpp>         // for boost unit test macros
 
-#include "ElementsKernel/Temporary.h"       // for TempDir, TempEnv
-#include <ElementsKernel/Exception.h>       // for Exception
-#include "ElementsKernel/Path.h"            // for joinPath, Path::Item
-#include "ElementsKernel/System.h"          // for DEFAULT_INSTALL_PREFIX
+#include "ElementsKernel/Path.h"       // for joinPath, Path::Item
+#include "ElementsKernel/System.h"     // for DEFAULT_INSTALL_PREFIX
+#include "ElementsKernel/Temporary.h"  // for TempDir, TempEnv
+#include <ElementsKernel/Exception.h>  // for Exception
 
 using std::string;
 using std::vector;
@@ -52,27 +52,24 @@ namespace Elements {
 
 struct Auxiliary_Fixture {
 
-  TempDir m_top_dir;
+  TempDir            m_top_dir;
   vector<Path::Item> m_item_list;
   vector<Path::Item> m_target_item_list;
   vector<Path::Item> m_real_item_list;
   vector<Path::Item> m_target_real_item_list;
 
-  Auxiliary_Fixture(): m_top_dir{ "Auxiliary_test-%%%%%%%" } {
+  Auxiliary_Fixture() : m_top_dir{"Auxiliary_test-%%%%%%%"} {
 
-    using std::for_each;
     using std::copy_if;
     using std::distance;
+    using std::for_each;
 
     m_item_list.emplace_back(m_top_dir.path() / "test1");
     m_item_list.emplace_back(m_top_dir.path() / "test1" / "foo");
     m_item_list.emplace_back(m_top_dir.path() / "test2");
     m_item_list.emplace_back(m_top_dir.path() / "test3");
 
-    for_each(m_item_list.cbegin(), m_item_list.cend(),
-        [](Path::Item p) {
-        boost::filesystem::create_directory(p);
-    });
+    for_each(m_item_list.cbegin(), m_item_list.cend(), [](Path::Item p) { boost::filesystem::create_directory(p); });
 
     m_item_list.emplace_back(m_top_dir.path() / "test4");
 
@@ -82,27 +79,17 @@ struct Auxiliary_Fixture {
     m_target_item_list.emplace_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "aux");
 
     m_real_item_list.resize(m_item_list.size());
-    auto it = copy_if(m_item_list.begin(), m_item_list.end(),
-                      m_real_item_list.begin(),
-                      [](const Path::Item& p){
-                            return exists(p);
-                      });
+    auto it =
+        copy_if(m_item_list.begin(), m_item_list.end(), m_real_item_list.begin(), [](const Path::Item& p) { return exists(p); });
     m_real_item_list.erase(it, m_real_item_list.end());
 
     m_target_real_item_list.resize(m_target_item_list.size());
-    auto it2 = copy_if(m_target_item_list.begin(), m_target_item_list.end(),
-                      m_target_real_item_list.begin(),
-                      [](const Path::Item& p){
-                            return exists(p);
-                      });
+    auto it2 = copy_if(m_target_item_list.begin(), m_target_item_list.end(), m_target_real_item_list.begin(),
+                       [](const Path::Item& p) { return exists(p); });
     m_target_real_item_list.erase(it2, m_target_real_item_list.end());
-
   }
 
-  ~Auxiliary_Fixture() {
-
-  }
-
+  ~Auxiliary_Fixture() {}
 };
 
 BOOST_AUTO_TEST_SUITE(Auxiliary_test)
@@ -112,40 +99,31 @@ BOOST_AUTO_TEST_SUITE(Auxiliary_test)
 BOOST_AUTO_TEST_CASE(AuxiliaryConstructor_test) {
 
   Path::Item make_template = getAuxiliaryPath("ElementsKernel/templates/Makefile.in");
-
 }
 
 BOOST_AUTO_TEST_CASE(AuxiliaryConstructor2_test) {
 
-  const string make_template_stem {"ElementsKernel/templates/Makefile.in"};
+  const string make_template_stem{"ElementsKernel/templates/Makefile.in"};
 
   Path::Item make_template = getAuxiliaryPath(make_template_stem);
-
 }
-
 
 BOOST_AUTO_TEST_CASE(AuxiliaryConstructor3_test) {
 
-  const Path::Item make_template_stem {"ElementsKernel/templates/Makefile.in"};
+  const Path::Item make_template_stem{"ElementsKernel/templates/Makefile.in"};
 
   Path::Item make_template = getAuxiliaryPath(make_template_stem);
-
 }
-
 
 BOOST_AUTO_TEST_CASE(AuxiliaryVariableName_test) {
 
   BOOST_CHECK_EQUAL(getAuxiliaryVariableName(), "ELEMENTS_AUX_PATH");
-
 }
-
 
 BOOST_AUTO_TEST_CASE(AuxiliaryException_test) {
 
   BOOST_CHECK_THROW(getAuxiliaryPath("NonExistingFile.txt"), Exception);
-
 }
-
 
 BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Auxiliary_Fixture) {
 
@@ -155,9 +133,7 @@ BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Auxiliary_Fixture) {
 
   auto locations = getAuxiliaryLocations();
 
-  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(),
-                                m_target_item_list.begin(), m_target_item_list.end());
-
+  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(), m_target_item_list.begin(), m_target_item_list.end());
 }
 
 BOOST_FIXTURE_TEST_CASE(getFromLocationsExist_test, Auxiliary_Fixture) {
@@ -168,11 +144,8 @@ BOOST_FIXTURE_TEST_CASE(getFromLocationsExist_test, Auxiliary_Fixture) {
 
   auto locations = getAuxiliaryLocations(true);
 
-  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(),
-                                m_target_real_item_list.begin(), m_target_real_item_list.end());
-
+  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(), m_target_real_item_list.begin(), m_target_real_item_list.end());
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()
 

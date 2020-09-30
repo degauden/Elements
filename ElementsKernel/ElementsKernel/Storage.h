@@ -26,9 +26,9 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_
 
-#include <string>   // for string
-#include <map>      // for map
 #include <cstdint>  // for int64_t
+#include <map>      // for map
+#include <string>   // for string
 
 #include "ElementsKernel/Export.h"
 
@@ -49,34 +49,25 @@ enum class StorageType {
   MetricPetaByte
 };
 
-ELEMENTS_API extern std::map<StorageType, std::string> StorageShortName;
+ELEMENTS_API extern std::map<StorageType, std::string>  StorageShortName;
 ELEMENTS_API extern std::map<StorageType, std::int64_t> StorageFactor;
 
-template<typename T>
+template <typename T>
 ELEMENTS_API T roundToDigits(const T& value, const std::size_t& max_digits);
 // explicit instantiation:
-extern template
-ELEMENTS_API double roundToDigits<double>(const double& value, const std::size_t& max_digits);
-extern template
-ELEMENTS_API float roundToDigits<float>(const float& value, const std::size_t& max_digits);
+extern template ELEMENTS_API double roundToDigits<double>(const double& value, const std::size_t& max_digits);
+extern template ELEMENTS_API float  roundToDigits<float>(const float& value, const std::size_t& max_digits);
 
-template<std::size_t max_digits, typename T>
+template <std::size_t max_digits, typename T>
 ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageType target_unit);
 
-template<typename T>
-ELEMENTS_API T
-storageConvert(const T& size, StorageType source_unit, StorageType target_unit);
+template <typename T>
+ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageType target_unit);
 // explicit instantiation:
-extern template
-ELEMENTS_API double
-storageConvert<double>(const double& size, StorageType source_unit, StorageType target_unit);
-extern template
-ELEMENTS_API float
-storageConvert<float>(const float& size, StorageType source_unit, StorageType target_unit);
-extern template
-ELEMENTS_API std::int64_t
-storageConvert<std::int64_t>(const std::int64_t& size, StorageType source_unit, StorageType target_unit);
-
+extern template ELEMENTS_API double storageConvert<double>(const double& size, StorageType source_unit, StorageType target_unit);
+extern template ELEMENTS_API float  storageConvert<float>(const float& size, StorageType source_unit, StorageType target_unit);
+extern template ELEMENTS_API std::int64_t storageConvert<std::int64_t>(const std::int64_t& size, StorageType source_unit,
+                                                                       StorageType target_unit);
 
 }  // namespace Units
 }  // namespace Elements

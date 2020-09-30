@@ -32,7 +32,7 @@
 /** @def ELEMENTS_DEPRECATED
  * This macro create a warning message for a deprecated function or class
  */
-#  define ELEMENTS_DEPRECATED __attribute__ ((__deprecated__))
+#define ELEMENTS_DEPRECATED __attribute__((__deprecated__))
 #endif
 
 #ifndef ELEMENTS_DEPRECATED_MSG
@@ -41,7 +41,7 @@
  * This version takes a \a msg as argument. This message will be displayed together
  * with the deprecation warning.
  */
-#  define ELEMENTS_DEPRECATED_MSG(msg)  __attribute__ ((__deprecated__(msg)))
+#define ELEMENTS_DEPRECATED_MSG(msg) __attribute__((__deprecated__(msg)))
 #endif
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_DEPRECATED_H_

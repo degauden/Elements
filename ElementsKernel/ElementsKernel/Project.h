@@ -24,62 +24,35 @@
  * @{
  */
 
-
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROJECT_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PROJECT_H_
 
-#include <string>                 // for string
-#include <vector>                 // for vector
-#include <cstdint>                // for uing_least64_t
-#include <iostream>               // for ostream
-#include <algorithm>              // for for_each
+#include <algorithm>  // for for_each
+#include <cstdint>    // for uing_least64_t
+#include <iostream>   // for ostream
+#include <string>     // for string
+#include <vector>     // for vector
 
-#include "ThisProject.h"          // local project constants generated
-                                  // by the build system
+#include "ThisProject.h"  // local project constants generated
+                          // by the build system
 
 namespace Elements {
 
 struct Project {
-  static inline std::string name() {
-    return THIS_PROJECT_NAME_STRING;
-  }
+  static inline std::string name() { return THIS_PROJECT_NAME_STRING; }
 
-  static inline std::string versionString() {
-    return THIS_PROJECT_VERSION_STRING;
-  }
-  static inline std::uint_least64_t version() {
-    return THIS_PROJECT_VERSION;
-  }
-  static inline std::uint_least64_t majorVersion() {
-    return THIS_PROJECT_MAJOR_VERSION;
-  }
-  static inline std::uint_least64_t minorVersion() {
-    return THIS_PROJECT_MINOR_VERSION;
-  }
-  static inline std::uint_least64_t patchVersion() {
-    return THIS_PROJECT_PATCH_VERSION;
-  }
-  static inline std::string originalVersion() {
-    return THIS_PROJECT_ORIGINAL_VERSION;
-  }
-  static inline std::string vcsVersion() {
-    return THIS_PROJECT_VCS_VERSION;
-  }
+  static inline std::string         versionString() { return THIS_PROJECT_VERSION_STRING; }
+  static inline std::uint_least64_t version() { return THIS_PROJECT_VERSION; }
+  static inline std::uint_least64_t majorVersion() { return THIS_PROJECT_MAJOR_VERSION; }
+  static inline std::uint_least64_t minorVersion() { return THIS_PROJECT_MINOR_VERSION; }
+  static inline std::uint_least64_t patchVersion() { return THIS_PROJECT_PATCH_VERSION; }
+  static inline std::string         originalVersion() { return THIS_PROJECT_ORIGINAL_VERSION; }
+  static inline std::string         vcsVersion() { return THIS_PROJECT_VCS_VERSION; }
 
-  static inline std::string installLocation() {
-    return THIS_PROJECT_INSTALL_LOCATION_STRING;
-  }
-  static inline bool useSoVersion() {
-    return THIS_PROJECT_USE_SOVERSION;
-  }
-  static inline std::string installPrefix() {
-    return CMAKE_INSTALL_PREFIX_STRING;
-  }
-  static inline std::vector<std::string> searchDirectories() {
-    return THIS_PROJECT_SEARCH_DIRS;
-  }
-
-
+  static inline std::string              installLocation() { return THIS_PROJECT_INSTALL_LOCATION_STRING; }
+  static inline bool                     useSoVersion() { return THIS_PROJECT_USE_SOVERSION; }
+  static inline std::string              installPrefix() { return CMAKE_INSTALL_PREFIX_STRING; }
+  static inline std::vector<std::string> searchDirectories() { return THIS_PROJECT_SEARCH_DIRS; }
 };
 
 inline std::ostream& operator<<(std::ostream& stream, const Project& p) {
@@ -96,9 +69,7 @@ inline std::ostream& operator<<(std::ostream& stream, const Project& p) {
   stream << "Install Prefix: " << p.installPrefix() << std::endl;
   stream << "Search Directories: ";
 
-  for (const auto& d : p.searchDirectories()) {
-    stream << d << " ";
-  }
+  for (const auto& d : p.searchDirectories()) { stream << d << " "; }
 
   return stream;
 }

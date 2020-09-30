@@ -22,56 +22,45 @@
 
 #include "ElementsKernel/Path.h"
 
-#include <string>                      // for string
-#include <vector>                      // for vector
-#include <algorithm>                   // for transform, remove_if
-#include <map>                         // for map
+#include <algorithm>  // for transform, remove_if
+#include <map>        // for map
+#include <string>     // for string
+#include <vector>     // for vector
 
-#include <boost/filesystem.hpp>        // for boost::filesystem
 #include <boost/algorithm/string.hpp>  // for boost::split
+#include <boost/filesystem.hpp>        // for boost::filesystem
 
-#include "ElementsKernel/System.h"     // for getEnv, SHLIB_VAR_NAME
+#include "ElementsKernel/System.h"  // for getEnv, SHLIB_VAR_NAME
 
+using std::map;
 using std::string;
 using std::vector;
-using std::map;
 
 namespace Elements {
 namespace Path {
 
-const string PATH_SEP {":"};
+const string PATH_SEP{":"};
 
-const map<Type, const string> VARIABLE  {
-  {Type::executable,                  "PATH"},
-  {Type::library,     System::SHLIB_VAR_NAME},
-  {Type::python,                "PYTHONPATH"},
-  {Type::configuration, "ELEMENTS_CONF_PATH"},
-  {Type::auxiliary,      "ELEMENTS_AUX_PATH"}
-};
+const map<Type, const string> VARIABLE{{Type::executable, "PATH"},
+                                       {Type::library, System::SHLIB_VAR_NAME},
+                                       {Type::python, "PYTHONPATH"},
+                                       {Type::configuration, "ELEMENTS_CONF_PATH"},
+                                       {Type::auxiliary, "ELEMENTS_AUX_PATH"}};
 
-const map<Type, const vector<string>> SUFFIXES {
-  {Type::executable, {"scripts", "bin"}},
-  {Type::library, {"lib"}},
-  {Type::python, {"python"}},
-  {Type::configuration, {"conf", "share/conf"}},
-  {Type::auxiliary, {"auxdir", "aux", "share/auxdir", "share/aux"}}
-};
+const map<Type, const vector<string>> SUFFIXES{{Type::executable, {"scripts", "bin"}},
+                                               {Type::library, {"lib"}},
+                                               {Type::python, {"python"}},
+                                               {Type::configuration, {"conf", "share/conf"}},
+                                               {Type::auxiliary, {"auxdir", "aux", "share/auxdir", "share/aux"}}};
 
-const map<Type, const vector<string>> DEFAULT_LOCATIONS {
-  {Type::executable, {}},
-  {Type::library, {"/usr/lib64", "/usr/lib"}},
-  {Type::python, {}},
-  {Type::configuration, {"/usr/share/conf"}},
-  {Type::auxiliary, {"/usr/share/auxdir", "/usr/share/aux"}}
-};
+const map<Type, const vector<string>> DEFAULT_LOCATIONS{{Type::executable, {}},
+                                                        {Type::library, {"/usr/lib64", "/usr/lib"}},
+                                                        {Type::python, {}},
+                                                        {Type::configuration, {"/usr/share/conf"}},
+                                                        {Type::auxiliary, {"/usr/share/auxdir", "/usr/share/aux"}}};
 
-const std::map<Type, const bool> HAS_SUBLEVELS {
-  {Type::executable, false},
-  {Type::library, false},
-  {Type::python, true},
-  {Type::configuration, true},
-  {Type::auxiliary, true}
-};
+const std::map<Type, const bool> HAS_SUBLEVELS{
+    {Type::executable, false}, {Type::library, false}, {Type::python, true}, {Type::configuration, true}, {Type::auxiliary, true}};
 
 vector<Item> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
@@ -82,11 +71,8 @@ vector<Item> getLocationsFromEnv(const string& path_variable, bool exist_only) {
   vector<Item> found_list = split(env_content);
 
   if (exist_only) {
-    auto new_end = std::remove_if(found_list.begin(),
-                                  found_list.end(),
-                                  [](const Item& p){
-                                     return (not boost::filesystem::exists(p));
-                                  });
+    auto new_end =
+        std::remove_if(found_list.begin(), found_list.end(), [](const Item& p) { return (not boost::filesystem::exists(p)); });
     found_list.erase(new_end, found_list.end());
   }
 
@@ -97,18 +83,13 @@ vector<Item> getLocations(const Type& path_type, bool exist_only) {
   return getLocationsFromEnv(VARIABLE.at(path_type), exist_only);
 }
 
-
 vector<Item> splitPath(const string& path_string) {
 
   vector<string> str_list;
   boost::split(str_list, path_string, boost::is_any_of(PATH_SEP));
 
   vector<Item> found_list(str_list.size());
-  std::transform(str_list.cbegin(), str_list.cend(),
-      found_list.begin(),
-      [](const string& s){
-        return Item{s};
-  });
+  std::transform(str_list.cbegin(), str_list.cend(), found_list.begin(), [](const string& s) { return Item{s}; });
 
   return found_list;
 }

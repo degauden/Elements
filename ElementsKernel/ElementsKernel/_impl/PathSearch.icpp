@@ -32,13 +32,13 @@ namespace Elements {
 
 //-----------------------------------------------------------------------------
 // Function search
-template<typename T, typename ITER>
+template <typename T, typename ITER>
 std::vector<T> pathSearch(const std::string& searched_name, T directory) {
 
   // create the resulting vector
-  std::vector<T> searchResults { };
+  std::vector<T> searchResults{};
   // make sure directory is ps::path, changing from string to path if T is string.
-  Path::Item l_directory { directory };
+  Path::Item l_directory{directory};
   // the default constructor of ITER return a pointer to one-past last element
   ITER end_iter;
   if (boost::filesystem::is_directory(l_directory)) {
@@ -47,7 +47,7 @@ std::vector<T> pathSearch(const std::string& searched_name, T directory) {
       if (dir_iter->path().filename() == searched_name) {
         // File found: make sure the result is T: string to string or string to
         // boost::filesystem::path
-        T l_result { dir_iter->path().string() };
+        T l_result{dir_iter->path().string()};
         searchResults.emplace_back(l_result);
       }
     }
@@ -55,33 +55,26 @@ std::vector<T> pathSearch(const std::string& searched_name, T directory) {
   return searchResults;
 }
 
-template<typename T>
-std::vector<T> searchOption(std::string searched_name, T directory,
-    SearchType search_type) {
+template <typename T>
+std::vector<T> searchOption(std::string searched_name, T directory, SearchType search_type) {
 
   // create a local tmp vector result to avoid multiple return statements
-  std::vector<T> searchResults { };
+  std::vector<T> searchResults{};
   switch (search_type) {
   case SearchType::Local:
-    searchResults = pathSearch<T, boost::filesystem::directory_iterator>(searched_name,
-        directory);
+    searchResults = pathSearch<T, boost::filesystem::directory_iterator>(searched_name, directory);
     break;
   case SearchType::Recursive:
-    searchResults = pathSearch<T, boost::filesystem::recursive_directory_iterator>(
-        searched_name, directory);
+    searchResults = pathSearch<T, boost::filesystem::recursive_directory_iterator>(searched_name, directory);
     break;
   }
   return searchResults;
 }
 
-
 template <typename T>
-std::vector<T> pathSearch(const std::string& searched_name,
-                          T directory,
-                          SearchType search_type) {
+std::vector<T> pathSearch(const std::string& searched_name, T directory, SearchType search_type) {
   return searchOption<T>(searched_name, directory, search_type);
 }
-
 
 }  // namespace Elements
 

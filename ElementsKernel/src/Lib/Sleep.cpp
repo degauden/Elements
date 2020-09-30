@@ -18,14 +18,13 @@
 
 #include "ElementsKernel/Sleep.h"
 
-#include <thread>                     // for this_thread
-#include <chrono>                     // for chrono
-#include <cstdint>                    // for int64_t
+#include <chrono>   // for chrono
+#include <cstdint>  // for int64_t
+#include <thread>   // for this_thread
 
 using std::this_thread::sleep_for;
 
 namespace Elements {
-
 
 /** @brief Small variation on the sleep function for seconds sleep.
  * @author Hubert Degaudenzi
