@@ -47,17 +47,14 @@ using System::unSetEnv;
 Environment::Variable::Variable(Environment& arg_env, const string& arg_index) : m_env{arg_env}, m_index{arg_index} {}
 
 Environment::Variable::Variable(const Environment::Variable& other) : m_env{other.m_env} {
-
   checkCompatibility(other);
 }
 
 Environment::Variable::Variable(Environment::Variable&& other) : m_env{std::move(other.m_env)} {
-
   checkCompatibility(other);
 }
 
 Environment::Variable& Environment::Variable::operator=(const Environment::Variable& other) {
-
   checkCompatibility(other);
 
   m_env = other.m_env;
@@ -66,7 +63,6 @@ Environment::Variable& Environment::Variable::operator=(const Environment::Varia
 }
 
 Environment::Variable& Environment::Variable::operator=(Environment::Variable&& other) {
-
   checkCompatibility(other);
 
   m_env = move(other.m_env);
@@ -163,10 +159,13 @@ void Environment::Variable::checkCompatibility(const Environment::Variable& othe
 Environment::Environment(bool keep_same) : m_old_values{}, m_keep_same{keep_same}, m_added_variables{} {}
 
 Environment& Environment::restore() {
+  for (const auto& v : m_added_variables) {
+    unSetEnv(v);
+  }
 
-  for (const auto& v : m_added_variables) { unSetEnv(v); }
-
-  for (const auto& v : m_old_values) { setEnv(v.first, v.second); }
+  for (const auto& v : m_old_values) {
+    setEnv(v.first, v.second);
+  }
 
   m_old_values = {};
 
@@ -178,12 +177,10 @@ Environment::~Environment() {
 }
 
 Environment::Variable Environment::operator[](const string& index) {
-
   return Environment::Variable(*this, index);
 }
 
 const Environment::Variable Environment::operator[](const string& index) const {
-
   return Environment::Variable(const_cast<Environment&>(*this), index);
 }
 
@@ -279,7 +276,9 @@ string Environment::generateScript(Environment::ShellType type) const {
     }
   }
 
-  for (const auto& v : m_added_variables) { script_text << format(set_cmd[type]) % v % get(v) << endl; }
+  for (const auto& v : m_added_variables) {
+    script_text << format(set_cmd[type]) % v % get(v) << endl;
+  }
 
   return script_text.str();
 }
