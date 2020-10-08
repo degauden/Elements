@@ -21,7 +21,7 @@
 
 #include "ElementsExamples/DataSourceUser.h"
 
-#include  <cstdlib>                           // for size_t
+#include <cstdlib>  // for size_t
 
 namespace Elements {
 namespace Examples {

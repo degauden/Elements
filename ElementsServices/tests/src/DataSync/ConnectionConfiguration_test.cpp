@@ -29,8 +29,8 @@ namespace DataSync = ElementsServices::DataSync;
 using std::string;
 using std::vector;
 
-using DataSync::DataHost;
 using DataSync::ConnectionConfiguration;
+using DataSync::DataHost;
 
 //-----------------------------------------------------------------------------
 
@@ -47,9 +47,9 @@ void checkHostParsing(DataHost host, vector<string> names) {
 }
 
 BOOST_AUTO_TEST_CASE(host_parsing_test) {
-  const vector<string> irodsNames { "irods", "iRODS", "IRODS" };
-  const vector<string> webdavNames { "webdav", "WebDAV", "WEBDAV" };
-  const vector<string> unknownNames { "blob", "BLOB" };
+  const vector<string> irodsNames{"irods", "iRODS", "IRODS"};
+  const vector<string> webdavNames{"webdav", "WebDAV", "WEBDAV"};
+  const vector<string> unknownNames{"blob", "BLOB"};
   checkHostParsing(DataHost::IRODS, irodsNames);
   checkHostParsing(DataHost::WEBDAV, webdavNames);
   BOOST_CHECK_THROW(checkHostParsing(DataHost::IRODS, unknownNames), std::exception);

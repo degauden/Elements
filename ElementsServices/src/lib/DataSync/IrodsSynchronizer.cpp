@@ -24,23 +24,18 @@ namespace ElementsServices {
 namespace DataSync {
 
 bool irodsIsInstalled() {
-  return checkCall ("iget --help");
+  return checkCall("iget --help");
 }
 
-IrodsSynchronizer::IrodsSynchronizer(
-    const ConnectionConfiguration& connection,
-    const DependencyConfiguration& dependency) :
-        DataSynchronizer(connection, dependency) {
+IrodsSynchronizer::IrodsSynchronizer(const ConnectionConfiguration& connection, const DependencyConfiguration& dependency)
+    : DataSynchronizer(connection, dependency) {
   if (not irodsIsInstalled()) {
-    throw std::runtime_error(
-        "You are trying to use iRODS, "
-        "but it does not seem to be installed.");
+    throw std::runtime_error("You are trying to use iRODS, "
+                             "but it does not seem to be installed.");
   }
 }
 
-std::string IrodsSynchronizer::createDownloadCommand(
-    path distantFile,
-    path localFile) const {
+std::string IrodsSynchronizer::createDownloadCommand(path distantFile, path localFile) const {
   std::string cmd = "irsync i:";
   cmd += distantFile.string() + " " + localFile.string();
   return cmd;

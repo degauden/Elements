@@ -38,13 +38,11 @@ BOOST_AUTO_TEST_SUITE(DataSyncUtils_test)
 //-----------------------------------------------------------------------------
 
 void checkLower(const vector<string>& casedList, const string& uncased) {
-  for (const auto& cased : casedList) {
-    BOOST_CHECK_EQUAL(DataSync::lower(cased), uncased);
-  }
+  for (const auto& cased : casedList) { BOOST_CHECK_EQUAL(DataSync::lower(cased), uncased); }
 }
 
 BOOST_AUTO_TEST_CASE(lower_test) {
-  const vector<string> casedList { "webdav", "WebDAV", "WEBDAV" };
+  const vector<string> casedList{"webdav", "WebDAV", "WEBDAV"};
   checkLower(casedList, "webdav");
 }
 
@@ -54,10 +52,10 @@ BOOST_AUTO_TEST_CASE(checkCall_test) {
 }
 
 BOOST_AUTO_TEST_CASE(runCommand_out_test) {
-  const string msg("toto");
-  const auto outerr = DataSync::runCommandAndCaptureOutErr("echo " + msg);
-  auto output = outerr.first;
-  const string::size_type size = output.size();
+  const string            msg("toto");
+  const auto              outerr = DataSync::runCommandAndCaptureOutErr("echo " + msg);
+  auto                    output = outerr.first;
+  const string::size_type size   = output.size();
   if (output[size - 1] == '\n') {
     output.resize(size - 1);
   }
@@ -79,13 +77,13 @@ BOOST_AUTO_TEST_CASE(containsInThisOrder_test) {
 
   using DataSync::containsInThisOrder;
 
-  const string input("0 one Two THREE");
-  const vector<string> perfect = { "0", "one", "Two", "THREE" };
-  const vector<string> partial = { "0", "one", "THR" };
+  const string         input("0 one Two THREE");
+  const vector<string> perfect = {"0", "one", "Two", "THREE"};
+  const vector<string> partial = {"0", "one", "THR"};
   const vector<string> empty;
-  const vector<string> unordered = { "0", "Two", "one", "THREE" };
-  const vector<string> random = { "R", "and", "OM" };
-  const vector<string> wordcut = { "0 one T", "wo THREE" };
+  const vector<string> unordered = {"0", "Two", "one", "THREE"};
+  const vector<string> random    = {"R", "and", "OM"};
+  const vector<string> wordcut   = {"0 one T", "wo THREE"};
   BOOST_CHECK(containsInThisOrder(input, perfect));
   BOOST_CHECK(containsInThisOrder(input, partial));
   BOOST_CHECK(containsInThisOrder(input, empty));

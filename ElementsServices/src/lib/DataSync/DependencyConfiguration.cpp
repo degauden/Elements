@@ -17,8 +17,8 @@
  */
 
 #include <fstream>
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
 
 #include "ElementsServices/DataSync/DependencyConfiguration.h"
@@ -29,14 +29,8 @@ namespace DataSync {
 using std::string;
 using std::vector;
 
-DependencyConfiguration::DependencyConfiguration(
-    path distantRoot,
-    path localRoot,
-    path configFile) :
-        m_aliasSeparator('\t'),
-        m_distantRoot(distantRoot),
-        m_localRoot(localRoot),
-        m_fileMap() {
+DependencyConfiguration::DependencyConfiguration(path distantRoot, path localRoot, path configFile)
+    : m_aliasSeparator('\t'), m_distantRoot(distantRoot), m_localRoot(localRoot), m_fileMap() {
   parseConfigurationFile(configFile);
 }
 
@@ -69,9 +63,9 @@ vector<path> DependencyConfiguration::localPaths() const {
 }
 
 void DependencyConfiguration::parseConfigurationFile(path filename) {
-  path abs_path = confFilePath(filename);
+  path          abs_path = confFilePath(filename);
   std::ifstream inputStream(abs_path.c_str());
-  string line;
+  string        line;
   while (std::getline(inputStream, line)) {
     parseConfigurationLine(line);
   }
@@ -95,18 +89,18 @@ bool DependencyConfiguration::lineHasAlias(string line) const {
 }
 
 void DependencyConfiguration::parseLineWithAlias(string line) {
-  string::size_type offset = line.find(m_aliasSeparator);
-  const string distantFilename = line.substr(0, offset);
-  const string localFilename = line.substr(offset + 1);
-  const path distantPath = m_distantRoot / distantFilename;
-  const path localPath = m_localRoot / localFilename;
-  m_fileMap[localPath] = distantPath;
+  string::size_type offset          = line.find(m_aliasSeparator);
+  const string      distantFilename = line.substr(0, offset);
+  const string      localFilename   = line.substr(offset + 1);
+  const path        distantPath     = m_distantRoot / distantFilename;
+  const path        localPath       = m_localRoot / localFilename;
+  m_fileMap[localPath]              = distantPath;
 }
 
 void DependencyConfiguration::parseLineWithoutAlias(string line) {
   const path distantPath = m_distantRoot / line;
-  const path localPath = m_localRoot / line;
-  m_fileMap[localPath] = distantPath;
+  const path localPath   = m_localRoot / line;
+  m_fileMap[localPath]   = distantPath;
 }
 
 }  // namespace DataSync

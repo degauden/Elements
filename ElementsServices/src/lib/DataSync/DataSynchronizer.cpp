@@ -16,24 +16,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <string>
 #include "ElementsKernel/Unused.h"
+#include <string>
 
-#include "ElementsServices/DataSync/DataSynchronizer.h"
 #include "ElementsServices/DataSync/DataSyncUtils.h"
+#include "ElementsServices/DataSync/DataSynchronizer.h"
 
 namespace ElementsServices {
 namespace DataSync {
 
-DataSynchronizer::DataSynchronizer(
-    const ConnectionConfiguration& connection,
-    const DependencyConfiguration& dependency) :
-        m_connection(connection), m_fileMap(dependency.fileMap()) {
-}
+DataSynchronizer::DataSynchronizer(const ConnectionConfiguration& connection, const DependencyConfiguration& dependency)
+    : m_connection(connection), m_fileMap(dependency.fileMap()) {}
 
 void DataSynchronizer::downloadAllFiles() const {
   for (const auto& item : m_fileMap) {
-    const auto& localFile = item.first;
+    const auto& localFile   = item.first;
     const auto& distantFile = item.second;
     if (fileShouldBeWritten(localFile)) {
       downloadOneFile(distantFile, localFile);
@@ -52,9 +49,7 @@ bool DataSynchronizer::fileAlreadyExists(path localFile) const {
   return boost::filesystem::is_regular_file(localFile);
 }
 
-void DataSynchronizer::downloadOneFile(
-    path distantFile,
-    path localFile) const {
+void DataSynchronizer::downloadOneFile(path distantFile, path localFile) const {
   std::string command = createDownloadCommand(distantFile, localFile);
   createLocalDirOf(localFile);
   const auto outErr = runCommandAndCaptureOutErr(command);
@@ -63,9 +58,7 @@ void DataSynchronizer::downloadOneFile(
   }
 }
 
-bool DataSynchronizer::hasBeenDownloaded(
-    ELEMENTS_UNUSED path distantFile,
-    path localFile) const {
+bool DataSynchronizer::hasBeenDownloaded(ELEMENTS_UNUSED path distantFile, path localFile) const {
   if (not boost::filesystem::is_regular_file(localFile)) {
     return false;
   }

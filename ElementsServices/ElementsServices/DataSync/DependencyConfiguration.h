@@ -25,8 +25,8 @@
 #define ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DEPENDENCYCONFIGURATION_H_
 
 #include <map>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 
@@ -44,13 +44,9 @@ namespace DataSync {
 class ELEMENTS_API DependencyConfiguration {
 
 public:
-
   virtual ~DependencyConfiguration() = default;
 
-  DependencyConfiguration(
-      path distantRoot,
-      path localRoot,
-      path configFile);
+  DependencyConfiguration(path distantRoot, path localRoot, path configFile);
 
   std::map<path, path> fileMap() const;
 
@@ -63,7 +59,6 @@ public:
   std::vector<path> localPaths() const;
 
 protected:
-
   void parseConfigurationFile(path filename);
 
   void parseConfigurationLine(std::string line);
@@ -77,12 +72,10 @@ protected:
   void parseLineWithoutAlias(std::string line);
 
 private:
-
-  char m_aliasSeparator;
-  path m_distantRoot;
-  path m_localRoot;
+  char                 m_aliasSeparator;
+  path                 m_distantRoot;
+  path                 m_localRoot;
   std::map<path, path> m_fileMap;
-
 };
 
 }  // namespace DataSync
