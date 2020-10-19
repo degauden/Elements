@@ -280,7 +280,7 @@ const string typeinfoName(const char* class_name) {
 const string& hostName() {
   static string host{};
   if (host.empty()) {
-    std::unique_ptr<char> buffer(new char[HOST_NAME_MAX + 1]);
+    std::unique_ptr<char[]> buffer(new char[HOST_NAME_MAX + 1]);
     ::gethostname(buffer.get(), HOST_NAME_MAX);
     host = buffer.get();
   }
@@ -361,7 +361,9 @@ vector<string> getEnv() {
   static char** environ = *_NSGetEnviron();
 #endif
   vector<string> vars;
-  for (int i = 0; environ[i] != 0; ++i) { vars.emplace_back(environ[i]); }
+  for (int i = 0; environ[i] != 0; ++i) {
+    vars.emplace_back(environ[i]);
+  }
   return vars;
 }
 
