@@ -529,7 +529,6 @@ def updateAnnotations(site, Testing, outputTemp, annotationsList):
         # update the end time
         endTimeOld = int(annotations["end_ts"])
         endTimeNew = int(Testing.find("EndTestTime").text or '0')
-        delta = endTimeOld - endTimeNew
         if endTimeOld < endTimeNew:
             annotations["end_time"] = time.strftime(
                 "%b %d %H:%M %Z", time.localtime(endTimeNew))

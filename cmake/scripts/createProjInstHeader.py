@@ -12,7 +12,7 @@ def main():
     parser.set_defaults(so_version=False)
     parser.add_option("-V", "--so-version", action="store_true",
                       help="Use So Version")
-    
+
     opts, args = parser.parse_args()
 
     if len(args) > 4:
@@ -26,12 +26,12 @@ def main():
         used_projects = used_projects.split(":")
 
     so_value = "false"
-    if (opts.so_version):
+    if opts.so_version:
         so_value = "true"
 
     if not opts.quiet:
         print("Creating %s for %s with %s install location" % (outputfile, project, location))
-        
+
 
     outdir = os.path.dirname(outputfile)
     if not os.path.exists(outdir):

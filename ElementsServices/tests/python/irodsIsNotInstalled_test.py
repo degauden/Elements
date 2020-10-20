@@ -31,7 +31,7 @@ class TestIrodsIsInstalled(unittest.TestCase):
         self.m_top_dir = TempDir(prefix="DataSync_test")
         self.m_env = TempEnv()
         self.m_env["WORKSPACE"] = os.path.join(self.m_top_dir.path(), "workspace")
-        
+
     def tearDown(self):
         unittest.TestCase.tearDown(self)
         del self.m_top_dir
