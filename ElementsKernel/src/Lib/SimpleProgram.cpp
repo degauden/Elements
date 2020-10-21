@@ -31,7 +31,7 @@ namespace Elements {
 
 SimpleProgram::~SimpleProgram() {}
 
-ExitCode SimpleProgram::run(int argc, char** argv) noexcept {
+ExitCode SimpleProgram::run(int argc, char* argv[]) noexcept {
 
   ExitCode exit_code{ExitCode::OK};
 
@@ -53,7 +53,7 @@ ExitCode SimpleProgram::run(int argc, char** argv) noexcept {
   return exit_code;
 }
 
-void SimpleProgram::setup(ELEMENTS_UNUSED int argc, char** argv) {
+void SimpleProgram::setup(ELEMENTS_UNUSED int argc, char* argv[]) {
 
   Path::Item prog_path{argv[0]};
 

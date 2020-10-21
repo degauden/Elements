@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <utility>
@@ -49,7 +50,7 @@ std::pair<string, string> runCommandAndCaptureOutErr(string command) {
   if (not cmdpipe) {
     throw std::runtime_error(string("Unable to run command: ") + command);
   }
-  if (fgets(buffer.data(), BUFSIZ, cmdpipe.get()) != NULL) {
+  if (fgets(buffer.data(), BUFSIZ, cmdpipe.get()) != nullptr) {
     out += buffer.data();
   }
   // @TODO get standard error

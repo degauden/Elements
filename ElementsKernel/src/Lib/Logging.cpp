@@ -60,7 +60,7 @@ unique_ptr<Layout> getLogLayout() {
 Logging::Logging(Category& log4cppLogger) : m_log4cppLogger(log4cppLogger) {}
 
 Logging Logging::getLogger(const string& name) {
-  if (Category::getRoot().getAppender("console") == NULL) {
+  if (Category::getRoot().getAppender("console") == nullptr) {
     log4cpp::OstreamAppender* consoleAppender = new log4cpp::OstreamAppender{"console", &std::cerr};
     consoleAppender->setLayout(getLogLayout().release());
     Category::getRoot().addAppender(consoleAppender);
@@ -95,10 +95,12 @@ void Logging::setLogFile(const Path::Item& fileName) {
 }
 
 /// @cond Doxygen_Suppress
-Logging::LogMessageStream::LogMessageStream(Category& logger, P_log_func log_func) : m_logger(logger), m_log_func{log_func} {}
+Logging::LogMessageStream::LogMessageStream(Category& logger, P_log_func log_func)
+    : m_logger(logger), m_log_func{log_func} {}
 /// @endcond Doxygen_Suppress
 
-Logging::LogMessageStream::LogMessageStream(LogMessageStream&& other) : m_logger(other.m_logger), m_log_func{other.m_log_func} {}
+Logging::LogMessageStream::LogMessageStream(LogMessageStream&& other)
+    : m_logger(other.m_logger), m_log_func{other.m_log_func} {}
 
 Logging::LogMessageStream::LogMessageStream(const LogMessageStream& other)
     : m_logger(other.m_logger), m_log_func{other.m_log_func} {}

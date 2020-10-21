@@ -31,6 +31,7 @@
 #include <mach-o/dyld.h>  // for _NSGetExecutablePath
 #endif
 
+#include <array>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
@@ -92,9 +93,9 @@ ImageHandle s_module_handle = nullptr;
 }
 /// Retrieve base name of module
 const string& moduleName() {
-  static string module("");
-  if (module == "") {
-    if (processHandle() and moduleHandle()) {
+  static string module{};
+  if (module.empty()) {
+    if ((processHandle() != nullptr) and (moduleHandle() != nullptr)) {
       string mod = ::basename(const_cast<char*>((reinterpret_cast<Dl_info*>(moduleHandle()))->dli_fname));
       module     = mod.substr(static_cast<string::size_type>(0), mod.find('.'));
     }
@@ -104,14 +105,14 @@ const string& moduleName() {
 
 /// Retrieve full name of module
 const string& moduleNameFull() {
-  static string module("");
-  if (module == "") {
+  static string module{};
+  if (module.empty()) {
     if (processHandle() and moduleHandle()) {
-      char name[PATH_MAX] = {"Unknown.module"};
-      name[0]             = 0;
-      const char* path    = (reinterpret_cast<Dl_info*>(moduleHandle())->dli_fname);
-      if (::realpath(path, name)) {
-        module = name;
+      std::array<char, PATH_MAX> name{"Unknown.module"};
+      name[0]          = 0;
+      const char* path = (reinterpret_cast<Dl_info*>(moduleHandle())->dli_fname);
+      if (::realpath(path, name.data())) {
+        module = name.data();
       }
     }
   }
@@ -149,8 +150,8 @@ void setModuleHandle(ImageHandle handle) {
 }
 
 ImageHandle moduleHandle() {
-  if (0 == s_module_handle) {
-    if (processHandle()) {
+  if (nullptr == s_module_handle) {
+    if (processHandle() != nullptr) {
       static Dl_info info;
       if (0 != ::dladdr(FuncPtrCast<void*>(moduleHandle), &info)) {
         return &info;
@@ -165,11 +166,11 @@ ImageHandle exeHandle() {
   static Dl_info  infoBuf;
   static Dl_info* info;
 
-  if (0 == info) {
-    void* handle = ::dlopen(0, RTLD_LAZY);
-    if (0 != handle) {
+  if (nullptr == info) {
+    void* handle = ::dlopen(nullptr, RTLD_LAZY);
+    if (nullptr != handle) {
       void* func = ::dlsym(handle, "main");
-      if (0 != func) {
+      if (nullptr != func) {
         if (0 != ::dladdr(func, &infoBuf)) {
           info = &infoBuf;
         }
@@ -180,8 +181,8 @@ ImageHandle exeHandle() {
 }
 
 const string& exeName() {
-  static string module("");
-  if (module.length() == 0) {
+  static string module{""};
+  if (module.empty()) {
     module = getExecutablePath().string();
   }
   return module;
@@ -231,7 +232,9 @@ const vector<string> linkedModules() {
 
   if (s_linkedModules.size() == 0) {
 
-    for (auto m : linkedModulePaths()) { s_linkedModules.emplace_back(m.string()); }
+    for (auto m : linkedModulePaths()) {
+      s_linkedModules.emplace_back(m.string());
+    }
   }
   return s_linkedModules;
 }

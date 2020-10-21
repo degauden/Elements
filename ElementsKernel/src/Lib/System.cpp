@@ -258,14 +258,12 @@ const string typeinfoName(const char* class_name) {
       break;
     }
   } else {
-    int   status;
-    char* realname;
-    realname = abi::__cxa_demangle(class_name, 0, 0, &status);
-    if (realname == 0) {
+    int                                    status;
+    std::unique_ptr<char, decltype(free)*> realname(abi::__cxa_demangle(class_name, 0, 0, &status), free);
+    if (realname == nullptr) {
       return class_name;
     }
-    result = realname;
-    ::free(realname);
+    result = realname.get();
     /// substitute ', ' with ','
     string::size_type pos = result.find(", ");
     while (string::npos != pos) {
@@ -280,9 +278,9 @@ const string typeinfoName(const char* class_name) {
 const string& hostName() {
   static string host{};
   if (host.empty()) {
-    std::unique_ptr<char[]> buffer(new char[HOST_NAME_MAX + 1]);
-    ::gethostname(buffer.get(), HOST_NAME_MAX);
-    host = buffer.get();
+    std::array<char, HOST_NAME_MAX + 1> buffer;
+    ::gethostname(buffer.data(), HOST_NAME_MAX);
+    host = buffer.data();
   }
   return host;
 }
@@ -338,7 +336,7 @@ bool getEnv(const string& var, string& value) {
   value      = "";
 
   char* env = ::getenv(var.c_str());
-  if (env != NULL) {
+  if (env != nullptr) {
     found = true;
     value = env;
   }

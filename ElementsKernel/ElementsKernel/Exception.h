@@ -26,6 +26,7 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_EXCEPTION_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_EXCEPTION_H_
 
+#include <cstddef>  // for size_t
 #include <cstdio>
 #include <exception>
 #include <sstream>
@@ -67,7 +68,8 @@ public:
    *  @param e: this is an optional exit code. By default is is set
    *            to NOT_OK.
    */
-  explicit Exception(const std::string& message, ExitCode e = ExitCode::NOT_OK) : m_error_msg(message), m_exit_code{e} {}
+  explicit Exception(const std::string& message, ExitCode e = ExitCode::NOT_OK)
+      : m_error_msg(message), m_exit_code{e} {}
 
   /**
    * @brief Constructs a new Exception with a message using format specifiers
@@ -77,8 +79,8 @@ public:
    */
   template <typename... Args>
   explicit Exception(const char* stringFormat, Args&&... args) : m_exit_code{ExitCodeHelper<Args...>{args...}.code} {
-    size_t len     = snprintf(NULL, 0, stringFormat, std::forward<Args>(args)...) + 1;
-    char*  message = new char[len];
+    std::size_t len     = snprintf(nullptr, 0, stringFormat, std::forward<Args>(args)...) + 1;
+    char*       message = new char[len];
     snprintf(message, len, stringFormat, std::forward<Args>(args)...);
     m_error_msg = std::string(message);
     delete[] message;
@@ -93,13 +95,17 @@ public:
    *          is in possession of the Exception object. Callers must
    *          not attempt to free the memory.
    */
-  const char* what() const noexcept override { return m_error_msg.c_str(); }
+  const char* what() const noexcept override {
+    return m_error_msg.c_str();
+  }
 
   /** Return the exit code of the Exception
    *
    * @return the exit code
    */
-  ExitCode exitCode() const noexcept { return m_exit_code; }
+  ExitCode exitCode() const noexcept {
+    return m_exit_code;
+  }
 
   /**
    * @brief Appends in the end of the exception message the parameter
@@ -155,7 +161,8 @@ private:
 };
 
 template <typename Ex, typename T,
-          typename = typename std::enable_if<std::is_base_of<Exception, typename std::remove_reference<Ex>::type>::value>::type>
+          typename = typename std::enable_if<
+              std::is_base_of<Exception, typename std::remove_reference<Ex>::type>::value>::type>
 auto operator<<(Ex&& ex, const T& message) -> decltype(std::forward<Ex>(ex)) {
   ex.appendMessage(message);
   return std::forward<Ex>(ex);

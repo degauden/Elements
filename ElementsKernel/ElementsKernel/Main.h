@@ -49,11 +49,11 @@
  * the class Elements::Program class.
  * @param MANAGER name of the manager variable to be created.
  */
-#define CREATE_MANAGER_WITH_ARGS(MANAGER, ELEMENTS_PROGRAM, ...)                                                                   \
-  Elements::ProgramManager MANAGER {                                                                                               \
-    std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM{__VA_ARGS__}}, Elements::Project::versionString(),                     \
-        Elements::Project::name(), Elements::Project::vcsVersion(), Elements::Module::versionString(), Elements::Module::name(),   \
-        Elements::Project::searchDirectories(), log4cpp::Priority::ELEMENTS_DEFAULT_LOGLEVEL                                       \
+#define CREATE_MANAGER_WITH_ARGS(MANAGER, ELEMENTS_PROGRAM, ...)                                                       \
+  Elements::ProgramManager MANAGER {                                                                                   \
+    std::unique_ptr<Elements::Program>{new ELEMENTS_PROGRAM{__VA_ARGS__}}, Elements::Project::versionString(),         \
+        Elements::Project::name(), Elements::Project::vcsVersion(), Elements::Module::versionString(),                 \
+        Elements::Module::name(), Elements::Project::searchDirectories(), log4cpp::Priority::ELEMENTS_DEFAULT_LOGLEVEL \
   }
 
 /**
@@ -84,12 +84,12 @@
  * @param ELEMENTS_PROGRAM name of the main program class, derived from
  * the class Elements::Program class.
  */
-#define MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM, ...)                                                                                  \
-  ELEMENTS_UNUSED const auto installed = {std::set_terminate(&Elements::ProgramManager::onTerminate)};                             \
-  ELEMENTS_API int           main(int argc, char* argv[]) {                                                                        \
-    CREATE_MANAGER_WITH_ARGS(manager, ELEMENTS_PROGRAM, __VA_ARGS__);                                                    \
-    Elements::ExitCode exit_code = manager.run(argc, argv);                                                              \
-    return static_cast<Elements::ExitCodeType>(exit_code);                                                               \
+#define MAIN_FOR_WITH_ARGS(ELEMENTS_PROGRAM, ...)                                                                      \
+  ELEMENTS_UNUSED const auto installed = {std::set_terminate(&Elements::ProgramManager::onTerminate)};                 \
+  ELEMENTS_API int           main(int argc, char* argv[]) {                                                            \
+    CREATE_MANAGER_WITH_ARGS(manager, ELEMENTS_PROGRAM, __VA_ARGS__);                                        \
+    Elements::ExitCode exit_code = manager.run(argc, argv);                                                  \
+    return static_cast<Elements::ExitCodeType>(exit_code);                                                   \
   }
 
 /**
