@@ -27,7 +27,8 @@ bool irodsIsInstalled() {
   return checkCall("iget --help");
 }
 
-IrodsSynchronizer::IrodsSynchronizer(const ConnectionConfiguration& connection, const DependencyConfiguration& dependency)
+IrodsSynchronizer::IrodsSynchronizer(const ConnectionConfiguration& connection,
+                                     const DependencyConfiguration& dependency)
     : DataSynchronizer(connection, dependency) {
   if (not irodsIsInstalled()) {
     throw std::runtime_error("You are trying to use iRODS, "

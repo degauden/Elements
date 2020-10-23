@@ -25,6 +25,7 @@
 #include "ElementsKernel/System.h"     // for DEFAULT_INSTALL_PREFIX
                                        // getPathFromLocations
 namespace Elements {
+inline namespace Kernel {
 
 template <typename T>
 Path::Item getAuxiliaryPath(const T& file_name, bool raise_exception) {
@@ -40,6 +41,7 @@ Path::Item getAuxiliaryPath(const T& file_name, bool raise_exception) {
   return result;
 }
 
+}  // namespace Kernel
 }  // namespace Elements
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_

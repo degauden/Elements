@@ -15,7 +15,4 @@
 
 using ElementsServices::DataSync::ConnectionConfiguration;
 
-ConnectionConfigurationPublic::ConnectionConfigurationPublic() :
-          ConnectionConfiguration(theWebdavFrConfig()) {
-
-}
+ConnectionConfigurationPublic::ConnectionConfigurationPublic() : ConnectionConfiguration(theWebdavFrConfig()) {}

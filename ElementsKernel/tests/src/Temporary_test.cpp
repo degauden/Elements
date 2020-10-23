@@ -19,26 +19,26 @@
  *
  */
 
-#include "ElementsKernel/Temporary.h"      // for TempDir
+#include "ElementsKernel/Temporary.h"  // for TempDir
 
-#include <string>                          // for string
-#include <vector>
 #include <cstdlib>
 #include <iostream>
+#include <string>  // for string
+#include <vector>
 
-#include <boost/test/unit_test.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/test/unit_test.hpp>
 
+#include "ElementsKernel/Environment.h"  // for Environment
 #include "ElementsKernel/Exception.h"
-#include "ElementsKernel/System.h"         // for getEnv, setEnv, unSetEnv
-#include "ElementsKernel/Environment.h"    // for Environment
-#include "ElementsKernel/Path.h"           // for Path::Item
+#include "ElementsKernel/Path.h"    // for Path::Item
+#include "ElementsKernel/System.h"  // for getEnv, setEnv, unSetEnv
 
 using std::string;
 
-using boost::filesystem::exists;
 using boost::filesystem::create_directory;
+using boost::filesystem::exists;
 
 namespace Elements {
 
@@ -51,7 +51,7 @@ namespace Elements {
 
 struct Temporary_Fixture {
 
-  TempDir m_top_dir { "Temporary_test-%%%%%%%" };
+  TempDir m_top_dir{"Temporary_test-%%%%%%%"};
   TempEnv m_env;
 
   Temporary_Fixture() {
@@ -97,7 +97,7 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
     using std::endl;
 
     TempDir three;
-    test2_path = three.path();
+    test2_path      = three.path();
     test2_file_path = test2_path / "toto.txt";
     BOOST_CHECK(!exists(test2_file_path));
     boost::filesystem::ofstream ofs(test2_file_path);
@@ -109,8 +109,7 @@ BOOST_FIXTURE_TEST_CASE(AutoDestruct_test, Temporary_Fixture) {
 
   BOOST_CHECK(!exists(test2_path));
   BOOST_CHECK(!exists(test2_file_path));
-
-  }
+}
 
 BOOST_FIXTURE_TEST_CASE(TempEnv_test, Temporary_Fixture) {
 
@@ -172,7 +171,6 @@ BOOST_FIXTURE_TEST_CASE(TempEnv2_test, Temporary_Fixture) {
 
   BOOST_CHECK(m_env["WORKSPACE"].value() == (m_top_dir.path() / "work").string());
 
-
   BOOST_CHECK(getEnv("TMPDIR") == "");
   BOOST_CHECK(exists(test_tmpdir));
 }
@@ -194,7 +192,6 @@ BOOST_AUTO_TEST_CASE(KeepTmpDir_test) {
 
   remove_all(that_path);
   BOOST_CHECK(not exists(that_path));
-
 }
 
 BOOST_AUTO_TEST_CASE(Fake_test) {
@@ -204,9 +201,9 @@ BOOST_AUTO_TEST_CASE(Fake_test) {
   const string motif1 = "";
   const string motif2 = "toto-%%%";
 
-  auto path1 = temp_directory_path() / unique_path(motif1);
+  auto path1  = temp_directory_path() / unique_path(motif1);
   auto path1p = temp_directory_path() / unique_path();
-  auto path2 = temp_directory_path() / unique_path(motif2);
+  auto path2  = temp_directory_path() / unique_path(motif2);
 
   using std::cout;
   using std::endl;
@@ -217,9 +214,7 @@ BOOST_AUTO_TEST_CASE(Fake_test) {
 
   TempPath p1;
   TempPath p2(motif1);
-
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()
 

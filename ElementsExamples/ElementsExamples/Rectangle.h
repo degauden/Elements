@@ -24,9 +24,9 @@
 #ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_RECTANGLE_H_
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_RECTANGLE_H_
 
-#include <utility>                   // for move
+#include <utility>  // for move
 
-#include "ElementsKernel/Export.h"   // for ELEMENTS_API
+#include "ElementsKernel/Export.h"  // for ELEMENTS_API
 
 namespace Elements {
 namespace Examples {
@@ -36,12 +36,11 @@ public:
   int x0, y0, x1, y1;
   Rectangle(int x0, int y0, int x1, int y1);
   ~Rectangle();
-  int getLength();
-  int getHeight();
-  int getArea();
+  int  getLength();
+  int  getHeight();
+  int  getArea();
   void move(int dx, int dy);
 };
-
 
 }  // namespace Examples
 }  // namespace Elements

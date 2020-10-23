@@ -20,14 +20,14 @@
 
 #ifdef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_TEMPLATEDDATASOURCEUSER_IMPL_
 
-#include <cstddef>   // for std::size_t
+#include <cstddef>  // for std::size_t
 
 namespace Elements {
 namespace Examples {
 
 template <typename T>
- double TemplatedDataSourceUser::sumRecords(const T& data_source) {
-  double sum = 0.;
+double TemplatedDataSourceUser::sumRecords(const T& data_source) {
+  double      sum            = 0.;
   std::size_t records_number = data_source.countRecords();
   for (std::size_t index = 0; index < records_number; ++index) {
     sum += data_source.getRecordValue(index);

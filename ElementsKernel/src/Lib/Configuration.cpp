@@ -36,6 +36,7 @@
 using std::string;
 
 namespace Elements {
+inline namespace Kernel {
 
 string getConfigurationVariableName() {
   return Path::VARIABLE.at(Path::Type::configuration);
@@ -53,12 +54,14 @@ std::vector<Path::Item> getConfigurationLocations(bool exist_only) {
   location_list.emplace_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
 
   if (exist_only) {
-    auto new_end = std::remove_if(location_list.begin(), location_list.end(),
-                                  [](const Path::Item& p) { return (not boost::filesystem::exists(p)); });
+    auto new_end = std::remove_if(location_list.begin(), location_list.end(), [](const Path::Item& p) {
+      return (not boost::filesystem::exists(p));
+    });
     location_list.erase(new_end, location_list.end());
   }
 
   return location_list;
 }
 
+}  // namespace Kernel
 }  // namespace Elements

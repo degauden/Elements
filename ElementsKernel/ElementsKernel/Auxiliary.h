@@ -41,6 +41,7 @@
 #include "ElementsKernel/Path.h"    // for Path::Item
 
 namespace Elements {
+inline namespace Kernel {
 
 ELEMENTS_API std::string getAuxiliaryVariableName();
 
@@ -57,6 +58,7 @@ ELEMENTS_API std::vector<Path::Item> getAuxiliaryLocations(bool exist_only = fal
  * This is an example of how to use the getAuxiliaryPath function.
  */
 
+}  // namespace Kernel
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_

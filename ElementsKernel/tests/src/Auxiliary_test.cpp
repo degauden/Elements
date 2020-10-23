@@ -69,7 +69,9 @@ struct Auxiliary_Fixture {
     m_item_list.emplace_back(m_top_dir.path() / "test2");
     m_item_list.emplace_back(m_top_dir.path() / "test3");
 
-    for_each(m_item_list.cbegin(), m_item_list.cend(), [](Path::Item p) { boost::filesystem::create_directory(p); });
+    for_each(m_item_list.cbegin(), m_item_list.cend(), [](Path::Item p) {
+      boost::filesystem::create_directory(p);
+    });
 
     m_item_list.emplace_back(m_top_dir.path() / "test4");
 
@@ -79,13 +81,16 @@ struct Auxiliary_Fixture {
     m_target_item_list.emplace_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "aux");
 
     m_real_item_list.resize(m_item_list.size());
-    auto it =
-        copy_if(m_item_list.begin(), m_item_list.end(), m_real_item_list.begin(), [](const Path::Item& p) { return exists(p); });
+    auto it = copy_if(m_item_list.begin(), m_item_list.end(), m_real_item_list.begin(), [](const Path::Item& p) {
+      return exists(p);
+    });
     m_real_item_list.erase(it, m_real_item_list.end());
 
     m_target_real_item_list.resize(m_target_item_list.size());
     auto it2 = copy_if(m_target_item_list.begin(), m_target_item_list.end(), m_target_real_item_list.begin(),
-                       [](const Path::Item& p) { return exists(p); });
+                       [](const Path::Item& p) {
+                         return exists(p);
+                       });
     m_target_real_item_list.erase(it2, m_target_real_item_list.end());
   }
 
@@ -133,7 +138,8 @@ BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Auxiliary_Fixture) {
 
   auto locations = getAuxiliaryLocations();
 
-  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(), m_target_item_list.begin(), m_target_item_list.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(), m_target_item_list.begin(),
+                                m_target_item_list.end());
 }
 
 BOOST_FIXTURE_TEST_CASE(getFromLocationsExist_test, Auxiliary_Fixture) {
@@ -144,7 +150,8 @@ BOOST_FIXTURE_TEST_CASE(getFromLocationsExist_test, Auxiliary_Fixture) {
 
   auto locations = getAuxiliaryLocations(true);
 
-  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(), m_target_real_item_list.begin(), m_target_real_item_list.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(), m_target_real_item_list.begin(),
+                                m_target_real_item_list.end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -44,6 +44,7 @@
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
 namespace Elements {
+inline namespace Kernel {
 namespace Path {
 
 enum class Type { executable, library, python, configuration, auxiliary };
@@ -139,9 +140,12 @@ template <typename T, typename U>
 ELEMENTS_API Item getPathFromLocations(const T& file_name, const std::vector<U>& locations);
 // Template instantiation for the most common types
 extern template ELEMENTS_API Item getPathFromLocations(const Item& file_name, const std::vector<Item>& locations);
-extern template ELEMENTS_API Item getPathFromLocations(const Item& file_name, const std::vector<std::string>& locations);
-extern template ELEMENTS_API Item getPathFromLocations(const std::string& file_name, const std::vector<Item>& locations);
-extern template ELEMENTS_API Item getPathFromLocations(const std::string& file_name, const std::vector<std::string>& locations);
+extern template ELEMENTS_API Item getPathFromLocations(const Item&                     file_name,
+                                                       const std::vector<std::string>& locations);
+extern template ELEMENTS_API Item getPathFromLocations(const std::string&       file_name,
+                                                       const std::vector<Item>& locations);
+extern template ELEMENTS_API Item getPathFromLocations(const std::string&              file_name,
+                                                       const std::vector<std::string>& locations);
 
 /**
  * @brief retrieve all the paths from a file name and a set of location to look into
@@ -162,7 +166,8 @@ extern template ELEMENTS_API Item getPathFromLocations(const std::string& file_n
 template <typename T, typename U>
 ELEMENTS_API std::vector<Item> getAllPathFromLocations(const T& file_name, const std::vector<U>& locations);
 // Template instantiation for the most common types
-extern template ELEMENTS_API std::vector<Item> getAllPathFromLocations(const Item& file_name, const std::vector<Item>& locations);
+extern template ELEMENTS_API std::vector<Item> getAllPathFromLocations(const Item&              file_name,
+                                                                       const std::vector<Item>& locations);
 extern template ELEMENTS_API std::vector<Item> getAllPathFromLocations(const Item&                     file_name,
                                                                        const std::vector<std::string>& locations);
 extern template ELEMENTS_API std::vector<Item> getAllPathFromLocations(const std::string&       file_name,
@@ -268,6 +273,7 @@ extern template ELEMENTS_API std::vector<Item> removeDuplicates(const std::vecto
 extern template ELEMENTS_API std::vector<Item> removeDuplicates(const std::vector<std::string>& path_list);
 
 }  // namespace Path
+}  // namespace Kernel
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_IMPL_

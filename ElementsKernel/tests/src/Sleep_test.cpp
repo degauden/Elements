@@ -38,7 +38,6 @@ BOOST_AUTO_TEST_CASE(SleepCall_test) {
 
   normalSleep(1);
   nanoSleep(10);
-
 }
 
 //-----------------------------------------------------------------------------

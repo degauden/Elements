@@ -214,7 +214,9 @@ public:
   // around may change its bits, although the new value is guaranteed
   // to be also a NAN.  Therefore, don't expect this constructor to
   // preserve the bits in x when x is a NAN.
-  explicit FloatingPoint(const RawType& x) { m_u.m_value = x; }
+  explicit FloatingPoint(const RawType& x) {
+    m_u.m_value = x;
+  }
 
   // Static methods
 
@@ -228,21 +230,31 @@ public:
   }
 
   // Returns the floating-point number that represent positive infinity.
-  static RawType Infinity() { return ReinterpretBits(s_exponent_bitmask); }
+  static RawType Infinity() {
+    return ReinterpretBits(s_exponent_bitmask);
+  }
 
   // Non-static methods
 
   // Returns the bits that represents this number.
-  const Bits& bits() const { return m_u.m_bits; }
+  const Bits& bits() const {
+    return m_u.m_bits;
+  }
 
   // Returns the exponent bits of this number.
-  Bits exponentBits() const { return s_exponent_bitmask & m_u.m_bits; }
+  Bits exponentBits() const {
+    return s_exponent_bitmask & m_u.m_bits;
+  }
 
   // Returns the fraction bits of this number.
-  Bits fractionBits() const { return s_fraction_bitmask & m_u.m_bits; }
+  Bits fractionBits() const {
+    return s_fraction_bitmask & m_u.m_bits;
+  }
 
   // Returns the sign bit of this number.
-  Bits signBit() const { return s_sign_bitmask & m_u.m_bits; }
+  Bits signBit() const {
+    return s_sign_bitmask & m_u.m_bits;
+  }
 
   // Returns true iff this is NAN (not a number).
   bool isNan() const {
@@ -469,7 +481,8 @@ inline bool isGreaterOrEqual(const double& left, const double& right) {
  * @return
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
-ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right, const int& max_ulps = FLT_DEFAULT_MAX_ULPS);
+ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
+                                          const int& max_ulps = FLT_DEFAULT_MAX_ULPS);
 /**
  * @brief
  *   This function compare 2 doubles with a relative tolerance
@@ -486,7 +499,8 @@ ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
  * @return
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
-ELEMENTS_API bool almostEqual2sComplement(const double& left, const double& right, const int& max_ulps = DBL_DEFAULT_MAX_ULPS);
+ELEMENTS_API bool almostEqual2sComplement(const double& left, const double& right,
+                                          const int& max_ulps = DBL_DEFAULT_MAX_ULPS);
 
 /**
  * @brief

@@ -37,6 +37,7 @@ using std::string;
 using std::vector;
 
 namespace Elements {
+inline namespace Kernel {
 namespace Path {
 
 const string PATH_SEP{":"};
@@ -59,8 +60,11 @@ const map<Type, const vector<string>> DEFAULT_LOCATIONS{{Type::executable, {}},
                                                         {Type::configuration, {"/usr/share/conf"}},
                                                         {Type::auxiliary, {"/usr/share/auxdir", "/usr/share/aux"}}};
 
-const std::map<Type, const bool> HAS_SUBLEVELS{
-    {Type::executable, false}, {Type::library, false}, {Type::python, true}, {Type::configuration, true}, {Type::auxiliary, true}};
+const std::map<Type, const bool> HAS_SUBLEVELS{{Type::executable, false},
+                                               {Type::library, false},
+                                               {Type::python, true},
+                                               {Type::configuration, true},
+                                               {Type::auxiliary, true}};
 
 vector<Item> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
@@ -71,8 +75,9 @@ vector<Item> getLocationsFromEnv(const string& path_variable, bool exist_only) {
   vector<Item> found_list = split(env_content);
 
   if (exist_only) {
-    auto new_end =
-        std::remove_if(found_list.begin(), found_list.end(), [](const Item& p) { return (not boost::filesystem::exists(p)); });
+    auto new_end = std::remove_if(found_list.begin(), found_list.end(), [](const Item& p) {
+      return (not boost::filesystem::exists(p));
+    });
     found_list.erase(new_end, found_list.end());
   }
 
@@ -89,7 +94,9 @@ vector<Item> splitPath(const string& path_string) {
   boost::split(str_list, path_string, boost::is_any_of(PATH_SEP));
 
   vector<Item> found_list(str_list.size());
-  std::transform(str_list.cbegin(), str_list.cend(), found_list.begin(), [](const string& s) { return Item{s}; });
+  std::transform(str_list.cbegin(), str_list.cend(), found_list.begin(), [](const string& s) {
+    return Item{s};
+  });
 
   return found_list;
 }
@@ -120,4 +127,5 @@ template vector<Item> removeDuplicates(const vector<Item>& path_list);
 template vector<Item> removeDuplicates(const vector<string>& path_list);
 
 }  // namespace Path
+}  // namespace Kernel
 }  // namespace Elements

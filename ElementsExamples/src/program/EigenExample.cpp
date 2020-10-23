@@ -20,8 +20,8 @@
 
 #include <iostream>
 
-#include <map>                              // for map
-#include <string>                           // for string
+#include <map>     // for map
+#include <string>  // for string
 
 #include <Eigen/Dense>
 
@@ -34,11 +34,9 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class EigenExample: public Program {
+class EigenExample : public Program {
 
 public:
-
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     using Eigen::MatrixXd;
@@ -55,14 +53,11 @@ public:
     log.info() << "This is the end of the test";
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples
 }  // namespace Elements
-
 
 /**
  * Implementation of a main using a base class macro

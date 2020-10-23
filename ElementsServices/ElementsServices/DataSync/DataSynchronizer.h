@@ -42,17 +42,12 @@ namespace DataSync {
  * @ingroup ElementsServices
  * @brief An exception raised when downloading fails.
  */
-class ELEMENTS_API DownloadFailed: public std::runtime_error {
+class ELEMENTS_API DownloadFailed : public std::runtime_error {
 public:
   virtual ~DownloadFailed() = default;
-  DownloadFailed(path distantFile, path localFile) :
-      std::runtime_error(
-          "Unable to download file: '"
-          + distantFile.string()
-          + "' as: '"
-          + localFile.string()
-          + "'.") {
-  }
+  DownloadFailed(path distantFile, path localFile)
+      : std::runtime_error("Unable to download file: '" + distantFile.string() + "' as: '" + localFile.string() +
+                           "'.") {}
 };
 
 /**
@@ -65,38 +60,26 @@ public:
 class ELEMENTS_API DataSynchronizer {
 
 public:
-
   virtual ~DataSynchronizer() = default;
 
-  DataSynchronizer(
-      const ConnectionConfiguration& connection,
-      const DependencyConfiguration& dependency);
+  DataSynchronizer(const ConnectionConfiguration& connection, const DependencyConfiguration& dependency);
 
   void downloadAllFiles() const;
 
 protected:
-
   bool fileShouldBeWritten(path localFile) const;
 
   bool fileAlreadyExists(path localFile) const;
 
-  void downloadOneFile(
-      path distantFile,
-      path localFile) const;
+  void downloadOneFile(path distantFile, path localFile) const;
 
-  bool hasBeenDownloaded(
-      path distantFile,
-      path localFile) const;
+  bool hasBeenDownloaded(path distantFile, path localFile) const;
 
-  virtual std::string createDownloadCommand(
-      path distantFile,
-      path localFile) const = 0;
+  virtual std::string createDownloadCommand(path distantFile, path localFile) const = 0;
 
 protected:
-
   ConnectionConfiguration m_connection;
-  std::map<path, path> m_fileMap;
-
+  std::map<path, path>    m_fileMap;
 };
 
 }  // namespace DataSync

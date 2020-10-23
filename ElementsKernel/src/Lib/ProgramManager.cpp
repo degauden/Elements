@@ -103,7 +103,9 @@ const Path::Item ProgramManager::getDefaultConfigFile(const Path::Item& program_
   default_config_file = getConfigurationPath(conf_name.string(), false);
   if (default_config_file.empty()) {
     log.warn() << "The " << conf_name << " default configuration file cannot be found in:";
-    for (auto loc : getConfigurationLocations()) { log.warn() << " " << loc; }
+    for (auto loc : getConfigurationLocations()) {
+      log.warn() << " " << loc;
+    }
     if (not module_name.empty()) {
       conf_name = Path::Item{module_name} / conf_name;
       log.warn() << "Trying " << conf_name << ".";
@@ -135,7 +137,8 @@ const Path::Item ProgramManager::setProgramPath(ELEMENTS_UNUSED char* arg0) {
 }
 
 template <class charT>
-void ProgramManager::checkCommandLineOptions(const boost::program_options::basic_parsed_options<charT>& cmd_parsed_options) {
+void ProgramManager::checkCommandLineOptions(
+    const boost::program_options::basic_parsed_options<charT>& cmd_parsed_options) {
 
   for (const auto& o : cmd_parsed_options.options) {
     if (o.string_key == "config-file") {
@@ -191,8 +194,12 @@ const VariablesMap ProgramManager::getProgramOptions(int argc, char* argv[]) {
   // Group all the generic options, for help output. Note that we add the
   // options one by one to avoid having empty lines between the groups
   OptionsDescription all_generic_options{"Generic options"};
-  for (auto o : cmd_only_generic_options.options()) { all_generic_options.add(o); }
-  for (auto o : cmd_and_file_generic_options.options()) { all_generic_options.add(o); }
+  for (auto o : cmd_only_generic_options.options()) {
+    all_generic_options.add(o);
+  }
+  for (auto o : cmd_and_file_generic_options.options()) {
+    all_generic_options.add(o);
+  }
 
   // Get the definition of the specific options and arguments (positional
   // options) from the derived class
@@ -210,7 +217,8 @@ const VariablesMap ProgramManager::getProgramOptions(int argc, char* argv[]) {
   help_options.add(all_generic_options).add(all_specific_options);
 
   // Perform a first parsing of the command line, to handle the cmd only options
-  auto cmd_parsed_options = command_line_parser(argc, argv).options(cmd_only_generic_options).allow_unregistered().run();
+  auto cmd_parsed_options =
+      command_line_parser(argc, argv).options(cmd_only_generic_options).allow_unregistered().run();
 
   checkCommandLineOptions(cmd_parsed_options);
 
@@ -238,8 +246,10 @@ const VariablesMap ProgramManager::getProgramOptions(int argc, char* argv[]) {
 
   try {
 
-    auto parsed_cmdline_options =
-        command_line_parser(leftover_cmd_options).options(all_cmd_and_file_options).positional(program_arguments.second).run();
+    auto parsed_cmdline_options = command_line_parser(leftover_cmd_options)
+                                      .options(all_cmd_and_file_options)
+                                      .positional(program_arguments.second)
+                                      .run();
 
     store(parsed_cmdline_options, var_map);
 
@@ -253,7 +263,8 @@ const VariablesMap ProgramManager::getProgramOptions(int argc, char* argv[]) {
     }
 
   } catch (const std::exception& e) {
-    if (boost::starts_with(e.what(), "unrecognised option") or boost::starts_with(e.what(), "too many positional options")) {
+    if (boost::starts_with(e.what(), "unrecognised option") or
+        boost::starts_with(e.what(), "too many positional options")) {
       throw OptionException(e.what());
     } else {
       throw;
@@ -325,23 +336,30 @@ void ProgramManager::logAllOptions() const {
     } else if (v.second.value().type() == typeid(vector<int>)) {
       vector<int>  intVec = v.second.as<vector<int>>();
       stringstream vecContent{};
-      for (const auto& i : intVec) { vecContent << " " << i; }
+      for (const auto& i : intVec) {
+        vecContent << " " << i;
+      }
       log_message << v.first << " = {" << vecContent.str() << " }";
       // double vector option
     } else if (v.second.value().type() == typeid(vector<double>)) {
       vector<double> intVec = v.second.as<vector<double>>();
       stringstream   vecContent{};
-      for (const auto& i : intVec) { vecContent << " " << i; }
+      for (const auto& i : intVec) {
+        vecContent << " " << i;
+      }
       log_message << v.first << " = {" << vecContent.str() << " }";
       // string vector option
     } else if (v.second.value().type() == typeid(vector<string>)) {
       vector<string> intVec = v.second.as<vector<string>>();
       stringstream   vecContent{};
-      for (const auto& i : intVec) { vecContent << " " << i; }
+      for (const auto& i : intVec) {
+        vecContent << " " << i;
+      }
       log_message << v.first << " = {" << vecContent.str() << " }";
       // if nothing else
     } else {
-      log_message << "Option " << v.first << " of type " << v.second.value().type().name() << " not supported in logging !" << endl;
+      log_message << "Option " << v.first << " of type " << v.second.value().type().name()
+                  << " not supported in logging !" << endl;
     }
     // write the log message
     log.log(m_elements_loglevel, log_message.str());
@@ -359,7 +377,9 @@ void ProgramManager::logTheEnvironment() const {
   log.debug() << "# ---------------------------";
   log.debug() << "#";
 
-  for (const auto& v : Path::VARIABLE) { log.debug() << v.second << ": " << m_env[v.second]; }
+  for (const auto& v : Path::VARIABLE) {
+    log.debug() << v.second << ": " << m_env[v.second];
+  }
 
   log.debug() << "#";
 }
@@ -371,8 +391,9 @@ void ProgramManager::bootstrapEnvironment(char* arg0) {
 
   vector<Path::Item> local_search_paths(m_search_dirs.size());
 
-  std::transform(m_search_dirs.cbegin(), m_search_dirs.cend(), local_search_paths.begin(),
-                 [](const string& s) { return boost::filesystem::complete(s); });
+  std::transform(m_search_dirs.cbegin(), m_search_dirs.cend(), local_search_paths.begin(), [](const string& s) {
+    return boost::filesystem::complete(s);
+  });
 
   // insert local parent dir if it is not already
   // the first one of the list
@@ -469,7 +490,9 @@ void ProgramManager::onTerminate() noexcept {
 
     log.fatal() << "Crash detected";
     log.fatal() << "This is the back trace:";
-    for (auto level : System::backTrace(21, 4)) { log.fatal() << level; }
+    for (auto level : System::backTrace(21, 4)) {
+      log.fatal() << level;
+    }
 
     // we have an exception
     try {

@@ -18,14 +18,14 @@
  *
  */
 
-#include <map>                                  // for map
-#include <string>                               // for string
-#include <stdexcept>                            // for standard exceptions
+#include <map>        // for map
+#include <stdexcept>  // for standard exceptions
+#include <string>     // for string
 
 #include "ElementsExamples/crashingFunction.h"  // for crashingFunction
 
-#include "ElementsKernel/ProgramHeaders.h"      // for including all Program/related headers
-#include "ElementsKernel/Unused.h"              // for ELEMENTS_UNUSED
+#include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
+#include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 
 using std::map;
 using std::string;
@@ -45,10 +45,9 @@ void firstLevelFunction() {
   secondLevelFunction();
 }
 
-class BackTraceExample: public Program {
+class BackTraceExample : public Program {
 
 public:
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     firstLevelFunction();
@@ -56,14 +55,11 @@ public:
     log.info() << "done with test program! ";
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples
 }  // namespace Elements
-
 
 /**
  * Implementation of a main using a base class macro

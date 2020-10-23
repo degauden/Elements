@@ -168,8 +168,8 @@ ELEMENTS_API bool isEnvSet(const std::string& var);
 ELEMENTS_API int   backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses, ELEMENTS_UNUSED const int depth);
 ELEMENTS_API const std::vector<std::string> backTrace(const int depth, const int offset = 0);
 
-ELEMENTS_API bool getStackLevel(ELEMENTS_UNUSED void* addresses, ELEMENTS_UNUSED void*& addr, ELEMENTS_UNUSED std::string& fnc,
-                                ELEMENTS_UNUSED std::string& lib);
+ELEMENTS_API bool getStackLevel(ELEMENTS_UNUSED void* addresses, ELEMENTS_UNUSED void*& addr,
+                                ELEMENTS_UNUSED std::string& fnc, ELEMENTS_UNUSED std::string& lib);
 
 }  // namespace System
 }  // namespace Elements

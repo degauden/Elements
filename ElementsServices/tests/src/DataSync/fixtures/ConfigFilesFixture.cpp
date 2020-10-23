@@ -15,10 +15,8 @@
 #include "ElementsKernel/Temporary.h"
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 
-
-using ElementsServices::DataSync::path;
 using ElementsServices::DataSync::localWorkspacePrefix;
-
+using ElementsServices::DataSync::path;
 
 WorkspaceFixture::WorkspaceFixture() {
   m_env["WORKSPACE"] = (m_top_dir.path() / "workspace").string();
@@ -29,13 +27,8 @@ path theDependencyConfig() {
 }
 
 std::vector<path> theLocalFiles() {
-  return std::vector<path>( {
-      path("file1.txt"),
-      path("file2.txt"),
-      path("dir/file3.txt"),
-      path("dir/file4.txt"),
-      path("file5.txt")
-  });
+  return std::vector<path>(
+      {path("file1.txt"), path("file2.txt"), path("dir/file3.txt"), path("dir/file4.txt"), path("file5.txt")});
 }
 
 path theLocalWorkspace() {

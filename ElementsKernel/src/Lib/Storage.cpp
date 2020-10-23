@@ -32,6 +32,7 @@ using std::pow;
 using std::size_t;
 
 namespace Elements {
+inline namespace Kernel {
 namespace Units {
 
 map<StorageType, std::string> StorageShortName{{StorageType::Byte, "B"},
@@ -67,4 +68,5 @@ template float   storageConvert<float>(const float& size, StorageType source_uni
 template int64_t storageConvert<int64_t>(const int64_t& size, StorageType source_unit, StorageType target_unit);
 
 }  // namespace Units
+}  // namespace Kernel
 }  // namespace Elements

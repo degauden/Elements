@@ -38,22 +38,18 @@ BOOST_FIXTURE_TEST_SUITE(IrodsSynchronizer_test, WorkspaceFixture)
 
 DataSync::IrodsSynchronizer createTestSynchronizer() {
   DataSync::ConnectionConfiguration connection(theIrodsFrConfig());
-  auto distant_root = connection.distantRoot;
-  auto local_root = connection.localRoot;
-  DataSync::DependencyConfiguration dependencies(
-      distant_root, local_root, theDependencyConfig());
+  auto                              distant_root = connection.distantRoot;
+  auto                              local_root   = connection.localRoot;
+  DataSync::DependencyConfiguration dependencies(distant_root, local_root, theDependencyConfig());
   return DataSync::IrodsSynchronizer(connection, dependencies);
 }
 
 BOOST_AUTO_TEST_CASE(webdavGetCmd_test) {
-  string distant_file = "src/distant_file.fits";
-  string local_file = "dst/local_file.fits";
-  auto synchronizer = createTestSynchronizer();
-  string cmd = synchronizer.createDownloadCommand(distant_file, local_file);
-  std::vector<string> chunks = {
-      "irsync ",
-      "i:", distant_file,
-      local_file };
+  string              distant_file = "src/distant_file.fits";
+  string              local_file   = "dst/local_file.fits";
+  auto                synchronizer = createTestSynchronizer();
+  string              cmd          = synchronizer.createDownloadCommand(distant_file, local_file);
+  std::vector<string> chunks       = {"irsync ", "i:", distant_file, local_file};
   BOOST_CHECK(DataSync::containsInThisOrder(cmd, chunks));
 }
 
@@ -62,5 +58,3 @@ BOOST_AUTO_TEST_CASE(webdavGetCmd_test) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
-
-

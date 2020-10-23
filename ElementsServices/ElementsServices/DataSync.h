@@ -26,13 +26,12 @@
 
 #include "ElementsKernel/Export.h"
 
-#include "ElementsServices/DataSync/DataSyncUtils.h"
 #include "ElementsServices/DataSync/ConnectionConfiguration.h"
+#include "ElementsServices/DataSync/DataSyncUtils.h"
 #include "ElementsServices/DataSync/DependencyConfiguration.h"
 
 namespace ElementsServices {
 namespace DataSync {
-
 
 /**
  * @class DataSync
@@ -47,7 +46,6 @@ namespace DataSync {
 class ELEMENTS_API DataSync {
 
 public:
-
   /**
    * @brief Initialize the synchronizer with configuration files.
    *
@@ -92,12 +90,10 @@ public:
   path absolutePath(path relativePath);
 
 private:
-
   ConnectionConfiguration m_connectionConfig;
-  path m_distantRoot;
-  path m_localRoot;
+  path                    m_distantRoot;
+  path                    m_localRoot;
   DependencyConfiguration m_dependencyConfig;
-
 };
 
 }  // namespace DataSync

@@ -18,16 +18,16 @@
  *
  */
 
-#include <map>                              // for map
-#include <string>                           // for string
+#include <map>     // for map
+#include <string>  // for string
 
-#include <xercesc/util/XercesVersion.hpp>   // For gXercesFullVersionStr
-#include <xercesc/util/PlatformUtils.hpp>   // for Initialize and Terminate
+#include <xercesc/util/PlatformUtils.hpp>  // for Initialize and Terminate
+#include <xercesc/util/XercesVersion.hpp>  // For gXercesFullVersionStr
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 
-namespace Xerces = XERCES_CPP_NAMESPACE;     // needed to avoid an unneeded ugly ns
+namespace Xerces = XERCES_CPP_NAMESPACE;  // needed to avoid an unneeded ugly ns
 
 using std::map;
 using std::string;
@@ -35,10 +35,9 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class XercesExample: public Program {
+class XercesExample : public Program {
 
 public:
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("XercesExample");
@@ -52,14 +51,11 @@ public:
     log.info() << "done with test program! ";
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples
 }  // namespace Elements
-
 
 /**
  * Implementation of a main using a base class macro

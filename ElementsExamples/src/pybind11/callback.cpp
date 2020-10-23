@@ -19,14 +19,14 @@
  *
  */
 
-#include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
+#include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pyerrors.h>
 
-#include "ElementsKernel/Export.h"
 #include "ElementsExamples/callBackExample.h"
+#include "ElementsKernel/Export.h"
 
 ELEMENTS_API PYBIND11_MODULE(testCallBack, mod) {
-    mod.def("test", &Elements::Examples::testCallBack);
+  mod.def("test", &Elements::Examples::testCallBack);
 }

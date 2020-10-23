@@ -21,10 +21,9 @@
 
 #include <iostream>
 
-#include "ElementsKernel/Project.h"          // for Project
+#include "ElementsKernel/Project.h"  // for Project
 
 #include "ElementsExamples/printProject.h"
-
 
 namespace Elements {
 namespace Examples {

@@ -18,18 +18,18 @@
  *
  */
 
+#include <cmath>  // for cos
 #include <cstdio>
-#include <cmath>                            // for cos
-#include <map>                              // for map
-#include <string>                           // for string
+#include <map>     // for map
+#include <string>  // for string
 
-#include <boost/format.hpp>                 // for format
+#include <boost/format.hpp>  // for format
 
 #include <fftw3.h>
 
+#include "ElementsKernel/MathConstants.h"   // for pi
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
-#include "ElementsKernel/MathConstants.h"   // for pi
 
 using std::map;
 using std::string;
@@ -39,23 +39,21 @@ constexpr std::size_t N = 32;
 namespace Elements {
 namespace Examples {
 
-class FftwExample: public Program {
+class FftwExample : public Program {
 
 public:
-
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("FftwExample");
 
     fftw_complex in[N], out[N], in2[N]; /* double [2] */
-    fftw_plan p, q;
+    fftw_plan    p, q;
 
     using std::cos;
 
     /* prepare a cosine wave */
     for (size_t i = 0; i < N; i++) {
-      in[i][0] = cos(3.0 * 2.0*Units::pi*static_cast<double>(i)/static_cast<double>(N));
+      in[i][0] = cos(3.0 * 2.0 * Units::pi * static_cast<double>(i) / static_cast<double>(N));
       in[i][1] = 0;
     }
 
@@ -73,12 +71,12 @@ public:
     fftw_execute(q);
     /* normalize */
     for (size_t i = 0; i < N; i++) {
-      in2[i][0] *= 1./N;
-      in2[i][1] *= 1./N;
+      in2[i][0] *= 1. / N;
+      in2[i][1] *= 1. / N;
     }
     for (size_t i = 0; i < N; i++) {
-      log.info() << boost::format("recover: %3d %+9.5f %+9.5f I vs. %+9.5f %+9.5f I")
-                                      % i % in[i][0] % in[i][1] % in2[i][0] % in2[i][1];
+      log.info() << boost::format("recover: %3d %+9.5f %+9.5f I vs. %+9.5f %+9.5f I") % i % in[i][0] % in[i][1] %
+                        in2[i][0] % in2[i][1];
     }
     fftw_destroy_plan(q);
 
@@ -87,14 +85,11 @@ public:
     log.info() << "This is the end of the test";
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples
 }  // namespace Elements
-
 
 /**
  * Implementation of a main using a base class macro

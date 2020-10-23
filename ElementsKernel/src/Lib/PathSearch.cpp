@@ -40,6 +40,7 @@ using boost::filesystem::directory_iterator;
 using boost::filesystem::recursive_directory_iterator;
 
 namespace Elements {
+inline namespace Kernel {
 
 namespace {
 auto log = Logging::getLogger("PathSearch");
@@ -48,9 +49,11 @@ auto log = Logging::getLogger("PathSearch");
 // template instantiations
 
 template vector<string>     pathSearch<string, directory_iterator>(const string& searched_name, string directory);
-template vector<Path::Item> pathSearch<Path::Item, directory_iterator>(const string& searched_name, Path::Item directory);
-template vector<string>     pathSearch<string, recursive_directory_iterator>(const string& searched_name, string directory);
-template vector<Path::Item> pathSearch<Path::Item, recursive_directory_iterator>(const string& searched_name, Path::Item directory);
+template vector<Path::Item> pathSearch<Path::Item, directory_iterator>(const string& searched_name,
+                                                                       Path::Item    directory);
+template vector<string> pathSearch<string, recursive_directory_iterator>(const string& searched_name, string directory);
+template vector<Path::Item> pathSearch<Path::Item, recursive_directory_iterator>(const string& searched_name,
+                                                                                 Path::Item    directory);
 
 template vector<Path::Item> pathSearch(const string& searched_name, Path::Item directory, SearchType search_type);
 template vector<string>     pathSearch(const string& searched_name, string directory, SearchType search_type);
@@ -62,7 +65,8 @@ template vector<string>     pathSearch(const string& searched_name, string direc
  *
  * and call pathSearch(...) for each of them
  */
-vector<Path::Item> pathSearchInEnvVariable(const string& file_name, const string& path_like_env_variable, SearchType search_type) {
+vector<Path::Item> pathSearchInEnvVariable(const string& file_name, const string& path_like_env_variable,
+                                           SearchType search_type) {
   // Placeholder for the to-be-returned search result
   vector<Path::Item> search_results{};
 
@@ -88,4 +92,5 @@ vector<Path::Item> pathSearchInEnvVariable(const string& file_name, const string
   return search_results;
 }
 
+}  // namespace Kernel
 }  // namespace Elements

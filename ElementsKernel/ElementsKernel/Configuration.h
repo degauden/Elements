@@ -41,6 +41,7 @@
 #include "ElementsKernel/Path.h"    // for Path::Item
 
 namespace Elements {
+inline namespace Kernel {
 
 ELEMENTS_API std::string getConfigurationVariableName();
 
@@ -54,6 +55,7 @@ extern template ELEMENTS_API Path::Item getConfigurationPath(const std::string& 
 
 ELEMENTS_API std::vector<Path::Item> getConfigurationLocations(bool exist_only = false);
 
+}  // namespace Kernel
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_

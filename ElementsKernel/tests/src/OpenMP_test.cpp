@@ -19,7 +19,6 @@
  *
  */
 
-
 #include <omp.h>
 
 #include <chrono>
@@ -32,19 +31,17 @@ using std::uint64_t;
 
 constexpr int target_thread_num = 4;
 
-
 uint64_t getMilliSecondsSinceEpoch() {
 
   namespace chrono = std::chrono;
 
-  auto now = chrono::system_clock::now();
+  auto now    = chrono::system_clock::now();
   auto now_ms = chrono::time_point_cast<chrono::milliseconds>(now);
 
-  auto value = now_ms.time_since_epoch();
+  auto     value    = now_ms.time_since_epoch();
   uint64_t duration = value.count();
 
   return duration;
-
 }
 
 BOOST_AUTO_TEST_SUITE(OpenMP_test)
@@ -57,15 +54,15 @@ BOOST_AUTO_TEST_CASE(HasOpenMP_test) {
 
   int is_in_parallel = 0;
 
-  // Initialize all the times
-  #pragma omp parallel
+// Initialize all the times
+#pragma omp parallel
   {
-     int thread_id = omp_get_thread_num();
-     times[thread_id] = getMilliSecondsSinceEpoch();
+    int thread_id    = omp_get_thread_num();
+    times[thread_id] = getMilliSecondsSinceEpoch();
 
-     is_in_parallel = omp_in_parallel();
+    is_in_parallel = omp_in_parallel();
 
-     times[thread_id] = getMilliSecondsSinceEpoch();
+    times[thread_id] = getMilliSecondsSinceEpoch();
   }
 
   BOOST_CHECK_NE(is_in_parallel, 0);

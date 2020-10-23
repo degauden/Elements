@@ -19,26 +19,23 @@
  *
  */
 
-#include <boost/test/unit_test.hpp>            // Gives access to the unit test framework.
+#include <boost/test/unit_test.hpp>  // Gives access to the unit test framework.
+#include <iostream>                  // for cout, endl
 #include <string>
-#include <iostream>                            // for cout, endl
 
-#include "ElementsKernel/Environment.h"        // for Environment
+#include "ElementsKernel/Environment.h"  // for Environment
 
 // Starts a test suite and name it.
 BOOST_AUTO_TEST_SUITE(TestEnvironment_test_suite)
-
 
 BOOST_AUTO_TEST_CASE(MyEnv_test) {
 
   Elements::Environment current;
 
-  std::cout << "MYTESTENV: " <<current["MYTESTENV"] << std::endl;
+  std::cout << "MYTESTENV: " << current["MYTESTENV"] << std::endl;
 
   BOOST_CHECK_EQUAL(std::string(current["MYTESTENV"]), "FooBar");
   BOOST_CHECK(std::string(current["MYTESTENV"]) == "FooBar");
-
-
 }
 
 // Ends the test suite

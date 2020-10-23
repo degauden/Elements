@@ -21,13 +21,12 @@
 
 #include <iostream>
 
+#include "ElementsKernel/Exception.h"  // For Exception
+#include "ElementsKernel/Exit.h"       // For ExitCode
 #include "ElementsKernel/SimpleProgram.h"
-#include "ElementsKernel/Exit.h"                // For ExitCode
-#include "ElementsKernel/Exception.h"           // For Exception
 
 namespace Elements {
 namespace Examples {
-
 
 /**
  * @class AnotherSimpleProgramExample
@@ -37,13 +36,10 @@ namespace Examples {
  *    This class is an example of a program based on the SimpleProgram class. It can be copied/pasted
  *    conveniently to write a new program.
  */
-class AnotherSimpleProgramExample: public SimpleProgram {
+class AnotherSimpleProgramExample : public SimpleProgram {
 
 public:
-
-  void defineOptions() override {
-
-  }
+  void defineOptions() override {}
 
   /**
    * @brief
@@ -64,9 +60,7 @@ public:
     throw Exception("This is an example exception.");
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples

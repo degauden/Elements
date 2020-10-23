@@ -33,6 +33,7 @@
 #include "ElementsKernel/Path.h"    // for Path::Item
 
 namespace Elements {
+inline namespace Kernel {
 
 enum class SearchType { Local, Recursive };
 
@@ -60,8 +61,8 @@ ELEMENTS_API std::vector<T> pathSearch(const std::string& searched_name, T direc
 // template instantiations of the most common types
 extern template ELEMENTS_API std::vector<Path::Item> pathSearch(const std::string& searched_name, Path::Item directory,
                                                                 SearchType search_type);
-extern template ELEMENTS_API std::vector<std::string> pathSearch(const std::string& searched_name, std::string directory,
-                                                                 SearchType search_type);
+extern template ELEMENTS_API std::vector<std::string> pathSearch(const std::string& searched_name,
+                                                                 std::string directory, SearchType search_type);
 
 /**
  * @brief
@@ -83,7 +84,7 @@ extern template ELEMENTS_API std::vector<std::string> pathSearch(const std::stri
 ELEMENTS_API
 std::vector<Path::Item> pathSearchInEnvVariable(const std::string& file_name, const std::string& path_like_env_variable,
                                                 SearchType search_type = SearchType::Recursive);
-
+}  // namespace Kernel
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_IMPL_

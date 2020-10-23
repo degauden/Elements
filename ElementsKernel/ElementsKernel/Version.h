@@ -79,7 +79,8 @@ ELEMENTS_API std::string getVersionFromSvnKeywords(const std::string& svnUrl, co
  * @return
  *    The formatted string with the version numbers
  */
-ELEMENTS_API std::string getVersionString(const unsigned short major, const unsigned short minor, const unsigned short patch = 0);
+ELEMENTS_API std::string getVersionString(const unsigned short major, const unsigned short minor,
+                                          const unsigned short patch = 0);
 
 }  // namespace Elements
 

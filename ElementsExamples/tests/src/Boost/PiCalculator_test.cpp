@@ -21,9 +21,8 @@
 
 #include "ElementsExamples/PiCalculator.h"  // Access the objects you want to test
 
-
-#include <iostream>
 #include <boost/test/unit_test.hpp>
+#include <iostream>
 
 using Elements::Examples::PiCalculator;
 
@@ -42,9 +41,7 @@ BOOST_AUTO_TEST_CASE(Creation_test) {
   pc.setShowResultCallback(callBackFunction);
 
   pc.calculate(10);
-
 }
-
 
 // Ends the test suite
 BOOST_AUTO_TEST_SUITE_END()

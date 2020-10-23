@@ -19,20 +19,20 @@
  *
  */
 
-#include "ElementsKernel/Configuration.h"          // header to test
+#include "ElementsKernel/Configuration.h"  // header to test
 
-#include <string>                           // for std::string
-#include <vector>                           // for std::vector
-#include <algorithm>                        // for for_each, transform, copy_if
+#include <algorithm>  // for for_each, transform, copy_if
+#include <string>     // for std::string
+#include <vector>     // for std::vector
 
-#include <boost/test/unit_test.hpp>         // for boost unit test macros
-#include <boost/filesystem/operations.hpp>  // for exists
 #include <boost/filesystem/fstream.hpp>     // for ofstream
+#include <boost/filesystem/operations.hpp>  // for exists
+#include <boost/test/unit_test.hpp>         // for boost unit test macros
 
-#include "ElementsKernel/Temporary.h"       // for TempDir, TempEnv
-#include <ElementsKernel/Exception.h>       // for Exception
-#include "ElementsKernel/Path.h"            // for joinPath, Item
-#include "ElementsKernel/System.h"          // for DEFAULT_INSTALL_PREFIX
+#include "ElementsKernel/Path.h"       // for joinPath, Item
+#include "ElementsKernel/System.h"     // for DEFAULT_INSTALL_PREFIX
+#include "ElementsKernel/Temporary.h"  // for TempDir, TempEnv
+#include <ElementsKernel/Exception.h>  // for Exception
 
 using std::string;
 using std::vector;
@@ -52,26 +52,25 @@ namespace Elements {
 
 struct Configuration_Fixture {
 
-  TempDir m_top_dir;
+  TempDir            m_top_dir;
   vector<Path::Item> m_item_list;
   vector<Path::Item> m_target_item_list;
   vector<Path::Item> m_real_item_list;
   vector<Path::Item> m_target_real_item_list;
 
-  Configuration_Fixture(): m_top_dir{ "Configuration_test-%%%%%%%" } {
+  Configuration_Fixture() : m_top_dir{"Configuration_test-%%%%%%%"} {
 
-    using std::for_each;
     using std::copy_if;
     using std::distance;
+    using std::for_each;
 
     m_item_list.emplace_back(m_top_dir.path() / "test1");
     m_item_list.emplace_back(m_top_dir.path() / "test1" / "foo");
     m_item_list.emplace_back(m_top_dir.path() / "test2");
     m_item_list.emplace_back(m_top_dir.path() / "test3");
 
-    for_each(m_item_list.cbegin(), m_item_list.cend(),
-        [](Path::Item p) {
-        boost::filesystem::create_directory(p);
+    for_each(m_item_list.cbegin(), m_item_list.cend(), [](Path::Item p) {
+      boost::filesystem::create_directory(p);
     });
 
     m_item_list.emplace_back(m_top_dir.path() / "test4");
@@ -81,27 +80,20 @@ struct Configuration_Fixture {
     m_target_item_list.emplace_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
 
     m_real_item_list.resize(m_item_list.size());
-    auto it = copy_if(m_item_list.begin(), m_item_list.end(),
-                      m_real_item_list.begin(),
-                      [](const Path::Item& p){
-                            return exists(p);
-                      });
+    auto it = copy_if(m_item_list.begin(), m_item_list.end(), m_real_item_list.begin(), [](const Path::Item& p) {
+      return exists(p);
+    });
     m_real_item_list.erase(it, m_real_item_list.end());
 
     m_target_real_item_list.resize(m_target_item_list.size());
-    auto it2 = copy_if(m_target_item_list.begin(), m_target_item_list.end(),
-                      m_target_real_item_list.begin(),
-                      [](const Path::Item& p){
-                            return exists(p);
-                      });
+    auto it2 = copy_if(m_target_item_list.begin(), m_target_item_list.end(), m_target_real_item_list.begin(),
+                       [](const Path::Item& p) {
+                         return exists(p);
+                       });
     m_target_real_item_list.erase(it2, m_target_real_item_list.end());
-
   }
 
-  ~Configuration_Fixture() {
-
-  }
-
+  ~Configuration_Fixture() {}
 };
 
 BOOST_AUTO_TEST_SUITE(Configuration_test)
@@ -111,13 +103,11 @@ BOOST_AUTO_TEST_SUITE(Configuration_test)
 BOOST_AUTO_TEST_CASE(ConfigurationException_test) {
 
   BOOST_CHECK_THROW(getConfigurationPath("NonExistingFile.conf"), Exception);
-
 }
 
 BOOST_AUTO_TEST_CASE(ConfigurationVariableName_test) {
 
   BOOST_CHECK_EQUAL(getConfigurationVariableName(), "ELEMENTS_CONF_PATH");
-
 }
 
 BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Configuration_Fixture) {
@@ -128,9 +118,8 @@ BOOST_FIXTURE_TEST_CASE(getFromLocations_test, Configuration_Fixture) {
 
   auto locations = getConfigurationLocations();
 
-  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(),
-                                m_target_item_list.begin(), m_target_item_list.end());
-
+  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(), m_target_item_list.begin(),
+                                m_target_item_list.end());
 }
 
 BOOST_FIXTURE_TEST_CASE(getFromLocationsExist_test, Configuration_Fixture) {
@@ -141,11 +130,9 @@ BOOST_FIXTURE_TEST_CASE(getFromLocationsExist_test, Configuration_Fixture) {
 
   auto locations = getConfigurationLocations(true);
 
-  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(),
-                                m_target_real_item_list.begin(), m_target_real_item_list.end());
-
+  BOOST_CHECK_EQUAL_COLLECTIONS(locations.begin(), locations.end(), m_target_real_item_list.begin(),
+                                m_target_real_item_list.end());
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()
 

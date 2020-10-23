@@ -16,9 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <boost/program_options.hpp>
 #include <string>
 #include <vector>
-#include <boost/program_options.hpp>
 
 #include "ElementsServices/DataSync/ConnectionConfiguration.h"
 #include "ElementsServices/DataSync/DataSyncUtils.h"
@@ -42,24 +42,15 @@ void ConnectionConfiguration::parseConfigurationFile(const path& filename) {
   namespace po = boost::program_options;
 
   /* Declare options */
-  po::options_description options { };
-  options.add_options()
-      ("host", po::value<string>(),
-          "Hosting solution: iRODS or WebDAV (case insensitive)")
-      ("host-url", po::value<string>()->default_value(""),
-          "Host URL if needed")
-      ("user", po::value<string>()->default_value(""),
-          "User name if needed")
-      ("password", po::value<string>()->default_value(""),
-          "Password if needed")
-      ("overwrite", po::value<string>()->default_value("no"),
-          "Allow overwriting local files if they already exist")
-      ("distant-workspace", po::value<string>(),
-          "Path to distant repository workspace")
-      ("local-workspace", po::value<string>(),
-          "Path to local repository workspace")
-      ("tries", po::value<int>()->default_value(4),
-          "Number of download tries");
+  po::options_description options{};
+  options.add_options()("host", po::value<string>(), "Hosting solution: iRODS or WebDAV (case insensitive)")(
+      "host-url", po::value<string>()->default_value(""),
+      "Host URL if needed")("user", po::value<string>()->default_value(""), "User name if needed")(
+      "password", po::value<string>()->default_value(""), "Password if needed")(
+      "overwrite", po::value<string>()->default_value("no"), "Allow overwriting local files if they already exist")(
+      "distant-workspace", po::value<string>(), "Path to distant repository workspace")(
+      "local-workspace", po::value<string>(),
+      "Path to local repository workspace")("tries", po::value<int>()->default_value(4), "Number of download tries");
 
   /* Get config file path */
   path abs_path = confFilePath(filename);
@@ -69,20 +60,19 @@ void ConnectionConfiguration::parseConfigurationFile(const path& filename) {
   try {
     po::store(po::parse_config_file<char>(abs_path.c_str(), options), vm);
     po::notify(vm);
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     throw e.what();
   }
 
   /* Configure object */
   parseHost(vm["host"].as<string>());
-  hostUrl = vm["host-url"].as<string>();
-  user = vm["user"].as<string>();
+  hostUrl  = vm["host-url"].as<string>();
+  user     = vm["user"].as<string>();
   password = vm["password"].as<string>();
   parseOverwritingPolicy(vm["overwrite"].as<string>());
   distantRoot = vm["distant-workspace"].as<string>();
-  localRoot = localWorkspacePrefix() / vm["local-workspace"].as<string>();
-  tries = static_cast<size_t>(vm["tries"].as<int>());
-
+  localRoot   = localWorkspacePrefix() / vm["local-workspace"].as<string>();
+  tries       = static_cast<size_t>(vm["tries"].as<int>());
 }
 
 void ConnectionConfiguration::parseHost(const string& name) {
@@ -100,8 +90,8 @@ void ConnectionConfiguration::parseOverwritingPolicy(const string& policy) {
 
   using std::vector;
 
-  const vector<string> overwriteAllowedOptions = { "true", "yes", "y" };
-  const vector<string> overwriteForbiddenOptions = { "false", "no", "n" };
+  const vector<string> overwriteAllowedOptions   = {"true", "yes", "y"};
+  const vector<string> overwriteForbiddenOptions = {"false", "no", "n"};
 
   string uncased = lower(policy);
   if (valueIsListed(uncased, overwriteAllowedOptions)) {
@@ -111,7 +101,6 @@ void ConnectionConfiguration::parseOverwritingPolicy(const string& policy) {
   } else {
     throw std::runtime_error("I don't know this overwriting policy: " + policy);
   }
-
 }
 
 }  // namespace DataSync

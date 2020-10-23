@@ -21,8 +21,8 @@
 
 #include "ElementsExamples/functionExample.h"
 
-#include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
+#include <boost/test/unit_test.hpp>
 
 using Elements::Examples::functionExample;
 
@@ -32,6 +32,4 @@ BOOST_AUTO_TEST_CASE(Value) {
   BOOST_CHECK(functionExample(3) == 9);
 }
 
-
 BOOST_AUTO_TEST_SUITE_END()
-

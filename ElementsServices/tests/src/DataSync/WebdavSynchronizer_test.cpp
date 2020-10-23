@@ -38,22 +38,18 @@ BOOST_FIXTURE_TEST_SUITE(WebdavSynchronizer_test, WorkspaceFixture)
 
 DataSync::WebdavSynchronizer createTestSynchronizer() {
   DataSync::ConnectionConfiguration connection(theWebdavFrConfig());
-  auto distant_root = connection.distantRoot;
-  auto local_root = connection.localRoot;
-  DataSync::DependencyConfiguration dependencies(
-      distant_root, local_root, theDependencyConfig());
+  auto                              distant_root = connection.distantRoot;
+  auto                              local_root   = connection.localRoot;
+  DataSync::DependencyConfiguration dependencies(distant_root, local_root, theDependencyConfig());
   return DataSync::WebdavSynchronizer(connection, dependencies);
 }
 
 BOOST_AUTO_TEST_CASE(webdavGetCmd_test) {
-  string distant_file = "src/distant_file.fits";
-  string local_file = "dst/local_file.fits";
-  auto synchronizer = createTestSynchronizer();
-  string cmd = synchronizer.createDownloadCommand(distant_file, local_file);
-  std::vector<string> chunks = {
-      "wget ", "-O",
-      local_file, distant_file,
-      "8" };
+  string              distant_file = "src/distant_file.fits";
+  string              local_file   = "dst/local_file.fits";
+  auto                synchronizer = createTestSynchronizer();
+  string              cmd          = synchronizer.createDownloadCommand(distant_file, local_file);
+  std::vector<string> chunks       = {"wget ", "-O", local_file, distant_file, "8"};
   BOOST_CHECK(DataSync::containsInThisOrder(cmd, chunks));
 }
 

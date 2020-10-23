@@ -23,7 +23,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-
 namespace Elements {
 
 //-----------------------------------------------------------------------------
@@ -132,7 +131,6 @@ BOOST_AUTO_TEST_CASE(DoubleCompare2_test) {
   BOOST_CHECK(isEqual(f, 0.5));
 
   BOOST_CHECK_CLOSE(f, 0.5, DBL_DEFAULT_TEST_TOLERANCE);
-
 
 }  // Eof DoubleCompare2_test
 
@@ -399,6 +397,5 @@ BOOST_AUTO_TEST_CASE(DoubleCompare7_test) {
 //-----------------------------------------------------------------------------
 // End of the Boost tests
 BOOST_AUTO_TEST_SUITE_END()
-
 
 }  // namespace Elements

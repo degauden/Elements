@@ -21,12 +21,12 @@
 
 #include "ElementsExamples/DataSourceUser.h"  // Access the objects you want to test
 
+#include <boost/test/unit_test.hpp>
 #include <cstddef>
 #include <gmock/gmock.h>
-#include <boost/test/unit_test.hpp>
 
+#include "ElementsKernel/EnableGMock.h"  // initialize the gmock framework
 #include "ElementsKernel/Real.h"
-#include "ElementsKernel/EnableGMock.h"       // initialize the gmock framework
 
 #include "DataSourceInterfaceMock.h"
 
@@ -43,16 +43,15 @@ BOOST_AUTO_TEST_CASE(sumRecords_test) {
   EXPECT_CALL(data_source_mock, countRecords()).Times(1).WillOnce(Return(5));
 
   for (size_t index = 0; index < 5; ++index) {
-    EXPECT_CALL(data_source_mock, getRecordValue(index)).Times(1).WillOnce(Return(static_cast<double>(index)+1.));
+    EXPECT_CALL(data_source_mock, getRecordValue(index)).Times(1).WillOnce(Return(static_cast<double>(index) + 1.));
   }
 
   // object to test
   Elements::Examples::DataSourceUser user{};
-  double result = user.sumRecords(data_source_mock);
+  double                             result = user.sumRecords(data_source_mock);
 
-  BOOST_CHECK_MESSAGE(Elements::isEqual(result, 15.), "Expected value :"<< 15. <<" Actual value :" << result);
+  BOOST_CHECK_MESSAGE(Elements::isEqual(result, 15.), "Expected value :" << 15. << " Actual value :" << result);
 }
 
 // Ends the test suite
 BOOST_AUTO_TEST_SUITE_END()
-

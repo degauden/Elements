@@ -29,6 +29,7 @@
 #include <boost/filesystem/operations.hpp>  // for exists
 
 namespace Elements {
+inline namespace Kernel {
 namespace Path {
 
 template <typename T, typename U>
@@ -37,8 +38,9 @@ Item getPathFromLocations(const T& file_name, const std::vector<U>& locations) {
   Item found_path{};
   Item file_path{file_name};
 
-  auto found_pos = std::find_if(locations.cbegin(), locations.cend(),
-                                [file_path](const U& l) { return boost::filesystem::exists(Item{l} / file_path); });
+  auto found_pos = std::find_if(locations.cbegin(), locations.cend(), [file_path](const U& l) {
+    return boost::filesystem::exists(Item{l} / file_path);
+  });
 
   if (found_pos != locations.cend()) {
     found_path = Item{*found_pos} / file_path;
@@ -53,10 +55,13 @@ std::vector<Item> getAllPathFromLocations(const T& file_name, const std::vector<
   std::vector<Item> file_list(locations.size());
   Item              file_path{file_name};
 
-  std::transform(locations.cbegin(), locations.cend(), file_list.begin(), [file_path](const U& l) { return Item{l} / file_path; });
+  std::transform(locations.cbegin(), locations.cend(), file_list.begin(), [file_path](const U& l) {
+    return Item{l} / file_path;
+  });
 
-  auto found_pos =
-      std::remove_if(file_list.begin(), file_list.end(), [](const Item& p) { return not boost::filesystem::exists(p); });
+  auto found_pos = std::remove_if(file_list.begin(), file_list.end(), [](const Item& p) {
+    return not boost::filesystem::exists(p);
+  });
 
   file_list.erase(found_pos, file_list.end());
 
@@ -81,7 +86,9 @@ std::string joinPath(const std::vector<T>& path_list) {
 
   vector<string> elems(path_list.size());
 
-  std::transform(path_list.cbegin(), path_list.cend(), elems.begin(), [](const T& s) { return Item{s}.string(); });
+  std::transform(path_list.cbegin(), path_list.cend(), elems.begin(), [](const T& s) {
+    return Item{s}.string();
+  });
 
   std::string result = boost::algorithm::join(elems, PATH_SEP);
 
@@ -108,7 +115,9 @@ std::vector<Item> multiPathAppend(const std::vector<T>& initial_locations, const
   auto pos = result.begin();
 
   std::for_each(initial_locations.cbegin(), initial_locations.cend(), [&pos, &suffixes](const T& l) {
-    std::transform(suffixes.cbegin(), suffixes.cend(), pos, [l](const U& s) { return Item{l} / s; });
+    std::transform(suffixes.cbegin(), suffixes.cend(), pos, [l](const U& s) {
+      return Item{l} / s;
+    });
     pos += static_cast<std::ptrdiff_t>(suffixes.size());
   });
 
@@ -122,8 +131,9 @@ std::vector<Item> removeDuplicates(const std::vector<T>& path_list) {
 
   std::vector<Item> output(path_list.size());
 
-  auto end =
-      copy_if(path_list.cbegin(), path_list.cend(), output.begin(), [&s](const T& i) { return s.insert(Item{i}.string()).second; });
+  auto end = copy_if(path_list.cbegin(), path_list.cend(), output.begin(), [&s](const T& i) {
+    return s.insert(Item{i}.string()).second;
+  });
 
   output.erase(end, output.end());
 
@@ -131,6 +141,7 @@ std::vector<Item> removeDuplicates(const std::vector<T>& path_list) {
 }
 
 }  // namespace Path
+}  // namespace Kernel
 }  // namespace Elements
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_IMPL_

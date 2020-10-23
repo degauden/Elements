@@ -36,6 +36,7 @@
 using std::string;
 
 namespace Elements {
+inline namespace Kernel {
 
 string getAuxiliaryVariableName() {
   return Path::VARIABLE.at(Path::Type::auxiliary);
@@ -57,12 +58,14 @@ std::vector<Path::Item> getAuxiliaryLocations(bool exist_only) {
   location_list.emplace_back(Path::Item(DEFAULT_INSTALL_PREFIX) / "share" / "aux");
 
   if (exist_only) {
-    auto new_end = std::remove_if(location_list.begin(), location_list.end(),
-                                  [](const Path::Item& p) { return (not boost::filesystem::exists(p)); });
+    auto new_end = std::remove_if(location_list.begin(), location_list.end(), [](const Path::Item& p) {
+      return (not boost::filesystem::exists(p));
+    });
     location_list.erase(new_end, location_list.end());
   }
 
   return location_list;
 }
 
+}  // namespace Kernel
 }  // namespace Elements

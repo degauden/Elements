@@ -33,6 +33,7 @@
 #include "ElementsKernel/Export.h"
 
 namespace Elements {
+inline namespace Kernel {
 namespace Units {
 
 enum class StorageType {
@@ -64,12 +65,15 @@ ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageTyp
 template <typename T>
 ELEMENTS_API T storageConvert(const T& size, StorageType source_unit, StorageType target_unit);
 // explicit instantiation:
-extern template ELEMENTS_API double storageConvert<double>(const double& size, StorageType source_unit, StorageType target_unit);
-extern template ELEMENTS_API float  storageConvert<float>(const float& size, StorageType source_unit, StorageType target_unit);
-extern template ELEMENTS_API std::int64_t storageConvert<std::int64_t>(const std::int64_t& size, StorageType source_unit,
-                                                                       StorageType target_unit);
+extern template ELEMENTS_API double storageConvert<double>(const double& size, StorageType source_unit,
+                                                           StorageType target_unit);
+extern template ELEMENTS_API float  storageConvert<float>(const float& size, StorageType source_unit,
+                                                         StorageType target_unit);
+extern template ELEMENTS_API        std::int64_t
+                                    storageConvert<std::int64_t>(const std::int64_t& size, StorageType source_unit, StorageType target_unit);
 
 }  // namespace Units
+}  // namespace Kernel
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_IMPL_

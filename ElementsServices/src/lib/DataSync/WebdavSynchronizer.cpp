@@ -27,7 +27,8 @@ bool webdavIsInstalled() {
   return checkCall("wget -h");
 }
 
-WebdavSynchronizer::WebdavSynchronizer(const ConnectionConfiguration& connection, const DependencyConfiguration& dependency)
+WebdavSynchronizer::WebdavSynchronizer(const ConnectionConfiguration& connection,
+                                       const DependencyConfiguration& dependency)
     : DataSynchronizer(connection, dependency) {
   if (not webdavIsInstalled()) {
     throw std::runtime_error("You are trying to use WebDAV, "

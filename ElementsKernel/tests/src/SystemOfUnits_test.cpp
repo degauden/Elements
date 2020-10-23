@@ -20,11 +20,11 @@
 
 #include "ElementsKernel/SystemOfUnits.h"  // The interface to test
 
+#include <boost/math/constants/constants.hpp>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
-#include <boost/math/constants/constants.hpp>
 
-#include "ElementsKernel/Real.h"   // for the isEqual function
+#include "ElementsKernel/Real.h"  // for the isEqual function
 
 namespace Elements {
 
@@ -34,34 +34,33 @@ BOOST_AUTO_TEST_SUITE(SystemOfUnits_test)
 
 BOOST_AUTO_TEST_CASE(LuminousFlux_test) {
 
-  using Units::perMillion;
   using Units::jansky;
   using Units::microjansky;
+  using Units::perMillion;
 
-  BOOST_CHECK(isEqual(microjansky, jansky*perMillion));
+  BOOST_CHECK(isEqual(microjansky, jansky * perMillion));
 }
 
 BOOST_AUTO_TEST_CASE(Illuminance_test) {
 
-  using Units::lux;
   using Units::lumen;
+  using Units::lux;
   using Units::meter2;
 
-  BOOST_CHECK(isEqual(lux, lumen/meter2));
+  BOOST_CHECK(isEqual(lux, lumen / meter2));
 }
 
 BOOST_AUTO_TEST_CASE(Misc_test) {
 
   using Units::perCent;
-  BOOST_CHECK(isEqual(perCent, 1.0/100.0));
+  BOOST_CHECK(isEqual(perCent, 1.0 / 100.0));
 
   using Units::perThousand;
-  BOOST_CHECK(isEqual(perThousand, 1.0/1000.0));
+  BOOST_CHECK(isEqual(perThousand, 1.0 / 1000.0));
 
   using Units::perMillion;
-  BOOST_CHECK(isEqual(perMillion, 1.0/1.0e6));
+  BOOST_CHECK(isEqual(perMillion, 1.0 / 1.0e6));
 }
-
 
 //-----------------------------------------------------------------------------
 BOOST_AUTO_TEST_SUITE_END()

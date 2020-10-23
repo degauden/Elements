@@ -39,12 +39,24 @@
 namespace Elements {
 
 struct Module {
-  static inline std::string         name() { return THIS_MODULE_NAME_STRING; }
-  static inline std::string         versionString() { return THIS_MODULE_VERSION_STRING; }
-  static inline std::uint_least64_t version() { return THIS_MODULE_VERSION; }
-  static inline std::uint_least64_t majorVersion() { return THIS_MODULE_MAJOR_VERSION; }
-  static inline std::uint_least64_t minorVersion() { return THIS_MODULE_MINOR_VERSION; }
-  static inline std::uint_least64_t patchVersion() { return THIS_MODULE_PATCH_VERSION; }
+  static inline std::string name() {
+    return THIS_MODULE_NAME_STRING;
+  }
+  static inline std::string versionString() {
+    return THIS_MODULE_VERSION_STRING;
+  }
+  static inline std::uint_least64_t version() {
+    return THIS_MODULE_VERSION;
+  }
+  static inline std::uint_least64_t majorVersion() {
+    return THIS_MODULE_MAJOR_VERSION;
+  }
+  static inline std::uint_least64_t minorVersion() {
+    return THIS_MODULE_MINOR_VERSION;
+  }
+  static inline std::uint_least64_t patchVersion() {
+    return THIS_MODULE_PATCH_VERSION;
+  }
 };
 
 inline std::ostream& operator<<(std::ostream& stream, const Module& m) {

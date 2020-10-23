@@ -23,7 +23,8 @@ namespace DataSync {
 
 using std::make_shared;
 
-std::shared_ptr<DataSynchronizer> createSynchronizer(ConnectionConfiguration connection, DependencyConfiguration dependency) {
+std::shared_ptr<DataSynchronizer> createSynchronizer(ConnectionConfiguration connection,
+                                                     DependencyConfiguration dependency) {
   switch (connection.host) {
   case DataHost::IRODS:
     return make_shared<IrodsSynchronizer>(connection, dependency);

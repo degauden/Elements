@@ -76,11 +76,11 @@ private:
  * @param ELEMENTS_PROGRAM name of the main program class, derived from
  * the class Elements::SimpleProgram class.
  */
-#define MAIN(ELEMENTS_PROGRAM)                                                                                                     \
-  ELEMENTS_API int main(int argc, char* argv[]) {                                                                                  \
-    auto               program   = ELEMENTS_PROGRAM();                                                                             \
-    Elements::ExitCode exit_code = program.run(argc, argv);                                                                        \
-    return static_cast<Elements::ExitCodeType>(exit_code);                                                                         \
+#define MAIN(ELEMENTS_PROGRAM)                                                                                         \
+  ELEMENTS_API int main(int argc, char* argv[]) {                                                                      \
+    auto               program   = ELEMENTS_PROGRAM();                                                                 \
+    Elements::ExitCode exit_code = program.run(argc, argv);                                                            \
+    return static_cast<Elements::ExitCodeType>(exit_code);                                                             \
   }
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SIMPLEPROGRAM_H_

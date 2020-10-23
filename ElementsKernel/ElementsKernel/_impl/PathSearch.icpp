@@ -29,7 +29,7 @@
 #include "ElementsKernel/Path.h"
 
 namespace Elements {
-
+inline namespace Kernel {
 //-----------------------------------------------------------------------------
 // Function search
 template <typename T, typename ITER>
@@ -76,6 +76,7 @@ std::vector<T> pathSearch(const std::string& searched_name, T directory, SearchT
   return searchOption<T>(searched_name, directory, search_type);
 }
 
+}  // namespace Kernel
 }  // namespace Elements
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_IMPL_

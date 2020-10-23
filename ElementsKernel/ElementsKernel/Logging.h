@@ -140,7 +140,9 @@ public:
    * Logs a debug message.
    * @param logMessage The message to log
    */
-  void debug(const std::string& logMessage) { m_log4cppLogger.debug(logMessage); }
+  void debug(const std::string& logMessage) {
+    m_log4cppLogger.debug(logMessage);
+  }
 
   /**
    * Logs a debug message using format specifiers.
@@ -157,13 +159,17 @@ public:
    * "<<" operator.
    * @return An object used for logging a debug message using the "<<" opearator
    */
-  LogMessageStream debug() { return LogMessageStream{m_log4cppLogger, &log4cpp::Category::debug}; }
+  LogMessageStream debug() {
+    return LogMessageStream{m_log4cppLogger, &log4cpp::Category::debug};
+  }
 
   /**
    * Logs an info message.
    * @param logMessage The message to log
    */
-  void info(const std::string& logMessage) { m_log4cppLogger.info(logMessage); }
+  void info(const std::string& logMessage) {
+    m_log4cppLogger.info(logMessage);
+  }
 
   /**
    * Logs an info message using format specifiers.
@@ -180,13 +186,17 @@ public:
    * "<<" operator.
    * @return An object used for logging a info message using the "<<" opearator
    */
-  LogMessageStream info() { return LogMessageStream{m_log4cppLogger, &log4cpp::Category::info}; }
+  LogMessageStream info() {
+    return LogMessageStream{m_log4cppLogger, &log4cpp::Category::info};
+  }
 
   /**
    * Logs a warning message.
    * @param logMessage The message to log
    */
-  void warn(const std::string& logMessage) { m_log4cppLogger.warn(logMessage); }
+  void warn(const std::string& logMessage) {
+    m_log4cppLogger.warn(logMessage);
+  }
 
   /**
    * Logs a warning message using format specifiers.
@@ -203,13 +213,17 @@ public:
    * "<<" operator.
    * @return An object used for logging a warn message using the "<<" opearator
    */
-  LogMessageStream warn() { return LogMessageStream{m_log4cppLogger, &log4cpp::Category::warn}; }
+  LogMessageStream warn() {
+    return LogMessageStream{m_log4cppLogger, &log4cpp::Category::warn};
+  }
 
   /**
    * Logs an error message.
    * @param logMessage The message to log
    */
-  void error(const std::string& logMessage) { m_log4cppLogger.error(logMessage); }
+  void error(const std::string& logMessage) {
+    m_log4cppLogger.error(logMessage);
+  }
 
   /**
    * Logs an error message using format specifiers.
@@ -226,13 +240,17 @@ public:
    * "<<" operator.
    * @return An object used for logging a error message using the "<<" opearator
    */
-  LogMessageStream error() { return LogMessageStream{m_log4cppLogger, &log4cpp::Category::error}; }
+  LogMessageStream error() {
+    return LogMessageStream{m_log4cppLogger, &log4cpp::Category::error};
+  }
 
   /**
    * Logs a fatal message.
    * @param logMessage The message to log
    */
-  void fatal(const std::string& logMessage) { m_log4cppLogger.fatal(logMessage); }
+  void fatal(const std::string& logMessage) {
+    m_log4cppLogger.fatal(logMessage);
+  }
 
   /**
    * Logs a fatal message using format specifiers.
@@ -249,14 +267,18 @@ public:
    * "<<" operator.
    * @return An object used for logging a fatal message using the "<<" opearator
    */
-  LogMessageStream fatal() { return LogMessageStream{m_log4cppLogger, &log4cpp::Category::fatal}; }
+  LogMessageStream fatal() {
+    return LogMessageStream{m_log4cppLogger, &log4cpp::Category::fatal};
+  }
 
   /**
    * Logs a message.
    * @param level The logging level of the message
    * @param logMessage The message to log
    */
-  void log(log4cpp::Priority::Value level, const std::string& logMessage) { m_log4cppLogger.log(level, logMessage); }
+  void log(log4cpp::Priority::Value level, const std::string& logMessage) {
+    m_log4cppLogger.log(level, logMessage);
+  }
 
   /**
    * Logs an log message using a level and format specifiers.
