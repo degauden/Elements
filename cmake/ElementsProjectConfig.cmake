@@ -20,7 +20,6 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0
   if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
     cmake_policy(SET CMP0042 OLD)
   endif()
-  cmake_policy(SET CMP0028 NEW)
 endif()
 
 if(POLICY CMP0063)
