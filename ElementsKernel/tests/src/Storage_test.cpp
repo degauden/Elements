@@ -22,11 +22,17 @@
 #include "ElementsKernel/Storage.h"
 
 #include <boost/test/unit_test.hpp>
+#include <cstdint>
 
 #include "ElementsKernel/MathConstants.h"  // For pi
 #include "ElementsKernel/Real.h"           // For isEqual
 
+using std::int64_t;
+
 namespace Elements {
+
+using Kernel::Units::storageConvert;
+using Kernel::Units::StorageType;
 
 //-----------------------------------------------------------------------------
 //
@@ -38,8 +44,7 @@ BOOST_AUTO_TEST_SUITE(Storage_test)
 
 BOOST_AUTO_TEST_CASE(StorageFactorValue_test) {
 
-  using Units::StorageFactor;
-  using Units::StorageType;
+  using Kernel::Units::StorageFactor;
 
   BOOST_CHECK_EQUAL(StorageFactor[StorageType::Byte], 1);
   BOOST_CHECK_EQUAL(StorageFactor[StorageType::KiloByte], 1024);
@@ -56,8 +61,7 @@ BOOST_AUTO_TEST_CASE(StorageFactorValue_test) {
 
 BOOST_AUTO_TEST_CASE(StorageShortName_test) {
 
-  using Units::StorageShortName;
-  using Units::StorageType;
+  using Kernel::Units::StorageShortName;
 
   BOOST_CHECK_EQUAL(StorageShortName[StorageType::Byte], "B");
   BOOST_CHECK_EQUAL(StorageShortName[StorageType::KiloByte], "KiB");
@@ -74,8 +78,8 @@ BOOST_AUTO_TEST_CASE(StorageShortName_test) {
 
 BOOST_AUTO_TEST_CASE(RoundToDigits_test) {
 
-  using Units::pi;
-  using Units::roundToDigits;
+  using Kernel::Units::pi;
+  using Kernel::Units::roundToDigits;
 
   BOOST_CHECK(isEqual(roundToDigits(pi, 12), 3.14159265359));
   BOOST_CHECK(isEqual(roundToDigits(pi, 0), 3.));
@@ -86,10 +90,7 @@ BOOST_AUTO_TEST_CASE(RoundToDigits_test) {
 
 BOOST_AUTO_TEST_CASE(StorageConvertLower_test) {
 
-  using Units::storageConvert;
-  using Units::StorageType;
-
-  std::int64_t size_in_byte{1000};
+  int64_t size_in_byte{1000};
 
   BOOST_CHECK(
       isEqual(storageConvert(static_cast<double>(size_in_byte), StorageType::Byte, StorageType::KiloByte), 0.977));
@@ -104,10 +105,7 @@ BOOST_AUTO_TEST_CASE(StorageConvertLower_test) {
 
 BOOST_AUTO_TEST_CASE(StorageConverterRounding_test) {
 
-  using Units::storageConvert;
-  using Units::StorageType;
-
-  std::int64_t size_in_byte{1000};
+  int64_t size_in_byte{1000};
 
   BOOST_CHECK_EQUAL(storageConvert(size_in_byte, StorageType::Byte, StorageType::KiloByte), 1);
   BOOST_CHECK_EQUAL(storageConvert<9>(size_in_byte, StorageType::Byte, StorageType::KiloByte), 1);
@@ -118,10 +116,7 @@ BOOST_AUTO_TEST_CASE(StorageConverterRounding_test) {
 
 BOOST_AUTO_TEST_CASE(StorageConvertUpper_test) {
 
-  using Units::storageConvert;
-  using Units::StorageType;
-
-  std::int64_t size{1};
+  int64_t size{1};
 
   BOOST_CHECK(isEqual(storageConvert(static_cast<double>(size), StorageType::KiloByte, StorageType::Byte), 1024.0));
   BOOST_CHECK(isEqual(storageConvert<9>(static_cast<double>(size), StorageType::KiloByte, StorageType::Byte), 1024.0));
@@ -142,10 +137,7 @@ BOOST_AUTO_TEST_CASE(StorageConvertUpper_test) {
 
 BOOST_AUTO_TEST_CASE(StorageConvertMetric_test) {
 
-  using Units::storageConvert;
-  using Units::StorageType;
-
-  std::int64_t size{1};
+  int64_t size{1};
 
   BOOST_CHECK(
       isEqual(storageConvert(static_cast<double>(size), StorageType::MetricKiloByte, StorageType::Byte), 1000.0));
