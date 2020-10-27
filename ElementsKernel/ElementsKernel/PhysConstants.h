@@ -30,6 +30,7 @@
 #include "ElementsKernel/SystemOfUnits.h"
 
 namespace Elements {
+inline namespace Kernel {
 namespace Units {
 
 /// @brief \f$N_A\f$
@@ -79,6 +80,7 @@ constexpr double kGasThreshold   = 10. * mg / cm3;
 constexpr double universe_mean_density = 1.e-25 * g / cm3;
 
 }  // namespace Units
+}  // namespace Kernel
 }  // namespace Elements
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PHYSCONSTANTS_H_

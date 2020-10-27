@@ -29,6 +29,7 @@
 #include "ElementsKernel/MathConstants.h"
 
 namespace Elements {
+inline namespace Kernel {
 namespace Units {
 
 //
@@ -268,6 +269,7 @@ constexpr double perThousand = 0.001;
 constexpr double perMillion  = 0.000001;
 
 }  // namespace Units
+}  // namespace Kernel
 }  // namespace Elements
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SYSTEMOFUNITS_H_

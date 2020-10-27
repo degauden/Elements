@@ -34,31 +34,31 @@ BOOST_AUTO_TEST_SUITE(SystemOfUnits_test)
 
 BOOST_AUTO_TEST_CASE(LuminousFlux_test) {
 
-  using Units::jansky;
-  using Units::microjansky;
-  using Units::perMillion;
+  using Kernel::Units::jansky;
+  using Kernel::Units::microjansky;
+  using Kernel::Units::perMillion;
 
   BOOST_CHECK(isEqual(microjansky, jansky * perMillion));
 }
 
 BOOST_AUTO_TEST_CASE(Illuminance_test) {
 
-  using Units::lumen;
-  using Units::lux;
-  using Units::meter2;
+  using Kernel::Units::lumen;
+  using Kernel::Units::lux;
+  using Kernel::Units::meter2;
 
   BOOST_CHECK(isEqual(lux, lumen / meter2));
 }
 
 BOOST_AUTO_TEST_CASE(Misc_test) {
 
-  using Units::perCent;
+  using Kernel::Units::perCent;
   BOOST_CHECK(isEqual(perCent, 1.0 / 100.0));
 
-  using Units::perThousand;
+  using Kernel::Units::perThousand;
   BOOST_CHECK(isEqual(perThousand, 1.0 / 1000.0));
 
-  using Units::perMillion;
+  using Kernel::Units::perMillion;
   BOOST_CHECK(isEqual(perMillion, 1.0 / 1.0e6));
 }
 
