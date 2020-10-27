@@ -43,6 +43,12 @@
 namespace Elements {
 inline namespace Kernel {
 
+/**
+ * @brief retrieve the variable name used for the auxiliary file lookup
+ * @ingroup ElementsKernel
+ * @return
+ *   the standard variable name: ELEMENTS_AUX_PATH
+ */
 ELEMENTS_API std::string getAuxiliaryVariableName();
 
 template <typename T>

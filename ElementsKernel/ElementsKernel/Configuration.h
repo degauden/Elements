@@ -43,6 +43,12 @@
 namespace Elements {
 inline namespace Kernel {
 
+/**
+ * @brief retrieve the variable name used for the configuration file lookup
+ * @ingroup ElementsKernel
+ * @return
+ *   the standard variable name: ELEMENTS_CONF_PATH
+ */
 ELEMENTS_API std::string getConfigurationVariableName();
 
 template <typename T>
