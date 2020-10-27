@@ -27,6 +27,7 @@
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_MATHCONSTANTS_H_
 
 namespace Elements {
+inline namespace Kernel {
 namespace Units {
 
 /// @brief \f$\pi\f$
@@ -50,6 +51,7 @@ constexpr double gamma = 0.57721566490153286061;
 constexpr double e = 2.71828182845904523536;
 
 }  // namespace Units
+}  // namespace Kernel
 }  // namespace Elements
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_MATHCONSTANTS_H_

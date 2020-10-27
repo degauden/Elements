@@ -328,9 +328,18 @@ option(INSTALL_TESTS
        "Enable the installation of the binary tests"
        OFF)
 
-option(USE_VERSIONED_LIBRARIES "Generate versioned shared libraries" ON)
+option(USE_VERSIONED_LIBRARIES
+       "Generate versioned shared libraries"
+       ON)
 
-option(USE_TIMESTAMP_RPM_VERSION "Use timestamp for the RPM version in non-squeezed mode" OFF)
+option(USE_TIMESTAMP_RPM_VERSION
+       "Use timestamp for the RPM version in non-squeezed mode"
+       OFF)
+
+option(Boost_NO_BOOST_CMAKE
+       "Don't use the BoostConfig.cmake file introduced in Boost 1.70"
+       ON)
+
 
 
 #--- Compilation Flags ---------------------------------------------------------
