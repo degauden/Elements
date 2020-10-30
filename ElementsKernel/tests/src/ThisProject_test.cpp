@@ -21,8 +21,8 @@
 
 #include "ThisProject.h"
 
-#include <typeinfo>                  // for type_info
 #include <string>
+#include <typeinfo>  // for type_info
 
 #include <boost/test/unit_test.hpp>
 
@@ -38,17 +38,15 @@ BOOST_AUTO_TEST_CASE(ThisProjectName_test) {
 
   // Get the present module. Here this must be the test executable
   BOOST_CHECK_EQUAL(THIS_PROJECT_NAME_STRING, "Elements");
-
 }
 
 BOOST_AUTO_TEST_CASE(ThisProjectType_test) {
 
   // Get the present module. Here this must be the test executable
   BOOST_CHECK(typeid(THIS_PROJECT_NAME_STRING) == typeid(string));
-  string install_location {THIS_PROJECT_INSTALL_LOCATION_STRING};
+  string install_location{THIS_PROJECT_INSTALL_LOCATION_STRING};
   BOOST_CHECK(typeid(install_location) == typeid(string));
   BOOST_CHECK(typeid(THIS_PROJECT_INSTALL_LOCATION_STRING) == typeid(string));
-
 }
 
 //-----------------------------------------------------------------------------

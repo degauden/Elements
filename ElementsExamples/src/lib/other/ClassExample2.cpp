@@ -21,11 +21,11 @@
 
 #include "ElementsExamples/ClassExample2.h"
 
-#include <cstdint>                           // for std::int64_t
-#include <cmath>                             // for std::abs
-#include <vector>                            // for vector
-#include <memory>                            // for unique_ptr
-#include <string>                            // for string
+#include <cmath>    // for std::abs
+#include <cstdint>  // for std::int64_t
+#include <memory>   // for unique_ptr
+#include <string>   // for string
+#include <vector>   // for vector
 
 #include "ElementsKernel/Exception.h"
 
@@ -43,8 +43,7 @@ double ClassExample2::fundamentalTypeMethod(const double input_variable) const {
 /*
  * This is a silly example just to have a method throwing an exception
  */
-double ClassExample2::divideNumbers(const double first,
-    const double second) const {
+double ClassExample2::divideNumbers(const double first, const double second) const {
   double tolerance = 1e-12;
   if (std::abs(second) < tolerance) {
     throw Elements::Exception() << "Dividing by " << second << " exception in ClassExample2::divideNumbers(...)";
@@ -52,19 +51,16 @@ double ClassExample2::divideNumbers(const double first,
   return first / second;
 }
 
-void ClassExample2::passingUniquePointer(
-    std::unique_ptr<vector<double>> vector_unique_ptr) const {
-    vector_unique_ptr->size();
+void ClassExample2::passingUniquePointer(std::unique_ptr<vector<double>> vector_unique_ptr) const {
+  vector_unique_ptr->size();
 }
 
-void ClassExample2::passingObjectInGeneral(
-    const vector<double>& input_object) const {
-    input_object.size();
+void ClassExample2::passingObjectInGeneral(const vector<double>& input_object) const {
+  input_object.size();
 }
 
-ClassExample2 ClassExample2::factoryMethod(const std::int64_t source_id,
-    const double ra) {
-  return ClassExample2 { source_id, ra };
+ClassExample2 ClassExample2::factoryMethod(const std::int64_t source_id, const double ra) {
+  return ClassExample2{source_id, ra};
 }
 
 }  // namespace Examples

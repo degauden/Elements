@@ -92,7 +92,8 @@ def substituteAuxFiles(module_dir, program_name):
                        "PROGRAMNAME": program_name
                     }
 
-    Auxiliary.configure(os.path.join("ElementsKernel", "templates", PROGRAM_TEMPLATE_FILE_IN), module_dir, target_location,
+    Auxiliary.configure(os.path.join("ElementsKernel", "templates", PROGRAM_TEMPLATE_FILE_IN),
+                        module_dir, target_location,
                         configuration=configuration,
                         create_missing_dir=True)
     ProjectCommonRoutines.addItemToCreationList(os.path.join(module_dir, target_location))

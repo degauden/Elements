@@ -34,34 +34,37 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 
-#include <string>                     // for string
-#include <vector>                     // for vector
+#include <string>  // for string
+#include <vector>  // for vector
 
-#include "ElementsKernel/Path.h"      // for Path::Item
-#include "ElementsKernel/Export.h"    // ELEMENTS_API
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Path.h"    // for Path::Item
 
 namespace Elements {
+inline namespace Kernel {
 
+/**
+ * @brief retrieve the variable name used for the auxiliary file lookup
+ * @ingroup ElementsKernel
+ * @return
+ *   the standard variable name: ELEMENTS_AUX_PATH
+ */
 ELEMENTS_API std::string getAuxiliaryVariableName();
 
 template <typename T>
 ELEMENTS_API Path::Item getAuxiliaryPath(const T& file_name, bool raise_exception = true);
 
 // instantiation of the most expected types
-extern template
-ELEMENTS_API Path::Item getAuxiliaryPath(const Path::Item& file_name,
-                                                      bool raise_exception);
-extern template
-ELEMENTS_API Path::Item getAuxiliaryPath(const std::string& file_name,
-                                                      bool raise_exception);
+extern template ELEMENTS_API Path::Item getAuxiliaryPath(const Path::Item& file_name, bool raise_exception);
+extern template ELEMENTS_API Path::Item getAuxiliaryPath(const std::string& file_name, bool raise_exception);
 
 ELEMENTS_API std::vector<Path::Item> getAuxiliaryLocations(bool exist_only = false);
-
 
 /** @example ElementsExamples/src/program/CCfitsExample.cpp
  * This is an example of how to use the getAuxiliaryPath function.
  */
 
+}  // namespace Kernel
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_

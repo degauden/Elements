@@ -18,45 +18,41 @@
  *
  */
 
-#include <map>                              // for map
-#include <string>                           // for string
+#include <map>     // for map
+#include <string>  // for string
 
-#include <gnuastro/fits.h>                    // header file to test
 #include <gnuastro/cosmology.h>
+#include <gnuastro/fits.h>  // header file to test
 
+#include "ElementsKernel/Auxiliary.h"
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
-#include "ElementsKernel/Auxiliary.h"
 
-using std::string;
 using std::map;
+using std::string;
 
 namespace Elements {
 namespace Examples {
 
-class GnuAstroExample: public Program {
+class GnuAstroExample : public Program {
 
 public:
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("GnuAstroExample");
 
-    string test_upper_string {"THATSTRING"};
+    string test_upper_string{"THATSTRING"};
     log.info() << "This is the test upper string: " << test_upper_string;
 
-    double z {2.5};
-    double H0 {67.66};
+    double z{2.5};
+    double H0{67.66};
 
     auto age = gal_cosmology_age(z, H0, 0.0, 0.0, 0.0);
 
     log.info() << "Age of the Universe @ z = " << z << " : " << age << " GA";
 
-
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples

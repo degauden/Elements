@@ -51,11 +51,11 @@ namespace System {
  * @tparam DESTPTR destination pointer type
  * @return destination pointer
  */
-template<typename DESTPTR, typename SRCPTR>
+template <typename DESTPTR, typename SRCPTR>
 inline DESTPTR FuncPtrCast(SRCPTR ptr) {
 #ifdef __GNUC__
   union {
-    SRCPTR src;
+    SRCPTR  src;
     DESTPTR dst;
   } p2p;
   p2p.src = ptr;

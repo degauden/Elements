@@ -18,32 +18,30 @@
  *
  */
 
-#include <map>                              // for map
-#include <string>                           // for string
+#include <map>     // for map
+#include <string>  // for string
 
-#include <CCfits/CCfits>                    // header file to test
+#include <CCfits/CCfits>  // header file to test
 
+#include "ElementsKernel/Auxiliary.h"
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
-#include "ElementsKernel/Auxiliary.h"
 
-using std::string;
 using std::map;
+using std::string;
 
 namespace Elements {
 namespace Examples {
 
-class CCfitsExample: public Program {
+class CCfitsExample : public Program {
 
 public:
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("CCfitsExample");
 
-    string test_upper_string {"THATSTRING"};
+    string test_upper_string{"THATSTRING"};
     log.info() << "This is the test upper string: " << test_upper_string;
-
 
     string test_lower_string = CCfits::FITSUtil::lowerCase(test_upper_string);
     log.info() << "This is the test lower string: " << test_lower_string;
@@ -54,17 +52,12 @@ public:
     log.info() << "Opening the file " << fits_file_path.string();
     CCfits::FITS fits_file(fits_file_path.string());
 
-
     CCfits::ExtHDU& extension = fits_file.extension(1);
-
 
     log.info() << "Extension comments: " << extension.getComments();
 
-
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples

@@ -27,16 +27,16 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAM_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAM_H_
 
-#include <string>                       // for string
-#include <utility>                      // for pair
-#include <map>                          // for map
-#include <memory>                       // for unique_ptr
+#include <map>      // for map
+#include <memory>   // for unique_ptr
+#include <string>   // for string
+#include <utility>  // for pair
 
 #include <boost/program_options.hpp>
 
-#include "ElementsKernel/Export.h"      // ELEMENTS_API
-#include "ElementsKernel/Exit.h"        // for ExitCode
-#include "ElementsKernel/Logging.h"     // for Logging
+#include "ElementsKernel/Exit.h"     // for ExitCode
+#include "ElementsKernel/Export.h"   // ELEMENTS_API
+#include "ElementsKernel/Logging.h"  // for Logging
 
 namespace Elements {
 
@@ -52,21 +52,20 @@ namespace Elements {
 class ELEMENTS_API Program {
 
 public:
-
   // backwards compatible type aliases
-  using options_description = boost::program_options::options_description;
+  using options_description            = boost::program_options::options_description;
   using positional_options_description = boost::program_options::positional_options_description;
-  using variable_value = boost::program_options::variable_value;
-  using variables_map = boost::program_options::variables_map;
+  using variable_value                 = boost::program_options::variable_value;
+  using variables_map                  = boost::program_options::variables_map;
 
   // camel case type aliases
-  using OptionsDescription = options_description;
+  using OptionsDescription           = options_description;
   using PositionalOptionsDescription = positional_options_description;
-  using VariableValue = variable_value;
-  using VariablesMap = variables_map;
+  using VariableValue                = variable_value;
+  using VariablesMap                 = variables_map;
 
   using ExitCode = Elements::ExitCode;
-  using Logging = Elements::Logging;
+  using Logging  = Elements::Logging;
 
   /**
    * @brief Constructor
@@ -114,7 +113,6 @@ public:
    *    The exit code which should be returned when the program exits
    */
   virtual ExitCode mainMethod(std::map<std::string, VariableValue>& args) = 0;
-
 };
 
 /** These are examples of how to create a executable program using

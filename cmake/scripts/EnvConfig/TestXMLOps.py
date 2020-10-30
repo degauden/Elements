@@ -10,7 +10,7 @@ try:
 except ImportError:
     # python 3 version
     from io import StringIO
-    
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from EnvConfig import Control  # @UnresolvedImport

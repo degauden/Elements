@@ -19,10 +19,10 @@
  *
  */
 
-#include <vector>                              // for vector
-#include <functional>                          // for function
+#include <functional>  // for function
+#include <vector>      // for vector
 
-#include "ElementsKernel/Logging.h"            // for Logging
+#include "ElementsKernel/Logging.h"  // for Logging
 
 #include "ElementsExamples/callBackExample.h"
 
@@ -31,7 +31,7 @@ using std::vector;
 namespace Elements {
 namespace Examples {
 
-double testCallBack(vector<double> x, const std::function<double(vector<double>)> &fun) {
+double testCallBack(vector<double> x, const std::function<double(vector<double>)>& fun) {
 
   auto log = Logging::getLogger("ElementsExamples");
 
@@ -43,9 +43,8 @@ double testCallBack(vector<double> x, const std::function<double(vector<double>)
 
   log.info() << "Returning the result";
 
-    return (f);
+  return (f);
 }
 
 }  // namespace Examples
 }  // namespace Elements
-

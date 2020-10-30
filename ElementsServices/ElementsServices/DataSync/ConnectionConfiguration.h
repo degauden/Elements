@@ -38,14 +38,16 @@ namespace DataSync {
  * @brief The test data hosting solution.
  */
 enum DataHost {
-  IRODS, WEBDAV,
+  IRODS,
+  WEBDAV,
 };
 
 /**
  * @brief The overwriting policy if the local file already exists.
  */
 enum OverwritingPolicy {
-  ABORT, OVERWRITE,
+  ABORT,
+  OVERWRITE,
 };
 
 /**
@@ -53,15 +55,12 @@ enum OverwritingPolicy {
  * @ingroup ElementsServices
  * @brief Exception raised when a hosting solution is not supported by the tool.
  */
-class ELEMENTS_API UnknownHost: public std::runtime_error {
+class ELEMENTS_API UnknownHost : public std::runtime_error {
 public:
   virtual ~UnknownHost() = default;
-  UnknownHost() :
-      std::runtime_error("I don't know this hosting solution!") {
-  }
-  explicit UnknownHost(const std::string& hostName):
-      std::runtime_error("I don't know this hosting solution: " + hostName) {
-  }
+  UnknownHost() : std::runtime_error("I don't know this hosting solution!") {}
+  explicit UnknownHost(const std::string& hostName)
+      : std::runtime_error("I don't know this hosting solution: " + hostName) {}
 };
 
 /**
@@ -75,7 +74,6 @@ public:
 class ELEMENTS_API ConnectionConfiguration {
 
 public:
-
   virtual ~ConnectionConfiguration() = default;
 
   /**
@@ -89,7 +87,6 @@ public:
   bool overwritingAllowed() const;
 
 protected:
-
   void parseConfigurationFile(const path& filename);
 
   void parseHost(const std::string& name);
@@ -97,16 +94,14 @@ protected:
   void parseOverwritingPolicy(const std::string& policy);
 
 public:
-
-  DataHost host;
-  std::string hostUrl;
-  std::string user;
-  std::string password;
+  DataHost          host;
+  std::string       hostUrl;
+  std::string       user;
+  std::string       password;
   OverwritingPolicy overwritingPolicy;
-  size_t tries;
-  path distantRoot;
-  path localRoot;
-
+  size_t            tries;
+  path              distantRoot;
+  path              localRoot;
 };
 
 }  // namespace DataSync

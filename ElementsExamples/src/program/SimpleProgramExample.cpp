@@ -19,12 +19,12 @@
  *
  */
 
-#include <iostream>                           // for cout, endl
-#include <map>                                // for map
-#include <string>                             // for string
+#include <iostream>  // for cout, endl
+#include <map>       // for map
+#include <string>    // for string
 
-#include "ElementsKernel/Sleep.h"             // for nanoSleep
 #include "ElementsKernel/ProgramHeaders.h"
+#include "ElementsKernel/Sleep.h"  // for nanoSleep
 #include "ElementsKernel/Unused.h"
 
 using std::map;
@@ -32,7 +32,6 @@ using std::string;
 
 namespace Elements {
 namespace Examples {
-
 
 /**
  * @class SimpleProgramExample
@@ -42,10 +41,9 @@ namespace Examples {
  *    This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
  *    conveniently to write a new program.
  */
-class SimpleProgramExample: public Program {
+class SimpleProgramExample : public Program {
 
 public:
-
   /**
    * @brief
    *    The "main" method.
@@ -69,9 +67,7 @@ public:
     std::cout << "This Works too!" << std::endl;
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples

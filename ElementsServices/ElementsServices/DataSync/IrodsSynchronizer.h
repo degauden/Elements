@@ -44,20 +44,14 @@ ELEMENTS_API bool irodsIsInstalled();
  * @ingroup ElementsServices
  * @brief A data synchronizer for iRODS hosts.
  */
-class ELEMENTS_API IrodsSynchronizer: public DataSynchronizer {
+class ELEMENTS_API IrodsSynchronizer : public DataSynchronizer {
 
 public:
-
   virtual ~IrodsSynchronizer() = default;
 
-  IrodsSynchronizer(
-      const ConnectionConfiguration& connection,
-      const DependencyConfiguration& dependency);
+  IrodsSynchronizer(const ConnectionConfiguration& connection, const DependencyConfiguration& dependency);
 
-  std::string createDownloadCommand(
-      path distantFile,
-      path localFile) const override;
-
+  std::string createDownloadCommand(path distantFile, path localFile) const override;
 };
 
 }  // namespace DataSync

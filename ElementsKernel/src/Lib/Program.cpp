@@ -21,25 +21,25 @@
 
 #include "ElementsKernel/Program.h"
 
-#include <utility>                                       // for pair
+#include <utility>  // for pair
 
 namespace Elements {
 
-  using OptionsDescription = Program::OptionsDescription;
-  using PositionalOptionsDescription = Program::PositionalOptionsDescription;
+using OptionsDescription           = Program::OptionsDescription;
+using PositionalOptionsDescription = Program::PositionalOptionsDescription;
 
-  OptionsDescription Program::defineSpecificProgramOptions() {
-    OptionsDescription config_desc("");
-    return config_desc;
-  }
+OptionsDescription Program::defineSpecificProgramOptions() {
+  OptionsDescription config_desc("");
+  return config_desc;
+}
 
-  std::pair<OptionsDescription, PositionalOptionsDescription> Program::defineProgramArguments() {
-    OptionsDescription desc("");
-    PositionalOptionsDescription pos_desc;
+std::pair<OptionsDescription, PositionalOptionsDescription> Program::defineProgramArguments() {
+  OptionsDescription           desc("");
+  PositionalOptionsDescription pos_desc;
 
-    return std::make_pair(desc, pos_desc);
-  }
+  return std::make_pair(desc, pos_desc);
+}
 
-  Program::~Program() = default;
+Program::~Program() = default;
 
 }  // namespace Elements

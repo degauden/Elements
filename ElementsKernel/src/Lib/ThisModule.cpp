@@ -30,7 +30,6 @@
 namespace Elements {
 namespace System {
 
-
 const ModuleInfo& getThisExecutableInfo() {
   static ModuleInfo this_module;
   if (this_module.isEmpty()) {
@@ -45,7 +44,6 @@ const ModuleInfo& getThisExecutableInfo() {
 
   return this_module;
 }
-
 
 }  // namespace System
 }  // namespace Elements

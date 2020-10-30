@@ -72,9 +72,9 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_REAL_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_REAL_H_
 
-#include <limits>                   // for numeric_limits
-#include <type_traits>              // for is_floating_point
-#include <cmath>                    // for round
+#include <cmath>        // for round
+#include <limits>       // for numeric_limits
+#include <type_traits>  // for is_floating_point
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 #include "ElementsKernel/Unused.h"  // ELEMENTS_UNUSED
@@ -84,9 +84,9 @@ using std::numeric_limits;
 namespace Elements {
 
 /// Single precision float default maximum unit in the last place
-constexpr std::size_t FLT_DEFAULT_MAX_ULPS { 4 };
+constexpr std::size_t FLT_DEFAULT_MAX_ULPS{4};
 /// Double precision float default maximum unit in the last place
-constexpr std::size_t DBL_DEFAULT_MAX_ULPS { 10 };
+constexpr std::size_t DBL_DEFAULT_MAX_ULPS{10};
 
 // For testing purposes only. Rather use the isEqual functions for real
 // life comparison
@@ -95,8 +95,7 @@ ELEMENTS_API extern const double FLT_DEFAULT_TEST_TOLERANCE;
 /// Double precision float default test tolerance
 ELEMENTS_API extern const double DBL_DEFAULT_TEST_TOLERANCE;
 
-
-template<std::size_t size>
+template <std::size_t size>
 class ELEMENTS_API TypeWithSize {
 public:
   // This prevents the user from using TypeWithSize<N> with incorrect
@@ -105,23 +104,23 @@ public:
 };
 
 // The specialisation for size 4.
-template<>
+template <>
 class ELEMENTS_API TypeWithSize<4> {
 public:
   // unsigned int has size 4 in both gcc and MSVC.
   //
   // As base/basictypes.h doesn't compile on Windows, we cannot use
   // uint32, uint64, and etc here.
-  using Int = int;
+  using Int  = int;
   using UInt = unsigned int;
 };
 
 // The specialisation for size 8.
-template<>
+template <>
 class ELEMENTS_API TypeWithSize<8> {
 public:
-  using Int = long long; // NOLINT
-  using UInt = unsigned long long; // NOLINT
+  using Int  = long long;           // NOLINT
+  using UInt = unsigned long long;  // NOLINT
 };
 
 template <typename RawType>
@@ -138,7 +137,6 @@ template <>
 constexpr std::size_t defaultMaxUlps<double>() {
   return DBL_DEFAULT_MAX_ULPS;
 }
-
 
 // This template class represents an IEEE floating-point number
 // (either single-precision or double-precision, depending on the
@@ -169,7 +167,7 @@ constexpr std::size_t defaultMaxUlps<double>() {
 // Template parameter:
 //
 //   RawType: the raw floating-point type (either float or double)
-template<typename RawType>
+template <typename RawType>
 class ELEMENTS_API FloatingPoint {
 public:
   // Defines the unsigned integer type that has the same size as the
@@ -225,7 +223,7 @@ public:
   // Reinterprets a bit pattern as a floating-point number.
   //
   // This function is needed to test the AlmostEquals() method.
-  static RawType ReinterpretBits(const Bits &bits) {
+  static RawType ReinterpretBits(const Bits& bits) {
     FloatingPoint fp(0);
     fp.m_u.m_bits = bits;
     return fp.m_u.m_value;
@@ -239,7 +237,7 @@ public:
   // Non-static methods
 
   // Returns the bits that represents this number.
-  const Bits &bits() const {
+  const Bits& bits() const {
     return m_u.m_bits;
   }
 
@@ -295,7 +293,7 @@ public:
   //
   // Read http://en.wikipedia.org/wiki/Signed_number_representations
   // for more details on signed number representations.
-  static Bits signAndMagnitudeToBiased(const Bits &sam) {
+  static Bits signAndMagnitudeToBiased(const Bits& sam) {
     if (s_sign_bitmask & sam) {
       // sam represents a negative number.
       return ~sam + 1;
@@ -307,7 +305,7 @@ public:
 
   // Given two numbers in the sign-and-magnitude representation,
   // returns the distance between them as an unsigned number.
-  static Bits distanceBetweenSignAndMagnitudeNumbers(const Bits &sam1, const Bits &sam2) {
+  static Bits distanceBetweenSignAndMagnitudeNumbers(const Bits& sam1, const Bits& sam2) {
     const Bits biased1 = signAndMagnitudeToBiased(sam1);
     const Bits biased2 = signAndMagnitudeToBiased(sam2);
     return (biased1 >= biased2) ? (biased1 - biased2) : (biased2 - biased1);
@@ -317,34 +315,30 @@ private:
   // The data type used to store the actual floating-point number.
   union FloatingPointUnion {
     RawType m_value;  // The raw floating-point number.
-    Bits m_bits;      // The bits that represent the number.
+    Bits    m_bits;   // The bits that represent the number.
   };
 
   FloatingPointUnion m_u;
 };
 
-
 // Usable AlmostEqual function
 
 template <typename FloatType>
-bool almostEqual2sComplement(ELEMENTS_UNUSED const FloatType& a,
-                             ELEMENTS_UNUSED const FloatType& b,
+bool almostEqual2sComplement(ELEMENTS_UNUSED const FloatType& a, ELEMENTS_UNUSED const FloatType& b,
                              ELEMENTS_UNUSED const std::size_t& max_ulps = 0) {
   return false;
 }
 
-
 template <typename RawType>
 bool isNan(const RawType& x) {
 
-  using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
-  Bits x_bits = *reinterpret_cast<const Bits *>(&x);
+  using Bits  = typename TypeWithSize<sizeof(RawType)>::UInt;
+  Bits x_bits = *reinterpret_cast<const Bits*>(&x);
 
-  Bits x_exp_bits = FloatingPoint<RawType>::s_exponent_bitmask & x_bits;
+  Bits x_exp_bits  = FloatingPoint<RawType>::s_exponent_bitmask & x_bits;
   Bits x_frac_bits = FloatingPoint<RawType>::s_fraction_bitmask & x_bits;
 
   return (x_exp_bits == FloatingPoint<RawType>::s_exponent_bitmask) && (x_frac_bits != 0);
-
 }
 
 template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
@@ -353,10 +347,10 @@ bool isEqual(const RawType& left, const RawType& right) {
   bool is_equal{false};
 
   if (not(isNan<RawType>(left) or isNan<RawType>(right))) {
-    using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
-    Bits l_bits = *reinterpret_cast<const Bits *>(&left);
-    Bits r_bits = *reinterpret_cast<const Bits *>(&right);
-    is_equal = (FloatingPoint<RawType>::distanceBetweenSignAndMagnitudeNumbers(l_bits, r_bits) <= max_ulps);
+    using Bits  = typename TypeWithSize<sizeof(RawType)>::UInt;
+    Bits l_bits = *reinterpret_cast<const Bits*>(&left);
+    Bits r_bits = *reinterpret_cast<const Bits*>(&right);
+    is_equal    = (FloatingPoint<RawType>::distanceBetweenSignAndMagnitudeNumbers(l_bits, r_bits) <= max_ulps);
   }
 
   return is_equal;
@@ -374,7 +368,7 @@ inline bool isEqual(const double& left, const double& right) {
 
 template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
 inline bool isNotEqual(const RawType& left, const RawType& right) {
-  return (not isEqual<RawType, max_ulps>(left, right) );
+  return (not isEqual<RawType, max_ulps>(left, right));
 }
 
 template <std::size_t max_ulps>
@@ -387,24 +381,23 @@ inline bool isNotEqual(const double& left, const double& right) {
   return (isNotEqual<double, max_ulps>(left, right));
 }
 
-
 template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
 bool isLess(const RawType& left, const RawType& right) {
   bool is_less{false};
 
-  if ( left < right && (not isEqual<RawType, max_ulps>(left, right)) ) {
+  if (left < right && (not isEqual<RawType, max_ulps>(left, right))) {
     is_less = true;
   }
 
   return is_less;
 }
 
-template<std::size_t max_ulps>
+template <std::size_t max_ulps>
 inline bool isLess(const float& left, const float& right) {
   return (isLess<float, max_ulps>(left, right));
 }
 
-template<std::size_t max_ulps>
+template <std::size_t max_ulps>
 inline bool isLess(const double& left, const double& right) {
   return (isLess<double, max_ulps>(left, right));
 }
@@ -413,19 +406,19 @@ template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
 bool isGreater(const RawType& left, const RawType& right) {
   bool is_greater{false};
 
-  if ( left > right && (not isEqual<RawType, max_ulps>(left, right)) ) {
+  if (left > right && (not isEqual<RawType, max_ulps>(left, right))) {
     is_greater = true;
   }
 
   return is_greater;
 }
 
-template<std::size_t max_ulps>
+template <std::size_t max_ulps>
 inline bool isGreater(const float& left, const float& right) {
   return (isGreater<float, max_ulps>(left, right));
 }
 
-template<std::size_t max_ulps>
+template <std::size_t max_ulps>
 inline bool isGreater(const double& left, const double& right) {
   return (isGreater<double, max_ulps>(left, right));
 }
@@ -434,19 +427,19 @@ template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
 bool isLessOrEqual(const RawType& left, const RawType& right) {
   bool is_loe{false};
 
-  if (not isGreater<RawType, max_ulps>(left, right))  {
+  if (not isGreater<RawType, max_ulps>(left, right)) {
     is_loe = true;
   }
 
   return is_loe;
 }
 
-template<std::size_t max_ulps>
+template <std::size_t max_ulps>
 inline bool isLessOrEqual(const float& left, const float& right) {
   return (isLessOrEqual<float, max_ulps>(left, right));
 }
 
-template<std::size_t max_ulps>
+template <std::size_t max_ulps>
 inline bool isLessOrEqual(const double& left, const double& right) {
   return (isLessOrEqual<double, max_ulps>(left, right));
 }
@@ -455,19 +448,19 @@ template <typename RawType, std::size_t max_ulps = defaultMaxUlps<RawType>()>
 bool isGreaterOrEqual(const RawType& left, const RawType& right) {
   bool is_goe{false};
 
-  if (not isLess<RawType, max_ulps>(left, right))  {
+  if (not isLess<RawType, max_ulps>(left, right)) {
     is_goe = true;
   }
 
   return is_goe;
 }
 
-template<std::size_t max_ulps>
+template <std::size_t max_ulps>
 inline bool isGreaterOrEqual(const float& left, const float& right) {
   return (isGreaterOrEqual<float, max_ulps>(left, right));
 }
 
-template<std::size_t max_ulps>
+template <std::size_t max_ulps>
 inline bool isGreaterOrEqual(const double& left, const double& right) {
   return (isGreaterOrEqual<double, max_ulps>(left, right));
 }
@@ -489,7 +482,7 @@ inline bool isGreaterOrEqual(const double& left, const double& right) {
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
 ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
-                                             const int& max_ulps = FLT_DEFAULT_MAX_ULPS);
+                                          const int& max_ulps = FLT_DEFAULT_MAX_ULPS);
 /**
  * @brief
  *   This function compare 2 doubles with a relative tolerance
@@ -507,7 +500,7 @@ ELEMENTS_API bool almostEqual2sComplement(const float& left, const float& right,
  *   true if the numbers are equal (or cannot be distinguished) and false otherwise.
  */
 ELEMENTS_API bool almostEqual2sComplement(const double& left, const double& right,
-                                             const int& max_ulps = DBL_DEFAULT_MAX_ULPS);
+                                          const int& max_ulps = DBL_DEFAULT_MAX_ULPS);
 
 /**
  * @brief
@@ -522,8 +515,8 @@ ELEMENTS_API bool almostEqual2sComplement(const double& left, const double& righ
  * @return
  *   true if the 2 numbers are bitwise equal
  */
-template<typename RawType>
-ELEMENTS_API bool realBitWiseEqual(const RawType& left, const RawType& right) {
+template <typename RawType>
+ELEMENTS_API bool      realBitWiseEqual(const RawType& left, const RawType& right) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wfloat-equal"
   return (left == right);
@@ -531,7 +524,6 @@ ELEMENTS_API bool realBitWiseEqual(const RawType& left, const RawType& right) {
 }
 
 }  // namespace Elements
-
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_REAL_H_
 

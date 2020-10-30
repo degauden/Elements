@@ -38,9 +38,8 @@ public:
   void setShowResultCallback(show_result_callback_type f);
 
 private:
-  show_result_callback_type m_show_result_callback {};
+  show_result_callback_type m_show_result_callback{};
 };
-
 
 }  // namespace Examples
 }  // namespace Elements

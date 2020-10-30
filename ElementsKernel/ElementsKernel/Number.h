@@ -26,8 +26,8 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_NUMBER_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_NUMBER_H_
 
-#include <type_traits>              // for is_floating_point, is_integral
-#include <cmath>                    // for round
+#include <cmath>        // for round
+#include <type_traits>  // for is_floating_point, is_integral
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 
@@ -44,7 +44,7 @@ namespace Elements {
  * @return
  *   casted number
  */
-template<typename TargetType, typename SourceType>
+template <typename TargetType, typename SourceType>
 ELEMENTS_API TargetType numberCast(const SourceType& s) {
 
   using std::is_floating_point;

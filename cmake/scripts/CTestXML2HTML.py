@@ -529,7 +529,6 @@ def updateAnnotations(site, Testing, outputTemp, annotationsList):
         # update the end time
         endTimeOld = int(annotations["end_ts"])
         endTimeNew = int(Testing.find("EndTestTime").text or '0')
-        delta = endTimeOld - endTimeNew
         if endTimeOld < endTimeNew:
             annotations["end_time"] = time.strftime(
                 "%b %d %H:%M %Z", time.localtime(endTimeNew))
@@ -745,10 +744,10 @@ def main():
                     summary["fields"].append(cleanSpace(
                         cleanWebChar(NamedMeasurement.get("name"))))
                     # or NamedMeasurement.get("name") == "Pass Reason" :
-                    if NamedMeasurement.get("name") == "Causes":
-                        if NamedMeasurement.find("Value") is not None and NamedMeasurement.find("Value").text is not None:
-                            summary["cause"] = cleanWebChar(
-                                NamedMeasurement.find("Value").text)
+                    if (NamedMeasurement.get("name") == "Causes" and
+                        (NamedMeasurement.find("Value") is not None and
+                         NamedMeasurement.find("Value").text is not None)):
+                        summary["cause"] = cleanWebChar(NamedMeasurement.find("Value").text)
 
                 # update the global summary file
                 globalSummaryFile = open(os.path.join(

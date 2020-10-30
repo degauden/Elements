@@ -32,10 +32,7 @@ namespace Examples {
 class ELEMENTS_API SwigClassExample {
 
 public:
-
-  explicit SwigClassExample(const double ra = 0.0, const double dec = 0.0) :
-      m_ra(ra), m_dec(dec) {
-  }
+  explicit SwigClassExample(const double ra = 0.0, const double dec = 0.0) : m_ra(ra), m_dec(dec) {}
 
   virtual ~SwigClassExample() = default;
 
@@ -44,10 +41,8 @@ public:
   double getDec() const;
 
 private:
-
   double m_ra;
   double m_dec;
-
 };
 
 }  // namespace Examples

@@ -42,8 +42,7 @@ ELEMENTS_API path confFilePath(path filename);
 
 ELEMENTS_API bool checkCall(std::string command);
 
-ELEMENTS_API std::pair<std::string, std::string> runCommandAndCaptureOutErr(
-    std::string command);
+ELEMENTS_API std::pair<std::string, std::string> runCommandAndCaptureOutErr(std::string command);
 
 ELEMENTS_API bool localDirExists(path localDir);
 
@@ -60,16 +59,14 @@ ELEMENTS_API path localWorkspacePrefix();
 
 ELEMENTS_API std::string lower(std::string text);
 
-template<typename T>
+template <typename T>
 ELEMENTS_API bool valueIsListed(const T& value, const std::vector<T>& list) {
   const auto& begin = list.begin();
-  const auto& end = list.end();
+  const auto& end   = list.end();
   return std::find(begin, end, value) != end;
 }
 
-ELEMENTS_API bool containsInThisOrder(
-    std::string input,
-    std::vector<std::string> substrings);
+ELEMENTS_API bool containsInThisOrder(std::string input, std::vector<std::string> substrings);
 
 }  // namespace DataSync
 }  // namespace ElementsServices

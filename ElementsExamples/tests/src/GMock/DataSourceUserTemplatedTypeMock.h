@@ -19,8 +19,8 @@
 #ifndef ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEUSERTEMPLATEDTYPEMOCK_H_
 #define ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEUSERTEMPLATEDTYPEMOCK_H_
 
-#include <gmock/gmock.h>
 #include <cstddef>
+#include <gmock/gmock.h>
 
 namespace Elements {
 namespace Examples {
@@ -33,13 +33,11 @@ namespace Examples {
  */
 class DataSourceUserTemplatedTypeMock {
 public:
-
   virtual ~DataSourceUserTemplatedTypeMock() = default;
 
   MOCK_CONST_METHOD0(countRecords, std::size_t());
 
   MOCK_CONST_METHOD1(getRecordValue, double(std::size_t));
-
 };
 
 }  // namespace Examples

@@ -18,8 +18,8 @@
  *
  */
 
-#include <map>                              // for map
-#include <string>                           // for string
+#include <map>     // for map
+#include <string>  // for string
 
 #include <fitsio.h>
 
@@ -32,11 +32,9 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-
-class CfitsioExample: public Program {
+class CfitsioExample : public Program {
 
 public:
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("CfitsioExample");
@@ -48,9 +46,7 @@ public:
     log.info() << "done with test program! ";
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples

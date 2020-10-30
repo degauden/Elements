@@ -27,21 +27,18 @@
 #ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CALLBACKEXAMPLE_H_
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CALLBACKEXAMPLE_H_
 
-#include <vector>
 #include <functional>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
 
 namespace Elements {
 namespace Examples {
 
-ELEMENTS_API double testCallBack(std::vector<double> x, const std::function<double(std::vector<double>)> &fun);
+ELEMENTS_API double testCallBack(std::vector<double> x, const std::function<double(std::vector<double>)>& fun);
 
 }  // namespace Examples
 }  // namespace Elements
-
-
-
 
 #endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CALLBACKEXAMPLE_H_
 

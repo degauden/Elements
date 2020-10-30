@@ -19,10 +19,10 @@
  *
  */
 
-#include "ElementsKernel/Project.h"            // for Project
+#include "ElementsKernel/Project.h"  // for Project
 
-#include <iostream>
 #include <boost/test/unit_test.hpp>
+#include <iostream>
 
 namespace Elements {
 

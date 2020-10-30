@@ -27,11 +27,11 @@
 #ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE2_H_
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_CLASSEXAMPLE2_H_
 
-#include <string>                   // for std::string
-#include <vector>                   // for std::vector
-#include <memory>                   // for std::unique_ptr
+#include <memory>  // for std::unique_ptr
+#include <string>  // for std::string
+#include <vector>  // for std::vector
 
-#include <cstdint>                  // for std::int64_t
+#include <cstdint>  // for std::int64_t
 
 #include "ElementsKernel/Export.h"
 
@@ -49,7 +49,6 @@ namespace Examples {
 class ELEMENTS_API ClassExample2 {
 
 public:
-
   /**
    * @brief
    *    Example factory method
@@ -167,7 +166,6 @@ public:
   }
 
 private:
-
   /**
    * @brief Constructor
    *
@@ -180,19 +178,16 @@ private:
    * can be chosen via the factory.
    *
    */
-  ClassExample2(const std::int64_t source_id, const double ra) :
-      m_source_id(source_id), m_ra(ra) {
-  }
+  ClassExample2(const std::int64_t source_id, const double ra) : m_source_id(source_id), m_ra(ra) {}
 
   /// An example of a static string
   static std::string s_static_string;
 
   /// Source ID as an example of a 64 bits integer
-  std::int64_t m_source_id { 0 };
+  std::int64_t m_source_id{0};
 
   /// Source right ascension
-  double m_ra { 0.0 };
-
+  double m_ra{0.0};
 };
 
 }  // namespace Examples

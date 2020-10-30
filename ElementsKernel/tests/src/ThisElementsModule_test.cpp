@@ -21,8 +21,8 @@
 
 #include "ThisElementsModule.h"
 
-#include <typeinfo>                  // for type_info
 #include <string>
+#include <typeinfo>  // for type_info
 
 #include <boost/test/unit_test.hpp>
 
@@ -38,7 +38,6 @@ BOOST_AUTO_TEST_CASE(ThisProjectName_test) {
 
   // Get the present module. Here this must be the test executable
   BOOST_CHECK_EQUAL(THIS_MODULE_NAME_STRING, "ElementsKernel");
-
 }
 
 //-----------------------------------------------------------------------------

@@ -29,20 +29,19 @@
 
 #include "ElementsKernel/Export.h"
 
-#include "ElementsServices/DataSync/DataSynchronizer.h"
 #include "ElementsServices/DataSync/DataSyncUtils.h"
+#include "ElementsServices/DataSync/DataSynchronizer.h"
 #include "ElementsServices/DataSync/IrodsSynchronizer.h"
 #include "ElementsServices/DataSync/WebdavSynchronizer.h"
 
 namespace ElementsServices {
 namespace DataSync {
 
-ELEMENTS_API std::shared_ptr<DataSynchronizer> createSynchronizer(
-    ConnectionConfiguration connection,
-    DependencyConfiguration dependency);
+ELEMENTS_API std::shared_ptr<DataSynchronizer> createSynchronizer(ConnectionConfiguration connection,
+                                                                  DependencyConfiguration dependency);
 
 }
-}
+}  // namespace ElementsServices
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H_
 

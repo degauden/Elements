@@ -40,35 +40,28 @@ enum class ExitCode;
 class ELEMENTS_API SimpleProgram {
 
 public:
-
   ELEMENTS_API ExitCode run(int argc, char** argv) noexcept;
   ELEMENTS_API const Path::Item& getProgramPath() const;
   ELEMENTS_API const Path::Item& getProgramName() const;
 
-
 protected:
-
   SimpleProgram() = default;
   virtual ~SimpleProgram();
 
-  virtual ExitCode main() = 0;
-  virtual void defineOptions() = 0;
+  virtual ExitCode main()          = 0;
+  virtual void     defineOptions() = 0;
 
 private:
-
   void setup(int argc, char** argv);
 
 private:
-
   Path::Item m_program_name;
   Path::Item m_program_path;
-
 };
 
 /** @example ElementsExamples/src/program/AnotherSimpleProgramExample.cpp
  * This is an example of how to use the SimpleProgram class.
  */
-
 
 }  // namespace Elements
 
@@ -83,12 +76,11 @@ private:
  * @param ELEMENTS_PROGRAM name of the main program class, derived from
  * the class Elements::SimpleProgram class.
  */
-#define MAIN(ELEMENTS_PROGRAM)         \
-  ELEMENTS_API int main(int argc, char* argv[])              \
-  { \
-    auto program = ELEMENTS_PROGRAM();\
-    Elements::ExitCode exit_code = program.run(argc, argv);   \
-    return static_cast<Elements::ExitCodeType>(exit_code);    \
+#define MAIN(ELEMENTS_PROGRAM)                                                                                         \
+  ELEMENTS_API int main(int argc, char* argv[]) {                                                                      \
+    auto               program   = ELEMENTS_PROGRAM();                                                                 \
+    Elements::ExitCode exit_code = program.run(argc, argv);                                                            \
+    return static_cast<Elements::ExitCodeType>(exit_code);                                                             \
   }
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_SIMPLEPROGRAM_H_

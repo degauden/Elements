@@ -38,7 +38,6 @@ ELEMENTS_API const System::ModuleInfo& getModuleInfo();
 }  // namespace Examples
 }  // namespace Elements
 
-
 #endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_MODULEINFO_H_
 
 /**@}*/

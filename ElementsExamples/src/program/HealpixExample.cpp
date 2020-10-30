@@ -18,10 +18,10 @@
  *
  */
 
-#include <map>                              // for map
-#include <string>                           // for string
+#include <map>     // for map
+#include <string>  // for string
 
-#include <healpix_cxx/healpix_map.h>            // for Healpix_Map
+#include <healpix_cxx/healpix_map.h>  // for Healpix_Map
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
@@ -32,10 +32,9 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class HealpixExample: public Program {
+class HealpixExample : public Program {
 
 public:
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("HealpixExample");
@@ -45,14 +44,11 @@ public:
     log.info() << "done with test program! ";
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples
 }  // namespace Elements
-
 
 /**
  * Implementation of a main using a base class macro

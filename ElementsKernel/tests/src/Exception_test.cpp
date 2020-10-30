@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* 
+/*
  * @file tests/src/Exception_test.cpp
  * @author nikoapos
  */
@@ -25,10 +25,9 @@
 
 #include <string>
 
-#include <boost/test/unit_test.hpp>       // for boost unit test macros
+#include <boost/test/unit_test.hpp>  // for boost unit test macros
 
 using std::string;
-
 
 namespace Elements {
 
@@ -59,7 +58,7 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   try {
     throw TestException(message_part_1);
 
-  // Then
+    // Then
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1);
     BOOST_CHECK_EQUAL(ex.m_number, -1);
@@ -73,7 +72,7 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   try {
     throw TestException(5) << message_part_1 << message_part_2;
 
-  // Then
+    // Then
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1 + message_part_2);
     BOOST_CHECK_EQUAL(ex.m_number, 5);
@@ -85,10 +84,10 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
 
   // When
   try {
-    TestException e {6};
+    TestException e{6};
     throw e << message_part_1 << message_part_2;
 
-  // Then
+    // Then
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1 + message_part_2);
     BOOST_CHECK_EQUAL(ex.m_number, 6);
@@ -100,11 +99,11 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
 
   // When
   try {
-    TestException e {7};
+    TestException e{7};
     e << message_part_1 << message_part_2;
     throw e;
 
-  // Then
+    // Then
   } catch (const TestException& ex) {
     BOOST_CHECK_EQUAL(ex.what(), message_part_1 + message_part_2);
     BOOST_CHECK_EQUAL(ex.m_number, 7);
@@ -113,7 +112,6 @@ BOOST_AUTO_TEST_CASE(SubclassStreamOperator_test) {
   } catch (...) {
     BOOST_FAIL("Unknown type of exception instead of TestException");
   }
-
 }
 
 //-----------------------------------------------------------------------------

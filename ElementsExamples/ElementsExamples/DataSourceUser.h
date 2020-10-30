@@ -27,7 +27,7 @@
 #ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_DATASOURCEUSER_H_
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_DATASOURCEUSER_H_
 
-#include  <cstdlib>                 // for std::size_t
+#include <cstdlib>  // for std::size_t
 
 #include "ElementsKernel/Export.h"  // For ELEMENTS_API
 
@@ -88,7 +88,6 @@ public:
    * @return The sum of the values of the records into the DataSource object
    */
   double sumRecords(const DataSourceInterface& data_source);
-
 };
 
 }  // namespace Examples

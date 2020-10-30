@@ -28,7 +28,6 @@ namespace Examples {
 const System::ModuleInfo& getModuleInfo() {
 
   return System::getThisModuleInfo();
-
 }
 
 }  // namespace Examples

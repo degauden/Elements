@@ -21,10 +21,9 @@
 
 #include "ElementsExamples/crashingFunction.h"  // Access the objects you want to test
 
-
-#include <iostream>
-#include <stdexcept>                           // for the logic_error
 #include <boost/test/unit_test.hpp>
+#include <iostream>
+#include <stdexcept>  // for the logic_error
 
 using Elements::Examples::crashingFunction;
 
@@ -34,9 +33,7 @@ BOOST_AUTO_TEST_SUITE(crashingFunction_test_suite)
 BOOST_AUTO_TEST_CASE(Call_test) {
 
   BOOST_CHECK_THROW(crashingFunction(), std::logic_error);
-
 }
-
 
 // Ends the test suite
 BOOST_AUTO_TEST_SUITE_END()

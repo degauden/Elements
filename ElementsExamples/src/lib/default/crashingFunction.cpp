@@ -21,9 +21,9 @@
 
 #include "ElementsExamples/crashingFunction.h"
 
-#include <stdexcept>                           // for the logic_error
+#include <stdexcept>  // for the logic_error
 
-#include "ElementsKernel/Logging.h"            // for the Logging
+#include "ElementsKernel/Logging.h"  // for the Logging
 
 namespace Elements {
 namespace Examples {

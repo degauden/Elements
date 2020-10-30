@@ -27,13 +27,13 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_ENVIRONMENT_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_ENVIRONMENT_H_
 
-#include <iostream>                              // for ostream
-#include <map>                                   // for map
-#include <string>                                // for string
-#include <vector>                                // for vector
-#include <functional>                            // for reference_wrapper
+#include <functional>  // for reference_wrapper
+#include <iostream>    // for ostream
+#include <map>         // for map
+#include <string>      // for string
+#include <vector>      // for vector
 
-#include "ElementsKernel/Export.h"               // for ELEMENTS_API
+#include "ElementsKernel/Export.h"  // for ELEMENTS_API
 
 namespace Elements {
 
@@ -43,31 +43,28 @@ namespace Elements {
  */
 class ELEMENTS_API Environment {
 public:
-
   class Variable;
 
 public:
-
   explicit Environment(bool keep_same = true);
   virtual ~Environment();
 
-  Variable operator[](const std::string&);
+  Variable       operator[](const std::string&);
   const Variable operator[](const std::string& index) const;
-  Environment& restore();
-  Environment& set(const std::string&, const std::string&);
-  Environment& unSet(const std::string&);
-  Environment& append(const std::string&, const std::string&);
-  Environment& prepend(const std::string&, const std::string&);
-  std::string get(const std::string& index, const std::string& default_value = "") const;
-  static bool hasKey(const std::string&);
-  void commit();
+  Environment&   restore();
+  Environment&   set(const std::string&, const std::string&);
+  Environment&   unSet(const std::string&);
+  Environment&   append(const std::string&, const std::string&);
+  Environment&   prepend(const std::string&, const std::string&);
+  std::string    get(const std::string& index, const std::string& default_value = "") const;
+  static bool    hasKey(const std::string&);
+  void           commit();
 
-  enum ShellType {sh, csh};
+  enum ShellType { sh, csh };
 
   std::string generateScript(ShellType) const;
 
 private:
-
   /**
    * @brief check that the variable is in the environment
    * @ingroup ElementsKernel
@@ -81,7 +78,6 @@ private:
 
   /// variable added to the environment
   std::vector<std::string> m_added_variables;
-
 };
 
 /**
@@ -95,25 +91,24 @@ public:
   Variable(Environment& env, const std::string& index);
   Variable(const Variable& other);
   Variable(Variable&& other);
-  Variable& operator=(const Variable& other);
-  Variable& operator=(Variable&& other);
-  Variable& operator=(const std::string&);
-  Variable& set(const std::string&);
-  Variable& unSet();
-  Variable& append(const std::string&);
-  Variable& operator+=(const std::string&);
-  Variable& prepend(const std::string&);
-  Variable operator+(const std::string&);
+  Variable&          operator=(const Variable& other);
+  Variable&          operator=(Variable&& other);
+  Variable&          operator=(const std::string&);
+  Variable&          set(const std::string&);
+  Variable&          unSet();
+  Variable&          append(const std::string&);
+  Variable&          operator+=(const std::string&);
+  Variable&          prepend(const std::string&);
+  Variable           operator+(const std::string&);
   const std::string& index() const;
-  Environment& env() const;
-  std::string value() const;
+  Environment&       env() const;
+  std::string        value() const;
   /// to string converter
-  operator std::string() const;
+       operator std::string() const;
   bool empty() const;
   bool exists() const;
 
 private:
-
   void checkCompatibility(const Variable&);
 
   /// a copiable and movable reference

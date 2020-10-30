@@ -19,8 +19,8 @@
 #ifndef ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEINTERFACEMOCK_H_
 #define ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEINTERFACEMOCK_H_
 
-#include <gmock/gmock.h>
 #include <cstddef>
+#include <gmock/gmock.h>
 
 #include "ElementsExamples/DataSourceUser.h"
 
@@ -31,18 +31,16 @@ namespace Examples {
  *
  * @brief Mock object implementing the DataSourceInterface.
  */
-class DataSourceInterfaceMock: public DataSourceInterface {
+class DataSourceInterfaceMock : public DataSourceInterface {
 public:
   virtual ~DataSourceInterfaceMock() = default;
 
   MOCK_CONST_METHOD0(countRecords, std::size_t());
 
   MOCK_CONST_METHOD1(getRecordValue, double(std::size_t));
-
 };
 
 }  // namespace Examples
 }  // namespace Elements
 
 #endif  // ELEMENTSEXAMPLES_TESTS_SRC_GMOCK_DATASOURCEINTERFACEMOCK_H_
-

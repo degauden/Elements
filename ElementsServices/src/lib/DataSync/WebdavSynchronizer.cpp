@@ -24,23 +24,19 @@ namespace ElementsServices {
 namespace DataSync {
 
 bool webdavIsInstalled() {
-  return checkCall ("wget -h");
+  return checkCall("wget -h");
 }
 
-WebdavSynchronizer::WebdavSynchronizer(
-    const ConnectionConfiguration& connection,
-    const DependencyConfiguration& dependency) :
-        DataSynchronizer(connection, dependency) {
+WebdavSynchronizer::WebdavSynchronizer(const ConnectionConfiguration& connection,
+                                       const DependencyConfiguration& dependency)
+    : DataSynchronizer(connection, dependency) {
   if (not webdavIsInstalled()) {
-    throw std::runtime_error(
-        "You are trying to use WebDAV, "
-        "but it does not seem to be installed.");
+    throw std::runtime_error("You are trying to use WebDAV, "
+                             "but it does not seem to be installed.");
   }
 }
 
-std::string WebdavSynchronizer::createDownloadCommand(
-    path distantFile,
-    path localFile) const {
+std::string WebdavSynchronizer::createDownloadCommand(path distantFile, path localFile) const {
   std::string cmd = "wget --no-check-certificate ";
   cmd += " --user=" + m_connection.user;
   cmd += " --password=" + m_connection.password;

@@ -18,9 +18,10 @@ else
 fi
 
 # Dependencies
-yum install -y @development-tools cmake gcc-c++ rpm-build
-yum install -y boost-devel $PYTHON-pytest log4cpp-devel doxygen CCfits-devel
-yum install -y graphviz $PYTHON-sphinx $PYTHON-sphinxcontrib-apidoc
+yum install -y @development-tools cmake gcc-c++ rpm-build ${PYTHON}-devel
+yum install -y boost-devel ${PYTHON}-pytest log4cpp-devel doxygen CCfits-devel wcslib-devel
+yum install -y pybind11-devel
+yum install -y graphviz ${PYTHON}-sphinx ${PYTHON}-sphinxcontrib-apidoc
 
 # Build
 mkdir -p /build

@@ -26,10 +26,10 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_KERNEL_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_KERNEL_H_
 
-#include "ElementsKernel/System.h"
+#include "ElementsKernel/Deprecated.h"
 #include "ElementsKernel/Export.h"
 #include "ElementsKernel/Likely.h"
-#include "ElementsKernel/Deprecated.h"
+#include "ElementsKernel/System.h"
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_KERNEL_H_
 

@@ -24,18 +24,17 @@
  * @{
  */
 
-
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROJECT_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PROJECT_H_
 
-#include <string>                 // for string
-#include <vector>                 // for vector
-#include <cstdint>                // for uing_least64_t
-#include <iostream>               // for ostream
-#include <algorithm>              // for for_each
+#include <algorithm>  // for for_each
+#include <cstdint>    // for uing_least64_t
+#include <iostream>   // for ostream
+#include <string>     // for string
+#include <vector>     // for vector
 
-#include "ThisProject.h"          // local project constants generated
-                                  // by the build system
+#include "ThisProject.h"  // local project constants generated
+                          // by the build system
 
 namespace Elements {
 
@@ -78,8 +77,6 @@ struct Project {
   static inline std::vector<std::string> searchDirectories() {
     return THIS_PROJECT_SEARCH_DIRS;
   }
-
-
 };
 
 inline std::ostream& operator<<(std::ostream& stream, const Project& p) {

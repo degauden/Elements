@@ -26,35 +26,31 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_ENABLEGMOCK_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_ENABLEGMOCK_H_
 
-#include <gmock/gmock.h>
 #include <boost/test/unit_test.hpp>
-#include <boost/version.hpp>            // for the BOOST_VERSION define
+#include <boost/version.hpp>  // for the BOOST_VERSION define
+#include <gmock/gmock.h>
 
-#include "ElementsKernel/Export.h"      // ELEMENTS_API
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
 
-class BoostTestAdapter: public testing::EmptyTestEventListener {
+class BoostTestAdapter : public testing::EmptyTestEventListener {
 
   void OnTestPartResult(const testing::TestPartResult& testPartResult) override {
     if (testPartResult.failed()) {
       BOOST_ERROR(testPartResult.summary());
     }
   }
-
 };
 
 class GoogleMockSetupFixture {
 
 public:
-
   GoogleMockSetupFixture() {
-    testing::InitGoogleMock(
-        &boost::unit_test::framework::master_test_suite().argc,
-        boost::unit_test::framework::master_test_suite().argv);
+    testing::InitGoogleMock(&boost::unit_test::framework::master_test_suite().argc,
+                            boost::unit_test::framework::master_test_suite().argv);
     auto& listeners = testing::UnitTest::GetInstance()->listeners();
     delete listeners.Release(listeners.default_result_printer());
     listeners.Append(new BoostTestAdapter);
   }
-
 };
 
 #if BOOST_VERSION >= 105900
@@ -69,6 +65,5 @@ BOOST_GLOBAL_FIXTURE(GoogleMockSetupFixture)
  * \example ElementsExamples/tests/src/GMock/TemplatedDataSourceUser_test.cpp
  * Example that shows the usage of the EnableGMock.h file.
  */
-
 
 /**@}*/

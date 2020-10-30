@@ -18,13 +18,13 @@
  *
  */
 
-#include <map>                              // for map
-#include <string>                           // for string
+#include <map>     // for map
+#include <string>  // for string
 
-#include <boost/format.hpp>                 // for format
+#include <boost/format.hpp>  // for format
 
+#include <gsl/gsl_sf_bessel.h>  // for gsl_sf_bessel_J0
 #include <gsl/gsl_version.h>
-#include <gsl/gsl_sf_bessel.h>              // for gsl_sf_bessel_J0
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
@@ -35,10 +35,9 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class GslExample: public Program {
+class GslExample : public Program {
 
 public:
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("GslExample");
@@ -51,14 +50,11 @@ public:
     log.info() << boost::format("J0(%g) = %.18e\n") % x % y;
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples
 }  // namespace Elements
-
 
 /**
  * Implementation of a main using a base class macro

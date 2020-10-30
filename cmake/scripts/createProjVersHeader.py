@@ -1,13 +1,16 @@
+""" Script that generates the project header file containing its version informations"""
+
 import os
 import re
 from optparse import OptionParser
 
-lhcb_ver_style = "v(?P<maj_ver>[0-9]+)r(?P<min_ver>[0-9]+)(?:p(?P<pat_ver>[0-9]+))?"
-atlas_ver_style = "[A-Za-z]+\-(?P<maj_ver>[0-9]+)\-(?P<min_ver>[0-9]+)(?:\-(?P<pat_ver>[0-9]+))?"
-plain_ver_style = "(?P<maj_ver>[0-9]+)\.(?P<min_ver>[0-9]+)(?:\.(?P<pat_ver>[0-9]+))?"
+lhcb_ver_style = r"v(?P<maj_ver>[0-9]+)r(?P<min_ver>[0-9]+)(?:p(?P<pat_ver>[0-9]+))?"
+atlas_ver_style = r"[A-Za-z]+\-(?P<maj_ver>[0-9]+)\-(?P<min_ver>[0-9]+)(?:\-(?P<pat_ver>[0-9]+))?"
+plain_ver_style = r"(?P<maj_ver>[0-9]+)\.(?P<min_ver>[0-9]+)(?:\.(?P<pat_ver>[0-9]+))?"
 
 
 def main():
+    """ Main function for this module """
     parser = OptionParser(
         usage="ERROR: Usage %prog <project> <version> <vcs_version> <outputfile>")
     parser.add_option("-q", "--quiet", action="store_true",
@@ -54,7 +57,8 @@ constexpr std::uint_least64_t %(proj)s_PATCH_VERSION = %(pat)d;
 constexpr std::uint_least64_t %(proj)s_VERSION = CALC_PROJECT_VERSION(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION);
 const std::string %(proj)s_VERSION_STRING {Elements::getVersionString(%(proj)s_MAJOR_VERSION,%(proj)s_MINOR_VERSION,%(proj)s_PATCH_VERSION)};
 #endif
-""" % { 'proj': project.upper(), 'version': version, 'vcs_version':vcs_version ,'min': minver, 'maj': majver, 'pat': patver }
+""" % { 'proj': project.upper(), 'version': version, 'vcs_version':vcs_version ,
+       'min': minver, 'maj': majver, 'pat': patver }
 
     # Get the current content of the destination file (if any)
     try:

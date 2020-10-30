@@ -26,8 +26,8 @@
 #ifndef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_UNITTESTEXAMPLE_H_
 
-#include <vector>
 #include "ElementsKernel/Export.h"
+#include <vector>
 
 namespace Elements {
 namespace Examples {
@@ -40,7 +40,6 @@ namespace Examples {
 class ELEMENTS_API UnitTestExample {
 
 public:
-
   /**
    * @brief
    *  Returns a particular version of the "average" of the vector values
@@ -60,7 +59,6 @@ public:
    *    If the given vector is empty
    */
   double average(const std::vector<int>& v);
-
 };
 
 }  // namespace Examples

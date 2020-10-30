@@ -16,12 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <algorithm>
 #include <array>
+#include <cstdio>
 #include <cstdlib>
 #include <string>
-#include <vector>
 #include <utility>
-#include <algorithm>
+#include <vector>
 
 #include "ElementsKernel/Configuration.h"
 #include "ElementsKernel/System.h"
@@ -38,19 +39,18 @@ path confFilePath(path filename) {
 }
 
 bool checkCall(string command) {
-  const int status = system(command.c_str());
+  const int status = std::system(command.c_str());
   return status == 0;
 }
 
-std::pair<string, string> runCommandAndCaptureOutErr(
-    string command) {
-  string out, err;
+std::pair<string, string> runCommandAndCaptureOutErr(string command) {
+  string                   out, err;
   std::array<char, BUFSIZ> buffer;
-  std::shared_ptr<FILE> cmdpipe(popen(command.c_str(), "r"), pclose);
+  std::shared_ptr<FILE>    cmdpipe(popen(command.c_str(), "r"), pclose);
   if (not cmdpipe) {
     throw std::runtime_error(string("Unable to run command: ") + command);
   }
-  if (fgets(buffer.data(), BUFSIZ, cmdpipe.get()) != NULL) {
+  if (fgets(buffer.data(), BUFSIZ, cmdpipe.get()) != nullptr) {
     out += buffer.data();
   }
   // @TODO get standard error
@@ -87,9 +87,7 @@ string lower(string text) {
   return uncased;
 }
 
-bool containsInThisOrder(
-    string input,
-    std::vector<string> substrings) {
+bool containsInThisOrder(string input, std::vector<string> substrings) {
   string::size_type offset(0);
   for (auto substr : substrings) {
     offset = input.find(substr, offset);

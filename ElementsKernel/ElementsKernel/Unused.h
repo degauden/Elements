@@ -36,7 +36,7 @@
  *   will be the mainstream syntax.
  * - we can also hide compiler specific attribute here
  */
-#define ELEMENTS_UNUSED __attribute__ ((unused))
+#define ELEMENTS_UNUSED __attribute__((unused))
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_UNUSED_H_
 

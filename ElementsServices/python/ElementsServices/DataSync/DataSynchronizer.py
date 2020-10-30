@@ -26,6 +26,7 @@ from .DataSyncUtils import createLocalDirOf, runCommandAndCaptureOutErr
 class DownloadFailed (Exception):
     """An exception raised when downloading fails.
     """
+
     def __init__ (self, distant_file, local_file):
         super(DownloadFailed, self).__init__()
         self.message = "Unable to download file: '" + distant_file + "' as: '" + local_file + "'."
@@ -72,7 +73,7 @@ class DataSynchronizer(object):
         _out, _err = runCommandAndCaptureOutErr(command)
         if not self.hasBeenDownloaded(distant_file, local_file):
             raise DownloadFailed(distant_file, local_file)
-            #TODO output _out, _err
+            # TODO output _out, _err
 
     def hasBeenDownloaded (self, distant_file, local_file):
         """Check whether a given test file has been downloaded,

@@ -21,7 +21,7 @@
 
 #include "ElementsExamples/ModuleInfo.h"
 
-#include <string>                     // for std::string
+#include <string>  // for std::string
 
 #include <boost/test/unit_test.hpp>
 
@@ -38,12 +38,9 @@ struct ModuleInfoFixture {
     // call the constructor
   }
 
-
   ~ModuleInfoFixture() {
     // delete fixture object
   }
-
-
 };
 
 //-----------------------------------------------------------------------------
@@ -52,19 +49,14 @@ BOOST_AUTO_TEST_SUITE(ModuleInfo_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE(ModuleName_test, ModuleInfoFixture ) {
+BOOST_FIXTURE_TEST_CASE(ModuleName_test, ModuleInfoFixture) {
   if (THIS_PROJECT_USE_SOVERSION) {
     BOOST_CHECK_EQUAL(Elements::Examples::getModuleInfo().name(),
-                      std::string(Elements::System::LIB_PREFIX
-                      + "ElementsExamples"
-                      + Elements::System::LIB_SUFFIX
-                      + "." + THIS_PROJECT_ORIGINAL_VERSION));
+                      std::string(Elements::System::LIB_PREFIX + "ElementsExamples" + Elements::System::LIB_SUFFIX +
+                                  "." + THIS_PROJECT_ORIGINAL_VERSION));
   } else {
     BOOST_CHECK_EQUAL(Elements::Examples::getModuleInfo().name(),
-                      std::string(Elements::System::LIB_PREFIX
-                      + "ElementsExamples"
-                      + Elements::System::LIB_SUFFIX));
-
+                      std::string(Elements::System::LIB_PREFIX + "ElementsExamples" + Elements::System::LIB_SUFFIX));
   }
 }
 
