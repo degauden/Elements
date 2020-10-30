@@ -812,13 +812,21 @@ endfunction()
 
 function(get_arch_lib_dir output_var)
 
-  if(EXISTS /usr/lib64)
-    set(lib_name lib64)
+  if(EXISTS /usr/lib/x86_64-linux-gnu)
+    set(lib_name lib/x86_64-linux-gnu)
   else()
-    set(lib_name lib)
+    if(EXISTS /usr/lib64)
+      set(lib_name lib64)
+    else()
+      set(lib_name lib)
+    endif()
   endif()
 
   set(${output_var} ${lib_name} PARENT_SCOPE)
+
+endfunction()
+
+function(get_arch_lib_dirs output_list_var)
 
 endfunction()
 
