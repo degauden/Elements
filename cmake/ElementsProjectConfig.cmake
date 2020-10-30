@@ -4656,7 +4656,7 @@ function(elements_add_python_program executable module)
   get_directory_property(elements_module_version version)
 
   add_custom_command(OUTPUT ${executable_file}
-                     COMMAND ${pythonprogramscript_cmd} --python-explicit-version="${PYTHON_EXPLICIT_VERSION}" --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable} --project-name ${CMAKE_PROJECT_NAME} --elements-module-name ${elements_module_name} --elements-module-version ${elements_module_version} --elements-default-loglevel=${ELEMENTS_DEFAULT_LOGLEVEL}
+                     COMMAND ${pythonprogramscript_cmd} --python-explicit-version="${PYTHON_VERSION_MAJOR}" --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable} --project-name ${CMAKE_PROJECT_NAME} --elements-module-name ${elements_module_name} --elements-module-version ${elements_module_version} --elements-default-loglevel=${ELEMENTS_DEFAULT_LOGLEVEL}
                      DEPENDS ${program_file})
 
   string(REPLACE "." "_" python_program_target ${module})
