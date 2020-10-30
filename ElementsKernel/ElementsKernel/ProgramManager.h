@@ -26,19 +26,19 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PROGRAMMANAGER_H_
 
-#include <map>                                // for map
-#include <string>                             // for string
-#include <memory>                             // for unique_ptr
-#include <vector>                             // for vector
+#include <map>     // for map
+#include <memory>  // for unique_ptr
+#include <string>  // for string
+#include <vector>  // for vector
 
 #include <boost/program_options/parsers.hpp>
 #include <log4cpp/Priority.hh>
 
-#include "ElementsKernel/Export.h"            // ELEMENTS_API
-#include "ElementsKernel/Exit.h"              // For ExitCode
+#include "ElementsKernel/Environment.h"  // For Environment
+#include "ElementsKernel/Exit.h"         // For ExitCode
+#include "ElementsKernel/Export.h"       // ELEMENTS_API
+#include "ElementsKernel/Path.h"         // for Path::Item
 #include "ElementsKernel/Program.h"
-#include "ElementsKernel/Environment.h"       // For Environment
-#include "ElementsKernel/Path.h"              // for Path::Item
 
 namespace Elements {
 
@@ -55,17 +55,13 @@ namespace Elements {
 class ELEMENTS_API ProgramManager {
 
 public:
-
   /**
    * @brief Constructor
    */
-  ProgramManager(std::unique_ptr<Program> program_ptr,
-                 const std::string& parent_project_version = "",
-                 const std::string& parent_project_name = "",
-                 const std::string& parent_project_vcs_version = "",
-                 const std::string& parent_module_version = "",
-                 const std::string& parent_module_name = "",
-                 const std::vector<std::string>& search_dirs = {},
+  ProgramManager(std::unique_ptr<Program> program_ptr, const std::string& parent_project_version = "",
+                 const std::string& parent_project_name = "", const std::string& parent_project_vcs_version = "",
+                 const std::string& parent_module_version = "", const std::string& parent_module_name = "",
+                 const std::vector<std::string>& search_dirs       = {},
                  const log4cpp::Priority::Value& elements_loglevel = log4cpp::Priority::DEBUG);
 
   /**
@@ -98,7 +94,6 @@ public:
   static void onTerminate() noexcept;
 
 private:
-
   /**
    * @brief Getter
    *
@@ -123,9 +118,7 @@ private:
    * @return
    *   A complete name/path to the default configuration file
    */
-  static const Path::Item getDefaultConfigFile(
-      const Path::Item& program_name,
-      const std::string& module_name = "");
+  static const Path::Item getDefaultConfigFile(const Path::Item& program_name, const std::string& module_name = "");
 
   /**
    * @brief
@@ -154,7 +147,6 @@ private:
    */
   void setup(int argc, char* argv[]);
 
-
   void tearDown(const ExitCode&);
 
   /**
@@ -164,8 +156,7 @@ private:
    *  @return
    *    A BOOST variable_map
    */
-  const Program::VariablesMap getProgramOptions(int argc,
-      char* argv[]);
+  const Program::VariablesMap getProgramOptions(int argc, char* argv[]);
 
   /**
    * @brief Log Header
@@ -201,19 +192,17 @@ private:
    *   file being passed does exist. It exits with ExitCode::CONFIG
    *   if the file cannot be found.
    */
-  template<class charT>
+  template <class charT>
   void checkCommandLineOptions(const boost::program_options::basic_parsed_options<charT>& cmd_line_options);
 
-
 private:
-
   /**
    * This is the BOOST program options variable_map used to store all
    * program options. It is similar to a std::map but the element can be
    * of different types. See the pseudoMain() in ElementsProgramExample.cpp
    * to see how to retrieve options from this map.
    */
-  Program::VariablesMap m_variables_map {};
+  Program::VariablesMap m_variables_map{};
 
   /**
    * Name of the executable (from argv[0])

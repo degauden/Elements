@@ -21,27 +21,27 @@
 
 #include "ElementsKernel/Temporary.h"
 
-#include <string>
 #include <iostream>
+#include <string>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
 
-#include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Environment.h"
+#include "ElementsKernel/Logging.h"
 #include "ElementsKernel/Path.h"
 
-using std::string;
 using boost::filesystem::temp_directory_path;
+using std::string;
 
 namespace Elements {
 
 namespace {
-  auto log = Logging::getLogger();
+auto log = Logging::getLogger();
 }
 
-TempPath::TempPath(const string& arg_motif, const string& keep_var) :
-    m_motif(arg_motif), m_path(temp_directory_path()), m_keep_var(keep_var) {
+TempPath::TempPath(const string& arg_motif, const string& keep_var)
+    : m_motif(arg_motif), m_path(temp_directory_path()), m_keep_var(keep_var) {
 
   using boost::filesystem::unique_path;
 
@@ -64,15 +64,12 @@ TempPath::~TempPath() {
   Environment current;
 
   if (not current.hasKey(m_keep_var)) {
-    log.debug() << "Automatic destruction of the " << path()
-                << " temporary path";
+    log.debug() << "Automatic destruction of the " << path() << " temporary path";
     const auto file_number = boost::filesystem::remove_all(m_path);
     log.debug() << "Number of files removed: " << file_number;
   } else {
-    log.info() << m_keep_var << " set: I do not remove the "
-               << m_path.string() << " temporary path";
+    log.info() << m_keep_var << " set: I do not remove the " << m_path.string() << " temporary path";
   }
-
 }
 
 Path::Item TempPath::path() const {
@@ -83,29 +80,23 @@ string TempPath::motif() const {
   return m_motif;
 }
 
-TempDir::TempDir(const string& arg_motif, const string& keep_var) :
-    TempPath(arg_motif, keep_var) {
+TempDir::TempDir(const string& arg_motif, const string& keep_var) : TempPath(arg_motif, keep_var) {
 
   log.debug() << "Creation of the " << path() << " temporary directory";
 
   boost::filesystem::create_directory(path());
-
 }
 
-TempDir::~TempDir() {
-}
+TempDir::~TempDir() {}
 
-TempFile::TempFile(const string& arg_motif, const string& keep_var) :
-    TempPath(arg_motif, keep_var) {
+TempFile::TempFile(const string& arg_motif, const string& keep_var) : TempPath(arg_motif, keep_var) {
 
   log.debug() << "Creation of the " << path() << " temporary file";
 
   boost::filesystem::ofstream ofs(path());
   ofs.close();
-
 }
 
-TempFile::~TempFile() {
-}
+TempFile::~TempFile() {}
 
 }  // namespace Elements

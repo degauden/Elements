@@ -4,7 +4,7 @@
  * @date Aug 27, 2015
  * @author hubert
  *
-* @copyright 2012-2020 Euclid Science Ground Segment
+ * @copyright 2012-2020 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
  * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
@@ -23,9 +23,9 @@
 
 #include <sys/utsname.h>
 
+#include <boost/test/unit_test.hpp>
 #include <string>
 #include <vector>
-#include <boost/test/unit_test.hpp>
 
 #include "ElementsKernel/Environment.h"
 
@@ -46,34 +46,29 @@ BOOST_AUTO_TEST_CASE(HostName_test) {
   if (current["HOSTNAME"].exists() and string(current["HOSTNAME"]) != ".") {
     BOOST_CHECK_EQUAL(string(current["HOSTNAME"]), System::hostName());
   }
-
 }
 
 BOOST_AUTO_TEST_CASE(osName_test) {
 
-  string osname = "UNKNOWN";
+  string         osname = "UNKNOWN";
   struct utsname ut;
   if (::uname(&ut) == 0) {
     osname = ut.sysname;
   }
 
   BOOST_CHECK_EQUAL(System::osName(), osname);
-
 }
 
 BOOST_AUTO_TEST_CASE(osVersion_test) {
 
-
-  string osver = "UNKNOWN";
+  string         osver = "UNKNOWN";
   struct utsname ut;
   if (uname(&ut) == 0) {
     osver = ut.release;
   }
 
   BOOST_CHECK_EQUAL(System::osVersion(), osver);
-
 }
-
 
 //-----------------------------------------------------------------------------
 

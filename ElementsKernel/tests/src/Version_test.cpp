@@ -21,7 +21,7 @@
 
 #include "ElementsKernel/Version.h"
 
-#include <string>                      // for std::string
+#include <string>  // for std::string
 
 #include <boost/test/unit_test.hpp>
 
@@ -31,13 +31,17 @@ namespace Elements {
 //-----------------------------------------------------------------------------
 
 // input string to test the generation of an appropriate version in case of a trunk or tags
-const string SVN_ID {"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
-const string SVN_URL_TRUNK {"SVN $HeadURL: http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/trunk/ElementsExamples/src/Program/ElementsProgramExample.cpp $"};
-const string SVN_URL_TAGS {"SVN $HeadURL: http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/tags/1.2/ElementsExamples/src/Program/ElementsProgramExample.cpp $"};
+const string SVN_ID{"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
+const string SVN_URL_TRUNK{"SVN $HeadURL: "
+                           "http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/trunk/ElementsExamples/src/"
+                           "Program/ElementsProgramExample.cpp $"};
+const string SVN_URL_TAGS{"SVN $HeadURL: "
+                          "http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/tags/1.2/ElementsExamples/"
+                          "src/Program/ElementsProgramExample.cpp $"};
 
 // expected result
-const string EXPECTED_TRUNK_VERSION {"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
-const string EXPECTED_TAGS_VERSION {"Elements 1.2"};
+const string EXPECTED_TRUNK_VERSION{"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
+const string EXPECTED_TAGS_VERSION{"Elements 1.2"};
 
 //-----------------------------------------------------------------------------
 
@@ -58,7 +62,6 @@ BOOST_AUTO_TEST_CASE(getVersionFromString_test) {
   BOOST_CHECK(getVersionString(3, 2, 1) == string("3.2.1"));
   BOOST_CHECK(getVersionString(4, 7, 0) == string("4.7"));
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()
 

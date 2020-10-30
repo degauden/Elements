@@ -34,28 +34,34 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_
 
-#include <string>                     // for string
-#include <vector>                     // for vector
+#include <string>  // for string
+#include <vector>  // for vector
 
-#include "ElementsKernel/Path.h"      // for Path::Item
-#include "ElementsKernel/Export.h"    // ELEMENTS_API
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Path.h"    // for Path::Item
 
 namespace Elements {
+inline namespace Kernel {
 
+/**
+ * @brief retrieve the variable name used for the configuration file lookup
+ * @ingroup ElementsKernel
+ * @return
+ *   the standard variable name: ELEMENTS_CONF_PATH
+ */
 ELEMENTS_API std::string getConfigurationVariableName();
 
 template <typename T>
 ELEMENTS_API Path::Item getConfigurationPath(const T& file_name, bool raise_exception = true);
 
 // Instantiation of the most expected types
-extern template
-ELEMENTS_API Path::Item getConfigurationPath(const Path::Item& file_name, bool raise_exception);
+extern template ELEMENTS_API Path::Item getConfigurationPath(const Path::Item& file_name, bool raise_exception);
 
-extern template
-ELEMENTS_API Path::Item getConfigurationPath(const std::string& file_name, bool raise_exception);
+extern template ELEMENTS_API Path::Item getConfigurationPath(const std::string& file_name, bool raise_exception);
 
 ELEMENTS_API std::vector<Path::Item> getConfigurationLocations(bool exist_only = false);
 
+}  // namespace Kernel
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_

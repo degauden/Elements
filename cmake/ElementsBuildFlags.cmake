@@ -206,6 +206,10 @@ option(OPT_DEBUG
        "Enable optimisation for the Debug version"
        ON)
 
+set(DEBUG_FORMAT "" CACHE STRING "Set the -g debug format")
+
+set(DEBUG_LEVEL "" CACHE STRING "Set the -g debug level")
+
 option(ELEMENTS_LINKOPT
        "Enable Link Time Optimisation"
        OFF)
@@ -324,9 +328,18 @@ option(INSTALL_TESTS
        "Enable the installation of the binary tests"
        OFF)
 
-option(USE_VERSIONED_LIBRARIES "Generate versioned shared libraries" ON)
+option(USE_VERSIONED_LIBRARIES
+       "Generate versioned shared libraries"
+       ON)
 
-option(USE_TIMESTAMP_RPM_VERSION "Use timestamp for the RPM version in non-squeezed mode" OFF)
+option(USE_TIMESTAMP_RPM_VERSION
+       "Use timestamp for the RPM version in non-squeezed mode"
+       OFF)
+
+option(Boost_NO_BOOST_CMAKE
+       "Don't use the BoostConfig.cmake file introduced in Boost 1.70"
+       ON)
+
 
 
 #--- Compilation Flags ---------------------------------------------------------
@@ -465,6 +478,10 @@ if(NOT ELEMENTS_FLAGS_SET)
       FORCE)
 
   if (ELEMENTS_LINKOPT AND SGS_COMPVERS VERSION_GREATER "47")
+    check_cxx_compiler_flag(-flto CXX_HAS_LTO)
+  endif()
+  
+  if(CXX_HAS_LTO)
     set(CMAKE_CXX_FLAGS_RELEASE "-flto ${CMAKE_CXX_FLAGS_RELEASE}"
         CACHE STRING "Flags used by the compiler during release builds."
         FORCE)
@@ -474,13 +491,12 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
 
 
-
   if (SGS_COMPVERS VERSION_GREATER "47")
     # Use -Og with Debug builds in gcc >= 4.8
-    set(CMAKE_CXX_FLAGS_DEBUG "-g"
+    set(CMAKE_CXX_FLAGS_DEBUG "-g${DEBUG_FORMAT}${DEBUG_LEVEL}"
       CACHE STRING "Flags used by the compiler during Debug builds."
       FORCE)
-    set(CMAKE_C_FLAGS_DEBUG "-g"
+    set(CMAKE_C_FLAGS_DEBUG "-g${DEBUG_FORMAT}${DEBUG_LEVEL}"
         CACHE STRING "Flags used by the compiler during Debug builds."
         FORCE)
     if(OPT_DEBUG)
@@ -500,13 +516,14 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
 
 
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g"
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g${DEBUG_FORMAT}${DEBUG_LEVEL}"
       CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
       FORCE)
-  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g"
+  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g${DEBUG_FORMAT}${DEBUG_LEVEL}"
       CACHE STRING "Flags used by the compiler during Release with Debug Info builds."
       FORCE)
-  if (ELEMENTS_LINKOPT AND SGS_COMPVERS VERSION_GREATER "47")
+
+  if(CXX_HAS_LTO)
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-flto ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}"
         CACHE STRING "Flags used by the compiler during release builds."
         FORCE)
@@ -514,11 +531,6 @@ if(NOT ELEMENTS_FLAGS_SET)
         CACHE STRING "Flags used by the compiler during release builds."
         FORCE)
   endif()
-
-
-
-
-
 
   set(CMAKE_CXX_FLAGS_COVERAGE "--coverage"
       CACHE STRING "Flags used by the compiler during coverage builds."

@@ -19,18 +19,17 @@
  *
  */
 
-#include <cstdint>                          // for int64_t
-#include <string>                           // for string
+#include <cstdint>  // for int64_t
+#include <string>   // for string
 
-#include <boost/test/unit_test.hpp>
-#include <boost/test/test_tools.hpp>
 #include "ElementsExamples/ClassExample.h"
+#include <boost/test/test_tools.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ElementsKernel/Exception.h"
 
-
-using std::string;
 using std::int64_t;
+using std::string;
 
 using Elements::Examples::ClassExample;
 
@@ -42,11 +41,11 @@ constexpr double EXAMPLE_TOLERANCE = 1e-12;
  */
 struct ClassExampleFixture {
 
-  string static_string { "This is a static field example" };
-  int64_t source_id { 123456789 };
-  double ra { 266.40506655 };
-  double input_variable { 1.273645899 };
-  double expected_result { 1.273645899 };
+  string  static_string{"This is a static field example"};
+  int64_t source_id{123456789};
+  double  ra{266.40506655};
+  double  input_variable{1.273645899};
+  double  expected_result{1.273645899};
 
   ClassExample example_class = ClassExample::factoryMethod(source_id, ra);
 
@@ -66,22 +65,21 @@ BOOST_AUTO_TEST_CASE(WithoutFixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(fundamentalTypeMethod_test, ClassExampleFixture) {
-  BOOST_CHECK_CLOSE(expected_result,
-      example_class.fundamentalTypeMethod(input_variable), EXAMPLE_TOLERANCE);
+  BOOST_CHECK_CLOSE(expected_result, example_class.fundamentalTypeMethod(input_variable), EXAMPLE_TOLERANCE);
 }
 
 BOOST_FIXTURE_TEST_CASE(Getter_test, ClassExampleFixture) {
   BOOST_CHECK_EQUAL(source_id, example_class.getSourceId());
 }
 
-BOOST_FIXTURE_TEST_CASE(exception_in_divideNumbers_test, ClassExampleFixture ) {
+BOOST_FIXTURE_TEST_CASE(exception_in_divideNumbers_test, ClassExampleFixture) {
   //
   BOOST_CHECK_EXCEPTION(example_class.divideNumbers(1.0, 0.0), Elements::Exception,
-      // below is a lambda function used as a predicate to check the exception error message
-      [](const Elements::Exception& e){
-            string exception_str = e.what();
-            return exception_str.find("exception in ClassExample::divideNumbers") != string::npos;
-      });
+                        // below is a lambda function used as a predicate to check the exception error message
+                        [](const Elements::Exception& e) {
+                          string exception_str = e.what();
+                          return exception_str.find("exception in ClassExample::divideNumbers") != string::npos;
+                        });
 }
 
 BOOST_AUTO_TEST_SUITE_END()

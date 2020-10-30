@@ -18,8 +18,8 @@
  *
  */
 
-#include <map>                              // for map
-#include <string>                           // for string
+#include <map>     // for map
+#include <string>  // for string
 
 #include <wcslib/wcs.h>
 
@@ -32,10 +32,9 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class WcsExample: public Program {
+class WcsExample : public Program {
 
 public:
-
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
     auto log = Logging::getLogger("WcsExample");
@@ -43,14 +42,11 @@ public:
     log.info() << "done with test program! ";
 
     return ExitCode::OK;
-
   }
-
 };
 
 }  // namespace Examples
 }  // namespace Elements
-
 
 /**
  * Implementation of a main using a base class macro

@@ -8,8 +8,8 @@
  *
  */
 
-#include <string>
 #include <map>
+#include <string>
 
 #include "ElementsServices/DataSync/DataSynchronizer.h"
 
@@ -17,21 +17,15 @@
 
 namespace DataSync = ElementsServices::DataSync;
 
-using std::string;
 using DataSync::path;
+using std::string;
 
-MockDataSynchronizer::MockDataSynchronizer(
-      DataSync::path connection,
-      path dependency) : DataSync::DataSynchronizer(
-                         DataSync::ConnectionConfiguration(connection),
-                         DataSync::DependencyConfiguration(theWebdavFrDistantWorkspace(),
-                                                           theLocalWorkspace(),
-                                                           dependency)
-        ) {}
+MockDataSynchronizer::MockDataSynchronizer(DataSync::path connection, path dependency)
+    : DataSync::DataSynchronizer(
+          DataSync::ConnectionConfiguration(connection),
+          DataSync::DependencyConfiguration(theWebdavFrDistantWorkspace(), theLocalWorkspace(), dependency)) {}
 
-string MockDataSynchronizer::createDownloadCommand(
-      path distantFile,
-      path localFile) const {
+string MockDataSynchronizer::createDownloadCommand(path distantFile, path localFile) const {
   string cmd = string("echo ") + distantFile.string() + "\t" + localFile.string();
   return cmd;
 }
@@ -39,6 +33,3 @@ string MockDataSynchronizer::createDownloadCommand(
 std::map<path, path> MockDataSynchronizer::fileMap() {
   return m_fileMap;
 }
-
-
-

@@ -24,18 +24,17 @@
  * @{
  */
 
-
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_MODULE_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_MODULE_H_
 
-#include <string>                 // for string
-#include <vector>                 // for vector
-#include <cstdint>                // for uing_least64_t
-#include <iostream>               // for ostream
-#include <algorithm>              // for for_each
+#include <algorithm>  // for for_each
+#include <cstdint>    // for uing_least64_t
+#include <iostream>   // for ostream
+#include <string>     // for string
+#include <vector>     // for vector
 
-#include "ThisElementsModule.h"   // local module constants generated
-                                  // by the build system
+#include "ThisElementsModule.h"  // local module constants generated
+                                 // by the build system
 
 namespace Elements {
 
@@ -58,7 +57,6 @@ struct Module {
   static inline std::uint_least64_t patchVersion() {
     return THIS_MODULE_PATCH_VERSION;
   }
-
 };
 
 inline std::ostream& operator<<(std::ostream& stream, const Module& m) {

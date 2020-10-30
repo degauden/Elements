@@ -22,20 +22,21 @@
 
 #include "ElementsKernel/Configuration.h"
 
-#include <algorithm>                        // for remove_if
+#include <algorithm>  // for remove_if
 #include <iterator>
 #include <map>
-#include <string>                           // for string
-#include <vector>                           // for vector
+#include <string>  // for string
+#include <vector>  // for vector
 
 #include <boost/filesystem/operations.hpp>  // for exists
 
-#include "ElementsKernel/Path.h"            // for Path::VARIABLE, Path::Type
-#include "ElementsKernel/System.h"          // for DEFAULT_INSTALL_PREFIX
+#include "ElementsKernel/Path.h"    // for Path::VARIABLE, Path::Type
+#include "ElementsKernel/System.h"  // for DEFAULT_INSTALL_PREFIX
 
 using std::string;
 
 namespace Elements {
+inline namespace Kernel {
 
 string getConfigurationVariableName() {
   return Path::VARIABLE.at(Path::Type::configuration);
@@ -50,18 +51,17 @@ std::vector<Path::Item> getConfigurationLocations(bool exist_only) {
   auto location_list = Path::getLocations(Path::Type::configuration, exist_only);
 
   // the search is extended to the default system /usr/share/conf
-  location_list.push_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
+  location_list.emplace_back(Path::Item(System::DEFAULT_INSTALL_PREFIX) / "share" / "conf");
 
   if (exist_only) {
-    auto new_end = std::remove_if(location_list.begin(),
-                                  location_list.end(),
-                                  [](const Path::Item& p){
-                                     return (not boost::filesystem::exists(p));
-                                  });
+    auto new_end = std::remove_if(location_list.begin(), location_list.end(), [](const Path::Item& p) {
+      return (not boost::filesystem::exists(p));
+    });
     location_list.erase(new_end, location_list.end());
   }
 
   return location_list;
 }
 
+}  // namespace Kernel
 }  // namespace Elements

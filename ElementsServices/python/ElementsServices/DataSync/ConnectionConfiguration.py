@@ -19,7 +19,7 @@
 """ The ConnectionConfiguration Module """
 
 import argparse
-#TODO use configparse
+# TODO use configparse
 import enum
 
 from .DataSyncUtils import dataSyncConfFilePath, localWorkspacePrefix, concatenatePaths
@@ -121,3 +121,4 @@ class ConnectionConfiguration(object):
         else:
             return
             # TODO: raise error
+

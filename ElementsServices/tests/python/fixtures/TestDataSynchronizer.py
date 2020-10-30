@@ -28,7 +28,8 @@ from fixtures.ConfigFilesFixture import theDependencyConfig, theInvalidDependenc
 
 class TestDataSynchronizer (object):
 
-    def checkSynchronization(self, connection):
+    @classmethod
+    def checkSynchronization(cls, connection):
         dependency = theDependencyConfig()
         connection_config = ConnectionConfiguration(connection)
         distant_root = connection_config.distant_root
@@ -42,8 +43,9 @@ class TestDataSynchronizer (object):
             assert os.path.isfile(f), "File not found: " + f + " using command: " \
                 +synchronizer.createDownloadCommand(dependency_config.getFileMap()[f], f)
             os.remove(f)
-
-    def checkDownloadTestData(self, connection):
+    
+    @classmethod
+    def checkDownloadTestData(cls, connection):
         dependency = theDependencyConfig()
         sync = DataSync(connection, dependency)
         sync.download()
@@ -57,7 +59,8 @@ class TestDataSynchronizer (object):
             assert os.path.isfile(f), "File not found: " + f
             os.remove(f)
 
-    def checkDownloadErrorReport(self, connection):
+    @classmethod
+    def checkDownloadErrorReport(cls, connection):
         dependency = dataSyncConfFilePath(theInvalidDependencyConfig())
         with py.test.raises(DownloadFailed):
             sync = DataSync(connection, dependency)

@@ -21,9 +21,9 @@
 
 #include "ElementsExamples/UnitTestExample.h"
 
-#include <numeric>                              // accumulate
-#include <algorithm>                            // sort
-#include <vector>                               // vector
+#include <algorithm>  // sort
+#include <numeric>    // accumulate
+#include <vector>     // vector
 
 #include "ElementsKernel/Exception.h"
 
@@ -35,7 +35,7 @@ namespace Examples {
 double UnitTestExample::average(const vector<int>& v) {
 
   double result = 0.0;
-  auto size = v.size();
+  auto   size   = v.size();
   // Throw an exception if the number of vector elements is null!
   if (size == 0) {
     throw Exception() << "Input vector has no element!";  // can be removed to feed a unit test exercise
@@ -45,7 +45,7 @@ double UnitTestExample::average(const vector<int>& v) {
   // if (size - 5 > 0) { // example mistake to feed a unit test exercise
   if (size > 5) {
     //
-    vector<int> ordered { v.begin(), v.end() };
+    vector<int> ordered{v.begin(), v.end()};
     std::sort(ordered.begin(), ordered.end());
     if (size % 2 == 0) {
       result = (ordered[size / 2 - 1] + ordered[size / 2]) / 2.;

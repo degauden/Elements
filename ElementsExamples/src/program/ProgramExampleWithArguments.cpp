@@ -19,13 +19,13 @@
  *
  */
 
-#include <utility>                           // for pair, make_pair
-#include <iostream>                          // for cout, endl
-#include <map>                               // for map
-#include <string>                            // for string
-#include <vector>                            // for vector
+#include <iostream>  // for cout, endl
+#include <map>       // for map
+#include <string>    // for string
+#include <utility>   // for pair, make_pair
+#include <vector>    // for vector
 
-#include <boost/program_options.hpp>         // for program options from configuration file of command line arguments
+#include <boost/program_options.hpp>  // for program options from configuration file of command line arguments
 
 #include "ElementsKernel/ProgramHeaders.h"
 #include "ElementsKernel/Unused.h"
@@ -47,10 +47,9 @@ namespace Examples {
  *    This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
  *    conveniently to write a new program.
  */
-class ProgramExampleWithArguments: public Program {
+class ProgramExampleWithArguments : public Program {
 
 public:
-
   /**
    * @brief
    *    The "main" method.
@@ -81,7 +80,6 @@ public:
       }
     }
     return ExitCode::OK;
-
   }
 
   std::pair<OptionsDescription, PositionalOptionsDescription> defineProgramArguments() override {
@@ -93,7 +91,6 @@ public:
 
     return std::make_pair(desc, pos_desc);
   }
-
 };
 
 }  // namespace Examples

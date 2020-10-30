@@ -8,10 +8,10 @@ def main():
     """ main function of the script module """
     parser = OptionParser(
         usage="ERROR: Usage %prog <project> <location> <used_projects> <outputfile>")
-    
+
     parser.add_option("-q", "--quiet", action="store_true",
                       help="Do not print messages")
-    
+
     parser.set_defaults(install_prefix="")
     parser.add_option("-i", "--install-prefix", action="store",
                      help="set the CMAKE_INSTALL_PREFIX")
@@ -34,7 +34,7 @@ def main():
         used_projects = used_projects.split(":")
 
     so_value = "False"
-    if (opts.so_version):
+    if opts.so_version:
         so_value = "True"
 
     if not opts.quiet:

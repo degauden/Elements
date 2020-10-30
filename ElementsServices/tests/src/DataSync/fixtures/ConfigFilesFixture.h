@@ -18,13 +18,12 @@
 
 struct WorkspaceFixture {
 
-  Elements::TempDir m_top_dir { "DataSync_test-%%%%%%%" };
+  Elements::TempDir m_top_dir{"DataSync_test-%%%%%%%"};
   Elements::TempEnv m_env;
 
   WorkspaceFixture();
   ~WorkspaceFixture() = default;
 };
-
 
 ElementsServices::DataSync::path theDependencyConfig();
 

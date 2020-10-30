@@ -28,15 +28,15 @@
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_MODULEINFO_H_
 
 // STL include files
+#include <dlfcn.h>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include <dlfcn.h>
 
 // Framework include files
-#include "ElementsKernel/System.h"      // LIB_PREFIX, LIB_EXTENSION
-#include "ElementsKernel/Path.h"        // for Path::Item
-#include "ElementsKernel/Export.h"      // ELEMENTS_API
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Path.h"    // for Path::Item
+#include "ElementsKernel/System.h"  // LIB_PREFIX, LIB_EXTENSION
 
 namespace Elements {
 namespace System {
@@ -44,19 +44,18 @@ namespace System {
 class ELEMENTS_API ModuleInfo {
 public:
   ModuleInfo();
-  explicit ModuleInfo(void *);
+  explicit ModuleInfo(void*);
   const std::string name() const;
   const std::string libraryName() const;
-  const void* addresse() const;
-  operator const Dl_info&() const;
-  bool isEmpty() const;
+  const void*       addresse() const;
+                    operator const Dl_info&() const;
+  bool              isEmpty() const;
+
 private:
   std::unique_ptr<Dl_info> m_dlinfo;
 };
 
-enum class ModuleType {
-  UNKNOWN, SHAREDLIB, EXECUTABLE
-};
+enum class ModuleType { UNKNOWN, SHAREDLIB, EXECUTABLE };
 
 /// Get the name of the (executable/DLL) file without file-type
 ELEMENTS_API const std::string& moduleName();
@@ -81,7 +80,6 @@ ELEMENTS_API void setModuleHandle(ImageHandle handle);
 ELEMENTS_API Path::Item getExecutablePath();
 /// Get the path to the /proc directory of the process
 ELEMENTS_API Path::Item getSelfProc();
-
 
 }  // namespace System
 }  // namespace Elements

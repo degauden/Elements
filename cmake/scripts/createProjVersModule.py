@@ -1,13 +1,16 @@
+""" Script that generates the project python module containing its version informations"""
+
 import os
 import re
 from optparse import OptionParser
 
-lhcb_ver_style = "v(?P<maj_ver>[0-9]+)r(?P<min_ver>[0-9]+)(?:p(?P<pat_ver>[0-9]+))?"
-atlas_ver_style = "[A-Za-z]+\-(?P<maj_ver>[0-9]+)\-(?P<min_ver>[0-9]+)(?:\-(?P<pat_ver>[0-9]+))?"
-plain_ver_style = "(?P<maj_ver>[0-9]+)\.(?P<min_ver>[0-9]+)(?:\.(?P<pat_ver>[0-9]+))?"
+lhcb_ver_style = r"v(?P<maj_ver>[0-9]+)r(?P<min_ver>[0-9]+)(?:p(?P<pat_ver>[0-9]+))?"
+atlas_ver_style = r"[A-Za-z]+\-(?P<maj_ver>[0-9]+)\-(?P<min_ver>[0-9]+)(?:\-(?P<pat_ver>[0-9]+))?"
+plain_ver_style = r"(?P<maj_ver>[0-9]+)\.(?P<min_ver>[0-9]+)(?:\.(?P<pat_ver>[0-9]+))?"
 
 
 def main():
+    """ Main function for this module """
     parser = OptionParser(
         usage="ERROR: Usage %prog <project> <version> <vcs_version> <outputfile>")
     parser.add_option("-q", "--quiet", action="store_true",
@@ -51,7 +54,7 @@ from ElementsKernel.Version import getVersionString
 %(proj)s_VERSION = (%(maj)d << 32) + (%(min)d << 16 ) + (%(pat)d)
 %(proj)s_VERSION_STRING = getVersionString(%(proj)s_MAJOR_VERSION, %(proj)s_MINOR_VERSION, %(proj)s_PATCH_VERSION)
 
-""" % {'proj': project.upper(), 'version': version, 'vcs_version': vcs_version, 
+""" % {'proj': project.upper(), 'version': version, 'vcs_version': vcs_version,
        'min': minver, 'maj': majver, 'pat': patver,
        'project': project}
 

@@ -11,8 +11,8 @@
 #ifndef ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_MOCKDATASYNCHRONIZER_H_
 #define ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_MOCKDATASYNCHRONIZER_H_
 
-#include <string>
 #include <map>
+#include <string>
 
 #include "ElementsServices/DataSync/DataSynchronizer.h"
 
@@ -22,19 +22,13 @@ struct MockDataSynchronizer : public ElementsServices::DataSync::DataSynchronize
 
   virtual ~MockDataSynchronizer() = default;
 
-  MockDataSynchronizer(
-      ElementsServices::DataSync::path connection = theWebdavFrConfig(),
-      ElementsServices::DataSync::path dependency = theDependencyConfig());
+  MockDataSynchronizer(ElementsServices::DataSync::path connection = theWebdavFrConfig(),
+                       ElementsServices::DataSync::path dependency = theDependencyConfig());
 
-  std::string createDownloadCommand(
-      ElementsServices::DataSync::path distantFile,
-      ElementsServices::DataSync::path localFile) const override;
+  std::string createDownloadCommand(ElementsServices::DataSync::path distantFile,
+                                    ElementsServices::DataSync::path localFile) const override;
 
   std::map<ElementsServices::DataSync::path, ElementsServices::DataSync::path> fileMap();
-
-
 };
 
-
 #endif  // ELEMENTSSERVICES_TESTS_SRC_DATASYNC_FIXTURES_MOCKDATASYNCHRONIZER_H_
-

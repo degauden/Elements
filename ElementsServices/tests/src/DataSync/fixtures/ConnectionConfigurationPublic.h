@@ -13,7 +13,7 @@
 
 #include "ElementsServices/DataSync/ConnectionConfiguration.h"
 
-class ConnectionConfigurationPublic: public ElementsServices::DataSync::ConnectionConfiguration {
+class ConnectionConfigurationPublic : public ElementsServices::DataSync::ConnectionConfiguration {
 public:
   virtual ~ConnectionConfigurationPublic() = default;
   ConnectionConfigurationPublic();

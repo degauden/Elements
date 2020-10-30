@@ -28,43 +28,39 @@
 
 #include <string>
 
-#include "ElementsKernel/Export.h"                 // ELEMENTS_API
-#include "ElementsKernel/Environment.h"            // for Environment
-#include "ElementsKernel/Path.h"                   // for Path::Item
+#include "ElementsKernel/Environment.h"  // for Environment
+#include "ElementsKernel/Export.h"       // ELEMENTS_API
+#include "ElementsKernel/Path.h"         // for Path::Item
 
 namespace Elements {
 
 /// The default environment variable name to keep the temporary object
-const std::string DEFAULT_TMP_KEEP_VAR {"KEEPTEMPDIR"};
+const std::string DEFAULT_TMP_KEEP_VAR{"KEEPTEMPDIR"};
 /// The default random creation motif
-const std::string DEFAULT_TMP_MOTIF {"%%%%-%%%%-%%%%-%%%%"};
+const std::string DEFAULT_TMP_MOTIF{"%%%%-%%%%-%%%%-%%%%"};
 
 class ELEMENTS_API TempPath {
 public:
-  explicit TempPath(const std::string& motif = DEFAULT_TMP_MOTIF,
-                    const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
+  explicit TempPath(const std::string& motif = DEFAULT_TMP_MOTIF, const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempPath();
-  Path::Item path() const;
+  Path::Item  path() const;
   std::string motif() const;
+
 private:
   const std::string m_motif;
-  Path::Item m_path;
+  Path::Item        m_path;
   const std::string m_keep_var;
 };
 
-
 class ELEMENTS_API TempDir : public TempPath {
 public:
-  explicit TempDir(const std::string& motif = DEFAULT_TMP_MOTIF,
-                   const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
+  explicit TempDir(const std::string& motif = DEFAULT_TMP_MOTIF, const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempDir();
 };
 
-
 class ELEMENTS_API TempFile : public TempPath {
 public:
-  explicit TempFile(const std::string&  motif = DEFAULT_TMP_MOTIF,
-                    const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
+  explicit TempFile(const std::string& motif = DEFAULT_TMP_MOTIF, const std::string& keep_var = DEFAULT_TMP_KEEP_VAR);
   virtual ~TempFile();
 };
 

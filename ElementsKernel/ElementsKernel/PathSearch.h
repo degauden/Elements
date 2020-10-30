@@ -29,14 +29,13 @@
 #include <string>
 #include <vector>
 
-#include "ElementsKernel/Path.h"       // for Path::Item
-#include "ElementsKernel/Export.h"     // ELEMENTS_API
+#include "ElementsKernel/Export.h"  // ELEMENTS_API
+#include "ElementsKernel/Path.h"    // for Path::Item
 
 namespace Elements {
+inline namespace Kernel {
 
-enum class SearchType {
-  Local, Recursive
-};
+enum class SearchType { Local, Recursive };
 
 /**
  * @brief
@@ -57,21 +56,13 @@ enum class SearchType {
  *   A vector of paths of the files found or empty string, if nothing is found
  */
 template <typename T>
-ELEMENTS_API std::vector<T> pathSearch(
-    const std::string& searched_name,
-    T directory,
-    SearchType search_type);
+ELEMENTS_API std::vector<T> pathSearch(const std::string& searched_name, T directory, SearchType search_type);
 
 // template instantiations of the most common types
-extern template
-ELEMENTS_API std::vector<Path::Item> pathSearch(const std::string& searched_name,
-                                                Path::Item directory,
-                                                SearchType search_type);
-extern template
-ELEMENTS_API std::vector<std::string> pathSearch(const std::string& searched_name,
-                                                 std::string directory,
-                                                 SearchType search_type);
-
+extern template ELEMENTS_API std::vector<Path::Item> pathSearch(const std::string& searched_name, Path::Item directory,
+                                                                SearchType search_type);
+extern template ELEMENTS_API std::vector<std::string> pathSearch(const std::string& searched_name,
+                                                                 std::string directory, SearchType search_type);
 
 /**
  * @brief
@@ -91,11 +82,9 @@ ELEMENTS_API std::vector<std::string> pathSearch(const std::string& searched_nam
  *   A vector of paths of the files found or empty string, if nothing is found
  */
 ELEMENTS_API
-std::vector<Path::Item> pathSearchInEnvVariable(
-    const std::string& file_name,
-    const std::string& path_like_env_variable,
-    SearchType search_type = SearchType::Recursive);
-
+std::vector<Path::Item> pathSearchInEnvVariable(const std::string& file_name, const std::string& path_like_env_variable,
+                                                SearchType search_type = SearchType::Recursive);
+}  // namespace Kernel
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PATHSEARCH_IMPL_
