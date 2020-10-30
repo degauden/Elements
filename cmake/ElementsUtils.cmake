@@ -826,11 +826,6 @@ function(get_arch_lib_dir output_var)
 
 endfunction()
 
-function(get_arch_lib_dirs output_list_var)
-
-endfunction()
-
-
 macro(print_all_variables)
   get_cmake_property(_variableNames VARIABLES)
   foreach (_variableName ${_variableNames})
