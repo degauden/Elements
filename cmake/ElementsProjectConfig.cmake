@@ -895,6 +895,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
                          COMMAND echo "The HTML reports for the tests are not enabled.")
     endif()
 
+    add_custom_target(JUnitSummary)
     if(TEST_JUNIT_REPORT)
       find_python_module(lxml)
       if(PY_LXML)
@@ -903,17 +904,18 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
                   PATHS ${CMAKE_MODULE_PATH}
                   PATH_SUFFIXES auxdir/test auxdir
                   NO_DEFAULT_PATH)
-        add_custom_target(JUnitSummary)
         add_custom_command(TARGET JUnitSummary
                            COMMAND ${env_cmd} --xml ${env_xml} 
                                    ${ctest2junit_cmd} ${PROJECT_BINARY_DIR} ${ctest2junit_xsl_file})
-
+      else()
+        add_custom_command(TARGET JUnitSummary
+                           COMMAND echo "The JUnit cannot be produced because of a missing lxml python module.")
       endif()
     else()
-      add_custom_target(JUnitSummary)
       add_custom_command(TARGET JUnitSummary
                          COMMAND echo "The JUnit reports for the tests are not enabled.")
     endif()
+
   endif()
 
 
