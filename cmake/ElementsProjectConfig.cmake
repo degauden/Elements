@@ -909,7 +909,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
                                    ${ctest2junit_cmd} ${PROJECT_BINARY_DIR} ${ctest2junit_xsl_file})
       else()
         add_custom_command(TARGET JUnitSummary
-                           COMMAND echo "The JUnit cannot be produced because of a missing lxml python module.")
+                           COMMAND echo "The JUnit reports cannot be produced because of a missing lxml python module.")
       endif()
     else()
       add_custom_command(TARGET JUnitSummary
