@@ -403,7 +403,7 @@ const vector<string> backTrace(const int depth, const int offset) {
 
   std::shared_ptr<void*> addresses{new (std::nothrow) void*[total_depth], std::default_delete<void*[]>()};
 
-  if (addresses != nullptr) {
+  if (addresses.get() != nullptr) {
 
     int count = backTrace(addresses, total_depth);
 
