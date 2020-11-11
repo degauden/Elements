@@ -147,10 +147,18 @@ purge:
 	find $(CURDIR) "(" -name "InstallArea" -prune -o -name "*.pyc" -o -name "*.pyo" ")" -a -type f -exec $(RM) -v \{} \;
 	find $(CURDIR) -depth -type d -name "__pycache__" -exec $(RM) -rv \{} \;
 
+# Remove all the possible directories and the whole InstallArea as well
+mrproper:
+	$(RM) -r $(CURDIR)/build $(CURDIR)/build.* $(CURDIR)/InstallArea
+	find $(CURDIR) "(" -name "*.pyc" -o -name "*.pyo" ")" -a -type f -exec $(RM) -v \{} \;
+	find $(CURDIR) -depth -type d -name "__pycache__" -exec $(RM) -rv \{} \;
+
 # delegate any target to the build directory (except 'purge')
 ifneq ($(MAKECMDGOALS),purge)
+ifneq ($(MAKECMDGOALS),mrproper)
 %: $(BUILDDIR)/$(BUILD_CONF_FILE) FORCE
 	+$(BUILD_CMD) $* -- $(BUILDFLAGS)
+endif
 endif
 
 # aliases

@@ -55,7 +55,7 @@ if (NOT HAS_ELEMENTS_TOOLCHAIN)
   # this is the call to the preload_local_module_path is the toolchain has not been called
   # Preset the CMAKE_MODULE_PATH from the environment, if not already defined.
   if(NOT CMAKE_MODULE_PATH)
-    # Note: this works even if the envirnoment variable is not set.
+    # Note: this works even if the environment variable is not set.
     file(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" CMAKE_MODULE_PATH)
   endif()
 
