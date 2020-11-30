@@ -62,6 +62,10 @@ if [ ! -e $User_area/$project_name/$version/.gitignore ]; then
    echo "Error: <$User_area/$project_name/$version/.gitignore> file not found" 1>&2
    local_clean_exit 1
 fi
+if [ ! -e $User_area/$project_name/$version/.gitattributes ]; then
+   echo "Error: <$User_area/$project_name/$version/.gitattributes> file not found" 1>&2
+   local_clean_exit 1
+fi
 if [ ! -e $User_area/$project_name/$version/.editorconfig ]; then
   echo "Error: <$User_area/$project_name/$version/.editorconfig> file not found" 1>&2
   local_clean_exit 1

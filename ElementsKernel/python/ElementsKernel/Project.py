@@ -46,6 +46,7 @@ AUX_MAKE_FILE_IN = "Makefile.in"
 AUX_PROJ_RST_IN = "doc_project.rst.in"
 AUX_PROJ_MAINPAGE_IN = "mainpage.dox.in"
 AUX_GITIGNORE_IN = "gitignore_template.in"
+AUX_GITATTRIBUTES_IN = "gitattributes_template.in"
 AUX_EDITOR_CONFIG = "editorconfig"
 AUX_CLANG_FORMAT = "clang-format"
 
@@ -54,6 +55,7 @@ target_locations = { AUX_CMAKE_LIST_IN: "CMakeLists.txt",
                      AUX_PROJ_RST_IN: "doc/doc_project.rst",
                      AUX_PROJ_MAINPAGE_IN: "doc/mainpage.dox",
                      AUX_GITIGNORE_IN: ".gitignore",
+                     AUX_GITATTRIBUTES_IN: ".gitattributes",
                      AUX_EDITOR_CONFIG: ".editorconfig",
                      AUX_CLANG_FORMAT: ".clang-format"
                    }
