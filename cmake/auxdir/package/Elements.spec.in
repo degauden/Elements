@@ -24,8 +24,6 @@ Vendor:         @CPACK_PACKAGE_VENDOR@
 
 @RPM_DEP_SYS_LINES@
 @RPM_DEP_LINES@
-Requires(post):    /sbin/ldconfig
-Requires(postun):  /sbin/ldconfig
 
 %global bin_tag @CPACK_SYSTEM_NAME@
 %global _proj_base_dir @ELEMENTS_BASE_DIR@
@@ -153,6 +151,9 @@ cd $RPM_BUILD_DIR/$BINARY_TAG
 %__rm -rf $RPM_BUILD_ROOT
 %__rm -rf $RPM_BUILD_DIR/%{bin_tag}
 %__rm -rf $RPM_BUILD_DIR/@CPACK_RPM_PACKAGE_NAME@-@CPACK_RPM_PACKAGE_VERSION@
+
+%post
+/sbin/ldconfig
 
 %postun
 /sbin/ldconfig
