@@ -242,11 +242,10 @@ const vector<string> linkedModules() {
 Path::Item getExecutablePath() {
 
 #ifdef __APPLE__
-  path         self_proc{};
   char         pathbuf[PATH_MAX + 1];
   unsigned int bufsize = sizeof(pathbuf);
   _NSGetExecutablePath(pathbuf, &bufsize);
-  path self_exe = path(string(pathbuf));
+  Path::Item self_exe = Path::Item(string(pathbuf));
 #else
 
   Path::Item self_exe = getSelfProc() / "exe";

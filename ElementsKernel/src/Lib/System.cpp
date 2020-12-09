@@ -25,6 +25,7 @@
 #include <sys/utsname.h>
 #include <unistd.h>  // for environ
 
+#include <array>    // for array
 #include <cstdlib>  // for free, getenv, malloc, etc
 #include <iomanip>
 #include <iostream>
