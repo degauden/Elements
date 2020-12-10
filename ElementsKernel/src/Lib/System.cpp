@@ -385,6 +385,7 @@ int unSetEnv(const string& name) {
 // backtrace utilities
 // -----------------------------------------------------------------------------
 
+__attribute__((noinline))
 int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses, ELEMENTS_UNUSED const int depth) {
 
   int count = ::backtrace(addresses.get(), depth);
