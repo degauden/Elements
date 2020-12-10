@@ -401,7 +401,8 @@ const vector<string> backTrace(const int depth, const int offset) {
   const int      total_depth  = depth + total_offset;
   vector<string> trace{};
 
-  std::shared_ptr<void*> addresses{new (std::nothrow) void*[total_depth], std::default_delete<void*[]>()};
+  std::shared_ptr<void*> addresses{new (std::nothrow) void*[static_cast<std::size_t>(total_depth)],
+                                   std::default_delete<void*[]>()};
 
   if (addresses.get() != nullptr) {
 
