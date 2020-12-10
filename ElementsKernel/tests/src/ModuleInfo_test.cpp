@@ -74,12 +74,14 @@ BOOST_AUTO_TEST_CASE(libraryName_test) {
   BOOST_CHECK_EQUAL(::basename(const_cast<char*>(info.libraryName().c_str())), "ModuleInfo_test");
 }
 
+#ifndef __APPLE__
 BOOST_AUTO_TEST_CASE(addresse_test) {
 
   const System::ModuleInfo& info = System::getThisModuleInfo();
 
   BOOST_CHECK_EQUAL(info.addresse(), static_cast<void*>(0));
 }
+#endif
 
 BOOST_AUTO_TEST_CASE(moduleName_test) {
 
