@@ -238,7 +238,6 @@ vector<Path::Item> linkedModulePaths() {
   Path::Item    self_maps = getSelfProc() / "maps";
   std::ifstream maps_str(self_maps.string());
 
-  string line;
   while (std::getline(maps_str, line)) {
     string             address, perms, offset, dev, pathname;
     unsigned           inode;
