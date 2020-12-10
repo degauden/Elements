@@ -47,6 +47,9 @@
 #endif
 
 #include <boost/filesystem/operations.hpp>  // for filesystem::exists, canonical
+#include <boost/process/child.hpp>          // for process::child
+#include <boost/process/io.hpp>             // for process::ipstream, process::std_out, std_err and std_in
+#include <boost/process/search_path.hpp>    // for process::search_path
 
 #include "ElementsKernel/FuncPtrCast.h"
 #include "ElementsKernel/Path.h"  // for Path::Item
@@ -206,7 +209,32 @@ Path::Item getSelfProc() {
 vector<Path::Item> linkedModulePaths() {
 
   vector<Path::Item> linked_modules;
+  string line;
 
+#ifdef __APPLE__
+  boost::process::ipstream mmap_is;
+  boost::process::child    vmmap(boost::process::search_path("vmmap"), "-w", std::to_string(getpid()),
+                              boost::process::std_out > mmap_is, boost::process::std_err > boost::process::null,
+                              boost::process::std_in < boost::process::null);
+  bool                     map_lines = false;
+  size_t                   perm_offset, symbol_offset;
+
+  while (vmmap.running() && std::getline(mmap_is, line)) {
+    if (!map_lines && line.compare(0, 11, "REGION TYPE") == 0) {
+      map_lines     = true;
+      perm_offset   = line.find("PRT/MAX");
+      symbol_offset = line.find("REGION DETAIL");
+    } else if (map_lines && line.empty()) {
+      map_lines = false;
+    } else if (map_lines && line.size() > symbol_offset) {
+      auto perms    = line.substr(perm_offset, 3);
+      auto pathname = line.substr(symbol_offset);
+      if (perms[2] == 'x' and boost::filesystem::exists(pathname)) {
+        linked_modules.emplace_back(Path::Item(pathname));
+      }
+    }
+  }
+#else
   Path::Item    self_maps = getSelfProc() / "maps";
   std::ifstream maps_str(self_maps.string());
 
@@ -224,7 +252,7 @@ vector<Path::Item> linkedModulePaths() {
   }
 
   maps_str.close();
-
+#endif
   return linked_modules;
 }
 
