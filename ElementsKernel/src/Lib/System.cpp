@@ -25,6 +25,7 @@
 #include <sys/utsname.h>
 #include <unistd.h>  // for environ
 
+#include <array>    // for array
 #include <cstdlib>  // for free, getenv, malloc, etc
 #include <iomanip>
 #include <iostream>
@@ -383,8 +384,8 @@ int unSetEnv(const string& name) {
 // -----------------------------------------------------------------------------
 // backtrace utilities
 // -----------------------------------------------------------------------------
-
-int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses, ELEMENTS_UNUSED const int depth) {
+__attribute__((noinline)) int backTrace(ELEMENTS_UNUSED std::shared_ptr<void*> addresses,
+                                        ELEMENTS_UNUSED const int              depth) {
 
   int count = ::backtrace(addresses.get(), depth);
   if (count > 0) {
