@@ -788,8 +788,6 @@ if (SGS_HOST_ARCH AND SGS_ARCH)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
     set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -m32")
     set(GCCXML_CXX_FLAGS "${GCCXML_CXX_FLAGS} -m32")
-  elseif(NOT "${SGS_HOST_ARCH}" STREQUAL SGS_ARCH)
-    message(FATAL_ERROR "Cannot build for ${SGS_ARCH} on ${SGS_HOST_ARCH}.")
   endif()
 endif()
 
