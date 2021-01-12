@@ -49,9 +49,24 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Coverage")
     find_package(GCovr QUIET)
 
     if(GCOVR_EXECUTABLE)
+    
+      set(GCOVR_OPTIONS)
+      set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude="/usr/include/.*")
+      set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude="${PROJECT_BINARY_DIR}/.*")
+      set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude=".*/InstallArea/.*")        
+      
+      if(GCOVR_EXCLUDE_UNREACHABLE)
+        set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude-unreachable-branches)
+      endif()
+    
+      if(GCOVR_EXCLUDE_THROW)
+        set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude-throw-branches)
+      endif()
+
+      set(GCOVR_OPTIONS ${GCOVR_OPTIONS} ${GCOVR_EXTRA_OPTIONS})        
 
       add_custom_target(gcovr
-                        COMMAND ${GCOVR_EXECUTABLE} -x -r ${CMAKE_SOURCE_DIR} --exclude=/usr/include/.* --exclude=${PROJECT_BINARY_DIR}/.* --exclude=.*/InstallArea/.* -o ${PROJECT_NAME}.xml
+                        COMMAND ${GCOVR_EXECUTABLE} -x -r ${CMAKE_SOURCE_DIR} ${GCOVR_OPTIONS} -o ${PROJECT_NAME}.xml
                         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/gcovr
                         COMMENT "Produce Cobertura output" VERBATIM)
 
