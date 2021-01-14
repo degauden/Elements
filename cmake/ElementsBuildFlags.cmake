@@ -340,6 +340,15 @@ option(Boost_NO_BOOST_CMAKE
        "Don't use the BoostConfig.cmake file introduced in Boost 1.70"
        ON)
 
+option(GCOVR_EXCLUDE_UNREACHABLE
+       "Option to remove unreachable branches from the gcovr analysis"
+       ON)
+
+option(GCOVR_EXCLUDE_THROW
+       "Option to remove throuw branches from the gcovr analysis"
+       ON)
+
+set(GCOVR_EXTRA_OPTIONS "" CACHE STRING "Extra option to be appended to the gcovr command")
 
 
 #--- Compilation Flags ---------------------------------------------------------
