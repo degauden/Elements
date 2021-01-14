@@ -2842,6 +2842,11 @@ function(_generate_swig_files swig_module)
                  PROPERTY COMPILE_FLAGS " -Wno-shadow")
   endif()
 
+  if(CXX_HAS_NULL_DEREFERENCE)
+    set_property(SOURCE ${PY_MODULE_SWIG_SRC} APPEND_STRING
+                 PROPERTY COMPILE_FLAGS " -Wno-null-dereference")
+  endif()
+
 
 
   install(FILES ${PY_MODULE_DIR}/${PY_MODULE}.py DESTINATION ${PYTHON_INSTALL_SUFFIX})
