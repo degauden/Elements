@@ -47,7 +47,10 @@ if(NOT SQUEEZED_INSTALL)
     set(ELEMENTS_BASE_DIR "/opt/euclid" CACHE STRING "Euclid Base Install Directory")
     message(STATUS "${ELEMENTS_BASE_VAR} is not in the environment: using default ${ELEMENTS_BASE_DIR}")
   endif()
-  
+
+  get_filename_component(ELEMENTS_BASE_PARENT_DIR ${ELEMENTS_BASE_DIR} PATH)
+  get_filename_component(ELEMENTS_BASE_PREFIX_DIR ${ELEMENTS_BASE_PARENT_DIR} PATH)
+
 endif()
 
 
