@@ -20,7 +20,9 @@
  */
 
 #include <cstdint>  // for int64_t
+#include <memory>   // for make_unique
 #include <string>   // for string
+#include <vector>   // for vector
 
 #include "ElementsExamples/ClassExample2.h"
 #include <boost/test/test_tools.hpp>
@@ -80,6 +82,19 @@ BOOST_FIXTURE_TEST_CASE(exception_in_divideNumbers_test, ClassExample2Fixture) {
                           string exception_str = e.what();
                           return exception_str.find("exception in ClassExample2::divideNumbers") != string::npos;
                         });
+
+  BOOST_CHECK_NO_THROW(example_class.divideNumbers(1.0, 2.0));
+}
+
+BOOST_FIXTURE_TEST_CASE(PassArguments_test, ClassExample2Fixture) {
+
+  using std::vector;
+
+  vector<double> test_list{1.0, 2.0, 5.0};
+  auto           other_list = std::unique_ptr<vector<double>>(new vector<double>(3));
+
+  BOOST_CHECK_NO_THROW(example_class.passingObjectInGeneral(test_list));
+  BOOST_CHECK_NO_THROW(example_class.passingUniquePointer(std::move(other_list)));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

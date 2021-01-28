@@ -23,14 +23,22 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Coverage")
                     COMMAND ;
                     COMMENT "Please run:make; make test; make cov in order to get the coverage reports"
                     )
-
-
+   if(NOT SQUEEZED_INSTALL)
+    add_custom_target(lcov
+                      COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --capture --output-file ${PROJECT_NAME}.info
+                      COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* ${ELEMENTS_BASE_PREFIX_DIR}/include/* ${ELEMENTS_BASE_PREFIX_DIR}/usr/include/* ${ELEMENTS_BASE_PREFIX_DIR}/lib/gcc/* ${ELEMENTS_BASE_PREFIX_DIR}/x86_64-conda* */InstallArea/* ${BUILD_SUBDIR}/* ${PROJECT_BINARY_DIR}/* /usr/lib/gcc/* --output-file ${PROJECT_NAME}.info.cleaned
+                      COMMAND ${GENHTML_EXECUTABLE} -o html ${PROJECT_NAME}.info.cleaned
+                      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
+                      COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters" VERBATIM)
+    else()
     add_custom_target(lcov
                       COMMAND ${LCOV_EXECUTABLE} --directory ${PROJECT_BINARY_DIR} --capture --output-file ${PROJECT_NAME}.info
                       COMMAND ${LCOV_EXECUTABLE} --remove ${PROJECT_NAME}.info /usr/include/* */InstallArea/* ${BUILD_SUBDIR}/* ${PROJECT_BINARY_DIR}/* /usr/lib/gcc/* --output-file ${PROJECT_NAME}.info.cleaned
                       COMMAND ${GENHTML_EXECUTABLE} -o html ${PROJECT_NAME}.info.cleaned
                       WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/cov/lcov
                       COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters" VERBATIM)
+    endif()
+
 
     add_dependencies(cov lcov)
 
@@ -53,6 +61,12 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Coverage")
       set(GCOVR_OPTIONS)
       set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude="/usr/include/.*")
       set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude="${PROJECT_BINARY_DIR}/.*")
+      if(NOT SQUEEZED_INSTALL)
+        set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude="${ELEMENTS_BASE_PREFIX_DIR}/include/.*")
+        set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude="${ELEMENTS_BASE_PREFIX_DIR}/usr/include/.*")
+        set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude="${ELEMENTS_BASE_PREFIX_DIR}/lib/gcc/.*")
+        set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude="${ELEMENTS_BASE_PREFIX_DIR}/x86_64-conda.*")
+      endif()
       set(GCOVR_OPTIONS ${GCOVR_OPTIONS} --exclude=".*/InstallArea/.*")        
       
       if(GCOVR_EXCLUDE_UNREACHABLE)
