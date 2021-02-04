@@ -175,8 +175,9 @@ endif()
 
 #---Python and Scripts ------------------------------------------------------------
 
-elements_install_python_modules()
+elements_install_scripts()
 
+elements_install_python_modules()
 
 elements_add_python_program(CreateElementsProject ElementsKernel.CreateProject)
 elements_add_python_program(AddElementsModule ElementsKernel.AddModule)
