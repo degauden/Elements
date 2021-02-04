@@ -30,6 +30,10 @@ parser.add_argument('--python-explicit-version', default="",
 parser.add_argument('--elements-default-loglevel', default="DEBUG",
                     help='default log level for the Elements framework')
 
+parser.add_argument('--no-config-file', default=False, action="store_true",
+                    help='default log level for the Elements framework')
+
+
 args = parser.parse_args()
 
 if not os.path.exists(args.outdir):
@@ -37,6 +41,11 @@ if not os.path.exists(args.outdir):
 if not os.path.isdir(args.outdir):
     print('Cannot create output directory', args.outdir)
     exit(1)
+
+if args.no_config_file:
+    use_config_file_string = "False"
+else:
+    use_config_file_string = "True"
 
 template = """\
 #!/usr/bin/env python%(Python_version)s
@@ -94,7 +103,8 @@ p = Program('%(MODULE_NAME)s',
              %(proj)s_VCS_VERSION,
              ELEMENTS_MODULE_NAME, ELEMENTS_MODULE_VERSION,
              %(proj)s_SEARCH_DIRS, os.path.realpath(__file__),
-             logging.%(LogLevel)s)
+             logging.%(LogLevel)s,
+             use_config_file=%(UseConfigFile)s)
 
 exit(p.runProgram())
 """ % {'MODULE_NAME' : args.module,
@@ -103,7 +113,8 @@ exit(p.runProgram())
        'Mod_name' : args.elements_module_name,
        'Mod_version' : args.elements_module_version,
        'Python_version': args.python_explicit_version,
-       'LogLevel': args.elements_default_loglevel
+       'LogLevel': args.elements_default_loglevel,
+       'UseConfigFile': use_config_file_string
       }
 
 filename = os.path.join(args.outdir, args.execname)

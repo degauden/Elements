@@ -45,10 +45,12 @@ class Program(object):
                  parent_project_vcs_version=None,
                  elements_module_name=None, elements_module_version=None,
                  search_dirs=None, original_path="",
-                 elements_loglevel=logging.DEBUG):
+                 elements_loglevel=logging.DEBUG,
+                 use_config_file=True):
         self._app_module = importlib.import_module(app_module)
         self._logger = log.getLogger('ElementsProgram')
         self._elements_loglevel = elements_loglevel
+        self._use_config_file = use_config_file
         self._parent_project_version = parent_project_version
         self._parent_project_name = parent_project_name
         self._parent_project_vcs_version = parent_project_vcs_version
@@ -157,7 +159,10 @@ class Program(object):
         # Setup the logging
         self._setupLogging(arg_parser)
         # Get the options from the config file
-        options = self._parseConfigFile(arg_parser)
+        if self._use_config_file:
+            options = self._parseConfigFile(arg_parser)
+        else:
+            options = []
         # Append any options passed by the user in the command line. Because they
         # are after the ones from the configuration file, they are going to
         # override them (argparse behavior)

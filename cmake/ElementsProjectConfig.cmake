@@ -4623,6 +4623,8 @@ endfunction()
 
 function(elements_add_python_program executable module)
 
+  cmake_parse_arguments(PYPROG NO_CONFIG_FILE "" "" ${ARGN})
+
   get_property(has_python_dir DIRECTORY PROPERTY module_has_python_dir)
 
   if (NOT has_python_dir)
@@ -4646,9 +4648,23 @@ function(elements_add_python_program executable module)
   get_directory_property(elements_module_name name)
   get_directory_property(elements_module_version version)
 
-  add_custom_command(OUTPUT ${executable_file}
-                     COMMAND ${pythonprogramscript_cmd} --python-explicit-version="${PYTHON_VERSION_MAJOR}" --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable} --project-name ${CMAKE_PROJECT_NAME} --elements-module-name ${elements_module_name} --elements-module-version ${elements_module_version} --elements-default-loglevel=${ELEMENTS_DEFAULT_LOGLEVEL}
-                     DEPENDS ${program_file})
+  if(PYPROG_NO_CONFIG_FILE)
+    add_custom_command(OUTPUT ${executable_file}
+                       COMMAND ${pythonprogramscript_cmd} --python-explicit-version="${PYTHON_VERSION_MAJOR}" 
+                               --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable} 
+                               --project-name ${CMAKE_PROJECT_NAME} --elements-module-name ${elements_module_name}
+                               --elements-module-version ${elements_module_version} 
+                               --elements-default-loglevel=${ELEMENTS_DEFAULT_LOGLEVEL} --no-config-file
+                       DEPENDS ${program_file})  
+  else()
+    add_custom_command(OUTPUT ${executable_file}
+                       COMMAND ${pythonprogramscript_cmd} --python-explicit-version="${PYTHON_VERSION_MAJOR}"
+                               --module ${module} --outdir ${CMAKE_BINARY_DIR}/scripts --execname ${executable}
+                               --project-name ${CMAKE_PROJECT_NAME} --elements-module-name ${elements_module_name}
+                               --elements-module-version ${elements_module_version} 
+                               --elements-default-loglevel=${ELEMENTS_DEFAULT_LOGLEVEL}
+                       DEPENDS ${program_file})
+  endif()
 
   string(REPLACE "." "_" python_program_target ${module})
   add_custom_target(${python_program_target} ALL DEPENDS ${executable_file})
