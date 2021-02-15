@@ -4,6 +4,15 @@ message(STATUS "----------------------------------------------------------------
 message(STATUS "                  --- ElementsToolChain ---                            ")
 message(STATUS "-----------------------------------------------------------------------")
 
+if (CMAKE_GENERATOR MATCHES "Ninja")
+    file(
+        WRITE "${CMAKE_BINARY_DIR}/GNUMakeRulesOverwrite.cmake" 
+            "STRING(REPLACE \"-MD\" \"-MMD\" CMAKE_DEPFILE_FLAGS_C \"\${CMAKE_DEPFILE_FLAGS_C}\")\n"
+            "STRING(REPLACE \"-MD\" \"-MMD\" CMAKE_DEPFILE_FLAGS_CXX \"\${CMAKE_DEPFILE_FLAGS_CXX}\")\n"
+    )
+    set(CMAKE_USER_MAKE_RULES_OVERRIDE "${CMAKE_BINARY_DIR}/GNUMakeRulesOverwrite.cmake" CACHE INTERNAL "")
+endif()
+
 
 # Initial bootstrap to locate the Toolchain macros
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_MODULE_PATH})

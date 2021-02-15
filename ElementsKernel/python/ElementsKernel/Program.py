@@ -149,8 +149,9 @@ class Program(object):
         arg_parser = self._app_module.defineSpecificProgramOptions()
         # Add all the options which are common to all the programs
         group = arg_parser.add_argument_group('Generic Options')
-        group.add_argument(
-            '--config-file', help='Name of a configuration file')
+        if self._use_config_file:
+            group.add_argument(
+                '--config-file', help='Name of a configuration file')
         group.add_argument('--log-file', help='Name of a log file')
         group.add_argument(
             '--log-level', help='Log level: FATAL, ERROR, WARN, INFO (default), DEBUG')
