@@ -33,6 +33,10 @@ elements_add_executable(CppProgramExample src/program/ProgramExample.cpp
                         INCLUDE_DIRS Boost ElementsExamples ElementsOther
                         LINK_LIBRARIES Boost ElementsExamples ElementsOther)
 
+elements_add_executable(OtherCppProgramExample src/program/OtherProgramExample.cpp
+                        INCLUDE_DIRS Boost ElementsExamples ElementsOther
+                        LINK_LIBRARIES Boost ElementsExamples ElementsOther)
+
 elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgramExample.cpp
                         INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
