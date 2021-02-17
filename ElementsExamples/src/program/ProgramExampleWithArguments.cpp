@@ -83,8 +83,10 @@ public:
   }
 
   std::pair<OptionsDescription, PositionalOptionsDescription> defineProgramArguments() override {
-    OptionsDescription desc("");
-    desc.add_options()("input-files", value<vector<string>>(), "Input files");
+    OptionsDescription desc{};
+    auto               add = desc.add_options();
+
+    add("input-files", value<vector<string>>(), "Input files");
 
     PositionalOptionsDescription pos_desc;
     pos_desc.add("input-files", -1);

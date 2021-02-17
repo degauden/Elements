@@ -101,16 +101,17 @@ public:
 
     OptionsDescription config_options{"Example program options"};
 
+    auto add = config_options.add_options();
+
     // Add the specific program options
-    config_options.add_options()("int-option", value<int>(&m_int_option)->default_value(int{111}),
-                                 "An example int option")(
-        "string-option", value<string>(&m_string_option)->default_value(string{}), "An example string option")(
-        "boolean-option", value<bool>(&m_boolean_option)->default_value(false),
-        "An example boolean option")("flag,f", bool_switch(&m_flag), "An option to set to true")(
-        "long-long-option", value<int64_t>(&m_long_long_option)->default_value(int64_t{3}),
-        "An example long long option")("double-option", value<double>(&m_double_option)->default_value(double{}),
-                                       "An example double option")(
-        "int-vector-option",
+    add("int-option", value<int>(&m_int_option)->default_value(int{111}), "An example int option");
+    add("string-option", value<string>(&m_string_option)->default_value(string{}), "An example string option");
+    add("boolean-option", value<bool>(&m_boolean_option)->default_value(false), "An example boolean option");
+    add("flag,f", bool_switch(&m_flag), "An option to set to true");
+    add("long-long-option", value<int64_t>(&m_long_long_option)->default_value(int64_t{3}),
+        "An example long long option");
+    add("double-option", value<double>(&m_double_option)->default_value(double{}), "An example double option");
+    add("int-vector-option",
         value<vector<int>>(&m_int_vector_option)->multitoken()->default_value(vector<int>{}, "Empty"),
         "An example vector option");
 
