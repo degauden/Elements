@@ -411,7 +411,8 @@ const vector<string> backTrace(const int depth, const int offset) {
 
     for (int i = total_offset; i < count; ++i) {
       void*  addr = 0;
-      string fnc, lib;
+      string fnc;
+      string lib;
       if (getStackLevel(addresses.get()[i], addr, fnc, lib)) {
         std::ostringstream ost;
         ost << "#" << std::setw(3) << std::setiosflags(std::ios::left) << i - total_offset + 1;
