@@ -177,16 +177,14 @@ if(SQUEEZED_INSTALL)
 
 endif()
 
-get_arch_lib_dir(that_arch)
-
 message(STATUS "--------------------------------------------------------------------------------------------------> ${CMAKE_PREFIX_PATH}")
 file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" current_cmake_prefix_path)
 
 set(ELEMENTS_DEFAULT_SEARCH_PATH)
 foreach(_ds ${current_cmake_prefix_path})  
-  list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${_ds}/${that_arch}/cmake/ElementsProject)
+  list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${_ds}/${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject)
 endforeach()
-set(ELEMENTS_USR_SEARCH_PATH /usr/${that_arch}/cmake/ElementsProject)
+set(ELEMENTS_USR_SEARCH_PATH /usr/${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject)
 
 file(TO_CMAKE_PATH "$ENV{XDG_DATA_DIRS}" data_dirs)
 if(data_dirs)
