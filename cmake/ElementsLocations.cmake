@@ -184,7 +184,11 @@ set(ELEMENTS_DEFAULT_SEARCH_PATH)
 foreach(_ds ${current_cmake_prefix_path})  
   list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${_ds}/${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject)
 endforeach()
+message(STATUS "=======================================================================> ${ELEMENTS_DEFAULT_SEARCH_PATH}")
+
 set(ELEMENTS_USR_SEARCH_PATH /usr/${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject)
+message(STATUS "=======================================================================> ${ELEMENTS_USR_SEARCH_PATH}")
+
 
 file(TO_CMAKE_PATH "$ENV{XDG_DATA_DIRS}" data_dirs)
 if(data_dirs)
