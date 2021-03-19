@@ -179,6 +179,7 @@ endif()
 
 get_arch_lib_dir(that_arch)
 
+message(STATUS "--------------------------------------------------------------------------------------------------> ${CMAKE_PRFIX_PATH}")
 file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" current_cmake_prefix_path)
 
 set(ELEMENTS_DEFAULT_SEARCH_PATH)
