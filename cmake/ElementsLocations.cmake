@@ -179,19 +179,18 @@ endif()
 
 message(STATUS "--------------------------------------------------------------------------------------------------> ${CMAKE_PREFIX_PATH}")
 
-if (CMAKE_PREFIX_PATH)
-  set(current_cmake_prefix_path ${CMAKE_PREFIX_PATH})
-endif()
 IF(ENV{CMAKE_PREFIX_PATH})
   file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" current_env_cmake_prefix_path)
+  set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${current_env_cmake_prefix_path})
   set(current_cmake_prefix_path ${current_cmake_prefix_path} ${current_env_cmake_prefix_path})
 endif()
 
-if(current_cmake_prefix_path)
-  list(REMOVE_DUPLICATES current_cmake_prefix_path)
+if(CMAKE_PREFIX_PATH)
+  list(REMOVE_DUPLICATES CMAKE_PREFIX_PATH)
 endif()
-#
-#file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" current_cmake_prefix_path)
+
+set(current_cmake_prefix_path ${CMAKE_PREFIX_PATH})
+
 
 set(ELEMENTS_DEFAULT_SEARCH_PATH)
 foreach(_ds ${current_cmake_prefix_path})  
