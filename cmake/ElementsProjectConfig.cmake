@@ -849,7 +849,6 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${so_version_option} ${projec
   find_package\(ElementsProject\)
   message\(STATUS \"Installing: ${installed_env_release_xml}\"\)
   set\(ELEMENTS_DEFAULT_SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH}\)
-  set\(ELEMENTS_DEFAULT_SEARCH_PATH ${ELEMENTS_DEFAULT_SEARCH_PATH}\)
   set\(ELEMENTS_USR_SEARCH_PATH ${ELEMENTS_USR_SEARCH_PATH}\)
   set\(used_elements_projects ${used_elements_projects}\)
   foreach\(other_project ${used_elements_projects}\)
