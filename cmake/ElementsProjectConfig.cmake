@@ -1465,15 +1465,11 @@ macro(_elements_use_other_projects)
   # Note: it works even if the env. var. is not set.
   file(TO_CMAKE_PATH "$ENV{CMAKE_PROJECT_PATH}" projects_search_path)
 
-  message(STATUS "|=======================================================================> ${ELEMENTS_DEFAULT_SEARCH_PATH}")
-
   foreach(_ds ${ELEMENTS_DEFAULT_SEARCH_PATH})
     if(EXISTS ${_ds})
       set(projects_search_path ${projects_search_path} ${_ds})
     endif()
   endforeach()
-
-  message(STATUS "|=======================================================================> ${ELEMENTS_USR_SEARCH_PATH}")
 
 
   if(EXISTS ${ELEMENTS_USR_SEARCH_PATH})
