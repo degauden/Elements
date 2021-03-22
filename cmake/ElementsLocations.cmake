@@ -187,8 +187,9 @@ IF(ENV{CMAKE_PREFIX_PATH})
   set(current_cmake_prefix_path ${current_cmake_prefix_path} ${current_env_cmake_prefix_path})
 endif()
 
-list(REMOVE_DUPLICATES current_cmake_prefix_path)
-
+if(current_cmake_prefix_path)
+  list(REMOVE_DUPLICATES current_cmake_prefix_path)
+endif()
 #
 #file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" current_cmake_prefix_path)
 
