@@ -810,22 +810,6 @@ ${other_sys_pack_line}")
 
 endfunction()
 
-function(get_arch_lib_dir output_var)
-
-  if(EXISTS /usr/lib/x86_64-linux-gnu)
-    set(lib_name lib/x86_64-linux-gnu)
-  else()
-    if(EXISTS /usr/lib64)
-      set(lib_name lib64)
-    else()
-      set(lib_name lib)
-    endif()
-  endif()
-
-  set(${output_var} ${lib_name} PARENT_SCOPE)
-
-endfunction()
-
 macro(print_all_variables)
   get_cmake_property(_variableNames VARIABLES)
   foreach (_variableName ${_variableNames})
