@@ -191,7 +191,6 @@ endif()
 
 set(current_cmake_prefix_path ${CMAKE_PREFIX_PATH})
 
-
 set(ELEMENTS_DEFAULT_SEARCH_PATH)
 foreach(_ds ${current_cmake_prefix_path})  
   list(APPEND ELEMENTS_DEFAULT_SEARCH_PATH ${_ds}/${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject)
