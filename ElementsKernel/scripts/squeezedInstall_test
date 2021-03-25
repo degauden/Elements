@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Clean and exit
+local_clean_exit() {
+  cd ${home_dir}
+  rm -rf ${tmploc}
+  exit $1
+}
+
+# Create unique directory
+tmploc=$(mktemp -dq -t temp.XXXXXX)
+
+
+
+
+
+local_clean_exit 0
