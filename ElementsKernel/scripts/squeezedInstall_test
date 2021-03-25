@@ -1,5 +1,7 @@
 #!/bin/sh
 
+home_dir=${PWD}
+
 # Clean and exit
 local_clean_exit() {
   cd ${home_dir}
@@ -10,8 +12,58 @@ local_clean_exit() {
 # Create unique directory
 tmploc=$(mktemp -dq -t temp.XXXXXX)
 
+#create the custom install prefix directory
+custom_prefix=${tmploc}/usr/local
+mkdir -p ${custom_prefix}
 
 
+
+# prepare the environment
+unset ELEMENTS_CONF_PATH
+unset ELEMENTS_AUX_PATH
+unset ELEMENTSKERNELROOT
+unset CMAKE_PROJECT_PATH
+unset THIS_PROJECT_ROOT
+unset CMAKE_PREFIX_PATH
+unset ELEMENTSEXAMPLESROOT
+unset ELEMENTSSERVICESROOT
+unset ELEMENTS_NAMING_DB_URL
+unset ELEMENTS_PROJECT_ROOT
+
+printenv | grep -i make
+
+# Configure Elements
+elements_build_dir=${tmploc}/ElementsBuild
+mkdir -p ${elements_build_dir}
+cd ${elements_build_dir}
+cmake -DCMAKE_PREFIX_PATH=${custom_prefix} -DCMAKE_INSTALL_PREFIX=${custom_prefix} ${ELEMENTS_SOURCE_DIR}
+if [ $? -ne 0 ]; then
+  echo "Error: <cmake -DCMAKE_PREFIX_PATH=${custom_prefix} -DCMAKE_INSTALL_PREFIX=${custom_prefix} ${ELEMENTS_SOURCE_DIR}> command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+
+# Build Elements
+make
+if [ $? -ne 0 ]; then
+   echo "Error: <make> command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+# Run Elements Tests (exclude this one)
+ctest -T test -E ElementsKernel.SqueezedInstall
+if [ $? -ne 0 ]; then
+   echo "Error: <ctest -T -E ElementsKernel.SqueezedInstall> command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+
+# Install Elements
+make install
+if [ $? -ne 0 ]; then
+   echo "Error: <make install> command failed!" 1>&2
+   local_clean_exit 1
+fi
 
 
 local_clean_exit 0
