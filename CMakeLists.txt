@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 # Ensure that we can find ElementsProjectConfig.cmake
 # (this works only for projects embedding ElementsProjectConfig.cmake)
