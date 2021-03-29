@@ -16,6 +16,7 @@ tmploc=$(mktemp -dq -t temp.XXXXXX)
 custom_prefix=${tmploc}/usr/local
 mkdir -p ${custom_prefix}
 
+cmake_full_cmd="cmake -DCMAKE_PREFIX_PATH=${custom_prefix} -DCMAKE_INSTALL_PREFIX=${custom_prefix}"
 
 
 # prepare the environment
@@ -29,31 +30,34 @@ unset ELEMENTSEXAMPLESROOT
 unset ELEMENTSSERVICESROOT
 unset ELEMENTS_NAMING_DB_URL
 unset ELEMENTS_PROJECT_ROOT
+unset User_area
 
 # Configure Elements
 elements_build_dir=${tmploc}/ElementsBuild
 mkdir -p ${elements_build_dir}
 cd ${elements_build_dir}
-cmake -DCMAKE_PREFIX_PATH=${custom_prefix} -DCMAKE_INSTALL_PREFIX=${custom_prefix} ${ELEMENTS_SOURCE_DIR}
+
+${cmake_full_cmd} ${ELEMENTS_SOURCE_DIR}
 if [ $? -ne 0 ]; then
   echo "Error: <cmake -DCMAKE_PREFIX_PATH=${custom_prefix} -DCMAKE_INSTALL_PREFIX=${custom_prefix} ${ELEMENTS_SOURCE_DIR}> command failed!" 1>&2
   local_clean_exit 1
 fi
 
 
+
 # Build Elements
-make
-if [ $? -ne 0 ]; then
-  echo "Error: <make> command failed!" 1>&2
-  local_clean_exit 1
-fi
+# make
+# if [ $? -ne 0 ]; then
+#  echo "Error: <make> command failed!" 1>&2
+#  local_clean_exit 1
+#fi
 
 # Run Elements Tests (exclude this one)
-ctest -T test -E ElementsKernel.SqueezedInstall
-if [ $? -ne 0 ]; then
-  echo "Error: <ctest -T -E ElementsKernel.SqueezedInstall> command failed!" 1>&2
-  local_clean_exit 1
-fi
+#ctest -T test -E ElementsKernel.SqueezedInstall
+#if [ $? -ne 0 ]; then
+#  echo "Error: <ctest -T -E ElementsKernel.SqueezedInstall> command failed!" 1>&2
+#  local_clean_exit 1
+#fi
 
 
 # Install Elements
@@ -62,6 +66,124 @@ if [ $? -ne 0 ]; then
   echo "Error: <make install> command failed!" 1>&2
   local_clean_exit 1
 fi
+
+# Set up the envrionment of the just installed Elements instance
+
+elements_aux_install_dir=${custom_prefix}/$(${cmake_full_cmd} -LA -N ${ELEMENTS_SOURCE_DIR} | grep ^AUX_INSTALL_SUFFIX | awk -F '=' '{print $2}')
+elements_conf_install_dir=${custom_prefix}/$(${cmake_full_cmd} -LA -N ${ELEMENTS_SOURCE_DIR} | grep ^CONF_INSTALL_SUFFIX | awk -F '=' '{print $2}')
+elements_bin_install_dir=${custom_prefix}/$(${cmake_full_cmd} -LA -N ${ELEMENTS_SOURCE_DIR} | grep ^BIN_INSTALL_SUFFIX | awk -F '=' '{print $2}')
+elements_script_install_dir=${custom_prefix}/$(${cmake_full_cmd} -LA -N ${ELEMENTS_SOURCE_DIR} | grep ^SCRIPT_INSTALL_SUFFIX | awk -F '=' '{print $2}')
+elements_lib_install_dir=${custom_prefix}/$(${cmake_full_cmd} -LA -N ${ELEMENTS_SOURCE_DIR} | grep ^LIB_INSTALL_SUFFIX | awk -F '=' '{print $2}')
+elements_python_install_dir=${custom_prefix}/$(${cmake_full_cmd} -LA -N ${ELEMENTS_SOURCE_DIR} | grep ^PYTHON_INSTALL_SUFFIX | awk -F '=' '{print $2}')
+elements_python_dynlib_install_dir=${custom_prefix}/$(${cmake_full_cmd} -LA -N ${ELEMENTS_SOURCE_DIR} | grep ^PYTHON_DYNLIB_INSTALL_SUFFIX | awk -F '=' '{print $2}')
+elements_prefix_dir=${custom_prefix}
+
+export CMAKE_PREFIX_PATH="${elements_prefix_dir}${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
+export PATH="${elements_bin_install_dir}${PATH:+:$PATH}"
+export PATH="${elements_script_install_dir}${PATH:+:$PATH}"
+export LD_LIBRARY_PATH="${elements_lib_install_dir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export PYTHONPATH="${elements_python_install_dir}${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH="${elements_python_dynlib_install_dir}${PYTHONPATH:+:$PYTHONPATH}"
+export ELEMENTS_AUX_PATH="${elements_aux_install_dir}${ELEMENTS_AUX_PATH:+:$ELEMENTS_AUX_PATH}"
+export ELEMENTS_CONF_PATH="${elements_conf_install_dir}${ELEMENTS_CONF_PATH:+:$ELEMENTS_CONF_PATH}"
+export CMAKEFLAGS="-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}"
+
+
+
+# Construct and build a depdent squeezed project
+
+projectB_name="ProjectB"
+projectB_version="1.2"
+
+export User_area=${tmploc}/Projects
+
+mkdir -p ${User_area}
+
+cd ${User_area}
+
+CreateElementsProject -n --yes ${projectB_name} ${projectB_version} 
+if [ $? -ne 0 ]; then
+   echo "Error: <CreateElementsProject $projectB_name $projectB_version> command failed!" 1>&2
+   local_clean_exit 1
+fi
+
+projectb_source_dir=${User_area}/${projectB_name}
+
+cd ${projectb_source_dir}
+
+AddElementsModule ${projectB_name}
+AddElementsModule -s ${projectB_name}Second
+
+# Configure Elements
+projectb_build_dir=${tmploc}/ProjectBBuild
+mkdir -p ${projectb_build_dir}
+cd ${projectb_build_dir}
+
+${cmake_full_cmd} ${projectb_source_dir}
+if [ $? -ne 0 ]; then
+  echo "Error: <${cmake_full_cmd} ${projectb_source_dir}> command failed!" 1>&2
+  local_clean_exit 1
+fi
+
+# Build ProjectB
+make
+if [ $? -ne 0 ]; then
+  echo "Error: <make> command failed!" 1>&2
+  local_clean_exit 1
+fi
+
+# Install ProjectB
+make install
+if [ $? -ne 0 ]; then
+  echo "Error: <make install> command failed!" 1>&2
+  local_clean_exit 1
+fi
+
+# Construct and build a depdent unsqueezed project
+
+# projectA_name="ProjectA"
+# projectA_version="1.1"
+
+# export User_area=${tmploc}/Projects
+
+# mkdir -p ${User_area}
+
+# cd ${User_area}
+
+# CreateElementsProject $projectA_name $projectA_version --yes
+# if [ $? -ne 0 ]; then
+#    echo "Error: <CreateElementsProject $projectA_name $projectA_version> command failed!" 1>&2
+#   local_clean_exit 1
+# fi
+
+# cd $projectA_name/$projectA_version
+
+# AddElementsModule ${projectA_name}
+# AddElementsModule -s ${projectA_name}Second
+
+# make configure
+# if [ $? -ne 0 ]; then
+#   echo "Error: <Configuration of $projectA_name $projectA_version> failed!" 1>&2
+#   local_clean_exit 1
+# fi
+
+# make
+# if [ $? -ne 0 ]; then
+#    echo "Error: <Builld of $projectA_name $projectA_version> failed!" 1>&2
+#   local_clean_exit 1
+# fi
+
+# make install
+# if [ $? -ne 0 ]; then
+#    echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
+#   local_clean_exit 1
+# fi
+
+# if [ ! -e InstallArea/${BINARY_TAG}/manifest.xml ]; then
+#   echo "Error: <Installation of $projectA_name $projectA_version> failed!" 1>&2
+#   local_clean_exit 1
+# fi
+
 
 
 local_clean_exit 0
