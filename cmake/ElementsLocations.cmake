@@ -157,7 +157,7 @@ endif()
 #python business
 
 set(PYTHON_INSTALL_SUFFIX python)
-set(PYTHON_DYNLIB_INSTALL_SUFFIX python/lib-dynload)
+set(PYTHON_DYNLIB_INSTALL_SUFFIX ${PYTHON_INSTALL_SUFFIX})
 
 if(SQUEEZED_INSTALL)
 
@@ -169,10 +169,7 @@ if(SQUEEZED_INSTALL)
                   ERROR_QUIET
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-
-  get_filename_component(python_install_suffix_parent ${PYTHON_INSTALL_SUFFIX} DIRECTORY)
-
-  set(PYTHON_DYNLIB_INSTALL_SUFFIX ${python_install_suffix_parent}/lib-dynload)
+  set(PYTHON_DYNLIB_INSTALL_SUFFIX ${PYTHON_INSTALL_SUFFIX})
 
 endif()
 
