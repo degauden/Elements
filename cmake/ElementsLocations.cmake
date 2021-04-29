@@ -157,7 +157,7 @@ endif()
 #python business
 
 set(PYTHON_INSTALL_SUFFIX python)
-set(PYTHON_DYNLIB_INSTALL_SUFFIX python/lib-dynload)
+set(PYTHON_DYNLIB_INSTALL_SUFFIX ${PYTHON_INSTALL_SUFFIX})
 
 if(SQUEEZED_INSTALL)
 
