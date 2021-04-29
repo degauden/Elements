@@ -343,11 +343,6 @@ macro(elements_project project version)
     set(CppUnit_testmain_cmd ${PYTHON_EXECUTABLE} ${CppUnit_testmain_cmd})
   endif()
 
-  find_program(zippythondir_cmd ZipPythonDir.py HINTS ${binary_paths})
-  if(zippythondir_cmd)
-    set(zippythondir_cmd ${PYTHON_EXECUTABLE} ${zippythondir_cmd})
-  endif()
-
   find_program(elementsrun_cmd elementsrun.py HINTS ${binary_paths})
   if(elementsrun_cmd)
     set(elementsrun_cmd ${PYTHON_EXECUTABLE} ${elementsrun_cmd})
@@ -382,8 +377,7 @@ macro(elements_project project version)
                    versmodule_cmd instmodule_cmd
                    thisheader_cmd thismodule_cmd
                    thismodheader_cmd
-                   Boost_testmain_cmd CppUnit_testmain_cmd
-                   zippythondir_cmd elementsrun_cmd
+                   Boost_testmain_cmd CppUnit_testmain_cmd elementsrun_cmd
                    pythonprogramscript_cmd ctest2junit_cmd ctestxml2html_cmd)
 
 
@@ -644,16 +638,6 @@ execute_process\(COMMAND ${instmodule_cmd} --quiet ${so_version_option} ${projec
   endforeach()
   file(APPEND ${CMAKE_BINARY_DIR}/subdirs_deps.dot "}\n")
 
-  # FIXME: it is not possible to produce the file python.zip at installation time
-  # because the install scripts of the subdirectories are executed after those
-  # of the parent project and we cannot have a post-install target because of
-  # http://public.kitware.com/Bug/view.php?id=8438
-  # install(CODE "execute_process(COMMAND  ${zippythondir_cmd} ${CMAKE_INSTALL_PREFIX}/python)")
-  if(zippythondir_cmd)
-    add_custom_target(python.zip
-                      COMMAND ${zippythondir_cmd} ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_SUFFIX}
-                      COMMENT "Zipping Python modules")
-  endif()
   #--- Prepare environment configuration
   message(STATUS "Preparing environment configuration:")
 

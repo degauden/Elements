@@ -18,7 +18,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifdef ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_IMPL_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_IMPL_
+#error "This file should not be included directly! Use ElementsKernel/Path.h instead"
+#else
 
 #include <algorithm>      // for find_if, transform, for_each
 #include <string>         // for string

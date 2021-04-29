@@ -18,7 +18,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifdef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
+#error "This file should not be included directly! Use ElementsKernel/Configuration.h instead"
+#else
 
 #include "ElementsKernel/Exception.h"  // for Exception
 #include "ElementsKernel/Path.h"       // for Path::VARIABLE, Path::Type, Path::Item

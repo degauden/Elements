@@ -20,7 +20,9 @@
  *
  */
 
-#ifdef ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_IMPL_
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_IMPL_
+#error "This file should not be included directly! Use ElementsKernel/Storage.h instead"
+#else
 
 #include <cmath>    // for pow, round
 #include <cstdint>  // for int64_t

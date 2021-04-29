@@ -159,7 +159,7 @@ endif()
 #python business
 
 set(PYTHON_INSTALL_SUFFIX python CACHE STRING "Final suffix for the install directory of the python files")
-set(PYTHON_DYNLIB_INSTALL_SUFFIX python/lib-dynload CACHE STRING "Final suffix for the install directory of the python binary files")
+set(PYTHON_DYNLIB_INSTALL_SUFFIX ${PYTHON_INSTALL_SUFFIX} CACHE STRING "Final suffix for the install directory of the python binary files")
 
 if(SQUEEZED_INSTALL)
 
@@ -167,15 +167,11 @@ if(SQUEEZED_INSTALL)
 
   execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c"
                   "from distutils.sysconfig import get_python_lib; print(get_python_lib(plat_specific=True, prefix='${CMAKE_INSTALL_PREFIX}').replace('${CMAKE_INSTALL_PREFIX}/',''))"
-                  OUTPUT_VARIABLE local_python_install_suffix
+                  OUTPUT_VARIABLE PYTHON_INSTALL_SUFFIX
                   ERROR_QUIET
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-
-  get_filename_component(python_install_suffix_parent ${local_python_install_suffix} DIRECTORY)
-
-  set(PYTHON_INSTALL_SUFFIX ${local_python_install_suffix} CACHE STRING "Final suffix for the install directory of the python files" FORCE)
-  set(PYTHON_DYNLIB_INSTALL_SUFFIX ${python_install_suffix_parent}/lib-dynload CACHE STRING "Final suffix for the install directory of the python binary files" FORCE)
+  set(PYTHON_DYNLIB_INSTALL_SUFFIX ${PYTHON_INSTALL_SUFFIX} CACHE STRING "Final suffix for the install directory of the python binary files" FORCE)
 
 endif()
 
