@@ -98,29 +98,31 @@ set(AUX_DIR_NAME "auxdir" CACHE STRING "Name of the auxiliary files directory")
 set(MAKE_DIR_NAME "make" CACHE STRING "Name of the make files directory")
 set(DOC_DIR_NAME "doc" CACHE STRING "Name of the documentation directory")
 
-set(INCLUDE_INSTALL_SUFFIX ${CMAKE_INSTALL_INCLUDEDIR})
-set(BIN_INSTALL_SUFFIX ${CMAKE_BIN_INSTALL_SUFFIX})
+set(INCLUDE_INSTALL_SUFFIX ${CMAKE_INSTALL_INCLUDEDIR} CACHE STRING "Final suffix for the install directory of the header files")
+set(BIN_INSTALL_SUFFIX ${CMAKE_BIN_INSTALL_SUFFIX} CACHE STRING "Final suffix for the install directory of the binaries")
+set(LIB_INSTALL_SUFFIX ${CMAKE_LIB_INSTALL_SUFFIX} CACHE STRING "Final suffix for the install directory of the libraries")
+
 
 if(SQUEEZED_INSTALL)
-  set(SCRIPT_INSTALL_SUFFIX ${BIN_INSTALL_SUFFIX})
-  set(CONF_INSTALL_SUFFIX ${CMAKE_INSTALL_DATAROOTDIR}/${CONF_DIR_NAME})
-  set(AUX_INSTALL_SUFFIX ${CMAKE_INSTALL_DATAROOTDIR}/${AUX_DIR_NAME})
-  set(CMAKE_INSTALL_SUFFIX ${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject)
-  set(CMAKE_CONFIG_INSTALL_SUFFIX ${CMAKE_INSTALL_SUFFIX})
-  set(CMAKE_CONFIG_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SUFFIX})
-  set(XML_INSTALL_SUFFIX ${CMAKE_INSTALL_SUFFIX})
-  set(MAKE_INSTALL_SUFFIX ${CMAKE_INSTALL_DATAROOTDIR}/Elements/${MAKE_DIR_NAME})
-  set(DOC_INSTALL_SUFFIX ${CMAKE_INSTALL_DOCDIR})
+  set(SCRIPT_INSTALL_SUFFIX ${BIN_INSTALL_SUFFIX} CACHE STRING "Final suffix for the install directory of the scripts")
+  set(CONF_INSTALL_SUFFIX ${CMAKE_INSTALL_DATAROOTDIR}/${CONF_DIR_NAME} CACHE STRING "Final suffix for the install directory of the conf files")
+  set(AUX_INSTALL_SUFFIX ${CMAKE_INSTALL_DATAROOTDIR}/${AUX_DIR_NAME} CACHE STRING "Final suffix for the install directory of the aux files")
+  set(CMAKE_INSTALL_SUFFIX ${CMAKE_LIB_INSTALL_SUFFIX}/cmake/ElementsProject CACHE STRING "Final suffix for the install directory of the cmake files")
+  set(CMAKE_CONFIG_INSTALL_SUFFIX ${CMAKE_INSTALL_SUFFIX} CACHE STRING "Final suffix for the install directory of the cmake config files")
+  set(CMAKE_CONFIG_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SUFFIX} CACHE STRING "Final prefix for the install directory of the cmake config files")
+  set(XML_INSTALL_SUFFIX ${CMAKE_INSTALL_SUFFIX} CACHE STRING "Final suffix for the install directory of the xml files")
+  set(MAKE_INSTALL_SUFFIX ${CMAKE_INSTALL_DATAROOTDIR}/Elements/${MAKE_DIR_NAME} CACHE STRING "Final suffix for the install directory of the make files")
+  set(DOC_INSTALL_SUFFIX ${CMAKE_INSTALL_DOCDIR} CACHE STRING "Final suffix for the install directory of the doc files")
 else()
-  set(SCRIPT_INSTALL_SUFFIX scripts)
-  set(CONF_INSTALL_SUFFIX ${CONF_DIR_NAME})
-  set(AUX_INSTALL_SUFFIX ${AUX_DIR_NAME})
-  set(CMAKE_INSTALL_SUFFIX cmake)
-  set(CMAKE_CONFIG_INSTALL_SUFFIX .)
-  set(CMAKE_CONFIG_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-  set(XML_INSTALL_SUFFIX .)
-  set(MAKE_INSTALL_SUFFIX ${MAKE_DIR_NAME})
-  set(DOC_INSTALL_SUFFIX ${DOC_DIR_NAME})
+  set(SCRIPT_INSTALL_SUFFIX scripts CACHE STRING "Final suffix for the install directory of the scripts")
+  set(CONF_INSTALL_SUFFIX ${CONF_DIR_NAME} CACHE STRING "Final suffix for the install directory of the conf files")
+  set(AUX_INSTALL_SUFFIX ${AUX_DIR_NAME} CACHE STRING "Final suffix for the install directory of the aux files")
+  set(CMAKE_INSTALL_SUFFIX cmake CACHE STRING "Final suffix for the install directory of the cmake files")
+  set(CMAKE_CONFIG_INSTALL_SUFFIX . CACHE STRING "Final suffix for the install directory of the cmake config files")
+  set(CMAKE_CONFIG_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE STRING "Final prefix for the install directory of the cmake config files")
+  set(XML_INSTALL_SUFFIX . CACHE STRING "Final suffix for the install directory of the xml files")
+  set(MAKE_INSTALL_SUFFIX ${MAKE_DIR_NAME} CACHE STRING "Final suffix for the install directory of the make files")
+  set(DOC_INSTALL_SUFFIX ${DOC_DIR_NAME} CACHE STRING "Final suffix for the install directory of the doc files")
 endif()
 
 #------------------------------------------------------------------------------------------------
@@ -156,8 +158,8 @@ endif()
 
 #python business
 
-set(PYTHON_INSTALL_SUFFIX python)
-set(PYTHON_DYNLIB_INSTALL_SUFFIX ${PYTHON_INSTALL_SUFFIX})
+set(PYTHON_INSTALL_SUFFIX python CACHE STRING "Final suffix for the install directory of the python files")
+set(PYTHON_DYNLIB_INSTALL_SUFFIX ${PYTHON_INSTALL_SUFFIX} CACHE STRING "Final suffix for the install directory of the python binary files")
 
 if(SQUEEZED_INSTALL)
 
@@ -169,7 +171,7 @@ if(SQUEEZED_INSTALL)
                   ERROR_QUIET
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-  set(PYTHON_DYNLIB_INSTALL_SUFFIX ${PYTHON_INSTALL_SUFFIX})
+  set(PYTHON_DYNLIB_INSTALL_SUFFIX ${PYTHON_INSTALL_SUFFIX} CACHE STRING "Final suffix for the install directory of the python binary files" FORCE)
 
 endif()
 

@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 #===============================================================================
 # Load elements_subdir macro here
 # Examples:

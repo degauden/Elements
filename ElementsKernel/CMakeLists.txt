@@ -241,3 +241,7 @@ elements_add_test(MissingElementsProjectVersion
                   ENVIRONMENT CMAKE_PREFIX_PATH+=${CMAKE_SOURCE_DIR}/cmake
                   TIMEOUT 120
                   LABELS Creation)
+
+elements_add_test(SqueezedInstall COMMAND squeezedInstall_test
+                  ENVIRONMENT ELEMENTS_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+                  LABELS Creation Meta)

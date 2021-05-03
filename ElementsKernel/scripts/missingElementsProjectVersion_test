@@ -65,7 +65,7 @@ fi
 mv CMakeLists.txt CMakeLists.txt.bck
 
 cat << EOF > CMakeLists.txt
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 find_package(ElementsProject)
 
@@ -140,7 +140,7 @@ fi
 mv CMakeLists.txt CMakeLists.txt.bck
 
 cat << EOF > CMakeLists.txt
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 find_package(ElementsProject)
 
@@ -210,7 +210,7 @@ fi
 mv CMakeLists.txt CMakeLists.txt.bck
 
 cat << EOF > CMakeLists.txt
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 find_package(ElementsProject)
 
