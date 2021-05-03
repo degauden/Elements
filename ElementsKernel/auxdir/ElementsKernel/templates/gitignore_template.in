@@ -65,3 +65,9 @@ __pycache__/
 #--------------------
 .scannerwork
 .sonar
+
+#-------------------------
+# Specific to checkQuality
+#-------------------------
+/PAQA
+.checkquality.config
