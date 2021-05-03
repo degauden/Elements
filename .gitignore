@@ -12,6 +12,7 @@
 /PAQA
 /.scannerwork
 .pytest_cache
+.checkquality.config
 
 #####=== System ===#####
 
@@ -52,7 +53,7 @@
 ## VIM
 *.swp
 
-## Emacs 
+## Emacs
 *~
 /.projectile
 
@@ -79,7 +80,6 @@ gmon.out
 .ptp-sync
 .ptp-sync-folder
 .cache
-/PAQA
 /sonar-project.properties
 /.checkstyle
 /.pylintrc
