@@ -44,6 +44,10 @@
 #
 ################################################################################
 
+# Default
+
+.DELETE_ON_ERROR:
+
 # settings
 CMAKE := cmake
 CTEST := ctest
