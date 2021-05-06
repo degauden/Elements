@@ -5,5 +5,5 @@ pipelineElements(
 	groupId:"CT",
 	component:'eden.2.1',
 	repository:'eden.2.1',
-	skipTest: true,
+	skipTest: false,
 )
