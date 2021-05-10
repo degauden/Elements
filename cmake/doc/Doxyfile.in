@@ -195,13 +195,6 @@ TAB_SIZE = 8
 
 ALIASES = FIXME="\todo" TODO="\todo"
 
-# This tag can be used to specify a number of word-keyword mappings (TCL only).
-# A mapping has the form "name=value". For example adding
-# "class=itcl::class" will allow you to use the command class in the
-# itcl::class meaning.
-
-TCL_SUBST =
-
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.
 # For instance, some of the names that are used will be different. The list
@@ -1714,7 +1707,7 @@ DIRECTORY_GRAPH = YES
 # HTML_FILE_EXTENSION to xhtml in order to make the SVG files
 # visible in IE 9+ (other browsers do not have this requirement).
 
-DOT_IMAGE_FORMAT = svg
+DOT_IMAGE_FORMAT = png
 
 # If DOT_IMAGE_FORMAT is set to svg, then this option can be set to YES to
 # enable generation of interactive SVG images that allow zooming and panning.
