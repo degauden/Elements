@@ -11,3 +11,10 @@ indent_size = 4
 
 [Makefile]
 indent_style = tab
+
+# Do not apply inside build directories
+￼[/build.*/**]
+￼max_line_length = unset
+
+[/InstallArea/**]
+￼max_line_length = unset
