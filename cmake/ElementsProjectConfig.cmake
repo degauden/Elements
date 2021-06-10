@@ -920,7 +920,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
 
   set(CPACK_PACKAGE_RELEASE 1 CACHE STRING "Release Number For the Packaging")
-  set(CPACK_PACKAGE_VENDOR "The Euclid Consortium")
+  set(CPACK_PACKAGE_VENDOR "Hubert Degaudenzi")
 
   set(CPACK_SOURCE_IGNORE_FILES "/InstallArea/;/${BUILD_PREFIX_NAME}\\\\..*/;/${BUILD_SUBDIR}/;/\\\\.svn/;/\\\\.settings/;\\\\..*project;\\\\.gitignore;/\\\\.git/")
 
@@ -1001,9 +1001,9 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
   option(RPM_FORWARD_PREFIX_PATH "Forward the CMAKE_PREFIX_PATH when using 'make rpm'" ON)
 
   if(NOT SQUEEZED_INSTALL)
-    set(CPACK_CMAKE_PREFIX_PATH_LINE "export CMAKE_PREFIX_PATH=\$PWD/cmake:/usr/share/EuclidEnv/cmake")
+    set(CPACK_CMAKE_PREFIX_PATH_LINE "export CMAKE_PREFIX_PATH=\$PWD/cmake:/usr/share/ElementsEnv/cmake:/usr/share/EuclidEnv/cmake")
   else()
-    set(CPACK_CMAKE_PREFIX_PATH_LINE "#")  
+    set(CPACK_CMAKE_PREFIX_PATH_LINE "#")
   endif()
 
   if(USE_RPM_CMAKE_MACRO)
@@ -1033,6 +1033,10 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
       endforeach()
 
       if(NOT SQUEEZED_INSTALL)
+          list(FIND CPACK_PREFIX_LIST "/usr/share/ElementsEnv/cmake" _index)
+          if(${_index} EQUAL -1)
+              list(APPEND CPACK_PREFIX_LIST "/usr/share/ElementsEnv/cmake")
+          endif()
           list(FIND CPACK_PREFIX_LIST "/usr/share/EuclidEnv/cmake" _index)
           if(${_index} EQUAL -1)
               list(APPEND CPACK_PREFIX_LIST "/usr/share/EuclidEnv/cmake")
@@ -1321,7 +1325,7 @@ ${_do}")
         if(SQUEEZED_INSTALL)
           get_rpm_sys_dep_lines("python${PYTHON_EXPLICIT_VERSION}" "Requires" RPM_DEP_SYS_LINES)
         else()
-          get_rpm_sys_dep_lines("python${PYTHON_EXPLICIT_VERSION};EuclidEnv" "Requires" RPM_DEP_SYS_LINES)
+          get_rpm_sys_dep_lines("python${PYTHON_EXPLICIT_VERSION}" "Requires" RPM_DEP_SYS_LINES)
         endif()
         get_rpm_sys_dep_lines("cmake >= 2.8.5" "Requires" RPM_DEVEL_DEP_SYS_LINES)
       endif()

@@ -94,7 +94,7 @@ else
 fi
 @CPACK_CMAKE_PREFIX_PATH_LINE@
 toolchain_name=ElementsToolChain.cmake
-search_path="${PWD}/cmake/:${CMAKE_PREFIX_PATH}:/usr/share/EuclidEnv/cmake/" 
+search_path="${PWD}/cmake/:${CMAKE_PREFIX_PATH}:/usr/share/ElementsEnv/cmake/:/usr/share/EuclidEnv/cmake/" 
 for d in ${search_path//:/ }; do
        if [[ -f "${d}/${toolchain_name}" ]]; then
                toolchain_file=${d}/${toolchain_name}

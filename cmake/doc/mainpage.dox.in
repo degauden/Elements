@@ -51,7 +51,7 @@ to the generated Makefile of that directory. The complete call to CMake during t
 looks like:
 
 	$ cd build.${BINARY_TAG}
-	$ cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/EuclidEnv/cmake/ElementsToolChain.cmake -DUSE_LOCAL_INSTALLAREA=ON ../
+	$ cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/ElementsEnv/cmake/ElementsToolChain.cmake -DUSE_LOCAL_INSTALLAREA=ON ../
 	$ cd ..
 
 The toolchain file is looked for (by the Makefile wrapper) in the local cmake sub-directory
@@ -83,7 +83,7 @@ To prepare the build directory, you have to:
 	$ dest=$MY_WORK/@PROJECT_NAME@/build
 	$ mkdir $dest
 	$ cd $dest
-	$ cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/EuclidEnv/cmake/ElementsToolChain.cmake \
+	$ cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/ElementsEnv/cmake/ElementsToolChain.cmake \
         -G "Eclipse CDT4 - Unix Makefiles" $src
 
 

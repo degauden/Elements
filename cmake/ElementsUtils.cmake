@@ -724,11 +724,12 @@ function(get_rpm_dep_list project_use package_suffix squeezed_install output_var
     list(REMOVE_AT ARGN_ 0 1)
   endwhile()
 
-  if(NOT squeezed_install)
-    if("${package_suffix}" STREQUAL "")
-      set(output_str_list "${output_str_list}, EuclidEnv")
-    endif()
-  endif()
+# TODO: to renable with ElementsEnv for the non-backward compatible Elements version (6.0)
+#  if(NOT squeezed_install)
+#    if("${package_suffix}" STREQUAL "")
+#      set(output_str_list "${output_str_list}, EuclidEnv")
+#    endif()
+#  endif()
     
   set(${output_var} ${output_str_list} PARENT_SCOPE)
 

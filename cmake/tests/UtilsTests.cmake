@@ -42,7 +42,7 @@ debug_message(STATUS "------>  this is the mismatch (should be 1): ${mismatch}")
 
 debug_message(STATUS "======================================================================")
 
-set(this_path "/home/hubert/Work/Space/Euclid" "/opt/euclid")
+set(this_path "/home/hubert/Work/Space" "/opt")
 
 find_local_project(Elements 3.6 "${this_path}" proj_loc)
 
