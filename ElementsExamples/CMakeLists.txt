@@ -37,6 +37,11 @@ elements_add_executable(OtherCppProgramExample src/program/OtherProgramExample.c
                         INCLUDE_DIRS Boost ElementsExamples ElementsOther
                         LINK_LIBRARIES Boost ElementsExamples ElementsOther)
 
+elements_add_executable(CppExtProgramExample src/program/ExtProgramExample.cpp
+                        INCLUDE_DIRS Boost ElementsExamples ElementsOther
+                        LINK_LIBRARIES Boost ElementsExamples ElementsOther)
+
+
 elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgramExample.cpp
                         INCLUDE_DIRS Boost ElementsExamples
                         LINK_LIBRARIES Boost ElementsExamples)
@@ -350,6 +355,7 @@ elements_add_test(ScriptThatGivesError COMMAND ScriptThatGivesError_test FAILREG
 elements_add_test(ScriptThatGivesStdError COMMAND ScriptThatGivesStdError_test FAILREGEX ".*worse" FAILS)
 
 elements_add_test(CppProgramExample COMMAND CppProgramExample)
+elements_add_test(CppExtProgramExample COMMAND CppExtProgramExample)
 elements_add_test(SimpleProgramExample COMMAND ElementsSimpleProgramExample)
 elements_add_test(AnotherSimpleProgramExample COMMAND ElementsAnotherSimpleProgramExample FAILS)
 
