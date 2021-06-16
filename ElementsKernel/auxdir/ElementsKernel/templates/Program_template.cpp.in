@@ -40,9 +40,9 @@ public:
     return options;
   }
 
-  Elements::ExitCode mainMethod(std::map<std::string, VariableValue>& args) override {
+  ExitCode mainMethod(std::map<std::string, VariableValue>& args) override {
 
-    Elements::Logging logger = Elements::Logging::getLogger("%(PROGRAMNAME)s");
+    Logging logger = Logging::getLogger("%(PROGRAMNAME)s");
 
     logger.info("#");
     logger.info("# Entering mainMethod()");
@@ -56,7 +56,7 @@ public:
     logger.info("# Exiting mainMethod()");
     logger.info("#");
 
-    return Elements::ExitCode::OK;
+    return ExitCode::OK;
   }
 
 };
