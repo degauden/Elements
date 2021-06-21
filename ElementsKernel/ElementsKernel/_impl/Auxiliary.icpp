@@ -43,6 +43,15 @@ Path::Item getAuxiliaryPath(const T& file_name, bool raise_exception) {
   return result;
 }
 
+namespace Auxiliary {
+
+template <typename T>
+Path::Item getPath(const T& file_name, bool raise_exception) {
+  return getAuxiliaryPath(file_name, raise_exception);
+}
+
+}  // namespace Auxiliary
+
 }  // namespace Kernel
 }  // namespace Elements
 

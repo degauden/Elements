@@ -24,7 +24,6 @@
 #include <gnuastro/cosmology.h>
 #include <gnuastro/fits.h>  // header file to test
 
-#include "ElementsKernel/Auxiliary.h"
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 

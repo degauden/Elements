@@ -34,8 +34,9 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 
-#include <string>  // for string
-#include <vector>  // for vector
+#include <string>   // for string
+#include <utility>  // for forward
+#include <vector>   // for vector
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 #include "ElementsKernel/Path.h"    // for Path::Item
@@ -59,6 +60,38 @@ extern template ELEMENTS_API Path::Item getAuxiliaryPath(const Path::Item& file_
 extern template ELEMENTS_API Path::Item getAuxiliaryPath(const std::string& file_name, bool raise_exception);
 
 ELEMENTS_API std::vector<Path::Item> getAuxiliaryLocations(bool exist_only = false);
+
+namespace Auxiliary {
+
+/**
+ * @brief alias for the getAuxiliaryVariableName function
+ * @ingroup ElementsKernel
+ * @return same as getAuxiliaryVariableName
+ */
+auto& getVariableName = getAuxiliaryVariableName;
+
+/**
+ * @brief alias for the getAuxiliaryPath function
+ * @ingroup ElementsKernel
+ * @param args
+ *   Forward arguments
+ * @return same as getAuxiliaryPath
+ */
+template <typename T>
+ELEMENTS_API Path::Item getPath(const T& file_name, bool raise_exception = true);
+
+// instantiation of the most expected types
+extern template ELEMENTS_API Path::Item getPath(const Path::Item& file_name, bool raise_exception);
+extern template ELEMENTS_API Path::Item getPath(const std::string& file_name, bool raise_exception);
+
+/**
+ * @brief alias for the getAuxiliaryLocations function
+ * @ingroup ElementsKernel
+ * @return same as getAuxiliaryLocations
+ */
+auto& getLocations = getAuxiliaryLocations;
+
+}  // namespace Auxiliary
 
 /** @example ElementsExamples/src/program/CCfitsExample.cpp
  * This is an example of how to use the getAuxiliaryPath function.

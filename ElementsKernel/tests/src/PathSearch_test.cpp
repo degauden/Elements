@@ -45,7 +45,7 @@ struct PathSearch_Fixture {
   Environment m_env;
   string      m_env_variable_name = "ELEMENTS_CONF_PATH";
 
-  path m_root_path = getAuxiliaryPath("ElementsKernel/tests");
+  path m_root_path = Auxiliary::getPath("ElementsKernel/tests");
   path m_full_path = m_root_path / "PathSearch/";
 
   path   m_full_path_1   = m_root_path / "PathSearch/dirForTestingRecursiveSearch";

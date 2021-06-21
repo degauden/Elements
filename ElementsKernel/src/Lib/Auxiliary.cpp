@@ -67,5 +67,12 @@ std::vector<Path::Item> getAuxiliaryLocations(bool exist_only) {
   return location_list;
 }
 
+namespace Auxiliary {
+// instantiation of the most expected types
+template Path::Item getPath(const Path::Item& file_name, bool raise_exception);
+template Path::Item getPath(const std::string& file_name, bool raise_exception);
+
+}  // namespace Auxiliary
+
 }  // namespace Kernel
 }  // namespace Elements

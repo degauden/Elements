@@ -48,7 +48,7 @@ public:
 
     log.info() << "done with test program! ";
 
-    auto fits_file_path = getAuxiliaryPath("ElementsExamples/phz_cat.fits");
+    auto fits_file_path = Auxiliary::getPath("ElementsExamples/phz_cat.fits");
     log.info() << "Opening the file " << fits_file_path.string();
     CCfits::FITS fits_file(fits_file_path.string());
 
