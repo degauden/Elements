@@ -1,5 +1,7 @@
 # EditorConfig is awesome: https://EditorConfig.org
 
+root = true
+
 [*]
 indent_style = space
 trim_trailing_whitespace = true
@@ -12,9 +14,9 @@ indent_size = 4
 [Makefile]
 indent_style = tab
 
-# Do not apply inside build directories
-￼[/build.*/**]
-￼max_line_length = unset
+## Do not apply inside build directories
+##￼[/build.*/**]
+##￼max_line_length = unset
 
 [/InstallArea/**]
 ￼max_line_length = unset
