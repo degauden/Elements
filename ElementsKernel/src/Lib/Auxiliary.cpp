@@ -68,9 +68,18 @@ std::vector<Path::Item> getAuxiliaryLocations(bool exist_only) {
 }
 
 namespace Auxiliary {
+
+string getVariableName() {
+  return getAuxiliaryVariableName();
+}
+
 // instantiation of the most expected types
 template Path::Item getPath(const Path::Item& file_name, bool raise_exception);
 template Path::Item getPath(const std::string& file_name, bool raise_exception);
+
+std::vector<Path::Item> getLocations(bool exist_only) {
+  return getAuxiliaryLocations(exist_only);
+}
 
 }  // namespace Auxiliary
 

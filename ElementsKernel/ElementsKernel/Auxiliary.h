@@ -34,9 +34,8 @@
 #ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_
 
-#include <string>   // for string
-#include <utility>  // for forward
-#include <vector>   // for vector
+#include <string>  // for string
+#include <vector>  // for vector
 
 #include "ElementsKernel/Export.h"  // ELEMENTS_API
 #include "ElementsKernel/Path.h"    // for Path::Item
@@ -68,7 +67,7 @@ namespace Auxiliary {
  * @ingroup ElementsKernel
  * @return same as getAuxiliaryVariableName
  */
-auto& getVariableName = getAuxiliaryVariableName;
+ELEMENTS_API std::string getVariableName();
 
 /**
  * @brief alias for the getAuxiliaryPath function
@@ -89,7 +88,7 @@ extern template ELEMENTS_API Path::Item getPath(const std::string& file_name, bo
  * @ingroup ElementsKernel
  * @return same as getAuxiliaryLocations
  */
-auto& getLocations = getAuxiliaryLocations;
+ELEMENTS_API std::vector<Path::Item> getLocations(bool exist_only = false);
 
 }  // namespace Auxiliary
 

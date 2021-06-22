@@ -24,7 +24,6 @@
 
 #include "ElementsKernel/Exception.h"  // for Exception
 #include "ElementsKernel/Path.h"       // for Path::VARIABLE, Path::Type, Path::Item
-#include "ElementsKernel/System.h"     // for DEFAULT_INSTALL_PREFIX
                                        // getPathFromLocations
 namespace Elements {
 inline namespace Kernel {
