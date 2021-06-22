@@ -63,5 +63,21 @@ std::vector<Path::Item> getConfigurationLocations(bool exist_only) {
   return location_list;
 }
 
+namespace Configuration {
+
+string getVariableName() {
+  return getConfigurationVariableName();
+}
+
+// instantiation of the most expected types
+template Path::Item getPath(const Path::Item& file_name, bool raise_exception);
+template Path::Item getPath(const std::string& file_name, bool raise_exception);
+
+std::vector<Path::Item> getLocations(bool exist_only) {
+  return getConfigurationLocations(exist_only);
+}
+
+}  // namespace Configuration
+
 }  // namespace Kernel
 }  // namespace Elements

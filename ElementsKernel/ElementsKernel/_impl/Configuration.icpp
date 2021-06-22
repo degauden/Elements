@@ -43,6 +43,15 @@ Path::Item getConfigurationPath(const T& file_name, bool raise_exception) {
   return result;
 }
 
+namespace Configuration {
+
+template <typename T>
+Path::Item getPath(const T& file_name, bool raise_exception) {
+  return getConfigurationPath(file_name, raise_exception);
+}
+
+}  // namespace Configuration
+
 }  // namespace Kernel
 }  // namespace Elements
 

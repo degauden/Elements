@@ -56,10 +56,41 @@ ELEMENTS_API Path::Item getConfigurationPath(const T& file_name, bool raise_exce
 
 // Instantiation of the most expected types
 extern template ELEMENTS_API Path::Item getConfigurationPath(const Path::Item& file_name, bool raise_exception);
-
 extern template ELEMENTS_API Path::Item getConfigurationPath(const std::string& file_name, bool raise_exception);
 
 ELEMENTS_API std::vector<Path::Item> getConfigurationLocations(bool exist_only = false);
+
+namespace Configuration {
+
+/**
+ * @brief alias for the getAuxiliaryVariableName function
+ * @ingroup ElementsKernel
+ * @return same as getAuxiliaryVariableName
+ */
+ELEMENTS_API std::string getVariableName();
+
+/**
+ * @brief alias for the getAuxiliaryPath function
+ * @ingroup ElementsKernel
+ * @param args
+ *   Forward arguments
+ * @return same as getAuxiliaryPath
+ */
+template <typename T>
+ELEMENTS_API Path::Item getPath(const T& file_name, bool raise_exception = true);
+
+// instantiation of the most expected types
+extern template ELEMENTS_API Path::Item getPath(const Path::Item& file_name, bool raise_exception);
+extern template ELEMENTS_API Path::Item getPath(const std::string& file_name, bool raise_exception);
+
+/**
+ * @brief alias for the getConfigurationLocations function
+ * @ingroup ElementsKernel
+ * @return same as getConfigurationLocations
+ */
+ELEMENTS_API std::vector<Path::Item> getLocations(bool exist_only = false);
+
+}  // namespace Configuration
 
 }  // namespace Kernel
 }  // namespace Elements
