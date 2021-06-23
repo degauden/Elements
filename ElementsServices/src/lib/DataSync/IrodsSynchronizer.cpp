@@ -24,7 +24,7 @@ namespace ElementsServices {
 namespace DataSync {
 
 bool irodsIsInstalled() {
-  return checkCall("iget --help");
+  return checkCall("iget --help > /dev/null");
 }
 
 IrodsSynchronizer::IrodsSynchronizer(const ConnectionConfiguration& connection,
