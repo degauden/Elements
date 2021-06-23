@@ -39,7 +39,8 @@ path confFilePath(path filename) {
 }
 
 bool checkCall(string command) {
-  const int status = std::system(command.c_str());
+  string    silent_command = command + " > /dev/null";
+  const int status         = std::system(silent_command.c_str());
   return status == 0;
 }
 

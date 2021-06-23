@@ -50,8 +50,7 @@ BOOST_AUTO_TEST_CASE(lower_test) {
 
 BOOST_AUTO_TEST_CASE(checkCall_test) {
   BOOST_CHECK(DataSync::checkCall("ls"));
-  BOOST_CHECK(DataSync::checkCall("ls > /dev/null"));
-  BOOST_CHECK(DataSync::checkCall("ls --help > /dev/null"));
+  BOOST_CHECK(DataSync::checkCall("ls --help"));
   BOOST_CHECK(not DataSync::checkCall("This command should not work"));
 }
 

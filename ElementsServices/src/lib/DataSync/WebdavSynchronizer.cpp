@@ -24,7 +24,7 @@ namespace ElementsServices {
 namespace DataSync {
 
 bool webdavIsInstalled() {
-  return checkCall("wget -h > /dev/null");
+  return checkCall("wget -h");
 }
 
 WebdavSynchronizer::WebdavSynchronizer(const ConnectionConfiguration& connection,
