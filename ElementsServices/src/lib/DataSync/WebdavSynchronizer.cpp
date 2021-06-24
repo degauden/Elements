@@ -20,7 +20,8 @@
 
 #include "ElementsServices/DataSync/WebdavSynchronizer.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 bool webdavIsInstalled() {
@@ -47,4 +48,5 @@ std::string WebdavSynchronizer::createDownloadCommand(path distantFile, path loc
 }
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements

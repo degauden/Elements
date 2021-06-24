@@ -20,7 +20,8 @@
 
 #include "ElementsServices/DataSync/IrodsSynchronizer.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 bool irodsIsInstalled() {
@@ -43,4 +44,5 @@ std::string IrodsSynchronizer::createDownloadCommand(path distantFile, path loca
 }
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements

@@ -22,7 +22,8 @@
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 #include "ElementsServices/DataSync/DataSynchronizer.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 DataSynchronizer::DataSynchronizer(const ConnectionConfiguration& connection, const DependencyConfiguration& dependency)
@@ -66,4 +67,5 @@ bool DataSynchronizer::hasBeenDownloaded(ELEMENTS_UNUSED path distantFile, path 
 }
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements

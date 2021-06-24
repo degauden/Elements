@@ -23,7 +23,8 @@
 
 #include "ElementsServices/DataSync/DependencyConfiguration.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 using std::string;
@@ -104,4 +105,5 @@ void DependencyConfiguration::parseLineWithoutAlias(string line) {
 }
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements

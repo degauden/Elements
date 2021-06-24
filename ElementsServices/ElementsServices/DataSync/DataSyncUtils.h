@@ -33,10 +33,11 @@
 #include "ElementsKernel/Export.h"
 #include "ElementsKernel/Path.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
-using path = Elements::Path::Item;
+using path = Path::Item;
 
 ELEMENTS_API path confFilePath(path filename);
 
@@ -69,7 +70,10 @@ ELEMENTS_API bool valueIsListed(const T& value, const std::vector<T>& list) {
 ELEMENTS_API bool containsInThisOrder(std::string input, std::vector<std::string> substrings);
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements
+
+namespace ElementsServices = Elements::Services;
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCUTILS_H_
 

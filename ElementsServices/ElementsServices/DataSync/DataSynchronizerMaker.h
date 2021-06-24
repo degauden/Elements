@@ -34,14 +34,18 @@
 #include "ElementsServices/DataSync/IrodsSynchronizer.h"
 #include "ElementsServices/DataSync/WebdavSynchronizer.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 ELEMENTS_API std::shared_ptr<DataSynchronizer> createSynchronizer(ConnectionConfiguration connection,
                                                                   DependencyConfiguration dependency);
 
-}
-}  // namespace ElementsServices
+}  // namespace DataSync
+}  // namespace Services
+}  // namespace Elements
+
+namespace ElementsServices = Elements::Services;
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZERMAKER_H_
 
