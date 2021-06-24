@@ -28,8 +28,21 @@ if [ ! -e "${MODULE_NAME}/${class_name}.h" ]; then
    clean_and_exit 1
 fi
 if [ ! -e "src/lib/${class_name}.cpp" ]; then
+   echo "Error: <src/lib/${class_name}.cpp> file not found!" 1>&2
    clean_and_exit 1
 fi
+if [ ! -e "tests/src/${class_name}_test.cpp" ]; then
+   echo "Error: <tests/src/${class_name}_test.cpp> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# test if the include statement contains a double slash
+result=$(grep -e "^\s*#\s*include\s*\(<[^>/]*/\{2,\}.*>\|\"[^\"/]*/\{2,\}.*\"\)\s*" tests/src/${class_name}_test.cpp)
+if [ $? -eq 0 ]  ;then
+  echo "The tests/src/${class_name}_test.cpp contains an include statement with double //" 1>&2
+  clean_and_exit 1
+fi
+
 
 # Make sure the elements_depends_on_subdirs macro is there and ElementsKernel
 result=$( grep "elements_depends_on_subdirs" ${MODULE_NAME_PATH}/CMakeLists.txt |
@@ -116,7 +129,21 @@ if [ ! -e "${MODULE_NAME}/${subdir}/${class_name}.h" ]; then
    clean_and_exit 1
 fi
 if [ ! -e "src/lib/${subdir}/${class_name}.cpp" ]; then
+   echo "Error: <src/lib/${subdir}/${class_name}.cpp> file not found!" 1>&2
    clean_and_exit 1
 fi
+
+if [ ! -e "tests/src/${subdir}/${class_name}_test.cpp" ]; then
+   echo "Error: <tests/src/${subdir}/${class_name}_test.cpp> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# test if the include statement contains a double slash
+result=$(grep -e "^\s*#\s*include\s*\(<[^>/]*/\{2,\}.*>\|\"[^\"/]*/\{2,\}.*\"\)\s*" tests/src/${subdir}/${class_name}_test.cpp)
+if [ $? -eq 0 ]  ;then
+   echo "The tests/src/${subdir}/${class_name}_test.cpp contains an include statement with double //" 1>&2
+   clean_and_exit 1
+fi
+
 
 clean_and_exit 0
