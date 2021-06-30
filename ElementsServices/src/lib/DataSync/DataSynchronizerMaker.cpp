@@ -18,7 +18,8 @@
 
 #include "ElementsServices/DataSync/DataSynchronizerMaker.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 using std::make_shared;
@@ -36,4 +37,5 @@ std::shared_ptr<DataSynchronizer> createSynchronizer(ConnectionConfiguration con
 }
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements

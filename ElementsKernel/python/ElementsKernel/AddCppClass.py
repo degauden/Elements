@@ -92,19 +92,24 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir):
                        }
 
     ossep2 = "" if not subdir else os.sep
-
-    configuration = {  "FILE_H": os.path.join(module_name, subdir, class_name + '.h'),
-                       "FILE_CPP": os.path.join('src', 'lib', subdir, class_name + '.cpp'),
-                       "FILE_TEST": os.path.join('tests', 'src', subdir, class_name + '_test.cpp'),
-                       "DATE": time.strftime("%x"),
-                       "AUTHOR": ProjectCommonRoutines.getAuthor(),
-                       "DEFINE_WORDS": ("_" + module_name + "_" + class_name + "_H").upper(),
-                       "CLASSNAME": class_name,
-                       "OSSEP": os.sep,
-                       "OSSEP2": ossep2,
-                       "MODULENAME": module_name,
-                       "SUBDIR": subdir
+    
+    module_name_subdir = module_name
+    if subdir:
+        module_name_subdir = os.path.join(subdir, module_name)
+    
+    configuration = {"FILE_H": os.path.join(module_name, subdir, class_name + '.h'),
+                     "FILE_CPP": os.path.join('src', 'lib', subdir, class_name + '.cpp'),
+                     "FILE_TEST": os.path.join('tests', 'src', subdir, class_name + '_test.cpp'),
+                     "DATE": time.strftime("%x"),
+                     "AUTHOR": ProjectCommonRoutines.getAuthor(),
+                     "DEFINE_WORDS": ("_" + module_name + "_" + class_name + "_H").upper(),
+                     "CLASSNAME": class_name,
+                     "OSSEP": os.sep,
+                     "OSSEP2": ossep2,
+                     "MODULENAME": module_name,
+                     "MODULENAME_SUBDIR": module_name_subdir
                     }
+        
     # Put AUX files to their target
     for src in target_locations:
         file_name = os.path.join("ElementsKernel", "templates", src)

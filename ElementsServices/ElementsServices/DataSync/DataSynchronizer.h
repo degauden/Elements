@@ -34,7 +34,8 @@
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 #include "ElementsServices/DataSync/DependencyConfiguration.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 /**
@@ -83,7 +84,10 @@ protected:
 };
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements
+
+namespace ElementsServices = Elements::Services;
 
 #endif  // ELEMENTSSERVICES_ELEMENTSSERVICES_DATASYNC_DATASYNCHRONIZER_H_
 

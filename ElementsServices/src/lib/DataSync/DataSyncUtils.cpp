@@ -29,7 +29,8 @@
 
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 using std::string;
@@ -100,4 +101,5 @@ bool containsInThisOrder(string input, std::vector<string> substrings) {
 }
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements

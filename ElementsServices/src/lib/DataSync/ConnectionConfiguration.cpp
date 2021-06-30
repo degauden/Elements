@@ -23,7 +23,8 @@
 #include "ElementsServices/DataSync/ConnectionConfiguration.h"
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 using std::string;
@@ -104,4 +105,5 @@ void ConnectionConfiguration::parseOverwritingPolicy(const string& policy) {
 }
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements

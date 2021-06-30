@@ -20,7 +20,8 @@
 #include "ElementsServices/DataSync/DataSynchronizer.h"
 #include "ElementsServices/DataSync/DataSynchronizerMaker.h"
 
-namespace ElementsServices {
+namespace Elements {
+inline namespace Services {
 namespace DataSync {
 
 DataSync::DataSync(path connectionFile, path dependencyFile)
@@ -48,4 +49,5 @@ path DataSync::absolutePath(path relativePath) {
 }
 
 }  // namespace DataSync
-}  // namespace ElementsServices
+}  // namespace Services
+}  // namespace Elements

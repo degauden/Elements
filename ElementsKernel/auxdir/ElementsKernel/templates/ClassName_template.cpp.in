@@ -21,7 +21,7 @@
  *
  */
 
-#include "%(MODULENAME)s%(OSSEP)s%(SUBDIR)s%(OSSEP2)s%(CLASSNAME)s.h"
+#include "%(MODULENAME_SUBDIR)s%(OSSEP2)s%(CLASSNAME)s.h"
 
 namespace %(MODULENAME)s {
 
