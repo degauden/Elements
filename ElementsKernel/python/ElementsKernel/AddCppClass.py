@@ -90,13 +90,11 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir):
                        CPP_TEMPLATE_FILE_IN: os.path.join('src', 'lib', subdir, class_name + ".cpp"),
                        UNITTEST_TEMPLATE_FILE_IN: os.path.join('tests', 'src', subdir, class_name + "_test.cpp")
                        }
-
-    ossep2 = "" if not subdir else os.sep
     
     module_name_subdir = module_name
     if subdir:
-        module_name_subdir = os.path.join(subdir, module_name)
-    
+        module_name_subdir = os.path.join(module_name, subdir)
+
     configuration = {"FILE_H": os.path.join(module_name, subdir, class_name + '.h'),
                      "FILE_CPP": os.path.join('src', 'lib', subdir, class_name + '.cpp'),
                      "FILE_TEST": os.path.join('tests', 'src', subdir, class_name + '_test.cpp'),
@@ -105,7 +103,6 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir):
                      "DEFINE_WORDS": ("_" + module_name + "_" + class_name + "_H").upper(),
                      "CLASSNAME": class_name,
                      "OSSEP": os.sep,
-                     "OSSEP2": ossep2,
                      "MODULENAME": module_name,
                      "MODULENAME_SUBDIR": module_name_subdir
                     }
