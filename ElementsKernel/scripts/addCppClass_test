@@ -145,5 +145,19 @@ if [ $? -eq 0 ]  ;then
    clean_and_exit 1
 fi
 
+# Test if the include in class.cpp is correct
+result=$( grep "#include"| grep "${MODULE_NAME}/${subdir}/${class_name}.h" src/lib/${subdir}/${class_name}.cpp )
+if [ $? -ne 0 ]  ;then
+   echo "The ${MODULE_NAME}/${subdir}/${class_name}.h contains an wrong include statement" 1>&2
+   clean_and_exit 1
+fi
+
+# Test if the include is correct in the class_name_test.cpp
+result=$( grep "#include"| grep -v boost| grep "${MODULE_NAME}/${subdir}/${class_name}.h"  tests/src/${subdir}/${class_name}_test.cpp)
+if [ $? -ne 0 ]  ;then
+   echo "The tests/src/${subdir}/${class_name}_test.cpp contains a wrong include statement" 1>&2
+   clean_and_exit 1
+fi
+
 
 clean_and_exit 0
