@@ -81,7 +81,7 @@ def createDirectories(module_dir, module_name, subdir):
 ################################################################################
 
 
-def substituteAuxFiles(module_dir, class_name, module_name, subdir):
+def substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibility):
     """
     Copy AUX file(s) and substitutes keyworks
     """
@@ -95,6 +95,15 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir):
     if subdir:
         module_name_subdir = os.path.join(module_name, subdir)
 
+    visibility_include = ""
+    visibility_macro = ""
+    if opt_visibility == "simple":
+        visibility_macro = "ELEMENTS_API"
+        visibility_include = '#include "ElementsKernel/Export.h"'
+    elif opt_visibility == "native":
+        visibility_macro = module_name.upper() +"_EXPORT"        
+        visibility_include = '#include "'+ module_name + '_export.h"'
+
     configuration = {"FILE_H": os.path.join(module_name, subdir, class_name + '.h'),
                      "FILE_CPP": os.path.join('src', 'lib', subdir, class_name + '.cpp'),
                      "FILE_TEST": os.path.join('tests', 'src', subdir, class_name + '_test.cpp'),
@@ -104,7 +113,9 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir):
                      "CLASSNAME": class_name,
                      "OSSEP": os.sep,
                      "MODULENAME": module_name,
-                     "MODULENAME_SUBDIR": module_name_subdir
+                     "MODULENAME_SUBDIR": module_name_subdir,
+                     "VISIBILITY_INCLUDE": visibility_include,
+                     "VISIBILITY_MACRO": visibility_macro                    
                     }
         
     # Put AUX files to their target
@@ -213,7 +224,7 @@ def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
 
 
 def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
-                   library_dep_list):
+                   library_dep_list, opt_visibility):
     """
     Create all necessary files for a cpp class
     """
@@ -226,7 +237,7 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
     # Update cmake file
     updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list, library_dep_list)
     # Substitue strings in files
-    substituteAuxFiles(module_dir, class_name, module_name, subdir)
+    substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibility)
 
 ################################################################################
 
@@ -268,6 +279,13 @@ e.g AddCppClass class_name or
     parser.add_argument('-extd', '--external-dependency', metavar='library_name',
                         action='append', type=str,
                         help='External dependency library name e.g. "-extd ElementsKernel"')
+    parser.add_argument('-V', '--visibility', metavar='visibility',
+                        type=str, choices=['simple', 'native'],
+                        help="Class Visibility, possible values: simple or native \n"
+                             "simple : ELEMENTS_API is added to the <.h>. This is the mode supported by Elements\n"
+                             "native : <library>_EXPORTS is added (like ElementsKernel_EXPORTS)\n"
+                             "         This is the native mode supported by CMake"
+                              )
 
     return parser
 
@@ -286,6 +304,7 @@ def mainMethod(args):
     elements_dep_list = args.elements_dependency
     library_dep_list = args.external_dependency
     (subdir, class_name) = getClassName(args.class_name)
+    opt_visibility = args.visibility
 
     try:
         # Default is the current directory
@@ -299,7 +318,7 @@ def mainMethod(args):
         logger.info('')
 
         # Create CPP class
-        createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list, library_dep_list)
+        createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list, library_dep_list, opt_visibility)
 
         logger.info('<%s> class successfully created in <%s>.', class_name, os.path.join(module_dir, subdir))
 
