@@ -70,14 +70,14 @@ extern template ELEMENTS_API double storageConvert<double>(const double& size, S
 extern template ELEMENTS_API float  storageConvert<float>(const float& size, StorageType source_unit,
                                                          StorageType target_unit);
 extern template ELEMENTS_API        std::int64_t
-                                    storageConvert<std::int64_t>(const std::int64_t& size, StorageType source_unit, StorageType target_unit);
+storageConvert<std::int64_t>(const std::int64_t& size, StorageType source_unit, StorageType target_unit);
 
 }  // namespace Units
 }  // namespace Kernel
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_IMPL_
-#include "ElementsKernel/_impl/Storage.icpp"
+#include "ElementsKernel/_impl/Storage.tpp"
 #undef ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_STORAGE_H_

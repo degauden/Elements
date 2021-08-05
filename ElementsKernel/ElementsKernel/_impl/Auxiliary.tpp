@@ -1,6 +1,6 @@
 /**
- * @file ElementsKernel/_impl/Configuration.icpp
- * @brief implementation of the templates declared in ElementsKernel/Configuration.h
+ * @file ElementsKernel/_impl/Auxiliary.tpp
+ * @brief implementation of the templates declared in ElementsKernel/Auxiliary.h
  * @date Feb 8, 2017
  * @author Hubert Degaudenzi
  *
@@ -18,41 +18,40 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
-#error "This file should not be included directly! Use ElementsKernel/Configuration.h instead"
+#ifndef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_
+#error "This file should not be included directly! Use ElementsKernel/Auxiliary.h instead"
 #else
 
 #include "ElementsKernel/Exception.h"  // for Exception
 #include "ElementsKernel/Path.h"       // for Path::VARIABLE, Path::Type, Path::Item
                                        // getPathFromLocations
-
 namespace Elements {
 inline namespace Kernel {
 
 template <typename T>
-Path::Item getConfigurationPath(const T& file_name, bool raise_exception) {
+Path::Item getAuxiliaryPath(const T& file_name, bool raise_exception) {
 
-  auto location_list = getConfigurationLocations();
+  auto location_list = getAuxiliaryLocations();
 
   auto result = Path::getPathFromLocations(file_name, location_list);
 
   if (result.empty() and raise_exception) {
-    throw Exception() << "The configuration path \"" << file_name << "\" cannot be found!";
+    throw Exception() << "The auxiliary path \"" << file_name << "\" cannot be found!";
   }
 
   return result;
 }
 
-namespace Configuration {
+namespace Auxiliary {
 
 template <typename T>
 Path::Item getPath(const T& file_name, bool raise_exception) {
-  return getConfigurationPath(file_name, raise_exception);
+  return getAuxiliaryPath(file_name, raise_exception);
 }
 
-}  // namespace Configuration
+}  // namespace Auxiliary
 
 }  // namespace Kernel
 }  // namespace Elements
 
-#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
+#endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_

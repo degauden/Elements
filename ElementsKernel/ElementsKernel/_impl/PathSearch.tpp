@@ -1,5 +1,5 @@
 /**
- * @file ElementsKernel/_impl/Path.icpp
+ * @file ElementsKernel/_impl/PathSearch.tpp
  * @brief implementation of the templates declared in ElementsKernel/Path.h
  * @date May 17, 2016
  * @author Hubert Degaudenzi

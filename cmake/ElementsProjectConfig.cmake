@@ -3579,6 +3579,7 @@ function(elements_install_headers)
               FILES_MATCHING
               PATTERN "*.h"
               PATTERN "*.icpp"
+              PATTERN "*.tpp"
               PATTERN "*.hpp"
               PATTERN "*.hxx"
               PATTERN "*.i"
@@ -3596,6 +3597,7 @@ function(elements_install_headers)
                 FILES_MATCHING
                 PATTERN "*.h"
                 PATTERN "*.icpp"
+                PATTERN "*.tpp"
                 PATTERN "*.hpp"
                 PATTERN "*.hxx"
                 PATTERN "*.i"

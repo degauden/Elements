@@ -60,7 +60,7 @@ public:
 }  // namespace Elements
 
 #define ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_TEMPLATEDDATASOURCEUSER_IMPL_
-#include "ElementsExamples/_impl/TemplatedDataSourceUser.icpp"
+#include "ElementsExamples/_impl/TemplatedDataSourceUser.tpp"
 #undef ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_TEMPLATEDDATASOURCEUSER_IMPL_
 
 #endif  // ELEMENTSEXAMPLES_ELEMENTSEXAMPLES_TEMPLATEDDATASOURCEUSER_H_

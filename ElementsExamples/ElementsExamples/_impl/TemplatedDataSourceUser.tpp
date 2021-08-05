@@ -1,5 +1,5 @@
 /*
- * TemplateDataSourceUser.icpp
+ * @file ElementsExamples/TemplateDataSourceUser.tpp
  *
  *  Created on: Sep 23, 2015
  *      Author: fdubath

@@ -678,7 +678,7 @@ INPUT_ENCODING = UTF-8
 #FILE_PATTERNS += *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py
 #FILE_PATTERNS += *.f90 *.f *.for *.vhd *.vhdl
 
-FILE_PATTERNS = *.c *.cc *.cxx *.cpp *.c++ *.icpp *.d *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh
+FILE_PATTERNS = *.c *.cc *.cxx *.cpp *.c++ *.icpp *.tpp *.d *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh
 FILE_PATTERNS += *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.md
 FILE_PATTERNS += *.f90 *.f *.for *.vhd *.vhdl
 FILE_PATTERNS += @DOXYGEN_EXTRA_FILE_PATTERNS@

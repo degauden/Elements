@@ -96,7 +96,7 @@ ELEMENTS_API std::vector<Path::Item> getLocations(bool exist_only = false);
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
-#include "ElementsKernel/_impl/Configuration.icpp"
+#include "ElementsKernel/_impl/Configuration.tpp"
 #undef ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_CONFIGURATION_H_

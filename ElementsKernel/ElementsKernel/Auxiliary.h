@@ -100,7 +100,7 @@ ELEMENTS_API std::vector<Path::Item> getLocations(bool exist_only = false);
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_
-#include "ElementsKernel/_impl/Auxiliary.icpp"
+#include "ElementsKernel/_impl/Auxiliary.tpp"
 #undef ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_AUXILIARY_H_

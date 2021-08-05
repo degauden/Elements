@@ -1,5 +1,5 @@
 /**
- * @file ElementsKernel/_impl/Storage.icpp
+ * @file ElementsKernel/_impl/Storage.tpp
  *
  * @date May 19, 2016
  * @author Hubert Degaudenzi

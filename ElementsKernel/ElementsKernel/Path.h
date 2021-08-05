@@ -277,7 +277,7 @@ extern template ELEMENTS_API std::vector<Item> removeDuplicates(const std::vecto
 }  // namespace Elements
 
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_IMPL_
-#include "ElementsKernel/_impl/Path.icpp"
+#include "ElementsKernel/_impl/Path.tpp"
 #undef ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_IMPL_
 
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_PATH_H_
