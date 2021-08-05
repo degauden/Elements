@@ -35,6 +35,7 @@
 #include <log4cpp/Priority.hh>         // for Priority, Priority::::INFO, etc
 
 #include "ElementsKernel/Exception.h"  // for Exception
+#include "ElementsKernel/Memory.h"     // for make_unique
 #include "ElementsKernel/Path.h"       // for Path::Item
 
 using log4cpp::Category;
@@ -52,9 +53,9 @@ static const std::map<string, const int> LOG_LEVEL{{"FATAL", Priority::FATAL},
                                                    {"DEBUG", Priority::DEBUG}};
 
 unique_ptr<Layout> getLogLayout() {
-  log4cpp::PatternLayout* layout = new log4cpp::PatternLayout{};
+  auto layout = make_unique<log4cpp::PatternLayout>();
   layout->setConversionPattern("%d{%FT%T%Z} %c %5p : %m%n");
-  return unique_ptr<Layout>(layout);
+  return layout;
 }
 
 Logging::Logging(Category& log4cppLogger) : m_log4cppLogger(log4cppLogger) {}

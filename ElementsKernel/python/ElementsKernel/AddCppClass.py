@@ -90,7 +90,7 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir):
                        CPP_TEMPLATE_FILE_IN: os.path.join('src', 'lib', subdir, class_name + ".cpp"),
                        UNITTEST_TEMPLATE_FILE_IN: os.path.join('tests', 'src', subdir, class_name + "_test.cpp")
                        }
-    
+
     module_name_subdir = module_name
     if subdir:
         module_name_subdir = os.path.join(module_name, subdir)
@@ -106,7 +106,7 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir):
                      "MODULENAME": module_name,
                      "MODULENAME_SUBDIR": module_name_subdir
                     }
-        
+
     # Put AUX files to their target
     for src in target_locations:
         file_name = os.path.join("ElementsKernel", "templates", src)

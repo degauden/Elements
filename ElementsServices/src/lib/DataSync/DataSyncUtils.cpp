@@ -39,7 +39,7 @@ path confFilePath(path filename) {
   return Elements::getConfigurationPath(filename);
 }
 
-bool checkCall(string command) {
+bool checkCall(const string& command) {
   string    silent_command = command + " > /dev/null";
   const int status         = std::system(silent_command.c_str());
   return status == 0;

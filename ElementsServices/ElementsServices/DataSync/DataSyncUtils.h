@@ -37,11 +37,12 @@ namespace Elements {
 inline namespace Services {
 namespace DataSync {
 
+/// importing the path item from ElementsKernel
 using path = Path::Item;
 
 ELEMENTS_API path confFilePath(path filename);
 
-ELEMENTS_API bool checkCall(std::string command);
+ELEMENTS_API bool checkCall(const std::string& command);
 
 ELEMENTS_API std::pair<std::string, std::string> runCommandAndCaptureOutErr(std::string command);
 
