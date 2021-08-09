@@ -37,7 +37,7 @@
 
 namespace Elements {
 
-/*
+/**
  * @brief Python dictionary-like Environment interface
  * @ingroup ElementsKernel
  */
@@ -46,6 +46,7 @@ public:
   class Variable;
 
 public:
+  /// default constructor
   explicit Environment(bool keep_same = true);
   virtual ~Environment();
 

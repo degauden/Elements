@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "ElementsKernel/Configuration.h"
-#include "ElementsKernel/System.h"
+#include "ElementsKernel/Environment.h"  // For Environment
 
 #include "ElementsServices/DataSync/DataSyncUtils.h"
 
@@ -36,7 +36,7 @@ namespace DataSync {
 using std::string;
 
 path confFilePath(path filename) {
-  return Elements::getConfigurationPath(filename);
+  return Configuration::getPath(filename);
 }
 
 bool checkCall(const string& command) {
@@ -46,7 +46,8 @@ bool checkCall(const string& command) {
 }
 
 std::pair<string, string> runCommandAndCaptureOutErr(string command) {
-  string                   out, err;
+  string                   out;
+  string                   err;
   std::array<char, BUFSIZ> buffer;
   std::shared_ptr<FILE>    cmdpipe(popen(command.c_str(), "r"), pclose);
   if (not cmdpipe) {
@@ -59,28 +60,28 @@ std::pair<string, string> runCommandAndCaptureOutErr(string command) {
   return std::make_pair(out, err);
 }
 
-bool localDirExists(path localDir) {
-  return boost::filesystem::is_directory(localDir);
+bool localDirExists(path local_dir) {
+  return boost::filesystem::is_directory(local_dir);
 }
 
-void createLocalDirOf(path localFile) {
-  if (not localFile.has_parent_path()) {
+void createLocalDirOf(path local_file) {
+  if (not local_file.has_parent_path()) {
     return;
   }
-  const path dir = localFile.parent_path();
+  const path dir = local_file.parent_path();
   if (not localDirExists(dir)) {
     boost::filesystem::create_directories(dir);
   }
 }
 
 string environmentVariable(string name) {
-  return Elements::System::getEnv(name);  // Already returns "" if not found
+  return Environment().get(name);  // Already returns "" if not found
 }
 
 path localWorkspacePrefix() {
-  const string codeenPrefix("WORKSPACE");
-  const string prefixEnvVariable(codeenPrefix);
-  return path(environmentVariable(prefixEnvVariable));
+  const string codeen_prefix("WORKSPACE");
+  const string prefix_env_variable(codeen_prefix);
+  return path(environmentVariable(prefix_env_variable));
 }
 
 string lower(string text) {
