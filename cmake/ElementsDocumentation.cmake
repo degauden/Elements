@@ -208,18 +208,40 @@ include_guard()
         endif()
 
     endforeach()
-    
+
+
+    foreach (_py_pack IN LISTS proj_python_package_list)
+
+      get_filename_component(_py_pack_short ${_py_pack} NAME)
+      get_filename_component(_py_pack_dir ${_py_pack} PATH)
+      get_filename_component(_py_pack_main ${_py_pack_dir} PATH)
+      get_filename_component(_el_pack_short ${_py_pack_main} NAME)
+
+      set(${_el_pack_short}_api_modules_line)
+
+      if(USE_SPHINX_APIDOC)
+        if(NOT TARGET sphinx_apidoc_${_py_pack_short})
+          add_custom_target(sphinx_apidoc_${_py_pack_short}
+                            COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}
+                            COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short} ${_py_pack_dir}
+                            COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
+
+          set(${_el_pack_short}_api_modules_line modules)
+
+          add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
+
+        endif()
+      endif()
+
+    endforeach()
+
+
     # This is the list of Elements modules that do contains python packages
     if(SPHINX_ELEMENTS_PACK_LIST)
       list(REMOVE_DUPLICATES SPHINX_ELEMENTS_PACK_LIST)
     endif()
 
     get_property(proj_package_list GLOBAL PROPERTY PROJ_PACKAGE_LIST)
-
-    set(_api_modules_line)
-    if(USE_SPHINX_APIDOC)
-      set(_api_modules_line modules)
-    endif()
 
     #loop over all Elements module
     # this will create an <module>_index.rst for each of them
@@ -244,9 +266,9 @@ include_guard()
 
 
       if(USE_SPHINX_APIDOC)
-      set(SPHINX_THIS_APIDOC_MODULES ${SPHINX_${_el_pack_short}_APIDOC_MODULES})
+        set(SPHINX_THIS_APIDOC_MODULES ${SPHINX_${_el_pack_short}_APIDOC_MODULES})
 
-      set(SPHINX_THIS_PYTHON_PACKAGE "
+        set(SPHINX_THIS_PYTHON_PACKAGE "
 Python Package
 --------------
 
@@ -259,6 +281,12 @@ Python Package
 
       endif()
 
+
+      set(_api_modules_line)
+      if(USE_SPHINX_APIDOC)
+        set(_api_modules_line ${${_el_pack_short}_api_modules_line})
+      endif()
+
       find_file_to_configure(index_module.rst.in
                              FILETYPE "Sphinx index"
                              OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}"
@@ -267,48 +295,14 @@ Python Package
                              PATH_SUFFIXES doc)
 
 
-    if(NOT SPHINX_EL_MODULES)
-      set(SPHINX_EL_MODULES "${_el_pack_short}/index")
-    else()
-      set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
+      if(NOT SPHINX_EL_MODULES)
+        set(SPHINX_EL_MODULES "${_el_pack_short}/index")
+      else()
+        set(SPHINX_EL_MODULES "${SPHINX_EL_MODULES}
    ${_el_pack_short}/index")
-    endif()
+      endif()
     
     endforeach()
-
-
-    foreach (_py_pack IN LISTS proj_python_package_list)
-
-      get_filename_component(_py_pack_short ${_py_pack} NAME)
-      get_filename_component(_py_pack_dir ${_py_pack} PATH)
-      get_filename_component(_py_pack_main ${_py_pack_dir} PATH)
-      get_filename_component(_el_pack_short ${_py_pack_main} NAME)
-
-      if(USE_SPHINX_APIDOC)
-        if(NOT TARGET sphinx_apidoc_${_py_pack_short})
-          add_custom_target(sphinx_apidoc_${_py_pack_short}
-                            COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short}
-                            COMMAND  ${SPHINX_APIDOC_CMD} ${SPHINX_APIDOC_OPTIONS} -o ${PROJECT_BINARY_DIR}/doc/sphinx/${_el_pack_short} ${_py_pack_dir}
-                            COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
-
-          add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
-
-        endif()
-      endif()
-      
-
-
-    endforeach()
-  
-
-
-
-    find_file_to_configure(elements_modules.rst.in
-                           FILETYPE "List of Elements modules"
-                           OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
-                           OUTPUTNAME "elements_modules.rst"
-                           PATHS ${CMAKE_MODULE_PATH}
-                           PATH_SUFFIXES doc)
 
 
 
