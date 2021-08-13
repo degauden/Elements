@@ -40,7 +40,4 @@ Legacy
 Indices and tables
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+@SPHINX_EL_INDICES@

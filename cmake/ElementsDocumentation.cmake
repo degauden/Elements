@@ -210,6 +210,8 @@ include_guard()
     endforeach()
 
 
+    set(EL_MODULE_INDEX)
+
     foreach (_py_pack IN LISTS proj_python_package_list)
 
       get_filename_component(_py_pack_short ${_py_pack} NAME)
@@ -227,6 +229,7 @@ include_guard()
                             COMMENT "Generating Sphinx API documentation for ${_py_pack_short}" VERBATIM)
 
           set(${_el_pack_short}_api_modules_line modules)
+          list(APPEND EL_MODULE_INDEX ${_el_pack_short})
 
           add_dependencies(sphinx sphinx_apidoc_${_py_pack_short})
 
@@ -330,6 +333,21 @@ Python Package
                      COPYONLY
                     )
     else()
+      if(EL_MODULE_INDEX)
+        set(SPHINX_EL_INDICES "
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+"
+        )
+      else()
+        set(SPHINX_EL_INDICES "
+* :ref:`genindex`
+* :ref:`search`
+"
+        )      
+      endif()
+    
       find_file_to_configure(index.rst.in
                              FILETYPE "Sphinx index"
                              OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx"
