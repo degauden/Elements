@@ -18,7 +18,7 @@
 
 """ This script will remove all files related to a C++ class
 
-:file: ElementsKernel/python/ElementsKernel/RemoveCppClass.py
+:file: ElementsKernel/RemoveCppClass.py
 :author: Nicolas Morisset
 
 :date: 02/10/16
