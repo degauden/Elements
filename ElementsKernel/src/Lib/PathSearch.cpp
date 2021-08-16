@@ -28,10 +28,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include "ElementsKernel/Exception.h"  // for Exception
-#include "ElementsKernel/Logging.h"    // for the logger
-#include "ElementsKernel/Path.h"       // for Path::Item
-#include "ElementsKernel/System.h"
+#include "ElementsKernel/Environment.h"  // for Environment
+#include "ElementsKernel/Exception.h"    // for Exception
+#include "ElementsKernel/Logging.h"      // for the logger
+#include "ElementsKernel/Path.h"         // for Path::Item
 
 using std::string;
 using std::vector;
@@ -72,7 +72,12 @@ vector<Path::Item> pathSearchInEnvVariable(const string& file_name, const string
 
   // get the multiple path from the environment variable
   string multiple_path{};
-  if (not System::getEnv(path_like_env_variable.c_str(), multiple_path)) {
+
+  Environment current_env;
+
+  if (current_env.hasKey(path_like_env_variable)) {
+    multiple_path = current_env[path_like_env_variable];
+  } else {
     log.warn() << "Environment variable \"" << path_like_env_variable << "\" is not defined !";
   }
 

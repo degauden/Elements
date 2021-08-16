@@ -30,7 +30,8 @@
 #include <boost/algorithm/string.hpp>  // for boost::split
 #include <boost/filesystem.hpp>        // for boost::filesystem
 
-#include "ElementsKernel/System.h"  // for getEnv, SHLIB_VAR_NAME
+#include "ElementsKernel/Environment.h"  // for the Environment class
+#include "ElementsKernel/System.h"       // for getEnv, SHLIB_VAR_NAME
 
 using std::map;
 using std::string;
@@ -68,9 +69,9 @@ const std::map<Type, const bool> HAS_SUBLEVELS{{Type::executable, false},
 
 vector<Item> getLocationsFromEnv(const string& path_variable, bool exist_only) {
 
-  using System::getEnv;
+  Environment current_env;
 
-  string env_content = getEnv(path_variable);
+  string env_content = current_env[path_variable];
 
   vector<Item> found_list = split(env_content);
 

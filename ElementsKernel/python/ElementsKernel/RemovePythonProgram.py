@@ -18,7 +18,7 @@
 
 """ This script will remove all files related to a python program
 
-:file: ElementsKernel/python/ElementsKernel/RemovePythonProgram.py
+:file: ElementsKernel/RemovePythonProgram.py
 :author: Nicolas Morisset
 
 :date: 02/10/16

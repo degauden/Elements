@@ -72,8 +72,10 @@ ELEMENTS_API std::string getVariableName();
 /**
  * @brief alias for the getAuxiliaryPath function
  * @ingroup ElementsKernel
- * @param args
- *   Forward arguments
+ * @param file_name
+ *   file name of the auxiliary file to be found.
+ * @param raise_exception
+ *   enable the raising of an exception if the file is not found
  * @return same as getAuxiliaryPath
  */
 template <typename T>

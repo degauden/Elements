@@ -17,7 +17,7 @@
 #
 
 """
-:file: python/ElementsKernel/GetElementsFiles.py
+:file: ElementsKernel/GetElementsFiles.py
 
 :date: Created on: 10/10/17
 :author: Hubert Degaudenzi

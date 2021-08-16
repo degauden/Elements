@@ -91,13 +91,13 @@ void ConnectionConfiguration::parseOverwritingPolicy(const string& policy) {
 
   using std::vector;
 
-  const vector<string> overwriteAllowedOptions   = {"true", "yes", "y"};
-  const vector<string> overwriteForbiddenOptions = {"false", "no", "n"};
+  const vector<string> overwrite_allowed_options   = {"true", "yes", "y"};
+  const vector<string> overwrite_forbidden_options = {"false", "no", "n"};
 
   string uncased = lower(policy);
-  if (valueIsListed(uncased, overwriteAllowedOptions)) {
+  if (valueIsListed(uncased, overwrite_allowed_options)) {
     overwritingPolicy = OverwritingPolicy::OVERWRITE;
-  } else if (valueIsListed(uncased, overwriteForbiddenOptions)) {
+  } else if (valueIsListed(uncased, overwrite_forbidden_options)) {
     overwritingPolicy = OverwritingPolicy::ABORT;
   } else {
     throw std::runtime_error("I don't know this overwriting policy: " + policy);
