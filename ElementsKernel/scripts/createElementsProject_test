@@ -160,7 +160,8 @@ version="1.0"
 
 CreateElementsProject $project_name $version -V --yes
 pattern="ELEMENTS_HIDE_SYMBOLS ON"
-result=$( grep $pattern "${project_name}/${version}/CMakeLists.txt" )
+result=$( grep "${pattern}" "${project_name}/${version}/CMakeLists.txt" )
+
 if [ $? -ne 0 ]; then
    echo "Error: No < $pattern...etc...> pattern found in CMakeLists.txt in this <$project_name> project name!" 1>&2
    local_clean_exit 1
