@@ -159,18 +159,51 @@ if [ $? -ne 0 ]  ;then
    clean_and_exit 1
 fi
 
+#
 # Test the visibility option : simple
+#
 
-#######################################zzzzz to be finished here....
+class_name_vis="ClassVisibilityTestSimple"
 
-class_name_vis="ClassVisibilityTest"
+AddCppClass ${class_name_vis} -V simple
 
-AddCppClass $class_name_vis -V simple
-
+# Check the ELEMENTS_API pattern
+result=$( grep ELEMENTS_API "${MODULE_NAME}/${class_name_vis}.h" )
 if [ $? -ne 0 ]  ;then
-   echo "The tests/src/${subdir}/${class_name}_test.cpp contains a wrong include statement" 1>&2
+   echo "The ${MODULE_NAME}/${class_name_vis}.h does not contains pattern : < ELEMENTS_API >" 1>&2
    clean_and_exit 1
 fi
 
+# Check the include
+result=$( grep "#include \"ElementsKernel/Export.h\"" "${MODULE_NAME}/${class_name_vis}.h" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${MODULE_NAME}/${class_name_vis}.h does not contains the include : < \"ElementsKernel/Export.h\" >" 1>&2
+   clean_and_exit 1
+fi
+
+#
+# Test the visibility option : native
+#
+
+class_name_vis="ClassVisibilityTestNative"
+
+AddCppClass ${class_name_vis} -V native
+
+# Check the EXPORT pattern
+exp_str="class ${MODULE_NAME^^}_EXPORT"
+
+result=$( grep "${exp_str}" "${MODULE_NAME}/${class_name_vis}.h" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${MODULE_NAME}/${class_name_vis}.h does not contains the following pattern : < ${exp_str} >" 1>&2
+   clean_and_exit 1
+fi
+
+# Check the include
+inc_str="#include \"${MODULE_NAME}_export.h\""
+result=$( grep "${inc_str}" "${MODULE_NAME}/${class_name_vis}.h" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${MODULE_NAME}/${class_name_vis}.h does not contains the following include : < ${inc_str} >" 1>&2
+   clean_and_exit 1
+fi
 
 clean_and_exit 0
