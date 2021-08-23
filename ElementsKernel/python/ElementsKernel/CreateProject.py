@@ -91,6 +91,8 @@ Note:
                         help='Erase the <project-version> directory if it does exists')
     parser.add_argument('-s', '--standalone', default=False, action="store_true",
                         help='Remove the implicit dependency onto the Elements project (expert only)')
+    parser.add_argument('-V', '--visibility', default=False, action="store_true",
+                        help="Add Element instructions for symbol visibility")
     parser.add_argument('-y', '--yes', default=False, action="store_true",
                         help='Answer <yes> by default to any question, useful when the script is called by another'\
                          'script')
@@ -121,6 +123,7 @@ def mainMethod(args):
     no_version_directory = args.no_version_directory
     standalone = args.standalone
     force_erase = args.erase
+    visibility = args.visibility
     answer_yes = args.yes
 
     logger.info('# Installation directory : %s', destination_path)
@@ -133,7 +136,7 @@ def mainMethod(args):
         Project.checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes)
 
         # Create the project
-        Project.createProject(project_dir, proj_name, proj_version, dependant_projects, standalone)
+        Project.createProject(project_dir, proj_name, proj_version, dependant_projects, standalone, visibility)
 
         # Print all files created
         ProjectCommonRoutines.printCreationList()

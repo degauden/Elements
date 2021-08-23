@@ -24,6 +24,8 @@
 #ifndef %(DEFINE_WORDS)s
 #define %(DEFINE_WORDS)s
 
+%(VISIBILITY_INCLUDE)s
+
 namespace %(MODULENAME)s {
 
 /**
@@ -31,7 +33,7 @@ namespace %(MODULENAME)s {
  * @brief
  *
  */
-class %(CLASSNAME)s {
+class %(VISIBILITY_MACRO)s %(CLASSNAME)s {
 
 public:
 

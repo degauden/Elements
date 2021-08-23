@@ -117,7 +117,7 @@ def getElementsVersion():
 ################################################################################
 
 
-def getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone=False):
+def getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone=False, visibility=False):
     """
     Format all dependent projects
     We put by default Elements dependency if no one is given
@@ -136,22 +136,29 @@ def getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone
     if str_dep_projects:
         str_dep_projects = "USE " + str_dep_projects
 
+    str_visibility = ""
+    if visibility:
+        str_visibility = """set(ELEMENTS_HIDE_SYMBOLS ON
+    CACHE STRING "Enable explicit symbol visibility on gcc-4"
+    FORCE)"""
+
     configuration = {"PROJECT_NAME":proj_name,
                      "PROJECT_VERSION":proj_version,
-                     "DEPENDANCE_LIST":str_dep_projects}
+                     "DEPENDANCE_LIST":str_dep_projects,
+                     "ELEMENTS_HIDE_SYMBOLS":str_visibility}
 
     return configuration
 
 ################################################################################
 
 
-def createProject(project_dir, proj_name, proj_version, dep_projects, standalone=False):
+def createProject(project_dir, proj_name, proj_version, dep_projects, standalone=False, visibility=False):
     """
     Create the project structure
     """
     logger.info('# Creating the project')
 
-    configuration = getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone)
+    configuration = getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone, visibility)
 
     for src in target_locations:
         file_name = os.path.join("ElementsKernel", "templates", src)
