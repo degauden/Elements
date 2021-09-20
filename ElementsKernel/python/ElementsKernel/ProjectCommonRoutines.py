@@ -276,6 +276,10 @@ def createPythonInitFile(init_path_filename):
     """
     if not os.path.exists(init_path_filename):
         f = open(init_path_filename, 'w')
+        doc_str = "\"\"\"\n"
+        f.write(doc_str)
+        f.write("Module Overview <----------------- TO BE WRITTEN ------------------------>\n\n")
+        f.write(doc_str)
         f.write("from pkgutil import extend_path\n")
         f.write("__path__ = extend_path(__path__, __name__)\n")
         f.close()
