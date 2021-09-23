@@ -1,5 +1,5 @@
 /**
- * @file %(FILE_CPP)s
+ * @file %(FILE_TPP)s
  * @date %(DATE)s
  * @author %(AUTHOR)s
  *
@@ -21,12 +21,19 @@
  *
  */
 
+#ifndef %(TEMPLATE_TPP_DEFWORDS)s
+#error "This file should not be included directly! Use Module/MyClass.h instead." 
+#else
+
 #include "%(MODULENAME_SUBDIR)s%(OSSEP)s%(CLASSNAME)s.h"
 
 namespace %(MODULENAME)s {
-%(TEMPLATE_COM_CPP)s
-%(TEMPLATE_CLASS_CPP)s
-}  // namespace %(MODULENAME)s
 
+// template<typename T>
+// void %(CLASSNAME)s<T>::fakeFunc(const T& t) {
+// 
+// }
 
+}  // namespace Module
 
+#endif  // %(TEMPLATE_TPP_DEFWORDS)s

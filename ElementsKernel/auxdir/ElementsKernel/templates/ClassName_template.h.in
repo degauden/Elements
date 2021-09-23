@@ -33,6 +33,7 @@ namespace %(MODULENAME)s {
  * @brief
  *
  */
+%(TEMPLATE_DECLARATION)s
 class %(VISIBILITY_MACRO)s %(CLASSNAME)s {
 
 public:
@@ -42,12 +43,18 @@ public:
    */
   virtual ~%(CLASSNAME)s() = default;
 
-
+  %(TEMPLATE_FUNC)s
+  
 private:
 
 };  // End of %(CLASSNAME)s class
 
+%(TEMPLATE_COMMENT)s
+%(TEMPLATE_EXTENSION)s
 }  // namespace %(MODULENAME)s
 
+%(TEMPLATE_DEFWORDS)s
+%(TEMPLATE_INCLUDE)s
+%(TEMPLATE_UNDEFWORDS)s
 
-#endif
+#endif // %(DEFINE_WORDS)s
