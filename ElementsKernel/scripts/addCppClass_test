@@ -164,20 +164,22 @@ fi
 #
 
 class_name_vis="ClassVisibilityTestSimple"
+file_h="${MODULE_NAME}/${class_name_vis}.h"
 
 AddCppClass ${class_name_vis} -V simple
 
+
 # Check the ELEMENTS_API pattern
-result=$( grep ELEMENTS_API "${MODULE_NAME}/${class_name_vis}.h" )
+result=$( grep ELEMENTS_API "${file_h}" )
 if [ $? -ne 0 ]  ;then
-   echo "The ${MODULE_NAME}/${class_name_vis}.h does not contains pattern : < ELEMENTS_API >" 1>&2
+   echo "The ${file_h} does not contains pattern : < ELEMENTS_API >" 1>&2
    clean_and_exit 1
 fi
 
 # Check the include
-result=$( grep "#include \"ElementsKernel/Export.h\"" "${MODULE_NAME}/${class_name_vis}.h" )
+result=$( grep "#include \"ElementsKernel/Export.h\"" "${file_h}" )
 if [ $? -ne 0 ]  ;then
-   echo "The ${MODULE_NAME}/${class_name_vis}.h does not contains the include : < \"ElementsKernel/Export.h\" >" 1>&2
+   echo "The ${file_h} does not contains the include : < \"ElementsKernel/Export.h\" >" 1>&2
    clean_and_exit 1
 fi
 
@@ -186,24 +188,163 @@ fi
 #
 
 class_name_vis="ClassVisibilityTestNative"
+file_h="${MODULE_NAME}/${class_name_vis}.h"
 
 AddCppClass ${class_name_vis} -V native
 
 # Check the EXPORT pattern
 exp_str="class ${MODULE_NAME^^}_EXPORT"
-
-result=$( grep "${exp_str}" "${MODULE_NAME}/${class_name_vis}.h" )
+result=$( grep "${exp_str}" "${file_h}" )
 if [ $? -ne 0 ]  ;then
-   echo "The ${MODULE_NAME}/${class_name_vis}.h does not contains the following pattern : < ${exp_str} >" 1>&2
+   echo "The ${file_h} does not contains the following pattern : < ${exp_str} >" 1>&2
    clean_and_exit 1
 fi
 
 # Check the include
-inc_str="#include \"${MODULE_NAME}_export.h\""
-result=$( grep "${inc_str}" "${MODULE_NAME}/${class_name_vis}.h" )
+pattern_str="#include \"${MODULE_NAME}_export.h\""
+result=$( grep "${pattern_str}" "${file_h}" )
 if [ $? -ne 0 ]  ;then
-   echo "The ${MODULE_NAME}/${class_name_vis}.h does not contains the following include : < ${inc_str} >" 1>&2
+   echo "The ${file_h} does not contains the following pattern : < ${pattern_str} >" 1>&2
    clean_and_exit 1
 fi
+
+#
+# Test the template option 
+#
+class_name_temp="ClassTemplateTest"
+file_h="${MODULE_NAME}/${class_name_temp}.h"
+file_tpp="${MODULE_NAME}/_impl/${class_name_temp}.tpp"
+file_cpp="src/lib/${class_name_temp}.cpp"
+
+AddCppClass ${class_name_temp} -t
+
+# Make sure the .tpp files is created
+if [ ! -e "${file_tpp}" ]; then
+   echo "Error: <${file_tpp}> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Make sure the .cpp files is created
+if [ ! -e "${file_cpp}" ]; then
+   echo "Error: <${file_cpp}> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Make sure the .h files is created
+if [ ! -e "${file_h}" ]; then
+   echo "Error: <${file_h}> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Check the template statement
+pattern_str="template<typename T>"
+result=$( grep "${pattern_str}" "${file_h}" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${file_h} does not contains the following pattern : < ${pattern_str} >" 1>&2
+   clean_and_exit 1
+fi
+
+# Check several patterns in the *.h file 
+pattern_str="#include \"${MODULE_NAME}/_impl/${class_name_temp}.tpp\""
+result=$( grep "${pattern_str}" "${file_h}" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${file_h} does not contains the following pattern : < ${pattern_str} >" 1>&2
+   clean_and_exit 1
+fi
+pattern_str="#define _${MODULE_NAME^^}_${MODULE_NAME^^}_${class_name_temp^^}_IMPL"
+result=$( grep "${pattern_str}" "${file_h}" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${file_h} does not contains the following pattern : < ${pattern_str} >" 1>&2
+   clean_and_exit 1
+fi
+pattern_str="#undef _${MODULE_NAME^^}_${MODULE_NAME^^}_${class_name_temp^^}_IMPL"
+result=$( grep "${pattern_str}" "${file_h}" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${file_h} does not contains the following pattern : < ${pattern_str} >" 1>&2
+   clean_and_exit 1
+fi
+# Make sure the tpp files is created
+if [ ! -e "${file_tpp}" ]; then
+   echo "Error: <${file_tpp}> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Check several patterns in the *.tpp file
+pattern_str="#ifndef _${MODULE_NAME^^}_${MODULE_NAME^^}_${class_name_temp^^}_IMPL"
+result=$( grep "${pattern_str}" "${file_tpp}" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${file_tpp} does not contains the following pattern : < ${pattern_str} >" 1>&2
+   clean_and_exit 1
+fi
+pattern_str="// template<typename T>"
+result=$( grep "${pattern_str}" "${file_tpp}" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${file_tpp} does not contains the following pattern : < ${pattern_str} >" 1>&2
+   clean_and_exit 1
+fi
+
+# Check pattern in the .cpp file
+pattern_str="// template ${class_name_temp}<double>;"
+result=$( grep "${pattern_str}" "${file_cpp}" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${file_cpp} does not contains the following pattern : < ${pattern_str} >" 1>&2
+   clean_and_exit 1
+fi
+
+#
+# Test the template option with a sub-directory
+#
+
+class_name_temp_subdir="ClassTemplateSubdirTest"
+subdir="subdir"
+file_h="${MODULE_NAME}/${subdir}/${class_name_temp_subdir}.h"
+file_tpp="${MODULE_NAME}/${subdir}/_impl/${class_name_temp_subdir}.tpp"
+file_cpp="src/lib/${subdir}/${class_name_temp_subdir}.cpp"
+
+AddCppClass ${subdir}/${class_name_temp_subdir} -t 
+
+# Make sure the .tpp file is created
+if [ ! -e "${file_tpp}" ]; then
+   echo "Error: <${file_tpp}> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Make sure the .cpp file is created
+if [ ! -e "${file_cpp}" ]; then
+   echo "Error: <${file_cpp}> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Make sure the .h file is created
+if [ ! -e "${file_h}" ]; then
+   echo "Error: <${file_h}> file not found!" 1>&2
+   clean_and_exit 1
+fi
+
+# Check include pattern in tpp file
+pattern_str="#include \"${file_tpp}\""
+result=$( grep "${pattern_str}" "${file_h}" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${file_h} does not contains the following pattern : < ${pattern_str} >" 1>&2
+   clean_and_exit 1
+fi
+
+# Check filename in header of .h file
+pattern_str=" * @file ${file_h}"
+result=$( grep "${pattern_str}" "${file_h}" )
+if [ $? -ne 0 ]  ;then
+   echo "The ${file_h} does not contains the following pattern : < ${pattern_str} >" 1>&2
+   clean_and_exit 1
+fi
+
+#
+# Test the template option and -V option
+#
+
+class_name_temp_v="ClassTemplateVTest"
+file_h="${MODULE_NAME}/${class_name_temp_v}.h"
+file_tpp="${MODULE_NAME}/_impl/${class_name_temp_v}.tpp"
+file_cpp="src/lib/${class_name_temp_v}.cpp"
+
 
 clean_and_exit 0

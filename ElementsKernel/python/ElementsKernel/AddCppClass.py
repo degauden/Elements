@@ -44,9 +44,11 @@ logger = Logging.getLogger('AddCppClass')
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 H_TEMPLATE_FILE = 'ClassName_template.h'
 CPP_TEMPLATE_FILE = 'ClassName_template.cpp'
+TPP_TEMPLATE_FILE = 'ClassTpp_template.tpp'
 UNITTEST_TEMPLATE_FILE = 'UnitTestFile_template.cpp'
 
 H_TEMPLATE_FILE_IN = 'ClassName_template.h.in'
+TPP_TEMPLATE_FILE_IN = 'ClassTpp_template.tpp.in'
 CPP_TEMPLATE_FILE_IN = 'ClassName_template.cpp.in'
 UNITTEST_TEMPLATE_FILE_IN = 'UnitTestFile_template.cpp.in'
 
@@ -66,13 +68,16 @@ def getClassName(subdir_class):
 ################################################################################
 
 
-def createDirectories(module_dir, module_name, subdir):
+def createDirectories(module_dir, module_name, subdir, opt_template):
     """
     Create directories needed for a module and a class
     """
     standalone_directories = [os.path.join(module_name, subdir),
                               os.path.join('src', 'lib', subdir),
                               os.path.join('tests', 'src', subdir)]
+    if opt_template:
+        standalone_directories.append(os.path.join(module_name, '_impl')) 
+
     for d in standalone_directories:
         target_dir = os.path.join(module_dir, d)
         if not os.path.exists(target_dir):
@@ -81,20 +86,23 @@ def createDirectories(module_dir, module_name, subdir):
 ################################################################################
 
 
-def substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibility):
+def substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibility, opt_template):
     """
     Copy AUX file(s) and substitutes keyworks
     """
-    target_locations = {
-                       H_TEMPLATE_FILE_IN: os.path.join(module_name, subdir, class_name + ".h"),
-                       CPP_TEMPLATE_FILE_IN: os.path.join('src', 'lib', subdir, class_name + ".cpp"),
-                       UNITTEST_TEMPLATE_FILE_IN: os.path.join('tests', 'src', subdir, class_name + "_test.cpp")
-                       }
-
     module_name_subdir = module_name
     if subdir:
         module_name_subdir = os.path.join(module_name, subdir)
 
+    target_locations = {
+                       H_TEMPLATE_FILE_IN: os.path.join(module_name_subdir, class_name + ".h"),
+                       CPP_TEMPLATE_FILE_IN: os.path.join('src', 'lib', subdir, class_name + ".cpp"),
+                       UNITTEST_TEMPLATE_FILE_IN: os.path.join('tests', 'src', subdir, class_name + "_test.cpp")
+                       }
+    if opt_template:
+        target_locations[ TPP_TEMPLATE_FILE_IN] = os.path.join(module_name_subdir, '_impl', class_name + ".tpp")
+
+    # Visibility option
     visibility_include = ""
     visibility_macro = ""
     if opt_visibility == "simple":
@@ -104,18 +112,56 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibili
         visibility_macro = module_name.upper() +"_EXPORT"        
         visibility_include = '#include "'+ module_name + '_export.h"'
 
+    # Set keywords empty if Template option not set
+    template_declaration = ""
+    template_comment = ""
+    template_func = ""
+    template_extension=""
+    template_include = ""
+    template_cpp = ""
+    template_defwords = ""
+    template_undefwords = ""
+    template_comment_cpp = ""
+    template_class_cpp = ""
+    
+    defwords = ( "_" + module_name + "_" + class_name ).upper()
+    tdefwords = "_" + (module_name).upper() + defwords + "_IMPL"
+
+    # Template option set
+    if opt_template:
+        template_declaration = "template<typename T>"
+        template_comment = "//// instantiation of the most expected types (declaration)"
+        template_extension = "// extern template " + visibility_macro + " " + class_name +"<double>;"
+        template_func = "// void fakeFunc(const T\& t);"
+        template_defwords = "#define " + tdefwords
+        template_include = "#include \"" + os.path.join(module_name_subdir, "_impl", class_name+".tpp\"" )
+        template_undefwords = "#undef " + tdefwords
+        template_comment_cpp = "//// instantiation of the most expected types"
+        template_class_cpp = "// template " + class_name + "<double>;"
+        
     configuration = {"FILE_H": os.path.join(module_name, subdir, class_name + '.h'),
                      "FILE_CPP": os.path.join('src', 'lib', subdir, class_name + '.cpp'),
                      "FILE_TEST": os.path.join('tests', 'src', subdir, class_name + '_test.cpp'),
+                     "FILE_TPP": os.path.join(module_name, subdir, "_impl", class_name + '.tpp'),
                      "DATE": time.strftime("%x"),
                      "AUTHOR": ProjectCommonRoutines.getAuthor(),
-                     "DEFINE_WORDS": ("_" + module_name + "_" + class_name + "_H").upper(),
+                     "DEFINE_WORDS": defwords + "_H",
                      "CLASSNAME": class_name,
                      "OSSEP": os.sep,
                      "MODULENAME": module_name,
                      "MODULENAME_SUBDIR": module_name_subdir,
                      "VISIBILITY_INCLUDE": visibility_include,
-                     "VISIBILITY_MACRO": visibility_macro                    
+                     "VISIBILITY_MACRO": visibility_macro,
+                     "TEMPLATE_DECLARATION": template_declaration,
+                     "TEMPLATE_FUNC": template_func,
+                     "TEMPLATE_COMMENT": template_comment,
+                     "TEMPLATE_EXTENSION": template_extension,
+                     "TEMPLATE_DEFWORDS": template_defwords,
+                     "TEMPLATE_TPP_DEFWORDS": tdefwords,
+                     "TEMPLATE_INCLUDE": template_include,
+                     "TEMPLATE_UNDEFWORDS": template_undefwords, 
+                     "TEMPLATE_COM_CPP": template_comment_cpp,
+                     "TEMPLATE_CLASS_CPP": template_class_cpp                                   
                     }
 
     # Put AUX files to their target
@@ -224,7 +270,7 @@ def checkClassFileNotExist(class_name, module_dir, module_name, subdir):
 
 
 def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
-                   library_dep_list, opt_visibility):
+                   library_dep_list, opt_visibility, opt_template):
     """
     Create all necessary files for a cpp class
     """
@@ -232,12 +278,12 @@ def createCppClass(module_dir, module_name, subdir, class_name, elements_dep_lis
     # Check the class does not exist already
     checkClassFileNotExist(class_name, module_dir, module_name, subdir)
 
-    createDirectories(module_dir, module_name, subdir)
+    createDirectories(module_dir, module_name, subdir, opt_template)
 
     # Update cmake file
     updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list, library_dep_list)
     # Substitue strings in files
-    substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibility)
+    substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibility, opt_template)
 
 ################################################################################
 
@@ -286,7 +332,9 @@ e.g AddCppClass class_name or
                              "native : <library>_EXPORTS is added (like ElementsKernel_EXPORTS)\n"
                              "         This is the native mode supported by CMake"
                               )
-
+    parser.add_argument('-t', '--template', default=False, action='store_true',
+                        help="Add the support for the templated class creation"
+                              )
     return parser
 
 ################################################################################
@@ -305,7 +353,8 @@ def mainMethod(args):
     library_dep_list = args.external_dependency
     (subdir, class_name) = getClassName(args.class_name)
     opt_visibility = args.visibility
-
+    opt_template = args.template
+    
     try:
         # Default is the current directory
         module_dir = os.getcwd()
@@ -318,7 +367,7 @@ def mainMethod(args):
         logger.info('')
 
         # Create CPP class
-        createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list, library_dep_list, opt_visibility)
+        createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list, library_dep_list, opt_visibility, opt_template)
 
         logger.info('<%s> class successfully created in <%s>.', class_name, os.path.join(module_dir, subdir))
 
