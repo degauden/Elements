@@ -1,6 +1,6 @@
 include(ElementsUtils)
 
-include_guard()
+include_guard(GLOBAL)
 
 get_property(module_list GLOBAL PROPERTY PROJ_PACKAGE_LIST)
 

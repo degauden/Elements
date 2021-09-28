@@ -1,4 +1,4 @@
-include_guard()
+include_guard(GLOBAL)
 
   if(INSTALL_DOC)
     add_custom_target(doc ALL

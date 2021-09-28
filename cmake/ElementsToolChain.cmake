@@ -31,7 +31,7 @@ debug_print_var(CMAKE_MODULE_PATH)
 
 set(CMAKE_PREFIX_PATH ${CMAKE_MODULE_PATH} CACHE STRING "The internal prefix path")
 
-reset_include_guards()
+reset_include_guards(GLOBAL)
 reset_message_guards()
 
 set(USED_CMAKE_GENERATOR "${CMAKE_GENERATOR}" CACHE STRING "Expose CMAKE_GENERATOR" FORCE)

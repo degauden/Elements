@@ -1,4 +1,4 @@
-include_guard()
+include_guard(GLOBAL)
 
 
   add_custom_target(cov

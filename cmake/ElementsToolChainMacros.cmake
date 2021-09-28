@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 include(ElementsUtils)
 
-include_guard()
+include_guard(GLOBAL)
 
 macro(preset_module_path_from_env)
 

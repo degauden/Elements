@@ -1,6 +1,6 @@
 include(ElementsUtils)
 
-include_guard()
+include_guard(GLOBAL)
 
 find_file_to_configure(cmake_uninstall.cmake.in
                        FILETYPE "CMake"

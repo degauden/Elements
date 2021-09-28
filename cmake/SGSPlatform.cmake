@@ -16,7 +16,7 @@
 #                      should be set to x86_64-slc6-gcc46.
 ################################################################################
 
-include_guard()
+include_guard(GLOBAL)
 
 ################################################################################
 # Helper function for the platform build type
@@ -46,6 +46,68 @@ function(getShortBuildType short_type long_type)
 
   
 endfunction()
+
+################################################################################
+# Helper function to extract the compiler major and minor version numbers
+################################################################################
+
+function(getCompVersionNumbers compiler_name comp_major_var comp_minor_var)
+
+  find_program(compiler_exe NAMES ${compiler_name} 
+               DOC "Host C compiler")
+               
+  if("${compiler_name}" STREQUAL "gcc")
+    
+    execute_process(COMMAND ${compiler_exe} -dumpversion OUTPUT_VARIABLE compiler_version)
+    string(REGEX MATCHALL "[0-9]+" compiler_version_components ${compiler_version})
+    list(LENGTH compiler_version_components compiler_version_components_nb)
+    if(compiler_version_components_nb LESS "2")
+      execute_process(COMMAND ${compiler_exe} --version OUTPUT_VARIABLE compiler_version)
+      string(REGEX MATCHALL "[0-9]+" compiler_version_components ${compiler_version})  
+    endif()
+    list(GET compiler_version_components 0 compiler_major)
+    list(GET compiler_version_components 1 compiler_minor)
+    
+  elseif("${compiler_name}" STREQUAL "icc")
+    
+    execute_process(COMMAND ${compiler_exe} -dumpversion OUTPUT_VARIABLE compiler_version)
+    string(REGEX MATCHALL "[0-9]+" compiler_version_components ${compiler_version})
+    list(GET compiler_version_components 0 compiler_major)
+    list(GET compiler_version_components 1 compiler_minor)
+
+  elseif("${compiler_name}" STREQUAL "clang")
+
+    execute_process(COMMAND ${compiler_exe} --version OUTPUT_VARIABLE compiler_version)
+    if(APPLE)
+      string(REGEX MATCH "LLVM[ \t]+([0-9]+)[.]([0-9]+)" compiler_version_components ${compiler_version})
+      set(compiler_major ${CMAKE_MATCH_1})
+      set(compiler_minor ${CMAKE_MATCH_2})
+      if(NOT compiler_major)
+        string(REGEX MATCHALL "[0-9]+" compiler_version_components ${compiler_version})
+        list(GET compiler_version_components 0 compiler_major)
+        list(GET compiler_version_components 1 compiler_minor)
+        set(compiler "llvm")
+      endif()
+    else()
+      string(REGEX MATCHALL "[0-9]+" compiler_version_components ${compiler_version})
+      list(GET compiler_version_components 0 compiler_major)
+      list(GET compiler_version_components 1 compiler_minor)
+    endif()
+    
+  else()
+  
+    message(WARNING "Unknown host C compiler ${compiler_name}")
+    set(compiler_major)
+    set(compiler_minor)
+  
+  endif()
+
+  set(${comp_major_var} ${compiler_major} PARENT_SCOPE)
+  set(${comp_minor_var} ${compiler_minor} PARENT_SCOPE)
+  
+
+endfunction()
+
 
 function(getLongBuildType long_type short_type)
   
@@ -190,11 +252,6 @@ function(sgs_find_host_compiler)
       set(cvers ${ICC_MAJOR})
     elseif(SGS_HOST_C_COMPILER MATCHES /clang)
       set(compiler clang)
-    elseif(SGS_HOST_C_COMPILER MATCHES /cl)
-      set(compiler vc)
-      execute_process(COMMAND ${SGS_HOST_C_COMPILER} ERROR_VARIABLE versioninfo OUTPUT_VARIABLE out)
-      string(REGEX REPLACE ".*Version ([0-9]+)[.].*" "\\1" cvers "${versioninfo}")
-      math(EXPR cvers "${cvers} - 6")
     else()
       message(WARNING "Unknown host C compiler ${SGS_HOST_C_COMPILER}")
       set(compiler)
@@ -366,6 +423,9 @@ endfunction()
 # Deduce the SGS configuration tag from the system
 sgs_detect_host_platform()
 sgs_get_target_platform()
+getCompVersionNumbers(${SGS_COMP} SGS_COMP_MAJOR SGS_COMP_MINOR)
+set(SGS_COMP_VERSION "${SGS_COMP_MAJOR}.${SGS_COMP_MINOR}")
+
 
 ## Debug messages.
 # foreach(p SGS_HOST_ SGS_)
@@ -389,6 +449,5 @@ if("${SGS_COMP}" STREQUAL "icc")
     find_program(CMAKE_Fortran_COMPILER
                  NAMES ifort
                  DOC "Fortran compiler")
-
 endif()
 

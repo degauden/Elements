@@ -1,25 +1,54 @@
-macro(include_guard)
-  get_filename_component(file_to_include ${CMAKE_CURRENT_LIST_FILE} NAME_WE)
-  string(TOUPPER ${file_to_include} file_to_include_upcase)
-  if(${file_to_include_upcase}_IS_INCLUDED)
-    return()
-  else()
-    set(${file_to_include_upcase}_IS_INCLUDED 1)
-    set(FULL_INCLUDE_FILE_LIST ${FULL_INCLUDE_FILE_LIST} ${file_to_include_upcase}_IS_INCLUDED)
-  endif()
-endmacro()
 
-include_guard()
+if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_LESS 3.1)
+  macro(include_guard)
+
+    set(_EXTRA_ARGS ${ARGN})
+    list(LENGTH _EXTRA_ARGS _EXTRA_ARGS_LENGTH)
+    
+    set(GUARD_RANGE "GLOBAL")
+    if(_EXTRA_ARGS_LENGTH GREATER 0)
+      set(GUARD_RANGE ${ARGV0})
+    endif()
+    
+    
+    get_filename_component(file_to_include ${CMAKE_CURRENT_LIST_FILE} NAME_WE)
+    get_filename_component(file_to_include_dir ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
+    get_filename_component(file_to_include_name ${CMAKE_CURRENT_LIST_FILE} NAME)
+    string(TOUPPER ${file_to_include} file_to_include_upcase)
+    get_property(_full_list ${GUARD_RANGE} PROPERTY FULL_INCLUDE_FILE_LIST)
+    list (FIND _full_list "${file_to_include}" _index)
+    if (${_index} GREATER -1)
+      if(USE_DEBUG_PRINT)
+        message("${file_to_include} is already included")
+      endif()
+      return()
+    else()
+      set_property(${GUARD_RANGE} APPEND PROPERTY FULL_INCLUDE_FILE_LIST "${file_to_include}")
+      if(USE_DEBUG_PRINT)
+        message("Including ${file_to_include_dir}/${file_to_include_name}")
+      endif()
+    endif()
+    get_property(_full_list ${GUARD_RANGE} PROPERTY FULL_INCLUDE_FILE_LIST)
+  endmacro()
+endif()
+
+include_guard(GLOBAL)
 
 set(version_regex "v?([0-9]+)[r.]([0-9]+)([p.]([0-9]+))?")
 set(full_version_regex "${version_regex}|HEAD.*")
 
-
 macro(reset_include_guards)
 
-  foreach(_s1 ${FULL_INCLUDE_FILE_LIST})
-    set(${_s1} 0)
-  endforeach()
+    set(_EXTRA_ARGS ${ARGN})
+    list(LENGTH _EXTRA_ARGS _EXTRA_ARGS_LENGTH)
+    
+    set(GUARD_RANGE "GLOBAL")
+    if(_EXTRA_ARGS_LENGTH GREATER 0)
+      set(GUARD_RANGE ${ARGV0})
+    endif()
+
+
+  set_property(${GUARD_RANGE} PROPERTY FULL_INCLUDE_FILE_LIST2 "")
 
 endmacro()
 
