@@ -57,7 +57,7 @@ elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramE
 # Example of a pure C program with a C++-compatible header file example.
 elements_add_executable(CProgramExample src/CProgram/*.c
                         INCLUDE_DIRS ElementsExamples
-                        LINK_LIBRARIES ElementsExamples)
+                        LINK_LIBRARIES ElementsExamples stdc++)
 
 #===== Test that the executables do run ========================================
 
