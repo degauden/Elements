@@ -1,3 +1,57 @@
+* Tue Oct 19 2021 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 6.0.0
+- Add the build, test and install tests for a squeezed Elements  
+  - Obviously this test file has to be avoided in the second level tests
+    in order to avoid an infinite recusion.
+  - This doubles roughly the global testing time
+  - This kind of tests get the label "Meta"
+- Use the same directory for binary python module as the regular ones. They
+  are not placed in a separate PYTHONPATH entry anymore.
+- Revert the guard logic for the template implementation files. This could 
+  hopefully force sonar to analyze them
+- Add checkQuality config files and output dir to gitignore template 
+  file (Manuel Grizonnet). Update Elements gitignore accordingly.
+- Add checkQuality config file and output directory to gitignore template file.
+- Generate the doxygen graphs as PNG instead of SVG. There is a bug in the SVG 
+  generation software (https://github.com/doxygen/doxygen/issues/5724) and then
+  the graphs are not displayed correctly in the web browser. This will be
+  reverted back when the bug will be fixed, probably in doxygen 1.9.
+- Fixing the double indirection for the squeezed installation directory
+  - Testing if the SOFTWARE_BASE_VAR is defined and not empty.
+  - Testing if the ${SOFTWARE_BASE_VAR} is defined and not empty
+  - in that case the ${${SOFTWARE_BASE_VAR}} value is used as the base
+    installation directory.
+  - otherwise /opt is chosen
+  Please note that, by convention, SOFTWARE_BASE_VAR=EUCLID_BASE and
+  EUCLID_BASE=/opt/euclid have to be found for the canonical Euclid
+  installation
+- Fixes for the EuclidEnv -> ElementsEnv change
+- Add the Elements::Auxiliary namespace  
+  - add the alias Auxiliary::getVariableName = getAuxiliaryVariableName
+  - and Auxiliary::getPath = getAuxiliaryPath
+  - and Auxiliary::getLocations = getAuxiliaryLocation
+- Add the Elements::Configuration namespace with its aliases
+- Create the Elements::Services inline namespace. Add 
+  an ElementsServices = Elements::Services namespace alias for backward compatibility.
+- Convert the .icpp extension in the .tpp one. This is related to 
+  the issue https://euclid.roe.ac.uk/issues/15512 where Sonar is not 
+  parsing these *.icpp files. This conversion should solve this.
+- Attempt to fix the sphinx errors    
+  - fixing the issue https://euclid.roe.ac.uk/issues/17076
+  - don't link the "modules.rst" file if it has not been generated
+- Added the support for the templated class creation task #21291 (Nicolas Morisset)
+- Add default docstring by default in __init__.py to silent sonar analyzer (Manuel Grizonnet)
+- Use only the major compiler version in the BINARY_TAG  
+  - Add detection of the major and minor version of the target compiler
+  - Add a conditional use of the custom include_guard macro depending
+    on the CMake version.
+  - Remove all the branching for gcc older than version 4.8
+  - Add the optional inclusion of local flag from LocalBuildFlags.cmake
+  - Use the global keyword for the include_guard macro
+  - Fix the CMake include_guard macro
+- Force the link of the stdc++ library to cure a conda problem. This is done on
+  the only C program of the project.
+
+
 * Tue Mar 23 2021 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.14.0
 -  Override the pybind11Tools.cmake file
    - remove the unconditional -flto for the optimized building. It can
