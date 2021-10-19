@@ -76,7 +76,7 @@ def createDirectories(module_dir, module_name, subdir, opt_template):
                               os.path.join('src', 'lib', subdir),
                               os.path.join('tests', 'src', subdir)]
     if opt_template:
-        standalone_directories.append(os.path.join(module_name, '_impl')) 
+        standalone_directories.append(os.path.join(module_name, '_impl'))
 
     for d in standalone_directories:
         target_dir = os.path.join(module_dir, d)
@@ -109,36 +109,36 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibili
         visibility_macro = "ELEMENTS_API"
         visibility_include = '#include "ElementsKernel/Export.h"'
     elif opt_visibility == "native":
-        visibility_macro = module_name.upper() +"_EXPORT"        
-        visibility_include = '#include "'+ module_name + '_export.h"'
+        visibility_macro = module_name.upper() + "_EXPORT"
+        visibility_include = '#include "' + module_name + '_export.h"'
 
     # Set keywords empty if Template option not set
     template_declaration = ""
     template_comment = ""
     template_func = ""
-    template_extension=""
+    template_extension = ""
     template_include = ""
     template_cpp = ""
     template_defwords = ""
     template_undefwords = ""
     template_comment_cpp = ""
     template_class_cpp = ""
-    
-    defwords = ( "_" + module_name + "_" + class_name ).upper()
+
+    defwords = ("_" + module_name + "_" + class_name).upper()
     tdefwords = "_" + (module_name).upper() + defwords + "_IMPL"
 
     # Template option set
     if opt_template:
         template_declaration = "template<typename T>"
         template_comment = "//// instantiation of the most expected types (declaration)"
-        template_extension = "// extern template " + visibility_macro + " " + class_name +"<double>;"
-        template_func = "// void fakeFunc(const T\& t);"
+        template_extension = "// extern template " + visibility_macro + " " + class_name + "<double>;"
+        template_func = "// void fakeFunc(const T& t);"
         template_defwords = "#define " + tdefwords
-        template_include = "#include \"" + os.path.join(module_name_subdir, "_impl", class_name+".tpp\"" )
+        template_include = "#include \"" + os.path.join(module_name_subdir, "_impl", class_name + ".tpp\"")
         template_undefwords = "#undef " + tdefwords
         template_comment_cpp = "//// instantiation of the most expected types"
         template_class_cpp = "// template " + class_name + "<double>;"
-        
+
     configuration = {"FILE_H": os.path.join(module_name, subdir, class_name + '.h'),
                      "FILE_CPP": os.path.join('src', 'lib', subdir, class_name + '.cpp'),
                      "FILE_TEST": os.path.join('tests', 'src', subdir, class_name + '_test.cpp'),
@@ -159,9 +159,9 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibili
                      "TEMPLATE_DEFWORDS": template_defwords,
                      "TEMPLATE_TPP_DEFWORDS": tdefwords,
                      "TEMPLATE_INCLUDE": template_include,
-                     "TEMPLATE_UNDEFWORDS": template_undefwords, 
+                     "TEMPLATE_UNDEFWORDS": template_undefwords,
                      "TEMPLATE_COM_CPP": template_comment_cpp,
-                     "TEMPLATE_CLASS_CPP": template_class_cpp                                   
+                     "TEMPLATE_CLASS_CPP": template_class_cpp
                     }
 
     # Put AUX files to their target
@@ -354,7 +354,7 @@ def mainMethod(args):
     (subdir, class_name) = getClassName(args.class_name)
     opt_visibility = args.visibility
     opt_template = args.template
-    
+
     try:
         # Default is the current directory
         module_dir = os.getcwd()
