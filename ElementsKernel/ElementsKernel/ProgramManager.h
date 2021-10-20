@@ -58,11 +58,12 @@ public:
   /**
    * @brief Constructor
    */
-  ProgramManager(std::unique_ptr<Program> program_ptr, const std::string& parent_project_version = "",
-                 const std::string& parent_project_name = "", const std::string& parent_project_vcs_version = "",
-                 const std::string& parent_module_version = "", const std::string& parent_module_name = "",
-                 const std::vector<std::string>& search_dirs       = {},
-                 const log4cpp::Priority::Value& elements_loglevel = log4cpp::Priority::DEBUG);
+  explicit ProgramManager(std::unique_ptr<Program> program_ptr, const std::string& parent_project_version = "",
+                          const std::string& parent_project_name        = "",
+                          const std::string& parent_project_vcs_version = "",
+                          const std::string& parent_module_version = "", const std::string& parent_module_name = "",
+                          const std::vector<std::string>& search_dirs       = {},
+                          const log4cpp::Priority::Value& elements_loglevel = log4cpp::Priority::DEBUG);
 
   /**
    * @brief Destructor
