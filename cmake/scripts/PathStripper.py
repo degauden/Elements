@@ -17,14 +17,15 @@ def stripPath(path):
     """
     collected = []
     for p in path.split(pathsep):
-        rp = realpath(p)
-        # We keep the entry if it is a directory not empty or a zipfile
-        try:
-            if exists(rp) and ((isdir(rp) and listdir(rp))
-                               or is_zipfile(rp)) and p not in collected:
-                collected.append(p)
-        except OSError:
-            pass
+        if p not in collected:
+            rp = realpath(p)
+            # We keep the entry if it is a directory not empty or a zipfile
+            try:
+                if exists(rp) and ((isdir(rp) and listdir(rp))
+                                   or is_zipfile(rp)):
+                    collected.append(p)
+            except OSError:
+                pass
     return pathsep.join(collected)
 
 
