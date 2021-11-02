@@ -118,7 +118,6 @@ def substituteAuxFiles(module_dir, class_name, module_name, subdir, opt_visibili
     template_func = ""
     template_extension = ""
     template_include = ""
-    template_cpp = ""
     template_defwords = ""
     template_undefwords = ""
     template_comment_cpp = ""
