@@ -36,6 +36,9 @@ export User_area=${tmploc}
 
 if [ -n "${extra_proj_path}" ]; then
   export CMAKE_PROJECT_PATH=${tmploc}:${extra_proj_path}:${CMAKE_PROJECT_PATH}
+else
+  echo "The internal CMAKE_POJECT_PATH is empty"
+  local_clean_exit 0
 fi
 
 echo "ELEMENTS_PROJECT_PATH: ${ELEMENTS_PROJECT_PATH}"
