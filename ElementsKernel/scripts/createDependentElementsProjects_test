@@ -20,10 +20,16 @@ local_clean_exit() {
 
 echo "ELEMENTS_PROJECT_ROOT: ${ELEMENTS_PROJECT_ROOT}"
 
+extra_proj_path=
+
 if [ "$(basename ${ELEMENTS_PROJECT_ROOT})" = "Elements" ]; then
-  extra_proj_path=$(dirname ${ELEMENTS_PROJECT_ROOT})
+  par_dir=$(dirname ${ELEMENTS_PROJECT_ROOT})
+  extra_proj_path=${par_dir}
 else
-  extra_proj_path=$(dirname $(dirname ${ELEMENTS_PROJECT_ROOT}))
+  par_dir=$(dirname ${ELEMENTS_PROJECT_ROOT})
+  if [  "$(basename ${par_dir})" = "Elements" ]; then
+    extra_proj_path=$(dirname ${par_dir})
+  fi
 fi
 
 echo "Internal CMAKE_PROJECT_PATH: ${extra_proj_path}"
