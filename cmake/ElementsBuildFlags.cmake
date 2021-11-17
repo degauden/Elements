@@ -1,3 +1,4 @@
+
 include_guard(GLOBAL)
 
 include(CheckCXXCompilerFlag)
@@ -130,6 +131,10 @@ set(CYTHON_FLAGS "" CACHE STRING
   "Extra flags to the cython compiler.")
 
 # Special defaults
+
+debug_print_var(SGS_COMP)
+debug_print_var(SGS_COMP_VERSION)
+
 if ( ("${SGS_COMP}" STREQUAL gcc) OR ("${SGS_COMP}" STREQUAL clang) OR ("${SGS_COMP}" STREQUAL llvm))
   # C++11 is enable by default on gcc47 and gcc48
   set(ELEMENTS_CPP11_DEFAULT ON)
