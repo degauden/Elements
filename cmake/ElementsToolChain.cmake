@@ -17,6 +17,10 @@ endif()
 # Initial bootstrap to locate the Toolchain macros
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_MODULE_PATH})
 
+if(USE_DEBUG_PRINT)
+  message(STATUS "initial CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+endif()
+
 # Loading the ToolChain library macros and functions
 include(ElementsToolChainMacros)
 
@@ -27,7 +31,9 @@ find_projects(projects collected ${CMAKE_SOURCE_DIR}/CMakeLists.txt)
 
 set_paths_from_projects(${projects})
 
-debug_print_var(CMAKE_MODULE_PATH)
+if(USE_DEBUG_PRINT)
+  message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+endif()
 
 set(CMAKE_PREFIX_PATH ${CMAKE_MODULE_PATH} CACHE STRING "The internal prefix path")
 
