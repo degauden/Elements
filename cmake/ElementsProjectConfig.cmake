@@ -863,6 +863,12 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
 
   if(ELEMENTS_BUILD_TESTS)
 
+    add_custom_target(HTMLSummary)
+    if(TEST_HTML_REPORT)
+      add_custom_command(TARGET HTMLSummary
+                         COMMAND echo "The HTMLSummary target is obsolete")
+    endif()
+
     add_custom_target(JUnitSummary)
     if(TEST_JUNIT_REPORT)
       find_python_module(lxml)
