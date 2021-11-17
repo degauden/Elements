@@ -53,8 +53,12 @@ endfunction()
 
 function(getCompVersionNumbers compiler_name comp_major_var comp_minor_var)
 
-  find_program(compiler_exe NAMES ${compiler_name} 
+  if (CMAKE_C_COMPILER)
+    set(compiler_exe ${CMAKE_C_COMPILER})
+  else()
+    find_program(compiler_exe NAMES ${compiler_name} 
                DOC "Host C compiler")
+  endif()
                
   if("${compiler_name}" STREQUAL "gcc")
     
@@ -423,6 +427,10 @@ endfunction()
 # Deduce the SGS configuration tag from the system
 sgs_detect_host_platform()
 sgs_get_target_platform()
+
+debug_print_var(CMAKE_C_COMPILER)
+debug_print_var(CMAKE_CXX_COMPILER)
+
 getCompVersionNumbers(${SGS_COMP} SGS_COMP_MAJOR SGS_COMP_MINOR)
 set(SGS_COMP_VERSION "${SGS_COMP_MAJOR}.${SGS_COMP_MINOR}")
 
