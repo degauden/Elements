@@ -53,8 +53,8 @@ endfunction()
 
 function(getCompVersionNumbers compiler_name comp_major_var comp_minor_var)
 
-  if (CMAKE_C_COMPILER)
-    set(compiler_exe ${CMAKE_C_COMPILER})
+  if (DEFINED ENV{CC})
+    set(compiler_exe $ENV{CC})
   else()
     find_program(compiler_exe NAMES ${compiler_name} 
                DOC "Host C compiler")
@@ -428,8 +428,8 @@ endfunction()
 sgs_detect_host_platform()
 sgs_get_target_platform()
 
-debug_print_var(CMAKE_C_COMPILER)
-debug_print_var(CMAKE_CXX_COMPILER)
+debug_print("CC environment variable: $ENV{CC}")
+debug_print("CXX environment variable: $ENV{CXX}")
 
 getCompVersionNumbers(${SGS_COMP} SGS_COMP_MAJOR SGS_COMP_MINOR)
 set(SGS_COMP_VERSION "${SGS_COMP_MAJOR}.${SGS_COMP_MINOR}")
