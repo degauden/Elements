@@ -1,3 +1,12 @@
+* Thu Nov 18 2021 Hubert Degaudenzi <Hubert.Degaudenzi@unige.ch> 6.0.1
+- Enable debugging of CMake includes with USE_DEBUG_PRINT=ON
+- Add fake HTMLSummary target to be compatible with older make libraries
+- Use the env var CC if present to have priority over the compiler found in 
+  the PATH environment variable. This is needed because conda defines a new name 
+  for the compiler (x86_64-conda_cos6-linux-gnu-cc). This change allows the 
+  correct parsing of the compiler version and its use for the compiler flags switching.
+- Cure ill-formed grep tests that were causing a test timeout.
+
 * Tue Oct 19 2021 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 6.0.0
 - Add the build, test and install tests for a squeezed Elements  
   - Obviously this test file has to be avoided in the second level tests
@@ -50,7 +59,6 @@
   - Fix the CMake include_guard macro
 - Force the link of the stdc++ library to cure a conda problem. This is done on
   the only C program of the project.
-
 
 * Tue Mar 23 2021 Hubert Degaudenzi  <Hubert.Degaudenzi@unige.ch> 5.14.0
 -  Override the pybind11Tools.cmake file
