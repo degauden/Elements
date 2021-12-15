@@ -19,64 +19,6 @@ set(bindings_source_ready ${CMAKE_CURRENT_BINARY_DIR}/bindings_source_ready)
 
 set(py_bindings_dir ${CMAKE_BINARY_DIR}/python)
 
-function(local_install_headers)
-
-  CMAKE_PARSE_ARGUMENTS(ARG "NO_EXIST_CHECK" "" "" ${ARGN})
-
-  set(has_local_headers FALSE)
-  foreach(hdr_dir ${ARG_UNPARSED_ARGUMENTS})
-    if(NOT IS_ABSOLUTE ${hdr_dir})
-      set(full_hdr_dir ${CMAKE_CURRENT_SOURCE_DIR}/${hdr_dir})
-    else()
-      set(full_hdr_dir ${hdr_dir})
-    endif()
-    if(ARG_NO_EXIST_CHECK)
-      install(DIRECTORY ${hdr_dir}
-              DESTINATION ${INCLUDE_INSTALL_SUFFIX}
-              FILES_MATCHING
-              PATTERN "*.h"
-              PATTERN "*.icpp"
-              PATTERN "*.hpp"
-              PATTERN "*.hxx"
-              PATTERN "*.i"
-              PATTERN "*.pxd"
-              PATTERN "CVS" EXCLUDE
-              PATTERN ".svn" EXCLUDE)
-      if(NOT IS_ABSOLUTE ${hdr_dir})
-        set(has_local_headers TRUE)
-        set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${hdr_dir})
-      endif()    
-    else()
-      if(IS_DIRECTORY ${full_hdr_dir})
-        install(DIRECTORY ${hdr_dir}
-                DESTINATION ${INCLUDE_INSTALL_SUFFIX}
-                FILES_MATCHING
-                PATTERN "*.h"
-                PATTERN "*.icpp"
-                PATTERN "*.hpp"
-                PATTERN "*.hxx"
-                PATTERN "*.i"
-                PATTERN "*.pxd"
-                PATTERN "CVS" EXCLUDE
-                PATTERN ".svn" EXCLUDE)
-        if(NOT IS_ABSOLUTE ${hdr_dir})
-          set(has_local_headers TRUE)
-          set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${hdr_dir})
-        endif()
-      else()
-        message(FATAL_ERROR "No ${hdr_dir} directory for header files in the ${CMAKE_CURRENT_SOURCE_DIR} location")
-      endif()
-    endif()
-  endforeach()
-  # flag the current directory as one that installs headers
-  #   the property is used when collecting the include directories for the
-  #   dependent subdirs
-  if(has_local_headers)
-    set_property(DIRECTORY PROPERTY INSTALLS_LOCAL_HEADERS TRUE)
-    set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
-  endif()
-endfunction()
-
 function(generate_bindings xsd_dir ns_prefix)
 
   message(STATUS "Parsing XSD directory : ${xsd_dir}")
@@ -139,7 +81,7 @@ function(generate_bindings xsd_dir ns_prefix)
                        NO_PUBLIC_HEADERS)
 
   include_directories(${cpp_bindings_dir}/include)
-  local_install_headers(${cpp_bindings_dir}/include/${package} NO_EXIST_CHECK) 
+  elements_install_headers(${cpp_bindings_dir}/include/${package} NO_EXIST_CHECK) 
   set_property(GLOBAL APPEND PROPERTY PROJ_HAS_INCLUDE TRUE)
   set_property(GLOBAL APPEND PROPERTY REGULAR_INCLUDE_OBJECTS ${package})
 
