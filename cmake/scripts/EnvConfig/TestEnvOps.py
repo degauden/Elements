@@ -239,35 +239,35 @@ class Test(unittest.TestCase):
         self.assertTrue(isinstance(control.var('loc2'), Variable.Scalar))
 
         control.declare('MY_PATH', 'list', False)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'MY_PATH', 'list', True)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'MY_PATH', 'scalar', True)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'MY_PATH', 'scalar', True)
 
         control.declare('loc', 'list', True)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'loc', 'list', False)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'loc', 'scalar', True)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'loc', 'scalar', True)
 
         control.declare('myVar2', 'scalar', False)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'myVar2', 'list', False)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'myVar2', 'list', True)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'myVar2', 'scalar', True)
 
         control.declare('loc2', 'scalar', True)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'loc2', 'list', False)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'loc2', 'list', True)
-        self.failUnlessRaises(
+        self.assertRaises(
             Variable.EnvError, control.declare, 'loc2', 'scalar', False)
 
     def testDelete(self):
