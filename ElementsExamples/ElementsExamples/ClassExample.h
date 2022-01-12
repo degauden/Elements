@@ -45,6 +45,16 @@ namespace Examples {
  *    An class example
  * @details
  *    Our naming convention and coding standard are used in this example
+ * @startuml
+ * class ClassExample {
+ *  +ClassExample {static} factoryMethod()
+ *  +std::string& {static} getStaticString()
+ *  +double fundamentalTypeMethod(const double, const double) const
+ *  -double m_ra
+ *  -const std::string {static} s_static_string
+ *  -std::int64_t m_source_id
+ * }
+ * @enduml
  */
 class ELEMENTS_API ClassExample {
 
