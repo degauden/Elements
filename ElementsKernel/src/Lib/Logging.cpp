@@ -55,7 +55,7 @@ static const std::map<string, const int> LOG_LEVEL{{"FATAL", Priority::FATAL},
 unique_ptr<Layout> getLogLayout() {
   auto layout = make_unique<log4cpp::PatternLayout>();
   layout->setConversionPattern("%d{%FT%T%Z} %c %5p : %m%n");
-  return layout;
+  return std::move(layout);
 }
 
 Logging::Logging(Category& log4cppLogger) : m_log4cppLogger(log4cppLogger) {}
