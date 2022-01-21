@@ -12,6 +12,7 @@
 # serve to show the default.
 
 import sys, os, importlib
+from datetime import datetime
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -78,7 +79,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'@PROJECT_NAME@'
-copyright = u'2020, Hubert Degaudenzi'
+copyright = f'{datetime.utcnow().year}, Euclid Science Ground Segment'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -165,7 +166,7 @@ html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-# html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%b %d, %Y, %X'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
