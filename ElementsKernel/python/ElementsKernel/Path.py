@@ -26,8 +26,8 @@
 from ElementsKernel.System import SHLIB_VAR_NAME, DEFAULT_INSTALL_PREFIX
 import os
 import sys
+import sysconfig
 import re
-from distutils.sysconfig import get_python_lib
 from collections import OrderedDict
 
 Type = ["executable", "library", "python", "configuration", "auxiliary"]
@@ -36,7 +36,7 @@ PATHSEP = os.pathsep
 
 VARIABLE = {"executable": "PATH",
             "library": SHLIB_VAR_NAME,
-            "python":  "PYTHONPATH",
+            "python": "PYTHONPATH",
             "configuration": "ELEMENTS_CONF_PATH",
             "auxiliary": "ELEMENTS_AUX_PATH"}
 
@@ -50,7 +50,7 @@ DEFAULT_INSTALL_LOCATIONS = { "executable": [ os.path.join(DEFAULT_INSTALL_PREFI
                                  "library": [ os.path.join(DEFAULT_INSTALL_PREFIX, "lib64"),
                                               os.path.join(DEFAULT_INSTALL_PREFIX, "lib"),
                                               os.path.join(DEFAULT_INSTALL_PREFIX, "lib32")],
-                                  "python": [ get_python_lib(prefix=DEFAULT_INSTALL_PREFIX)],
+                                  "python": [ sysconfig.get_path("purelib").replace(sys.prefix, DEFAULT_INSTALL_PREFIX)],
                            "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "conf") ],
                                "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "auxdir"),
                                              os.path.join(DEFAULT_INSTALL_PREFIX, "share", "aux")]}
