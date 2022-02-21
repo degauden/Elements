@@ -4308,9 +4308,10 @@ macro(elements_external_project_environment)
     # Check that it is not a "Elements project" (the environment is included in a
     # different way in elements_generate_env_conf).
     list(FIND used_elements_projects ${pack} elements_project_idx)
-    if((NOT "${pack}" STREQUAL "ElementsProject") AND (elements_project_idx EQUAL -1))
+    if((NOT "${pack}" STREQUAL "ElementsProject") AND (elements_project_idx EQUAL -1) AND (NOT "${pack}" STREQUAL "PythonModules"))
       message(STATUS "    ${pack}")
       # this is needed to get the non-cache variables for the packages
+      
       find_package(${pack} QUIET)
 
       if("${pack}" STREQUAL "PythonInterp" OR "${pack}" STREQUAL "PythonLibs")
