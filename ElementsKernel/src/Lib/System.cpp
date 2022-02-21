@@ -128,7 +128,6 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name, EntryPo
     errno = static_cast<int>(0xAFFEDEAD);
     return 0;
   }
-  return 1;
 #elif defined(__APPLE__)
   *pFunction = (EntryPoint)::dlsym(handle, name.c_str());
   if (not *pFunction) {
@@ -141,8 +140,8 @@ unsigned long getProcedureByName(ImageHandle handle, const string& name, EntryPo
     std::cout << "Elements::System::getProcedureByName>" << getLastErrorString() << std::endl;
     return 0;
   }
-  return 1;
 #endif
+  return 1;
 }
 
 /// Get a specific function defined in the DLL

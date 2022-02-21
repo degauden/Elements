@@ -366,7 +366,8 @@ def mainMethod(args):
         logger.info('')
 
         # Create CPP class
-        createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list, library_dep_list, opt_visibility, opt_template)
+        createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
+                       library_dep_list, opt_visibility, opt_template)
 
         logger.info('<%s> class successfully created in <%s>.', class_name, os.path.join(module_dir, subdir))
 
