@@ -36,7 +36,7 @@ from ElementsKernel import Logging
 
 from ElementsKernel import Exit
 
-logger = Logging.getLogger('AddCppProgram')
+LOGGER = Logging.getLogger(__name__)
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
@@ -75,8 +75,8 @@ def addConfFile(module_dir, program_name):
         f.close()
         ProjectCommonRoutines.addItemToCreationList(conf_file)
     else:
-        logger.warning('The < %s > conf file has been kept as it already exists!', conf_file)
-        logger.warning('The < %s > conf file already exists!', conf_file)
+        LOGGER.warning('The < %s > conf file has been kept as it already exists!', conf_file)
+        LOGGER.warning('The < %s > conf file already exists!', conf_file)
 
 ################################################################################
 
@@ -106,7 +106,7 @@ def updateCmakeListsFile(module_dir, module_name, program_name,
     """
     Update CMakeLists.txt file
     """
-    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
+    LOGGER.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
     ProjectCommonRoutines.addItemToCreationList(cmake_filename)
 
@@ -221,9 +221,9 @@ def mainMethod(args):
     Main
     """
 
-    logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the AddCppProgram script')
-    logger.info('#')
+    LOGGER.info('#')
+    LOGGER.info('#  Logging from the mainMethod() of the AddCppProgram script')
+    LOGGER.info('#')
 
     exit_code = Exit.Code["OK"]
 
@@ -235,8 +235,8 @@ def mainMethod(args):
         # Default is the current directory
         current_dir = os.getcwd()
 
-        logger.info('Current directory : %s', current_dir)
-        logger.info('')
+        LOGGER.info('Current directory : %s', current_dir)
+        LOGGER.info('')
         # We absolutely need a Elements cmake file
         module_name = ProjectCommonRoutines.getElementsModuleName(current_dir)
         # make some checks
@@ -245,7 +245,7 @@ def mainMethod(args):
         createCppProgram(current_dir, module_name, program_name, module_list, library_list)
 
         location = os.path.join(current_dir, 'src', 'program')
-        logger.info('< %s > program successfully created in < %s >.', program_name, location)
+        LOGGER.info('< %s > program successfully created in < %s >.', program_name, location)
 
         # Remove backup file
         ProjectCommonRoutines.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
@@ -255,10 +255,10 @@ def mainMethod(args):
 
     except Exception as msg:
         if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
+            LOGGER.error(msg)
+        LOGGER.error('# Script aborted.')
         exit_code = Exit.Code["NOT_OK"]
     else:
-        logger.info('# Script over.')
+        LOGGER.info('# Script over.')
 
     return exit_code

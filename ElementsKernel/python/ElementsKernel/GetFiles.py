@@ -25,8 +25,8 @@
 
 import os
 import argparse
-import ElementsKernel.Logging as log
 
+from ElementsKernel import Logging
 from ElementsKernel import Path, Exit
 
 DEFAULT_TYPE = "executable"
@@ -90,7 +90,7 @@ def mainMethod(args):
     similar to a main (and it is why it is called mainMethod()).
     """
 
-    logger = log.getLogger('GetElementsFiles')
+    logger = Logging.getLogger('GetElementsFiles')
 
     exit_code = Exit.Code["OK"]
 
@@ -119,4 +119,3 @@ def mainMethod(args):
         print(f)
 
     return exit_code
-

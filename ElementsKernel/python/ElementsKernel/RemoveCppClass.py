@@ -39,7 +39,7 @@ except ImportError:
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
-logger = Logging.getLogger('RemoveCppClass')
+LOGGER = Logging.getLogger(__name__)
 
 ################################################################################
 
@@ -68,7 +68,7 @@ def updateCmakeListsFile(module_dir, class_name):
     """
     Update the <CMakeLists.txt> file
     """
-    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
+    LOGGER.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Cmake file already exist
@@ -119,9 +119,9 @@ def mainMethod(args):
     Main
     """
 
-    logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the RemoveCppClass script ')
-    logger.info('#')
+    LOGGER.info('#')
+    LOGGER.info('#  Logging from the mainMethod() of the RemoveCppClass script ')
+    LOGGER.info('#')
 
     exit_code = Exit.Code["OK"]
 
@@ -130,8 +130,8 @@ def mainMethod(args):
     # Default is the current directory
     module_dir = os.getcwd()
 
-    logger.info('Current directory : %s', module_dir)
-    logger.info('')
+    LOGGER.info('Current directory : %s', module_dir)
+    LOGGER.info('')
 
     try:
         # We absolutely need a Elements cmake file
@@ -140,31 +140,31 @@ def mainMethod(args):
         # Default is the current directory
         file_to_be_deleted = getAllFiles(class_name, module_dir, module_name)
         if file_to_be_deleted:
-            logger.info('File to be deleted:')
+            LOGGER.info('File to be deleted:')
             for elt_file in file_to_be_deleted:
-                logger.info('--> %s', elt_file)
+                LOGGER.info('--> %s', elt_file)
             response_key = input('Do you want to continue?(y/n, default: n)')
             if response_key.lower() == 'y':
                 ProjectCommonRoutines.removeFilesOnDisk(file_to_be_deleted)
                 cmakefile = os.path.join(module_dir, 'CMakeLists.txt')
                 updateCmakeListsFile(module_dir, class_name)
-                logger.info('')
-                logger.warning('# !!!!!!!!!!!!!!!!!!')
-                logger.warning('# If your <%s> class has some Element and/or external dependencies,', class_name)
-                logger.warning('# Maybe you need to remove them. Check the <elements_add_library, find_package,')
-                logger.warning('# elements_add_library, elements_depends_on_subdirs> macros in the file :')
-                logger.warning('# < %s >', cmakefile)
-                logger.warning('# !!!!!!!!!!!!!!!!!!')
+                LOGGER.info('')
+                LOGGER.warning('# !!!!!!!!!!!!!!!!!!')
+                LOGGER.warning('# If your <%s> class has some Element and/or external dependencies,', class_name)
+                LOGGER.warning('# Maybe you need to remove them. Check the <elements_add_library, find_package,')
+                LOGGER.warning('# elements_add_library, elements_depends_on_subdirs> macros in the file :')
+                LOGGER.warning('# < %s >', cmakefile)
+                LOGGER.warning('# !!!!!!!!!!!!!!!!!!')
         else:
-            logger.info('No file found for deletion!')
-            logger.info('')
+            LOGGER.info('No file found for deletion!')
+            LOGGER.info('')
 
     except Exception as msg:
         if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
+            LOGGER.error(msg)
+        LOGGER.error('# Script aborted.')
         exit_code = Exit.Code["NOT_OK"]
     else:
-        logger.info('# Script over.')
+        LOGGER.info('# Script over.')
 
     return exit_code

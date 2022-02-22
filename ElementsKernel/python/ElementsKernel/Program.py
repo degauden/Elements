@@ -22,7 +22,7 @@ import importlib
 import os
 import sys
 import re
-import ElementsKernel.Logging as log
+from ElementsKernel import Logging
 import logging
 from ElementsKernel.Path import VARIABLE, SUFFIXES, joinPath, multiPathAppend
 from ElementsKernel.Environment import Environment
@@ -48,7 +48,7 @@ class Program(object):
                  elements_loglevel=logging.DEBUG,
                  use_config_file=True):
         self._app_module = importlib.import_module(app_module)
-        self._logger = log.getLogger('ElementsProgram')
+        self._logger = Logging.getLogger('ElementsProgram')
         self._elements_loglevel = elements_loglevel
         self._use_config_file = use_config_file
         self._parent_project_version = parent_project_version
@@ -65,16 +65,15 @@ class Program(object):
     def _setupLogging(arg_parser):
         options = arg_parser.parse_known_args()[0]
         if options.log_level:
-            log.setLevel(options.log_level.upper())
+            Logging.setLevel(options.log_level.upper())
         if options.log_file:
-            log.setLogFile(options.log_file)
+            Logging.setLogFile(options.log_file)
 
     def _findConfigFile(self):
         # Create the path which represents the package of the module (if any)
         rel_path = ''
         if '.' in self._app_module.__name__:
-            rel_path = self._app_module.__name__[
-                :self._app_module.__name__.index('.')]
+            rel_path = self._app_module.__name__[:self._app_module.__name__.index('.')]
             rel_path = rel_path.replace('.', os.sep)
         # Get the name of the executable, remove the prefix and change the
         # extension to .conf
@@ -101,8 +100,7 @@ class Program(object):
             for l in getConfigurationLocations():
                 self._logger.warning(" %s", l)
             if not module_name and '.' in self._app_module.__name__:
-                module_name = self._app_module.__name__[
-                    :self._app_module.__name__.index('.')]
+                module_name = self._app_module.__name__[:self._app_module.__name__.index('.')]
                 module_name = module_name.replace('.', os.sep)
             if module_name:
                 conf_name = os.sep.join([module_name, conf_name])

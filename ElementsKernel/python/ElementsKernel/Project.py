@@ -26,9 +26,9 @@
 import os
 import re
 
-import ELEMENTS_VERSION  # @UnresolvedImport
+import ELEMENTS_VERSION  # @UnresolvedImport pylint: disable=import-error
 
-import ElementsKernel.Logging as log
+from ElementsKernel import Logging
 from ElementsKernel import Auxiliary
 from ElementsKernel import ProjectCommonRoutines
 
@@ -37,7 +37,7 @@ try:
 except ImportError:
     from __builtin__ import input
 
-logger = log.getLogger('CreateElementsProject')
+LOGGER = Logging.getLogger(__name__)
 
 AUX_CMAKE_LIST_IN = "CMakeLists.txt.in"
 AUX_MAKE_FILE_IN = "Makefile.in"
@@ -69,7 +69,7 @@ def setPath():
     # Check if User_area environment variable exists
     user_area = os.environ.get('User_area')
     if not user_area is None:
-        logger.debug('# <$User_area> environment variable defined to : <%s>', user_area)
+        LOGGER.debug('# <$User_area> environment variable defined to : <%s>', user_area)
         destination_path = user_area
     else:
         destination_path = os.getcwd()
@@ -110,7 +110,7 @@ def getElementsVersion():
 
     elt_version = ELEMENTS_VERSION.ELEMENTS_ORIGINAL_VERSION
 
-    logger.info('# Elements version found : <%s>', elt_version)
+    LOGGER.info('# Elements version found : <%s>', elt_version)
 
     return str(elt_version)
 
@@ -131,7 +131,7 @@ def getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone
             if not dep[0] in str_dep_projects:
                 str_dep_projects += ' ' + dep[0] + ' ' + dep[1]
             else:
-                logger.warning('<%s> dependency already exists. It is skipped!', dep[0])
+                LOGGER.warning('<%s> dependency already exists. It is skipped!', dep[0])
 
     if str_dep_projects:
         str_dep_projects = "USE " + str_dep_projects
@@ -156,7 +156,7 @@ def createProject(project_dir, proj_name, proj_version, dep_projects, standalone
     """
     Create the project structure
     """
-    logger.info('# Creating the project')
+    LOGGER.info('# Creating the project')
 
     configuration = getSubstituteConfiguration(proj_name, proj_version, dep_projects, standalone, visibility)
 
@@ -220,15 +220,15 @@ def checkProjectExist(project_dir, no_version_directory, force_erase, answer_yes
     Look for any version directory in the project directory e.g 1.0,1.2 etc...
     """
     if os.path.exists(project_dir) and not force_erase:
-        logger.warning('<%s> Project ALREADY exists!!!', project_dir)
+        LOGGER.warning('<%s> Project ALREADY exists!!!', project_dir)
         version_dir_list = lookForDirectories(project_dir)
         # Warn user about directory under the project
         if no_version_directory and version_dir_list:
-            logger.warning('Found the following version(s) directory(ies) : %s', version_dir_list)
+            LOGGER.warning('Found the following version(s) directory(ies) : %s', version_dir_list)
         if not answer_yes:
             response_key = input('Do you want to overwrite the existing project (y/n, default: n)?')
         if answer_yes or response_key.lower() == "yes" or response_key == "y":
-            logger.info('# Overwriting the existing project: <%s>', project_dir)
+            LOGGER.info('# Overwriting the existing project: <%s>', project_dir)
         else:
             raise Exception()
     elif force_erase:

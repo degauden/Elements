@@ -5,7 +5,7 @@
 # the terms of the GNU Lesser General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option)
 # any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -16,7 +16,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
 '''
 :date: May 29, 2018
 
@@ -24,7 +23,7 @@
 
 '''
 
-__updated__ = "2020-10-19"
+__updated__ = "2022-02-22"
 
 from subprocess import Popen, PIPE
 import shlex
@@ -33,34 +32,35 @@ import pytest
 
 from ElementsKernel.Auxiliary import getAuxiliaryPath
 
+
 class TestCppProgramTest(object):
 
     @pytest.mark.parametrize(
         "default, default_conf, cmd_line_conf, cmd_line_arg, arg_name, expected",
         [
-            ("default", None,           None,            None,         "int-option-with-default-no-default-in-conf",  444),
-            ("default", "default_conf", None,            None,         "int-option-with-default-and-default-in-conf", 333),
-            ("default", "default_conf", "cmd_line_conf", None,         "int-option-with-default-and-default-in-conf", 777),
-            ("default", "default_conf", "cmd_line_conf", "regular",    "int-option-with-default-and-default-in-conf", 666),
+            ("default", None, None, None, "int-option-with-default-no-default-in-conf", 444),
+            ("default", "default_conf", None, None, "int-option-with-default-and-default-in-conf", 333),
+            ("default", "default_conf", "cmd_line_conf", None, "int-option-with-default-and-default-in-conf", 777),
+            ("default", "default_conf", "cmd_line_conf", "regular", "int-option-with-default-and-default-in-conf", 666),
             ("default", "default_conf", "cmd_line_conf", "with_space", "int-option-with-default-and-default-in-conf", 666),
-            ("default", "default_conf", None,            "regular",    "int-option-with-default-and-default-in-conf", 666),
-            ("default", "default_conf", None,            "with_space", "int-option-with-default-and-default-in-conf", 666),
-            ("default", None,           "cmd_line_conf", None,         "int-option-with-default-no-default-in-conf",  888),
-            ("default", None,           "cmd_line_conf", "regular",    "int-option-with-default-no-default-in-conf",  666),
-            ("default", None,           "cmd_line_conf", "with_space", "int-option-with-default-no-default-in-conf",  666),
-            ("default", None,           None,            "regular",    "int-option-with-default-no-default-in-conf",  666),
-            ("default", None,           None,            "with_space", "int-option-with-default-no-default-in-conf",  666),
-            (None,      "default_conf", None,            None,         "int-option",                                    3),
-            (None,      "default_conf", "cmd_line_conf", None,         "int-option",                                    4),
-            (None,      "default_conf", "cmd_line_conf", "regular",    "int-option",                                  666),
-            (None,      "default_conf", "cmd_line_conf", "with_space", "int-option",                                  666),
-            (None,      "default_conf", None,            "regular",    "int-option",                                  666),
-            (None,      "default_conf", None,            "with_space", "int-option",                                  666),
-            (None,      None,           "cmd_line_conf", None,         "int-option-no-default-not-defined-in-conf",   555),
-            (None,      None,           "cmd_line_conf", "regular",    "int-option-no-default-not-defined-in-conf",   666),
-            (None,      None,           "cmd_line_conf", "with_space", "int-option-no-default-not-defined-in-conf",   666),
-            (None,      None,           None,            "regular",    "int-option-with-no-defaults-anywhere",        666),
-            (None,      None,           None,            "with_space", "int-option-with-no-defaults-anywhere",        666),
+            ("default", "default_conf", None, "regular", "int-option-with-default-and-default-in-conf", 666),
+            ("default", "default_conf", None, "with_space", "int-option-with-default-and-default-in-conf", 666),
+            ("default", None, "cmd_line_conf", None, "int-option-with-default-no-default-in-conf", 888),
+            ("default", None, "cmd_line_conf", "regular", "int-option-with-default-no-default-in-conf", 666),
+            ("default", None, "cmd_line_conf", "with_space", "int-option-with-default-no-default-in-conf", 666),
+            ("default", None, None, "regular", "int-option-with-default-no-default-in-conf", 666),
+            ("default", None, None, "with_space", "int-option-with-default-no-default-in-conf", 666),
+            (None, "default_conf", None, None, "int-option", 3),
+            (None, "default_conf", "cmd_line_conf", None, "int-option", 4),
+            (None, "default_conf", "cmd_line_conf", "regular", "int-option", 666),
+            (None, "default_conf", "cmd_line_conf", "with_space", "int-option", 666),
+            (None, "default_conf", None, "regular", "int-option", 666),
+            (None, "default_conf", None, "with_space", "int-option", 666),
+            (None, None, "cmd_line_conf", None, "int-option-no-default-not-defined-in-conf", 555),
+            (None, None, "cmd_line_conf", "regular", "int-option-no-default-not-defined-in-conf", 666),
+            (None, None, "cmd_line_conf", "with_space", "int-option-no-default-not-defined-in-conf", 666),
+            (None, None, None, "regular", "int-option-with-no-defaults-anywhere", 666),
+            (None, None, None, "with_space", "int-option-with-no-defaults-anywhere", 666),
         ]
     )
     def test_that_parameter_precedence_is_respected(self,
@@ -84,7 +84,6 @@ class TestCppProgramTest(object):
                 cmd = '{} --{}=666'.format(cmd, arg_name)
             else:
                 cmd = '{} --{} 666'.format(cmd, arg_name)
-
 
         process = Popen(shlex.split(cmd), stdout=PIPE, stderr=PIPE)
         _, stderr = process.communicate()

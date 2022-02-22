@@ -37,7 +37,7 @@ from ElementsKernel import Logging
 
 from ElementsKernel import Exit
 
-logger = Logging.getLogger('AddPythonProgram')
+LOGGER = Logging.getLogger(__name__)
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
@@ -84,7 +84,7 @@ def substituteAuxFiles(module_dir, program_name, module_name):
     Copy AUX file(s) and substitutes keyworks
     """
     filename = program_name + ".py"
-    configuration = {  "FILE":  os.path.join('python', module_name, filename),
+    configuration = {  "FILE": os.path.join('python', module_name, filename),
                        "DATE": time.strftime("%x"),
                        "AUTHOR": ProjectCommonRoutines.getAuthor(),
                        "PROGRAMNAME": program_name
@@ -104,7 +104,7 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     Update the <CMakeList.txt> file
     """
-    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
+    LOGGER.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
     ProjectCommonRoutines.addItemToCreationList(cmake_filename)
 
@@ -186,9 +186,9 @@ def mainMethod(args):
     Main
     """
 
-    logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the AddPythonProgram script')
-    logger.info('#')
+    LOGGER.info('#')
+    LOGGER.info('#  Logging from the mainMethod() of the AddPythonProgram script')
+    LOGGER.info('#')
 
     exit_code = Exit.Code["OK"]
 
@@ -198,8 +198,8 @@ def mainMethod(args):
         # Default is the current directory
         current_dir = os.getcwd()
 
-        logger.info('# Current directory : %s', current_dir)
-        logger.info('')
+        LOGGER.info('# Current directory : %s', current_dir)
+        LOGGER.info('')
 
         # We absolutely need a Elements cmake file
         module_name = ProjectCommonRoutines.getElementsModuleName(current_dir)
@@ -211,7 +211,7 @@ def mainMethod(args):
         # Create program
         createPythonProgram(current_dir, module_name, program_name)
 
-        logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
+        LOGGER.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
         # Remove backup file
         ProjectCommonRoutines.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
 
@@ -220,10 +220,10 @@ def mainMethod(args):
 
     except Exception as msg:
         if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
+            LOGGER.error(msg)
+        LOGGER.error('# Script aborted.')
         exit_code = Exit.Code["NOT_OK"]
     else:
-        logger.info('# Script over.')
+        LOGGER.info('# Script over.')
 
     return exit_code

@@ -16,7 +16,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
 """ Small example for pybind11
 
 """
@@ -27,7 +26,8 @@ import numpy as np
 from ElementsKernel import Logging
 from ElementsKernel import Exit
 
-from testCallBack import test # pylint: disable=no-name-in-module
+from testCallBack import test  # pylint: disable=no-name-in-module,import-error
+
 
 def norm(x):
     """ function to return the norm of a scalar or a vector
@@ -42,6 +42,7 @@ def norm(x):
 
     return n
 
+
 def defineSpecificProgramOptions():
     """ Allows to define the (command line and configuration file) options specific to
     this program. See the ElementsProgram documentation for more details.
@@ -53,7 +54,7 @@ def defineSpecificProgramOptions():
     return parser
 
 
-def mainMethod(args): #pylint: disable=unused-argument
+def mainMethod(args):  # pylint: disable=unused-argument
     """ The "main" method.
     This method is the entry point to the program. In this sense, it is similar to a main
     (and it is why it is called mainMethod()). The code below contains the calls to the

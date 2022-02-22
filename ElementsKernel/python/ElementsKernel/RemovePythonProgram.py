@@ -43,7 +43,7 @@ from ElementsKernel import Exit
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
-logger = Logging.getLogger('RemovePythonProgram')
+LOGGER = Logging.getLogger(__name__)
 
 ################################################################################
 
@@ -69,7 +69,7 @@ def updateCmakeListsFile(module_dir, program_name):
     """
     Update the <CMakeLists.txt> file
     """
-    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
+    LOGGER.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
 
     # Cmake file already exist
@@ -117,10 +117,10 @@ def mainMethod(args):
     Main
     """
 
-    logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the RemovePythonProgram \
+    LOGGER.info('#')
+    LOGGER.info('#  Logging from the mainMethod() of the RemovePythonProgram \
     script ')
-    logger.info('#')
+    LOGGER.info('#')
 
     exit_code = Exit.Code["OK"]
 
@@ -129,8 +129,8 @@ def mainMethod(args):
     # Default is the current directory
     module_dir = os.getcwd()
 
-    logger.info('Current directory : %s', module_dir)
-    logger.info('')
+    LOGGER.info('Current directory : %s', module_dir)
+    LOGGER.info('')
 
     try:
         # We absolutely need a Elements cmake file
@@ -139,23 +139,23 @@ def mainMethod(args):
         # Default is the current directory
         file_to_be_deleted = getAllFiles(program_name, module_dir, module_name)
         if file_to_be_deleted:
-            logger.info('File to be deleted:')
+            LOGGER.info('File to be deleted:')
             for elt_file in file_to_be_deleted:
-                logger.info(' --> %s', elt_file)
+                LOGGER.info(' --> %s', elt_file)
             response_key = input('Do you want to continue?(y/n, default: n)')
             if response_key.lower() == 'y':
                 ProjectCommonRoutines.removeFilesOnDisk(file_to_be_deleted)
                 updateCmakeListsFile(module_dir, program_name)
         else:
-            logger.info('No file found for deletion!')
-            logger.info('')
+            LOGGER.info('No file found for deletion!')
+            LOGGER.info('')
 
     except Exception as msg:
         if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
+            LOGGER.error(msg)
+        LOGGER.error('# Script aborted.')
         exit_code = Exit.Code["NOT_OK"]
     else:
-        logger.info('# Script over.')
+        LOGGER.info('# Script over.')
 
     return exit_code

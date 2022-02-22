@@ -27,7 +27,8 @@
 """
 
 import argparse
-import ElementsKernel.Logging as log
+
+from ElementsKernel import Logging
 from ElementsKernel import Project, ProjectCommonRoutines
 from ElementsKernel import Exit
 
@@ -72,10 +73,8 @@ Note:
       needed to be copied.
             """
 
-    from argparse import RawTextHelpFormatter
-
     parser = argparse.ArgumentParser(description=description,
-                                     formatter_class=RawTextHelpFormatter)
+                                     formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('project_name', metavar='project-name', type=str,
                         help='Project name')
     parser.add_argument('project_version', metavar='project-version',
@@ -109,7 +108,7 @@ def mainMethod(args):
 
     exit_code = Exit.Code["OK"]
 
-    logger = log.getLogger('CreateElementsProject')
+    logger = Logging.getLogger('CreateElementsProject')
 
     logger.info('#')
     logger.info('#  Logging from the mainMethod() of the CreateElementsProject script')

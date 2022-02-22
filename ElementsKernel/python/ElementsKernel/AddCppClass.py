@@ -38,7 +38,7 @@ from ElementsKernel import Logging
 
 from ElementsKernel import Exit
 
-logger = Logging.getLogger('AddCppClass')
+LOGGER = Logging.getLogger(__name__)
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
@@ -60,9 +60,9 @@ def getClassName(subdir_class):
     Get the class name and sub directory if any
     """
     (subdir, class_name) = os.path.split(subdir_class)
-    logger.info('Class name: %s', class_name)
+    LOGGER.info('Class name: %s', class_name)
     if subdir:
-        logger.info('Sub directory: %s', subdir)
+        LOGGER.info('Sub directory: %s', subdir)
     return subdir, class_name
 
 ################################################################################
@@ -180,7 +180,7 @@ def updateCmakeListsFile(module_dir, subdir, class_name, elements_dep_list,
     """
     Update the <CMakeLists.txt> file for a class
     """
-    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
+    LOGGER.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
     ProjectCommonRoutines.addItemToCreationList(cmake_filename)
 
@@ -342,9 +342,9 @@ e.g AddCppClass class_name or
 def mainMethod(args):
     """ Main method of the AddCppClass Script"""
 
-    logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the AddCppClass script ')
-    logger.info('#')
+    LOGGER.info('#')
+    LOGGER.info('#  Logging from the mainMethod() of the AddCppClass script ')
+    LOGGER.info('#')
 
     exit_code = Exit.Code["OK"]
 
@@ -362,14 +362,14 @@ def mainMethod(args):
         # We absolutely need a Elements cmake file
         module_name = ProjectCommonRoutines.getElementsModuleName(module_dir)
 
-        logger.info('Current directory : %s', module_dir)
-        logger.info('')
+        LOGGER.info('Current directory : %s', module_dir)
+        LOGGER.info('')
 
         # Create CPP class
         createCppClass(module_dir, module_name, subdir, class_name, elements_dep_list,
                        library_dep_list, opt_visibility, opt_template)
 
-        logger.info('<%s> class successfully created in <%s>.', class_name, os.path.join(module_dir, subdir))
+        LOGGER.info('<%s> class successfully created in <%s>.', class_name, os.path.join(module_dir, subdir))
 
         # Remove backup file
         ProjectCommonRoutines.deleteFile(os.path.join(module_dir, CMAKE_LISTS_FILE) + '~')
@@ -379,10 +379,10 @@ def mainMethod(args):
 
     except Exception as msg:
         if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
+            LOGGER.error(msg)
+        LOGGER.error('# Script aborted.')
         exit_code = Exit.Code["NOT_OK"]
     else:
-        logger.info('# Script over.')
+        LOGGER.info('# Script over.')
 
     return exit_code

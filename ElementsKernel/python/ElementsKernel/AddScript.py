@@ -36,7 +36,7 @@ from ElementsKernel import Logging
 
 from ElementsKernel import Exit
 
-logger = Logging.getLogger('AddScript')
+LOGGER = Logging.getLogger(__name__)
 
 # Define constants
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
@@ -84,7 +84,7 @@ def updateCmakeListsFile(module_dir):
     """
     Update the <CMakeList.txt> file
     """
-    logger.info('Updating the <%s> file', CMAKE_LISTS_FILE)
+    LOGGER.info('Updating the <%s> file', CMAKE_LISTS_FILE)
     cmake_filename = os.path.join(module_dir, CMAKE_LISTS_FILE)
     ProjectCommonRoutines.addItemToCreationList(cmake_filename)
 
@@ -155,9 +155,9 @@ def mainMethod(args):
     Main
     """
 
-    logger.info('#')
-    logger.info('#  Logging from the mainMethod() of the AddScript script')
-    logger.info('#')
+    LOGGER.info('#')
+    LOGGER.info('#  Logging from the mainMethod() of the AddScript script')
+    LOGGER.info('#')
 
     exit_code = Exit.Code["OK"]
 
@@ -166,8 +166,8 @@ def mainMethod(args):
     # Default is the current directory
     current_dir = os.getcwd()
 
-    logger.info('# Current directory : %s', current_dir)
-    logger.info('')
+    LOGGER.info('# Current directory : %s', current_dir)
+    LOGGER.info('')
 
     try:
         # Check name in the Element Naming Database
@@ -176,7 +176,7 @@ def mainMethod(args):
         makeChecks(program_file_path, program_name)
 
         createScript(current_dir, program_name)
-        logger.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
+        LOGGER.info('< %s > program successfully created in < %s >.', program_name, program_file_path)
 
         # Remove backup file
         ProjectCommonRoutines.deleteFile(os.path.join(current_dir, CMAKE_LISTS_FILE) + '~')
@@ -186,10 +186,10 @@ def mainMethod(args):
 
     except Exception as msg:
         if str(msg):
-            logger.error(msg)
-        logger.error('# Script aborted.')
+            LOGGER.error(msg)
+        LOGGER.error('# Script aborted.')
         exit_code = Exit.Code["NOT_OK"]
     else:
-        logger.info('# Script over.')
+        LOGGER.info('# Script over.')
 
     return exit_code

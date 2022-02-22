@@ -48,7 +48,7 @@ _filelist = []
 NAME_REGEX = r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
 VERSION_REGEX = r"^(\d+\.\d+(\.\d+)?|HEAD)$"
 
-logger = log.getLogger('ProjectCommonRoutines')
+LOGGER = log.getLogger(__name__)
 
 CMAKE_LISTS_FILE = 'CMakeLists.txt'
 
@@ -66,12 +66,12 @@ def printCreationList():
     """
     Print the contents of the file list
     """
-    logger.info("#")
-    logger.info("# File(s) created/modified:")
-    logger.info("#")
+    LOGGER.info("#")
+    LOGGER.info("# File(s) created/modified:")
+    LOGGER.info("#")
     for elt in _filelist:
-        logger.info("#  file --> %s", elt)
-    logger.info("#")
+        LOGGER.info("#  file --> %s", elt)
+    LOGGER.info("#")
 
 
 ################################################################################
@@ -82,33 +82,33 @@ def checkNameInEuclidNamingDatabase(entity_name, entity_type="", answer_yes=Fals
     if the element_name exists already or the database is not available.
     """
     script_goes_on = True
-    logger.info("Querying the Element Naming Database...")
+    LOGGER.info("Querying the Element Naming Database...")
     db_url = os.environ.get("ELEMENTS_NAMING_DB_URL", "")
     if not nc.checkDataBaseUrl(db_url):
-        logger.info("#")
-        logger.warning("!!! The Elements Naming Database URL is not valid : <%s> !!!", db_url)
-        logger.warning("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
+        LOGGER.info("#")
+        LOGGER.warning("!!! The Elements Naming Database URL is not valid : <%s> !!!", db_url)
+        LOGGER.warning("!!! Please set the ELEMENTS_NAMING_DB_URL environment variable to the Database URL !!!")
     else:
         info = nc.getInfo(entity_name, db_url, entity_type)
         if info["error"]:
-            logger.error("There was an error querying the DB: %s", info["message"])
+            LOGGER.error("There was an error querying the DB: %s", info["message"])
         else:
             if info["exists"]:
-                logger.info("#")
-                logger.warning("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!",
+                LOGGER.info("#")
+                LOGGER.warning("!!! The \"%s\" name for the \"%s\" type already exists in the Element Naming Database !!!",
                                entity_name, entity_type)
-                logger.warning("See the result for the global query of the \"%s\" name in the DB: %s", entity_name,
+                LOGGER.warning("See the result for the global query of the \"%s\" name in the DB: %s", entity_name,
                                info["url"])
-                logger.warning("For more information also connect to: %s", info["private_url"])
+                LOGGER.warning("For more information also connect to: %s", info["private_url"])
                 script_goes_on = False
             else:
-                logger.warning("")
-                logger.warning("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!",
+                LOGGER.warning("")
+                LOGGER.warning("The \"%s\" name of \"%s\" type doesn't exist in the Element Naming Database!!!",
                                entity_name,
                                entity_type)
-                logger.warning("Please think to add the \"%s\" name in the Element Naming Database below:", entity_name)
-                logger.warning("< %s/NameCheck/project1/ >", db_url)
-                logger.info("")
+                LOGGER.warning("Please think to add the \"%s\" name in the Element Naming Database below:", entity_name)
+                LOGGER.warning("< %s/NameCheck/project1/ >", db_url)
+                LOGGER.info("")
 
     if not answer_yes and not script_goes_on:
         response_key = input('Do you want to continue?(y/n, default: n)')
@@ -122,11 +122,11 @@ def removeFilesOnDisk(file_list):
     """
     Remove all files on hard drive from the <file_list> list.
     """
-    logger.info('')
+    LOGGER.info('')
     for elt in file_list:
-        logger.info('File deleted : %s', elt)
+        LOGGER.info('File deleted : %s', elt)
         deleteFile(elt)
-    logger.info('')
+    LOGGER.info('')
 
 ################################################################################
 
@@ -161,7 +161,7 @@ def makeACopy(cmakefile):
     if os.path.exists(cmakefile):
         shutil.copy(cmakefile, copy_file)
     else:
-        logger.warning('File not found: <%s> Can not make a copy of this file!', cmakefile)
+        LOGGER.warning('File not found: <%s> Can not make a copy of this file!', cmakefile)
 
 ################################################################################
 
@@ -187,7 +187,7 @@ def eraseDirectory(directory):
     """
     if os.path.isdir(directory):
         shutil.rmtree(directory)
-        logger.info('< %s > directory erased!', directory)
+        LOGGER.info('< %s > directory erased!', directory)
 
 ################################################################################
 

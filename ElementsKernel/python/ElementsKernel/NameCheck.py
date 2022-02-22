@@ -31,7 +31,7 @@ import os
 import argparse
 import json
 
-import ElementsKernel.Logging as log
+from ElementsKernel import Logging
 from ElementsKernel import Exit
 
 # pyling: disable=bare-except
@@ -42,7 +42,7 @@ except:  # pylint: disable=bare-except
     from urllib.request import urlopen  # @ImportRedefinition
     from urllib.error import URLError
 
-logger = log.getLogger('NameCheck')
+LOGGER = Logging.getLogger(__name__)
 
 TYPES = ["cmake", "library", "executable"]
 DEFAULT_TYPE = "cmake"
@@ -53,7 +53,7 @@ _localUrlOpen = urlopen
 def getInfo(name, db_url, entity_type=DEFAULT_TYPE):
     """ Get the informations about a given entity of a specific type """
     full_url = db_url + "/NameCheck/exists?name=%s&type=%s" % (name, entity_type)
-    logger.debug("The url for the name request: %s", full_url)
+    LOGGER.debug("The url for the name request: %s", full_url)
     info = json.loads(_localUrlOpen(full_url).read().decode("utf-8"))
     for u in ["url", "private_url"]:
         if u in info and info[u]:
@@ -119,24 +119,24 @@ def mainMethod(args):
     entity_name = args.entity_name
 
     if not checkDataBaseUrl(args.url):
-        logger.critical("The Elements Naming DB URL is not valid")
+        LOGGER.critical("The Elements Naming DB URL is not valid")
         exit_code = Exit.Code["INVALID_URL"]
     else:
         info = getInfo(entity_name, args.url, args.type)
 
         if info["error"]:
-            logger.error("There was an error querying the DB: %s", info["message"])
+            LOGGER.error("There was an error querying the DB: %s", info["message"])
             exit_code = Exit.Code["DB_ERROR"]
         else:
             if info["exists"]:
-                logger.warning("The \"%s\" name for the %s type already exists", entity_name, args.type)
-                logger.info("The result for the global query of the name \"%s\" in the DB: %s",
+                LOGGER.warning("The \"%s\" name for the %s type already exists", entity_name, args.type)
+                LOGGER.info("The result for the global query of the name \"%s\" in the DB: %s",
                             entity_name, info["url"])
-                logger.info("The full information for the \"%s\" name of type %s: %s", entity_name,
+                LOGGER.info("The full information for the \"%s\" name of type %s: %s", entity_name,
                             args.type, info["private_url"])
                 exit_code = Exit.Code["OK"]
             else:
-                logger.warning("The \"%s\" name of type %s doesn't exist", entity_name, args.type)
+                LOGGER.warning("The \"%s\" name of type %s doesn't exist", entity_name, args.type)
                 exit_code = Exit.Code["NOT_OK"]
 
     return exit_code

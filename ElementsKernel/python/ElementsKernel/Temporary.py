@@ -55,6 +55,7 @@ else:
     from tempfile import mkdtemp, mkstemp
 
 DEFAULT_TMP_KEEP_VAR = "KEEPTEMPDIR"
+LOGGER = Logging.getLogger(__name__)
 
 
 class TempResource(object):
@@ -83,8 +84,7 @@ class TempResource(object):
         """Internal function to remove the resource"""
         if self._name:
             if self._keep_var in os.environ:
-                log = Logging.getLogger(None)
-                log.info("%s set: I do not remove the '%s' temporary path",
+                LOGGER.info("%s set: I do not remove the '%s' temporary path",
                          self._keep_var, self._name)
             else:
                 self._delResource()
@@ -221,8 +221,7 @@ class Environment(object):
             raise KeyError(key)
         self.old_values[key] = self.env[key]
         del self.env[key]
-        log = Logging.getLogger(None)
-        log.info("removed %s from environment", key)
+        LOGGER.info("removed %s from environment", key)
 
     def keys(self):
         """
