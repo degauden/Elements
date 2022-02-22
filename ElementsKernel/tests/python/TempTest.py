@@ -23,10 +23,11 @@
 
 '''
 
-from ElementsKernel.Temporary import TempDir, TempFile
-from ElementsKernel.Temporary import TempEnv
 import os
 from shutil import rmtree
+
+from ElementsKernel.Temporary import TempDir, TempFile
+from ElementsKernel.Temporary import TempEnv
 
 import unittest
 
@@ -113,9 +114,13 @@ class TestCase(unittest.TestCase):
 
         os.environ["KEEPTEMPDIR"] = "1"
 
+        td_path = ""
         with TempDir() as td:
             td_path = td.path()
             self.assertTrue(os.path.exists(td_path))
+
+        # force deletion
+        del td
 
         self.assertTrue(os.path.exists(td_path))
         rmtree(td_path)
