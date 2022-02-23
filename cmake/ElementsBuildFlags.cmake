@@ -356,6 +356,10 @@ option(GCOVR_EXCLUDE_THROW
 
 set(GCOVR_EXTRA_OPTIONS "" CACHE STRING "Extra option to be appended to the gcovr command")
 
+set(PYTEST_EXTRA_OPTIONS "" CACHE STRING "Extra option to be appended to the pytest command")
+
+set(NOSE_EXTRA_OPTIONS "" CACHE STRING "Extra option to be appended to the nosetests command")
+
 
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
