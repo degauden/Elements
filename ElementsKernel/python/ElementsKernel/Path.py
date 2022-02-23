@@ -23,12 +23,13 @@
 
 '''
 
-from ElementsKernel.System import SHLIB_VAR_NAME, DEFAULT_INSTALL_PREFIX
 import os
 import sys
 import sysconfig
 import re
 from collections import OrderedDict
+
+from ElementsKernel.System import SHLIB_VAR_NAME, DEFAULT_INSTALL_PREFIX
 
 Type = ["executable", "library", "python", "configuration", "auxiliary"]
 
@@ -46,20 +47,24 @@ SUFFIXES = {"executable": ["scripts", "bin"],
             "configuration": ["conf", "share/conf"],
             "auxiliary": ["auxdir", "aux", "share/auxdir", "share/aux"]}
 
-DEFAULT_INSTALL_LOCATIONS = { "executable": [ os.path.join(DEFAULT_INSTALL_PREFIX, "bin")],
-                                 "library": [ os.path.join(DEFAULT_INSTALL_PREFIX, "lib64"),
-                                              os.path.join(DEFAULT_INSTALL_PREFIX, "lib"),
-                                              os.path.join(DEFAULT_INSTALL_PREFIX, "lib32")],
-                                  "python": [ sysconfig.get_path("purelib").replace(sys.prefix, DEFAULT_INSTALL_PREFIX)],
-                           "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "conf") ],
-                               "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "auxdir"),
-                                             os.path.join(DEFAULT_INSTALL_PREFIX, "share", "aux")]}
+DEFAULT_INSTALL_LOCATIONS = {
+    "executable": [ os.path.join(DEFAULT_INSTALL_PREFIX, "bin")],
+       "library": [ os.path.join(DEFAULT_INSTALL_PREFIX, "lib64"),
+                    os.path.join(DEFAULT_INSTALL_PREFIX, "lib"),
+                    os.path.join(DEFAULT_INSTALL_PREFIX, "lib32")],
+        "python": [ sysconfig.get_path("purelib").replace(sys.prefix, DEFAULT_INSTALL_PREFIX)],
+ "configuration": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "conf") ],
+     "auxiliary": [ os.path.join(DEFAULT_INSTALL_PREFIX, "share", "auxdir"),
+                    os.path.join(DEFAULT_INSTALL_PREFIX, "share", "aux")]
+     }
 
-HAS_SUBLEVELS = { "executable": False,
-                     "library": False,
-                      "python": True,
-               "configuration": True,
-                   "auxiliary": True}
+HAS_SUBLEVELS = {
+    "executable": False,
+       "library": False,
+        "python": True,
+ "configuration": True,
+     "auxiliary": True
+     }
 
 
 def getLocations(file_type="executable", exist_only=False, with_defaults=True):

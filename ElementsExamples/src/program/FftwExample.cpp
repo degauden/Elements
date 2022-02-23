@@ -46,8 +46,11 @@ public:
 
     auto log = Logging::getLogger("FftwExample");
 
-    fftw_complex in[N], out[N], in2[N]; /* double [2] */
-    fftw_plan    p, q;
+    fftw_complex in[N]; /* double [2] */
+    fftw_complex out[N];
+    fftw_complex in2[2];
+    fftw_plan    p;
+    fftw_plan    q;
 
     using std::cos;
 

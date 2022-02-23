@@ -212,7 +212,11 @@ vector<Path::Item> linkedModulePaths() {
 
   string line;
   while (std::getline(maps_str, line)) {
-    string             address, perms, offset, dev, pathname;
+    string             address;
+    string             perms;
+    string             offset;
+    string             dev;
+    string             pathname;
     unsigned           inode;
     std::istringstream iss(line);
     if (not(iss >> address >> perms >> offset >> dev >> inode >> pathname)) {
