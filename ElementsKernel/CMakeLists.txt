@@ -164,6 +164,11 @@ if(ELEMENTS_PARALLEL AND OPENMP_FOUND)
                          LABELS OpenMP)
 endif()
 
+elements_add_unit_test(GLibCxxParallel tests/src/GLibCxxParallel_test.cpp
+                       EXECUTABLE GLibCxxParallel_test
+                       TYPE Boost)
+
+
 #if(ELEMENTS_HIDE_WARNINGS)
 #  if(UNIX)
     # This hides warnings from a broken header file in CppUnit, but may
