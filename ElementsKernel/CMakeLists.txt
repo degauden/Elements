@@ -8,6 +8,7 @@ elements_add_library(ElementsKernel src/Lib/*.cpp
                     LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Log4CPP
                     INCLUDE_DIRS Boost Log4CPP
                     PUBLIC_HEADERS ElementsKernel)
+add_library(Elements::Kernel ALIAS ElementsKernel)
 
 #---Tests-------------------------------------------------------------------
 elements_add_unit_test(Real tests/src/Real_test.cpp

@@ -36,6 +36,7 @@ elements_add_library(ElementsServices src/lib/DataSync/*.cpp src/lib/*.cpp
                      LINK_LIBRARIES ElementsKernel
                      INCLUDE_DIRS ElementsKernel
                      PUBLIC_HEADERS ElementsServices)
+add_library(Elements::Services ALIAS ElementsServices)
 
 #===============================================================================
 # Declare the executables here

@@ -8,7 +8,7 @@ elements_depends_on_subdirs(ElementsKernel)
 # Declare external library dependencies
 #    This module is using the Boost C++ library
 #    CppUnit and GMock are optional dependencies
-find_package(Boost REQUIRED COMPONENTS filesystem thread system program_options unit_test_framework)
+find_package(Boost REQUIRED COMPONENTS unit_test_framework)
 find_package(CppUnit)
 find_package(GMock)
 
@@ -17,12 +17,16 @@ find_package(GMock)
 #    ElementsExamples is the library name
 #    src/Lib/*.cpp are the source files
 elements_add_library(ElementsExamples src/lib/default/*.cpp src/lib/default/*.c
-                     LINK_LIBRARIES Boost ElementsKernel
+                     INCLUDE_DIRS  ElementsKernel
+                     LINK_LIBRARIES  ElementsKernel
                      PUBLIC_HEADERS ElementsExamples)
+add_library(Elements::Examples ALIAS ElementsExamples)
 
 elements_add_library(ElementsOther src/lib/other/*.cpp
-                     LINK_LIBRARIES Boost ElementsKernel
+                     INCLUDE_DIRS  ElementsKernel
+                     LINK_LIBRARIES  ElementsKernel
                      PUBLIC_HEADERS ElementsExamples)
+add_library(Elements::Other ALIAS ElementsOther)
 
 
 #===== Executables =============================================================
@@ -30,25 +34,25 @@ elements_add_library(ElementsOther src/lib/other/*.cpp
 #    CppProgramExample is the executable name
 #    src/Program/ProgramExample.cpp is the source file
 elements_add_executable(CppProgramExample src/program/ProgramExample.cpp
-                        INCLUDE_DIRS Boost ElementsExamples ElementsOther
-                        LINK_LIBRARIES Boost ElementsExamples ElementsOther)
+                        INCLUDE_DIRS ElementsExamples ElementsOther
+                        LINK_LIBRARIES ElementsExamples ElementsOther)
 
 elements_add_executable(CppExtProgramExample src/program/ExtProgramExample.cpp
-                        INCLUDE_DIRS Boost ElementsExamples ElementsOther
-                        LINK_LIBRARIES Boost ElementsExamples ElementsOther)
+                        INCLUDE_DIRS ElementsExamples ElementsOther
+                        LINK_LIBRARIES ElementsExamples ElementsOther)
 
 
 elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgramExample.cpp
-                        INCLUDE_DIRS Boost ElementsExamples
-                        LINK_LIBRARIES Boost ElementsExamples)
+                        INCLUDE_DIRS ElementsExamples
+                        LINK_LIBRARIES ElementsExamples)
 
 elements_add_executable(ElementsAnotherSimpleProgramExample src/program/AnotherSimpleProgramExample.cpp
-                        INCLUDE_DIRS Boost ElementsExamples
-                        LINK_LIBRARIES Boost ElementsExamples)
+                        INCLUDE_DIRS ElementsExamples
+                        LINK_LIBRARIES ElementsExamples)
 
 elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramExampleWithArguments.cpp
-                        INCLUDE_DIRS Boost ElementsExamples
-                        LINK_LIBRARIES Boost ElementsExamples)
+                        INCLUDE_DIRS ElementsExamples
+                        LINK_LIBRARIES ElementsExamples)
 
 # Example of a pure C program with a C++-compatible header file example.
 elements_add_executable(CProgramExample src/CProgram/*.c
@@ -105,8 +109,8 @@ elements_add_unit_test(FunctionExample2 tests/src/Boost/FunctionExample2_test.cp
 # LINK_LIBRARIES argument.
 elements_add_unit_test(BoostClassExampleWithMain tests/src/Boost/ClassExample_test.cpp tests/src/Boost/TestMain.cpp
                        EXECUTABLE BoostClassExampleWithMain_test
-                       INCLUDE_DIRS ElementsExamples
-                       LINK_LIBRARIES Boost ElementsExamples)
+                       INCLUDE_DIRS Boost::unit_test_framework ElementsExamples
+                       LINK_LIBRARIES Boost::unit_test_framework ElementsExamples)
 
 elements_add_unit_test(ModuleInfo tests/src/Boost/ModuleInfo_test.cpp
                        EXECUTABLE ElementsExamplesModuleInfo_test
