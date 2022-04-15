@@ -155,8 +155,8 @@ elements_add_unit_test(OtherClassExample tests/src/CppUnit/ClassExample_test.cpp
 # Test with the CppUnit library. The TestMain.cpp is not generated
 elements_add_unit_test(OtherClassExampleWithMain tests/src/CppUnit/ClassExample_test.cpp tests/src/CppUnit/TestMain.cpp
                        EXECUTABLE ElementsExamples_OtherClassExampleWithMain_test
-                       LINK_LIBRARIES CppUnit ElementsExamples
-                       INCLUDE_DIRS CppUnit ElementsExamples
+                       LINK_LIBRARIES CppUnit::cppunit ElementsExamples
+                       INCLUDE_DIRS CppUnit::cppunit ElementsExamples
                        LABELS CustomLabel CppUnit)
 endif()
 
