@@ -174,12 +174,15 @@ configure: $(BUILDDIR)/$(BUILD_CONF_FILE)
 endif
 	@ # do not delegate further
 
+ifndef CTEST_ARGS
+  CTEST_ARGS = -T test --output-junit $(BUILDDIR)/Testing/JUnitTestReport.xml $(CTEST_EXTRA_ARGS)
+endif 
 
 # This wrapping around the test target is used to ensure the generation of
 # the XML output from ctest.
 test: $(BUILDDIR)/$(BUILD_CONF_FILE)
 	$(RM) -r $(BUILDDIR)/Testing $(BUILDDIR)/html
-	-cd $(BUILDDIR) && $(CTEST) -T test $(ARGS)
+	-cd $(BUILDDIR) && $(CTEST) $(CTEST_ARGS) $(ARGS)
 	+$(BUILD_CMD) JUnitSummary
 
 
@@ -187,7 +190,7 @@ test: $(BUILDDIR)/$(BUILD_CONF_FILE)
 # running the tests (unlike the "test" default target of CMake)
 tests: all
 	$(RM) -r $(BUILDDIR)/Testing $(BUILDDIR)/html
-	-cd $(BUILDDIR) && $(CTEST) -T test $(ARGS)
+	-cd $(BUILDDIR) && $(CTEST) $(CTEST_ARGS) $(ARGS)
 	+$(BUILD_CMD) JUnitSummary
 
 ifeq ($(VERBOSE),)
