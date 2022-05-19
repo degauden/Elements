@@ -48,7 +48,7 @@ public:
 
     fftw_complex in[N]; /* double [2] */
     fftw_complex out[N];
-    fftw_complex in2[2];
+    fftw_complex in2[N];
     fftw_plan    p;
     fftw_plan    q;
 
