@@ -333,7 +333,7 @@ bool almostEqual2sComplement(ELEMENTS_UNUSED const FloatType& a, ELEMENTS_UNUSED
 template <typename RawType>
 bool isNan(const RawType& x) {
 
-  using Bits  = typename TypeWithSize<sizeof(RawType)>::UInt;
+  using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
   Bits x_bits;
   std::memcpy(&x_bits, &x, sizeof(x_bits));
 
@@ -350,7 +350,8 @@ bool isEqual(const RawType& left, const RawType& right) {
 
   if (not(isNan<RawType>(left) or isNan<RawType>(right))) {
     using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
-    Bits l_bits, r_bits;
+    Bits l_bits;
+    Bits r_bits;
     std::memcpy(&l_bits, &left, sizeof(l_bits));
     std::memcpy(&r_bits, &right, sizeof(r_bits));
     is_equal = (FloatingPoint<RawType>::distanceBetweenSignAndMagnitudeNumbers(l_bits, r_bits) <= max_ulps);
