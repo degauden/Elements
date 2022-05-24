@@ -32,7 +32,7 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class CfitsioExample : public Program {
+class Cfitsio : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
@@ -56,4 +56,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::CfitsioExample)
+MAIN_FOR(Elements::Examples::Cfitsio)

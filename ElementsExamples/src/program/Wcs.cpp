@@ -1,5 +1,5 @@
 /**
- * @file XercesExample.cpp
+ * @file WcsExample.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -21,13 +21,10 @@
 #include <map>     // for map
 #include <string>  // for string
 
-#include <xercesc/util/PlatformUtils.hpp>  // for Initialize and Terminate
-#include <xercesc/util/XercesVersion.hpp>  // For gXercesFullVersionStr
+#include <wcslib/wcs.h>
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
-
-namespace Xerces = XERCES_CPP_NAMESPACE;  // needed to avoid an unneeded ugly ns
 
 using std::map;
 using std::string;
@@ -35,18 +32,12 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class XercesExample : public Program {
+class Wcs : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    auto log = Logging::getLogger("XercesExample");
-
-    Xerces::XMLPlatformUtils::Initialize();
-
-    log.info() << "XercesC version:" << gXercesFullVersionStr;
-
-    Xerces::XMLPlatformUtils::Terminate();
+    auto log = Logging::getLogger("WcsExample");
 
     log.info() << "done with test program! ";
 
@@ -61,4 +52,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::XercesExample)
+MAIN_FOR(Elements::Examples::Wcs)

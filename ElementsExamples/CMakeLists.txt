@@ -33,24 +33,24 @@ add_library(Elements::Other ALIAS ElementsOther)
 # Instruction for creating a C++ executable
 #    CppProgramExample is the executable name
 #    src/Program/ProgramExample.cpp is the source file
-elements_add_executable(CppProgramExample src/program/ProgramExample.cpp
+elements_add_executable(CppProgramExample src/program/Program.cpp
                         INCLUDE_DIRS ElementsExamples ElementsOther
                         LINK_LIBRARIES ElementsExamples ElementsOther)
 
-elements_add_executable(CppExtProgramExample src/program/ExtProgramExample.cpp
+elements_add_executable(CppExtProgramExample src/program/ExtProgram.cpp
                         INCLUDE_DIRS ElementsExamples ElementsOther
                         LINK_LIBRARIES ElementsExamples ElementsOther)
 
 
-elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgramExample.cpp
+elements_add_executable(ElementsSimpleProgramExample src/program/SimpleProgram.cpp
                         INCLUDE_DIRS ElementsExamples
                         LINK_LIBRARIES ElementsExamples)
 
-elements_add_executable(ElementsAnotherSimpleProgramExample src/program/AnotherSimpleProgramExample.cpp
+elements_add_executable(ElementsAnotherSimpleProgramExample src/program/AnotherSimpleProgram.cpp
                         INCLUDE_DIRS ElementsExamples
                         LINK_LIBRARIES ElementsExamples)
 
-elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramExampleWithArguments.cpp
+elements_add_executable(ElementsProgramExampleWithArguments src/program/ProgramWithArguments.cpp
                         INCLUDE_DIRS ElementsExamples
                         LINK_LIBRARIES ElementsExamples)
 
@@ -185,12 +185,12 @@ endif(GMOCK_FOUND)
 #====== Build Tests =================================================================
 
 
-elements_add_executable(BackTraceExample src/program/BackTraceExample.cpp
+elements_add_executable(BackTraceExample src/program/BackTrace.cpp
                         INCLUDE_DIRS ElementsExamples
                         LINK_LIBRARIES ElementsExamples)
 elements_add_test(BackTraceFailure COMMAND BackTraceExample FAILS)
 
-elements_add_executable(FloatPrecisionExample src/program/FloatPrecisionExample.cpp
+elements_add_executable(FloatPrecisionExample src/program/FloatPrecision.cpp
                         INCLUDE_DIRS ElementsExamples
                         LINK_LIBRARIES ElementsExamples)
 elements_add_test(FloatPrecsionExampleWorks COMMAND FloatPrecisionExample LABELS Float Build)
@@ -198,7 +198,7 @@ elements_add_test(FloatPrecsionExampleWorks COMMAND FloatPrecisionExample LABELS
 
 find_package(GSL QUIET)
 if(GSL_FOUND)
-elements_add_executable(GslExample src/program/GslExample.cpp
+elements_add_executable(GslExample src/program/Gsl.cpp
                         INCLUDE_DIRS GSL ElementsExamples
                         LINK_LIBRARIES GSL ElementsExamples)
 elements_add_test(GSLWorks COMMAND GslExample LABELS GSL Build)
@@ -207,7 +207,7 @@ endif()
 
 find_package(HealpixCpp QUIET)
 if(HEALPIXCPP_FOUND AND HEALPIXCPP_NEW_LAYOUT)
-elements_add_executable(HealpixExample src/program/HealpixExample.cpp
+elements_add_executable(HealpixExample src/program/Healpix.cpp
                         INCLUDE_DIRS HealpixCpp ElementsExamples
                         LINK_LIBRARIES HealpixCpp ElementsExamples)
 elements_add_test(HealpixCppWorks COMMAND HealpixExample LABELS Healpix Build)
@@ -216,7 +216,7 @@ endif()
 
 find_package(XercesC QUIET)
 if(XERCESC_FOUND)
-elements_add_executable(XercesExample src/program/XercesExample.cpp
+elements_add_executable(XercesExample src/program/Xerces.cpp
                         INCLUDE_DIRS XercesC ElementsExamples
                         LINK_LIBRARIES XercesC ElementsExamples)
 elements_add_test(XercesCWorks COMMAND XercesExample LABELS Xerces Build)
@@ -225,7 +225,7 @@ endif()
 
 find_package(WCSLIB QUIET)
 if(WCSLIB_FOUND)
-elements_add_executable(WcsExample src/program/WcsExample.cpp
+elements_add_executable(WcsExample src/program/Wcs.cpp
                         INCLUDE_DIRS WCSLIB ElementsExamples
                         LINK_LIBRARIES WCSLIB ElementsExamples)
 elements_add_test(WCSLIBWorks COMMAND WcsExample LABELS Wcs Build)
@@ -234,7 +234,7 @@ endif()
 
 find_package(FFTW QUIET)
 if(FFTW_FOUND)
-elements_add_executable(FftwExample src/program/FftwExample.cpp
+elements_add_executable(FftwExample src/program/Fftw.cpp
                         INCLUDE_DIRS FFTW ElementsExamples
                         LINK_LIBRARIES FFTW ElementsExamples)
 elements_add_test(FFTWWorks COMMAND FftwExample LABELS Fftw Build)
@@ -242,7 +242,7 @@ endif()
 
 find_package(Eigen3 QUIET)
 if(EIGEN3_FOUND)
-elements_add_executable(EigenExample src/program/EigenExample.cpp
+elements_add_executable(EigenExample src/program/Eigen.cpp
                         LINK_LIBRARIES Eigen3 ElementsExamples
                         INCLUDE_DIRS Eigen3 ElementsExamples)
 elements_add_test(EigenWorks COMMAND EigenExample LABELS Eigen Build)
@@ -250,7 +250,7 @@ endif()
 
 find_package(CCfits QUIET)
 if(CCFITS_FOUND)
-elements_add_executable(CCfitsExample src/program/CCfitsExample.cpp
+elements_add_executable(CCfitsExample src/program/CCfits.cpp
                         LINK_LIBRARIES CCfits ElementsExamples
                         INCLUDE_DIRS CCfits ElementsExamples)
 elements_add_test(CCfitsWorks COMMAND CCfitsExample LABELS CCfits Build)
@@ -258,7 +258,7 @@ endif()
 
 find_package(Cfitsio QUIET)
 if(CFITSIO_FOUND AND CFITSIO_IS_REENTRANT)
-elements_add_executable(CfitsioExample src/program/CfitsioExample.cpp
+elements_add_executable(CfitsioExample src/program/Cfitsio.cpp
                         LINK_LIBRARIES Cfitsio ElementsExamples
                         INCLUDE_DIRS Cfitsio ElementsExamples)
 elements_add_test(CfitsioWorks COMMAND CfitsioExample LABELS Cfitsio Build)
@@ -266,13 +266,13 @@ endif()
 
 find_package(GnuAstro QUIET)
 if(GNUASTRO_FOUND)
-elements_add_executable(GnuAstroExample src/program/GnuAstroExample.cpp
+elements_add_executable(GnuAstroExample src/program/GnuAstro.cpp
                         LINK_LIBRARIES GnuAstro ElementsExamples
                         INCLUDE_DIRS GnuAstro ElementsExamples)
 elements_add_test(GnuAstroWorks COMMAND GnuAstroExample LABELS GnuAstro Build)
 endif()
 
-elements_add_executable(OpenMPExample src/program/OpenMPExample.cpp
+elements_add_executable(OpenMPExample src/program/OpenMP.cpp
                         LINK_LIBRARIES ElementsExamples
                         INCLUDE_DIRS ElementsExamples)
 elements_add_test(OpenMPWorks COMMAND OpenMPExample LABELS OpenMP Build)
