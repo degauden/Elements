@@ -1,3 +1,21 @@
+#[=======================================================================[.rst:
+ElementsDefaults
+-----------------
+
+This files set the default values for various CMake cache variables
+
+.. cmake:variable:: ELEMENTS_HIDE_SYMBOLS
+   
+   Enable explicit symbol visibility on gcc-4. Set to ``ON``
+
+.. cmake:variable:: CXX_SUGGEST_OVERRIDE
+   
+   Enable the -Wsuggest-override warning. Set to ``ON``
+
+
+#]=======================================================================]
+
+
 set(ELEMENTS_HIDE_SYMBOLS ON
     CACHE STRING "Enable explicit symbol visibility on gcc-4"
     FORCE)
