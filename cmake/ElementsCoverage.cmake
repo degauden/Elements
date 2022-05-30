@@ -2,8 +2,8 @@
 ElementsCoverage
 -----------------
 
-This files implements the functions for the production of code instrumented
-for coverage
+This file implements the functions for the production of code instrumented
+for coverage.
 
 #]=======================================================================]
 

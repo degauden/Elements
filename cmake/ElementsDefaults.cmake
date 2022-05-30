@@ -2,7 +2,8 @@
 ElementsDefaults
 -----------------
 
-This files set the default values for various CMake cache variables
+This file set the default values for various CMake cache variables used by Elements itself. The default 
+values for a new project are stored in the `ElementsBuildFlags` module.
 
 .. cmake:variable:: ELEMENTS_HIDE_SYMBOLS
    
