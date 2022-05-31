@@ -46,37 +46,15 @@ using boost::program_options::value;
 
 using std::int64_t;
 
-namespace Elements {
-namespace Examples {
-
 /**
+ * @class ExtProgram
  * @brief
- *    test function to demonstrate the logger
- * @details
- *    test function to demonstrate the logger
- */
-
-void myLocalLogTestFunc() {
-
-  auto logger = Logging::getLogger();
-  logger.info("Test of Message");
-
-  auto logger2 = Logging::getLogger(__func__);
-  logger2.info("Test2 of Message");
-
-  auto logger3 = Logging::getLogger(BOOST_CURRENT_FUNCTION);
-  logger3.info("Test3 of Message");
-}
-
-/**
- * @class ProgramExample
- * @brief
- *    Simple example of an Elements program
+ *    Simple example of an Elements program outside of the Elements namespace
  * @details
  *    All C++ executable must extend the Elements::Program base class
  *
  */
-class ProgramExample : public Program {
+class ExtProgram : public Elements::Program {
 
 public:
   /**
@@ -126,6 +104,8 @@ public:
    *
    */
   ExitCode mainMethod(map<string, VariableValue>& args) override {
+
+    using Elements::Examples::ClassExample;
 
     auto log = Logging::getLogger("ProgramExample");
     log.info("Entering mainMethod()");
@@ -186,7 +166,7 @@ public:
       double second   = 0.0;
       division_result = example_class_object.divideNumbers(first, second);
       //
-    } catch (const Exception& e) {
+    } catch (const Elements::Exception& e) {
       log.info("#");
       log.info() << e.what();
       log.info("#");
@@ -212,19 +192,17 @@ public:
     vector<double> object_example{vector<double>{1.0, 2.3, 4.5}};
     example_class_object.passingObjectInGeneral(object_example);
 
-    log.info() << "Function Example: " << functionExample(3);
+    log.info() << "Function Example: " << Elements::Examples::functionExample(3);
 
     log.info() << "This executable name: " << Elements::System::getThisExecutableInfo().name();
 
-    myLocalLogTestFunc();
+    Elements::Examples::printProject();
 
-    printProject();
-
-    log.info() << Project();
-    log.info() << "Project Name: " << Project::name();
-    log.info() << "Project Version: " << Project::versionString();
-    log.info() << "Module Name: " << Module::name();
-    log.info() << "Module Version: " << Module::versionString();
+    log.info() << Elements::Project();
+    log.info() << "Project Name: " << Elements::Project::name();
+    log.info() << "Project Version: " << Elements::Project::versionString();
+    log.info() << "Module Name: " << Elements::Module::name();
+    log.info() << "Module Version: " << Elements::Module::versionString();
 
     log.info("#");
     log.info("Exiting mainMethod()");
@@ -232,11 +210,8 @@ public:
   }
 };
 
-}  // namespace Examples
-}  // namespace Elements
-
 /**
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::ProgramExample)
+MAIN_FOR(ExtProgram)

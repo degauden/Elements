@@ -134,18 +134,6 @@ include_guard(GLOBAL)
     if(NOT SPHINX_APIDOC_OPTIONS)
       set(SPHINX_APIDOC_OPTIONS "" CACHE STRING "Extra options to pass to sphinx-apidoc" FORCE)
     endif()
-    
-    if(USE_DOXYGEN AND DOXYGEN_FOUND AND USE_SPHINX_BREATHE)
-      set(APPEND_BREATHE_EXT "extensions.append('breathe')")
-    else()
-      set(APPEND_BREATHE_EXT "")
-    endif()
-
-    if(USE_SPHINX_NUMPYDOC)
-      set(APPEND_NUMPYDOC_EXT "extensions.append(numpydoc_extension)")
-    else()
-      set(APPEND_NUMPYDOC_EXT "pass")
-    endif()
 
 
     # Generation of the main sphinx configuration file.
@@ -307,6 +295,8 @@ Python Package
     
     endforeach()
 
+    # Generation of the cmake index.rst file for the cmake directory
+
 
 
     # Generation of the top index.rst file for the project
@@ -319,9 +309,49 @@ Python Package
      endif()
 
 
+    find_file(sphinx_main_cmake_index_file
+              NAMES index.rst
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}
+              PATH_SUFFIXES cmake
+              NO_DEFAULT_PATH)
+
+    set(SPHINX_CMAKE_MODULES "")
+
+    if(sphinx_main_cmake_index_file)
+      configure_file(
+                     "${sphinx_main_cmake_index_file}"
+                     "${PROJECT_BINARY_DIR}/doc/sphinx/cmake/index.rst"
+                     COPYONLY
+                    ) 
+      set(SPHINX_CMAKE_MODULES "cmake/index")
+    else()
+    
+       file(GLOB cm_list RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.cmake)
+       foreach(cm ${cm_list})
+          set(sphinx_cmake_module_lines "${sphinx_cmake_module_lines}
+.. cmake-module:: ../../../../${cm}")
+
+       endforeach()
+    
+      find_file_to_configure(index_cmake.rst.in
+                             FILETYPE "Sphinx index"
+                             OUTPUTDIR "${PROJECT_BINARY_DIR}/doc/sphinx/cmake"
+                             OUTPUTNAME "index.rst"
+                             PATHS ${CMAKE_MODULE_PATH}
+                             PATH_SUFFIXES doc)
+                             
+      if(sphinx_cmake_module_lines)
+        set(SPHINX_CMAKE_MODULES "cmake/index")
+      endif()
+      
+    endif()
+
+
+
+
     find_file(sphinx_main_project_index_file
               NAMES index.rst
-              PATHS ${CMAKE_SOURCE_DIR}
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}
               PATH_SUFFIXES doc
               NO_DEFAULT_PATH)
 
@@ -372,7 +402,7 @@ Python Package
     foreach(_do ChangeLog README README.md)
       find_file(_do_file
                 NAMES ${_do}
-                PATHS ${CMAKE_SOURCE_DIR}
+                PATHS ${CMAKE_CURRENT_SOURCE_DIR}
                 PATH_SUFFIXES doc
                 NO_DEFAULT_PATH)
 

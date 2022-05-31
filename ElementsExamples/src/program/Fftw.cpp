@@ -39,7 +39,7 @@ constexpr std::size_t N = 32;
 namespace Elements {
 namespace Examples {
 
-class FftwExample : public Program {
+class Fftw : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
@@ -98,4 +98,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::FftwExample)
+MAIN_FOR(Elements::Examples::Fftw)

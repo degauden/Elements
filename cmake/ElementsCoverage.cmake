@@ -1,3 +1,13 @@
+#[=======================================================================[.rst:
+ElementsCoverage
+-----------------
+
+This file implements the functions for the production of code instrumented
+for coverage.
+
+#]=======================================================================]
+
+
 include_guard(GLOBAL)
 
 

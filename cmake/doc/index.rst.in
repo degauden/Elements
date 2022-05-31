@@ -14,6 +14,8 @@ Project Overview
    :caption: Table of Contents
 
    doc_project
+  
+   @SPHINX_CMAKE_MODULES@
 
 Modules
 =======

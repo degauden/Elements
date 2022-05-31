@@ -37,7 +37,7 @@ namespace Examples {
 
 static constexpr char CHARSET[] = ".,c8M@jawrpogOQEPGJ";
 
-class OpenMPExample : public Program {
+class OpenMP : public Program {
 
 public:
   ExitCode mainMethod(map<string, VariableValue>& /*args*/) override {
@@ -107,4 +107,4 @@ private:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::OpenMPExample)
+MAIN_FOR(Elements::Examples::OpenMP)

@@ -1,5 +1,5 @@
 /**
- * @file CCfitsExample.cpp
+ * @file HealpixExample.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -21,9 +21,8 @@
 #include <map>     // for map
 #include <string>  // for string
 
-#include <CCfits/CCfits>  // header file to test
+#include <healpix_cxx/healpix_map.h>  // for Healpix_Map
 
-#include "ElementsKernel/Auxiliary.h"
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 
@@ -33,28 +32,16 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class CCfitsExample : public Program {
+class Healpix : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    auto log = Logging::getLogger("CCfitsExample");
+    auto log = Logging::getLogger("HealpixExample");
 
-    string test_upper_string{"THATSTRING"};
-    log.info() << "This is the test upper string: " << test_upper_string;
-
-    string test_lower_string = CCfits::FITSUtil::lowerCase(test_upper_string);
-    log.info() << "This is the test lower string: " << test_lower_string;
+    Healpix_Map<double> map;
 
     log.info() << "done with test program! ";
-
-    auto fits_file_path = Auxiliary::getPath("ElementsExamples/phz_cat.fits");
-    log.info() << "Opening the file " << fits_file_path.string();
-    CCfits::FITS fits_file(fits_file_path.string());
-
-    CCfits::ExtHDU& extension = fits_file.extension(1);
-
-    log.info() << "Extension comments: " << extension.getComments();
 
     return ExitCode::OK;
   }
@@ -67,4 +54,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::CCfitsExample)
+MAIN_FOR(Elements::Examples::Healpix)

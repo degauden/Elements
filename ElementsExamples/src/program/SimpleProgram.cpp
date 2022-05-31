@@ -1,7 +1,7 @@
 /**
- * @file AnotherSimpleProgramExample.cpp
+ * @file SimpleProgramExample.cpp
  *
- * @date Dec 23, 2019
+ * @date Aug 27, 2014
  * @author Hubert Degaudenzi
  *
  * @copyright 2012-2020 Euclid Science Ground Segment
@@ -19,45 +19,52 @@
  *
  */
 
-#include <iostream>
+#include <iostream>  // for cout, endl
+#include <map>       // for map
+#include <string>    // for string
 
-#include "ElementsKernel/Exception.h"  // For Exception
-#include "ElementsKernel/Exit.h"       // For ExitCode
-#include "ElementsKernel/SimpleProgram.h"
+#include "ElementsKernel/ProgramHeaders.h"
+#include "ElementsKernel/Sleep.h"  // for nanoSleep
+#include "ElementsKernel/Unused.h"
+
+using std::map;
+using std::string;
 
 namespace Elements {
 namespace Examples {
 
 /**
- * @class AnotherSimpleProgramExample
+ * @class SimpleProgram
  * @brief
  *    Example of an Elements program
  * @details
- *    This class is an example of a program based on the SimpleProgram class. It can be copied/pasted
+ *    This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
  *    conveniently to write a new program.
  */
-class AnotherSimpleProgramExample : public SimpleProgram {
+class SimpleProgram : public Program {
 
 public:
-  void defineOptions() override {}
-
   /**
    * @brief
    *    The "main" method.
    * @details
    *    This method is the entry point to the program. In this sense, it is similar to a main
-   *    (and it is why it is called main()). The code below provides only example stuff
+   *    (and it is why it is called mainMethod()). The code below provides only example stuff
    *    which should be replaced by real code in any program.
    *
-   *    See the SimpleProgram documentation for more details.
+   *    See the ElementsProgram documentation for more details.
    *
    */
-  ExitCode main() override {
+  ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    std::cout << "Program name: " << getProgramName() << std::endl;
-    std::cout << "Program path: " << getProgramPath() << std::endl;
+    // Get logger and log the entry into the mainMethod
+    auto log = Logging::getLogger();
 
-    throw Exception("This is an example exception.");
+    log.info("This Works");
+
+    Elements::nanoSleep(4);
+
+    std::cout << "This Works too!" << std::endl;
 
     return ExitCode::OK;
   }
@@ -66,4 +73,4 @@ public:
 }  // namespace Examples
 }  // namespace Elements
 
-MAIN(Elements::Examples::AnotherSimpleProgramExample)
+MAIN_FOR(Elements::Examples::SimpleProgram)

@@ -1,5 +1,5 @@
 /**
- * @file WcsExample.cpp
+ * @file XercesExample.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -18,14 +18,16 @@
  *
  */
 
-#include <map>        // for map
-#include <stdexcept>  // for standard exceptions
-#include <string>     // for string
+#include <map>     // for map
+#include <string>  // for string
 
-#include "ElementsExamples/crashingFunction.h"  // for crashingFunction
+#include <xercesc/util/PlatformUtils.hpp>  // for Initialize and Terminate
+#include <xercesc/util/XercesVersion.hpp>  // For gXercesFullVersionStr
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
+
+namespace Xerces = XERCES_CPP_NAMESPACE;  // needed to avoid an unneeded ugly ns
 
 using std::map;
 using std::string;
@@ -33,24 +35,18 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-auto log = Logging::getLogger("BackTraceExample");
-
-void secondLevelFunction() {
-  log.info() << "Entering Second Level Function";
-  crashingFunction();
-}
-
-void firstLevelFunction() {
-  log.info() << "Entering First Level Function";
-  secondLevelFunction();
-}
-
-class BackTraceExample : public Program {
+class Xerces : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    firstLevelFunction();
+    auto log = Logging::getLogger("XercesExample");
+
+    ::Xerces::XMLPlatformUtils::Initialize();
+
+    log.info() << "XercesC version:" << gXercesFullVersionStr;
+
+    ::Xerces::XMLPlatformUtils::Terminate();
 
     log.info() << "done with test program! ";
 
@@ -65,4 +61,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::BackTraceExample)
+MAIN_FOR(Elements::Examples::Xerces)
