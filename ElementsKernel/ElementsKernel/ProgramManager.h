@@ -200,7 +200,7 @@ private:
   /**
    * This is the BOOST program options variable_map used to store all
    * program options. It is similar to a std::map but the element can be
-   * of different types. See the pseudoMain() in ElementsProgramExample.cpp
+   * of different types. See the pseudoMain() in ElementsExamples/src/program/Program.cpp
    * to see how to retrieve options from this map.
    */
   Program::VariablesMap m_variables_map{};

@@ -1,5 +1,5 @@
 /**
- * @file SimpleProgramExample.cpp
+ * @file SimpleProgram.cpp
  *
  * @date Aug 27, 2014
  * @author Hubert Degaudenzi

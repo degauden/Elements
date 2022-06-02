@@ -1,5 +1,5 @@
 /**
- * @file FftwExample.cpp
+ * @file Fftw.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
