@@ -4,14 +4,14 @@ User Manual
 Introduction
 ------------
 
-One challenge in the management of a C project is the need for a
+One challenge in the management of a C++ project is the need for a
 building system. Unlike Java, for example, which has a powerful building
-and distribution system (e.g. Maven), C projects require additional
+and distribution system (e.g. Maven), C++ projects require additional
 software to perform the same task. Roughly speaking, the main
 requirements for this system can be listed as
 
--  Build the C libraries and executables
--  Package the various C projects with management of their dependencies
+-  Build the C++ libraries and executables
+-  Package the various C++ projects with management of their dependencies
 
 The dependencies are in two forms: between projects as well as with
 external software. It is also important to note Linux will be the main
@@ -346,7 +346,7 @@ construct the CMake stucturing library that Elements is providing.
 Management of Extra Software Sources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On top of classical binary build, generally from C sources, Elements has
+On top of classical binary build, generally from C++ sources, Elements has
 been extended to support various other types of file:
 
 -  The python packages, modules and scripts,
@@ -366,7 +366,7 @@ following table explains the setup:
 |                      | python scripts      |                      |
 +----------------------+---------------------+----------------------+
 | ``LD_LIBRARY_PATH``  | binary libraries    | ``lib<name>.so`` for |
-|                      |                     | C libraries,         |
+|                      |                     | C++ libraries,       |
 |                      |                     | ``_<name>.so`` for   |
 |                      |                     | python binary        |
 |                      |                     | modules              |
@@ -549,7 +549,7 @@ The list of common switches are
 -  **``ELEMENTS_PARALLEL``** (default value: ``OFF``): This activates
    the OpenMP parallel support of the compiler.
 -  **``ELEMENTS_FORTIFY``** (default value: ``ON``): This enables the
-   ``FORTIFY`` standard C library option that caries out further checks
+   ``FORTIFY`` standard C++ library option that caries out further checks
    on the code.
 
 Documentation Configuration Options
@@ -1388,11 +1388,11 @@ Options available:
                └── tests
                    └── src
 
-**Add a C Class**
-~~~~~~~~~~~~~~~~~
+**Add a C++ Class**
+~~~~~~~~~~~~~~~~~~~
 
-| For creating a C class you must be inside an Elements module.
-| For adding a C class use the following command:
+| For creating a C++ class you must be inside an Elements module.
+| For adding a C++ class use the following command:
 
 ::
 
@@ -1433,11 +1433,11 @@ Options available:
                    └── src
                        └── TestClass_test.cpp
 
-**Add a C Program**
-~~~~~~~~~~~~~~~~~~~
+**Add a C++ Program**
+~~~~~~~~~~~~~~~~~~~~~
 
-| For creating a C program you must be inside an Elements module.
-| For adding a C program use the following command:
+| For creating a C++ program you must be inside an Elements module.
+| For adding a C++ program use the following command:
 
 ::
 
@@ -1827,8 +1827,8 @@ or
    elements_depends_on_subdirs(MyOtherModule)
    elements_depends_on_subdirs(YetAnotherModule)
 
-C Objects - Libraries and Executables
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C++ Objects - Libraries and Executables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Libraries
 '''''''''
@@ -2346,7 +2346,7 @@ command.
 
 One can divide the nature of the tests in 3 categories:
 
--  C tests constructed with the `Boost Test (the
+-  C++ tests constructed with the `Boost Test (the
    default) <https://www.boost.org/doc/libs/1_67_0/libs/test/doc/html/index.html>`__
    or `CppUnit utility
    framework <http://cppunit.sourceforge.net/doc/cvs/cppunit_cookbook.html>`__,
@@ -2373,7 +2373,7 @@ Remarks:
    tests.
 -  The tests that are described are generic, they could be unit,
    integration, regression, smoke, etc tests.
--  It is clear nevertheless that some languages like C are less suited
+-  It is clear nevertheless that some languages like C++ are less suited
    for the high test levels like integration or regression tests that
    could require calls to several executables.
 
@@ -2381,11 +2381,11 @@ A quite complete list of possible tests is implemented in the
 `ElementsExamples <https://gitlab.euclid-sgs.uk/ST-TOOLS/Elements/blob/develop/ElementsExamples/CMakeLists.txt>`__
 module
 
-C Tests
-~~~~~~~
+C++ Tests
+~~~~~~~~~
 
-This is the fundamental type that is used for the C unit testing.
-Currently 2 C unit testing framework are supported: `Boost
+This is the fundamental type that is used for the C++ unit testing.
+Currently 2 C++ unit testing framework are supported: `Boost
 Test <https://www.boost.org/doc/libs/1_67_0/libs/test/doc/html/index.html>`__
 and
 `CppUnit <http://cppunit.sourceforge.net/doc/cvs/cppunit_cookbook.html>`__.
@@ -2596,7 +2596,7 @@ detailed description of that macro is available
 
 An executable can be created in an Elements module in several ways:
 
--  a C binary declared with ``elements_add_executable``,
+-  a C++ binary declared with ``elements_add_executable``,
 -  a script (bash, python, perl etc) placed in the scripts sub-directory
    and declared with ``elements_install_scripts()``,
 -  a script generated from a python module declared with
@@ -2629,7 +2629,7 @@ For the run of tests, it is often needed to create
 temporary directories]] and/or
 [[NewUserManual#Temporary-Environment|temporary environments]]. Elements
 provides a few helper classes for the creation of these objects for both
-C and Python.
+C++ and Python.
 
 They provides the following features:
 
@@ -2791,13 +2791,11 @@ setting the ``CTEST_OUPUT_ON_FAILURE`` environment variable:
    Errors while running CTest
    make: [/home/hubert/Work/Space/Euclid/Elements/make/Elements.mk:145: test] Error 8 (ignored)
 
-C and Python Utilities
-----------------------
+C++ and Python Utilities
+------------------------
 
-{{>toc}}
-
-C Utilities
-~~~~~~~~~~~
+C++ Utilities
+~~~~~~~~~~~~~
 
 As mentioned earlier, the ElementsKernel module has also as function to
 iron out the differences between various platforms and compilers. All
@@ -2808,8 +2806,8 @@ rest of the code from other projects nice and clean.
 One specific class of instructions which are compilers dependent are the
 specific “attributes” that one could riddle his code. These attributes
 give special instructions to the compiler for, say, optimize, debug etc.
-Until C+\ *14, there was no standard syntax for writing attributes.
-Since we are using the C*\ +11 standard, we can only use compiler
+Until C++14, there was no standard syntax for writing attributes.
+Since we are using the C++11 standard, we can only use compiler
 dependent attributes. For example gcc uses the ``__attribute__`` syntax
 and microsoft ``__declspec``.
 
@@ -3091,11 +3089,11 @@ Logging
 See the `Elements
 examples <https://gitlab.euclid-sgs.uk/ST-TOOLS/Elements/tree/master/ElementsExamples>`__
 to find an example usage of the Elements logger in
-`C <https://gitlab.euclid-sgs.uk/ST-TOOLS/Elements/blob/master/ElementsExamples/src/program/ProgramExample.cpp>`__
+`C++ <https://gitlab.euclid-sgs.uk/ST-TOOLS/Elements/blob/master/ElementsExamples/src/program/ProgramExample.cpp>`__
 and
 `Python <https://gitlab.euclid-sgs.uk/ST-TOOLS/Elements/blob/master/ElementsExamples/python/ElementsExamples/PythonProgramExample.py>`__.
 
-For example, for C:
+For example, for C++:
 
 ::
 
@@ -3191,13 +3189,13 @@ which gives the result:
    2018-05-04T17:37:11CEST ElementsExamples.PythonProgramExample  INFO : Test3 of Message
    ...
 
-The log level and command line options are similar for Python and C.
+The log level and command line options are similar for Python and C++.
 
 Temporary Directories and Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-C Temporary Directories and Files
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C++ Temporary Directories and Files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In order to be able to use temporary resources like directories and
 files during the implementation features like the
@@ -3341,7 +3339,7 @@ counterparts. They just create files instead of directories.
 Python Temporary Directories and Files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As for their C counterpart, the ``ElementsKernel.Temporary`` python
+As for their C++ counterpart, the ``ElementsKernel.Temporary`` python
 module contains utilities for the usage of temporary directories and
 temporary files. These entities has the property to delete the resources
 when their instance is going out of scope. It is quite handy to use the
@@ -3353,7 +3351,7 @@ since Elements 4.1).
 Temporary Directories
 '''''''''''''''''''''
 
-As for its C equivalent
+As for its C++ equivalent
 
 ::
 
@@ -3408,8 +3406,8 @@ original environment is restored.
 
 This is a useful feature for writing tests.
 
-For C
-^^^^^
+For C++
+^^^^^^^
 
 The ``TempEnv`` is providing the automatic construction and destruction
 of an overlaid environment. It can be changed at will and the original
@@ -3449,7 +3447,7 @@ and the original environment is restored.
 For Python
 ^^^^^^^^^^
 
-As for C, the ``TempEnv`` is providing the automatic construction and
+As for C++, the ``TempEnv`` is providing the automatic construction and
 destruction of an overlaid environment.
 
 ::
@@ -3482,7 +3480,7 @@ The framework also provides ways to access 2 other types of files:
 auxiliary and configuration files.
 
 In principle, the configuration files don’t need to be accessed manually
-because they are handles automatically by the generated C and python
+because they are handles automatically by the generated C++ and python
 executables.
 
 In contrast, the so-called auxiliary files are custom auxiliary files
@@ -3490,14 +3488,14 @@ In contrast, the so-called auxiliary files are custom auxiliary files
 manually.
 
 For this task 2 functions, ``getConfigurationPath`` and
-``getAuxiliaryPath`` are provided both for C and Python. They rely on
+``getAuxiliaryPath`` are provided both for C++ and Python. They rely on
 the ``ELEMENTS_CONF_PATH`` and ``ELEMENTS_AUX_PATH`` environment
 variables and they also rely on some hardcoded default locations.
 
 .. _for-c-1:
 
-For C
-^^^^^
+For C++
+^^^^^^^
 
 The following example shows how to get a template file from the
 ElementsKernel auxiliary files. The real code that uses this feature and
@@ -3702,8 +3700,8 @@ ROOT environment variable. This variable is set up by either the local
 
 .. _for-c-2:
 
-For C
-'''''
+For C++
+'''''''
 
 ::
 
@@ -3788,8 +3786,8 @@ Declare the dependency of your project to the beta project
    elements_project(<ProjectName> <ProjectVersion> USE Elements <ElementsVersion> CT_TestDataManager <CT_TestDataManagerVersion>)
    </code>
 
-Module CMakeLists (C only)
-''''''''''''''''''''''''''
+Module CMakeLists (C++ only)
+''''''''''''''''''''''''''''
 
 Declare the dependency of each test suite to the tool module
 ``ElementsServices``:
@@ -3803,8 +3801,8 @@ Declare the dependency of each test suite to the tool module
                         TYPE Boost)
    </code>
 
-C test suite source
-'''''''''''''''''''
+C++ test suite source
+'''''''''''''''''''''
 
 Include the end-user header and optionally use the tool namespace at
 test suite level:
@@ -3837,8 +3835,8 @@ Configuration Files
 
 See the [[configuration files|dedicated page]].
 
-C usage
-~~~~~~~
+C++ usage
+~~~~~~~~~
 
 Download command
 ^^^^^^^^^^^^^^^^
