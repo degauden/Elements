@@ -51,6 +51,22 @@ Legacy
 
 * The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.
 
+Contributors to This Document
+=============================
+- Manuel Grizonnet
+- Téo Bouvard
+- Nikos Apostolakos  
+- Antoine Basset 
+- Jennifer Pollack  
+- Adrien Calvayrac  
+- Elina Keihänen
+- Nicolas Morisset  
+- Pierre Dubath  
+- Stanislas Bruhiere  
+- Tristan Grégoire  
+- Alexandre Diaz
+- Hubert Degaudenzi  
+
 
 Indices and tables
 ==================
