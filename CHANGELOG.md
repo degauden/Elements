@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [6.0.1] - 2021-11-18
+This is a patched version of 6.0.0 to clean up deployment issues.
 
 ### Added
 - Enable debugging of CMake includes with USE_DEBUG_PRINT=ON
@@ -27,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ##  [6.0.0] - 2021-10-19
+This new release is targeting the EDEN 3 development environment. The major changes are:
+* A new companion software called ElementsEnv that supersedes the original EuclidEnv python project.
+* The support for a `BINARY_TAG` with only the major version of the compiler. For example, `x86_64-fc34-gcc112-dbg` becomes `x86_64-fc34-gcc11-dbg` for gcc 11.2. It relaxes the binary dependency between the projects. Internally, however, the branching on the compiler can still be done on the major, minor and patch numbers of the full version.
 
 ### Added
 - Add the build, test and install tests for a squeezed Elements  
@@ -87,6 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ##  [5.14.0] - 2021-03-23
+Fixes and improvements for EDEN 2.1
 
 ### Added
 - Add the BOOST_TEST_TOOLS_UNDER_DEBUGGER compile definition. This allows
@@ -154,6 +159,7 @@ specific tag for the Euclid release
 
 
 ## [5.12] - 2020-07-10
+First version that has the C++14 standard as default
 
 ### Added
 - Factor out Elements own build default values into a separate file 
@@ -199,6 +205,7 @@ specific tag for the Euclid release
 
 
 ## [5.10.1] - 2020-04-08
+Fix for the Debian (Ubuntu) deployment
 
 ### Added
 - Add a test and an example for the OpenMP usage
@@ -216,6 +223,7 @@ specific tag for the Euclid release
 
 
 ## [5.10] - 2020-02-06
+Main adaptation to the EDEN 2.1 environment and improvements of the compilation warnings
 
 ### Added
 - Add the GnuAstro CMake find package with an example
@@ -282,6 +290,7 @@ specific tag for the Euclid release
 
 
 ## [5.8] - 2019-07-08
+Integration of the DataSync service (Antoine Basset). A new ElementsServices module.
 
 ### Added
 - Add the New DataSync service. (Antoine Basset)
@@ -442,10 +451,50 @@ specific tag for the Euclid release
   ones provides in the configuration files.
   
 
+## [5.2.2] - 2017-08-09
+This release is a collection of emergency fixes done on top of the 5.2.1 release. Since the develop branch has diverged since that version, the 5.2.2 tag has been placed on a dedicated support branch based on 5.2.1.
+
+### Added
+- Add an example for the SWIG interface to numpy
+- Add support for the NumPy include directories
+- Add the lookup of the Xsd include directories
+
+### Fixed
+- Fix the explicit version of the python interpreter for NumPy on CVMFS.
+- Fix the import of future_builtins to work with python 3
+
+
 ## [5.2.1] - 2017-08-09
+This version is mainly designed to integrate the EDEEN 2.0 environment. Most of the modifications are done to integrate the _combination_ of 
+* python 3
+* the usage of python 3 and all the other overridden external software from the /cvmfs/euclid.in2p3.fr/EDEN*/.../usr location
+* the RPM packaging for Elements-based software rooted at the /cvmfs/euclid.in2p3.fr/EDEN*/.../opt/euclid location
+* the limited usage of the CVMFS-located RPM database for the projects.
+Together with this Elements release, the EuclidEnv 3.3 helper package is released to interface the original Linux system with the CVMFS-installed software. It takes into account the various changes needed by the modifications mentioned above.
+
+### Added
+- Add the new CPACK_REMOVE_SYSTEM_DEPS CMake option to avoid dragging system dependencies into the CVMFS RPM database.
+- Pass a new (`--no-warn-unused-cli`) option to CMake in order to avoid the "unused" CMake options/variable warnings. This is passed through the top wrapper Makefile
+- Add options to use distcc and ccache for the build of the rpm. These options are CPACK_USE_CCACHE and CPACK_USE_DISTCC. They are @OFF@ by default.
+- Add options to use the sanitize feature of gcc. 
+    - `-DSANITIZE_OPTIONS=ON` activates the feature. The default is `OFF`. 
+    - `-DSANITIZE_STYLE=leak` choose the sanitizer. The default is the `undefined `. The undefined checker. Please note that the 
+      corresponding sanitizer library must be installed for this feature to work.
+- Add experimental support for Cython
+- Add option to forward the CMAKE_PREFIX_PATH to the RPM creation. The option is called RPM_FORWARD_PREFIX_PATH and it is ON by default.
+* Add the getConfigurationLocations and getAuxiliaryLocations functions. They take into account the /usr/share locations and they are the recommended way to access configuration and auxiliary files. 
+
+### Changed
+- Use the Elements module name as search possibitlity for conf. The first default tried is the name of the executable with a ".conf" extension. If not found,  `<module>/<executable>.conf` is tried as a fallback.
 
 ### Fixed
 - Fix the test on the version of sphinx.
+- Generate the correct new layout for the compiled py files for python 3 in the RPM
+- Fix the usage of the `HEAD` keyword for the project version. This is a usual substitute for sliding development versions.
+- Fix the lookup order in the Environment XML files. There was a bug where the system directories where looked up first.
+- Fix issue with incompatible `-pg` and `-pie` gcc options for executables. It is somehow related  with the glibc 2.17. The fix will only be used if the build is "Profile" and the gcc version is less that 5.0. The problem appears on CentOS 7 (and not on Fedora) when linking executables.
+- Bug fixed: #2305 (Nicolas Morisset)
+- Fix a bug which was giving priority to the options from the configuration file over the ones from the command line (Nikos Apostolakos)
 
 
 ## [5.2] - 2017-08-08
