@@ -34,7 +34,7 @@ jobs:
       - name: Install Boost
         run: sudo apt-get install -y libboost-all-dev liblog4cpp5-dev
       - name: Install Doxygen
-        run: sudo apt-get install -y doxygen
+        run: sudo apt-get install -y doxygen python3-sphinx
       - name: Use CMake
         run: cmake --version
       - name: Build Doc with CMake
