@@ -32,7 +32,7 @@ jobs:
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.12
       - name: Install Boost
-        run: sudo apt-get install -y libboost-all-dev
+        run: sudo apt-get install -y libboost-all-dev log4cpp-dev
       - name: Install Doxygen
         run: sudo apt-get install -y doxygen
       - name: Use CMake
