@@ -31,6 +31,8 @@ jobs:
         uses: actions/configure-pages@v1
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.12
+      - name: Install Boost
+        uses: MarkusJx/install-boost@v2.3.1
       - name: Use CMake
         run: cmake --version
       - name: Build Doc with CMake
