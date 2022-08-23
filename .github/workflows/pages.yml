@@ -32,9 +32,9 @@ jobs:
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.12
       - name: Install Boost
-        uses: MarkusJx/install-boost@v2.3.1
-        with:
-          boost_version: 1.73.0
+        run: sudo apt-get install -y libboost-all-dev
+      - name: Install Doxygen
+        run: sudo apt-get install -y doxygen
       - name: Use CMake
         run: cmake --version
       - name: Build Doc with CMake
