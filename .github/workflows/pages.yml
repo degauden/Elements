@@ -31,6 +31,8 @@ jobs:
         uses: actions/configure-pages@v1
       - name: Setup cmake
         uses: jwlawson/actions-setup-cmake@v1.12
+      - name: Use cmake
+        run: cmake --version
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
