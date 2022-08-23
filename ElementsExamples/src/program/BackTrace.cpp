@@ -1,5 +1,5 @@
 /**
- * @file WcsExample.cpp
+ * @file BackTrace.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *

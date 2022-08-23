@@ -1,5 +1,5 @@
 /**
- * @file OpenMPExample.cpp
+ * @file OpenMP.cpp
  * @date March 17th, 2020
  * @author Hubert Degaudenzi
  *
@@ -42,7 +42,7 @@ class OpenMP : public Program {
 public:
   ExitCode mainMethod(map<string, VariableValue>& /*args*/) override {
 
-    auto log = Logging::getLogger("ProgramExample");
+    auto log = Logging::getLogger("OpenMP");
 
     const int width      = 78;
     const int height     = 44;

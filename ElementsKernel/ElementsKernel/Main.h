@@ -115,7 +115,7 @@
 #endif  // ELEMENTSKERNEL_ELEMENTSKERNEL_MAIN_H_
 
 /**
- * @example ElementsExamples/src/program/ProgramExample.cpp
+ * @example ElementsExamples/src/program/Program.cpp
  * Example that shows the usage of the MAIN_FOR macro
  */
 

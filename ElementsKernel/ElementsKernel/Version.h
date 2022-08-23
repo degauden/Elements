@@ -43,7 +43,7 @@ namespace Elements {
  * @brief
  *    Function returning a version string extracted from SVN keywords
  * @details
- *    ElementsExample/ElementsProgramExample.cpp shows how to use this method to implement
+ *    ElementsExample/src/program/Program.cpp shows how to use this method to implement
  *    a getVersion in a prgram
  * @ingroup ElementsKernel
  * @param svnUrl
@@ -57,7 +57,7 @@ namespace Elements {
  *
  *    the svn keywords will be expanded upon the next commit if the svn
  *    client is instructed to do this with
- *       svn propset svn:keywords 'Id Revision HeadURL' ElementsProgramExample.cpp
+ *       svn propset svn:keywords 'Id Revision HeadURL' Program.cpp
  *
  * @return
  */

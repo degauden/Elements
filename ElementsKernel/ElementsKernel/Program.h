@@ -117,8 +117,8 @@ public:
 
 /** These are examples of how to create a executable program using
  * the Program class.
- * @example ElementsExamples/src/program/SimpleProgramExample.cpp
- * @include ElementsExamples/src/program/ProgramExample.cpp
+ * @example ElementsExamples/src/program/SimpleProgram.cpp
+ * @include ElementsExamples/src/program/Program.cpp
  */
 }  // namespace Elements
 

@@ -1,5 +1,5 @@
 /**
- * @file FloatPrecisionExample.cpp
+ * @file FloatPrecision.cpp
  * @date October 30th, 2018
  * @author Hubert Degaudenzi
  *

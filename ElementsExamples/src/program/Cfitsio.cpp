@@ -1,5 +1,5 @@
 /**
- * @file CfitsioExample.cpp
+ * @file Cfitsio.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *

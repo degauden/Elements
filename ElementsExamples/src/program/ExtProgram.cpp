@@ -1,5 +1,5 @@
 /**
- * @file ProgramExample.cpp
+ * @file ExtProgram.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -107,7 +107,7 @@ public:
 
     using Elements::Examples::ClassExample;
 
-    auto log = Logging::getLogger("ProgramExample");
+    auto log = Logging::getLogger("ExtProgram");
     log.info("Entering mainMethod()");
     log.info("#");
     /*

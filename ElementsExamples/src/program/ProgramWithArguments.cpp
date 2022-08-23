@@ -1,5 +1,5 @@
 /**
- * @file ProgramExampleWithArguments.cpp
+ * @file ProgramWithArguments.cpp
  *
  * @date Aug 27, 2014
  * @author Hubert Degaudenzi

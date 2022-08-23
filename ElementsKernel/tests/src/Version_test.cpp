@@ -31,16 +31,16 @@ namespace Elements {
 //-----------------------------------------------------------------------------
 
 // input string to test the generation of an appropriate version in case of a trunk or tags
-const string SVN_ID{"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
+const string SVN_ID{"SVN $Id: Program.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
 const string SVN_URL_TRUNK{"SVN $HeadURL: "
                            "http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/trunk/ElementsExamples/src/"
-                           "Program/ElementsProgramExample.cpp $"};
+                           "program/Program.cpp $"};
 const string SVN_URL_TAGS{"SVN $HeadURL: "
                           "http://euclid.esac.esa.int/svn/EC/SGS/SDC/CH/Projects/Elements/tags/1.2/ElementsExamples/"
-                          "src/Program/ElementsProgramExample.cpp $"};
+                          "src/program/ElementsProgram.cpp $"};
 
 // expected result
-const string EXPECTED_TRUNK_VERSION{"SVN $Id: ElementsProgramExample.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
+const string EXPECTED_TRUNK_VERSION{"SVN $Id: Program.cpp 3124 2013-08-14 12:20:26Z pdubath $"};
 const string EXPECTED_TAGS_VERSION{"Elements 1.2"};
 
 //-----------------------------------------------------------------------------

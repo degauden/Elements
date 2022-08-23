@@ -25,3 +25,6 @@ How is it done?
   1. List of modules
   2. Explanation of used design patterns
   3. Useful UML diagrams: UML Package, UML Structure and Deployment, UML Use Case
+  
+
+

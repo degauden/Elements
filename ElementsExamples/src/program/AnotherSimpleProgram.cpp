@@ -1,5 +1,5 @@
 /**
- * @file AnotherSimpleProgramExample.cpp
+ * @file AnotherSimpleProgram.cpp
  *
  * @date Dec 23, 2019
  * @author Hubert Degaudenzi
@@ -29,7 +29,7 @@ namespace Elements {
 namespace Examples {
 
 /**
- * @class AnotherSimpleProgramExample
+ * @class AnotherSimpleProgram
  * @brief
  *    Example of an Elements program
  * @details
