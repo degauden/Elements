@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
+- Move to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format
 
 ## [6.0.1] - 2021-11-18
 This is a patched version of 6.0.0 to clean up deployment issues.
