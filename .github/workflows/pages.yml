@@ -64,5 +64,5 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ../build/doc # The folder the action should deploy.
+          folder: ${{ runner.workspace }}/build/doc # The folder the action should deploy.
         
