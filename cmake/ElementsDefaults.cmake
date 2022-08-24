@@ -50,3 +50,6 @@ set(USE_PYTHON_DOXYGEN OFF
     CACHE STRING "Use Doxygen for the Python Documentation"
     FORCE)
 
+set(EXTRA_SPHINX_FILES ${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md
+    CACHE STRING "List of extra doc files for the sphinx generation"
+    FORCE)

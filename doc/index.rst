@@ -27,6 +27,9 @@ Project Overview
    Tutorial
 
    FAQ
+   
+   CHANGELOG.md
+   LICENSE.md
 
 Modules
 =======
