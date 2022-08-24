@@ -163,6 +163,11 @@ include_guard(GLOBAL)
 
     get_property(proj_python_package_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
 
+
+    if(EXTRA_SPHINX_FILES)
+      file(COPY ${EXTRA_SPHINX_FILES} DESTINATION ${PROJECT_BINARY_DIR}/doc/sphinx)
+    endif()
+
     add_custom_target(sphinx
                       COMMAND  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx 
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
