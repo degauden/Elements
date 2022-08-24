@@ -1,5 +1,5 @@
 /**
- * @file WcsExample.cpp
+ * @file GnuAstro.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -21,7 +21,8 @@
 #include <map>     // for map
 #include <string>  // for string
 
-#include <wcslib/wcs.h>
+#include <gnuastro/cosmology.h>
+#include <gnuastro/fits.h>  // header file to test
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
@@ -32,14 +33,22 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class WcsExample : public Program {
+class GnuAstro : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    auto log = Logging::getLogger("WcsExample");
+    auto log = Logging::getLogger("GnuAstroExample");
 
-    log.info() << "done with test program! ";
+    string test_upper_string{"THATSTRING"};
+    log.info() << "This is the test upper string: " << test_upper_string;
+
+    double z{2.5};
+    double H0{67.66};
+
+    auto age = gal_cosmology_age(z, H0, 0.0, 0.0, 0.0);
+
+    log.info() << "Age of the Universe @ z = " << z << " : " << age << " GA";
 
     return ExitCode::OK;
   }
@@ -52,4 +61,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::WcsExample)
+MAIN_FOR(Elements::Examples::GnuAstro)

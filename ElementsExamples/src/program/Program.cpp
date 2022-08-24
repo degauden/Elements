@@ -1,5 +1,5 @@
 /**
- * @file ProgramExample.cpp
+ * @file Program.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -69,14 +69,14 @@ void myLocalLogTestFunc() {
 }
 
 /**
- * @class ProgramExample
+ * @class Program
  * @brief
  *    Simple example of an Elements program
  * @details
  *    All C++ executable must extend the Elements::Program base class
  *
  */
-class ProgramExample : public Program {
+class Program : public Elements::Program {
 
 public:
   /**
@@ -127,7 +127,7 @@ public:
    */
   ExitCode mainMethod(map<string, VariableValue>& args) override {
 
-    auto log = Logging::getLogger("ProgramExample");
+    auto log = Logging::getLogger("Program");
     log.info("Entering mainMethod()");
     log.info("#");
     /*
@@ -239,4 +239,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::ProgramExample)
+MAIN_FOR(Elements::Examples::Program)

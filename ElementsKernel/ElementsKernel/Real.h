@@ -73,6 +73,7 @@
 #define ELEMENTSKERNEL_ELEMENTSKERNEL_REAL_H_
 
 #include <cmath>        // for round
+#include <cstring>      // for memcpy
 #include <limits>       // for numeric_limits
 #include <type_traits>  // for is_floating_point
 
@@ -332,8 +333,9 @@ bool almostEqual2sComplement(ELEMENTS_UNUSED const FloatType& a, ELEMENTS_UNUSED
 template <typename RawType>
 bool isNan(const RawType& x) {
 
-  using Bits  = typename TypeWithSize<sizeof(RawType)>::UInt;
-  Bits x_bits = *reinterpret_cast<const Bits*>(&x);
+  using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
+  Bits x_bits;
+  std::memcpy(&x_bits, &x, sizeof(x_bits));
 
   Bits x_exp_bits  = FloatingPoint<RawType>::s_exponent_bitmask & x_bits;
   Bits x_frac_bits = FloatingPoint<RawType>::s_fraction_bitmask & x_bits;
@@ -347,10 +349,12 @@ bool isEqual(const RawType& left, const RawType& right) {
   bool is_equal{false};
 
   if (not(isNan<RawType>(left) or isNan<RawType>(right))) {
-    using Bits  = typename TypeWithSize<sizeof(RawType)>::UInt;
-    Bits l_bits = *reinterpret_cast<const Bits*>(&left);
-    Bits r_bits = *reinterpret_cast<const Bits*>(&right);
-    is_equal    = (FloatingPoint<RawType>::distanceBetweenSignAndMagnitudeNumbers(l_bits, r_bits) <= max_ulps);
+    using Bits = typename TypeWithSize<sizeof(RawType)>::UInt;
+    Bits l_bits;
+    Bits r_bits;
+    std::memcpy(&l_bits, &left, sizeof(l_bits));
+    std::memcpy(&r_bits, &right, sizeof(r_bits));
+    is_equal = (FloatingPoint<RawType>::distanceBetweenSignAndMagnitudeNumbers(l_bits, r_bits) <= max_ulps);
   }
 
   return is_equal;

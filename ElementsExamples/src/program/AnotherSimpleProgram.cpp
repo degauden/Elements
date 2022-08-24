@@ -1,5 +1,5 @@
 /**
- * @file AnotherSimpleProgramExample.cpp
+ * @file AnotherSimpleProgram.cpp
  *
  * @date Dec 23, 2019
  * @author Hubert Degaudenzi
@@ -29,14 +29,14 @@ namespace Elements {
 namespace Examples {
 
 /**
- * @class AnotherSimpleProgramExample
+ * @class AnotherSimpleProgram
  * @brief
  *    Example of an Elements program
  * @details
  *    This class is an example of a program based on the SimpleProgram class. It can be copied/pasted
  *    conveniently to write a new program.
  */
-class AnotherSimpleProgramExample : public SimpleProgram {
+class AnotherSimpleProgram : public SimpleProgram {
 
 public:
   void defineOptions() override {}
@@ -66,4 +66,4 @@ public:
 }  // namespace Examples
 }  // namespace Elements
 
-MAIN(Elements::Examples::AnotherSimpleProgramExample)
+MAIN(Elements::Examples::AnotherSimpleProgram)

@@ -1,5 +1,5 @@
 /**
- * @file ProgramExample.cpp
+ * @file ExtProgram.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -47,14 +47,14 @@ using boost::program_options::value;
 using std::int64_t;
 
 /**
- * @class ProgramExample
+ * @class ExtProgram
  * @brief
  *    Simple example of an Elements program outside of the Elements namespace
  * @details
  *    All C++ executable must extend the Elements::Program base class
  *
  */
-class ExtProgramExample : public Elements::Program {
+class ExtProgram : public Elements::Program {
 
 public:
   /**
@@ -107,7 +107,7 @@ public:
 
     using Elements::Examples::ClassExample;
 
-    auto log = Logging::getLogger("ProgramExample");
+    auto log = Logging::getLogger("ExtProgram");
     log.info("Entering mainMethod()");
     log.info("#");
     /*
@@ -214,4 +214,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(ExtProgramExample)
+MAIN_FOR(ExtProgram)

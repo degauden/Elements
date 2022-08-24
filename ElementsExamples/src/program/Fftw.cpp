@@ -1,5 +1,5 @@
 /**
- * @file FftwExample.cpp
+ * @file Fftw.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -39,7 +39,7 @@ constexpr std::size_t N = 32;
 namespace Elements {
 namespace Examples {
 
-class FftwExample : public Program {
+class Fftw : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
@@ -48,7 +48,7 @@ public:
 
     fftw_complex in[N]; /* double [2] */
     fftw_complex out[N];
-    fftw_complex in2[2];
+    fftw_complex in2[N];
     fftw_plan    p;
     fftw_plan    q;
 
@@ -98,4 +98,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::FftwExample)
+MAIN_FOR(Elements::Examples::Fftw)

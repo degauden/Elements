@@ -59,7 +59,7 @@ private:
   Path::Item m_program_path;
 };
 
-/** @example ElementsExamples/src/program/AnotherSimpleProgramExample.cpp
+/** @example ElementsExamples/src/program/AnotherSimpleProgram.cpp
  * This is an example of how to use the SimpleProgram class.
  */
 

@@ -1,5 +1,5 @@
 /**
- * @file EigenExample.cpp
+ * @file Wcs.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -18,12 +18,10 @@
  *
  */
 
-#include <iostream>
-
 #include <map>     // for map
 #include <string>  // for string
 
-#include <Eigen/Dense>
+#include <wcslib/wcs.h>
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
@@ -34,23 +32,14 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class EigenExample : public Program {
+class Wcs : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    using Eigen::MatrixXd;
+    auto log = Logging::getLogger("WcsExample");
 
-    auto log = Logging::getLogger("EigenExample");
-
-    MatrixXd m(2, 2);
-    m(0, 0) = 3;
-    m(1, 0) = 2.5;
-    m(0, 1) = -1;
-    m(1, 1) = m(1, 0) + m(0, 1);
-    std::cout << m << std::endl;
-
-    log.info() << "This is the end of the test";
+    log.info() << "done with test program! ";
 
     return ExitCode::OK;
   }
@@ -63,4 +52,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::EigenExample)
+MAIN_FOR(Elements::Examples::Wcs)

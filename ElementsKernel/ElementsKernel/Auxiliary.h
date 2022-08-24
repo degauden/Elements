@@ -94,8 +94,8 @@ ELEMENTS_API std::vector<Path::Item> getLocations(bool exist_only = false);
 
 }  // namespace Auxiliary
 
-/** @example ElementsExamples/src/program/CCfitsExample.cpp
- * This is an example of how to use the getAuxiliaryPath function.
+/** @example ElementsExamples/src/program/CCfits.cpp
+ * This is an example of how to use the Auxiliary::getPath function.
  */
 
 }  // namespace Kernel

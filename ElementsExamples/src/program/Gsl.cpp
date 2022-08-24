@@ -1,5 +1,5 @@
 /**
- * @file XercesExample.cpp
+ * @file Gsl.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -21,13 +21,13 @@
 #include <map>     // for map
 #include <string>  // for string
 
-#include <xercesc/util/PlatformUtils.hpp>  // for Initialize and Terminate
-#include <xercesc/util/XercesVersion.hpp>  // For gXercesFullVersionStr
+#include <boost/format.hpp>  // for format
+
+#include <gsl/gsl_sf_bessel.h>  // for gsl_sf_bessel_J0
+#include <gsl/gsl_version.h>
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
-
-namespace Xerces = XERCES_CPP_NAMESPACE;  // needed to avoid an unneeded ugly ns
 
 using std::map;
 using std::string;
@@ -35,20 +35,19 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class XercesExample : public Program {
+class Gsl : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    auto log = Logging::getLogger("XercesExample");
+    auto log = Logging::getLogger("GslExample");
 
-    Xerces::XMLPlatformUtils::Initialize();
+    log.info() << "GSL version: " << gsl_version;
 
-    log.info() << "XercesC version:" << gXercesFullVersionStr;
+    double x = 5.0;
+    double y = gsl_sf_bessel_J0(x);
 
-    Xerces::XMLPlatformUtils::Terminate();
-
-    log.info() << "done with test program! ";
+    log.info() << boost::format("J0(%g) = %.18e\n") % x % y;
 
     return ExitCode::OK;
   }
@@ -61,4 +60,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::XercesExample)
+MAIN_FOR(Elements::Examples::Gsl)

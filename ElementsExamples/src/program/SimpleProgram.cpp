@@ -1,5 +1,5 @@
 /**
- * @file SimpleProgramExample.cpp
+ * @file SimpleProgram.cpp
  *
  * @date Aug 27, 2014
  * @author Hubert Degaudenzi
@@ -34,14 +34,14 @@ namespace Elements {
 namespace Examples {
 
 /**
- * @class SimpleProgramExample
+ * @class SimpleProgram
  * @brief
  *    Example of an Elements program
  * @details
  *    This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
  *    conveniently to write a new program.
  */
-class SimpleProgramExample : public Program {
+class SimpleProgram : public Program {
 
 public:
   /**
@@ -73,4 +73,4 @@ public:
 }  // namespace Examples
 }  // namespace Elements
 
-MAIN_FOR(Elements::Examples::SimpleProgramExample)
+MAIN_FOR(Elements::Examples::SimpleProgram)

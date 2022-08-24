@@ -1,4 +1,11 @@
+#[=======================================================================[.rst:
+ElementsBuildFlags
+------------------
 
+This file set the default values for various CMake cache variables used by a 
+new project.
+
+#]=======================================================================]
 include_guard(GLOBAL)
 
 include(CheckCXXCompilerFlag)
@@ -558,10 +565,10 @@ if(NOT ELEMENTS_FLAGS_SET)
       FORCE)
 
   # @todo Check why the -D_GLIBCXX_PROFILE cannot be used with Boost.
-  set(CMAKE_CXX_FLAGS_PROFILE "-pg"
+  set(CMAKE_CXX_FLAGS_PROFILE "-g -pg"
       CACHE STRING "Flags used by the compiler during profile builds."
       FORCE)
-  set(CMAKE_C_FLAGS_PROFILE "-pg"
+  set(CMAKE_C_FLAGS_PROFILE "-g -pg"
       CACHE STRING "Flags used by the compiler during profile builds."
       FORCE)
 

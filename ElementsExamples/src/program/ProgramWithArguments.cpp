@@ -1,5 +1,5 @@
 /**
- * @file ProgramExampleWithArguments.cpp
+ * @file ProgramWithArguments.cpp
  *
  * @date Aug 27, 2014
  * @author Hubert Degaudenzi
@@ -40,14 +40,14 @@ namespace Elements {
 namespace Examples {
 
 /**
- * @class ProgramExampleWithArguments
+ * @class ProgramWithArguments
  * @brief
  *    Example of an Elements program
  * @details
  *    This class is an example of a program based on the ElementsProgram class. It can be copied/pasted
  *    conveniently to write a new program.
  */
-class ProgramExampleWithArguments : public Program {
+class ProgramWithArguments : public Program {
 
 public:
   /**
@@ -98,4 +98,4 @@ public:
 }  // namespace Examples
 }  // namespace Elements
 
-MAIN_FOR(Elements::Examples::ProgramExampleWithArguments)
+MAIN_FOR(Elements::Examples::ProgramWithArguments)

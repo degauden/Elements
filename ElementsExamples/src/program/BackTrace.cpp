@@ -1,5 +1,5 @@
 /**
- * @file CfitsioExample.cpp
+ * @file BackTrace.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -18,10 +18,11 @@
  *
  */
 
-#include <map>     // for map
-#include <string>  // for string
+#include <map>        // for map
+#include <stdexcept>  // for standard exceptions
+#include <string>     // for string
 
-#include <fitsio.h>
+#include "ElementsExamples/crashingFunction.h"  // for crashingFunction
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
@@ -32,16 +33,24 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class CfitsioExample : public Program {
+auto log = Logging::getLogger("BackTraceExample");
+
+void secondLevelFunction() {
+  log.info() << "Entering Second Level Function";
+  crashingFunction();
+}
+
+void firstLevelFunction() {
+  log.info() << "Entering First Level Function";
+  secondLevelFunction();
+}
+
+class BackTrace : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    auto log = Logging::getLogger("CfitsioExample");
-
-    int a = fits_is_reentrant();
-
-    log.info() << "Cfitsio is reentrant: " << a;
+    firstLevelFunction();
 
     log.info() << "done with test program! ";
 
@@ -56,4 +65,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::CfitsioExample)
+MAIN_FOR(Elements::Examples::BackTrace)

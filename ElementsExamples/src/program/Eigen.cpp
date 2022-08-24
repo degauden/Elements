@@ -1,5 +1,5 @@
 /**
- * @file GslExample.cpp
+ * @file Eigen.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -18,13 +18,12 @@
  *
  */
 
+#include <iostream>
+
 #include <map>     // for map
 #include <string>  // for string
 
-#include <boost/format.hpp>  // for format
-
-#include <gsl/gsl_sf_bessel.h>  // for gsl_sf_bessel_J0
-#include <gsl/gsl_version.h>
+#include <Eigen/Dense>
 
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
@@ -35,19 +34,23 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class GslExample : public Program {
+class Eigen : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    auto log = Logging::getLogger("GslExample");
+    using ::Eigen::MatrixXd;
 
-    log.info() << "GSL version: " << gsl_version;
+    auto log = Logging::getLogger("EigenExample");
 
-    double x = 5.0;
-    double y = gsl_sf_bessel_J0(x);
+    MatrixXd m(2, 2);
+    m(0, 0) = 3;
+    m(1, 0) = 2.5;
+    m(0, 1) = -1;
+    m(1, 1) = m(1, 0) + m(0, 1);
+    std::cout << m << std::endl;
 
-    log.info() << boost::format("J0(%g) = %.18e\n") % x % y;
+    log.info() << "This is the end of the test";
 
     return ExitCode::OK;
   }
@@ -60,4 +63,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::GslExample)
+MAIN_FOR(Elements::Examples::Eigen)

@@ -1,5 +1,5 @@
 /**
- * @file CCfitsExample.cpp
+ * @file CCfits.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -21,9 +21,9 @@
 #include <map>     // for map
 #include <string>  // for string
 
-#include <gnuastro/cosmology.h>
-#include <gnuastro/fits.h>  // header file to test
+#include <CCfits/CCfits>  // header file to test
 
+#include "ElementsKernel/Auxiliary.h"
 #include "ElementsKernel/ProgramHeaders.h"  // for including all Program/related headers
 #include "ElementsKernel/Unused.h"          // for ELEMENTS_UNUSED
 
@@ -33,22 +33,28 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class GnuAstroExample : public Program {
+class CCfits : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
 
-    auto log = Logging::getLogger("GnuAstroExample");
+    auto log = Logging::getLogger("CCfits");
 
     string test_upper_string{"THATSTRING"};
     log.info() << "This is the test upper string: " << test_upper_string;
 
-    double z{2.5};
-    double H0{67.66};
+    string test_lower_string = ::CCfits::FITSUtil::lowerCase(test_upper_string);
+    log.info() << "This is the test lower string: " << test_lower_string;
 
-    auto age = gal_cosmology_age(z, H0, 0.0, 0.0, 0.0);
+    log.info() << "done with test program! ";
 
-    log.info() << "Age of the Universe @ z = " << z << " : " << age << " GA";
+    auto fits_file_path = Auxiliary::getPath("ElementsExamples/phz_cat.fits");
+    log.info() << "Opening the file " << fits_file_path.string();
+    ::CCfits::FITS fits_file(fits_file_path.string());
+
+    ::CCfits::ExtHDU& extension = fits_file.extension(1);
+
+    log.info() << "Extension comments: " << extension.getComments();
 
     return ExitCode::OK;
   }
@@ -61,4 +67,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::GnuAstroExample)
+MAIN_FOR(Elements::Examples::CCfits)

@@ -1,5 +1,5 @@
 /**
- * @file FloatPrecisionExample.cpp
+ * @file FloatPrecision.cpp
  * @date October 30th, 2018
  * @author Hubert Degaudenzi
  *
@@ -159,7 +159,7 @@ void printFloatPrecision() {
   cout << "The sizeof in bits: " << 8 * sizeof(T) << endl;
 }
 
-class FloatPrecisionExample : public Program {
+class FloatPrecision : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
@@ -181,4 +181,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::FloatPrecisionExample)
+MAIN_FOR(Elements::Examples::FloatPrecision)

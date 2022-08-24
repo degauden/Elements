@@ -36,6 +36,12 @@ else:
     sphinx_major_version = int(sphinx.__version__.split(".")[0])
     sphinx_minor_version = int(sphinx.__version__.split(".")[1])
 
+
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode',
+              'sphinx.ext.mathjax', 'sphinx.ext.autosummary', 'sphinx.ext.inheritance_diagram',
+              'sphinx.ext.intersphinx']
+
+# Napo extension
 if sphinx_major_version < 1 or (sphinx_major_version == 1 and sphinx_minor_version < 3):
     napoleon_extension = 'sphinxcontrib.napoleon'
 
@@ -45,12 +51,23 @@ try:
 except ImportError:
     found_napo = False
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode',
-              'sphinx.ext.mathjax', 'sphinx.ext.autosummary', 'sphinx.ext.inheritance_diagram',
-              'sphinx.ext.intersphinx']
-
 if found_napo:
     extensions.append(napoleon_extension)
+
+
+# CMake extension
+cmake_extension = 'sphinxcontrib.moderncmakedomain'
+
+try:
+    importlib.import_module(cmake_extension)
+    found_cmake = True
+except ImportError:
+    found_cmake = False
+
+if found_cmake:
+    extensions.append(cmake_extension)
+
+
 
 numpydoc_extension = 'numpydoc'
 try:
@@ -61,9 +78,10 @@ except ImportError:
 
 if found_npdoc:
     numpydoc_show_class_members = False
-    @APPEND_NUMPYDOC_EXT@
+    extensions.append(numpydoc_extension)
 
-# Try to import read the docs theme if available
+
+# readthedocs extension
 readthedocs_extension='sphinx_rtd_theme'
 try:
     importlib.import_module(readthedocs_extension)
@@ -74,7 +92,19 @@ except ImportError:
 if found_rtd:
 	extensions.append(readthedocs_extension)
 
-@APPEND_BREATHE_EXT@
+
+# Breathe extension
+breathe_extension = 'breathe'
+try:
+    importlib.import_module(breathe_extension)
+    found_breathe = True
+except ImportError:
+    found_breathe = False
+
+if found_breathe:
+  extensions.append(breathe_extension)
+
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

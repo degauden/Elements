@@ -34,7 +34,7 @@
 #define _xstr(s) str(s)
 
 /**
- * @def _xstr(x)
+ * @def _str(x)
  * Macro to convert a preprocessor constant into a string.
  */
 #define _str(s) #s

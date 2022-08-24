@@ -1,5 +1,5 @@
 /**
- * @file HealpixExample.cpp
+ * @file Healpix.cpp
  * @date January 6th, 2015
  * @author Pierre Dubath
  *
@@ -32,7 +32,7 @@ using std::string;
 namespace Elements {
 namespace Examples {
 
-class HealpixExample : public Program {
+class Healpix : public Program {
 
 public:
   ExitCode mainMethod(ELEMENTS_UNUSED map<string, VariableValue>& args) override {
@@ -54,4 +54,4 @@ public:
  * Implementation of a main using a base class macro
  * This must be present in all Elements programs
  */
-MAIN_FOR(Elements::Examples::HealpixExample)
+MAIN_FOR(Elements::Examples::Healpix)
