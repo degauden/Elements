@@ -4,7 +4,7 @@ name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["develop"]
+    branches: ["feature/GithubDoc"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -60,6 +60,8 @@ jobs:
     steps:
       - name: Where are we?
         run: pwd; ls; ls ${{ runner.workspace }}
+      - name: And then?
+        run: ls ${{ runner.workspace }}; ls ${{ runner.workspace }}/build         
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
