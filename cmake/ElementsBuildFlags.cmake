@@ -368,6 +368,9 @@ set(PYTEST_EXTRA_OPTIONS "" CACHE STRING "Extra option to be appended to the pyt
 set(NOSE_EXTRA_OPTIONS "" CACHE STRING "Extra option to be appended to the nosetests command")
 
 
+set(EXTRA_SPHINX_FILES "" CACHE STRING "List of extra doc files for the sphinx generation")
+
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   message(STATUS "Setting cached build flags")
