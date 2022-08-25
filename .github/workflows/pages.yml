@@ -61,7 +61,7 @@ jobs:
       - name: Where are we?
         run: pwd; ls ${{ runner.workspace }}
       - name: And then?
-        run: ls ${{ runner.workspace }}; ls ${{ runner.workspace }}/Elements/build         
+        run: ls ${{ runner.workspace }}; ls ${{ runner.workspace }}/Elements      
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
