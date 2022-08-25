@@ -59,7 +59,7 @@ jobs:
     needs: build
     steps:
       - name: Where are we?
-        run: pwd; ls; ls ${{ runner.workspace }}
+        run: pwd; ls ${{ runner.workspace }}
       - name: And then?
         run: ls ${{ runner.workspace }}; ls ${{ runner.workspace }}/build         
       - name: Deploy to GitHub Pages
