@@ -45,6 +45,8 @@ jobs:
         with:
           build-dir: ${{ runner.workspace }}/build
           target: doc
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
       - name: Where are we?
         run: pwd; ls ${{ runner.workspace }}
       - name: And then?
@@ -54,7 +56,5 @@ jobs:
         uses: actions/deploy-pages@v1
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: ${{ runner.workspace }}/build/doc # The folder the action should deploy.
-
+        
  
