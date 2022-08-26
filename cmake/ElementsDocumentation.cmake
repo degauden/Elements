@@ -425,18 +425,27 @@ Python Package
 
   if(INSTALL_DOC)
 
-    install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/
+    if(MERGE_HTML_DOC_TREES)
+      set(DOC_DIST_TREE ${CMAKE_BINARY_DIR}/doc/html/)
+    else()
+      set(DOC_DIST_TREE ${CMAKE_BINARY_DIR}/doc/)
+    endif()
+
+
+    install(DIRECTORY ${DOC_DIST_TREE}
             DESTINATION ${DOC_INSTALL_SUFFIX}
             PATTERN "CVS" EXCLUDE
             PATTERN ".svn" EXCLUDE
             PATTERN "*~" EXCLUDE)
 
-    foreach(_do ChangeLog README README.md)
+    foreach(_do ChangeLog CHANGELOG.md README README.md)
+      set(_do_file)
       find_file(_do_file
                 NAMES ${_do}
                 PATHS ${CMAKE_CURRENT_SOURCE_DIR}
                 PATH_SUFFIXES doc
-                NO_DEFAULT_PATH)
+                NO_DEFAULT_PATH
+                NO_CACHE)
 
       if(_do_file)
           install(FILES ${_do_file}
