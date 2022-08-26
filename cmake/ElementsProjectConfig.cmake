@@ -1025,6 +1025,7 @@ elements_generate_env_conf\(${installed_env_xml} ${installed_project_build_envir
     endif()
   endif()
 
+  set(CPACK_EXTRA_CMAKEFLAGS "${CPACK_EXTRA_CMAKEFLAGS} -DMERGE_HTML_DOC_TREES=${MERGE_HTML_DOC_TREES}")
 
   if(RPM_FORWARD_PREFIX_PATH)
   
