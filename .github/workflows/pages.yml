@@ -22,7 +22,10 @@ concurrency:
 
 jobs:
   # Build job
-  build:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,31 +45,16 @@ jobs:
         with:
           build-dir: ${{ runner.workspace }}/build
           target: doc
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-
-  # Deployment job
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Where are we?
         run: pwd; ls ${{ runner.workspace }}
       - name: And then?
-        run: ls ${{ runner.workspace }}; ls ${{ runner.workspace }}/Elements      
+        run: ls ${{ runner.workspace }}; ls ${{ runner.workspace }}/build      
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ${{ runner.workspace }}/Elements/build/doc # The folder the action should deploy.
-        
+          folder: ${{ runner.workspace }}/build/doc # The folder the action should deploy.
+
+ 
