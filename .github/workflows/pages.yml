@@ -48,7 +48,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ${{ runner.workspace }}/build/doc/build/doc/html
+          path: ${{ runner.workspace }}/build/doc/html
       - name: Where are we?
         run: pwd; ls ${{ runner.workspace }}/build/doc/html
       - name: Deploy to GitHub Pages
