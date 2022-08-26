@@ -22,10 +22,7 @@ concurrency:
 
 jobs:
   # Build job
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,12 +44,17 @@ jobs:
           target: doc
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
-        with:
-          path: ${{ runner.workspace }}/build/doc/html
-      - name: Where are we?
-        run: pwd; ls ${{ runner.workspace }}/build/doc/html
+#        with:
+#          path: ${{ runner.workspace }}/build/doc/html
+       
+  deploy: 
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
-        
  
