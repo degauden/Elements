@@ -44,8 +44,8 @@ jobs:
           target: doc
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
-#        with:
-#          path: ${{ runner.workspace }}/build/doc/html
+        with:
+          path: ${{ runner.workspace }}/build/doc/html
        
   deploy: 
     needs: build
