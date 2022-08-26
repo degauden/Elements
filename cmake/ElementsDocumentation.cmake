@@ -12,6 +12,17 @@ include_guard(GLOBAL)
 
   if(USE_DOXYGEN)
 
+  option(MERGE_HTML_DOC_TREES
+         "Merge the Doxygen and Sphinx HTML trees into a single one"
+         FALSE)
+
+  if(MERGE_HTML_DOC_TREES)
+    set(DOXYGEN_HTML_OUTPUT_DIR ${PROJECT_BINARY_DIR}/doc/html)
+  else()
+    set(DOXYGEN_HTML_OUTPUT_DIR html)
+  endif()
+
+
 
   # Add Doxygen generation
   find_package(Doxygen QUIET)
@@ -34,7 +45,11 @@ include_guard(GLOBAL)
 
 
     if(USE_SPHINX)
-      set(DOX_LINK_TO_SPHINX "<tab type=\"user\" url=\"../../sphinx/html/index.html\" title=\"Sphinx\"/>")
+      if(MERGE_HTML_DOC_TREES)
+        set(DOX_LINK_TO_SPHINX "<tab type=\"user\" url=\"sphinx/index.html\" title=\"Sphinx\"/>")
+      else()
+        set(DOX_LINK_TO_SPHINX "<tab type=\"user\" url=\"../../sphinx/html/index.html\" title=\"Sphinx\"/>")
+      endif()
     else()
       set(DOX_LINK_TO_SPHINX "")
     endif()
@@ -124,6 +139,14 @@ include_guard(GLOBAL)
 
   if(USE_SPHINX AND (NOT "${PYTHON_EXPLICIT_VERSION}" STREQUAL "2"))
 
+  if(MERGE_HTML_DOC_TREES)
+    set(SPHINX_HTML_OUTPUT_DIR ${PROJECT_BINARY_DIR}/doc/html/sphinx)
+  else()
+    set(SPHINX_HTML_OUTPUT_DIR ${PROJECT_BINARY_DIR}/doc/sphinx/html)
+  endif()
+  
+
+
   find_package(Sphinx REQUIRED)
   if(SPHINX_FOUND)
 
@@ -170,9 +193,9 @@ include_guard(GLOBAL)
 
     add_custom_target(sphinx
                       COMMAND  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx 
-                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
+                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${SPHINX_HTML_OUTPUT_DIR}
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/_static
-                      COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} -b html . html
+                      COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} -b html . ${SPHINX_HTML_OUTPUT_DIR}
                       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/doc
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)
@@ -308,7 +331,11 @@ Python Package
 
 
      if(USE_DOXYGEN AND DOXYGEN_FOUND)
-       set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
+       if(MERGE_HTML_DOC_TREES)
+         set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../index.html>`_.")
+       else()
+         set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
+       endif()     
      else()
        set(SPHINX_ORIGINAL_DOX "")
      endif()

@@ -47,12 +47,6 @@ API Documentation
 .. toctree::
    :maxdepth: 5
 
-   
-   
-Legacy
-======
-
-* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.
 
 Contributors to This Document
 =============================
