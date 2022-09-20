@@ -188,11 +188,19 @@ include_guard(GLOBAL)
 
 
     if(EXTRA_SPHINX_FILES)
-      file(COPY ${EXTRA_SPHINX_FILES} DESTINATION ${PROJECT_BINARY_DIR}/doc/sphinx)
+      foreach (esf IN LISTS EXTRA_SPHINX_FILES)
+        if(EXISTS "${esf}")
+          file(COPY ${esf} DESTINATION ${PROJECT_BINARY_DIR}/doc/sphinx)
+        endif()
+      endforeach()
     endif()
-
+    
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doc")
+      copy_dir(${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx)
+    endif()
+    
+                      
     add_custom_target(sphinx
-                      COMMAND  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx 
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${SPHINX_HTML_OUTPUT_DIR}
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/_static
                       COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} -b html . ${SPHINX_HTML_OUTPUT_DIR}
