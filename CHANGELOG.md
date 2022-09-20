@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Changed
 - Move to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format
 
 ## [6.0.1] - 2021-11-18
@@ -15,7 +17,6 @@ This is a patched version of 6.0.0 to clean up deployment issues.
 ### Added
 - Enable debugging of CMake includes with USE_DEBUG_PRINT=ON
 - Add fake HTMLSummary target to be compatible with older make libraries
-
 
 ### Changed
 - Use the env var CC if present to have priority over the compiler found in 
@@ -155,6 +156,8 @@ Fixes and improvements for EDEN 2.1
 
 
 ## [5.12.0] - 2020-07-21
+
+### Added
 specific tag for the Euclid release
 
 
