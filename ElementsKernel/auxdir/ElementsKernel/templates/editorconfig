@@ -13,8 +13,8 @@ indent_size = 4
 indent_style = tab
 
 # Do not apply inside build directories
-￼[/build.*/**]
-￼max_line_length = unset
+[/build.*/**]
+max_line_length = unset
 
 [/InstallArea/**]
-￼max_line_length = unset
+max_line_length = unset
