@@ -165,6 +165,28 @@ else()
   set(ELEMENTS_CPP14_DEFAULT OFF)
 endif()
 
+# C++17 according to https://en.cppreference.com/w/cpp/compiler_support/17
+
+set(ELEMENTS_CPP17_DEFAULT OFF)
+
+if ( ("${SGS_COMP}" STREQUAL gcc AND ( (NOT SGS_COMP_VERSION VERSION_LESS "7.0") OR (SGS_COMPVERS MATCHES "max") ))
+    OR ("${SGS_COMP}" STREQUAL clang AND (NOT SGS_COMP_VERSION VERSION_LESS "6") )
+    OR ("${SGS_COMP}" STREQUAL llvm))
+  set(ELEMENTS_CPP17_DEFAULT ON)
+  set(ELEMENTS_CPP14_DEFAULT OFF)
+  set(ELEMENTS_CPP11_DEFAULT OFF)
+  
+elseif("${SGS_COMP}" STREQUAL icc AND (NOT SGS_COMPVERS VERSION_LESS "19.0.1"))
+  set(ELEMENTS_CPP17_DEFAULT ON)
+  set(ELEMENTS_CPP14_DEFAULT OFF)
+  set(ELEMENTS_CPP11_DEFAULT OFF)
+else()
+  set(ELEMENTS_CPP17_DEFAULT OFF)
+endif()
+
+
+
+
 debug_print("The default C++11 standard is set to ${ELEMENTS_CPP11_DEFAULT}")
 debug_print("The default C++14 standard is set to ${ELEMENTS_CPP14_DEFAULT}")
 
@@ -197,7 +219,12 @@ option(ELEMENTS_CPP14
 
 option(ELEMENTS_CPP17
        "Enable C++17 compilation"
+       ${ELEMENTS_CPP17_DEFAULT})
+
+option(ELEMENTS_CPP20
+       "Enable C++20 compilation"
        OFF)
+
 
 option(ELEMENTS_CPP20
        "Enable C++20 compilation"
