@@ -204,7 +204,6 @@ include_guard(GLOBAL)
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${SPHINX_HTML_OUTPUT_DIR}
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/_static
                       COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} -b html . ${SPHINX_HTML_OUTPUT_DIR}
-                      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/doc
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)
 
