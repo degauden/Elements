@@ -8,8 +8,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add the FindXsData.cmake module in order to find the xsdata executable. xsData will
+  replace at some point the usage of the pyxbgen tool
+- Add trivial PlantUML example in Doxygen
+- update sphinx config to auto retrieve current year and add display build date (Manuel Grizonnet)
+- Initial implementation of the pytest coverage report
+- Add 2 CMake variables to be passed to the pytest and nose test runners
+    - PYTEST_EXTRA_OPTIONS for pytest
+    - NOSE_EXTRA_OPTIONS for nosetests
+- Add a CMake configure test to disable -D_GLIBCXX_PARALLEL
+    - there are some cases where it misbehaves.
+    - it only happens when the ELEMENTS_PARALLEL CMake flags is enabled
+- Use Read The Docs HTML Sphinx theme if available (Manuel Grizonnet)
+- Add the extra `--output-junit` option to the ctest call
+    - the default call is now `-T test --output-junit
+    $(BUILDDIR)/Testing/JUnitTestReport.xml`
+    - add a CTEST_ARGS environment variable to recover the previous behavior
+    (`export CTEST_ARGS="-T test"`)
+    - add a CTEST_EXTRA_ARGS environment variable to extend the already
+    present options.
+- Add the Sphinx support for the cmake directory
+    - use the sphinxcontrib-moderncmakedomain
+    - the documentation is provided by either
+        - a local cmake/index.rst static file
+        - a generated list from cmake/*.cmake if the former file doesn't exist
+    - the documentation only appear if there are some rst inserted in the
+    cmake files.
+- Import the documentation from the Euclid Redmine site
+    - the site https://euclid.roe.ac.uk/projects/elements/wiki
+    - convert the textile source with pandoc:
+      `pandoc -s FAQ.textile -f textile -t rst -o FAQ.rst`
+- Add support for Markdown files in Sphinx
+- Add the CMake EXTRA_SPHINX_FILES variable for files to be copied into the sphinx doc dir
+- Implementation of the HTML tree merge
+    - the merge is triggered by the MERGE_HTML_DOC_TREES=ON CMake option. By
+    default it is set to OFF
+    - the tree is generated at build/doc/html
+    - the root of the tree is the doxygen one
+    - the sphinx tree is located at build/doc/html/sphinx
+
+
 ### Changed
 - Move to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format
+- Update the jenkins configuration for EDEN-3
+- Change the obsolete failUnlessRaises methods that were deprecated in Python 3.1.
+    - it is changed to assertRaises
+    - it will be removed in Python 3.11
+- replace the obsolete imp python module with the importlib one
+- Improve the python coding style
+    - more consistency with the import statements
+    - use the `__name__` for the global logger when applicable
+    - define the global in capitals
+- Move the pytest coverage results into build.*/cov/PyTest. Now both XML 
+  and HTML reports are generated.
+- Use new CMake find_package layout
+    - create a specific target
+    - use caching for some variables only
+- Make C++17 the default standard
+
+
+### Fixed
+- Fix build of Logging.cpp in centos7 (Alejandro Álvarez Ayllón)
+- Remove of the obsolete distutils python package. Use the sysconfig module
+  to retrieve the default PYTHONPATH.
+- Readd the needed `-g`compile option for the profiling build type
 
 ## [6.0.1] - 2021-11-18
 This is a patched version of 6.0.0 to clean up deployment issues.
