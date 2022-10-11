@@ -33,7 +33,6 @@ parser.add_argument('--elements-default-loglevel', default="DEBUG",
 parser.add_argument('--no-config-file', default=False, action="store_true",
                     help='default log level for the Elements framework')
 
-
 args = parser.parse_args()
 
 if not os.path.exists(args.outdir):
@@ -106,12 +105,13 @@ p = Program('%(MODULE_NAME)s',
              logging.%(LogLevel)s,
              use_config_file=%(UseConfigFile)s)
 
-exit(p.runProgram())
-""" % {'MODULE_NAME' : args.module,
-       'proj' : args.project_name.upper(),
-       'Proj' : args.project_name,
-       'Mod_name' : args.elements_module_name,
-       'Mod_version' : args.elements_module_version,
+if __name__ == '__main__':
+    exit(p.runProgram())
+""" % {'MODULE_NAME': args.module,
+       'proj': args.project_name.upper(),
+       'Proj': args.project_name,
+       'Mod_name': args.elements_module_name,
+       'Mod_version': args.elements_module_version,
        'Python_version': args.python_explicit_version,
        'LogLevel': args.elements_default_loglevel,
        'UseConfigFile': use_config_file_string
