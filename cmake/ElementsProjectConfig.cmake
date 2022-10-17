@@ -3439,10 +3439,19 @@ function(elements_add_unit_test name)
       endif()
     endif()
 
-    add_test(NAME ${package}.${name}
-             WORKING_DIRECTORY ${${name}_UNIT_TEST_WORKING_DIRECTORY}
-             COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
-             ${executable}${exec_suffix} ${exec_argument})
+    if (USE_MEMORYCHECK)
+      separate_arguments(memorycheck_command_options_list UNIX_COMMAND ${MEMORYCHECK_COMMAND_OPTIONS})
+      add_test(NAME ${package}.${name}
+               WORKING_DIRECTORY ${${name}_UNIT_TEST_WORKING_DIRECTORY}
+               COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
+               ${MEMORYCHECK_COMMAND} ${memorycheck_command_options_list} --suppressions=${MEMORYCHECK_SUPPRESSIONS_FILE} --xml=yes --xml-file=${PROJECT_BINARY_DIR}/Testing/Temporary/${executable}.${${name}_UNIT_TEST_TYPE}.memcheck.xml ${executable}${exec_suffix} ${exec_argument})    
+    else() 
+      add_test(NAME ${package}.${name}
+               WORKING_DIRECTORY ${${name}_UNIT_TEST_WORKING_DIRECTORY}
+               COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
+               ${executable}${exec_suffix} ${exec_argument})
+    endif()
+
 
     set_property(GLOBAL APPEND PROPERTY TEST_LIST ${package}.${name}:${executable}${exec_suffix})
 
@@ -3529,10 +3538,19 @@ function(elements_add_test name)
     endif()
   endforeach()
 
-  add_test(NAME ${package}.${name}
-           WORKING_DIRECTORY ${ARG_WORKING_DIRECTORY}
-           COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
-           ${cmdline})
+  if (USE_MEMORYCHECK)
+    separate_arguments(memorycheck_command_options_list UNIX_COMMAND ${MEMORYCHECK_COMMAND_OPTIONS})
+    add_test(NAME ${package}.${name}
+             WORKING_DIRECTORY ${ARG_WORKING_DIRECTORY}
+             COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
+             ${MEMORYCHECK_COMMAND} ${memorycheck_command_options_list} --suppressions=${MEMORYCHECK_SUPPRESSIONS_FILE} --xml=yes --xml-file=${PROJECT_BINARY_DIR}/Testing/Temporary/${package}.${name}.memcheck.xml ${cmdline})
+  else()
+    add_test(NAME ${package}.${name}
+             WORKING_DIRECTORY ${ARG_WORKING_DIRECTORY}
+             COMMAND ${env_cmd} ${extra_env} --xml ${env_xml}
+              ${cmdline})
+  endif()
+
 
   set_property(TEST ${package}.${name} APPEND PROPERTY LABELS ${package})
   set_property(TEST ${package}.${name} PROPERTY CMDLINE "${cmdline}")
