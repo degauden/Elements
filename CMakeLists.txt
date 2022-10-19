@@ -16,7 +16,7 @@ find_package(ElementsProject)
 include(ElementsDefaults)
 
 # Declare project name and version
-elements_project(Elements 6.1 DESCRIPTION "A C++ base framework for the Euclid Software.")
+elements_project(Elements 6.2 DESCRIPTION "A C++ base framework for the Euclid Software.")
 
 # This test does not really fit in a subdirectory.
 
