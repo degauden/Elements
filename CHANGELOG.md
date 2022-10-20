@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [6.1.1] - 2022-10-19
+
+### Changed
+- forgot to update this very file
+
+
+## [6.1.0] - 2022-10-19
+
 ### Added
 - Add the FindXsData.cmake module in order to find the xsdata executable. xsData will
   replace at some point the usage of the pyxbgen tool
@@ -48,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - the root of the tree is the doxygen one
     - the sphinx tree is located at build/doc/html/sphinx
 
+
 ### Changed
 - Move to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format
 - Update the jenkins configuration for EDEN-3
@@ -65,12 +75,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - create a specific target
     - use caching for some variables only
 - Make C++17 the default standard
+- Restrict the -Wshadow warning to local variables only
+- Change the sanitize style into a list
+    - several sanitizers can be used
+    - the sanitizers are passed with a CMake option string that uses spaces
+    as separator (e.g: -DSANITIZE_STYLE="undefined thread")
 
 ### Fixed
 - Fix build of Logging.cpp in centos7 (Alejandro Álvarez Ayllón)
 - Remove of the obsolete distutils python package. Use the sysconfig module
   to retrieve the default PYTHONPATH.
 - Readd the needed `-g`compile option for the profiling build type
+- Fix the python multiprocessing spawning by adding the "__main__" guard
 
 
 ## [6.0.1] - 2021-11-18
