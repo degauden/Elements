@@ -86,7 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove of the obsolete distutils python package. Use the sysconfig module
   to retrieve the default PYTHONPATH.
 - Readd the needed `-g`compile option for the profiling build type
-- Fix the python multiprocessing spawning by adding the "__main__" guard
+- Fix the python multiprocessing spawning by adding the `__main__` guard
 
 
 ## [6.0.1] - 2021-11-18
