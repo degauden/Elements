@@ -1,0 +1,63 @@
+name: RPM - Repository
+
+on:
+  push:
+    branches: [ master, develop ]
+    tags: [ '*' ]
+  pull_request:
+    branches: [ master, develop ]
+  workflow_dispatch:
+
+jobs:
+  get_fedora_releases:
+    name: Get Fedora Releases
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query Fedora
+        id: releases
+        uses: sgallagher/get-fedora-releases-action@v1
+    outputs:
+      stable: ${{ steps.releases.outputs.stable }}
+      development: ${{ steps.releases.outputs.development }}
+      active: ${{ steps.releases.outputs.active }}
+
+  build:
+    name: Build (Active)
+    needs: get_fedora_releases
+    continue-on-error: false
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os-type: [fedora]
+        os-version: ${{ fromJson(needs.get_fedora_releases.outputs.stable) }}
+        include:
+          - os-type: centos
+            os-version: 7
+          - os-type: rockylinux
+            os-version: 9
+    container: ${{ matrix.os-type }}:${{ matrix.os-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Get package name and version
+        id: package-version
+        uses: astrorama/actions/elements-project@v3.4
+      - name: Install dependencies
+        uses: astrorama/actions/setup-dependencies@v3.4
+        with:
+          dependency-list: .github/workflows/dependencies.txt
+      - name: Build
+        id: build
+        uses: astrorama/actions/elements-build-rpm@v3.4
+      - name: Upload RPM to repository
+        uses: astrorama/actions/upload-rpm@v3.4
+        if: ${{ github.repository_owner == 'astrorama' }}
+        env:
+          REPOSITORY_USER: ${{ secrets.REPOSITORY_USER }}
+          REPOSITORY_PASSWORD: ${{ secrets.REPOSITORY_PASSWORD }}
+          REPOSITORY_KEY: ${{ secrets.REPOSITORY_KEY }}
+        with:
+          rpm-dir: ${{ steps.build.outputs.rpm-dir }}
+          srpm-dir: ${{ steps.build.outputs.srpm-dir }}
