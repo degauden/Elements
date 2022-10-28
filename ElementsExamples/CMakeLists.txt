@@ -327,6 +327,8 @@ elements_add_python_program(PythonProgramExample ElementsExamples.PythonProgramE
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
   elements_add_python_program(SwigProgramExample ElementsExamples.SwigProgramExample)
 endif()
+
+
 #===== Test that the python program does run ========================================
 elements_add_test(PythonProgramExampleRun COMMAND PythonProgramExample)
 elements_add_test(PythonProgramExampleNoConfigFile COMMAND PythonProgramExample --config-file=toto.conf FAILS)
@@ -339,11 +341,15 @@ if(pybind11_FOUND)
   elements_add_test(PyBind11ProgramExampleRun COMMAND PyBind11ProgramExample)
 endif()
 
-elements_add_python_program(PythonTestProgramExample ElementsExamples.PythonTestProgramExample)
-
 elements_install_scripts()
 
+elements_add_python_program(PythonTestProgramExample ElementsExamples.PythonTestProgramExample)
+
 elements_add_test(PythonTestProgram COMMAND PythonTestProgramExample)
+
+elements_add_python_program(PythonSpawnExample ElementsExamples.SpawnExample)
+
+elements_add_test(PythonSpawnTest COMMAND PythonSpawnExample)
 
 
 elements_add_test(ScriptThatSucceeds COMMAND ScriptThatSucceeds_test LABELS CustomLabel)

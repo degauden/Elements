@@ -165,6 +165,28 @@ else()
   set(ELEMENTS_CPP14_DEFAULT OFF)
 endif()
 
+# C++17 according to https://en.cppreference.com/w/cpp/compiler_support/17
+
+set(ELEMENTS_CPP17_DEFAULT OFF)
+
+if ( ("${SGS_COMP}" STREQUAL gcc AND ( (NOT SGS_COMP_VERSION VERSION_LESS "7.0") OR (SGS_COMPVERS MATCHES "max") ))
+    OR ("${SGS_COMP}" STREQUAL clang AND (NOT SGS_COMP_VERSION VERSION_LESS "6") )
+    OR ("${SGS_COMP}" STREQUAL llvm))
+  set(ELEMENTS_CPP17_DEFAULT ON)
+  set(ELEMENTS_CPP14_DEFAULT OFF)
+  set(ELEMENTS_CPP11_DEFAULT OFF)
+  
+elseif("${SGS_COMP}" STREQUAL icc AND (NOT SGS_COMPVERS VERSION_LESS "19.0.1"))
+  set(ELEMENTS_CPP17_DEFAULT ON)
+  set(ELEMENTS_CPP14_DEFAULT OFF)
+  set(ELEMENTS_CPP11_DEFAULT OFF)
+else()
+  set(ELEMENTS_CPP17_DEFAULT OFF)
+endif()
+
+
+
+
 debug_print("The default C++11 standard is set to ${ELEMENTS_CPP11_DEFAULT}")
 debug_print("The default C++14 standard is set to ${ELEMENTS_CPP14_DEFAULT}")
 
@@ -197,7 +219,12 @@ option(ELEMENTS_CPP14
 
 option(ELEMENTS_CPP17
        "Enable C++17 compilation"
+       ${ELEMENTS_CPP17_DEFAULT})
+
+option(ELEMENTS_CPP20
+       "Enable C++20 compilation"
        OFF)
+
 
 option(ELEMENTS_CPP20
        "Enable C++20 compilation"
@@ -254,6 +281,11 @@ option(USE_SPHINX_BREATHE
 option(USE_SPHINX_NUMPYDOC
        "Use sphinx numpydoc extension"
        ON)
+       
+option(USE_MEMORYCHECK
+       "Use the memory checker"
+       OFF)
+
 
 option(ELEMENTS_USE_RPATH
        "Use full RPATH for both build and installation"
@@ -368,6 +400,9 @@ set(PYTEST_EXTRA_OPTIONS "" CACHE STRING "Extra option to be appended to the pyt
 set(NOSE_EXTRA_OPTIONS "" CACHE STRING "Extra option to be appended to the nosetests command")
 
 
+set(EXTRA_SPHINX_FILES "" CACHE STRING "List of extra doc files for the sphinx generation")
+
+
 #--- Compilation Flags ---------------------------------------------------------
 if(NOT ELEMENTS_FLAGS_SET)
   message(STATUS "Setting cached build flags")
@@ -399,7 +434,7 @@ if(NOT ELEMENTS_FLAGS_SET)
   check_and_use_cxx_option(-Wno-long-long CXX_HAS_NO_LONG_LONG)
   check_and_use_cxx_option(-Wno-unknown-pragmas CXX_HAS_NO_UNKNOWN_PRAGMAS)
   check_and_use_cxx_option(-Wformat-security CXX_HAS_FORMAT_SECURITY)
-  check_and_use_cxx_option(-Wshadow CXX_HAS_SHADOW)
+  check_and_use_cxx_option(-Wshadow=local CXX_HAS_SHADOW)
   check_and_use_cxx_option(-Wlogical-not-parentheses CXX_HAS_LOGICAL_NOT_PARENTHESES)
   check_and_use_cxx_option(-Wnull-dereference CXX_HAS_NULL_DEREFERENCE)
 
@@ -425,7 +460,7 @@ if(NOT ELEMENTS_FLAGS_SET)
   check_and_use_c_option(-Wno-long-long C_HAS_NO_LONG_LONG)
   check_and_use_c_option(-Wno-unknown-pragmas C_HAS_NO_UNKNOWN_PRAGMAS)
   check_and_use_c_option(-Wformat-security C_HAS_FORMAT_SECURITY)
-  check_and_use_c_option(-Wshadow C_HAS_SHADOW)
+  check_and_use_c_option(-Wshadow=local C_HAS_SHADOW)
   check_and_use_c_option(-Wlogical-not-parentheses C_HAS_LOGICAL_NOT_PARENTHESES)
   check_and_use_c_option(-Wnull-dereference C_HAS_NULL_DEREFERENCE)
 
@@ -446,8 +481,12 @@ if(NOT ELEMENTS_FLAGS_SET)
   endif()
 
   if(SANITIZE_OPTIONS AND ("${SGS_COMP}" STREQUAL gcc))
-    check_and_use_cxx_option(-fsanitize=${SANITIZE_STYLE} CXX_HAS_SANITIZE)
-    check_and_use_c_option(-fsanitize=${SANITIZE_STYLE} C_HAS_SANITIZE)
+    string(REPLACE " " ";" sanitize_list ${SANITIZE_STYLE})
+    foreach(s_style ${sanitize_list})
+      string(TOUPPER ${s_style} UPPER_STYLE)
+      check_and_use_cxx_option(-fsanitize=${s_style} CXX_HAS_${UPPER_STYLE}_SANITIZE)
+      check_and_use_c_option(-fsanitize=${s_style} C_HAS_${UPPER_STYLE}_SANITIZE)
+    endforeach()
   endif()
 
   if(FLOAT_EQUAL_WARNING)

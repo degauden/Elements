@@ -12,6 +12,17 @@ include_guard(GLOBAL)
 
   if(USE_DOXYGEN)
 
+  option(MERGE_HTML_DOC_TREES
+         "Merge the Doxygen and Sphinx HTML trees into a single one"
+         FALSE)
+
+  if(MERGE_HTML_DOC_TREES)
+    set(DOXYGEN_HTML_OUTPUT_DIR ${PROJECT_BINARY_DIR}/doc/html)
+  else()
+    set(DOXYGEN_HTML_OUTPUT_DIR html)
+  endif()
+
+
 
   # Add Doxygen generation
   find_package(Doxygen QUIET)
@@ -34,7 +45,11 @@ include_guard(GLOBAL)
 
 
     if(USE_SPHINX)
-      set(DOX_LINK_TO_SPHINX "<tab type=\"user\" url=\"../../sphinx/html/index.html\" title=\"Sphinx\"/>")
+      if(MERGE_HTML_DOC_TREES)
+        set(DOX_LINK_TO_SPHINX "<tab type=\"user\" url=\"sphinx/index.html\" title=\"Sphinx\"/>")
+      else()
+        set(DOX_LINK_TO_SPHINX "<tab type=\"user\" url=\"../../sphinx/html/index.html\" title=\"Sphinx\"/>")
+      endif()
     else()
       set(DOX_LINK_TO_SPHINX "")
     endif()
@@ -124,6 +139,14 @@ include_guard(GLOBAL)
 
   if(USE_SPHINX AND (NOT "${PYTHON_EXPLICIT_VERSION}" STREQUAL "2"))
 
+  if(MERGE_HTML_DOC_TREES)
+    set(SPHINX_HTML_OUTPUT_DIR ${PROJECT_BINARY_DIR}/doc/html/sphinx)
+  else()
+    set(SPHINX_HTML_OUTPUT_DIR ${PROJECT_BINARY_DIR}/doc/sphinx/html)
+  endif()
+  
+
+
   find_package(Sphinx REQUIRED)
   if(SPHINX_FOUND)
 
@@ -163,12 +186,24 @@ include_guard(GLOBAL)
 
     get_property(proj_python_package_list GLOBAL PROPERTY PROJ_PYTHON_PACKAGE_LIST)
 
+
+    if(EXTRA_SPHINX_FILES)
+      foreach (esf IN LISTS EXTRA_SPHINX_FILES)
+        if(EXISTS "${esf}")
+          file(COPY ${esf} DESTINATION ${PROJECT_BINARY_DIR}/doc/sphinx)
+        endif()
+      endforeach()
+    endif()
+    
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doc")
+      copy_dir(${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx)
+    endif()
+    
+                      
     add_custom_target(sphinx
-                      COMMAND  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx 
-                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/html
+                      COMMAND  ${CMAKE_COMMAND} -E make_directory ${SPHINX_HTML_OUTPUT_DIR}
                       COMMAND  ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/sphinx/_static
-                      COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} -b html . html
-                      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/doc
+                      COMMAND  ${SPHINX_BUILD_CMD} ${SPHINX_BUILD_OPTIONS} -b html . ${SPHINX_HTML_OUTPUT_DIR}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx
                       COMMENT "Generating Sphinx documentation" VERBATIM)
 
@@ -303,7 +338,11 @@ Python Package
 
 
      if(USE_DOXYGEN AND DOXYGEN_FOUND)
-       set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
+       if(MERGE_HTML_DOC_TREES)
+         set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../index.html>`_.")
+       else()
+         set(SPHINX_ORIGINAL_DOX "* The original Doxygen documentation can be accessed with `this link <../../doxygen/html/index.html>`_.")
+       endif()     
      else()
        set(SPHINX_ORIGINAL_DOX "")
      endif()
@@ -393,18 +432,27 @@ Python Package
 
   if(INSTALL_DOC)
 
-    install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/
+    if(MERGE_HTML_DOC_TREES)
+      set(DOC_DIST_TREE ${CMAKE_BINARY_DIR}/doc/html/)
+    else()
+      set(DOC_DIST_TREE ${CMAKE_BINARY_DIR}/doc/)
+    endif()
+
+
+    install(DIRECTORY ${DOC_DIST_TREE}
             DESTINATION ${DOC_INSTALL_SUFFIX}
             PATTERN "CVS" EXCLUDE
             PATTERN ".svn" EXCLUDE
             PATTERN "*~" EXCLUDE)
 
-    foreach(_do ChangeLog README README.md)
+    foreach(_do ChangeLog CHANGELOG.md README README.md)
+      set(_do_file)
       find_file(_do_file
                 NAMES ${_do}
                 PATHS ${CMAKE_CURRENT_SOURCE_DIR}
                 PATH_SUFFIXES doc
-                NO_DEFAULT_PATH)
+                NO_DEFAULT_PATH
+                NO_CACHE)
 
       if(_do_file)
           install(FILES ${_do_file}

@@ -28,6 +28,7 @@
 #include <vector>   // for vector
 
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Unused.h"
 
 using std::vector;
 
@@ -52,11 +53,11 @@ double ClassExample2::divideNumbers(const double first, const double second) con
 }
 
 void ClassExample2::passingUniquePointer(std::unique_ptr<vector<double>> vector_unique_ptr) const {
-  vector_unique_ptr->size();
+  ELEMENTS_UNUSED auto vect_size = vector_unique_ptr->size();
 }
 
 void ClassExample2::passingObjectInGeneral(const vector<double>& input_object) const {
-  input_object.size();
+  ELEMENTS_UNUSED auto object_size = input_object.size();
 }
 
 ClassExample2 ClassExample2::factoryMethod(const std::int64_t source_id, const double ra) {

@@ -4,7 +4,7 @@ name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["develop"]
+    branches: ["feature/GithubDoc"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -42,29 +42,22 @@ jobs:
         with:
           build-dir: ${{ runner.workspace }}/build
           target: doc
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
+          configure-options: -DMERGE_HTML_DOC_TREES=ON
+      - name: And then?
+        run: ls ${{ runner.workspace }}; ls ${{ runner.workspace }}/build; ls  ${{ runner.workspace }}/build/doc
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
-
-  # Deployment job
-  deploy:
+        with:
+          path: ${{ runner.workspace }}/build/doc/html
+       
+  deploy: 
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: Where are we?
-        run: pwd; ls; ls ${{ runner.workspace }}
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: ${{ runner.workspace }}/build/doc # The folder the action should deploy.
-        
+ 
