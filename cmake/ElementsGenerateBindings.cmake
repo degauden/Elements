@@ -135,8 +135,8 @@ function(generate_cpp_bindings xsd_dir ns_prefix)
 
   elements_add_library(${library_name}
                        ${xsd_generated_cpp_files}
-                       LINK_LIBRARIES Xsd XercesC
-                       INCLUDE_DIRS Xsd ${cpp_bindings_dir}/include
+                       LINK_LIBRARIES  XercesC
+                       INCLUDE_DIRS Xsd::xsd ${cpp_bindings_dir}/include
                        NO_PUBLIC_HEADERS)
 
   include_directories(${cpp_bindings_dir}/include)
