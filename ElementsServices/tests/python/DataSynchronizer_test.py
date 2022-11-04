@@ -16,9 +16,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
 import unittest
-import py.test
+import pytest
 import os
 
 from ElementsKernel.Temporary import TempDir, TempEnv
@@ -35,14 +34,14 @@ class TestDataSynchronizer(unittest.TestCase):
         self.m_top_dir = TempDir(prefix="DataSync_test")
         self.m_env = TempEnv()
         self.m_env["WORKSPACE"] = os.path.join(self.m_top_dir.path(), "workspace")
-        
+
     def tearDown(self):
         unittest.TestCase.tearDown(self)
         del self.m_top_dir
 
     def testDownloadFailure(self):
         mock = MockDataSynchronizer()
-        with py.test.raises(DownloadFailed):
+        with pytest.raises(DownloadFailed):
             mock.downloadAllFiles()
 
     def testOverwritingPolicy(self):

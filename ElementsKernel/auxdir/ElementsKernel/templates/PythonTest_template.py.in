@@ -23,7 +23,7 @@
 :author: %(AUTHOR)s
 """
 
-import py.test
+import pytest
 import %(MODULENAME)s.%(PYTHONMODULE)s
 
 class Test%(PYTHONMODULE)s(object):
