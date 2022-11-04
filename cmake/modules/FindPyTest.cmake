@@ -3,7 +3,7 @@ if (NOT PYTEST_FOUND)
     find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION})
     
     set(explicit_pytest)
-    set(implicit_pytest py.test)
+    set(implicit_pytest pytest)
 
     if(PYTHON_EXPLICIT_VERSION)
       set(explicit_pytest ${implicit_pytest}-${PYTHON_EXPLICIT_VERSION})

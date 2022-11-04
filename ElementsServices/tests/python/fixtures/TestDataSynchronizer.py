@@ -14,7 +14,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-import py.test
+import pytest
 import os.path
 
 from ElementsServices.DataSync.DataSyncUtils import dataSyncConfFilePath
@@ -43,7 +43,7 @@ class TestDataSynchronizer (object):
             assert os.path.isfile(f), "File not found: " + f + " using command: " \
                 +synchronizer.createDownloadCommand(dependency_config.getFileMap()[f], f)
             os.remove(f)
-    
+
     @classmethod
     def checkDownloadTestData(cls, connection):
         dependency = theDependencyConfig()
@@ -62,6 +62,6 @@ class TestDataSynchronizer (object):
     @classmethod
     def checkDownloadErrorReport(cls, connection):
         dependency = dataSyncConfFilePath(theInvalidDependencyConfig())
-        with py.test.raises(DownloadFailed):
+        with pytest.raises(DownloadFailed):
             sync = DataSync(connection, dependency)
             sync.download()

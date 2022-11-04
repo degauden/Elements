@@ -16,9 +16,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-
 import os.path
-import py.test
+import pytest
 import unittest
 
 from ElementsKernel.Temporary import TempDir, TempEnv
@@ -54,7 +53,7 @@ class TestDataSync(unittest.TestCase):
 
     def checkFallback(self, fallback_config):
         sync = DataSync(aBadConnectionConfig(), theDependencyConfig())
-        with py.test.raises(Exception):
+        with pytest.raises(Exception):
             sync.download()
         sync.downloadWithFallback(fallback_config)
         for file in theLocalFiles():

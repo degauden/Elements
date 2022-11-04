@@ -239,10 +239,10 @@ The List of Options
 |         |         |         | instead | only be |         |     |
 |         |         |         | of the  | used as |         |     |
 |         |         |         | default | a       |         |     |
-|         |         |         | Py.Test | f       |         |     |
+|         |         |         | PyTest  | f       |         |     |
 |         |         |         | one     | allback |         |     |
 |         |         |         |         | if      |         |     |
-|         |         |         |         | Py.Test |         |     |
+|         |         |         |         | PyTest  |         |     |
 |         |         |         |         | is not  |         |     |
 |         |         |         |         | found.  |         |     |
 +---------+---------+---------+---------+---------+---------+-----+

@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Move from Py.Test to PyTest
+    - pytest 7.2.0 no longer depends on py module which means that the import of py.test will no longer work.
+    - Change the executable from py.test to pytest
+    - Rename py.test into pytest in the python files
+    - Change the comments and documentation from Py.Test to PyTest
+
+
 
 ## [6.1.1] - 2022-10-19
 

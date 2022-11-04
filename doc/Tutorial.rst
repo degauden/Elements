@@ -508,7 +508,7 @@ with
 
 ::
 
-   import py.test
+   import pytest
    from ExampleModule.ExamplePyModule import ExampleClass
 
    class TestExamplePyModule(object):

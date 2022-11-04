@@ -2350,7 +2350,7 @@ One can divide the nature of the tests in 3 categories:
    default) <https://www.boost.org/doc/libs/1_67_0/libs/test/doc/html/index.html>`__
    or `CppUnit utility
    framework <http://cppunit.sourceforge.net/doc/cvs/cppunit_cookbook.html>`__,
--  Python tests run by py.test (the default), nosetests or the python
+-  Python tests run by pytest (the default), nosetests or the python
    internal test runner,
 -  and finally the plain tests which are just executables that return
    either 0 (Success) or another number (failure).
@@ -2509,7 +2509,7 @@ only the suite has to be written:
 Python Tests
 ~~~~~~~~~~~~
 
-For the python unit testing the `py.test
+For the python unit testing the `pytest
 framework <https://docs.pytest.org/en/latest/contents.html>`__ is the
 recommended one. If the framework is not able to locate that executable,
 it will fall back on “nosetests” or even to the “python -m unittest”
@@ -2706,7 +2706,7 @@ will provide more information about the possible ctest options.
 
 Another feature that is very useful is the detailed crash if a test is
 not passing. This is very useful when a crash appears in a python test
-that is run together with other tests within the same Py.Test call. For
+that is run together with other tests within the same PyTest call. For
 example:
 
 ::
@@ -4023,7 +4023,7 @@ Downloading a set of files for one test suite
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In order to download a set of files for one test suite, we will rely on
-a ``py.test`` functionality: the **test suite setup**, which is a class
+a ``pytest`` functionality: the **test suite setup**, which is a class
 method.
 
 ::
