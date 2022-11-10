@@ -537,10 +537,10 @@ if(NOT ELEMENTS_FLAGS_SET)
 
 
   # Build type compilation flags (if different from default or unknown to CMake)
-  set(CMAKE_CXX_FLAGS_RELEASE "-O2"
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3"
       CACHE STRING "Flags used by the compiler during release builds."
       FORCE)
-  set(CMAKE_C_FLAGS_RELEASE "-O2"
+  set(CMAKE_C_FLAGS_RELEASE "-O3"
       CACHE STRING "Flags used by the compiler during release builds."
       FORCE)
 
