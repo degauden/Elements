@@ -94,25 +94,6 @@ public:
 
     OptionsDescription config_options{"Example program options"};
 
-    //    auto               add = config_options.add_options();
-    //
-    //
-    //    // Add the specific program options
-    //    add("int-option", value<int>()->default_value(int{111}), "An example int option");
-    //    add("int-option-with-default-and-default-in-conf", value<int>()->default_value(int{222}), "An example int
-    //    option"); add("int-option-with-default-no-default-in-conf", value<int>()->default_value(int{444}), "An example
-    //    int option"); add("int-option-no-default-not-defined-in-conf", value<int>(), "An example int option");
-    //    add("int-option-with-no-defaults-anywhere", value<int>(), "An example int option");
-    //    add("string-option", value<string>()->default_value(string{}), "An example string option");
-    //    add("boolean-option", value<bool>()->default_value(false), "An example boolean option");
-    //    add("flag,f", bool_switch(&flag), "An option to set to true");
-    //    add("string-option-no-default", value<string>(), "A string option without default value");
-    //    add("long-long-option", value<int64_t>()->default_value(int64_t{}), "An example long long option");
-    //    add("double-option", value<double>()->default_value(double{}), "An example double option");
-    //    add("int-vector-option", value<vector<int>>()->multitoken()->default_value(vector<int>{}, "Empty"),
-    //        "An example vector option");
-    //    add("threshold,t", value<double>()->default_value(double{0.5}), "An example double option");
-
     config_options.add_options()("int-option", value<int>()->default_value(int{111}), "An example int option")(
         "int-option-with-default-and-default-in-conf", value<int>()->default_value(int{222}), "An example int option")(
         "int-option-with-default-no-default-in-conf", value<int>()->default_value(int{444}),
